@@ -14,8 +14,8 @@ function App() {
 
   return (
     <div className="App">
-      work
-        <button onClick={onCloce}>Закрыть</button>
+      тебе отправили обнимашку
+        <button onClick={onCloce}>отправить обнимашку в ответ</button>
     </div>
   );
 }

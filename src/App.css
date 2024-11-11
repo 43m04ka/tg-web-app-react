@@ -7,3 +7,35 @@ body {
   background: var(--tg-theme-bg-color);
   color: var(--tg-theme-text-color);
 }
+.red{
+  border: 2px solid red;
+}
+.blue{
+  border: 2px solid blue;
+}
+.green{
+  border: 2px solid green;
+}
+#app-head{
+  display: grid;
+  grid-template-columns: 8fr 1fr 1fr;
+}
+
+.button-rect-50{
+ height: 50px;
+}
+
+.button-rect-body{
+  height: 300px;
+  margin-right: 5px;
+  margin-left: 5px;
+  margin-top: 5px;
+}
+
+.right-margin{
+  margin: 5px;
+}
+#app-body {
+  overflow: auto;
+  margin: 0;
+}

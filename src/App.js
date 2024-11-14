@@ -18,6 +18,9 @@ function App() {
             <div className='button-rect-50 right-margin red'>search</div>
             <div className='button-rect-50 right-margin red'>basket</div>
             <div className='button-rect-50 right-margin red'>info</div>
+            <div className='button-rect-50 right-margin red'>
+                <button onClick={onCloce}>Закрыть</button>
+            </div>
         </div>
         <div className="App-body red" id='app-body'>
             <div className='button-rect-body green'>card 1</div>

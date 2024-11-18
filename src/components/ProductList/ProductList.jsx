@@ -4,6 +4,7 @@ import ProductItem from "../ProductItem/ProductItem";
 import {useTelegram} from "../../hooks/useTelegram";
 import {useCallback, useEffect} from "react";
 
+
 const products = [
     {id: '1', title: 'title-1', price: 100, description: 'description-1'},
     {id: '2', title: 'title-2', price: 200, description: 'description-2'},

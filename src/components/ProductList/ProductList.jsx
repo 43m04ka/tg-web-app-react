@@ -3,6 +3,7 @@ import './ProductList.css';
 import ProductItem from "../ProductItem/ProductItem";
 import {useTelegram} from "../../hooks/useTelegram";
 import {useCallback, useEffect} from "react";
+import {response} from "express";
 
 
 const products = [
@@ -15,6 +16,8 @@ const products = [
     {id: '7', title: 'title-7', price: 400, description: 'description-1'},
     {id: '8', title: 'title-8', price: 500, description: 'description-1'},
 ]
+
+const url = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/web-data/'
 
 const getTotalPrice = (items = []) => {
     return items.reduce((acc, item) => {
@@ -32,13 +35,19 @@ const ProductList = () => {
             totalPrice: getTotalPrice(addedItems),
             queryId,
         }
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/web-data/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        })
+        try {
+             fetch(url, {
+                method: "POST", // или 'PUT'
+                body: JSON.stringify(data), // данные могут быть 'строкой' или {объектом}!
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const json =  response.json();
+            console.log("Успех:", JSON.stringify(json));
+        } catch (error) {
+            console.error("Ошибка:", error);
+        }
     }, [addedItems])
 
     useEffect(() => {

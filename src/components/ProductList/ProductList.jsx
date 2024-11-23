@@ -17,7 +17,7 @@ const products = [
     {id: '8', title: 'title-8', price: 500, description: 'description-1'},
 ]
 
-const url = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/web-data/'
+const url  = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/web-data/'
 
 const getTotalPrice = (items = []) => {
     return items.reduce((acc, item) => {

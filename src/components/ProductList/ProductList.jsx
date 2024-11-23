@@ -32,7 +32,7 @@ const ProductList = () => {
             totalPrice: getTotalPrice(addedItems),
             queryId,
         }
-        fetch('http://localhost:8000/web-data/', {
+        fetch('http://https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/web-data/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

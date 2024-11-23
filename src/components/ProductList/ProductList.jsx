@@ -34,9 +34,9 @@ const ProductList = () => {
         }
         fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/web-data/', {
             method: 'POST',
+            mode: 'no-cors',
             headers: {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin' :'no-cors'
             },
             body: JSON.stringify(data)
         })

@@ -7,13 +7,13 @@ import {useCallback, useEffect} from "react";
 
 const products = [
     {id: '1', title: 'title-1', price: 100, description: 'description-1'},
-    {id: '2', title: 'title-2', price: 200, description: 'description-2'},
-    {id: '3', title: 'title-3', price: 200, description: 'description-3'},
-    {id: '4', title: 'title-4', price: 300, description: 'description-4'},
-    {id: '5', title: 'title-5', price: 300, description: 'description-5'},
-    {id: '6', title: 'title-6', price: 400, description: 'description-6'},
-    {id: '7', title: 'title-7', price: 400, description: 'description-1'},
-    {id: '8', title: 'title-8', price: 500, description: 'description-1'},
+    {id: '2', title: 'title-2', price: 100, description: 'description-2'},
+    {id: '3', title: 'title-3', price: 100, description: 'description-3'},
+    {id: '4', title: 'title-4', price: 100, description: 'description-4'},
+    {id: '5', title: 'title-5', price: 100, description: 'description-5'},
+    {id: '6', title: 'title-6', price: 100, description: 'description-6'},
+    {id: '7', title: 'title-7', price: 100, description: 'description-1'},
+    {id: '8', title: 'title-8', price: 100, description: 'description-1'},
 ]
 
 
@@ -37,14 +37,6 @@ const ProductList = () => {
     const onSendData = useCallback(() => {
         tg.sendData(JSON.stringify(data));
     }, [data])
-
-    useEffect(() => {
-        tg.onEvent('mainButtonClicked', onSendData)
-        return () => {
-            tg.offEvent('mainButtonClicked', onSendData)
-        }
-    }, [onSendData])
-
 
     useEffect(() => {
         tg.onEvent('mainButtonClicked', onSendData)

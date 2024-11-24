@@ -14,7 +14,7 @@ const getTotalPrice = (items = []) => {
 
 const ProductList = (data_list) => {
     const products = data_list.main_data
-    const [addedItems, setAddedItems] = useState([]);
+    const [addedItems,  setAddedItems] = useState([]);
     const {tg, queryId} = useTelegram();
     console.log(products);
 

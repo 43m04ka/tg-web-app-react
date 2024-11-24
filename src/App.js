@@ -47,7 +47,7 @@ function App() {
                 ))}
                 {mainData.map(category => (
                     category.body.map(item => (
-                            <Route path={'home/' + category.path + '/' + item.id} key={item.id} element={<CardProduct mainData={item} />}/>
+                            <Route path={'home/' + category.path + '/' + item.id} key={item.id} element={<CardProduct mainData={item} path ={category.path + '/'}/>}/>
                         ))
                 ))}
                 <Route path="*" element={<ErrorPage/>}/>

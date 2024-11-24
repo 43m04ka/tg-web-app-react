@@ -1,11 +1,26 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import Button from "./Button";
+import {useTelegram} from "../../hooks/useTelegram";
 
-const CardProduct = ({mainData, onAdd}) => {
+const CardProduct = ({mainData, path}) => {
     const itemData = mainData.mainData
+    const {tg} = useTelegram();
+
     const onAddHandler = () => {
         onAdd(itemData);
     }
+
+    const onBack = useCallback(() => {
+        window.location.href='/home'+path;
+    }, [])
+
+    useEffect(() => {
+        tg.onEvent('backButtonClicked', onBack)
+        return () => {
+            tg.offEvent('backButtonClicked', onBack)
+        }
+    }, [onBack])
+
     console.log(itemData)
     return (
         <div>

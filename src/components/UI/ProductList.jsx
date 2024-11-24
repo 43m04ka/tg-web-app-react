@@ -35,9 +35,20 @@ const ProductList = (data_list) => {
         }
     }, [onSendData])
 
+    const onBack = useCallback(() => {
+       window.location.href='/home';
+    }, [])
+
     useEffect(() => {
-        tg.BackButton.show()
-    }, [onSendData])
+        tg.onEvent('backButtonClicked', onBack)
+        return () => {
+            tg.offEvent('backButtonClicked', onBack)
+        }
+    }, [onBack])
+
+    useEffect(() => {
+       tg.BackButton.show();
+    }, [])
 
     const onAdd = (product) => {
         const alreadyAdded = addedItems.find(item => item.id === product.id);

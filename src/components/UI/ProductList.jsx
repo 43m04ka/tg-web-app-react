@@ -35,6 +35,10 @@ const ProductList = (data_list) => {
         }
     }, [onSendData])
 
+    useEffect(() => {
+        tg.BackButton.show()
+    }, [onSendData])
+
     const onAdd = (product) => {
         const alreadyAdded = addedItems.find(item => item.id === product.id);
         let newItems = [];

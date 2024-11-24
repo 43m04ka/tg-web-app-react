@@ -6,9 +6,6 @@ const CardProduct = ({mainData, path}) => {
     const itemData = mainData.mainData
     const {tg} = useTelegram();
 
-    const onAddHandler = () => {
-        onAdd(itemData);
-    }
 
     const onBack = useCallback(() => {
         window.location.href='/home'+path;

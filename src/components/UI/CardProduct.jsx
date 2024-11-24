@@ -22,9 +22,6 @@ const CardProduct = ({mainData, path}) => {
     return (
         <div>
             <span>{'Page '+itemData.title}</span>
-            <Button className={'add-btn'} onClick={onAddHandler}>
-                Добавить в корзину
-            </Button>
         </div>
     );
 };

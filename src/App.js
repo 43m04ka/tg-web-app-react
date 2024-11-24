@@ -8,22 +8,23 @@ import ProductList from "./components/UI/ProductList";
 import Home from "./components/UI/Home";
 import ErrorPage from "./components/UI/ErrorPage";
 import ProductItem from "./components/UI/ProductItem";
+import CardProduct from "./components/UI/CardProduct";
 
 
-const main_data = [{
+const mainData = [{
         name: 'new',
         id: 0,
         path: 'new',
         body: [
-            {id: '1', title: 'title-1', price: 100, description: 'description-1', category: 'new'},
-            {id: '2', title: 'title-2', price: 150, description: 'description-2', category: 'new'}]
+            {id: '1', title: 'Fortnite', price: 100, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202311/2801/803e41fee0edf8f8ed1de518e6eac60ddf30ac485b9a16a2.png?w=180'},
+            {id: '2', title: 'UFC® 5', price: 150, description: 'description-2', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202309/0421/418704276d35ce02e8cb532c6ca3826cf866ad2ec66c0b17.png?w=180'}]
     },
     {
         name: 'sale',
         id: 1,
         path: 'sale',
-        body: [{id: '3', title: 'title-3', price: 50, description: 'description-3', category: 'sale'},
-            {id: '4', title: 'title-4', price: 80, description: 'description-4', category: 'sale'}]
+        body: [{id: '3', title: 'Astro-Bot', price: 50, description: 'description-3', category: 'sale', img:'https://image.api.playstation.com/vulcan/ap/rnd/202406/0500/8f15268257b878597757fcc5f2c9545840867bc71fc863b1.png?w=180'},
+            {id: '4', title: 'Red dead redemption 2', price: 80, description: 'description-4', category: 'sale', img:'https://image.api.playstation.com/gs2-sec/appkgo/prod/CUSA08519_00/12/i_3da1cf7c41dc7652f9b639e1680d96436773658668c7dc3930c441291095713b/i/icon0.png?w=180'}]
     }
 ]
 
@@ -40,9 +41,14 @@ function App() {
         <div className="App">
             <Header/>
             <Routes>
-                <Route path="home" element={<Home main_data={main_data}/>}/>
-                {main_data.map(category => (
-                    <Route path={'home/' + category.path} key={category.id} element={<ProductList main_data={main_data[category.id].body} />}/>
+                <Route path="home" element={<Home main_data={mainData}/>}/>
+                {mainData.map(category => (
+                    <Route path={'home/' + category.path} key={category.id} element={<ProductList main_data={mainData[category.id].body} />}/>
+                ))}
+                {mainData.map(category => (
+                    category.body.map(item => (
+                            <Route path={'home/' + category.path + '/' + item.id} key={item.id} element={<CardProduct mainData={item} />}/>
+                        ))
                 ))}
                 <Route path="*" element={<ErrorPage/>}/>
             </Routes>

@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from "./Button";
 import '../styles/style.css';
+import {Link} from "react-router-dom";
 
 const ProductItem = ({product, className, onAdd}) => {
     const onAddHandler = () => {
@@ -9,15 +10,19 @@ const ProductItem = ({product, className, onAdd}) => {
 
     return (
         <div className={'product ' + className}>
-            <div className={'img'}/>
-            <div className={'title'}>{product.title}</div>
-            <div className={'description'}>{product.description}</div>
-            <div className={'price'}>
-                <span>Стоимость: <b>{product.price}</b></span>
-            </div>
-            <Button className={'add-btn'} onClick={onAddHandler}>
-                Добавить в корзину
-            </Button>
+            <Link to={String(product.id)}>
+                <div className={'img'}>
+                    <img src={product.img} alt="Product Image"/>
+                </div>
+                <div className={'title'}>{product.title}</div>
+                <div className={'description'}>{product.description}</div>
+                <div className={'price'}>
+                    <span>Стоимость: <b>{product.price}</b></span>
+                </div>
+                <Button className={'add-btn'} onClick={onAddHandler}>
+                    Добавить в корзину
+                </Button>
+            </Link>
         </div>
     );
 };

@@ -1,3 +1,11 @@
+.red{
+    border: 1px solid red;
+}
+
+.green{
+    border: 1px solid green;
+}
+
 .button{
     padding: 10px 15px;
     background: var(--tg-theme-bg-color);
@@ -29,11 +37,12 @@
 
 
 .img {
-    width: 50px;
+    width: 70px;
     background: lightgray;
-    height: 50px;
+    height: 70px;
     margin: 0 auto;
     background: var(--tg-theme-button-color);
+    border-radius: 5px;
 }
 
 .description {
@@ -66,7 +75,20 @@
 .titleBlock{
     text-align: left;
     margin-top: 10px;
-    margin-left: 10px;
+    margin-left: 7px;
     font-size: 12px;
     font-family: Arial, Verdana, sans-serif;
+}
+
+.scroll-container {
+    display: flex;
+    height: 120px;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    margin-top: 5px;
+}
+.home-block-element{
+    display: flex;
+    height: 100%;
+    margin-left: 6px;
 }

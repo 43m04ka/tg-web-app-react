@@ -10,7 +10,7 @@ const Home = ({main_data}) => {
     const {tg} = useTelegram();
 
     useEffect(() => {
-        tg.BackButton.show();
+        tg.BackButton.hide();
     }, [])
     return (
         <div>

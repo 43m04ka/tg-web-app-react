@@ -16,19 +16,18 @@ const mainData = [{
         id: 0,
         path: 'new',
         body: [
-            {id: '1', title: 'Fortnite', price: 100, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202311/2801/803e41fee0edf8f8ed1de518e6eac60ddf30ac485b9a16a2.png?w=180'},
-            {id: '2', title: 'Fortnite1', price: 100, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202311/2801/803e41fee0edf8f8ed1de518e6eac60ddf30ac485b9a16a2.png?w=180'},
-            {id: '3', title: 'Fortnite2', price: 100, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202311/2801/803e41fee0edf8f8ed1de518e6eac60ddf30ac485b9a16a2.png?w=180'},
-            {id: '4', title: 'Fortnite3', price: 100, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202311/2801/803e41fee0edf8f8ed1de518e6eac60ddf30ac485b9a16a2.png?w=180'},
-            {id: '5', title: 'Fortnite4', price: 100, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202311/2801/803e41fee0edf8f8ed1de518e6eac60ddf30ac485b9a16a2.png?w=180'},
-            {id: '6', title: 'UFC® 5', price: 150, description: 'description-2', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202309/0421/418704276d35ce02e8cb532c6ca3826cf866ad2ec66c0b17.png?w=180'}]
+            {id: '1', title: 'Far Cry 5', price: 180, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/gs2-sec/appkgo/prod/CUSA05847_00/2/i_156be5fdc23a961f0e2b05974c0df5ecfd6169b09aa25e5c510ec7e6e1ad683f/i/icon0.png'},
+            {id: '2', title: 'DOOM Eternal Standard Edition', price: 165, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202010/0114/ERNPc4gFqeRDG1tYQIfOKQtM.png'},
+            {id: '3', title: 'Divinity: Original Sin 2 - Definitive Edition', price: 100, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/gs2-sec/appkgo/prod/CUSA11898_00/7/i_54c96b482f927d0516249edbc804fa5c99a351443544964e3335bd12869db9c7/i/icon0.png'},
+            {id: '4', title: 'NieR: Automata™ Game of the YoRHa Edition', price: 100, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202010/0604/gwDCkbeX5axMIavw9XrDvihp.png'},
+            {id: '5', title: 'UFC® 5', price: 150, description: 'description-2', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202309/0421/418704276d35ce02e8cb532c6ca3826cf866ad2ec66c0b17.png?w=180'}]
     },
     {
         name: 'Популярные',
         id: 1,
         path: 'popular',
-        body: [{id: '3', title: 'Astro-Bot', price: 50, description: 'description-3', category: 'popular', img:'https://image.api.playstation.com/vulcan/ap/rnd/202406/0500/8f15268257b878597757fcc5f2c9545840867bc71fc863b1.png?w=180'},
-            {id: '4', title: 'Red dead redemption 2', price: 80, description: 'description-4', category: 'popular', img:'https://image.api.playstation.com/gs2-sec/appkgo/prod/CUSA08519_00/12/i_3da1cf7c41dc7652f9b639e1680d96436773658668c7dc3930c441291095713b/i/icon0.png?w=180'}]
+        body: [{id: '6', title: 'Astro-Bot', price: 50, description: 'description-3', category: 'popular', img:'https://image.api.playstation.com/vulcan/ap/rnd/202406/0500/8f15268257b878597757fcc5f2c9545840867bc71fc863b1.png?w=180'},
+            {id: '7', title: 'Red dead redemption 2', price: 80, description: 'description-4', category: 'popular', img:'https://image.api.playstation.com/gs2-sec/appkgo/prod/CUSA08519_00/12/i_3da1cf7c41dc7652f9b639e1680d96436773658668c7dc3930c441291095713b/i/icon0.png?w=180'}]
     }
 ]
 

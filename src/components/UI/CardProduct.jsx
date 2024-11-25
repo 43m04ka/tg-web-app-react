@@ -18,6 +18,10 @@ const CardProduct = ({mainData, path}) => {
         }
     }, [onBack])
 
+    useEffect(() => {
+        tg.BackButton.show();
+    }, [])
+
     console.log(mainData)
     return (
         <div className={'card-product'}>

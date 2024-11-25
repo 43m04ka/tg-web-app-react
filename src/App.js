@@ -12,7 +12,7 @@ import CardProduct from "./components/UI/CardProduct";
 
 
 const mainData = [{
-        name: 'new',
+        name: 'Новинки',
         id: 0,
         path: 'new',
         body: [
@@ -20,11 +20,11 @@ const mainData = [{
             {id: '2', title: 'UFC® 5', price: 150, description: 'description-2', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202309/0421/418704276d35ce02e8cb532c6ca3826cf866ad2ec66c0b17.png?w=180'}]
     },
     {
-        name: 'sale',
+        name: 'Популярные',
         id: 1,
-        path: 'sale',
-        body: [{id: '3', title: 'Astro-Bot', price: 50, description: 'description-3', category: 'sale', img:'https://image.api.playstation.com/vulcan/ap/rnd/202406/0500/8f15268257b878597757fcc5f2c9545840867bc71fc863b1.png?w=180'},
-            {id: '4', title: 'Red dead redemption 2', price: 80, description: 'description-4', category: 'sale', img:'https://image.api.playstation.com/gs2-sec/appkgo/prod/CUSA08519_00/12/i_3da1cf7c41dc7652f9b639e1680d96436773658668c7dc3930c441291095713b/i/icon0.png?w=180'}]
+        path: 'popular',
+        body: [{id: '3', title: 'Astro-Bot', price: 50, description: 'description-3', category: 'popular', img:'https://image.api.playstation.com/vulcan/ap/rnd/202406/0500/8f15268257b878597757fcc5f2c9545840867bc71fc863b1.png?w=180'},
+            {id: '4', title: 'Red dead redemption 2', price: 80, description: 'description-4', category: 'popular', img:'https://image.api.playstation.com/gs2-sec/appkgo/prod/CUSA08519_00/12/i_3da1cf7c41dc7652f9b639e1680d96436773658668c7dc3930c441291095713b/i/icon0.png?w=180'}]
     }
 ]
 

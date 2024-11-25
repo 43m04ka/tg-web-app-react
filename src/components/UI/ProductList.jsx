@@ -37,7 +37,7 @@ const ProductList = (data_list) => {
     }, [onSendData])
 
     const onBack = useCallback(async () => {
-        navigate('/home/'+path);
+        navigate('/home');
     }, [])
 
     useEffect(() => {

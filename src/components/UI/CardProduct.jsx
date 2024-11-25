@@ -7,7 +7,8 @@ const CardProduct = ({mainData, path}) => {
 
 
     const onBack = useCallback(() => {
-        window.location.href='/home'+path;
+        console.log('/home/'+path);
+        window.location.href='/home/'+path;
     }, [])
 
     useEffect(() => {

@@ -3,7 +3,6 @@ import Button from "./Button";
 import {useTelegram} from "../../hooks/useTelegram";
 
 const CardProduct = ({mainData, path}) => {
-    const itemData = mainData.mainData
     const {tg} = useTelegram();
 
 
@@ -18,10 +17,10 @@ const CardProduct = ({mainData, path}) => {
         }
     }, [onBack])
 
-    console.log(itemData)
+    console.log(mainData)
     return (
         <div>
-            <span>{'Page '+itemData.title}</span>
+            <span>{'Page '+mainData.title}</span>
         </div>
     );
 };

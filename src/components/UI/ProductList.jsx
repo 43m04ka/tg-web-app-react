@@ -3,6 +3,7 @@ import '../styles/style.css';
 import ProductItem from "./ProductItem";
 import {useTelegram} from "../../hooks/useTelegram";
 import {useCallback, useEffect} from "react";
+import {useNavigate} from "react-router-dom";
 
 
 
@@ -16,7 +17,7 @@ const ProductList = (data_list) => {
     const products = data_list.main_data
     const [addedItems,  setAddedItems] = useState([]);
     const {tg, queryId} = useTelegram();
-    console.log(products);
+    const navigate = useNavigate();
 
     const data = {
         products: addedItems,
@@ -35,8 +36,8 @@ const ProductList = (data_list) => {
         }
     }, [onSendData])
 
-    const onBack = useCallback(() => {
-       window.location.href='/home';
+    const onBack = useCallback(async () => {
+        navigate('/home/'+path);
     }, [])
 
     useEffect(() => {

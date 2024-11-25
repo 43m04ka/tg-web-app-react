@@ -1,14 +1,14 @@
 import React, {useCallback, useEffect} from 'react';
 import Button from "./Button";
 import {useTelegram} from "../../hooks/useTelegram";
+import {useNavigate, useParams} from "react-router-dom";
 
 const CardProduct = ({mainData, path}) => {
     const {tg} = useTelegram();
+    const navigate = useNavigate();
 
-
-    const onBack = useCallback(() => {
-        console.log('/home/'+path);
-        this.context.router.push('/home/'+path)
+    const onBack = useCallback(async () => {
+        navigate('/home/'+path);
     }, [])
 
     useEffect(() => {

@@ -1,9 +1,10 @@
 import React from 'react';
 import '../styles/style.css';
+import {Link} from "react-router-dom";
 
-const Button = (props) => {
+const Button = ({path, text}) => {
     return (
-        <button {...props} className={'button' + props.className} />
+        <div></div>
     );
 };
 

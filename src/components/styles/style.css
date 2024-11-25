@@ -38,9 +38,9 @@
 
 
 .img {
-    width: 100px;
+    width: 150px;
     background: lightgray;
-    height: 100px;
+    height: 150px;
     margin: 0 auto;
     background: var(--tg-theme-button-color);
     border-radius: 5px;
@@ -71,29 +71,43 @@
     margin-left: 5px;
     margin-right: 5px;
     margin-top: 10px;
-    height: 180px;
+    height: 280px;
 }
 .titleBlock{
     text-align: left;
     margin-top: 10px;
     margin-left: 7px;
-    font-size: 12px;
+    font-size: 16px;
     font-family: Arial, Verdana, sans-serif;
 }
 
 .scroll-container {
     display: flex;
-    height: 120px;
+    height: 200px;
     overflow-x: auto;
     scroll-behavior: smooth;
     margin-top: 5px;
 }
 
 .home-block-element{
-    display: flex;
+    display: block;
     height: 100%;
     margin-left: 6px;
 }
 .scroll-container::-webkit-scrollbar {
    width: 30px;
+}
+
+.name-block{
+    text-align: left;
+    margin-top: 3px;
+    font-size: 12px;
+    font-family: Arial, Verdana, sans-serif;
+}
+.all-see-button{
+    margin-left: 50px;
+    font-size: 14px;
+}
+.card-product{
+
 }

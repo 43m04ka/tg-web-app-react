@@ -8,7 +8,7 @@ const CardProduct = ({mainData, path}) => {
     const navigate = useNavigate();
 
     const onBack = useCallback(async () => {
-        navigate('/home/'+path);
+        navigate(-1);
     }, [])
 
     useEffect(() => {
@@ -20,8 +20,9 @@ const CardProduct = ({mainData, path}) => {
 
     console.log(mainData)
     return (
-        <div>
-            <span>{'Page '+mainData.title}</span>
+        <div className={'card-product'}>
+            <img src={mainData.img} className={'img'} alt="Product Image"/>
+            <span>{'Page ' + mainData.title}</span>
         </div>
     );
 };

@@ -17,11 +17,11 @@ const mainData = [{
         path: 'new',
         body: [
             {id: '1', title: 'Fortnite', price: 100, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202311/2801/803e41fee0edf8f8ed1de518e6eac60ddf30ac485b9a16a2.png?w=180'},
-            {id: '1', title: 'Fortnite', price: 100, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202311/2801/803e41fee0edf8f8ed1de518e6eac60ddf30ac485b9a16a2.png?w=180'},
-            {id: '1', title: 'Fortnite', price: 100, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202311/2801/803e41fee0edf8f8ed1de518e6eac60ddf30ac485b9a16a2.png?w=180'},
-            {id: '1', title: 'Fortnite', price: 100, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202311/2801/803e41fee0edf8f8ed1de518e6eac60ddf30ac485b9a16a2.png?w=180'},
-            {id: '1', title: 'Fortnite', price: 100, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202311/2801/803e41fee0edf8f8ed1de518e6eac60ddf30ac485b9a16a2.png?w=180'},
-            {id: '2', title: 'UFC® 5', price: 150, description: 'description-2', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202309/0421/418704276d35ce02e8cb532c6ca3826cf866ad2ec66c0b17.png?w=180'}]
+            {id: '2', title: 'Fortnite1', price: 100, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202311/2801/803e41fee0edf8f8ed1de518e6eac60ddf30ac485b9a16a2.png?w=180'},
+            {id: '3', title: 'Fortnite2', price: 100, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202311/2801/803e41fee0edf8f8ed1de518e6eac60ddf30ac485b9a16a2.png?w=180'},
+            {id: '4', title: 'Fortnite3', price: 100, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202311/2801/803e41fee0edf8f8ed1de518e6eac60ddf30ac485b9a16a2.png?w=180'},
+            {id: '5', title: 'Fortnite4', price: 100, description: 'description-1', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202311/2801/803e41fee0edf8f8ed1de518e6eac60ddf30ac485b9a16a2.png?w=180'},
+            {id: '6', title: 'UFC® 5', price: 150, description: 'description-2', category: 'new', img:'https://image.api.playstation.com/vulcan/ap/rnd/202309/0421/418704276d35ce02e8cb532c6ca3826cf866ad2ec66c0b17.png?w=180'}]
     },
     {
         name: 'Популярные',

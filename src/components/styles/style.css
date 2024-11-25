@@ -1,3 +1,4 @@
+
 .red{
     border: 1px solid red;
 }
@@ -83,12 +84,16 @@
 .scroll-container {
     display: flex;
     height: 120px;
-    overflow-x: hidden;
+    overflow-x: auto;
     scroll-behavior: smooth;
     margin-top: 5px;
 }
+
 .home-block-element{
     display: flex;
     height: 100%;
     margin-left: 6px;
+}
+.scroll-container::-webkit-scrollbar {
+   width: 30px;
 }

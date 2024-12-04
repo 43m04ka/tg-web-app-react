@@ -17,6 +17,7 @@ const ProductList = (data_list) => {
     const products = data_list.main_data
     const [addedItems,  setAddedItems] = useState([]);
     const {tg, queryId} = useTelegram();
+    console.log(queryId);
     const navigate = useNavigate();
 
     const data = {

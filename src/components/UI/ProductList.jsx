@@ -14,18 +14,16 @@ const getTotalPrice = (items = []) => {
 }
 
 const ProductList = (data_list) => {
-    const tg = window.Telegram.WebApp;
-    console.log(tg);
     const products = data_list.main_data
     const [addedItems,  setAddedItems] = useState([]);
-    const queryId = tg.initDataUnsafe?.query_id;
-    console.log(queryId);
+    const {tg, queryId, user} = useTelegram();
     const navigate = useNavigate();
 
     const data = {
         products: addedItems,
         totalPrice: getTotalPrice(addedItems),
         queryId,
+        user,
     }
 
     const onSendData = useCallback(() => {

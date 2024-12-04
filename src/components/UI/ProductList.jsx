@@ -26,8 +26,13 @@ const ProductList = (data_list) => {
     }
 
     const onSendData = useCallback(() => {
-        tg.sendData(JSON.stringify(data));
-    }, [data])
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/web-data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        }).then(r => console.log(r))}, [data])
 
     useEffect(() => {
         tg.onEvent('mainButtonClicked', onSendData)
@@ -36,7 +41,7 @@ const ProductList = (data_list) => {
         }
     }, [onSendData])
 
-    const onBack = useCallback(async () => {
+    const onBack = useCallback( () => {
         navigate(-1);
     }, [])
 

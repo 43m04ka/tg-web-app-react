@@ -83,7 +83,7 @@
 
 .scroll-container {
     display: flex;
-    height: 200px;
+    height: max-content;
     overflow-x: auto;
     scroll-behavior: smooth;
     margin-top: 5px;
@@ -110,4 +110,6 @@
 }
 .card-product{
 
+}
+.product-item{
 }

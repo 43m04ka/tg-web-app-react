@@ -18,7 +18,7 @@ const ProductList = (data_list) => {
     console.log(tg);
     const products = data_list.main_data
     const [addedItems,  setAddedItems] = useState([]);
-    const queryId = tg.initDataUnsafe?.queryId;
+    const queryId = tg.initDataUnsafe?.query_id;
     console.log(queryId);
     const navigate = useNavigate();
 

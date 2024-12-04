@@ -14,9 +14,11 @@ const getTotalPrice = (items = []) => {
 }
 
 const ProductList = (data_list) => {
+    const tg = window.Telegram.WebApp;
+    console.log(tg);
     const products = data_list.main_data
     const [addedItems,  setAddedItems] = useState([]);
-    const {tg, queryId} = useTelegram();
+    const queryId = tg.initDataUnsafe?.queryId;
     console.log(queryId);
     const navigate = useNavigate();
 

@@ -8,7 +8,7 @@ const HomeBlockElement = ({path, data}) => {
                 <div className={'box-home-block-element'}>
                     <img src={data.img} alt={data.title} className={'img-home'}/>
                     <div className={'text-element'}>{data.title}</div>
-                    <div className={'text-element price-element'}>{data.price}</div>
+                    <div className={'text-element price-element'}>{String(data.price) + ' ₽'}</div>
                 </div>
             </Link>
         </div>

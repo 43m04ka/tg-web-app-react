@@ -69,12 +69,11 @@
     margin-left: 5px;
     margin-right: 5px;
     margin-top: 10px;
-    height: 280px;
 }
 .title{
     color: white;
     text-align: left;
-    margin-top: 10px;
+    margin-top: 20px;
     margin-left: 20px;
     margin-bottom: 15px;
     font-size: 19px;
@@ -83,10 +82,9 @@
 
 .scroll-container {
     display: flex;
-    height: max-content;
     overflow-x: auto;
     scroll-behavior: smooth;
-    margin-top: 5px;
+    height: max-content;
 }
 
 .home-block-element{
@@ -102,39 +100,34 @@
     text-decoration: none;
     text-align: left;
     margin-left: 5px;
-    font-family: Arial, Verdana, sans-serif;
+    margin-right: 5px;
+    font-family: sans-serif;
     color: white;
-    font-weight: 500;
-    font-size: 10.7px;
-    font-variant: small-caps;
+    font-weight: 700;
+    font-size: 13px;
     overflow: hidden;
-    width: 120px;
-    height: 24px;
+    height: 28px;
     word-break: break-word;
+
 }
 .price-element{
-    margin-top: 6px;
+    margin-top: 10px;
 }
 
 .all-see-button{
     margin-left: 50px;
     font-size: 14px;
 }
-.card-product{
-}
-.title{
-}
-
 .img-home{
-    width: 140px;
-    height: 140px;
-    border-top-left-radius: 7px;
-    border-top-right-radius: 7px;
+    width: 210px;
+    height: 210px;
+    border-top-left-radius: 13px;
+    border-top-right-radius: 13px;
 }
 .box-home-block-element{
     background: rgb(69, 69, 69);
-    border-radius: 7px;
-    height: 190px;
+    border-radius: 13px;
+    width: 210px;
 }
 .App{
     background: rgb(23, 23, 23);
@@ -142,4 +135,17 @@
 .link-element{
     text-decoration: none;
 }
+.all-see-button{
+    background: rgb(69, 69, 69);
+    color: white;
+    border-radius: 9px;
+    border: none;
+    width: 190px;
+    height: 40px;
+    font-size: 17px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 

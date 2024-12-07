@@ -13,8 +13,8 @@ const HomeBlock = ({path, data}) => {
                     <HomeBlockElement key={item.id} path={data.path} data={item}/>
                 ))}
             </div>
-            <Link to={'/home/'+data.path} >
-                <button className={'all-see-button'} >Смотреть всё</button>
+            <Link to={'/home/'+data.path} className={'link-element'}>
+                <button className={'all-see-button'} >Открыть каталог</button>
             </Link>
         </div>
     );

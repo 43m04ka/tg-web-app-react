@@ -15,7 +15,7 @@ const Home = ({main_data}) => {
     return (
         <div>
             {main_data.map(category => (
-                <HomeBlock key={category.id} path = {category.path} data={category} />
+                <HomeBlock key={category.id} path={category.path} data={category}/>
             ))}
         </div>
     );

@@ -47,14 +47,12 @@
 
 .list {
     display: flex;
-    border: 2px solid green;
 }
 
 .list-grid{
     display: grid;
     width: 100%;
     grid-template-columns: 1fr 1fr;
-    border: 2px solid orange;
 }
 
 .homeBlock{

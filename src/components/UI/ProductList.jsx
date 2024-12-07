@@ -6,7 +6,6 @@ import {useCallback, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 
 
-
 const getTotalPrice = (items = []) => {
     return items.reduce((acc, item) => {
         return acc += item.price
@@ -15,7 +14,7 @@ const getTotalPrice = (items = []) => {
 
 const ProductList = (data_list) => {
     const products = data_list.main_data
-    const [addedItems,  setAddedItems] = useState([]);
+    const [addedItems, setAddedItems] = useState([]);
     const {tg, queryId, user} = useTelegram();
     const navigate = useNavigate();
 
@@ -33,7 +32,8 @@ const ProductList = (data_list) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data)
-        }).then(r => console.log(r))}, [data])
+        }).then(r => console.log(r))
+    }, [data])
 
     useEffect(() => {
         tg.onEvent('mainButtonClicked', onSendData)
@@ -42,7 +42,7 @@ const ProductList = (data_list) => {
         }
     }, [onSendData])
 
-    const onBack = useCallback( () => {
+    const onBack = useCallback(() => {
         navigate(-1);
     }, [])
 
@@ -54,7 +54,7 @@ const ProductList = (data_list) => {
     }, [onBack])
 
     useEffect(() => {
-       tg.BackButton.show();
+        tg.BackButton.show();
     }, [])
 
     const onAdd = (product) => {
@@ -81,9 +81,11 @@ const ProductList = (data_list) => {
 
     return (
         <div className={'list'}>
-            {products.map(item => (
-                <ProductItem key = {item.id} product={item} onAdd={onAdd} className={'item'}/>
-            ))}
+            <div className={'list-grid'}>
+                {products.map(item => (
+                    <ProductItem key={item.id} product={item} onAdd={onAdd} className={'item'}/>
+                ))}
+            </div>
         </div>
     );
 };

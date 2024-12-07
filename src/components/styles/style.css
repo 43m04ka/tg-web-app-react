@@ -140,4 +140,7 @@
 .link-element{
     text-decoration: none;
 }
+body {
+    width: 200px;
+}
 

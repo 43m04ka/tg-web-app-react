@@ -102,9 +102,11 @@
     text-decoration: none;
     text-align: left;
     margin-left: 5px;
-    font-family: FreeMono, Verdana, sans-serif, bold;
+    font-family: Arial, Verdana, sans-serif;
     color: white;
-    font-size: 10.5px;
+    font-weight: 500;
+    font-size: 10.7px;
+    font-variant: small-caps;
     overflow: hidden;
     width: 120px;
     height: 24px;
@@ -139,8 +141,5 @@
 }
 .link-element{
     text-decoration: none;
-}
-body {
-    width: 200px;
 }
 

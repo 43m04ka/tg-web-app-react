@@ -97,10 +97,16 @@
 }
 
 .name-block{
+    text-decoration: none;
     text-align: left;
-    margin-top: 3px;
+    margin-left: 3px;
     font-size: 12px;
-    font-family: Arial, Verdana, sans-serif;
+    font-family: FreeMono, Verdana, sans-serif, bold;
+    color: white;
+    overflow: hidden;
+    width: 127px;
+    height: 30px;
+    word-break: break-word;
 }
 .all-see-button{
     margin-left: 50px;
@@ -112,7 +118,7 @@
 }
 
 .img-home{
-    background: gray;
+    background: #454545;
     width: 130px;
     height: 130px;
     border-top-left-radius: 10px;
@@ -123,3 +129,10 @@
     border-radius: 10px;
     height: 190px;
 }
+.App{
+    background: rgb(23, 23, 23);
+}
+.link-element{
+    text-decoration: none;
+}
+

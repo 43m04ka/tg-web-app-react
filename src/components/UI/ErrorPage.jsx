@@ -1,9 +1,14 @@
 import React from 'react';
+import {Link} from "react-router-dom";
+import Button from "./Button";
 
 const ErrorPage = () => {
     return (
         <div>
-            Что то пошло не так
+            <div className={'title price-element'}>Страница не найдена</div>
+            <Link to={'/home'} className={'link-element'}>
+                <button className={'all-see-button'}>На главную</button>
+            </Link>
         </div>
     );
 };

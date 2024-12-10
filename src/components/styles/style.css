@@ -144,5 +144,25 @@
     margin-right: auto;
     margin-left: auto;
 }
+.selector-container{
+    border-radius: 10px;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-left: 5px;
+    margin-right: 5px;
+}
 
 
+
+.selector-button{
+    color: white;
+    background: #171717;
+    border-radius: 9px;
+    border: 2px gray solid;
+    height: 40px;
+    width: 100%;
+    font-size: 17px;
+    transition-property: background-color;
+    transition-duration: 0.3s;
+}

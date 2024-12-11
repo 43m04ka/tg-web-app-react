@@ -22,6 +22,10 @@ const CardProduct = ({mainData}) => {
         tg.BackButton.show();
     }, [])
 
+    const sendData = {
+        method:'add',
+        mainData: mainData,
+    }
 
     const onSendData = useCallback(() => {
         fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/web-data', {
@@ -29,15 +33,17 @@ const CardProduct = ({mainData}) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(mainData)
+            body: JSON.stringify(sendData)
         }).then(r => console.log(r))
-    }, [mainData])
+    }, [sendData])
 
     return (
         <div className={'card-product'}>
-            <img src={mainData.img} className={'img'} alt="Product Image"/>
-            <span>{'Page ' + mainData.title}</span>
-            <button onClick={onSendData} className={'all-see-button'}>запрос</button>
+            <div className={'img_wrap'}>
+                <img src={mainData.img} className={'img'} alt="Product Image"/>
+            </div>
+            <div className={'text-element name-card-element'}>{mainData.title}</div>
+            <button onClick={onSendData} className={'all-see-button'}>Добавить в корзину</button>
         </div>
     );
 };

@@ -37,8 +37,6 @@
     border-radius: 10px;
     width: 100px;
     height: 100px;
-    position: absolute;
-
 }
 
 .description {
@@ -165,4 +163,8 @@
     font-size: 17px;
     transition-property: background-color;
     transition-duration: 0.3s;
+}
+
+.card-product{
+    display: block;
 }

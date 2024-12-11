@@ -3,15 +3,11 @@ import Button from "./Button";
 import '../styles/style.css';
 import {Link} from "react-router-dom";
 
-const ProductItem = ({product, className, onAdd}) => {
-    const onAddHandler = () => {
-        onAdd(product);
-    }
-    console.log(product);
+const ProductItem = ({product, path}) => {
 
     return (
         <div className={'list-element'}>
-            <Link to={'/home/' + product.category + '/' + product.id} className={'link-element'}>
+            <Link to={'/home/' + path + '/' + product.id} className={'link-element'}>
                 <div className={'box-home-block-element'}>
                     <img src={product.img} alt={product.title} className={'img-home'}/>
                     <div className={'text-element name-element'}>{product.title}</div>

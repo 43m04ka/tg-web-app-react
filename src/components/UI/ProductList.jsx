@@ -12,35 +12,12 @@ const getTotalPrice = (items = []) => {
     }, 0)
 }
 
-const ProductList = (data_list) => {
-    const products = data_list.main_data
+const ProductList = ({main_data}) => {
+    const products = main_data.body
+    const path = main_data.path
     const [addedItems, setAddedItems] = useState([]);
     const {tg, queryId, user} = useTelegram();
     const navigate = useNavigate();
-
-    const data = {
-        products: addedItems,
-        totalPrice: getTotalPrice(addedItems),
-        queryId,
-        user,
-    }
-
-    const onSendData = useCallback(() => {
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/web-data', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        }).then(r => console.log(r))
-    }, [data])
-
-    useEffect(() => {
-        tg.onEvent('mainButtonClicked', onSendData)
-        return () => {
-            tg.offEvent('mainButtonClicked', onSendData)
-        }
-    }, [onSendData])
 
     const onBack = useCallback(() => {
         navigate(-1);
@@ -57,33 +34,11 @@ const ProductList = (data_list) => {
         tg.BackButton.show();
     }, [])
 
-    const onAdd = (product) => {
-        const alreadyAdded = addedItems.find(item => item.id === product.id);
-        let newItems = [];
-
-        if (alreadyAdded) {
-            newItems = addedItems.filter(item => item.id !== product.id);
-        } else {
-            newItems = [...addedItems, product];
-        }
-
-        setAddedItems(newItems)
-
-        if (newItems.length === 0) {
-            tg.MainButton.hide();
-        } else {
-            tg.MainButton.show();
-            tg.MainButton.setParams({
-                text: `Купить ${getTotalPrice(newItems)}`
-            })
-        }
-    }
-
     return (
         <div className={'list'}>
             <div className={'list-grid'}>
                 {products.map(item => (
-                    <ProductItem key={item.id} product={item} onAdd={onAdd} className={'item'}/>
+                    <ProductItem key={item.id} product={item} path = {path}/>
                 ))}
             </div>
         </div>

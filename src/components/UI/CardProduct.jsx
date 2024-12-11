@@ -6,6 +6,7 @@ import {useNavigate, useParams} from "react-router-dom";
 const CardProduct = ({mainData}) => {
     const {tg} = useTelegram();
     const navigate = useNavigate();
+    console.log(tg);
 
     const onBack = useCallback(async () => {
         navigate(-1);

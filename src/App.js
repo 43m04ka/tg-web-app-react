@@ -1,6 +1,6 @@
 //import logo from './logo.svg';
 import './App.css';
-import React, {useEffect} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {useTelegram} from "./hooks/useTelegram";
 import {Route, Routes} from "react-router-dom";
 import ProductList from "./components/UI/ProductList";
@@ -103,9 +103,29 @@ const mainData = [
 
 
 function App() {
+    const [basket, setBasket] = useState([0]);
+    const {user} = useTelegram();
+
+    const sendData = {
+        method:'get',
+        user: user,
+    }
+
+    const onSendData = useCallback(() => {
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(sendData)
+        }).then(r => {
+        console.log(r);
+        })
+    }, [sendData])
 
     const {tg} = useTelegram()
 
+    onSendData()
 
     useEffect(() => {
         tg.ready();
@@ -129,7 +149,7 @@ function App() {
                         ))
                     ))
                 ))}
-                <Route path='home/basket' element={<Basket/>}/>
+                <Route path='home/basket' element={<Basket data = {basket}/>}/>
                 <Route path="*" element={<ErrorPage/>}/>
 
             </Routes>

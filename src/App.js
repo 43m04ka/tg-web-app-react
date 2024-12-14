@@ -119,7 +119,10 @@ function App() {
             },
             body: JSON.stringify(sendData)
         }).then(r=> {
-        console.log(r.json());
+        let Promise = r.json()
+            Promise.then(r => {
+                console.log(r)
+            })
         })
     }, [sendData])
 

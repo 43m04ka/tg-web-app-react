@@ -107,12 +107,13 @@ function App() {
     const {user} = useTelegram();
 
     const sendData = {
+        method:'get',
         user: user,
     }
 
     const onSendData = useCallback(() => {
         fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
-            method: 'GET',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },

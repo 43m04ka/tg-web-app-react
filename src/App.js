@@ -103,7 +103,7 @@ const mainData = [
 
 
 function App() {
-    const [basket, setBasket] = useState([0]);
+    const [basket, setBasket] = useState(' ');
     const {user} = useTelegram();
 
     const sendData = {

@@ -121,7 +121,8 @@ function App() {
         }).then(r=> {
         let Promise = r.json()
             Promise.then(r => {
-                console.log(r)
+                const body = r.body;
+                setBasket(body)
             })
         })
     }, [sendData])

@@ -7,7 +7,7 @@ const Basket = (data) => {
             <div>Нет запроса</div>
         );
     }else{
-        return (<div>{data.join(' ')}
+        return (<div>{data}
         </div>)
     }
 };

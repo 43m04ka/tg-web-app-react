@@ -118,8 +118,8 @@ function App() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(sendData)
-        }).then(r => {
-        console.log(r.body);
+        }).then(r=> {
+        console.log(r.json());
         })
     }, [sendData])
 

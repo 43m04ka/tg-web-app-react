@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {Link} from "react-router-dom";
 
 const HeadSelector = ({onChange}) => {
     const [pageSelected, setPageSelected] = useState(0);
@@ -51,6 +52,12 @@ const HeadSelector = ({onChange}) => {
                 <div className={'div-box-4563'} style={{width: '100%', height: "100%", padding: '3px', marginTop:'10px'}}>
                     <button className={'selector-button'} onClick={onclickSR} style={styleSR}>Сервисы</button>
                 </div>
+            </div>
+            <div className={'box-grid-panel'}>
+                <div className={'search'}></div>
+                <Link to={'basket'} className={'link-element'}>
+                <div className={'div-button-panel'}>basket</div></Link>
+                <div className={'div-button-panel'}>man</div>
             </div>
         </div>
     );

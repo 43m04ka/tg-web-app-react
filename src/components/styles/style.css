@@ -60,7 +60,6 @@
 }
 
 .homeBlock{
-    margin-left: 5px;
     margin-right: 5px;
     margin-top: 10px;
 }
@@ -68,7 +67,7 @@
     color: white;
     text-align: left;
     margin-top: 20px;
-    margin-left: 20px;
+    margin-left: 30px;
     margin-bottom: 15px;
     font-size: 19px;
     font-family: Arial, Verdana, sans-serif;
@@ -78,16 +77,25 @@
     display: flex;
     overflow-x: auto;
     scroll-behavior: smooth;
-    height: max-content;
+    margin-left: 10px;
 }
 
 .home-block-element{
     display: block;
     height: 100%;
-    margin-left: 6px;
+    margin-right: 6px;
+    margin-bottom: 3px;
 }
+
 .scroll-container::-webkit-scrollbar {
-   width: 30px;
+    background: rgb(17, 17, 17);
+    border: 2px solid rgb(69, 69, 69);
+    border-radius: 5px;
+    height: 10px;
+}
+.scroll-container::-webkit-scrollbar-thumb {
+    background: gray;
+    border-radius: 5px;
 }
 
 .text-element{
@@ -106,7 +114,7 @@
     height: 23px;
 }
 .name-element{
-    height: 33px;
+    height: 36px;
 }
 
 .all-see-button{
@@ -114,15 +122,15 @@
     font-size: 14px;
 }
 .img-home{
-    width: 170px;
-    height: 170px;
+    width: 150px;
+    height: 150px;
     border-top-left-radius: 13px;
     border-top-right-radius: 13px;
 }
 .box-home-block-element{
     background: rgb(69, 69, 69);
     border-radius: 13px;
-    width: 170px;
+    width: 150px;
 }
 body{
     background: rgb(23, 23, 23);
@@ -141,6 +149,7 @@ body{
     display: block;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 15px;
 }
 .list-element{
     margin-top: 15px;
@@ -179,4 +188,24 @@ body{
     font-size: 20px;
     margin-top: 10px;
     margin-bottom: 10px;
+}
+.box-grid-panel{
+    display: grid;
+    grid-template-columns: 1fr 75px 75px;
+}
+.search{
+    border: 2px solid red;
+    margin: 10px;
+    height: 55px;
+    border-radius: 10px;
+}
+.div-button-panel{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid green;
+    margin: 10px;
+    border-radius: 10px;
+    color: white;
+    height: 55px;
 }

@@ -8,6 +8,7 @@ import Home from "./components/UI/Home";
 import ErrorPage from "./components/UI/ErrorPage";
 import ProductItem from "./components/UI/ProductItem";
 import CardProduct from "./components/UI/CardProduct";
+import Basket from "./components/UI/Basket";
 
 
 const mainData = [
@@ -128,7 +129,9 @@ function App() {
                         ))
                     ))
                 ))}
+                <Route path='home/basket' element={<Basket/>}/>
                 <Route path="*" element={<ErrorPage/>}/>
+
             </Routes>
 
         </div>

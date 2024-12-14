@@ -4,9 +4,8 @@ import {useTelegram} from "../../hooks/useTelegram";
 import {useNavigate, useParams} from "react-router-dom";
 
 const CardProduct = ({mainData}) => {
-    const {tg} = useTelegram();
+    const {tg, user} = useTelegram();
     const navigate = useNavigate();
-    console.log(tg);
 
     const onBack = useCallback(async () => {
         navigate(-1);
@@ -26,10 +25,11 @@ const CardProduct = ({mainData}) => {
     const sendData = {
         method:'add',
         mainData: mainData,
+        user: user,
     }
 
     const onSendData = useCallback(() => {
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/web-data', {
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -119,7 +119,7 @@ function App() {
             },
             body: JSON.stringify(sendData)
         }).then(r => {
-        console.log(r);
+        console.log(r.body);
         })
     }, [sendData])
 

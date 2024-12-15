@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {Link} from "react-router-dom";
+import basket from "../icons/basket.png";
 
 const HeadSelector = ({onChange}) => {
     const [pageSelected, setPageSelected] = useState(0);
@@ -56,8 +57,12 @@ const HeadSelector = ({onChange}) => {
             <div className={'box-grid-panel'}>
                 <div className={'search'}></div>
                 <Link to={'basket'} className={'link-element'}>
-                <div className={'div-button-panel'}>basket</div></Link>
-                <div className={'div-button-panel'}>man</div>
+                <div className={'div-button-panel'}>
+                    <div className={'background-basket'} style={{ width:'100%', height:'100%'}}></div>
+                </div></Link>
+                <div className={'div-button-panel'}>
+                    <div className={'background-profile'} style={{width: '100%', height: '100%'}}></div>
+                </div>
             </div>
         </div>
     );

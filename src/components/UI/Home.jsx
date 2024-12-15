@@ -18,18 +18,20 @@ const Home = ({main_data}) => {
 
     const handleChange = (value) => {
         setPageSelected(value)
-        if(value===0){
+        if (value === 0) {
             setData(main_data[0])
-        }else if(value===1){
+        } else if (value === 1) {
             setData(main_data[1])
         }
     }
     return (
         <div>
-            <HeadSelector  onChange={handleChange}/>
-            {data.body.map(category => (
-                <HomeBlock key={category.id} path={category.path} data={category}/>
-            ))}
+            <HeadSelector onChange={handleChange}/>
+                <div className={'scroll-container-y'} style={{height:String(window.innerHeight-130)+'px'}}>
+                    {data.body.map(category => (
+                        <HomeBlock key={category.id} path={category.path} data={category}/>
+                    ))}
+                </div>
         </div>
     );
 };

@@ -103,33 +103,7 @@ const mainData = [
 
 
 function App() {
-    const [basket, setBasket] = useState(' ');
-    const {user} = useTelegram();
-
-    const sendData = {
-        method:'get',
-        user: user,
-    }
-
-    const onSendData = useCallback(() => {
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(sendData)
-        }).then(r=> {
-        let Promise = r.json()
-            Promise.then(r => {
-                const body = r.body;
-                setBasket(body)
-            })
-        })
-    }, [sendData])
-
-    const {tg} = useTelegram()
-
-    onSendData()
+    const {tg} = useTelegram();
 
     useEffect(() => {
         tg.ready();
@@ -153,9 +127,8 @@ function App() {
                         ))
                     ))
                 ))}
-                <Route path='home/basket' element={<Basket data = {basket}/>}/>
+                <Route path='home/basket' element={<Basket/>}/>
                 <Route path="*" element={<ErrorPage/>}/>
-
             </Routes>
 
         </div>

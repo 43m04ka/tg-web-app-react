@@ -192,10 +192,13 @@ body{
     grid-template-columns: 1fr 55px 55px;
 }
 .search{
-    border: 2px solid red;
+    border: 2px solid white;
+    background: white;
     margin: 10px;
     height: 45px;
     border-radius: 10px;
+    text-align: left;
+
 }
 .div-button-panel{
     display: flex;

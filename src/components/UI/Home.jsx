@@ -26,7 +26,7 @@ const Home = ({main_data}) => {
     }
     return (
         <div>
-            <HeadSelector onChange={handleChange}/>
+            <HeadSelector onChange={handleChange} main_data = {main_data}/>
                 <div className={'scroll-container-y'} style={{height:String(window.innerHeight-130)+'px'}}>
                     {data.body.map(category => (
                         <HomeBlock key={category.id} path={category.path} data={category}/>

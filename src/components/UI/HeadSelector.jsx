@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Link} from "react-router-dom";
 import basket from "../icons/basket.png";
 
-const HeadSelector = ({onChange}) => {
+const HeadSelector = ({onChange, main_data}) => {
     const [pageSelected, setPageSelected] = useState(0);
     const [colorPS, setColorPS] = useState([64, 73, 233]);
     const [colorXB, setColorXB] = useState([23, 23, 23]);
@@ -41,6 +41,25 @@ const HeadSelector = ({onChange}) => {
     const styleXB = {background: rgb(colorXB)}
     const styleSR = {background: rgb(colorSR)}
 
+    const onChangeEmpty = (event) => {
+        const valueInput = event.target.value
+        const category = main_data[pageSelected].body
+
+        let allCard = []
+        category.map(el => {
+            const array = el.body
+            array.map(card =>{
+                allCard = [...allCard, card]
+            })
+        })
+        let result = []
+        allCard.map(card =>{
+            if(card.title.toLowerCase().includes(valueInput.toLowerCase())){
+                result = [...result, card]
+            }
+        })
+    }
+
     return (
         <div>
             <div className="selector-container">
@@ -55,7 +74,7 @@ const HeadSelector = ({onChange}) => {
                 </div>
             </div>
             <div className={'box-grid-panel'}>
-                <div className={'search'}></div>
+                <input className={'search'} onChange={onChangeEmpty}></input>
                 <Link to={'basket'} className={'link-element'}>
                 <div className={'div-button-panel'}>
                     <div className={'background-basket'} style={{ width:'100%', height:'100%'}}></div>

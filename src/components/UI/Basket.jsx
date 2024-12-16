@@ -9,7 +9,7 @@ var isResizeble = true;
 const Basket = () => {
     const {tg} = useTelegram();
 
-    const [basket, setBasket] = useState([' '])
+    const [basket, setBasket] = useState([])
 
     const sendData = {
         method: 'get',
@@ -58,9 +58,19 @@ const Basket = () => {
 
 
     if (isResizeble) {
-        return (<div className={'pong-loader'} style={{border:'2px solid #8cdb8b', marginTop:String(window.innerHeight/2-25)+'px', marginLeft:String(window.innerWidth/2-40)+'px'}}>Ожидайте</div>);
+        return (<div className={'pong-loader'} style={{
+            border: '2px solid #8cdb8b',
+            marginTop: String(window.innerHeight / 2 - 25) + 'px',
+            marginLeft: String(window.innerWidth / 2 - 40) + 'px'
+        }}>Ожидайте</div>);
     } else if (basket.length === 0) {
-        return (<div>Корзина пуста</div>)
+        return (
+            <div>
+                <div className={'title'} style={{marginLeft:String(window.innerWidth/2-60)+'px'}}>Корзина пуста</div>
+                <Link to={'/home'} className={'link-element'}>
+                <button className={'all-see-button'}>За покупками</button>
+                </Link>
+            </div>)
     } else {
         return (
             <div style={{display: 'grid', height: '100%'}}>
@@ -73,9 +83,19 @@ const Basket = () => {
                     ))}
                 </div>
                 <div style={{marginBottom: '0px', position: 'relative'}}>
-                    <div style={{display: 'flex', alignItems:'center', width:'100%', justifyContent:'space-between', borderTop:'2px solid gray'}}>
-                        <div style={{marginTop: '10px', fontSize: '20px', marginLeft:'20px'}} className={'text-element'}>Итого:</div>
-                        <div style={{marginTop: '10px', fontSize: '20px', marginRight:'20px'}} className={'text-element'}>{String(123)} ₽</div>
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        width: '100%',
+                        justifyContent: 'space-between',
+                        borderTop: '2px solid gray'
+                    }}>
+                        <div style={{marginTop: '10px', fontSize: '20px', marginLeft: '20px'}}
+                             className={'text-element'}>Итого:
+                        </div>
+                        <div style={{marginTop: '10px', fontSize: '20px', marginRight: '20px'}}
+                             className={'text-element'}>{String(123)} ₽
+                        </div>
                     </div>
                     <button className={'all-see-button'} style={{marginTop: '10px'}}>Оформить заказ</button>
                 </div>

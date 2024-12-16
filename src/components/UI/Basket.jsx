@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import ProductItem from "./ProductItem";
 import ProductItemBasket from "./ProductItemBasket";
 import {useTelegram} from "../../hooks/useTelegram";
@@ -8,6 +8,7 @@ var isResizeble = true;
 
 const Basket = () => {
     const {tg} = useTelegram();
+    const navigate = useNavigate();
 
     const [basket, setBasket] = useState([])
 

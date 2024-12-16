@@ -7,7 +7,7 @@ var isResizeble = true;
 
 const Basket = () => {
 
-    const [basket, satBasket] = useState([' '])
+    const [basket, setBasket] = useState([' '])
 
     const sendData = {
         method: 'get',
@@ -27,7 +27,7 @@ const Basket = () => {
                 console.log(r.body)
                 if (isResizeble) {
                     isResizeble = false;
-                    return satBasket(r.body);
+                    return setBasket(r.body);
                 }
             })
         })
@@ -47,7 +47,7 @@ const Basket = () => {
                 </div>
                 <div style={{height: "100%", border:'2px solid red'}}>
                     {basket.map(el => (
-                        <ProductItemBasket key={el.id} dataRebuild = {onGetData} bool={isResizeble}  product={el}/>
+                        <ProductItemBasket key={el.id} setBasketF={setBasket}  product={el}/>
                     ))}
                 </div>
                 <div style={{marginBottom:'0px', position:'relative'}}>

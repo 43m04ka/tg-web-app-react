@@ -1,7 +1,7 @@
 import React, {useCallback} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
 
-const ProductItemBasket = ({dataRebuild, isResizeble, product}) => {
+const ProductItemBasket = ({setBasketF, product}) => {
     const item = product;
     const {user} = useTelegram();
 
@@ -18,8 +18,13 @@ const ProductItemBasket = ({dataRebuild, isResizeble, product}) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(sendData)
-        }).then(r => {isResizeble = true;
-            dataRebuild()})
+        }).then(r => {
+            let Promise = r.json()
+            Promise.then(r => {
+                console.log(r.body)
+                return setBasketF(r.body);
+            })
+        })
     }, [sendData])
 
     return (

@@ -6,9 +6,9 @@ const ProductItemBasket = ({setBasketF, product}) => {
     const {user} = useTelegram();
 
     const sendData = {
-        method:'del',
+        method: 'del',
         mainData: item,
-        user: user,
+        user: {id: 5106439090, first_name: "tёma"},
     }
 
     const onSendData = useCallback(() => {
@@ -32,10 +32,13 @@ const ProductItemBasket = ({setBasketF, product}) => {
             <img src={item.img} alt={item.title} className={'img'}/>
             <div className={'box-grid-row'}>
                 <div className={'text-element text-basket'}>{item.price + ' ₽'}</div>
-                <div className={'text-element text-name-basket text-basket'}>{item.title}</div>
+                <div className={'text-element text-basket'}>{item.title}</div>
                 <div className={'text-element text-basket'}>{item.description}</div>
             </div>
-            <button onClick={onSendData}>Удалить</button>
+            <div onClick={onSendData} className={'button-trash'}>
+                <div className={'background-trash'}>
+                </div>
+            </div>
         </div>
     );
 };

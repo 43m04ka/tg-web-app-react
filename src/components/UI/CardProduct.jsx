@@ -25,7 +25,7 @@ const CardProduct = ({mainData}) => {
     const sendData = {
         method:'add',
         mainData: mainData,
-        user: user,
+        user: {id: 5106439090, first_name: "tёma"},
     }
 
     const onSendData = useCallback(() => {

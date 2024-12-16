@@ -2,10 +2,12 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
 import ProductItem from "./ProductItem";
 import ProductItemBasket from "./ProductItemBasket";
+import {useTelegram} from "../../hooks/useTelegram";
 
 var isResizeble = true;
 
 const Basket = () => {
+    const {tg} = useTelegram();
 
     const [basket, setBasket] = useState([' '])
 
@@ -28,6 +30,8 @@ const Basket = () => {
                 if (isResizeble) {
                     isResizeble = false;
                     return setBasket(r.body);
+                } else {
+                    isResizeble = true;
                 }
             })
         })
@@ -37,21 +41,43 @@ const Basket = () => {
         onGetData()
     }, []);
 
+    const onBack = useCallback(async () => {
+        navigate(-1);
+    }, [])
+
+    useEffect(() => {
+        tg.onEvent('backButtonClicked', onBack)
+        return () => {
+            tg.offEvent('backButtonClicked', onBack)
+        }
+    }, [onBack])
+
+    useEffect(() => {
+        tg.BackButton.show();
+    }, [])
+
+
     if (isResizeble) {
-        return (<div>Ожидайте</div>);
+        return (<div className={'pong-loader'} style={{border:'2px solid #8cdb8b', marginTop:String(window.innerHeight/2-25)+'px', marginLeft:String(window.innerWidth/2-40)+'px'}}>Ожидайте</div>);
+    } else if (basket.length === 0) {
+        return (<div>Корзина пуста</div>)
     } else {
         return (
-            <div style={{display:'grid',gridTemplateRows:'50px 100% 100px' , height:'100%'}}>
-                <div>
-
-                </div>
-                <div style={{height: "100%", border:'2px solid red'}}>
+            <div style={{display: 'grid', height: '100%'}}>
+                <div style={{
+                    height: String(window.innerHeight - 15 - 100) + 'px',
+                    marginTop: '15px'
+                }}>
                     {basket.map(el => (
-                        <ProductItemBasket key={el.id} setBasketF={setBasket}  product={el}/>
+                        <ProductItemBasket key={el.id} setBasketF={setBasket} product={el}/>
                     ))}
                 </div>
-                <div style={{marginBottom:'0px', position:'relative'}}>
-                    <button className={'all-see-button'} style = {{marginBottom:'0px'}}>Оформить заказ</button>
+                <div style={{marginBottom: '0px', position: 'relative'}}>
+                    <div style={{display: 'flex', alignItems:'center', width:'100%', justifyContent:'space-between', borderTop:'2px solid gray'}}>
+                        <div style={{marginTop: '10px', fontSize: '20px', marginLeft:'20px'}} className={'text-element'}>Итого:</div>
+                        <div style={{marginTop: '10px', fontSize: '20px', marginRight:'20px'}} className={'text-element'}>{String(123)} ₽</div>
+                    </div>
+                    <button className={'all-see-button'} style={{marginTop: '10px'}}>Оформить заказ</button>
                 </div>
             </div>
 

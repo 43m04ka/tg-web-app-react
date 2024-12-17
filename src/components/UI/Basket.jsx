@@ -70,14 +70,14 @@ const Basket = () => {
         }
     }, [onBack])
 
+    const setTargetMargin = (() =>{
+        setMargin(70)
+    })
+
     useEffect(() => {
         tg.BackButton.show();
         tg.onEvent('fullscreenChanged', setTargetMargin)
     }, [setTargetMargin])
-
-    const setTargetMargin = (() =>{
-        setMargin(70)
-    })
 
     let sumPrice = 0
 

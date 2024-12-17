@@ -112,8 +112,12 @@ function App() {
             tg.requestFullscreen()
         }catch (err) {console.log(err)}
         tg.ready();
-        tg.onEvent('fullscreenChanged', setMargin(70))
-    }, [setMargin])
+        tg.onEvent('fullscreenChanged', setTargetMargin)
+    }, [setTargetMargin])
+
+    const setTargetMargin = (() =>{
+        setMargin(70)
+    })
 
 
 

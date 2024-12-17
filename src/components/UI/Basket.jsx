@@ -11,6 +11,7 @@ const Basket = () => {
     const navigate = useNavigate();
 
     const [basket, setBasket] = useState([])
+    const [margin, setMargin] = useState(0)
 
     const sendDataProduct = {
         method: 'buy',
@@ -71,7 +72,12 @@ const Basket = () => {
 
     useEffect(() => {
         tg.BackButton.show();
-    }, [])
+        tg.onEvent('fullscreenChanged', setTargetMargin)
+    }, [setTargetMargin])
+
+    const setTargetMargin = (() =>{
+        setMargin(70)
+    })
 
     let sumPrice = 0
 
@@ -89,7 +95,7 @@ const Basket = () => {
         return (
             <div style={{display: 'grid', height: '100%'}}>
                 <div style={{
-                    height: String(window.innerHeight - 15 - 100) + 'px',
+                    height: String(window.innerHeight - 15 - 100-margin) + 'px',
                     marginTop: '15px', marginLeft : String(window.innerWidth/2-45)+'px',
                     color:'gray'
                 }} className={'text-element'}>
@@ -119,7 +125,7 @@ const Basket = () => {
         return (
             <div style={{display: 'grid', height: '100%'}}>
                 <div style={{
-                    height: String(window.innerHeight - 15 - 100) + 'px',
+                    height: String(window.innerHeight - 15 - 100 - margin) + 'px',
                     marginTop: '15px', overflowY:'scroll'
                 }}>
                     {basket.map(el => (

@@ -107,16 +107,9 @@ function App() {
     const [margin, setMargin] = useState(0)
 
     useEffect(() => {
-        tg.ready();
         tg.disableVerticalSwipes();
-        try {
-            tg.requestFullscreen().then(r =>{
-                console.log(r.is_fullscreen)
-                if(r.is_fullscreen){
-                    setMargin(50)
-                }
-            });
-        }catch (err){console.log(err)}
+        tg.requestFullscreen();
+        tg.ready();
     }, [])
 
     return (

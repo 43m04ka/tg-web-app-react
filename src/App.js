@@ -127,7 +127,7 @@ function App() {
         <div className="App">
             <div style={{marginTop:String(margin)+'px'}}></div>
             <Routes>
-                <Route path="home" element={<Home main_data={mainData}/>}/>
+                <Route path="home" element={<Home main_data={mainData} margin={margin}/>}/>
                 {mainData.map(platform => (
                     platform.body.map(category => (
                         <Route path={'home/' + category.path} key={category.id}

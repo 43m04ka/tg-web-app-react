@@ -111,7 +111,9 @@ function App() {
         tg.disableVerticalSwipes();
         try {
             tg.requestFullscreen().then(r =>{
-                console.log(r)
+                if(r.is_fullscreen){
+                    setMargin(30)
+                }
             });
         }catch (e){}
     }, [])

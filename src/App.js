@@ -104,15 +104,21 @@ const mainData = [
 
 function App() {
     const {tg} = useTelegram();
+    const [margin, setMargin] = useState(0)
 
     useEffect(() => {
         tg.ready();
         tg.disableVerticalSwipes();
-        tg.requestFullscreen();
+        try {
+            tg.requestFullscreen().then(r =>{
+                console.log(r)
+            });
+        }catch (e){}
     }, [])
 
     return (
         <div className="App">
+            <div style={{marginTop:String(margin)+'px'}}></div>
             <Routes>
                 <Route path="home" element={<Home main_data={mainData}/>}/>
                 {mainData.map(platform => (

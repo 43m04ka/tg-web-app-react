@@ -108,6 +108,7 @@ function App() {
     useEffect(() => {
         tg.ready();
         tg.disableVerticalSwipes();
+        tg.requestFullscreen();
     }, [])
 
     return (

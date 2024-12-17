@@ -31,10 +31,6 @@ const Basket = () => {
         onGetData()
     }, []);
 
-    useEffect(() => {
-        tg.disableVerticalSwipes();
-    }, [])
-
 
     const sendData = {
         method: 'get',

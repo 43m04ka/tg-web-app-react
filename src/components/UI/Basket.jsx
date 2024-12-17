@@ -89,7 +89,7 @@ const Basket = () => {
         return (
             <div style={{display: 'grid', height: '100%'}}>
                 <div style={{
-                    height: String(window.innerHeight - 15 - 100) + 'px',
+                    height: String(window.innerHeight - 15 - 80) + 'px',
                     marginTop: '15px', marginLeft : String(window.innerWidth/2-45)+'px',
                     color:'gray'
                 }} className={'text-element'}>
@@ -119,7 +119,7 @@ const Basket = () => {
         return (
             <div style={{display: 'grid', height: '100%'}}>
                 <div style={{
-                    height: String(window.innerHeight - 15 - 100) + 'px',
+                    height: String(window.innerHeight - 15 - 80) + 'px',
                     marginTop: '15px', overflowY:'scroll'
                 }}>
                     {basket.map(el => (

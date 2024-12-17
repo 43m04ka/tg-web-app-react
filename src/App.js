@@ -105,6 +105,7 @@ const mainData = [
 function App() {
     const {tg} = useTelegram();
     const [margin, setMargin] = useState(0)
+    const [height, setHeight] = useState()
 
     useEffect(() => {
         tg.disableVerticalSwipes();
@@ -112,7 +113,7 @@ function App() {
             tg.requestFullscreen()
         }catch (err) {console.log(err)}
         tg.ready();
-        tg.onEvent('fullscreenChanged', setMargin(150))
+        tg.onEvent('fullscreenChanged', setMargin(50))
     }, [setMargin])
 
 

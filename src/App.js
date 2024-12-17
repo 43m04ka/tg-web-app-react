@@ -113,7 +113,7 @@ function App() {
             tg.requestFullscreen().then(r =>{
                 console.log(r.is_fullscreen)
                 if(r.is_fullscreen){
-                    setMargin(100)
+                    setMargin(150)
                 }
             });
         }catch (e){}

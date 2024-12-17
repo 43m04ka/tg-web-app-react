@@ -7,7 +7,7 @@ import {useTelegram} from "../../hooks/useTelegram";
 import HeadSelector from "./HeadSelector";
 
 
-const Home = ({main_data}) => {
+const Home = ({main_data, margin}) => {
     const {tg} = useTelegram();
     const [pageSelected, setPageSelected] = useState(0);
     const [data, setData] = useState(main_data[0])
@@ -27,7 +27,7 @@ const Home = ({main_data}) => {
     return (
         <div>
             <HeadSelector onChange={handleChange} main_data = {main_data}/>
-                <div className={'scroll-container-y'} style={{height:String(window.innerHeight-200)+'px'}}>
+                <div className={'scroll-container-y'} style={{height:String(window.innerHeight-130-margin)+'px'}}>
                     {data.body.map(category => (
                         <HomeBlock key={category.id} path={category.path} data={category}/>
                     ))}

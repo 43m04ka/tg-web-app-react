@@ -108,12 +108,14 @@ function App() {
 
     useEffect(() => {
         tg.disableVerticalSwipes();
-        try{
-        tg.requestFullscreen().then(r => {
-            console.log(r)
-        });}catch (err){console.log(err)}
+        try {
+            tg.requestFullscreen()
+        }catch (err) {console.log(err)}
         tg.ready();
-    }, [])
+        tg.onEvent('fullscreenChanged', setMargin(150))
+    }, [setMargin])
+
+
 
     return (
         <div className="App">

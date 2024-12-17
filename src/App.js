@@ -105,7 +105,6 @@ const mainData = [
 function App() {
     const {tg} = useTelegram();
     const [margin, setMargin] = useState(0)
-    const [height, setHeight] = useState()
 
     useEffect(() => {
         tg.disableVerticalSwipes();

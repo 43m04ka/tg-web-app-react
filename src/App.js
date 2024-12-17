@@ -107,6 +107,7 @@ function App() {
 
     useEffect(() => {
         tg.ready();
+        tg.disableVerticalSwipes();
     }, [])
 
     return (

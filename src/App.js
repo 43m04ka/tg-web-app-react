@@ -109,7 +109,7 @@ function App() {
 
     const setTargetMargin = (() =>{
         setMargin(70)
-        setHeight(String(window.innerHeight-200)+'px')
+        setHeight(String(window.innerHeight-110-margin)+'px')
     })
 
     useEffect(() => {

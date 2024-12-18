@@ -82,7 +82,7 @@ const Basket = () => {
     if (isResizeble) {
         return (<div className={'pong-loader'} style={{
             border: '2px solid #8cdb8b',
-            marginTop: String(window.innerHeight / 2 - 25) + 'px',
+            marginTop: String(window.innerHeight / 2 - 60) + 'px',
             marginLeft: String(window.innerWidth / 2 - 40) + 'px'
         }}>Ожидайте</div>);
     } else if (basket.length === 0) {

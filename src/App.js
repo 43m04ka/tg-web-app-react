@@ -105,9 +105,11 @@ const mainData = [
 function App() {
     const {tg} = useTelegram();
     const [margin, setMargin] = useState(0)
+    const [height, setHeight] = useState(String(window.innerHeight-130-margin)+'px')
 
     const setTargetMargin = (() =>{
         setMargin(70)
+        setHeight(String(window.innerHeight-130-margin)+'px')
     })
 
     useEffect(() => {
@@ -123,7 +125,7 @@ function App() {
         <div className="App">
             <div style={{marginTop:String(margin)+'px'}}></div>
             <Routes>
-                <Route path="home" element={<Home main_data={mainData} height = {String(window.innerHeight-130-margin)+'px'}/>}/>
+                <Route path="home" element={<Home main_data={mainData} height = {height}/>}/>
                 {mainData.map(platform => (
                     platform.body.map(category => (
                         <Route path={'home/' + category.path} key={category.id}

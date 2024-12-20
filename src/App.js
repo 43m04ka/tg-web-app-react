@@ -105,6 +105,7 @@ const mainData = [
 
 function App() {
     const {tg} = useTelegram();
+    console.log(tg)
     const [margin, setMargin] = useState(0)
     const [height, setHeight] = useState(String(window.innerHeight-130-margin)+'px')
 
@@ -124,7 +125,7 @@ function App() {
 
     return (
         <div className="App">
-            {/*<div style={{marginTop:String(tg.safeAreaInset.top)+'px'}}></div>*/}
+            <div style={{marginTop:String(tg.safeAreaInset.top)+'px'}}></div>
             <Routes>
                 <Route path="home" element={<Home main_data={mainData} height = {height}/>}/>
                 {mainData.map(platform => (

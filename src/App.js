@@ -105,14 +105,20 @@ const mainData = [
 
 function App() {
     const {tg} = useTelegram();
-    console.log(tg)
-    const [margin, setMargin] = useState(0)
-    const [height, setHeight] = useState(String(window.innerHeight-130-margin)+'px')
+    const [size, setSize] = React.useState(window.innerHeight);
+    const ref = React.useRef();
 
-    const setTargetMargin = (() =>{
-        setMargin(70)
-        setHeight(String(window.innerHeight-110-margin)+'px')
-    })
+    const resizeHandler = () => {
+        setSize(window.innerHeight);
+    };
+
+    React.useEffect(() => {
+        window.addEventListener("resize", resizeHandler);
+        resizeHandler();
+        return () => {
+            window.removeEventListener("resize", resizeHandler);
+        };
+    }, []);
 
     useEffect(() => {
         tg.disableVerticalSwipes();
@@ -120,14 +126,14 @@ function App() {
             tg.requestFullscreen()
         }catch (err) {console.log(err)}
         tg.ready();
-        tg.onEvent('fullscreenChanged', setTargetMargin)
-    }, [setTargetMargin])
+    }, [])
+
 
     return (
-        <div className="App">
+        <div className="App" ref = {ref}>
             <div style={{height:String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top)+'px',}}></div>
             <Routes>
-                <Route path="home" element={<Home main_data={mainData} height = {height}/>}/>
+                <Route path="home" element={<Home main_data={mainData} height = {size}/>}/>
                 {mainData.map(platform => (
                     platform.body.map(category => (
                         <Route path={'home/' + category.path} key={category.id}

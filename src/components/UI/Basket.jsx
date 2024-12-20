@@ -86,10 +86,10 @@ const Basket = ({height}) => {
         }}>Ожидайте</div>);
     } else if (basket.length === 0) {
         return (
-            <div style={{display: 'grid', height: '100%'}}>
+            <div style={{display: 'grid', height: String(height - 100)+'px'}}>
                 <div style={{
                     height: String(height - 15 - 100 - 70) + 'px',
-                    marginTop: '15px', marginLeft : String(window.innerWidth/2-45)+'px',
+                    marginTop: '15px', marginLeft : String(height/2-45)+'px',
                     color:'gray'
                 }} className={'text-element'}>
                     Корзина пуста
@@ -116,9 +116,9 @@ const Basket = ({height}) => {
             </div>)
     } else {
         return (
-            <div style={{display: 'grid', height: '100%'}}>
+            <div style={{display: 'grid'}}>
                 <div style={{
-                    height: String(height - 15 - 100 - 70) + 'px',
+                    height: String(height - 15 - 100) + 'px',
                     marginTop: '15px', overflowY:'scroll'
                 }}>
                     {basket.map(el => (

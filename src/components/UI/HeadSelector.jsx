@@ -76,10 +76,10 @@ const HeadSelector = ({onChange, main_data}) => {
             <div className={'box-grid-panel'}>
                 <input className={'search'} onChange={onChangeEmpty}></input>
                 <Link to={'basket'} className={'link-element'}>
-                <div className={'div-button-panel'}>
+                <div className={'div-button-panel'} style={{padding:'10px !important'}}>
                     <div className={'background-basket'} style={{ width:'100%', height:'100%'}}></div>
                 </div></Link>
-                <div className={'div-button-panel'}>
+                <div className={'div-button-panel'} style={{padding:'10px !important'}} >
                     <div className={'background-profile'} style={{width: '100%', height: '100%'}}></div>
                 </div>
             </div>

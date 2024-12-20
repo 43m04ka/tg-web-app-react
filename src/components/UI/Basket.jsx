@@ -7,7 +7,7 @@ import {useTelegram} from "../../hooks/useTelegram";
 var isResizeble = true;
 
 const Basket = () => {
-    const {tg} = useTelegram();
+    const {tg, user} = useTelegram();
     const navigate = useNavigate();
 
     const [basket, setBasket] = useState([])
@@ -30,7 +30,6 @@ const Basket = () => {
     useEffect(() => {
         onGetData()
     }, []);
-
 
     const sendData = {
         method: 'get',

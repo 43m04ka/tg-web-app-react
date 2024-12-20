@@ -9,6 +9,7 @@ import ErrorPage from "./components/UI/ErrorPage";
 import ProductItem from "./components/UI/ProductItem";
 import CardProduct from "./components/UI/CardProduct";
 import Basket from "./components/UI/Basket";
+import AdminPanel from "./components/UI/AdminPanel";
 
 
 const mainData = [
@@ -141,6 +142,7 @@ function App() {
                     ))
                 ))}
                 <Route path='home/basket' element={<Basket/>}/>
+                <Route path={'admin'} element={<AdminPanel/>}/>
                 <Route path="*" element={<ErrorPage/>}/>
             </Routes>
 

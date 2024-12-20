@@ -9,6 +9,7 @@ import HeadSelector from "./HeadSelector";
 
 const Home = ({main_data, height}) => {
     const {tg} = useTelegram();
+    console.log(tg)
     const [pageSelected, setPageSelected] = useState(0);
     const [data, setData] = useState(main_data[0])
 

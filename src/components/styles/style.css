@@ -166,7 +166,6 @@ body{
 }
 
 
-
 .selector-button{
     color: white;
     background: #171717;
@@ -252,7 +251,7 @@ body{
     background-size: cover;
 }
 .background-profile{
-    background-image: url("../icons/profile.png");
+    background-image: url("../icons/question.png");
     background-size: cover;
 }
 .background-trash{

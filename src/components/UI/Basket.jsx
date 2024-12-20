@@ -5,6 +5,7 @@ import ProductItemBasket from "./ProductItemBasket";
 import {useTelegram} from "../../hooks/useTelegram";
 
 var isResizeble = true;
+var isResizeble1 = false;
 
 const Basket = ({height}) => {
     const {tg, user} = useTelegram();
@@ -47,11 +48,12 @@ const Basket = ({height}) => {
             let Promise = r.json()
             Promise.then(r => {
                 console.log(r.body)
-                if (isResizeble) {
+                if (isResizeble || isResizeble1) {
                     isResizeble = false;
                     return setBasket(r.body);
                 } else {
                     isResizeble = true;
+                    isResizeble1 = true
                 }
             })
         })

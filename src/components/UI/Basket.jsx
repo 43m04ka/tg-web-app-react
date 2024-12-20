@@ -82,7 +82,7 @@ const Basket = ({height}) => {
         return (<div className={'pong-loader'} style={{
             border: '2px solid #8cdb8b',
             marginTop: String(height / 2 - 60) + 'px',
-            marginLeft: String(height / 2 - 40) + 'px'
+            marginLeft: String(window.innerWidth / 2 - 40) + 'px'
         }}>Ожидайте</div>);
     } else if (basket.length === 0) {
         return (

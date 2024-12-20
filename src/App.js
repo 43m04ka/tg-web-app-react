@@ -109,6 +109,9 @@ function App() {
     const ref = React.useRef();
 
     const resizeHandler = () => {
+        if(window.innerWidth>1000){
+            tg.exitFullscreen()
+        }
         setSize(window.innerHeight);
     };
 
@@ -132,8 +135,8 @@ function App() {
 
     return (
         <div className="App" ref={ref}>
-            <div style={{height: String(tg?.contentSafeAreaInset.top) + 'px', border: '2px solid green'}}></div>
-            <div style={{height: String(tg?.safeAreaInset.top) + 'px', border: '2px solid red'}}></div>
+            <div style={{height: String(tg?.contentSafeAreaInset.top) + 'px'}}></div>
+            <div style={{height: String(tg?.safeAreaInset.top) + 'px'}}></div>
             <Routes>
                 <Route path="home" element={<Home main_data={mainData} height={size}/>}/>
                 {mainData.map(platform => (

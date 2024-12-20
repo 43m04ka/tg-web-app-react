@@ -27,7 +27,7 @@ const Home = ({main_data, height}) => {
     return (
         <div>
             <HeadSelector onChange={handleChange} main_data = {main_data}/>
-                <div className={'scroll-container-y'} style={{height:height}}>
+                <div className={'scroll-container-y'} style={{height:String(window.innerHeight-tg?.contentSafeAreaInset.bottom-tg?.safeAreaInset.top-tg?.contentSafeAreaInset.top-tg?.safeAreaInset.top-125)+'px'}}>
                     {data.body.map(category => (
                         <HomeBlock key={category.id} path={category.path} data={category}/>
                     ))}

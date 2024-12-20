@@ -124,6 +124,7 @@ function App() {
         tg.disableVerticalSwipes();
         try {
             tg.requestFullscreen()
+            tg.expand()
         }catch (err) {console.log(err)}
         tg.ready();
     }, [])

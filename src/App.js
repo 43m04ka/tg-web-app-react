@@ -125,7 +125,7 @@ function App() {
 
     return (
         <div className="App">
-            <div style={{height:String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top)+'px', border:'2px solid red'}}></div>
+            <div style={{height:String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top)+'px',}}></div>
             <Routes>
                 <Route path="home" element={<Home main_data={mainData} height = {height}/>}/>
                 {mainData.map(platform => (

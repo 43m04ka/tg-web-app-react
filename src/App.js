@@ -130,10 +130,11 @@ function App() {
 
 
     return (
-        <div className="App" ref = {ref}>
-            <div style={{height:String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top)+'px',}}></div>
+        <div className="App" ref={ref}>
+            <div style={{height: String(tg?.contentSafeAreaInset.top) + 'px', border: '2px solid green'}}></div>
+            <div style={{height: String(tg?.safeAreaInset.top) + 'px', border: '2px solid red'}}></div>
             <Routes>
-                <Route path="home" element={<Home main_data={mainData} height = {size}/>}/>
+                <Route path="home" element={<Home main_data={mainData} height={size}/>}/>
                 {mainData.map(platform => (
                     platform.body.map(category => (
                         <Route path={'home/' + category.path} key={category.id}

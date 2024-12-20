@@ -139,18 +139,18 @@ function App() {
                 {mainData.map(platform => (
                     platform.body.map(category => (
                         <Route path={'home/' + category.path} key={category.id}
-                               element={<ProductList main_data={platform.body[category.id]}/>}/>
+                               element={<ProductList main_data={platform.body[category.id]} height={size}/>}/>
                     ))
                 ))}
                 {mainData.map(platform => (
                     platform.body.map(category => (
                         category.body.map(item => (
                             <Route path={'home/' + category.path + '/' + item.id} key={item.id}
-                                   element={<CardProduct mainData={item}/>}/>
+                                   element={<CardProduct mainData={item} height={size} />}/>
                         ))
                     ))
                 ))}
-                <Route path='home/basket' element={<Basket/>}/>
+                <Route path='home/basket' element={<Basket height={size}/>}/>
                 <Route path={'admin'} element={<AdminPanel/>}/>
                 <Route path="*" element={<ErrorPage/>}/>
             </Routes>

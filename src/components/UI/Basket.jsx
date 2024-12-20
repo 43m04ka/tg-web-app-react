@@ -6,7 +6,7 @@ import {useTelegram} from "../../hooks/useTelegram";
 
 var isResizeble = true;
 
-const Basket = () => {
+const Basket = ({height}) => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
 
@@ -81,14 +81,14 @@ const Basket = () => {
     if (isResizeble) {
         return (<div className={'pong-loader'} style={{
             border: '2px solid #8cdb8b',
-            marginTop: String(window.innerHeight / 2 - 60) + 'px',
-            marginLeft: String(window.innerWidth / 2 - 40) + 'px'
+            marginTop: String(height / 2 - 60) + 'px',
+            marginLeft: String(height / 2 - 40) + 'px'
         }}>Ожидайте</div>);
     } else if (basket.length === 0) {
         return (
             <div style={{display: 'grid', height: '100%'}}>
                 <div style={{
-                    height: String(window.innerHeight - 15 - 100 - 70) + 'px',
+                    height: String(height - 15 - 100 - 70) + 'px',
                     marginTop: '15px', marginLeft : String(window.innerWidth/2-45)+'px',
                     color:'gray'
                 }} className={'text-element'}>
@@ -118,7 +118,7 @@ const Basket = () => {
         return (
             <div style={{display: 'grid', height: '100%'}}>
                 <div style={{
-                    height: String(window.innerHeight - 15 - 100 - 70) + 'px',
+                    height: String(height - 15 - 100 - 70) + 'px',
                     marginTop: '15px', overflowY:'scroll'
                 }}>
                     {basket.map(el => (

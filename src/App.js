@@ -124,7 +124,7 @@ function App() {
 
     return (
         <div className="App">
-            <div style={{marginTop:String(margin)+'px'}}></div>
+            <div style={{marginTop:String(tg.safeAreaInset.top)+'px'}}></div>
             <Routes>
                 <Route path="home" element={<Home main_data={mainData} height = {height}/>}/>
                 {mainData.map(platform => (

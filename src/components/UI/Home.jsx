@@ -26,7 +26,6 @@ const Home = ({main_data, height}) => {
     }
     return (
         <div>
-            <div>{tg.safeAreaInset.top}</div>
             <HeadSelector onChange={handleChange} main_data = {main_data}/>
                 <div className={'scroll-container-y'} style={{height:height}}>
                     {data.body.map(category => (

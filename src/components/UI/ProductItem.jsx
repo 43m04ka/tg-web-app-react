@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 const ProductItem = ({product, path}) => {
 
     return (
-        <div className={'list-element'}>
+        <div className={'list-element'} style={{marginLeft:String((window.innerWidth-160-160)/3)+'px'}}>
             <Link to={'/home/' + path + '/' + product.id} className={'link-element'}>
                 <div className={'box-home-block-element'}>
                     <img src={product.img} alt={product.title} className={'img-home'}/>

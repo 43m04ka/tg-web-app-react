@@ -14,9 +14,22 @@ const HomeBlock = ({path, data}) => {
                         <HomeBlockElement key={item.id} path={data.path} data={item}/>
                     )
                 )}
-                <div className={'home-block-element'}></div>
+                <div className={'box-home-block-element home-block-element'}>
+                    <div style={{width: '160px', height: '157px'}}>
+                        <Link to={'/home/' + data.path} className={'link-element'}>
+                            <button className={'all-see-button'} style={{
+                                height: '50px',
+                                width: '100px',
+                                marginTop: '85px',
+                                background: '#232323',
+                                border: '2px black solid'
+                            }}>Смотреть больше
+                            </button>
+                        </Link>
+                    </div>
                 </div>
-                <Link to={'/home/' + data.path} className={'link-element'}>
+            </div>
+            <Link to={'/home/' + data.path} className={'link-element'}>
                 <button className={'all-see-button'}>Открыть каталог</button>
             </Link>
         </div>

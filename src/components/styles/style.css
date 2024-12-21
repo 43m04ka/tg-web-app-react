@@ -57,7 +57,8 @@
 .list-grid{
     display: grid;
     width: 100%;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: max-content auto;
+    justify-items: auto;
 }
 
 .homeBlock{
@@ -113,11 +114,13 @@
 }
 .price-element{
     margin-top: 13px;
-    height: 23px;
     font-weight: bold;
+    line-height: 20px;
+    height: 25px;
 }
 .name-element{
-    height: 43px;
+    height: 40px;
+    line-height: 20px;
 }
 
 
@@ -154,8 +157,6 @@ body{
 .list-element{
     margin-top: 15px;
     display: flex;
-    margin-right: auto;
-    margin-left: auto;
 }
 .selector-container{
     border-radius: 10px;

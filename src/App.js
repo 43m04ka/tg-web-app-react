@@ -88,11 +88,11 @@ function App() {
                     ))
                 ))}
                 {mainData.map(platform => (
-                    platform.body[1].map(category => (
-                        category.body.map(item => (
-                            <Route path={'home/' + category.path + '/' + item.id} key={item.id}
-                                   element={<CardProduct mainData={item} height={size} />}/>
-                        ))
+                    platform.body[1].map(category =>
+                        (category.body.map(item =>
+                                (<Route path={'home/' + category.path + '/' + item.id} key={item.id}
+                                        element={<CardProduct mainData={item} height={size}/>}/>)
+                        )
                     ))
                 ))}
                 <Route path='home/basket' element={<Basket height={size}/>}/>

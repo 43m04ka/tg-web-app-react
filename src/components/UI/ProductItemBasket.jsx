@@ -8,7 +8,7 @@ const ProductItemBasket = ({setBasketF, product}) => {
     const sendData = {
         method: 'del',
         mainData: item,
-        user: {id: 5106439090, first_name: "tёma"},
+        user: user,
     }
 
     const onSendData = useCallback(() => {

@@ -15,7 +15,7 @@ const Basket = ({height}) => {
 
     const sendDataProduct = {
         method: 'buy',
-        user: {id: 5106439090, first_name: "tёma"},
+        user: user,
     }
 
     const onClickButton = useCallback(() => {
@@ -34,7 +34,7 @@ const Basket = ({height}) => {
 
     const sendData = {
         method: 'get',
-        user: {id: 5106439090, first_name: "tёma"},
+        user: user,
     }
 
     const onGetData = useCallback(() => {

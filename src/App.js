@@ -6,17 +6,23 @@ import {Route, Routes} from "react-router-dom";
 import ProductList from "./components/UI/ProductList";
 import Home from "./components/UI/Home";
 import ErrorPage from "./components/UI/ErrorPage";
-import ProductItem from "./components/UI/ProductItem";
+import Search from "./components/UI/Search";
 import CardProduct from "./components/UI/CardProduct";
 import Basket from "./components/UI/Basket";
 import AdminPanel from "./components/UI/AdminPanel";
 
 
 let isGetData = true;
+
 function App() {
     const {tg} = useTelegram();
     const [size, setSize] = React.useState(window.innerHeight);
-    const [mainData, setMainData] = useState([{id: 0, page: 'playstation', body: [[], []]}, {id: 1, page: 'xbox', body: [[], []]}]);
+    const [mainData, setMainData] = useState([
+        {id: 0, page: 'playstation', body: [[], []]}, {
+            id: 1,
+            page: 'xbox',
+            body: [[], []]
+        }, {id: 2, page: 'service', body: [[], []]}]);
     const [status, setStatus] = useState(0);
 
     const sendGetData = {
@@ -41,10 +47,10 @@ function App() {
     }, [sendGetData])
 
     const resizeHandler = () => {
-        if(window.innerWidth>1000){
+        if (window.innerWidth > 1000) {
             try {
                 tg.exitFullscreen()
-            }catch (err){
+            } catch (err) {
             }
         }
         setSize(window.innerHeight);
@@ -53,7 +59,7 @@ function App() {
     useEffect(() => {
         if (isGetData) {
             onGetData()
-            isGetData  = false;
+            isGetData = false;
         }
     }, []);
 
@@ -70,39 +76,45 @@ function App() {
         try {
             tg.requestFullscreen()
             tg.expand()
-        }catch (err) {console.log(err)}
+        } catch (err) {
+            console.log(err)
+        }
         tg.ready();
     }, [])
 
-    if(status===1){
-    return (
-        <div className="App">
-            <div style={{height: String(tg?.contentSafeAreaInset.top) + 'px'}}></div>
-            <div style={{height: String(tg?.safeAreaInset.top) + 'px'}}></div>
-            <Routes>
-                <Route path="home" element={<Home main_data={mainData} height={size}/>}/>
-                {mainData.map(platform => (
-                    platform.body[1].map(category => (
-                        <Route path={'home/' + category.path} key={category.id}
-                               element={<ProductList main_data={category} height={size}/>}/>
-                    ))
-                ))}
-                {mainData.map(platform => (
-                    platform.body[1].map(category =>
-                        (category.body.map(item =>
-                                (<Route path={'home/' + category.path + '/' + item.id} key={item.id}
-                                        element={<CardProduct mainData={item} height={size}/>}/>)
-                        )
-                    ))
-                ))}
-                <Route path='home/basket' element={<Basket height={size}/>}/>
-                <Route path={'admin'} element={<AdminPanel/>}/>
-                <Route path="*" element={<ErrorPage/>}/>
-            </Routes>
+    if (status === 1) {
+        return (
+            <div className="App">
+                <div style={{height: String(tg?.contentSafeAreaInset.top) + 'px'}}></div>
+                <div style={{height: String(tg?.safeAreaInset.top) + 'px'}}></div>
+                <Routes>
+                    <Route path="home" element={<Home main_data={mainData} height={size}/>}/>
+                    {mainData.map(platform => (
+                        platform.body[1].map(category => (
+                            <Route path={'home/' + category.path} key={category.id}
+                                   element={<ProductList main_data={category} page={platform.id} height={size}/>}/>
+                        ))
+                    ))}
+                    {mainData.map(platform => (
+                        platform.body[1].map(category =>
+                            (category.body.map(item =>
+                                    (<Route path={'home/' + category.path + '/' + item.id} key={item.id}
+                                            element={<CardProduct mainData={item} height={size}/>}/>)
+                                )
+                            ))
+                    ))}
+                    <Route path={'home/basket'} element={<Basket height={size}/>}/>
+                    {mainData.map(platform => (
+                        <Route path={'home/search' + String(platform.id)}
+                               element={<Search data={platform} height={size}/>}/>
+                    ))}
+                    <Route path={'admin'} element={<AdminPanel/>}/>
+                    <Route path="*" element={<ErrorPage/>}/>
+                </Routes>
 
-        </div>
-    );}
-    else{
+            </div>
+        );
+    } else {
         return (<div className={'pong-loader'} style={{
             border: '2px solid #8cdb8b',
             marginTop: String(size / 2 - 60) + 'px',

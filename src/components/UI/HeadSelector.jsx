@@ -74,7 +74,9 @@ const HeadSelector = ({onChange, main_data}) => {
                 </div>
             </div>
             <div className={'box-grid-panel'}>
-                <input className={'search'} onChange={onChangeEmpty}></input>
+                <Link to={'search'+String(pageSelected)} className={'link-element'}>
+                    <div className={'search'}></div>
+                </Link>
                 <Link to={'basket'} className={'link-element'}>
                 <div className={'div-button-panel'} style={{padding:'10px !important'}}>
                     <div className={'background-basket'} style={{ width:'100%', height:'100%'}}></div>

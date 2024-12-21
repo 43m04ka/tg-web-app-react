@@ -3,7 +3,7 @@ import '../styles/style.css';
 import ProductItem from "./ProductItem";
 import {useTelegram} from "../../hooks/useTelegram";
 import {useCallback, useEffect} from "react";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 
 const getTotalPrice = (items = []) => {
@@ -12,7 +12,8 @@ const getTotalPrice = (items = []) => {
     }, 0)
 }
 
-const ProductList = ({main_data}) => {
+const ProductList = ({main_data, page, height}) => {
+    console.log(page)
     const products = main_data.body
     const path = main_data.path
     const [addedItems, setAddedItems] = useState([]);
@@ -35,10 +36,23 @@ const ProductList = ({main_data}) => {
     }, [])
 
     return (
-        <div className={'list'}>
+        <div className={'list'} style={{display: 'flex', flexDirection: 'column'}}>
+            <div className={'box-grid-panel'}>
+                <Link to={'/home/search' + String(page)} className={'link-element'}>
+                    <div className={'search'}></div>
+                </Link>
+                <Link to={'basket'} className={'link-element'}>
+                    <div className={'div-button-panel'} style={{padding: '10px !important'}}>
+                        <div className={'background-basket'} style={{width: '100%', height: '100%'}}></div>
+                    </div>
+                </Link>
+                <div className={'div-button-panel'} style={{padding: '10px !important'}}>
+                    <div className={'background-profile'} style={{width: '100%', height: '100%'}}></div>
+                </div>
+            </div>
             <div className={'list-grid'}>
                 {products.map(item => (
-                    <ProductItem key={item.id} product={item} path = {path}/>
+                    <ProductItem key={item.id} product={item} path={path}/>
                 ))}
             </div>
         </div>

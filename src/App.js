@@ -12,108 +12,50 @@ import Basket from "./components/UI/Basket";
 import AdminPanel from "./components/UI/AdminPanel";
 
 
-const mainData = [
-    {
-        id: 0, page: 'playstation', body: [
-            {
-                id: 0,
-                name: 'Новинки',
-                path: 'new',
-                body: [
-                    {
-                        id: '0',
-                        title: 'Far Cry 5',
-                        price: 180,
-                        description: 'description-1',
-                        img: 'https://image.api.playstation.com/gs2-sec/appkgo/prod/CUSA05847_00/2/i_156be5fdc23a961f0e2b05974c0df5ecfd6169b09aa25e5c510ec7e6e1ad683f/i/icon0.png'
-                    },
-                    {
-                        id: '1',
-                        title: 'DOOM Eternal Standard Edition',
-                        price: 165,
-                        description: 'description-1',
-                        img: 'https://image.api.playstation.com/vulcan/ap/rnd/202010/0114/ERNPc4gFqeRDG1tYQIfOKQtM.png'
-                    },
-                    {
-                        id: '2',
-                        title: 'Divinity: Original Sin 2 - Definitive Edition',
-                        price: 100,
-                        description: 'description-1',
-                        img: 'https://image.api.playstation.com/gs2-sec/appkgo/prod/CUSA11898_00/7/i_54c96b482f927d0516249edbc804fa5c99a351443544964e3335bd12869db9c7/i/icon0.png'
-                    },
-                    {
-                        id: '3',
-                        title: 'NieR: Automata™ Game of the YoRHa Edition',
-                        price: 100,
-                        description: 'description-1',
-                        img: 'https://image.api.playstation.com/vulcan/ap/rnd/202010/0604/gwDCkbeX5axMIavw9XrDvihp.png'
-                    },
-                    {
-                        id: '4',
-                        title: 'UFC® 5',
-                        price: 150,
-                        description: 'description-2',
-                        img: 'https://image.api.playstation.com/vulcan/ap/rnd/202309/0421/418704276d35ce02e8cb532c6ca3826cf866ad2ec66c0b17.png?w=180'
-                    }]
-            }, {
-                id: 1,
-                name: 'Популярные',
-                path: 'popular',
-                body:  [
-                    {
-                        id: '6',
-                        title: 'Astro-Bot',
-                        price: 50,
-                        description: 'description-3',
-                        img: 'https://image.api.playstation.com/vulcan/ap/rnd/202406/0500/8f15268257b878597757fcc5f2c9545840867bc71fc863b1.png?w=180'
-                    },
-                    {
-                        id: '7',
-                        title: 'Red dead redemption 2',
-                        price: 80,
-                        description: 'description-4',
-                        img: 'https://image.api.playstation.com/gs2-sec/appkgo/prod/CUSA08519_00/12/i_3da1cf7c41dc7652f9b639e1680d96436773658668c7dc3930c441291095713b/i/icon0.png?w=180'
-                    },
-                    {
-                        id: '8',
-                        title: 'Divinity: Original Sin 2 - Definitive Edition',
-                        price: 100,
-                        description: 'description-1',
-                        img: 'https://image.api.playstation.com/gs2-sec/appkgo/prod/CUSA11898_00/7/i_54c96b482f927d0516249edbc804fa5c99a351443544964e3335bd12869db9c7/i/icon0.png'
-                    },
-                    {
-                        id: '9',
-                        title: 'NieR: Automata™ Game of the YoRHa Edition',
-                        price: 100,
-                        description: 'description-1',
-                        img: 'https://image.api.playstation.com/vulcan/ap/rnd/202010/0604/gwDCkbeX5axMIavw9XrDvihp.png'
-                    },
-                    {
-                        id: '10',
-                        title: 'UFC® 5',
-                        price: 150,
-                        description: 'description-2',
-                        img: 'https://image.api.playstation.com/vulcan/ap/rnd/202309/0421/418704276d35ce02e8cb532c6ca3826cf866ad2ec66c0b17.png?w=180'
-                    }]
-            }
-        ]
-    },
-    {
-        id: 1, page: 'xbox', body: []
-    }]
-
-
+let isGetData = true;
 function App() {
     const {tg} = useTelegram();
     const [size, setSize] = React.useState(window.innerHeight);
-    const ref = React.useRef();
+    const [mainData, setMainData] = useState([{id: 0, page: 'playstation', body: [[], []]}, {id: 1, page: 'xbox', body: [[], []]}]);
+    const [status, setStatus] = useState(0);
+
+    const sendGetData = {
+        method: 'get',
+    }
+
+    const onGetData = useCallback(() => {
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/admin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(sendGetData)
+        }).then(r => {
+            let Promise = r.json()
+            Promise.then(prom => {
+                console.log(prom.body)
+                setMainData(prom.body)
+                setStatus(1)
+            })
+        })
+    }, [sendGetData])
 
     const resizeHandler = () => {
         if(window.innerWidth>1000){
-            tg.exitFullscreen()
+            try {
+                tg.exitFullscreen()
+            }catch (err){
+            }
         }
         setSize(window.innerHeight);
     };
+
+    useEffect(() => {
+        if (isGetData) {
+            onGetData()
+            isGetData  = false;
+        }
+    }, []);
 
     React.useEffect(() => {
         window.addEventListener("resize", resizeHandler);
@@ -132,21 +74,21 @@ function App() {
         tg.ready();
     }, [])
 
-
+    if(status===1){
     return (
-        <div className="App" ref={ref}>
+        <div className="App">
             <div style={{height: String(tg?.contentSafeAreaInset.top) + 'px'}}></div>
             <div style={{height: String(tg?.safeAreaInset.top) + 'px'}}></div>
             <Routes>
                 <Route path="home" element={<Home main_data={mainData} height={size}/>}/>
                 {mainData.map(platform => (
-                    platform.body.map(category => (
+                    platform.body[1].map(category => (
                         <Route path={'home/' + category.path} key={category.id}
-                               element={<ProductList main_data={platform.body[category.id]} height={size}/>}/>
+                               element={<ProductList main_data={category} height={size}/>}/>
                     ))
                 ))}
                 {mainData.map(platform => (
-                    platform.body.map(category => (
+                    platform.body[1].map(category => (
                         category.body.map(item => (
                             <Route path={'home/' + category.path + '/' + item.id} key={item.id}
                                    element={<CardProduct mainData={item} height={size} />}/>
@@ -159,7 +101,14 @@ function App() {
             </Routes>
 
         </div>
-    );
+    );}
+    else{
+        return (<div className={'pong-loader'} style={{
+            border: '2px solid #8cdb8b',
+            marginTop: String(size / 2 - 60) + 'px',
+            marginLeft: String(window.innerWidth / 2 - 40) + 'px'
+        }}>Ожидайте</div>);
+    }
 }
 
 export default App;

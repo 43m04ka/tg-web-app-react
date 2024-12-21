@@ -114,6 +114,7 @@
 .price-element{
     margin-top: 13px;
     height: 23px;
+    font-weight: bold;
 }
 .name-element{
     height: 43px;

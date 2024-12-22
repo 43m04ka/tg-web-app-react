@@ -1,11 +1,12 @@
 import React, {useCallback, useEffect} from 'react';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useTelegram} from "../../hooks/useTelegram";
 
 const Search = ({data, height}) => {
     const [listRes, setListRes] = React.useState([]);
     const [status, setStatus] = React.useState(0);
     const {tg} = useTelegram();
+    const navigate = useNavigate();
 
     const onChangeEmpty = (event) => {
         const valueInput = event.target.value

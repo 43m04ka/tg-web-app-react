@@ -1,8 +1,10 @@
 import React, {useCallback, useEffect} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
+import {useNavigate} from "react-router-dom";
 
 const Info = () => {
     const {tg} = useTelegram();
+    const navigate = useNavigate();
 
     const onBack = useCallback(() => {
         navigate(-1);

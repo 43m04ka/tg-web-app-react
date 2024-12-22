@@ -48,7 +48,13 @@ const Basket = ({height}) => {
             let Promise = r.json()
             Promise.then(r => {
                 console.log(r.body)
-                setBasket(r.body);
+                if (isResizeble || isResizeble1) {
+                    isResizeble = false;
+                    return setBasket(r.body);
+                } else {
+                    isResizeble = true;
+                    isResizeble1 = true
+                }
             })
         })
     }, [sendData])

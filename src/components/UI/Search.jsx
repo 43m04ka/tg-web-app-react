@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {Link} from "react-router-dom";
 import {useTelegram} from "../../hooks/useTelegram";
 
@@ -41,6 +41,18 @@ const Search = ({data, height}) => {
         console.log(result)
     }
     console.log(data)
+
+    const onBack = useCallback(() => {
+        navigate(-1);
+    }, [])
+
+    useEffect(() => {
+        tg.onEvent('backButtonClicked', onBack)
+        return () => {
+            tg.offEvent('backButtonClicked', onBack)
+        }
+    }, [onBack])
+
 
     if (status === 1) {
         return (

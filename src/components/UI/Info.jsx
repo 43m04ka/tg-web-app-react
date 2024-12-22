@@ -1,6 +1,18 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 
 const Info = () => {
+
+    const onBack = useCallback(() => {
+        navigate(-1);
+    }, [])
+
+    useEffect(() => {
+        tg.onEvent('backButtonClicked', onBack)
+        return () => {
+            tg.offEvent('backButtonClicked', onBack)
+        }
+    }, [onBack])
+
     return (
         <div>
             <div style={{margin: '15px'}}><a className={'link-element text-element'}

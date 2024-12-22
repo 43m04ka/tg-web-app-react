@@ -137,6 +137,7 @@ const Slider = () => {
                     pagination={{
                         clickable: false,
                     }}
+                    loop={true}
                     modules={[Autoplay, Pagination]}
             >
                 {data.map(el => (

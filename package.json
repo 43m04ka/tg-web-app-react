@@ -16,6 +16,7 @@
     "react-scripts": "5.0.1",
     "redux": "^5.0.1",
     "sequelize": "^6.37.5",
+    "swiper": "^11.1.15",
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"
   },

@@ -14,11 +14,13 @@ const getTotalPrice = (items = []) => {
 
 const ProductList = ({main_data, page, height}) => {
     console.log(page)
-    const products = main_data.body
+    let products = main_data.body
     const path = main_data.path
     const [addedItems, setAddedItems] = useState([]);
     const {tg, queryId, user} = useTelegram();
     const navigate = useNavigate();
+    const [sortNap, setSortNap] = useState(true);
+    const [stpSort, setStpSort] = useState('Цена↑');
 
     const onBack = useCallback(() => {
         navigate(-1);
@@ -35,6 +37,22 @@ const ProductList = ({main_data, page, height}) => {
         tg.BackButton.show();
     }, [])
 
+    const onSort = () => {
+        if(sortNap) {
+            setSortNap(false)
+            setStpSort('Цена↓')
+        }else{
+            setSortNap(true)
+            setStpSort('Цена↑')
+        }
+    }
+
+    if(sortNap) {
+        products.sort((a, b) => (+(a.price - b.price)))
+    }else{
+        products.sort((a, b) => (+(b.price - a.price)));
+    }
+
     return (
         <div className={'list'} style={{display: 'flex', flexDirection: 'column'}}>
             <div className={'box-grid-panel'}>
@@ -50,10 +68,15 @@ const ProductList = ({main_data, page, height}) => {
                     <div className={'background-profile'} style={{width: '100%', height: '100%'}}></div>
                 </div>
             </div>
-            <div className={'list-grid'}>
-                {products.map(item => (
-                    <ProductItem key={item.id} product={item} path={path}/>
-                ))}
+            <div className={'text-element'} style={{justifyItems:'right', color:'gray', fontSize:'16px', marginRight:'10px', marginBottom:'5px'}}>
+                <div onClick={onSort}>{stpSort}</div>
+            </div>
+            <div className={'scroll-container-y'} style={{height:String(height-80)+'px'}}>
+                <div className={'list-grid'}>
+                    {products.map(item => (
+                        <ProductItem key={item.id} product={item} path={path}/>
+                    ))}
+                </div>
             </div>
         </div>
     );

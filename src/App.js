@@ -10,6 +10,7 @@ import Search from "./components/UI/Search";
 import CardProduct from "./components/UI/CardProduct";
 import Basket from "./components/UI/Basket";
 import AdminPanel from "./components/UI/AdminPanel";
+import Info from "./components/UI/Info";
 
 
 let isGetData = true;
@@ -109,6 +110,7 @@ function App() {
                                element={<Search data={platform} height={size}/>}/>
                     ))}
                     <Route path={'admin'} element={<AdminPanel/>}/>
+                    <Route path={'home/info'} element={<Info/>}/>
                     <Route path="*" element={<ErrorPage/>}/>
                 </Routes>
 

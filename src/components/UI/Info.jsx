@@ -1,9 +1,15 @@
 import React, {useCallback, useEffect} from 'react';
+import {useTelegram} from "../../hooks/useTelegram";
 
 const Info = () => {
+    const {tg} = useTelegram();
 
     const onBack = useCallback(() => {
         navigate(-1);
+    }, [])
+
+    useEffect(() => {
+        tg.BackButton.show();
     }, [])
 
     useEffect(() => {

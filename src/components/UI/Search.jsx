@@ -47,11 +47,17 @@ const Search = ({data, height}) => {
     }, [])
 
     useEffect(() => {
+        tg.BackButton.show();
+    }, [])
+
+    useEffect(() => {
         tg.onEvent('backButtonClicked', onBack)
         return () => {
             tg.offEvent('backButtonClicked', onBack)
         }
     }, [onBack])
+
+
 
 
     if (status === 1) {

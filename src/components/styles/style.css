@@ -668,3 +668,6 @@ body{
     text-align: center;
     padding: 5px;
 }
+#box{
+    border-radius: 15px;
+}

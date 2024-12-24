@@ -9,7 +9,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 
 // import required modules
-import {Autoplay, Pagination, Navigation} from 'swiper/modules';
+import {Autoplay, Pagination, Navigation, Controller} from 'swiper/modules';
 import ElementSlider from "./ElementSlider";
 
 const data = [
@@ -64,12 +64,16 @@ const data = [
 
 
 const Slider = () => {
+    const [swiperElement, setSwiperElement] = useState(null);
+
     return (
         <div>
             <Swiper watchSlidesProgress={true} slidesPerView={3} className="swiper"
                     style={{width: String(window.innerWidth) + 'px'}}
                     spaceBetween={30}
+                    onClick={() => console.log(swiperRef)}
                     centeredSlides={true}
+                    onSlideChange={(event) => {setSwiperElement(event.realIndex)}}
                     autoplay={{
                         delay: 2500,
                         disableOnInteraction: false,
@@ -78,13 +82,26 @@ const Slider = () => {
                         clickable: false,
                     }}
                     loop={true}
-                    modules={[Autoplay, Pagination]}
+                    modules={[Autoplay, Pagination, Controller]}
+                    style={{justifyItems:'center'}}
             >
-                {data.map(el => (
-                    <SwiperSlide key={el.id}>
-                        <ElementSlider img = {el.img}/>
-                    </SwiperSlide>
-                ))}
+                {data.map(el => {
+                    var height1 = 0
+                    if(swiperElement === el.id-1){
+                        console.log('big', el.id)
+                        height1 = (window.innerWidth)/3
+                    }else{
+                        console.log('small')
+                        height1 = (window.innerWidth-35)/3
+                    }
+
+                    console.log(height1)
+                    return (<SwiperSlide key={el.id}>
+                        <div style={{width:String((window.innerWidth)/3)+'px'}}>
+                        <ElementSlider number={swiperElement} img={el.img} height={height1} id={el.id}/>
+                        </div>
+                    </SwiperSlide>)
+                })}
             </Swiper>
         </div>
     );

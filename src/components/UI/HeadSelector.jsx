@@ -64,13 +64,13 @@ const HeadSelector = ({onChange, main_data}) => {
         <div>
             <div className="selector-container">
                 <div className={'div-box-4563'} style={{width: '100%', height: "100%", padding: '3px'}}>
-                    <button className={'selector-button'} onClick={onclickPS} style={stylePs}>Playstation</button>
+                    <button className={'selector-button'} onClick={onclickPS} style={stylePs}>PLAYSTATION</button>
                 </div>
                 <div className={'div-box-4563'} style={{width: '100%', height: "100%", padding: '3px'}}>
-                    <button className={'selector-button'} onClick={onclickXB} style={styleXB}>Xbox</button>
+                    <button className={'selector-button'} onClick={onclickXB} style={styleXB}>XBOX</button>
                 </div>
                 <div className={'div-box-4563'} style={{width: '100%', height: "100%", padding: '3px'}}>
-                    <button className={'selector-button'} onClick={onclickSR} style={styleSR}>Сервисы</button>
+                    <button className={'selector-button'} onClick={onclickSR} style={styleSR}>СЕРВИСЫ</button>
                 </div>
             </div>
             <div className={'box-grid-panel'}>

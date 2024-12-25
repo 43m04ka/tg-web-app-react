@@ -15,14 +15,13 @@ const HomeBlock = ({path, data}) => {
                     )
                 )}
                 <div className={'box-home-block-element home-block-element'}>
-                    <div style={{width: '160px', height: '157px'}}>
+                    <div style={{width: '160px', height: '242px'}}>
                         <Link to={'/home/' + data.path} className={'link-element'}>
                             <button className={'all-see-button'} style={{
-                                height: '50px',
-                                width: '100px',
-                                marginTop: '85px',
-                                background: '#232323',
-                                border: '2px black solid'
+                                height: '100%',
+                                width: '100%',
+                                marginTop: '0',
+                                background: '#464646',
                             }}>Смотреть больше
                             </button>
                         </Link>

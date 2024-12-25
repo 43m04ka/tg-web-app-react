@@ -57,14 +57,14 @@ const Slider = () => {
     const [swiperElement, setSwiperElement] = useState(null);
 
     return (
-        <div>
+        <div style={{height:String(window.innerWidth/3*1.4)+'px'}}>
             <Swiper watchSlidesProgress={true} slidesPerView={3} className="swiper"
                     style={{width: String(window.innerWidth) + 'px'}}
                     spaceBetween={30}
                     centeredSlides={true}
                     onSlideChange={(event) => {if(event.realIndex !== swiperElement){setSwiperElement(event.realIndex)}}}
                     autoplay={{
-                        delay: 2500,
+                        delay: 7000,
                         disableOnInteraction: false,
                     }}
                     pagination={{
@@ -79,16 +79,16 @@ const Slider = () => {
                     var margin1 = 0
                     if(swiperElement === el.id-1){
                         console.log('big', el.id)
-                        height1 = (window.innerWidth)/3
+                        height1 = (window.innerWidth-30)/3
                     }else{
                         console.log('small')
-                        height1 = (window.innerWidth-35)/3
+                        height1 = (window.innerWidth-70)/3
                         margin1 = 10
                     }
 
                     console.log(height1)
                     return (<SwiperSlide key={el.id}>
-                        <div style={{width:String((window.innerWidth)/3)+'px', paddingTop:String(margin1)+'px'}}>
+                        <div style={{width:String((window.innerWidth-30)/3)+'px', paddingTop:String(margin1)+'px'}}>
                         <ElementSlider number={swiperElement} img={el.img} height={height1} id={el.id}/>
                         </div>
                     </SwiperSlide>)

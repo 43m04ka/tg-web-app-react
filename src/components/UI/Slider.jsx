@@ -79,16 +79,16 @@ const Slider = () => {
                     var margin1 = 0
                     if(swiperElement === el.id-1){
                         console.log('big', el.id)
-                        height1 = 170
+                        height1 = (window.innerWidth)/3
                     }else{
                         console.log('small')
-                        height1 = 150
+                        height1 = (window.innerWidth-35)/3
                         margin1 = 10
                     }
 
                     console.log(height1)
                     return (<SwiperSlide key={el.id}>
-                        <div style={{width:String(170)+'px', paddingTop:String(margin1)+'px'}}>
+                        <div style={{width:String((window.innerWidth)/3)+'px', paddingTop:String(margin1)+'px'}}>
                         <ElementSlider number={swiperElement} img={el.img} height={height1} id={el.id}/>
                         </div>
                     </SwiperSlide>)

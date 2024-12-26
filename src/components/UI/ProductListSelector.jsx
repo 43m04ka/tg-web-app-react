@@ -48,6 +48,8 @@ const ProductListSelector = ({main_data, page, height}) => {
         //             borderRadius: '5px',
         //             position: 'relative',
         //             marginLeft: String(cordCategory) + 'px',
+        //             transitionProperty: 'margin-left',
+        //             transitionDuration: '0.2s',
         //         }}></div>
         //
         //         {data.map(el => (
@@ -88,6 +90,8 @@ const ProductListSelector = ({main_data, page, height}) => {
         //             borderRadius: '5px',
         //             position: 'relative',
         //             marginLeft: String(cordView) + 'px',
+        //             transitionProperty: 'margin-left',
+        //             transitionDuration: '0.2s',
         //         }}></div>
         //             {data[selectCategory].body.map(el => (
         //                 <div key={el.id} style={{
@@ -116,7 +120,7 @@ const ProductListSelector = ({main_data, page, height}) => {
         //
         //     </div>
         // </div>
-        <div className={'title'}>В разаработке</div>
+        <div className={'title'}>В разработке</div>
     );
 };
 

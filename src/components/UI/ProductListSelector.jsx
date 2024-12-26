@@ -25,6 +25,9 @@ const ProductListSelector = ({main_data, page, height}) => {
     })
     data = [...data, ...vsArray]
 
+
+
+
     console.log(data);
     return (
         <div>
@@ -35,8 +38,6 @@ const ProductListSelector = ({main_data, page, height}) => {
                 border: '2px gray solid',
                 borderRadius: '5px',
                 marginLeft: '10px',
-                paddingRight: '3px',
-                paddingBottom: '3px',
             }}>
                 <div style={{
                     background: 'blue',
@@ -45,48 +46,71 @@ const ProductListSelector = ({main_data, page, height}) => {
                     borderRadius: '5px',
                     position: 'relative'
                 }}>
+
+                    {data.map(el => (
+                        <div key={el.id} style={{
+                            position: 'absolute',
+                            marginLeft: String((el.id) * (window.innerWidth - 20) / 4 + 'px'),
+                            width: String((window.innerWidth - 30) / 4) + 'px',
+                            height: '25px'
+                        }}>
+                            <div style={{
+                                border: '1px solid green',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                display: 'flex',
+                                height: '30px',
+                                overflow: 'hidden',
+                            }} onClick={() => {
+                                setSelectCategory(el.id)
+                            }}>
+                                {el.title}
+                            </div>
+                        </div>
+                    ))}
                 </div>
-                {data.map(el => (
-                    <div key={el.id} style={{
-                        position: 'absolute',
-                        marginLeft: String((el.id) * (window.innerWidth - 20) / 4 + 'px'),
-                        width: String((window.innerWidth - 30) / 4) + 'px',
-                        height: '25px'
-                    }}>
-                        <div style={{
-                            border: '1px solid green',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            display: 'flex',
-                            height: '30px',
-                            overflow:'hidden',
-                        }} onClick={()=>{setSelectCategory(el.id)}}>
-                            {el.title}
-                        </div>
-                    </div>
-                ))}
             </div>
-                {data[selectCategory].body.map(el => (
-                    <div key={el.id} style={{
-                        position: 'absolute',
-                        marginLeft: String(((el.id-1)%3) * (window.innerWidth - 20) / 4 + 'px'),
-                        width: String((window.innerWidth - 30) / el.length) + 'px',
-                        height: '25px'
-                    }}>
-                        <div style={{
-                            border: '1px solid green',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            display: 'flex',
-                            height: '30px',
-                            overflow:'hidden',
-                        }} onClick={()=>{setSelectCategory(el.id)}}>
-                            {el.view}
+            <div style={{
+                display: 'grid',
+                alignItems: 'center',
+                width: String(window.innerWidth - 20) + 'px',
+                border: '2px gray solid',
+                borderRadius: '5px',
+                marginLeft: '10px',
+            }}>
+                <div style={{
+                    background: 'blue',
+                    width: String((window.innerWidth - 20) / 3) + 'px',
+                    height: '30px',
+                    borderRadius: '5px',
+                    position: 'relative'
+                }}>
+                    {data[selectCategory].body.map(el => (
+                        <div key={el.id} style={{
+                            position: 'absolute',
+                            marginLeft: String(((el.id - 1) % 3) * (window.innerWidth - 20) / 3 + 'px'),
+                            width: String((window.innerWidth - 30) / el.length) + 'px',
+                            height: '25px'
+                        }}>
+                            <div style={{
+                                border: '1px solid green',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                display: 'flex',
+                                height: '30px',
+                                overflow: 'hidden',
+                                width: String((window.innerWidth - 30) / data[selectCategory].body.length) + 'px',
+                            }} onClick={() => {
+                                setSelectView(el.id)
+                            }}>
+                                <div>
+                                    {el.view}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                ))}
-
-
+                    ))}
+                </div>
+            </div>
         </div>
     );
 };

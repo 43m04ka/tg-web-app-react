@@ -17,7 +17,6 @@ const AdminPanel = () => {
     const [inputOne, setInputOne] = useState('');
     const [inputTwo, setInputTwo] = useState('');
 
-    const [selectCategoryType, setSelectCategoryType] = useState(0)
     const [inputCategory1, setInputCategory1] = useState('')
     const [inputCategory2, setInputCategory2] = useState('')
     const [inputCategory3, setInputCategory3] = useState('')
@@ -88,13 +87,8 @@ const AdminPanel = () => {
         setPageSelected(2)
     }
 
-    const setButtonTable = (table) => {
-        let typeI = 0
-        if (selectCategoryType == '0') {
-            typeI = 1
-        } else {
-            typeI = 0
-        }
+    const setButtonTableClassic = (table) => {
+        let typeI = 1
 
         let id = 0;
 
@@ -108,6 +102,31 @@ const AdminPanel = () => {
             id: id+1,
             name: inputCategory2,
             path: inputCategory3,
+            body: table
+        }
+
+        let newData = getData
+        newData[pageSelected].body[typeI].splice(parseInt(inputCategory1), 0, bodyPromt);
+        sendSetData.data = {body: newData}
+        console.log(sendSetData)
+        onSendData()
+    }
+
+    const setButtonTableSlider = (table) => {
+        let typeI = 0;
+
+        let id = 0;
+
+        getData[pageSelected].body[typeI].map(el => {
+            if (el.id > id) {
+                id = el.id
+            }
+        })
+
+        const bodyPromt = {
+            id: id+1,
+            path: inputCategory2,
+            img: inputCategory3,
             body: table
         }
 
@@ -154,8 +173,8 @@ const AdminPanel = () => {
                 {data.body[0].map(el => {
                     return (
                         <div style={{border: '2px solid gray', display: 'grid', padding: '10px', borderRadius: '10px'}}>
-                            <div className={'text-element'}>Имя: {el.name}</div>
                             <div className={'text-element'}>Путь: {el.path}</div>
+                            <div className={'text-element'}>URL: {el.img}</div>
                             <button className={'text-element'} style={{background: 'black'}} onClick={() => {
                                 console.log(el.body)
                             }}>Тело элемента
@@ -174,6 +193,21 @@ const AdminPanel = () => {
                         </div>
                     )
                 })}
+
+                <div style={{border: '2px solid gray', display: 'grid', padding: '10px', borderRadius: '10px'}}>
+                    <div className={'text-element'}>Добавить новый элемент слайдера</div>
+                    <input defaultValue={'Порядковый_номер'} onChange={(event) => {
+                        setInputCategory1(event.target.value)
+                    }}/>
+                    <input defaultValue={'Путь_до_категории'} onChange={(event) => {
+                        setInputCategory2(event.target.value)
+                    }}/>
+                    <input defaultValue={'url_превью_изображения'} onChange={(event) => {
+                        setInputCategory3(event.target.value)
+                    }}/>
+                    <div className={'text-element'}>Таблица с данными категории</div>
+                    <ExcelReader setButtonTable={setButtonTableSlider}/>
+                </div>
 
                 <div className={'title'}>Элементы тела</div>
                 {data.body[1].map(el => {
@@ -198,15 +232,8 @@ const AdminPanel = () => {
                         </div>
                     )
                 })}
-                <div className={'title'}>Добавить новый элемент</div>
                 <div style={{border: '2px solid gray', display: 'grid', padding: '10px', borderRadius: '10px'}}>
                     <div className={'text-element'}>Добавить новую категорию</div>
-                    <select onChange={(event) => {
-                        setSelectCategoryType(event.target.value)
-                    }}>
-                        <option value={'0'} selected>Обычная категория</option>
-                        <option value={'1'}>Слайдер</option>
-                    </select>
                     <input defaultValue={'Порядковый_номер'} onChange={(event) => {
                         setInputCategory1(event.target.value)
                     }}/>
@@ -217,7 +244,7 @@ const AdminPanel = () => {
                         setInputCategory3(event.target.value)
                     }}/>
                     <div className={'text-element'}>Таблица с данными категории</div>
-                    <ExcelReader setButtonTable={setButtonTable}/>
+                    <ExcelReader setButtonTable={setButtonTableClassic}/>
                 </div>
             </div>
         </div>)

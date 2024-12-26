@@ -11,51 +11,12 @@ import 'swiper/css/autoplay';
 // import required modules
 import {Autoplay, Pagination, Navigation, Controller} from 'swiper/modules';
 import ElementSlider from "./ElementSlider";
-
-const data = [
-    {
-        "id": 1,
-        "title": "PS Plus Essential",
-        "platfrom": "PS4, PS5",
-        "wiew": "1 месяц",
-        "price": 990,
-        "description": "PS Plus Essential — даёт доступ к онлайну в играх (Которые у Вас на дисках или куплены на аккаунт) и 3 бесплатные игры каждый месяц",
-        "img": "https://i.postimg.cc/L8mzwXbq/PS.png"
-    },
-    {
-        "id": 2,
-        "title": "PS Plus Essential",
-        "platfrom": "PS4, PS5",
-        "wiew": "3 месяца",
-        "price": 1490,
-        "description": "PS Plus Essential — даёт доступ к онлайну в играх (Которые у Вас на дисках или куплены на аккаунт) и 3 бесплатные игры каждый месяц",
-        "img": "https://i.postimg.cc/qBCXCWK7/PS-1.png"
-    },
-    {
-        "id": 3,
-        "title": "PS Plus Essential",
-        "platfrom": "PS4, PS5",
-        "wiew": "12 месяцев",
-        "price": 4990,
-        "description": "PS Plus Essential — даёт доступ к онлайну в играх (Которые у Вас на дисках или куплены на аккаунт) и 3 бесплатные игры каждый месяц",
-        "img": "https://i.postimg.cc/WbLmmSmw/PS-2.png"
-    }
-    ,
-    {
-        "id": 4,
-        "title": "PS Plus Essential",
-        "platfrom": "PS4, PS5",
-        "wiew": "12 месяцев",
-        "price": 4990,
-        "description": "PS Plus Essential — даёт доступ к онлайну в играх (Которые у Вас на дисках или куплены на аккаунт) и 3 бесплатные игры каждый месяц",
-        "img": "https://i.postimg.cc/RV77gfX5/PS-3.png"
-    }
-]
+import {Link} from "react-router-dom";
 
 
-const Slider = () => {
+const Slider = ({data}) => {
     const [swiperElement, setSwiperElement] = useState(null);
-
+    console.log(data)
     return (
         <div style={{height:String(window.innerWidth/3*1.4)+'px'}}>
             <Swiper watchSlidesProgress={true} slidesPerView={3} className="swiper"
@@ -70,7 +31,7 @@ const Slider = () => {
                     pagination={{
                         clickable: false,
                     }}
-                    loop={() => {if(data.length > 3){return true}else{return false}}}
+                    loop={false}
                     modules={[Autoplay, Pagination, Controller]}
                     style={{justifyItems:'center'}}
             >
@@ -89,7 +50,9 @@ const Slider = () => {
                     console.log(height1)
                     return (<SwiperSlide key={el.id}>
                         <div style={{width:String((window.innerWidth-30)/3)+'px', paddingTop:String(margin1)+'px'}}>
-                        <ElementSlider number={swiperElement} img={el.img} height={height1} id={el.id}/>
+                            <Link to={el.path} className={'link-element'}>
+                                <ElementSlider number={swiperElement} img={el.img} height={height1} id={el.id}/>
+                            </Link>
                         </div>
                     </SwiperSlide>)
                 })}

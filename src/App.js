@@ -11,6 +11,7 @@ import CardProduct from "./components/UI/CardProduct";
 import Basket from "./components/UI/Basket";
 import AdminPanel from "./components/UI/AdminPanel";
 import Info from "./components/UI/Info";
+import ProductListSelector from "./components/UI/ProductListSelector";
 
 
 let isGetData = true;
@@ -90,10 +91,18 @@ function App() {
                 <div style={{height: String(tg?.safeAreaInset.top) + 'px'}}></div>
                 <Routes>
                     <Route path="home" element={<Home main_data={mainData} height={size}/>}/>
+
                     {mainData.map(platform => (
                         platform.body[1].map(category => (
                             <Route path={'home/' + category.path} key={category.id}
                                    element={<ProductList main_data={category} page={platform.id} height={size}/>}/>
+                        ))
+                    ))}
+
+                    {mainData.map(platform => (
+                        platform.body[0].map(category => (
+                            <Route path={'home/' + category.path} key={category.id}
+                                   element={<ProductListSelector main_data={category} page={platform.id} height={size}/>}/>
                         ))
                     ))}
                     {mainData.map(platform => (

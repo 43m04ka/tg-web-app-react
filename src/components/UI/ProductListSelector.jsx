@@ -65,9 +65,9 @@ const ProductListSelector = ({main_data, page, height}) => {
                      style={{borderTopRightRadius: '10px', borderTopLeftRadius: '10px'}}/>
                 <div style={{
                     color: 'white',
-                    fontSize: '25px',
+                    fontSize: '22px',
                     textAlign: 'center',
-                    fontFamily: '"Argentum Sans VF Arial", serif',
+                    fontFamily: "Argentum Sans VF Arial",
                     marginTop: '7px',
                     marginBottom: '7px'
                 }}>{thisElement.title + ' ' + thisElement.view}</div>
@@ -172,21 +172,21 @@ const ProductListSelector = ({main_data, page, height}) => {
                 </div>
                 <div style={{
                     marginTop: '7px',
-                    fontSize: '17px',
+                    fontSize: '14px',
                     color: 'white',
                     fontFamily: "Argentum Sans VF Arial"
                 }}>Описание:
                 </div>
                 <div style={{
                     marginTop: '7px',
-                    fontSize: '17px',
+                    fontSize: '14px',
                     color: 'white',
                     fontFamily: "Argentum Sans VF Arial"
                 }}>{thisElement.description}
                 </div>
                 <div style={{
                     marginTop: '7px',
-                    fontSize: '17px',
+                    fontSize: '14px',
                     color: 'white',
                     fontFamily: "Argentum Sans VF Arial"
                 }}>{'Платформа: ' + thisElement.platform}

@@ -25,8 +25,8 @@ const ProductListSelector = ({main_data, page, height}) => {
     })
     data = [...data, ...vsArray]
 
-    let cordCategory = (window.innerWidth - 7 - 7 - 2 - 2) / data.length * selectCategory + 1.5
-    let cordView = (window.innerWidth - 7 - 7 - 2 - 2) / data[selectCategory].body.length * selectView + 1.5
+    let cordCategory = (window.innerWidth - 20 - 2 - 2) / data.length * selectCategory + 1.5
+    let cordView = (window.innerWidth - 20 - 2 - 2) / data[selectCategory].body.length * selectView + 1.5
 
     let url = data[selectCategory].body[selectView].img
 
@@ -36,25 +36,34 @@ const ProductListSelector = ({main_data, page, height}) => {
     return (
         <div>
             <div style={{
-                background: '#565656', borderRadius: '7px', marginLeft: '7px',
-                marginRight: '7px',
-                width: String(window.innerWidth - 14) + 'px',
-                marginTop: '7px'
+                background: '#454545', borderRadius: '10px', marginLeft: '10px',
+                marginRight: '10px',
+                width: String(window.innerWidth - 20) + 'px',
+                marginTop: '10px',
+                paddingBottom:'5px'
             }}>
-                <img src={url} className={'img_wrap'} style={{borderTopRightRadius:'7px', borderTopLeftRadius:'7px'}}/>
-                <div style={{color:'white', fontSize:'20px', textAlign:'center', fontFamily:'Argentum Sans VF Arial'}}>{thisElement.title+' '+thisElement.view}</div>
+                <img src={url} className={'img_wrap'}
+                     style={{borderTopRightRadius: '10px', borderTopLeftRadius: '10px'}}/>
+                <div style={{
+                    color: 'white',
+                    fontSize: '25px',
+                    textAlign: 'center',
+                    fontFamily: '"Argentum Sans VF Arial", serif',
+                    marginTop: '7px',
+                    marginBottom: '7px'
+                }}>{thisElement.title + ' ' + thisElement.view}</div>
                 <div style={{
                     display: 'grid',
                     alignItems: 'center',
-                    width: String(window.innerWidth - 14) + 'px',
+                    width: String(window.innerWidth - 20) + 'px',
                     border: '1px gray solid',
                     borderRadius: '7px',
                     marginBottom: '7px'
                 }}>
                     <div style={{
                         background: '#414BE0FF',
-                        width: String(((window.innerWidth - 7 - 7 - 2 - 2) - (data.length - 1) * 2) / data.length) + 'px',
-                        height: '25px',
+                        width: String(((window.innerWidth - 20 - 2 - 2) - (data.length - 1) * 2) / data.length) + 'px',
+                        height: '45px',
                         marginTop: '2px',
                         marginBottom: '2px',
                         borderRadius: '5px',
@@ -67,21 +76,21 @@ const ProductListSelector = ({main_data, page, height}) => {
                     {data.map(el => (
                         <div key={el.id} style={{
                             position: 'absolute',
-                            marginLeft: String((el.id) * (window.innerWidth - 14) / data.length) + 'px',
-                            width: String((window.innerWidth - 24) / data.length) + 'px',
-                            height: '30px'
+                            marginLeft: String((el.id) * (window.innerWidth - 20) / data.length) + 'px',
+                            width: String((window.innerWidth - 30) / data.length) + 'px',
+                            height: '50px'
                         }}>
                             <div style={{
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 display: 'flex',
-                                height: '30px',
+                                height: '50px',
                                 overflow: 'hidden',
                             }} onClick={() => {
                                 setSelectCategory(el.id)
                                 setSelectView(0)
                             }}>
-                                <div>
+                                <div style={{color: 'white',}}>
                                     {el.title}
                                 </div>
 
@@ -92,15 +101,15 @@ const ProductListSelector = ({main_data, page, height}) => {
                 <div style={{
                     display: 'grid',
                     alignItems: 'center',
-                    width: String(window.innerWidth - 14) + 'px',
+                    width: String(window.innerWidth - 20) + 'px',
                     border: '1px gray solid',
-                    borderRadius: '7px',
+                    borderRadius: '10px',
                 }}>
                     <div style={{
                         background: '#414BE0FF',
-                        width: String(((window.innerWidth - 7 - 7 - 2 - 2) - (data[selectCategory].body.length - 1) * 2) / data[selectCategory].body.length) + 'px',
-                        height: '55px',
-                        borderRadius: '5px',
+                        width: String(((window.innerWidth - 20 - 2 - 2) - (data[selectCategory].body.length - 1) * 2) / data[selectCategory].body.length) + 'px',
+                        height: '95px',
+                        borderRadius: '7px',
                         marginTop: '2px',
                         marginBottom: '2px',
                         marginRight: '2px',
@@ -112,37 +121,58 @@ const ProductListSelector = ({main_data, page, height}) => {
                     {data[selectCategory].body.map(el => (
                         <div key={el.id} style={{
                             position: 'absolute',
-                            marginLeft: String(((el.id - 1) % 3) * (window.innerWidth - 14) / data[selectCategory].body.length + 'px'),
-                            width: String((window.innerWidth - 24) / data[selectCategory].body.length) + 'px',
-                            height: '60px'
+                            marginLeft: String(((el.id - 1) % 3) * (window.innerWidth - 20) / data[selectCategory].body.length + 'px'),
+                            width: String((window.innerWidth - 30) / data[selectCategory].body.length) + 'px',
+                            height: '100px'
                         }}>
                             <div style={{
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 display: 'flex',
-                                height: '60px',
+                                height: '95px',
                                 overflow: 'hidden',
-                                width: String((window.innerWidth - 24) / data[selectCategory].body.length) + 'px',
+                                width: String((window.innerWidth - 30) / data[selectCategory].body.length) + 'px',
                             }} onClick={() => {
                                 setSelectView(((el.id - 1) % 3))
                             }}>
                                 <div style={{
                                     color: 'white',
-                                    fontSize: '10px',
-                                    height: '50px',
+                                    height: '70px',
                                     display: 'grid',
                                     gridTemplateRows: '1fr 1fr',
                                     justifyItems: 'center',
                                     alignItems: 'center'
                                 }}>
-                                    <div>{el.view}</div>
-                                    <div>{el.price}</div>
+                                    <div style={{fontSize: '13px'}}>{el.view}</div>
+                                    <div style={{fontSize: '22px'}}>{el.price + ' ₽'}</div>
                                 </div>
                             </div>
                         </div>
                     ))}
 
                 </div>
+                <div style={{
+                    marginTop: '7px',
+                    fontSize: '17px',
+                    color: 'white',
+                    fontFamily: "Argentum Sans VF Arial"
+                }}>Описание:
+                </div>
+                <div style={{
+                    marginTop: '7px',
+                    fontSize: '17px',
+                    color: 'white',
+                    fontFamily: "Argentum Sans VF Arial"
+                }}>{thisElement.description}
+                </div>
+                <div style={{
+                    marginTop: '7px',
+                    fontSize: '17px',
+                    color: 'white',
+                    fontFamily: "Argentum Sans VF Arial"
+                }}>{'Платформа: ' + thisElement.platform}
+                </div>
+                <button className={'all-see-button'} style={{background:'#51a456', width:String(window.innerWidth-20-8)+'px'}}>Добавить в корзину</button>
             </div>
         </div>
     );

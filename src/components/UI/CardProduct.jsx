@@ -1,5 +1,4 @@
 import React, {useCallback, useEffect} from 'react';
-import Button from "./Button";
 import {useTelegram} from "../../hooks/useTelegram";
 import {useNavigate, useParams} from "react-router-dom";
 

@@ -6,6 +6,8 @@ const ProductListSelector = ({main_data, page, height}) => {
     const [selectCategory, setSelectCategory] = React.useState(0);
     const [selectView, setSelectView] = React.useState(0);
     const [isImgHidden, setIsImgHidden] = React.useState(true);
+    const [isBuy, setIsBuy] = React.useState(false);
+    const [buttonText, setButtonText] = React.useState('Добавить в корзину');
 
     const dataOld = main_data.body;
     let data = []
@@ -33,6 +35,10 @@ const ProductListSelector = ({main_data, page, height}) => {
 
     const onBack = useCallback(async () => {
         navigate(-1);
+    }, [])
+
+    const onBasket = useCallback(async () => {
+        navigate('/home/basket');
     }, [])
 
     useEffect(() => {
@@ -79,10 +85,24 @@ const ProductListSelector = ({main_data, page, height}) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(sendData)
-        }).then(r => console.log(r))
+        }).then(r => {
+            let Promise = r.json()
+            Promise.then(prom => {
+                const result = prom.body
+                if(result) {
+                    setIsBuy(true)
+                    setButtonText('Перейти в корзину')
+                }else{setButtonText('Добавить в корзину')}
+            })
+        })
     }, [sendData])
 
-    console.log(data);
+    let buttonColor = '#51a456'
+    let buttonLink = () => {onSendData;setButtonText('Ожидайте...');}
+    if(isBuy) {
+        buttonColor = '#414BE0FF'
+        buttonLink = () => {onBasket}
+    }
     return (
         <div>
             <div style={{
@@ -225,9 +245,8 @@ const ProductListSelector = ({main_data, page, height}) => {
                     fontFamily: "Argentum Sans VF Arial"
                 }}>{'Платформа: ' + thisElement.platform}
                 </div>
-                <button className={'all-see-button'} onClick={onSendData}
-                        style={{background: '#51a456', width: String(window.innerWidth - 20 - 8) + 'px'}}>Добавить в
-                    корзину
+                <button className={'all-see-button'} onClick={buttonLink}
+                        style={{background: buttonColor, width: String(window.innerWidth - 20 - 8) + 'px'}}>{buttonText}
                 </button>
             </div>
         </div>

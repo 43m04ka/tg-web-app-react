@@ -1,10 +1,14 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
+import {useTelegram} from "../../hooks/useTelegram";
+import {useNavigate} from "react-router-dom";
 
 const ProductListSelector = ({main_data, page, height}) => {
     const [selectCategory, setSelectCategory] = React.useState(0);
     const [selectView, setSelectView] = React.useState(0);
     const dataOld = main_data.body;
     let data = []
+    const {tg, user} = useTelegram();
+    const navigate = useNavigate();
 
     let lastName = ''
     let vsArray = []
@@ -24,6 +28,21 @@ const ProductListSelector = ({main_data, page, height}) => {
 
     })
     data = [...data, ...vsArray]
+
+    const onBack = useCallback(async () => {
+        navigate(-1);
+    }, [])
+
+    useEffect(() => {
+        tg.onEvent('backButtonClicked', onBack)
+        return () => {
+            tg.offEvent('backButtonClicked', onBack)
+        }
+    }, [onBack])
+
+    useEffect(() => {
+        tg.BackButton.show();
+    }, [])
 
     let cordCategory = (window.innerWidth - 20 - 2 - 2) / data.length * selectCategory + 1.5
     let cordView = (window.innerWidth - 20 - 2 - 2) / data[selectCategory].body.length * selectView + 1.5

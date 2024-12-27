@@ -98,10 +98,10 @@ const ProductListSelector = ({main_data, page, height}) => {
     }, [sendData])
 
     let buttonColor = '#51a456'
-    let buttonLink = () => {onSendData;setButtonText('Ожидайте...');}
+    let buttonLink = () => {onSendData();setButtonText('Ожидайте...');}
     if(isBuy) {
         buttonColor = '#414BE0FF'
-        buttonLink = () => {onBasket}
+        buttonLink = () => {onBasket()}
     }
     return (
         <div>

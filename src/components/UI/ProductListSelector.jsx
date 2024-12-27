@@ -30,6 +30,8 @@ const ProductListSelector = ({main_data, page, height}) => {
 
     let url = data[selectCategory].body[selectView].img
 
+    let thisElement = dataOld[(selectCategory)*data[0].body.length+selectView]
+
     console.log(data);
     return (
         <div>
@@ -40,6 +42,7 @@ const ProductListSelector = ({main_data, page, height}) => {
                 marginTop: '7px'
             }}>
                 <img src={url} className={'img_wrap'} style={{borderTopRightRadius:'7px', borderTopLeftRadius:'7px'}}/>
+                <div style={{color:'white', fontSize:'20px', textAlign:'center', fontFamily:'Argentum Sans VF Arial'}}>{thisElement.title+' '+thisElement.view}</div>
                 <div style={{
                     display: 'grid',
                     alignItems: 'center',

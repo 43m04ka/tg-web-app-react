@@ -113,7 +113,9 @@ const ProductListSelector = ({main_data, page, height}) => {
                 paddingBottom: '5px'
             }}>
                 <div className={'img-wrap'} onClick={resizeImg}
-                     style={{width: String(window.innerWidth - 20) + 'px', height: String(heightImg) + 'px', transitionProperty:'height', transitionDuration:'0.2s', transitionBehavior:'allow-discrete'}}>
+                     style={{width: String(window.innerWidth - 20) + 'px', height: String(heightImg) + 'px',
+                         transitionProperty: 'height',
+                         transitionDuration:'0.2s', transitionBehavior:'allow-discrete'}}>
                     <img src={url}
                          style={{borderTopRightRadius: '10px', borderTopLeftRadius: '10px'}}/>
                 </div>
@@ -246,7 +248,8 @@ const ProductListSelector = ({main_data, page, height}) => {
                 }}>{'Платформа: ' + thisElement.platform}
                 </div>
                 <button className={'all-see-button'} onClick={buttonLink}
-                        style={{background: buttonColor, width: String(window.innerWidth - 20 - 8) + 'px'}}>{buttonText}
+                        style={{background: buttonColor, width: String(window.innerWidth - 20 - 8) + 'px',transitionProperty: 'background',
+                            transitionDuration:'0.2s',}}>{buttonText}
                 </button>
             </div>
         </div>

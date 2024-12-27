@@ -5,6 +5,8 @@ import {useNavigate} from "react-router-dom";
 const ProductListSelector = ({main_data, page, height}) => {
     const [selectCategory, setSelectCategory] = React.useState(0);
     const [selectView, setSelectView] = React.useState(0);
+    const [isImgHidden, setIsImgHidden] = React.useState(true);
+
     const dataOld = main_data.body;
     let data = []
     const {tg, user} = useTelegram();
@@ -49,7 +51,20 @@ const ProductListSelector = ({main_data, page, height}) => {
 
     let url = data[selectCategory].body[selectView].img
 
-    let thisElement = dataOld[(selectCategory)*data[0].body.length+selectView]
+    let thisElement = dataOld[(selectCategory) * data[0].body.length + selectView]
+
+    let heightImg = window.innerWidth - 20
+    if (isImgHidden) {
+        heightImg = heightImg * 0.75
+    }
+
+    const resizeImg = () => {
+        if (isImgHidden) {
+            setIsImgHidden(false)
+        } else {
+            setIsImgHidden(true)
+        }
+    }
 
     console.log(data);
     return (
@@ -59,10 +74,13 @@ const ProductListSelector = ({main_data, page, height}) => {
                 marginRight: '10px',
                 width: String(window.innerWidth - 20) + 'px',
                 marginTop: '10px',
-                paddingBottom:'5px'
+                paddingBottom: '5px'
             }}>
-                <img src={url} className={'img_wrap'}
-                     style={{borderTopRightRadius: '10px', borderTopLeftRadius: '10px'}}/>
+                <div className={'img-wrap'} onClick={resizeImg}
+                     style={{width: String(window.innerWidth - 20) + 'px', height: String(heightImg) + 'px', transitionProperty:'height', transitionDuration:'0.2s', transitionBehavior:'allow-discrete'}}>
+                    <img src={url}
+                         style={{borderTopRightRadius: '10px', borderTopLeftRadius: '10px'}}/>
+                </div>
                 <div style={{
                     color: 'white',
                     fontSize: '22px',
@@ -191,7 +209,10 @@ const ProductListSelector = ({main_data, page, height}) => {
                     fontFamily: "Argentum Sans VF Arial"
                 }}>{'Платформа: ' + thisElement.platform}
                 </div>
-                <button className={'all-see-button'} style={{background:'#51a456', width:String(window.innerWidth-20-8)+'px'}}>Добавить в корзину</button>
+                <button className={'all-see-button'}
+                        style={{background: '#51a456', width: String(window.innerWidth - 20 - 8) + 'px'}}>Добавить в
+                    корзину
+                </button>
             </div>
         </div>
     );

@@ -40,7 +40,7 @@ const CardProduct = ({mainData}) => {
     return (
         <div className={'card-product'}>
             <div className={'img_wrap'}>
-                <img src={mainData.img} className={'img'} alt="Product Image"/>
+                <img src={mainData.img} className={'img-mini'} alt="Product Image"/>
             </div>
             <div className={'text-element name-card-element'}>{mainData.title}</div>
             <button onClick={onSendData} className={'all-see-button'}>Добавить в корзину</button>

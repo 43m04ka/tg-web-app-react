@@ -29,7 +29,7 @@ const ProductItemBasket = ({setBasketF, product}) => {
 
     return (
         <div className={'box-item-basket'}>
-            <img src={item.img} alt={item.title} className={'img'}/>
+            <img src={item.img} alt={item.title} className={'img-mini'}/>
             <div className={'box-grid-row'}>
                 <div className={'text-element text-basket'}>{item.price + ' ₽'}</div>
                 <div className={'text-element text-basket'}>{item.title}</div>

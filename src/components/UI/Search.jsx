@@ -74,7 +74,7 @@ const Search = ({data, height}) => {
                              style={{marginLeft: String((window.innerWidth - 160 - 160) / 3) + 'px'}}>
                             <Link to={'/home/' + item.path + '/' + item.id} className={'link-element'}>
                                 <div className={'box-item-basket'}>
-                                    <img src={item.img} alt={item.title} className={'img'}/>
+                                    <img src={item.img} alt={item.title} className={'img-mini'}/>
                                     <div className={'box-grid-row'}>
                                         <div className={'text-element text-basket'}>{item.price + ' ₽'}</div>
                                         <div className={'text-element text-basket'}>{item.title}</div>

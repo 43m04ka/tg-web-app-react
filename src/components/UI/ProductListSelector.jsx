@@ -66,6 +66,22 @@ const ProductListSelector = ({main_data, page, height}) => {
         }
     }
 
+    const sendData = {
+        method:'add',
+        mainData: thisElement,
+        user: user,
+    }
+
+    const onSendData = useCallback(() => {
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(sendData)
+        }).then(r => console.log(r))
+    }, [sendData])
+
     console.log(data);
     return (
         <div>
@@ -209,7 +225,7 @@ const ProductListSelector = ({main_data, page, height}) => {
                     fontFamily: "Argentum Sans VF Arial"
                 }}>{'Платформа: ' + thisElement.platform}
                 </div>
-                <button className={'all-see-button'}
+                <button className={'all-see-button'} onClick={onSendData}
                         style={{background: '#51a456', width: String(window.innerWidth - 20 - 8) + 'px'}}>Добавить в
                     корзину
                 </button>

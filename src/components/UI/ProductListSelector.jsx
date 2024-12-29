@@ -279,7 +279,7 @@ const ProductListSelector = ({main_data, page, height}) => {
                          transitionDuration: '0.2s', transitionBehavior: 'allow-discrete'
                      }}>
                     <img src={url}
-                         style={{borderTopRightRadius: '10px', borderTopLeftRadius: '10px'}}/>
+                         style={{borderTopRightRadius: '10px', borderTopLeftRadius: '10px', }}/>
                 </div>
                 <div style={{
                     color: 'white',

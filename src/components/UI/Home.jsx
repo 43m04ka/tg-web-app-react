@@ -7,7 +7,7 @@ import {useTelegram} from "../../hooks/useTelegram";
 import HeadSelector from "./HeadSelector";
 import Slider from "./Slider";
 
-const Home = ({main_data, height}) => {
+const Home = ({main_data, height, width}) => {
     const {tg} = useTelegram();
     const [pageSelected, setPageSelected] = useState(0);
     const [data, setData] = useState(main_data[0])
@@ -28,15 +28,20 @@ const Home = ({main_data, height}) => {
     return (
         <div>
 
-            <HeadSelector onChange={handleChange} main_data = {main_data}/>
-                <div className={'scroll-container-y'} style={{height:String(height-tg?.contentSafeAreaInset.bottom-tg?.safeAreaInset.bottom-tg?.contentSafeAreaInset.top-tg?.safeAreaInset.top-120)+'px'}}>
-                    <Slider data = {data.body[0]}/>
-                    {data.body[1].map(category => (
-                        <HomeBlock key={category.id} path={category.path} data={category}/>
-                    ))}
+            <HeadSelector onChange={handleChange} main_data={main_data}/>
+
+            <div className={'scroll-container-y'}
+                 style={{height: String(height - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 120) + 'px'}}>
+                <div style={{width: String(window.innerWidth) + 'px'}}>
+                    <Slider data={data.body[0]}/>
                 </div>
+                {data.body[1].map(category => (
+                    <HomeBlock key={category.id} path={category.path} data={category}/>
+                ))}
+            </div>
         </div>
-    );
+    )
+        ;
 };
 
 export default Home;

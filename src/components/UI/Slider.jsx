@@ -20,9 +20,9 @@ const Slider = ({data}) => {
     let loop = false
     if(data.length > 3){loop = true}
     return (
-        <div style={{width:String(window.innerWidth+150)+'px',marginLeft:'-75px'}}>
+        <div style={{width:String(window.innerWidth)+'px', overflowX:'hidden'}}>
             <Swiper watchSlidesProgress={true} slidesPerView={3} className="swiper"
-                    style={{width: String(window.innerWidth+150) + 'px',justifyItems:'center'}}
+                    style={{width: String(window.innerWidth+150) + 'px',justifyItems:'center', marginLeft:'-75px'}}
                     spaceBetween={30}
                     centeredSlides={true}
                     onSlideChange={(event) => {if(event.realIndex !== swiperElement){setSwiperElement(event.realIndex)}}}

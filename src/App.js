@@ -90,7 +90,7 @@ function App() {
                 <div style={{height: String(tg?.contentSafeAreaInset.top) + 'px'}}></div>
                 <div style={{height: String(tg?.safeAreaInset.top) + 'px'}}></div>
                 <Routes>
-                    <Route path="home" element={<Home main_data={mainData} height={size}/>}/>
+                    <Route path="home" element={<Home main_data={mainData} width={window.innerWidth} height={size}/>}/>
 
                     {mainData.map(platform => (
                         platform.body[1].map(category => (

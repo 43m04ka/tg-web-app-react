@@ -16,11 +16,13 @@ import {Link} from "react-router-dom";
 
 const Slider = ({data}) => {
     const [swiperElement, setSwiperElement] = useState(null);
-    console.log(data)
+
+    let loop = false
+    if(data.length > 3){loop = true}
     return (
-        <div style={{height:String(window.innerWidth/3*1.4)+'px'}}>
+        <div style={{width:String(window.innerWidth+150)+'px',marginLeft:'-75px'}}>
             <Swiper watchSlidesProgress={true} slidesPerView={3} className="swiper"
-                    style={{width: String(window.innerWidth) + 'px'}}
+                    style={{width: String(window.innerWidth+150) + 'px',justifyItems:'center'}}
                     spaceBetween={30}
                     centeredSlides={true}
                     onSlideChange={(event) => {if(event.realIndex !== swiperElement){setSwiperElement(event.realIndex)}}}
@@ -31,27 +33,14 @@ const Slider = ({data}) => {
                     pagination={{
                         clickable: false,
                     }}
-                    loop={false}
+                    loop={loop}
                     modules={[Autoplay, Pagination, Controller]}
-                    style={{justifyItems:'center'}}
             >
                 {data.map(el => {
-                    var height1 = 0
-                    var margin1 = 0
-                    if(swiperElement === el.id-1){
-                        console.log('big', el.id)
-                        height1 = (window.innerWidth-30)/3
-                    }else{
-                        console.log('small')
-                        height1 = (window.innerWidth-70)/3
-                        margin1 = 10
-                    }
-
-                    console.log(height1)
                     return (<SwiperSlide key={el.id}>
-                        <div style={{width:String((window.innerWidth-30)/3)+'px', paddingTop:String(margin1)+'px'}}>
+                        <div>
                             <Link to={el.path} className={'link-element'}>
-                                <ElementSlider number={swiperElement} img={el.img} height={height1} id={el.id}/>
+                                <img src={el.img} id={'box'} alt={''} style={{width:String((window.innerWidth+150)/3) + 'px',  marginBottom:'15px'}}/>
                             </Link>
                         </div>
                     </SwiperSlide>)

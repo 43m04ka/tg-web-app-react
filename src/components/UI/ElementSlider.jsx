@@ -1,10 +1,10 @@
 import React, {useEffect} from 'react';
 
-const ElementSlider = ({img, height}) => {
+const ElementSlider = ({img}) => {
 
     return (
         <div>
-            <img src = {img} id={'box'} alt={''} style={{width: String(height)+'px',   marginBottom:'15px', transitionProperty:'width', transitionDuration:'0.2s'}}/>
+            <img src = {img} id={'box'} alt={''}/>
         </div>
     );
 };

@@ -27,7 +27,7 @@ const HomeBlockElement = ({path, data}) => {
             <Link to={'/home/' + path + '/' + data.id} className={'link-element'}>
                 <div className={'box-home-block-element'}>
                     <div style={{backgroundImage:'url("'+data.img+'+")', backgroundRepeat:'no-repeat', backgroundSize:'cover', paddingTop:'135px', justifyItems:'left'}} className={'img-home'}>
-                        <div className={'text-element'} style={{lineHeight:'20px'}}>ps5</div>
+                        <div className={'text-element'} style={{lineHeight:'20px'}}>{data.platform}</div>
                     </div>
                     <div className={'text-element name-element'}>{data.title}</div>
                     <div style={{display: 'flex', justifyContent: 'left'}}>

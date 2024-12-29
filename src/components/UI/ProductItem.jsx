@@ -34,7 +34,7 @@ const ProductItem = ({product, path}) => {
                         paddingTop: '135px',
                         justifyItems: 'left'
                     }} className={'img-home'}>
-                        <div className={'text-element'} style={{lineHeight: '20px'}}>ps5</div>
+                        <div className={'text-element'} style={{lineHeight: '20px'}}>{product.platform}</div>
                     </div>
                     <div className={'text-element name-element'}>{product.title}</div>
                     <div style={{display: 'flex', justifyContent: 'left'}}>

@@ -23,6 +23,9 @@ const Home = ({main_data, height, width}) => {
         } else if (value === 1) {
             setData(main_data[1])
         }
+        else if (value === 2) {
+            setData(main_data[2])
+        }
     }
 
     return (

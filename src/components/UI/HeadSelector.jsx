@@ -77,7 +77,8 @@ const HeadSelector = ({onChange, main_data}) => {
                 <Link to={'search' + String(pageSelected)} className={'link-element'}>
                     <div className={'search'} style={{padding: '3px', display:'flex', flexDirection: 'row'}}>
                         <div className={'background-search'} style={{width: '39px', height: '39px'}}></div>
-                        <div style={{height: '39px', alignContent:'center', marginLeft:'3px', fontFamily: "Arial", fontSize: "16px", color:'black'}}>Найти игру, подписку...</div>
+                        <div style={{height: '39px', alignContent:'center', marginLeft:'3px', fontSize: "16px", color:'black', fontFamily: "'Montserrat', sans-serif",
+                            fontVariant: 'small-caps'}}>Найти игру, подписку...</div>
                     </div>
                 </Link>
                 <Link to={'basket'} className={'link-element'}>

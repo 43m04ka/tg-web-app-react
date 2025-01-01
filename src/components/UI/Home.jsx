@@ -34,7 +34,7 @@ const Home = ({main_data, height, width}) => {
             <HeadSelector onChange={handleChange} main_data={main_data}/>
 
             <div className={'scroll-container-y'}
-                 style={{height: String(height - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 120) + 'px'}}>
+                 style={{height: String(height - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 60) + 'px'}}>
                 <div style={{width: String(window.innerWidth) + 'px'}}>
                     <Slider data={data.body[0]}/>
                 </div>

@@ -36,7 +36,9 @@ const ProductItem = ({product, path}) => {
                     }} className={'img-home'}>
                         <div className={'text-element'} style={{lineHeight: '20px'}}>{product.platform}</div>
                     </div>
+                    <div style={{height:'40px', overflow:'hidden'}}>
                     <div className={'text-element name-element'}>{product.title}</div>
+                    </div>
                     <div style={{display: 'flex', justifyContent: 'left'}}>
                         <div className={'text-element price-element'}>{String(product.price) + ' ₽'}</div>
                         <div className={'text-element price-element'}

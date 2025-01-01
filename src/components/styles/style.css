@@ -170,9 +170,11 @@ body{
     background: #171717;
     border-radius: 9px;
     border: 2px gray solid;
+    font-family: 'Montserrat', sans-serif;
+    font-variant: small-caps;
+    font-size: 16px;
     height: 45px;
     width: 100%;
-    font-size: 18px;
     transition-property: background-color;
     transition-duration: 0.3s;
 }

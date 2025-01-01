@@ -67,7 +67,6 @@ const AdminPanel = () => {
         }).then(r => {
             let Promise = r.json()
             Promise.then(prom => {
-                console.log(prom.body)
                 setGetData(prom.body)
                 setStatus(2)
             })
@@ -88,28 +87,18 @@ const AdminPanel = () => {
     }
 
     const setButtonTableClassic = (table) => {
-        let typeI = 1
 
-        let id = 0;
-
-        getData[pageSelected].body[typeI].map(el => {
-            if (el.id > id) {
-                id = el.id
-            }
+        let arrayRequest = []
+        table.map(el =>{
+            let newCard = el
+            newCard.tab = pageSelected
+            newCard.tabCategoryName = inputCategory2
+            newCard.tabCategoryName = inputCategory3
+            newCard.type = 1
+            arrayRequest = [...arrayRequest, ...[newCard]]
         })
 
-        const bodyPromt = {
-            id: id+1,
-            name: inputCategory2,
-            path: inputCategory3,
-            body: table
-        }
-
-        let newData = getData
-        newData[pageSelected].body[typeI].splice(parseInt(inputCategory1), 0, bodyPromt);
-        sendSetData.data = {body: newData}
-        console.log(sendSetData)
-        onSendData()
+        sendDataOnServer(arrayRequest, 'add')
     }
 
     const setButtonTableSlider = (table) => {
@@ -132,33 +121,41 @@ const AdminPanel = () => {
 
         let newData = getData
         newData[pageSelected].body[typeI].splice(parseInt(inputCategory1), 0, bodyPromt);
-        sendSetData.data = {body: newData}
-        console.log(sendSetData)
-        onSendData()
+        sendDataOnServer(getData)
     }
 
-    let sendSetData = {
-        method: 'set',
+    let dataSetRequest = {
+        method: '',
         userData: userData,
-        data:{}
+        data:[]
     }
 
-    const onSendData = useCallback(() => {
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/admin', {
+    const setRequest = useCallback(() => {
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/database', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(sendSetData)
+            body: JSON.stringify(dataSetRequest)
         }).then(r => {
             let Promise = r.json()
             Promise.then(prom => {
-                console.log(prom.body)
-                setGetData(prom.body)
-                setStatus(2)
+                console.log(prom)
+                if(prom.method === 'add'){
+                    const inputData = prom.body;
+
+                }else if(prom.method === 'get'){
+                    console.log(prom.body)
+                }
             })
         })
-    }, [sendSetData])
+    }, [dataSetRequest])
+
+    const sendDataOnServer = (inputData, operation) => {
+        dataSetRequest.method = operation
+        dataSetRequest.data = inputData
+        setRequest()
+    }
 
     if (status === 2) {
         let data = getData[pageSelected]
@@ -267,7 +264,6 @@ const AdminPanel = () => {
                     <input onChange={(event) => setInputTwo(event.target.value)}/>
                 </div>
                 <button onClick={onSingUpButton}>Войти</button>
-
             </div>
         );
     }

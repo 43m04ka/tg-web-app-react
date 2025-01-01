@@ -189,8 +189,8 @@ const ProductListSelector = ({main_data, page, height}) => {
                             justifyItems: 'center',
                             alignItems: 'center'
                         }}>
-                            <div style={{fontSize: '13px'}}>{el.view}</div>
-                            <div style={{fontSize: '22px'}}>{el.price + ' ₽'}</div>
+                            <div style={{fontSize: '13px', fontFamily: "'Montserrat', sans-serif"}}>{el.view}</div>
+                            <div style={{fontSize: '22px', fontFamily: "'Montserrat', sans-serif"}}>{el.price + ' ₽'}</div>
                         </div>
                     </div>
                 </div>
@@ -253,8 +253,8 @@ const ProductListSelector = ({main_data, page, height}) => {
                                     justifyItems: 'center',
                                     alignItems: 'center'
                                 }}>
-                                    <div style={{fontSize: '13px'}}>{el.view}</div>
-                                    <div style={{fontSize: '22px'}}>{el.price + ' ₽'}</div>
+                                    <div style={{fontSize: '13px', fontFamily: "'Montserrat', sans-serif"}}>{el.view}</div>
+                                    <div style={{fontSize: '22px', fontFamily: "'Montserrat', sans-serif"}}>{el.price + ' ₽'}</div>
                                 </div>
                             </div>
                         </div>
@@ -285,7 +285,7 @@ const ProductListSelector = ({main_data, page, height}) => {
                     color: 'white',
                     fontSize: '22px',
                     textAlign: 'center',
-                    fontFamily: "Argentum Sans VF Arial",
+                    fontFamily: "'Montserrat', sans-serif",
                     marginTop: '7px',
                     marginBottom: '7px'
                 }}>{thisElement.title + ' ' + thisElement.view}</div>
@@ -327,7 +327,7 @@ const ProductListSelector = ({main_data, page, height}) => {
                                 setSelectCategory(el.id)
                                 setSelectView(0)
                             }}>
-                                <div style={{color: 'white',}}>
+                                <div style={{color: 'white', fontFamily: "'Montserrat', sans-serif"}}>
                                     {el.title}
                                 </div>
 
@@ -340,21 +340,21 @@ const ProductListSelector = ({main_data, page, height}) => {
                     marginTop: '7px',
                     fontSize: '14px',
                     color: 'white',
-                    fontFamily: "Argentum Sans VF Arial"
+                    fontFamily: "'Montserrat', sans-serif"
                 }}>Описание:
                 </div>
                 <div style={{
                     marginTop: '7px',
                     fontSize: '14px',
                     color: 'white',
-                    fontFamily: "Argentum Sans VF Arial"
+                    fontFamily: "'Montserrat', sans-serif"
                 }}>{thisElement.description}
                 </div>
                 <div style={{
                     marginTop: '7px',
                     fontSize: '14px',
                     color: 'white',
-                    fontFamily: "Argentum Sans VF Arial"
+                    fontFamily: "'Montserrat', sans-serif"
                 }}>{'Платформа: ' + thisElement.platform}
                 </div>
                 <button className={'all-see-button'} onClick={buttonLink}

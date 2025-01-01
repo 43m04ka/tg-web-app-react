@@ -85,7 +85,7 @@ const CardProduct = ({mainData}) => {
                     color: 'white',
                     fontSize: '22px',
                     textAlign: 'center',
-                    fontFamily: "Argentum Sans VF Arial",
+                    fontFamily: "'Montserrat', sans-serif",
                     marginTop: '7px',
                     marginBottom: '7px'
                 }}>{mainData.title}</div>
@@ -93,14 +93,14 @@ const CardProduct = ({mainData}) => {
                     marginTop: '7px',
                     fontSize: '14px',
                     color: 'white',
-                    fontFamily: "Argentum Sans VF Arial"
+                    fontFamily: "'Montserrat', sans-serif"
                 }}>{descriptionText}
                 </div>
                 <div style={{
                     marginTop: '7px',
                     fontSize: '14px',
                     color: 'white',
-                    fontFamily: "Argentum Sans VF Arial"
+                    fontFamily: "'Montserrat', sans-serif"
                 }}>{'Платформа: ' + mainData.platform}
                 </div>
                 <button className={'all-see-button'} onClick={buttonLink}

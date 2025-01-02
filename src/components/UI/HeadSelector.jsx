@@ -67,7 +67,7 @@ const HeadSelector = ({onChange, main_data, hidden}) => {
 
     return (
         <div>
-            <div className="selector-container" style={{height:String(buttonMenuHeight)+'px', overflow:'hidden', transitionProperty:'height', transitionDuration:'0.2s'}}>
+            <div className="selector-container" style={{height:String(buttonMenuHeight)+'px', overflow:'hidden', transitionProperty:'height', transitionDuration:'0.1s'}}>
                 <div className={'div-box-4563'} style={{width: '100%', height: "100%", padding: '3px'}}>
                     <button className={'selector-button'} onClick={onclickPS} style={stylePs}>PLAYSTATION</button>
                 </div>

@@ -14,7 +14,7 @@ const HomeBlock = ({path, data}) => {
                     )
                 )}
                 <div className={'box-home-block-element home-block-element'}>
-                    <div style={{width: '160px', height: '242px'}}>
+                    <div style={{width: '160px', height: '210px'}}>
                         <Link to={'/home/' + data.path} className={'link-element'}>
                             <button className={'all-see-button'} style={{
                                 height: '100%',

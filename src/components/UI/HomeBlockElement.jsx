@@ -26,16 +26,16 @@ const HomeBlockElement = ({path, data}) => {
         <div className={'home-block-element'}>
             <Link to={'/home/' + path + '/' + data.id} className={'link-element'}>
                 <div className={'box-home-block-element'}>
-                    <div style={{backgroundImage:'url("'+data.img+'+")', backgroundRepeat:'no-repeat', backgroundSize:'cover', paddingTop:'135px', justifyItems:'left'}} className={'img-home'}>
-                        <div className={'text-element'} style={{lineHeight:'20px', background:'#191919', paddingLeft:'3px', paddingRight:'3px', borderRadius:'5px'}}>{data.platform}</div>
+                    <div style={{backgroundImage:'url("'+data.img+'+")', backgroundRepeat:'no-repeat', backgroundSize:'cover', alignContent:'end', justifyItems:'left'}} className={'img-home'}>
+                        <div className={'text-element'} style={{lineHeight:'20px', background:'#191919', paddingLeft:'3px', paddingRight:'3px', borderRadius:'5px', marginBottom:'7px'}}>{data.platform}</div>
                     </div>
-                    <div style={{height:'40px', overflow:'hidden'}}>
+                    <div style={{height:'37px', overflow:'hidden'}}>
                         <div className={'text-element name-element'}>{data.title}</div>
                     </div>
                     <div style={{display: 'flex', justifyContent: 'left'}}>
-                        <div className={'text-element price-element'}>{String(data.price) + ' ₽'}</div>
+                        <div className={'text-element price-element'} style={{fontSize:'14px'}}>{String(data.price) + ' ₽'}</div>
                         <div className={'text-element price-element'}
-                             style={{textDecoration: 'line-through', color: 'gray'}}>{oldPrice}</div>
+                             style={{textDecoration: 'line-through', color: 'gray', fontSize:'14px'}}>{oldPrice}</div>
                         {/*<div className={'text-element price-element'}*/}
                         {/*     style={{textDecoration: 'line-through', color: 'gray'}}>{dataRelease}</div>*/}
                     </div>

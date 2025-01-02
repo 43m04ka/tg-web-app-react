@@ -107,7 +107,7 @@
     font-variant: normal;
     font-weight: 700;
     color: white;
-    font-size: 16px;
+    font-size: 12px;
     overflow: hidden;
     word-break: break-word;
 }
@@ -120,21 +120,20 @@
 }
 
 .name-element {
-    line-height: 20px;
+    margin-top: 5px;
+    line-height: 16px;
 }
 
 
 .img-home {
-    width: 160px;
-    height: 160px;
-    border-top-left-radius: 13px;
-    border-top-right-radius: 13px;
+    width: 150px;
+    height: 150px;
+    border-radius: 7px;
 }
 
 .box-home-block-element {
-    background: rgb(69, 69, 69);
     border-radius: 13px;
-    width: 160px;
+    width: 150px;
 }
 
 body {

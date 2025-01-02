@@ -101,6 +101,29 @@ const AdminPanel = () => {
         sendDataOnServer(arrayRequest, 'add')
     }
 
+    let sendSetData = {
+        method: 'set',
+        userData: userData,
+        data:{}
+    }
+
+    const onSendData = useCallback(() => {
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/admin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(sendSetData)
+        }).then(r => {
+            let Promise = r.json()
+            Promise.then(prom => {
+                console.log(prom.body)
+                setGetData(prom.body)
+                setStatus(2)
+            })
+        })
+    }, [sendSetData])
+
     const setButtonTableSlider = (table) => {
         let typeI = 0;
 
@@ -121,7 +144,9 @@ const AdminPanel = () => {
 
         let newData = getData
         newData[pageSelected].body[typeI].splice(parseInt(inputCategory1), 0, bodyPromt);
-        sendDataOnServer(getData)
+        sendSetData.data = {body: newData}
+        console.log(sendSetData)
+        onSendData()
     }
 
     let dataSetRequest = {

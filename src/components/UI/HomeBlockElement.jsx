@@ -47,7 +47,8 @@ const HomeBlockElement = ({path, data}) => {
                             fontWeight:700,
                             fontSize:'12px',
                             overflow:'hidden',
-                            color:'white'
+                            color:'white',
+                            width:'max-content'
                         }}>{data.platform}</div>
                     </div>
                     <div style={{height: '37px', overflow: 'hidden'}}>

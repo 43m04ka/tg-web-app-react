@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Link} from "react-router-dom";
 import basket from "../icons/basket.png";
 
-const HeadSelector = ({onChange, main_data}) => {
+const HeadSelector = ({onChange, main_data, hidden}) => {
     const [pageSelected, setPageSelected] = useState(0);
     const [colorPS, setColorPS] = useState([64, 73, 233]);
     const [colorXB, setColorXB] = useState([23, 23, 23]);
@@ -60,9 +60,14 @@ const HeadSelector = ({onChange, main_data}) => {
         })
     }
 
+    let buttonMenuHeight = 50
+    if(hidden){
+        buttonMenuHeight = 0
+    }
+
     return (
         <div>
-            <div className="selector-container">
+            <div className="selector-container" style={{height:String(buttonMenuHeight)+'px', overflow:'hidden', transitionProperty:'height', transitionDuration:'0.2s'}}>
                 <div className={'div-box-4563'} style={{width: '100%', height: "100%", padding: '3px'}}>
                     <button className={'selector-button'} onClick={onclickPS} style={stylePs}>PLAYSTATION</button>
                 </div>

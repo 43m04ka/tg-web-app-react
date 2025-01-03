@@ -23,244 +23,176 @@ const AdminPanel = () => {
 
     const [pageSelected, setPageSelected] = useState(0);
 
-    const [getData, setGetData] = useState(null)
+    const [dataStructure, setDataStructure] = useState(null);
+    const [dataCards, setDataCards] = useState(null);
+    const [computeData, setComputeData] = useState(null);
 
     const [status, setStatus] = useState(0)
 
 
-    const sendSingUp = {
+    const dataRequestAdmin = {
         method: 'login',
+        data:{},
         userData: {login: inputOne, password: inputTwo}
     }
 
-    const onSingUpButton = useCallback(() => {
-        console.log(sendSingUp)
+    const sendRequestAdmin = useCallback(() => {
+        console.log(dataRequestAdmin, 'input setAdmin')
         fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/admin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(sendSingUp)
+            body: JSON.stringify(dataRequestAdmin)
         }).then(r => {
+            console.log(r, 'выход setAdmin')
             if (r.status === 200) {
-                userData = sendSingUp.userData
+                userData = dataRequestAdmin.userData
                 setStatus(1)
             } else {
                 alert('Неверный логин или пароль')
             }
         })
-    }, [sendSingUp])
+    }, [dataRequestAdmin])
 
 
-    const sendGetData = {
-        method: 'get',
+    const sendRequestOnAdmin = (inputData, operation) => {
+        dataRequestAdmin.method = operation
+        dataRequestAdmin.data = inputData
+        sendRequestAdmin()
     }
 
-
-    const onGetData = useCallback(() => {
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/admin', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(sendGetData)
-        }).then(r => {
-            let Promise = r.json()
-            Promise.then(prom => {
-                setGetData(prom.body)
-                setStatus(2)
-            })
-        })
-    }, [sendGetData])
-
-
-
-
-    const selectPS = () => {
-        setPageSelected(0)
-    }
-    const selectXB = () => {
-        setPageSelected(1)
-    }
-    const selectSR = () => {
-        setPageSelected(2)
-    }
 
     const setButtonTableClassic = (table) => {
 
         let arrayRequest = []
-        table.map(el =>{
+        table.map(el => {
             let newCard = el
             newCard.tab = pageSelected
-            newCard.tabCategoryName = inputCategory2
-            newCard.tabCategoryName = inputCategory3
-            newCard.type = 1
+            newCard.tabCategoryPath = inputCategory3
+            newCard.type = inputCategory1
             arrayRequest = [...arrayRequest, ...[newCard]]
         })
 
-        sendDataOnServer(arrayRequest, 'add')
+        sendRequestOnDatabase(arrayRequest, 'add')
     }
 
-    let sendSetData = {
-        method: 'set',
-        userData: userData,
-        data:{}
-    }
 
-    const onSendData = useCallback(() => {
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/admin', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(sendSetData)
-        }).then(r => {
-            let Promise = r.json()
-            Promise.then(prom => {
-                console.log(prom.body)
-                setGetData(prom.body)
-                setStatus(2)
-            })
-        })
-    }, [sendSetData])
-
-    const setButtonTableSlider = (table) => {
-        let typeI = 0;
-
-        let id = 0;
-
-        getData[pageSelected].body[typeI].map(el => {
-            if (el.id > id) {
-                id = el.id
-            }
-        })
-
-        const bodyPromt = {
-            id: id+1,
-            path: inputCategory2,
-            img: inputCategory3,
-            body: table
-        }
-
-        let newData = getData
-        newData[pageSelected].body[typeI].splice(parseInt(inputCategory1), 0, bodyPromt);
-        sendSetData.data = {body: newData}
-        console.log(sendSetData)
-        onSendData()
-    }
-
-    let dataSetRequest = {
+    let dataRequestDatabase = {
         method: '',
         userData: userData,
-        data:[]
+        data: []
     }
 
-    const setRequest = useCallback(() => {
+    const sendRequestDatabase = useCallback(() => {
+        console.log(dataRequestDatabase, 'inputRequestDb')
         fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/database', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(dataSetRequest)
+            body: JSON.stringify(dataRequestDatabase)
         }).then(r => {
             let Promise = r.json()
             Promise.then(prom => {
-                console.log(prom)
-                if(prom.method === 'add'){
-                    const inputData = prom.body;
-
-                }else if(prom.method === 'get'){
-                    console.log(prom.body)
+                console.log(prom, 'возвратил get')
+                if (dataRequestDatabase.method === 'add') {
+                    setStatus(1)
+                } else if (dataRequestDatabase.method === 'get') {
+                    setDataStructure(prom.structure)
+                    setDataCards(prom.cards)
+                    setStatus(2)
                 }
             })
         })
-    }, [dataSetRequest])
+    }, [dataRequestDatabase])
 
-    const sendDataOnServer = (inputData, operation) => {
-        dataSetRequest.method = operation
-        dataSetRequest.data = inputData
-        setRequest()
+    const sendRequestOnDatabase = (inputData, operation) => {
+        dataRequestDatabase.method = operation
+        dataRequestDatabase.data = inputData
+        sendRequestDatabase()
     }
 
+    const addCategory = (type, tab) =>{
+        let structure = dataStructure;
+        console.log(structure,dataStructure, 'вход addStructure')
+        let id = 0
+        structure[tab].body[type].map(el => {
+            if(el.id> id){id = el.id}
+        })
+
+
+        if(type === 0){structure[tab].body[type].splice(parseInt(inputCategory1), 0, {id:id+1, url:inputCategory2, path:inputCategory3, body:[]});}
+        if(type === 1){structure[tab].body[type].splice(parseInt(inputCategory1), 0, {id:id+1, name:inputCategory2, path:inputCategory3, body:[]});}
+
+        console.log(structure,dataStructure, 'выход addStructure')
+        sendRequestOnAdmin({body: structure}, 'set')
+
+    }
+
+    const deleteCategory = (type, tab, categoryId) =>{
+        let structure = dataStructure;
+
+        let newArray = []
+        
+        structure[tab].body[type].map(el => {
+            if(el.id !== categoryId){
+                newArray = [...newArray, ... [{el}]]
+            }
+        })
+
+        structure[tab].body[type] = newArray
+
+        sendRequestOnAdmin({body: structure}, 'set')
+
+    }
+
+    const onComputeData = () =>{
+        let inputDataCards = dataCards
+        let resultData = dataStructure
+
+        inputDataCards.map(cardOld => {
+            let card = cardOld.body
+            card.id = cardOld.id
+
+            const cardTab = card.tab
+            const cardType = card.type
+            const cardCategory = card.tabCategoryPath
+
+            let count = 0
+            resultData[cardTab].body[cardType].map(category =>{
+                if(category.path === cardCategory){
+                    resultData[cardTab].body[cardType][count].body = [...resultData[cardTab].body[cardType][count].body, ...[card]]
+                }
+                count += 1;
+            })
+
+        })
+        console.log(resultData)
+    }
+
+
     if (status === 2) {
-        let data = getData[pageSelected]
-        return (<div>
-            <div style={{display: 'flex'}}>
-                <button onClick={selectPS}>Playstation</button>
-                <button onClick={selectXB}>Xbox</button>
-                <button onClick={selectSR}>Services</button>
-            </div>
-            <div>
-                <div className={'title'}>Элементы слайдера</div>
-                {data.body[0].map(el => {
-                    return (
-                        <div style={{border: '2px solid gray', display: 'grid', padding: '10px', borderRadius: '10px'}}>
-                            <div className={'text-element'}>Путь: {el.path}</div>
-                            <div className={'text-element'}>URL: {el.img}</div>
-                            <button className={'text-element'} style={{background: 'black'}} onClick={() => {
-                                console.log(el.body)
-                            }}>Тело элемента
-                            </button>
-
-                            <button className={'text-element'} style={{background: 'black'}} onClick={
-                                () => {
-                                    let userBasket = getData
-                                    let deleteItem = [el];
-                                    const editArray = userBasket[pageSelected].body[0].filter(person_A => !deleteItem.some(person_B => person_A.id === person_B.id));
-                                    userBasket[pageSelected].body[0] = editArray;
-                                    sendSetData.data = {body: userBasket}
-                                    onSendData()
-                                }}>Удалить
-                            </button>
-                        </div>
-                    )
-                })}
-
-                <div style={{border: '2px solid gray', display: 'grid', padding: '10px', borderRadius: '10px'}}>
-                    <div className={'text-element'}>Добавить новый элемент слайдера</div>
-                    <input defaultValue={'Порядковый_номер'} onChange={(event) => {
-                        setInputCategory1(event.target.value)
-                    }}/>
-                    <input defaultValue={'Путь_до_категории'} onChange={(event) => {
-                        setInputCategory2(event.target.value)
-                    }}/>
-                    <input defaultValue={'url_превью_изображения'} onChange={(event) => {
-                        setInputCategory3(event.target.value)
-                    }}/>
-                    <div className={'text-element'}>Таблица с данными категории</div>
-                    <ExcelReader setButtonTable={setButtonTableSlider}/>
+        if (pageSelected === 0) {
+            return (<div>
+                <div>
+                    <button onClick={() => {
+                        setPageSelected(0)
+                    }}>Загрузить новые данные
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(1)
+                    }}>Редактировать карты
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(2)
+                    }}>Редактировать каталоги
+                    </button>
                 </div>
-
-                <div className={'title'}>Элементы тела</div>
-                {data.body[1].map(el => {
-                    return (
-                        <div style={{border: '2px solid gray', display: 'grid', padding: '10px', borderRadius: '10px'}}>
-                            <div className={'text-element'}>Имя: {el.name}</div>
-                            <div className={'text-element'}>Путь: {el.path}</div>
-                            <button className={'text-element'} style={{background: 'black'}} onClick={() => {
-                                console.log(el.body)
-                            }}>Тело элемента
-                            </button>
-                            <button className={'text-element'} style={{background: 'black'}} onClick={
-                                () => {
-                                    let userBasket = getData
-                                    let deleteItem = [el];
-                                    const editArray = userBasket[pageSelected].body[1].filter(person_A => !deleteItem.some(person_B => person_A.id === person_B.id));
-                                    userBasket[pageSelected].body[1] = editArray;
-                                    sendSetData.data = {body: userBasket}
-                                    onSendData()
-                                }}>Удалить
-                            </button>
-                        </div>
-                    )
-                })}
-                <div style={{border: '2px solid gray', display: 'grid', padding: '10px', borderRadius: '10px'}}>
-                    <div className={'text-element'}>Добавить новую категорию</div>
-                    <input defaultValue={'Порядковый_номер'} onChange={(event) => {
+                <div style={{display: 'grid', padding: '10px', borderTop: '3px gray solid', marginTop: '10px'}}>
+                    <div className={'text-element'}>Загрузить карты на сервер</div>
+                    <input defaultValue={'Вид категории'} onChange={(event) => {
                         setInputCategory1(event.target.value)
-                    }}/>
-                    <input defaultValue={'Имя_категории'} onChange={(event) => {
-                        setInputCategory2(event.target.value)
                     }}/>
                     <input defaultValue={'Путь_до_категории'} onChange={(event) => {
                         setInputCategory3(event.target.value)
@@ -268,10 +200,112 @@ const AdminPanel = () => {
                     <div className={'text-element'}>Таблица с данными категории</div>
                     <ExcelReader setButtonTable={setButtonTableClassic}/>
                 </div>
-            </div>
-        </div>)
+                <button onClick={() => {
+                    sendRequestOnDatabase([], 'get')
+                }}>getData
+                </button>
+            </div>)
+        }
+        if (pageSelected === 1) {
+            return (<div>
+                <div>
+                    <button onClick={() => {
+                        setPageSelected(0)
+                    }}>Загрузить новые данные
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(1)
+                    }}>Редактировать карты
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(2)
+                    }}>Редактировать каталоги
+                    </button>
+                </div>
+            </div>)
+        }
+        if (pageSelected === 2) {
+            return (<div>
+                <div>
+                    <button onClick={() => {
+                        setPageSelected(0)
+                    }}>Загрузить новые данные
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(1)
+                    }}>Редактировать карты
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(2)
+                    }}>Редактировать каталоги
+                    </button>
+                </div>
+                {dataStructure.map(tab =>(
+                <div style={{border: '2px solid red', borderRadius:'10px', marginTop:'5px'}} key={tab.id}>
+                    <div className={'title'}>{tab.page}</div>
+                    <div>
+                        <div className={'text-element'}>Слайдер</div>
+                        {dataStructure[tab.id].body[0].map(category => (
+                            <div style={{border: '2px solid green', borderRadius: '10px'}} key={category.id}>
+                                <div className={'text-element'}>Id: {category.id}</div>
+                                <div className={'text-element'}>Путь: {category.path}</div>
+                                <div className={'text-element'}>Url: {category.url}</div>
+                                <button style={{background: '#343434'}} onClick={() => {
+                                    deleteCategory(0, tab.id, category.id)
+                                }}>Удалить категорию
+                                </button>
+                            </div>
+                        ))}
+                        <div style={{border: '2px solid green', borderRadius: '10px', marginTop:'5px'}}>
+                            <div className={'text-element'}>Добавить категорию слайдера</div>
+                                <input defaultValue={'Порядковый_номер'} onChange={(event) => {
+                                    setInputCategory1(event.target.value)
+                                }}/>
+                                <input defaultValue={'url_изображения'} onChange={(event) => {
+                                    setInputCategory2(event.target.value)
+                                }}/>
+                                <input defaultValue={'Путь_до_категории'} onChange={(event) => {
+                                    setInputCategory3(event.target.value)
+                                }}/>
+                                <button style={{background: '#343434'}} onClick={() => {
+                                    addCategory(0, tab.id)
+                                }}>Добавить категорию
+                                </button>
+                        </div>
+                    </div>
+                    <div>
+                        <div className={'text-element'}>Tело</div>
+                        {dataStructure[tab.id].body[1].map(category => (
+                            <div style={{border: '2px solid green', borderRadius: '10px', marginTop:'5px'}} key={category.id}>
+                                <div className={'text-element'}>Id: {category.id}</div>
+                                <div className={'text-element'}>Путь: {category.path}</div>
+                                <div className={'text-element'}>Имя: {category.name}</div>
+                                <button style={{background: '#343434'}} onClick={() => {
+                                    deleteCategory(1, tab.id, category.id)
+                                }}>Удалить категорию
+                                </button>
+                            </div>
+                        ))}
+                        <div style={{border: '2px solid green', borderRadius:'10px', marginTop:'5px'}}>
+                            <div className={'text-element'}>Добавить категорию тела</div>
+                            <input defaultValue={'Порядковый_номер'} onChange={(event) => {
+                                setInputCategory1(event.target.value)
+                            }}/>
+                            <input defaultValue={'Имя_категории'} onChange={(event) => {
+                                setInputCategory2(event.target.value)
+                            }}/>
+                            <input defaultValue={'Путь_до_категории'} onChange={(event) => {
+                                setInputCategory3(event.target.value)
+                            }}/>
+                            <button style={{background:'#343434'}} onClick={()=>{addCategory(1, tab.id)}}>Добавить категорию</button>
+                        </div>
+                    </div>
+                </div>))}
+
+            </div>)
+        }
     } else if (status === 1) {
-        onGetData()
+        sendRequestOnDatabase([], 'get')
         return (
             <div className={'text-element'}>
                 Ожидайте
@@ -288,7 +322,7 @@ const AdminPanel = () => {
                     <div className={'text-element'}>Пароль: .</div>
                     <input onChange={(event) => setInputTwo(event.target.value)}/>
                 </div>
-                <button onClick={onSingUpButton}>Войти</button>
+                <button onClick={sendRequestAdmin}>Войти</button>
             </div>
         );
     }

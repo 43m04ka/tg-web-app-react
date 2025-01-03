@@ -27,26 +27,58 @@ function App() {
         }, {id: 2, page: 'service', body: [[], []]}]);
     const [status, setStatus] = useState(0);
 
-    const sendGetData = {
-        method: 'get',
+    let dataRequestDatabase = {
+        method: '',
+        data: []
     }
 
-    const onGetData = useCallback(() => {
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/admin', {
+    const sendRequestDatabase = useCallback(() => {
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/database', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(sendGetData)
+            body: JSON.stringify(dataRequestDatabase)
         }).then(r => {
             let Promise = r.json()
             Promise.then(prom => {
-                console.log(prom.body)
-                setMainData(prom.body)
-                setStatus(1)
+                console.log(dataRequestDatabase.method)
+                if (dataRequestDatabase.method === 'add') {
+                    setStatus(1)
+                } else if (dataRequestDatabase.method === 'get') {
+                    const inputDataCards = prom.cards;
+                    let resultData = prom.structure;
+
+                    inputDataCards.map(cardOld => {
+                        let card = cardOld.body
+                        card.id = cardOld.id
+
+                        const cardTab = card.tab
+                        const cardType = card.type
+                        const cardCategory = card.tabCategoryPath
+
+                        let count = 0
+                        resultData[cardTab].body[cardType].map(category =>{
+                            if(category.path === cardCategory){
+                                resultData[cardTab].body[cardType][count].body = [...resultData[cardTab].body[cardType][count].body, ...[card]]
+                            }
+                            count += 1;
+                        })
+
+                    })
+                    setMainData(resultData)
+                    console.log(resultData)
+                    setStatus(1)
+                }
             })
         })
-    }, [sendGetData])
+    }, [dataRequestDatabase])
+
+    const sendRequestOnDatabase = (inputData, operation) => {
+        dataRequestDatabase.method = operation
+        dataRequestDatabase.data = inputData
+        sendRequestDatabase()
+    }
 
     const resizeHandler = () => {
         if (window.innerWidth > 1000) {
@@ -60,7 +92,7 @@ function App() {
 
     useEffect(() => {
         if (isGetData) {
-            onGetData()
+            sendRequestOnDatabase([], 'get')
             isGetData = false;
         }
     }, []);
@@ -108,7 +140,7 @@ function App() {
                     {mainData.map(platform => (
                         platform.body[1].map(category =>
                             (category.body.map(item =>
-                                    (<Route path={'home/' + category.path + '/' + item.id} key={item.id}
+                                    (<Route path={'home/' + item.id} key={item.id}
                                             element={<CardProduct mainData={item} height={size}/>}/>)
                                 )
                             ))

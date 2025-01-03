@@ -40,7 +40,7 @@ const Slider = ({data}) => {
                     return (<SwiperSlide key={el.id}>
                         <div>
                             <Link to={el.path} className={'link-element'}>
-                                <img src={el.img} id={'box'} alt={''} style={{width:String((window.innerWidth+150)/3) + 'px',  marginBottom:'15px'}}/>
+                                <img src={el.url} id={'box'} alt={''} style={{width:String((window.innerWidth+150)/3) + 'px',  marginBottom:'15px'}}/>
                             </Link>
                         </div>
                     </SwiperSlide>)

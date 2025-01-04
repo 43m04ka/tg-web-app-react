@@ -10,12 +10,13 @@ var isResizeble1 = false;
 const Basket = ({height}) => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
+    console.log(user)
 
     const [basket, setBasket] = useState([])
 
     const sendDataProduct = {
         method: 'buy',
-        user: user,
+        user: {chat_Id:'5106439090'},
     }
 
     const onClickButton = useCallback(() => {

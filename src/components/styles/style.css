@@ -232,7 +232,7 @@ body {
     margin-right: 10px;
     margin-bottom: 10px;
     display: grid;
-    grid-template-columns: max-content 1fr 50px;
+    grid-template-columns: 1fr 50px;
 }
 
 .img-mini {
@@ -245,8 +245,8 @@ body {
 
 .box-grid-row {
     display: grid;
-    align-items: end;
-    grid-template-rows: 1fr 1fr 1fr;
+    align-items: center;
+    grid-template-rows:1fr 1fr;
 }
 
 .text-basket {

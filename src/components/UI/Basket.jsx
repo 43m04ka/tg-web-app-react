@@ -4,19 +4,24 @@ import ProductItem from "./ProductItem";
 import ProductItemBasket from "./ProductItemBasket";
 import {useTelegram} from "../../hooks/useTelegram";
 
-var isResizeble = true;
-var isResizeble1 = false;
-
 const Basket = ({height}) => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     console.log(user)
 
     const [basket, setBasket] = useState([])
+    const [myAcc, setMyAcc] = useState(0);
+    const [colorYes, setColorYes] = useState([81, 164, 86]);
+    const [colorNo, setColorNo] = useState([45, 12, 12]);
+    const [status, setStatus] = useState(0);
 
     const sendDataProduct = {
         method: 'buy',
-        user: {chat_Id:'5106439090'},
+        user: {id: 5106439090},
+    }
+
+    function rgb([r, g, b]) {
+        return '#' + (0x1000000 + (r << 16) + (g << 8) + b).toString(16).substring(1);
     }
 
     const onClickButton = useCallback(() => {
@@ -26,16 +31,14 @@ const Basket = ({height}) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(sendDataProduct)
-        }).then(r => {console.log(r)})
+        }).then(r => {
+            console.log(r)
+        })
     }, [sendDataProduct])
-
-    useEffect(() => {
-        onGetData()
-    }, []);
 
     const sendData = {
         method: 'get',
-        user: user,
+        user: {id: 5106439090},
     }
 
     const onGetData = useCallback(() => {
@@ -48,14 +51,8 @@ const Basket = ({height}) => {
         }).then(r => {
             let Promise = r.json()
             Promise.then(r => {
-                console.log(r.body)
-                if (isResizeble || isResizeble1) {
-                    isResizeble = false;
-                    return setBasket(r.body);
-                } else {
-                    isResizeble = true;
-                    isResizeble1 = true
-                }
+                setBasket(r.body);
+                setStatus(1);
             })
         })
     }, [sendData])
@@ -78,10 +75,26 @@ const Basket = ({height}) => {
     let sumPrice = 0
 
     basket.map(el => {
-        return  sumPrice += el.price
+        return sumPrice += el.price
     })
 
-    if (isResizeble) {
+    const onclickYes = () => {
+        setMyAcc(0);
+        setColorYes([81, 164, 86]);
+        setColorNo([45, 12, 12]);
+    }
+    const onclickNo = () => {
+        setMyAcc(1);
+        setColorNo([164, 30, 30]);
+        setColorYes([12, 45, 12]);
+    }
+
+
+    const styleYes = {background: rgb(colorYes)}
+    const styleNo = {background: rgb(colorNo)}
+
+    if (status === 0) {
+        onGetData()
         return (<div className={'pong-loader'} style={{
             border: '2px solid #8cdb8b',
             marginTop: String(height / 2 - 60) + 'px',
@@ -91,9 +104,9 @@ const Basket = ({height}) => {
         return (
             <div style={{display: 'grid'}}>
                 <div style={{
-                    height: String(height - 100 - 15 -tg?.contentSafeAreaInset.bottom-tg?.safeAreaInset.bottom-tg?.contentSafeAreaInset.top-tg?.safeAreaInset.top)+'px',
-                    marginTop: '15px', marginLeft : String(window.innerWidth/2-45)+'px',
-                    color:'gray'
+                    height: String(height - 100 - 15 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
+                    marginTop: '15px', marginLeft: String(window.innerWidth / 2 - 45) + 'px',
+                    color: 'gray'
                 }} className={'text-element'}>
                     Корзина пуста
                 </div>
@@ -113,37 +126,84 @@ const Basket = ({height}) => {
                         </div>
                     </div>
                     <Link to={'/home'} className={'link-element'}>
-                        <button className={'all-see-button'} style={{marginTop: '10px'}}>На главную</button>
+                        <button className={'all-see-button'} style={{marginTop: '10px'}}>На главную
+                        </button>
                     </Link>
                 </div>
             </div>)
     } else {
+        let count = 1;
+        basket.map(el => {
+            el.number = count;
+            count += 1
+        })
         return (
             <div style={{display: 'grid'}}>
                 <div style={{
-                    height: String(height - 15 - 100 -tg?.contentSafeAreaInset.bottom-tg?.safeAreaInset.bottom-tg?.contentSafeAreaInset.top-tg?.safeAreaInset.top) + 'px',
-                    marginTop: '15px', overflowY:'scroll'
+                    height: String(height - 15 - 100 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
+                    overflowY: 'scroll'
                 }}>
+                    <div className={'title'} style={{
+                        marginLeft: String(window.innerWidth / 2 - 75) + 'px',
+                        marginRight: 'auto',
+                        marginTop: '10px'
+                    }}>Ваша корзина
+                    </div>
                     {basket.map(el => (
                         <ProductItemBasket key={el.id} setBasketF={setBasket} product={el}/>
                     ))}
                 </div>
                 <div style={{marginBottom: '0px', position: 'relative'}}>
                     <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        width: '100%',
-                        justifyContent: 'space-between',
                         borderTop: '2px solid gray'
                     }}>
-                        <div style={{marginTop: '10px', fontSize: '20px', marginLeft: '20px'}}
-                             className={'text-element'}>Итого:
-                        </div>
-                        <div style={{marginTop: '10px', fontSize: '20px', marginRight: '20px'}}
-                             className={'text-element'}>{String(sumPrice)} ₽
+                        <div style={{display: 'flex', flexDirection: 'column'}}>
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                width: String(window.innerWidth - 15-35) + 'px',
+                                justifyContent: 'space-between',
+                                alignItems:'center',
+                                marginLeft:'15px'
+                            }}>
+                                <div className={"text-element"} style={{fontSize:'20px'}}>У меня есть свой аккаунт:</div>
+                                <div className="selector-container" style={{
+                                    height: '60px',
+                                    width: '135px',
+                                    transitionProperty: 'height',
+                                    transitionDuration: '0.1s'
+                                }}>
+                                    <div className={'div-box-4563'}
+                                         style={{width: '75px', height: "100%", padding: '3px'}}>
+                                        <button className={'selector-button'} onClick={onclickYes} style={styleYes}>Да
+                                        </button>
+                                    </div>
+                                    <div className={'div-box-4563'}
+                                         style={{width: '75px', height: "100%", padding: '3px'}}>
+                                        <button className={'selector-button'} onClick={onclickNo} style={styleNo}>Нет
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                width: String(window.innerWidth - 15) + 'px',
+                                justifyContent: 'space-between',
+                            }}>
+                                <div style={{marginTop: '10px', fontSize: '20px', marginLeft: '20px'}}
+                                     className={'text-element'}>Итого:
+                                </div>
+                                <div style={{marginTop: '10px', fontSize: '20px', marginRight: '20px'}}
+                                     className={'text-element'}>{String(sumPrice)} ₽
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <button className={'all-see-button'} style={{marginTop: '10px'}} onClick={onClickButton}>Оформить заказ</button>
+                    <button className={'all-see-button'} style={{marginTop: '10px'}}
+                            onClick={onClickButton}>Оформить
+                        заказ
+                    </button>
                 </div>
             </div>
 

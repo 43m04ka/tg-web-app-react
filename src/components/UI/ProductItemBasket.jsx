@@ -1,5 +1,6 @@
 import React, {useCallback} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
+import {Link} from "react-router-dom";
 
 const ProductItemBasket = ({setBasketF, product}) => {
     const item = product;
@@ -29,12 +30,14 @@ const ProductItemBasket = ({setBasketF, product}) => {
 
     return (
         <div className={'box-item-basket'}>
-            <img src={item.img} alt={item.title} className={'img-mini'}/>
-            <div className={'box-grid-row'}>
-                <div className={'text-element text-basket'}>{item.price + ' ₽'}</div>
-                <div className={'text-element text-basket'}>{item.title}</div>
-                <div className={'text-element text-basket'}>{item.description}</div>
-            </div>
+            <Link to={'/home/'+item.id} className={'link-element'} style={{display:'flex', flexDirection:'row',justifyContent:'left'}}>
+                <div className={'title'} style={{marginLeft:'10px', marginRight:'5px'}}>{item.number+'.'}</div>
+                <img src={item.img} alt={item.title} className={'img-mini'}/>
+                <div className={'box-grid-row'}>
+                    <div className={'text-element text-basket'}>{item.title}</div>
+                    <div className={'text-element text-basket'}>{item.price + ' ₽'}</div>
+                </div>
+            </Link>
             <div onClick={onSendData} className={'button-trash'}>
                 <div className={'background-trash'}>
                 </div>

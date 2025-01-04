@@ -4,10 +4,10 @@ import {Link} from "react-router-dom";
 const HomeBlockElement = ({path, data}) => {
 
     let oldPrice = ''
-    if (typeof data.old_price === 'undefined') {
+    if (typeof data.oldPrice === 'undefined') {
         oldPrice = ''
     } else {
-        oldPrice = String(data.old_price) + ' ₽'
+        oldPrice = String(data.oldPrice) + ' ₽'
     }
 
     let dataRelease = ''

@@ -137,7 +137,7 @@ const AdminPanel = () => {
         
         structure[tab].body[type].map(el => {
             if(el.id !== categoryId){
-                newArray = [...newArray, ... [{el}]]
+                newArray = [...newArray, ... [el]]
             }
         })
 

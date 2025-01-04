@@ -66,10 +66,39 @@ const CardProduct = ({mainData}) => {
          descriptionText = 'Описание: '+mainData.description
     }
 
+    let oldPrice = ''
+    if(typeof mainData.oldPrice === 'undefined') {
+        oldPrice = ''
+    }else{
+        oldPrice = mainData.oldPrice
+    }
+
+    let endDate = ''
+    if(typeof mainData.endDate === 'undefined') {
+        endDate = ''
+    }else{
+        endDate = 'Скидка до ' + mainData.endDate
+    }
+
+    let language = ''
+    if(typeof mainData.language === 'undefined') {
+        language = ''
+    }else{
+        language = 'Язык в игре: ' + mainData.language
+    }
+
+    let region = ''
+    if(typeof mainData.region === 'undefined') {
+        region = ''
+    }else{
+        region = 'Регион активации: ' + mainData.region
+    }
+
+
     return (
         <div className={'card-product'}>
             <div style={{
-                background: '#454545', borderRadius: '10px', marginLeft: '10px',
+                borderRadius: '10px', marginLeft: '10px',
                 marginRight: '10px',
                 width: String(window.innerWidth - 20) + 'px',
                 marginTop: '10px',
@@ -77,8 +106,7 @@ const CardProduct = ({mainData}) => {
             }}>
                 <img src={mainData.img} className={'img'} style={{
                     height: String(window.innerWidth - 20) + 'px',
-                    borderTopLeftRadius: '10px',
-                    borderTopRightRadius: '10px'
+                    borderRadius: '10px'
                 }}
                      alt="Product Image"/>
                 <div style={{
@@ -89,19 +117,73 @@ const CardProduct = ({mainData}) => {
                     marginTop: '7px',
                     marginBottom: '7px'
                 }}>{mainData.title}</div>
+
+                <div style={{marginLeft:'15px'}}>
+
                 <div style={{
                     marginTop: '7px',
+                    fontSize: '14px',
+                    color: 'white',
+                    fontFamily: "'Montserrat', sans-serif",
+                    display: 'flex',
+                    flexDirection: 'row'
+                }}>
+                    <div style={{fontSize: '20px'}}>{mainData.price + ' ₽'}</div>
+                    <div style={{
+                        textDecoration: 'line-through',
+                        color: 'gray',
+                        marginLeft: '25px',
+                        fontSize: '20px'
+                    }}>{oldPrice + ' ₽'}</div>
+                </div>
+
+                <div style={{
+                    marginTop: '2px',
+                    fontSize: '14px',
+                    color: 'gray',
+                    fontFamily: "'Montserrat', sans-serif",
+                    display: 'flex',
+                    flexDirection: 'row',
+                    marginLeft: '15px',
+                }}>
+                    {endDate}
+                </div>
+
+
+                <div style={{
+                    marginTop: '12px',
                     fontSize: '14px',
                     color: 'white',
                     fontFamily: "'Montserrat', sans-serif"
                 }}>{descriptionText}
                 </div>
                 <div style={{
-                    marginTop: '7px',
+                    marginTop: '12px',
                     fontSize: '14px',
                     color: 'white',
                     fontFamily: "'Montserrat', sans-serif"
                 }}>{'Платформа: ' + mainData.platform}
+                </div>
+
+
+                <div style={{
+                    marginTop: '12px',
+                    fontSize: '14px',
+                    color: 'white',
+                    fontFamily: "'Montserrat', sans-serif"
+                }}>
+                    {language}
+                </div>
+
+                <div style={{
+                    marginTop: '12px',
+                    fontSize: '14px',
+                    color: 'white',
+                    fontFamily: "'Montserrat', sans-serif"
+                }}>
+                    {region}
+                </div>
+
                 </div>
                 <button className={'all-see-button'} onClick={buttonLink}
                         style={{

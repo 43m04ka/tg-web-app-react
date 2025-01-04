@@ -57,18 +57,18 @@ const ProductList = ({main_data, page, height}) => {
         <div className={'list'} style={{display: 'flex', flexDirection: 'column'}}>
             <div className={'box-grid-panel'}>
                 <Link to={'search' + String(0)} className={'link-element'}>
-                    <div className={'search'} style={{padding: '3px', display:'flex', flexDirection: 'row'}}>
-                        <div className={'background-search'} style={{width: '39px', height: '39px'}}></div>
-                        <div style={{height: '39px', alignContent:'center', marginLeft:'3px', fontSize: "16px", color:'black', fontFamily: "'Montserrat', sans-serif",
+                    <div className={'search'} style={{padding: '8px', display:'flex', flexDirection: 'row'}}>
+                        <div className={'background-search'} style={{width: '30px', height: '30px'}}></div>
+                        <div style={{height: '30px', alignContent:'center', marginLeft:'3px', fontSize: "16px", color:'black', fontFamily: "'Montserrat', sans-serif",
                             fontVariant: 'small-caps'}}>Найти игру, подписку...</div>
                     </div>
                 </Link>
                 <Link to={'basket'} className={'link-element'}>
-                    <div className={'div-button-panel'} style={{padding: '10px !important'}}>
+                    <div className={'div-button-panel'} style={{padding: '3px'}}>
                         <div className={'background-basket'} style={{width: '100%', height: '100%'}}></div>
                     </div>
                 </Link>
-                <div className={'div-button-panel'} style={{padding: '10px !important'}}>
+                <div className={'div-button-panel'} style={{padding: '6px'}}>
                     <div className={'background-profile'} style={{width: '100%', height: '100%'}}></div>
                 </div>
             </div>

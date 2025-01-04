@@ -80,9 +80,9 @@ const HeadSelector = ({onChange, main_data, hidden}) => {
             </div>
             <div className={'box-grid-panel'}>
                 <Link to={'search' + String(pageSelected)} className={'link-element'}>
-                    <div className={'search'} style={{padding: '3px', display:'flex', flexDirection: 'row'}}>
-                        <div className={'background-search'} style={{width: '39px', height: '39px'}}></div>
-                        <div style={{height: '39px', alignContent:'center', marginLeft:'3px', fontSize: "16px", color:'black', fontFamily: "'Montserrat', sans-serif",
+                    <div className={'search'} style={{padding: '8px', display:'flex', flexDirection: 'row'}}>
+                        <div className={'background-search'} style={{width: '30px', height: '30px'}}></div>
+                        <div style={{height: '30px', alignContent:'center', marginLeft:'3px', fontSize: "16px", color:'black', fontFamily: "'Montserrat', sans-serif",
                             fontVariant: 'small-caps'}}>Найти игру, подписку...</div>
                     </div>
                 </Link>
@@ -92,7 +92,7 @@ const HeadSelector = ({onChange, main_data, hidden}) => {
                     </div>
                 </Link>
                 <Link to={'info'} className={'link-element'}>
-                    <div className={'div-button-panel'} style={{padding: '7px'}}>
+                    <div className={'div-button-panel'} style={{padding: '6px'}}>
                         <div className={'background-profile'} style={{width: '100%', height: '100%'}}></div>
                     </div>
                 </Link>

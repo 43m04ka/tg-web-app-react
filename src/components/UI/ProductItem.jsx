@@ -31,13 +31,29 @@ const ProductItem = ({product, path}) => {
                         backgroundImage: 'url("' + product.img + '+")',
                         backgroundRepeat: 'no-repeat',
                         backgroundSize: 'cover',
-                        paddingTop: '135px',
+                        alignContent: 'end',
                         justifyItems: 'left'
                     }} className={'img-home'}>
-                        <div className={'text-element'} style={{lineHeight: '20px'}}>{product.platform}</div>
+                        <div style={{
+                            lineHeight: '20px',
+                            background: '#191919',
+                            paddingLeft: '3px',
+                            paddingRight: '3px',
+                            borderRadius: '5px',
+                            marginBottom: '5px',
+                            textDecoration: 'none',
+                            textAlign: 'left',
+                            marginLeft: '5px',
+                            fontFamily: "'Montserrat', sans-serif",
+                            fontWeight: 700,
+                            fontSize: '12px',
+                            overflow: 'hidden',
+                            color: 'white',
+                            width: 'max-content'
+                        }}>{product.platform}</div>
                     </div>
-                    <div style={{height:'40px', overflow:'hidden'}}>
-                    <div className={'text-element name-element'}>{product.title}</div>
+                    <div style={{height: '40px', overflow: 'hidden'}}>
+                        <div className={'text-element name-element'}>{product.title}</div>
                     </div>
                     <div style={{display: 'flex', justifyContent: 'left'}}>
                         <div className={'text-element price-element'}>{String(product.price) + ' ₽'}</div>

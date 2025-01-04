@@ -68,7 +68,7 @@ const AdminPanel = () => {
         let arrayRequest = []
         table.map(el => {
             let newCard = el
-            newCard.tab = pageSelected
+            newCard.tab = inputCategory2
             newCard.tabCategoryPath = inputCategory3
             newCard.type = inputCategory1
             arrayRequest = [...arrayRequest, ...[newCard]]
@@ -193,6 +193,9 @@ const AdminPanel = () => {
                     <div className={'text-element'}>Загрузить карты на сервер</div>
                     <input defaultValue={'Вид категории'} onChange={(event) => {
                         setInputCategory1(event.target.value)
+                    }}/>
+                    <input defaultValue={'Tab_number'} onChange={(event) => {
+                        setInputCategory2(event.target.value)
                     }}/>
                     <input defaultValue={'Путь_до_категории'} onChange={(event) => {
                         setInputCategory3(event.target.value)

@@ -42,7 +42,7 @@ function App() {
         }).then(r => {
             let Promise = r.json()
             Promise.then(prom => {
-                console.log(dataRequestDatabase.method)
+                console.log(prom)
                 if (dataRequestDatabase.method === 'add') {
                     setStatus(1)
                 } else if (dataRequestDatabase.method === 'get') {
@@ -123,7 +123,14 @@ function App() {
                 <div style={{height: String(tg?.safeAreaInset.top) + 'px'}}></div>
                 <Routes>
                     <Route path="home" element={<Home main_data={mainData} width={window.innerWidth} height={size}/>}/>
-
+                    {mainData.map(platform => (
+                        platform.body[1].map(category =>
+                            (category.body.map(item =>
+                                    (<Route path={'home/' + item.id} key={item.id}
+                                            element={<CardProduct mainData={item} height={size}/>}/>)
+                                )
+                            ))
+                    ))}
                     {mainData.map(platform => (
                         platform.body[1].map(category => (
                             <Route path={'home/' + category.path} key={category.id}
@@ -136,14 +143,6 @@ function App() {
                             <Route path={'home/' + category.path} key={category.id}
                                    element={<ProductListSelector main_data={category} page={platform.id} height={size}/>}/>
                         ))
-                    ))}
-                    {mainData.map(platform => (
-                        platform.body[1].map(category =>
-                            (category.body.map(item =>
-                                    (<Route path={'home/' + item.id} key={item.id}
-                                            element={<CardProduct mainData={item} height={size}/>}/>)
-                                )
-                            ))
                     ))}
                     <Route path={'home/basket'} element={<Basket height={size}/>}/>
                     {mainData.map(platform => (

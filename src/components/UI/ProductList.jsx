@@ -56,8 +56,12 @@ const ProductList = ({main_data, page, height}) => {
     return (
         <div className={'list'} style={{display: 'flex', flexDirection: 'column'}}>
             <div className={'box-grid-panel'}>
-                <Link to={'/home/search' + String(page)} className={'link-element'}>
-                    <div className={'search'}></div>
+                <Link to={'search' + String(0)} className={'link-element'}>
+                    <div className={'search'} style={{padding: '3px', display:'flex', flexDirection: 'row'}}>
+                        <div className={'background-search'} style={{width: '39px', height: '39px'}}></div>
+                        <div style={{height: '39px', alignContent:'center', marginLeft:'3px', fontSize: "16px", color:'black', fontFamily: "'Montserrat', sans-serif",
+                            fontVariant: 'small-caps'}}>Найти игру, подписку...</div>
+                    </div>
                 </Link>
                 <Link to={'basket'} className={'link-element'}>
                     <div className={'div-button-panel'} style={{padding: '10px !important'}}>

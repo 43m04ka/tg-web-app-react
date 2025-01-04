@@ -70,7 +70,7 @@ const CardProduct = ({mainData}) => {
     if(typeof mainData.oldPrice === 'undefined') {
         oldPrice = ''
     }else{
-        oldPrice = mainData.oldPrice
+        oldPrice = mainData.oldPrice + ' ₽'
     }
 
     let endDate = ''
@@ -134,7 +134,7 @@ const CardProduct = ({mainData}) => {
                         color: 'gray',
                         marginLeft: '25px',
                         fontSize: '20px'
-                    }}>{oldPrice + ' ₽'}</div>
+                    }}>{oldPrice}</div>
                 </div>
 
                 <div style={{

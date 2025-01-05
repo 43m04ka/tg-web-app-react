@@ -38,7 +38,7 @@ const Basket = ({height}) => {
 
     const sendData = {
         method: 'get',
-        user: {id:5106439090},
+        user: {id: 5106439090},
     }
 
     const onGetData = useCallback(() => {
@@ -90,8 +90,8 @@ const Basket = ({height}) => {
     }
 
 
-    const styleYes = {background: rgb(colorYes)}
-    const styleNo = {background: rgb(colorNo)}
+    const styleYes = {background: rgb(colorYes), height:'37px'}
+    const styleNo = {background: rgb(colorNo), height:'37px'}
 
     if (status === 0) {
         onGetData()
@@ -153,33 +153,34 @@ const Basket = ({height}) => {
                         <ProductItemBasket key={el.id} setBasketF={setBasket} product={el}/>
                     ))}
                 </div>
-                <div style={{marginBottom: '0px', position: 'relative'}}>
-                    <div style={{
-                        borderTop: '2px solid gray'
-                    }}>
+                <div style={{paddingLeft: '15px', borderTop: '2px solid gray'}}>
+                    <div style={{width: String(window.innerWidth - 30) + 'px'}}>
                         <div style={{display: 'flex', flexDirection: 'column'}}>
                             <div style={{
                                 display: 'flex',
                                 flexDirection: 'row',
-                                width: String(window.innerWidth - 10-35) + 'px',
+                                alignItems: 'center',
                                 justifyContent: 'space-between',
-                                alignItems:'center',
-                                marginLeft:'15px'
+                                marginTop: '5px',
+                                height:'40px'
                             }}>
-                                <div className={"text-element"} style={{fontSize:'15px'}}>У меня есть свой аккаунт:</div>
-                                <div className="selector-container" style={{
-                                    height: '60px',
-                                    width: '135px',
-                                    transitionProperty: 'height',
-                                    transitionDuration: '0.1s'
+                                <div className={"text-element"}
+                                     style={{fontSize: '15px', marginLeft: '0', marginRight: '0',}}>У
+                                    меня есть свой аккаунт:
+                                </div>
+                                <div style={{
+                                    width: '140px',
+                                    justifyContent: 'space-between',
+                                    display: 'flex',
+                                    flexDirection: 'row',
                                 }}>
-                                    <div className={'div-box-4563'}
-                                         style={{width: '75px', height: "100%", padding: '3px'}}>
+                                    <div
+                                        style={{width: '65px'}}>
                                         <button className={'selector-button'} onClick={onclickYes} style={styleYes}>Да
                                         </button>
                                     </div>
-                                    <div className={'div-box-4563'}
-                                         style={{width: '75px', height: "100%", padding: '3px'}}>
+                                    <div
+                                        style={{width: '65px'}}>
                                         <button className={'selector-button'} onClick={onclickNo} style={styleNo}>Нет
                                         </button>
                                     </div>
@@ -188,22 +189,41 @@ const Basket = ({height}) => {
                             <div style={{
                                 display: 'flex',
                                 flexDirection: 'row',
-                                width: String(window.innerWidth - 10) + 'px',
+                                alignItems: 'center',
                                 justifyContent: 'space-between',
+                                marginTop: '5px',
+                                height:'40px'
                             }}>
-                                <div style={{marginTop: '10px', fontSize: '20px', marginLeft: '20px'}}
+                                <div className={"text-element"}
+                                     style={{fontSize: '15px', marginLeft: '0', marginRight: '0',}}>У
+                                    меня есть промокод:
+                                </div>
+                                <div style={{
+                                    width: '140px',
+                                }}>
+                                    <input style={{height:'37px', width:'140px', borderRadius:'10px', background:'#454545', border:'0px', fontSize:'15px', color:'white', fontFamily:"'Montserrat', sans-serif", paddingLeft:'5px'}} />
+                                </div>
+                            </div>
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                marginTop: '5px',
+                                height:'40px'
+                            }}>
+                                <div style={{marginTop: '10px', fontSize: '15px', marginLeft: '0', marginRight: '0'}}
                                      className={'text-element'}>Итого:
                                 </div>
-                                <div style={{marginTop: '10px', fontSize: '20px', marginRight: '20px'}}
+                                <div style={{marginTop: '10px', fontSize: '17px', marginLeft: '0', marginRight: '0'}}
                                      className={'text-element'}>{String(sumPrice)} ₽
                                 </div>
                             </div>
                         </div>
+                        <button className={'all-see-button'} style={{marginTop: '10px', width:String(window.innerWidth-30)+'px', background:'#52a557'}}
+                                onClick={onClickButton}>Оформить
+                            заказ
+                        </button>
                     </div>
-                    <button className={'all-see-button'} style={{marginTop: '10px'}}
-                            onClick={onClickButton}>Оформить
-                        заказ
-                    </button>
                 </div>
             </div>
 

@@ -120,47 +120,46 @@ const CardProduct = ({mainData}) => {
 
                 <div style={{marginLeft:'15px'}}>
 
-                <div style={{
-                    marginTop: '7px',
-                    fontSize: '14px',
-                    color: 'white',
-                    fontFamily: "'Montserrat', sans-serif",
-                    display: 'flex',
-                    flexDirection: 'row'
-                }}>
-                    <div style={{fontSize: '20px'}}>{mainData.price + ' ₽'}</div>
                     <div style={{
-                        textDecoration: 'line-through',
-                        color: 'gray',
-                        marginLeft: '25px',
-                        fontSize: '20px'
-                    }}>{oldPrice}</div>
-                </div>
+                        marginTop: '7px',
+                        fontSize: '14px',
+                        color: 'white',
+                        fontFamily: "'Montserrat', sans-serif",
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems:'center'
+                    }}>
+                        <div style={{fontSize: '20px'}}>{mainData.price + ' ₽'}</div>
+                        <div style={{
+                            textDecoration: 'line-through',
+                            color: 'gray',
+                            marginLeft: '25px',
+                            fontSize: '20px'
+                        }}>{oldPrice}</div>
+                        <div style={{
+                            fontSize: '14px',
+                            color: '#ff5d5d',
+                            fontFamily: "'Montserrat', sans-serif",
+                            display: 'flex',
+                            flexDirection: 'row',
+                            marginLeft: '15px',
+                        }}>
+                            {endDate}
+                        </div>
+                    </div>
 
-                <div style={{
-                    marginTop: '2px',
-                    fontSize: '14px',
-                    color: 'gray',
-                    fontFamily: "'Montserrat', sans-serif",
-                    display: 'flex',
-                    flexDirection: 'row',
-                    marginLeft: '15px',
-                }}>
-                    {endDate}
-                </div>
 
-
-                <div style={{
-                    marginTop: '12px',
-                    fontSize: '14px',
-                    color: 'white',
-                    fontFamily: "'Montserrat', sans-serif"
-                }}>{descriptionText}
-                </div>
-                <div style={{
-                    marginTop: '12px',
-                    fontSize: '14px',
-                    color: 'white',
+                    <div style={{
+                        marginTop: '12px',
+                        fontSize: '14px',
+                        color: 'white',
+                        fontFamily: "'Montserrat', sans-serif"
+                    }}>{descriptionText}
+                    </div>
+                    <div style={{
+                        marginTop: '12px',
+                        fontSize: '14px',
+                        color: 'white',
                     fontFamily: "'Montserrat', sans-serif"
                 }}>{'Платформа: ' + mainData.platform}
                 </div>

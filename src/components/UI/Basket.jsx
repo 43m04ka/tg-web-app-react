@@ -262,24 +262,20 @@ const Basket = ({height}) => {
             }}>Заказ
                 успешно оформлен, спасибо!
             </div>
-            <div style={{
-                justifyItems: 'center', width: String(window.innerWidth - 150) + 'px',
-                marginLeft: '75px', marginTop: '30px', marginBottom: '30px'
-            }}>
-                <div className={'background-heart'} style={{height: '60px', width: '60px'}}/>
-            </div>
+                <div className={'background-heart'} style={{height: '60px', width: '60px', marginLeft:String(window.innerWidth/2-30)+'px'}}/>
             <div className={'text-element'} style={{
                 width: String(window.innerWidth - 90) + 'px',
                 textAlign: 'center',
                 fontSize: '20px',
                 marginLeft: '45px'
-            }}>Совсем скоро с Вами свяжется наш менеджер - @gwstore_admin для оплаты и вктивации Вашего заказа.
+            }}>Совсем скоро с Вами свяжется наш менеджер - @gwstore_admin для оплаты и активации Вашего заказа.
             </div>
             <a className={'link-element text-element'}
                href={'https://t.me/gwstore_admin'}>
                 <button className={'all-see-button'} style={{
                     marginTop: '15px',
                     height: '50px',
+                    marginLeft: '25px',
                     width: String(window.innerWidth - 50) + 'px',
                     background: '#52a557'
                 }}

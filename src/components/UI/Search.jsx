@@ -59,44 +59,51 @@ const Search = ({data, height}) => {
     }, [onBack])
 
 
-
-
     if (status === 1) {
         return (
             <div>
                 <div style={{borderBottom: '2px gray solid'}}>
                     <input className={'search'} onChange={onChangeEmpty}
-                           style={{width: String(window.innerWidth - 20) + 'px',}}></input>
+                           style={{width: String(window.innerWidth - 20) + 'px', border:'0px'}}></input>
                 </div>
                 <div className={'scroll-container-y'} style={{height: String(height - 70) + 'px'}}>
                     {listRes.map((item) => (
                         <div className={'list-element'}
-                             style={{marginLeft: String((window.innerWidth - 160 - 160) / 3) + 'px'}}>
-                            <Link to={'/home/' + item.path + '/' + item.id} className={'link-element'}>
-                                <div className={'box-item-basket'}>
-                                    <img src={item.img} alt={item.title} className={'img-mini'}/>
-                                    <div className={'box-grid-row'}>
-                                        <div className={'text-element text-basket'}>{item.price + ' ₽'}</div>
-                                        <div className={'text-element text-basket'}>{item.title}</div>
-                                    </div>
+                             style={{marginLeft: '20px', width:String(window.innerWidth-40)+'px'}}>
+                            <Link to={'/home/' + item.path + '/' + item.id} className={'link-element'}
+                                  style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>
+
+                                <img src={item.img} alt={item.title} className={'img-mini'}/>
+                                <div className={'box-grid-row'}>
+                                    <div className={'text-element text-basket'} style={{
+                                        marginTop: '3px',
+                                        lineHeight: '17px',
+                                        height: '34x',
+                                        fontSize: '15px'
+                                    }}>{item.title}</div>
+                                    <div className={'text-element text-basket'} style={{
+                                        marginTop: '12px',
+                                        lineHeight: '15px',
+                                        height: '15px',
+                                        fontSize: '15px'
+                                    }}>{item.price + ' ₽'}</div>
                                 </div>
                             </Link>
                         </div>))}
                 </div>
             </div>
         );
-    }
-    else if(status === 2) {
+    } else if (status === 2) {
         return (
             <div>
                 <div style={{borderBottom: '2px gray solid'}}>
                     <input className={'search'} onChange={onChangeEmpty}
-                           style={{width: String(window.innerWidth - 20) + 'px'}}></input>
+                           style={{width: String(window.innerWidth - 20) + 'px', border:'0px'}}></input>
 
                 </div>
                 <div style={{
                     height: String(height - 100 - 15 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
-                    marginTop: '15px', marginLeft: String(window.innerWidth / 2 - 60) + 'px',
+                    marginTop: '15px', marginLeft: String(window.innerWidth / 2 - 50) + 'px',
                     color: 'gray'
                 }} className={'text-element'}>
                     Нет результатов
@@ -108,11 +115,11 @@ const Search = ({data, height}) => {
             <div>
                 <div style={{borderBottom: '2px gray solid'}}>
                     <input className={'search'} onChange={onChangeEmpty}
-                           style={{width: String(window.innerWidth - 20) + 'px',}}></input>
+                           style={{width: String(window.innerWidth - 20) + 'px', border:'0px'}}></input>
 
                 </div>
                 <div style={{
-                    marginTop: '15px', marginLeft: String(window.innerWidth / 2 - 65) + 'px',
+                    marginTop: '15px', marginLeft: String(window.innerWidth / 2 - 55) + 'px',
                     color: 'gray'
                 }} className={'text-element'}>
                     Начните вводить

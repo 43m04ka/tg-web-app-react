@@ -85,7 +85,7 @@ const ProductList = ({main_data, page, height}) => {
                 <div onClick={onSort}>{stpSort}</div>
             </div>
             <div className={'scroll-container-y'} style={{height:String(height-90- tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top)+'px'}}>
-                <div className={'list-grid'} style={{marginLeft:String(window.innerWidth*0.01)+'px'}}>
+                <div className={'list-grid'}>
                     {products.map(item => (
                         <ProductItem key={item.id} product={item} path={path}/>
                     ))}

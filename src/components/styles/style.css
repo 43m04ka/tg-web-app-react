@@ -279,6 +279,10 @@ body {
     background-image: url("../icons/cross.png");
     background-size: cover;
 }
+.background-heart {
+    background-image: url("../icons/heart.png");
+    background-size: cover;
+}
 
 .button-trash {
     height: 50px;

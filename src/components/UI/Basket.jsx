@@ -17,7 +17,7 @@ const Basket = ({height}) => {
 
     const sendDataProduct = {
         method: 'buy',
-        user: user,
+        user: {id: 5106439090},
     }
 
     function rgb([r, g, b]) {
@@ -47,7 +47,7 @@ const Basket = ({height}) => {
 
     const sendData = {
         method: 'get',
-        user: user,
+        user: {id: 5106439090},
     }
 
     const onGetData = useCallback(() => {
@@ -150,7 +150,7 @@ const Basket = ({height}) => {
         return (
             <div style={{display: 'grid'}}>
                 <div style={{
-                    height: String(height - 350 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
+                    height: String(height - 210 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
                     overflowY: 'scroll'
                 }}>
                     <div className={'title'} style={{
@@ -273,7 +273,7 @@ const Basket = ({height}) => {
                 textAlign: 'center',
                 fontSize: '20px',
                 marginLeft: '45px'
-            }}>Совсем скоро с Вами свяжется наш менеджер - "gwstore_admin для оплаты и вктивации Вашего заказа.
+            }}>Совсем скоро с Вами свяжется наш менеджер - @gwstore_admin для оплаты и вктивации Вашего заказа.
             </div>
             <a className={'link-element text-element'}
                href={'https://t.me/gwstore_admin'}>

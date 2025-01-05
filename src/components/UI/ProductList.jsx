@@ -55,7 +55,7 @@ const ProductList = ({main_data, page, height}) => {
     return (
         <div className={'list'} style={{display: 'flex', flexDirection: 'column'}}>
             <div className={'box-grid-panel'}>
-                <Link to={'search' + String(0)} className={'link-element'}>
+                <Link to={'/home/search' + String(0)} className={'link-element'}>
                     <div className={'search'} style={{padding: '10px', display: 'flex', flexDirection: 'row'}}>
                         <div className={'background-search'} style={{width: '25px', height: '25px'}}></div>
                         <div style={{
@@ -70,14 +70,16 @@ const ProductList = ({main_data, page, height}) => {
                         </div>
                     </div>
                 </Link>
-                <Link to={'basket'} className={'link-element'}>
+                <Link to={'/home/basket'} className={'link-element'}>
                     <div className={'div-button-panel'} style={{padding: '3px'}}>
                         <div className={'background-basket'} style={{width: '100%', height: '100%'}}></div>
                     </div>
                 </Link>
-                <div className={'div-button-panel'} style={{padding: '6px'}}>
-                    <div className={'background-profile'} style={{width: '100%', height: '100%'}}></div>
-                </div>
+                <Link to={'/home/info'} className={'link-element'}>
+                    <div className={'div-button-panel'} style={{padding: '6px'}}>
+                        <div className={'background-profile'} style={{width: '100%', height: '100%'}}></div>
+                    </div>
+                </Link>
             </div>
             <div className={'text-element'} style={{justifyItems:'right', color:'gray', fontSize:'16px', marginRight:'10px', marginBottom:'5px'}}>
                 <div onClick={onSort}>{stpSort}</div>

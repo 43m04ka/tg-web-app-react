@@ -140,7 +140,7 @@ function App() {
 
                     {mainData.map(platform => (
                         platform.body[0].map(category => (
-                            <Route path={'home/' + category.path} key={category.id}
+                            <Route path={category.path} key={category.id}
                                    element={<ProductListSelector main_data={category} page={platform.id} height={size}/>}/>
                         ))
                     ))}

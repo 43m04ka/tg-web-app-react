@@ -16,8 +16,7 @@ const ProductList = ({main_data, page, height}) => {
     console.log(page)
     let products = main_data.body
     const path = main_data.path
-    const [addedItems, setAddedItems] = useState([]);
-    const {tg, queryId, user} = useTelegram();
+    const {tg} = useTelegram();
     const navigate = useNavigate();
     const [sortNap, setSortNap] = useState(true);
     const [stpSort, setStpSort] = useState('Цена↑');
@@ -83,7 +82,7 @@ const ProductList = ({main_data, page, height}) => {
             <div className={'text-element'} style={{justifyItems:'right', color:'gray', fontSize:'16px', marginRight:'10px', marginBottom:'5px'}}>
                 <div onClick={onSort}>{stpSort}</div>
             </div>
-            <div className={'scroll-container-y'} style={{height:String(height-80)+'px'}}>
+            <div className={'scroll-container-y'} style={{height:String(height-90- tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top)+'px'}}>
                 <div className={'list-grid'}>
                     {products.map(item => (
                         <ProductItem key={item.id} product={item} path={path}/>

@@ -225,6 +225,9 @@ const AdminPanel = () => {
                     }}>Редактировать каталоги
                     </button>
                 </div>
+                {dataCards.map(card=>(
+                    <div>{card.id + ' ' + card.body.title + ' '+ card.body.tabCategoryPath}</div>
+                ))}
             </div>)
         }
         if (pageSelected === 2) {

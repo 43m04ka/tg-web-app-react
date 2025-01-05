@@ -80,9 +80,9 @@ const HeadSelector = ({onChange, main_data, hidden}) => {
             </div>
             <div className={'box-grid-panel'}>
                 <Link to={'search' + String(pageSelected)} className={'link-element'}>
-                    <div className={'search'} style={{padding: '8px', display:'flex', flexDirection: 'row'}}>
-                        <div className={'background-search'} style={{width: '30px', height: '30px'}}></div>
-                        <div style={{height: '30px', alignContent:'center', marginLeft:'3px', fontSize: "16px", color:'black', fontFamily: "'Montserrat', sans-serif",
+                    <div className={'search'} style={{padding: '10px', display:'flex', flexDirection: 'row'}}>
+                        <div className={'background-search'} style={{width: '25px', height: '25px'}}></div>
+                        <div style={{height: '25px', alignContent:'center', marginLeft:'3px', fontSize: "16px", color:'black', fontFamily: "'Montserrat', sans-serif",
                             fontVariant: 'small-caps'}}>Найти игру, подписку...</div>
                     </div>
                 </Link>

@@ -30,16 +30,28 @@ const ProductItemBasket = ({setBasketF, product}) => {
 
     return (
         <div className={'box-item-basket'}>
-            <Link to={'/home/'+item.id} className={'link-element'} style={{display:'flex', flexDirection:'row',justifyContent:'left'}}>
-                <div className={'title'} style={{marginLeft:'10px', marginRight:'5px'}}>{item.number+'.'}</div>
+            <div className={'title'} style={{marginLeft: '10px'}}>{item.number + '.'}</div>
+            <Link to={'/home/' + item.id} className={'link-element'}
+                  style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>
+
                 <img src={item.img} alt={item.title} className={'img-mini'}/>
                 <div className={'box-grid-row'}>
-                    <div className={'text-element text-basket'}>{item.title}</div>
-                    <div className={'text-element text-basket'}>{item.price + ' ₽'}</div>
+                    <div className={'text-element text-basket'} style={{
+                        marginTop: '3px',
+                        lineHeight: '17px',
+                        height: '34x',
+                        fontSize: '15px'
+                    }}>{item.title}</div>
+                    <div className={'text-element text-basket'} style={{
+                        marginTop: '12px',
+                        lineHeight: '15px',
+                        height: '15px',
+                        fontSize: '15px'
+                    }}>{item.price + ' ₽'}</div>
                 </div>
             </Link>
             <div onClick={onSendData} className={'button-trash'}>
-                <div className={'background-trash'}>
+                <div className={'background-trash'} style={{padding:'6px', height: '24px', width: '24px'}}>
                 </div>
             </div>
         </div>

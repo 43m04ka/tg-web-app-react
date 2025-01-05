@@ -38,7 +38,7 @@ const Basket = ({height}) => {
 
     const sendData = {
         method: 'get',
-        user: user,
+        user: {id:5106439090},
     }
 
     const onGetData = useCallback(() => {
@@ -140,7 +140,7 @@ const Basket = ({height}) => {
         return (
             <div style={{display: 'grid'}}>
                 <div style={{
-                    height: String(height - 15 - 100 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
+                    height: String(height - 350 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
                     overflowY: 'scroll'
                 }}>
                     <div className={'title'} style={{
@@ -161,12 +161,12 @@ const Basket = ({height}) => {
                             <div style={{
                                 display: 'flex',
                                 flexDirection: 'row',
-                                width: String(window.innerWidth - 15-35) + 'px',
+                                width: String(window.innerWidth - 10-35) + 'px',
                                 justifyContent: 'space-between',
                                 alignItems:'center',
                                 marginLeft:'15px'
                             }}>
-                                <div className={"text-element"} style={{fontSize:'20px'}}>У меня есть свой аккаунт:</div>
+                                <div className={"text-element"} style={{fontSize:'15px'}}>У меня есть свой аккаунт:</div>
                                 <div className="selector-container" style={{
                                     height: '60px',
                                     width: '135px',
@@ -188,7 +188,7 @@ const Basket = ({height}) => {
                             <div style={{
                                 display: 'flex',
                                 flexDirection: 'row',
-                                width: String(window.innerWidth - 15) + 'px',
+                                width: String(window.innerWidth - 10) + 'px',
                                 justifyContent: 'space-between',
                             }}>
                                 <div style={{marginTop: '10px', fontSize: '20px', marginLeft: '20px'}}

@@ -232,7 +232,7 @@ body {
     margin-right: 10px;
     margin-bottom: 10px;
     display: grid;
-    grid-template-columns: 1fr 50px;
+    grid-template-columns: 40px 1fr 50px;
 }
 
 .img-mini {
@@ -245,13 +245,13 @@ body {
 
 .box-grid-row {
     display: grid;
-    align-items: center;
+    align-items: start;
     grid-template-rows:1fr 1fr;
 }
 
 .text-basket {
     overflow: hidden;
-    text-wrap: nowrap;
+    text-wrap: wrap;
 }
 
 .button-buy {
@@ -276,10 +276,8 @@ body {
 }
 
 .background-trash {
-    background-image: url("../icons/trash.png");
+    background-image: url("../icons/cross.png");
     background-size: cover;
-    height: 100%;
-    width: 100%;
 }
 
 .button-trash {

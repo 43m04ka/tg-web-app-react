@@ -275,7 +275,7 @@ const Basket = ({height}) => {
                 <button className={'all-see-button'} style={{
                     marginTop: '15px',
                     height: '50px',
-                    marginLeft: '25px',
+                    marginLeft: '20px',
                     width: String(window.innerWidth - 50) + 'px',
                     background: '#52a557'
                 }}

@@ -86,6 +86,7 @@ const ProductList = ({main_data, page, height}) => {
             </div>
             <div className={'scroll-container-y'} style={{height:String(height-90- tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top)+'px'}}>
                 <div className={'list-grid'}>
+                    {tg.platform}
                     {products.map(item => (
                         <ProductItem key={item.id} product={item} path={path}/>
                     ))}

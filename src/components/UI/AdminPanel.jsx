@@ -1,5 +1,6 @@
 import React, {Component, useCallback, useEffect, useRef, useState} from 'react';
 import * as XLSX from "xlsx";
+import {useTelegram} from "../../hooks/useTelegram";
 
 const make_cols = refstr => {
     let o = [], C = XLSX.utils.decode_range(refstr).e.c + 1;

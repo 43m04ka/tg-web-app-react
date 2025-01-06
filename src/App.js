@@ -18,7 +18,6 @@ let isGetData = true;
 
 function App() {
     const {tg} = useTelegram();
-    console.log(tg)
     const [size, setSize] = React.useState(window.innerHeight);
     const [mainData, setMainData] = useState([
         {id: 0, page: 'playstation', body: [[], []]}, {

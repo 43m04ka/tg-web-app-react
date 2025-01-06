@@ -289,7 +289,7 @@ const Basket = ({height}) => {
                     width: String(window.innerWidth - 50) + 'px',
                     background: '#454545'
                 }}
-                        onClick={onClickButton}>Вернутся на главную
+                        onClick={onClickButton}>Вернуться на главную
                 </button>
         </Link>
         </div>

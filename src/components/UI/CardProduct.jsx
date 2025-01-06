@@ -110,10 +110,10 @@ const CardProduct = ({mainData}) => {
         const height = refText.current.getBoundingClientRect().height;
         if (textHidden === 2) {
             oldTExtHeight = height
-            if (height > 17.3*6) {
-                setTextHeight(17.3*6)
+            if (height > 17.3 * 6) {
+                setTextHeight(17.3 * 6)
                 setTextHidden(true)
-                setSignElement(<div style={{width: String(window.innerWidth) + 'px', justifyItems: 'center'}}>
+                setSignElement(
                     <div className={'background-arrow'}
                          style={{
                              width: '20px',
@@ -121,8 +121,7 @@ const CardProduct = ({mainData}) => {
                              rotate: '90deg',
                              transitionProperty: 'rotate',
                              transitionDuration: '0.3s'
-                         }}/>
-                </div>)
+                         }}/>)
             } else {
                 setTextHeight(height)
             }
@@ -132,7 +131,7 @@ const CardProduct = ({mainData}) => {
 
     const onResize = () => {
         if (textHidden) {
-            setSignElement(<div style={{width: String(window.innerWidth) + 'px', justifyItems: 'center'}}>
+            setSignElement(
                 <div className={'background-arrow'}
                      style={{
                          width: '20px',
@@ -141,11 +140,11 @@ const CardProduct = ({mainData}) => {
                          transitionProperty: 'rotate',
                          transitionDuration: '0.3s'
                      }}/>
-            </div>)
+            )
             setTextHeight(oldTExtHeight)
             setTextHidden(false)
         } else {
-            setSignElement(<div style={{width: String(window.innerWidth) + 'px', justifyItems: 'center'}}>
+            setSignElement(
                 <div className={'background-arrow'}
                      style={{
                          width: '20px',
@@ -154,8 +153,8 @@ const CardProduct = ({mainData}) => {
                          transitionProperty: 'rotate',
                          transitionDuration: '0.3s'
                      }}/>
-            </div>)
-            setTextHeight(17.3*6)
+            )
+            setTextHeight(17.3 * 6)
             setTextHidden(true)
         }
     }
@@ -226,7 +225,9 @@ const CardProduct = ({mainData}) => {
                             transitionDuration: '0.3s'
                         }} ref={refText}>{descriptionText}
                         </div>
-                        {signElement}
+                        <div style={{
+                            justifyItems: 'center'
+                        }}>{signElement}</div>
                     </div>
                     <div style={{
                         marginTop: '12px',

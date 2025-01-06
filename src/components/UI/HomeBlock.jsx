@@ -2,7 +2,7 @@ import React, {useCallback} from 'react';
 import HomeBlockElement from "./HomeBlockElement";
 import {Link, useNavigate} from "react-router-dom";
 
-const HomeBlock = ({path, data}) => {
+const HomeBlock = ({data}) => {
 
 
     return (

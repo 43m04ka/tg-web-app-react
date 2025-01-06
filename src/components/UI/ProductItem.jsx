@@ -25,7 +25,7 @@ const ProductItem = ({product, path}) => {
 
     return (
         <div className={'list-element'} style={{marginLeft: String((window.innerWidth - 150 - 150) / 3) + 'px'}}>
-            <Link to={'/home/' + product.id} className={'link-element'}>
+            <Link to={'/card/' + product.id} className={'link-element'}>
                 <div className={'box-home-block-element'}>
                     <div style={{
                         backgroundImage: 'url("' + product.img + '+")',

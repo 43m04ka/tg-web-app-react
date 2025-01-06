@@ -104,7 +104,7 @@ const HeadSelector = ({main_data, hidden, page}) => {
                 </Link>
             </div>
             <div className={'box-grid-panel'}>
-                <Link to={'search' + String(pageSelected)} className={'link-element'}>
+                <Link to={'/search' + String(pageSelected)} className={'link-element'}>
                     <div className={'search'} style={{padding: '10px', display: 'flex', flexDirection: 'row'}}>
                         <div className={'background-search'} style={{width: '25px', height: '25px'}}></div>
                         <div style={{
@@ -119,12 +119,12 @@ const HeadSelector = ({main_data, hidden, page}) => {
                         </div>
                     </div>
                 </Link>
-                <Link to={'basket'} className={'link-element'}>
+                <Link to={'/basket'} className={'link-element'}>
                     <div className={'div-button-panel'} style={{padding: '3px'}}>
                         <div className={'background-basket'} style={{width: '100%', height: '100%'}}></div>
                     </div>
                 </Link>
-                <Link to={'info'} className={'link-element'}>
+                <Link to={'/info'} className={'link-element'}>
                     <div className={'div-button-panel'} style={{padding: '6px'}}>
                         <div className={'background-profile'} style={{width: '100%', height: '100%'}}></div>
                     </div>

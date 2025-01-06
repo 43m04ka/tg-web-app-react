@@ -227,7 +227,9 @@ const AdminPanel = () => {
                     </button>
                 </div>
                 {dataCards.map(card=>(
+                    <div style={{display:'flex', flexDirection:'row'}}>
                     <div>{card.id + ' ' + card.body.title + ' '+ card.body.tabCategoryPath}</div>
+                    <button onClick={()=>{sendRequestOnDatabase(card, 'del')}}>Удалить</button></div>
                 ))}
             </div>)
         }
@@ -275,7 +277,7 @@ const AdminPanel = () => {
                                     setInputCategory3(event.target.value)
                                 }}/>
                                 <button style={{background: '#343434'}} onClick={() => {
-                                    addCategory(0, tab.id)
+                                    addCategory(0, tab.id);
                                 }}>Добавить категорию
                                 </button>
                         </div>
@@ -334,8 +336,7 @@ const AdminPanel = () => {
         );
     }
 };
-
-export default AdminPanel;
+export  default  AdminPanel;
 
 
 class ExcelReader extends Component {
@@ -392,3 +393,4 @@ class ExcelReader extends Component {
         )
     }
 }
+

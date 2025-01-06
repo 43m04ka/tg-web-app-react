@@ -21,23 +21,26 @@ const Home = ({main_data, height, page}) => {
     return (
         <div>
 
-            <HeadSelector page={page} main_data={main_data} hidden = {hiddenSelector}/>
+            <HeadSelector page={page} main_data={main_data} hidden={hiddenSelector}/>
 
             <div className={'scroll-container-y'} onScroll={(event) => {
                 let scroll = event.target.scrollTop
-                if(scroll > scrollCtrl+200){
+                if (scroll > scrollCtrl + 200) {
                     setScrollCtrl(scroll)
                     setHiddenSelector(true)
                     setHeightMenuButton(55)
                     console.log(true)
-                }else if(scroll<scrollCtrl-100 || scroll === 0){
+                } else if (scroll < scrollCtrl - 100 || scroll === 0) {
                     setScrollCtrl(scroll)
                     setHiddenSelector(false)
                     setHeightMenuButton(0)
                     console.log(false)
                 }
-                if (hiddenSelector && scroll > scrollCtrl){setScrollCtrl(scroll)}
-                else if(!hiddenSelector && scroll < scrollCtrl){setScrollCtrl(scroll)}
+                if (hiddenSelector && scroll > scrollCtrl) {
+                    setScrollCtrl(scroll)
+                } else if (!hiddenSelector && scroll < scrollCtrl) {
+                    setScrollCtrl(scroll)
+                }
             }}
                  style={{height: String(height - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 120 + heightMenuButton) + 'px'}}>
                 <div style={{width: String(window.innerWidth) + 'px'}}>

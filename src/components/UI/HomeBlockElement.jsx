@@ -24,7 +24,7 @@ const HomeBlockElement = ({path, data}) => {
 
     return (
         <div className={'home-block-element'}>
-            <Link to={'/home/'  + data.id} className={'link-element'}>
+            <Link to={'/card/'  + data.id} className={'link-element'}>
                 <div className={'box-home-block-element'}>
                     <div style={{
                         backgroundImage: 'url("' + data.img + '+")',

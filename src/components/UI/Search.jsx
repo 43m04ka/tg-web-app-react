@@ -72,7 +72,7 @@ const Search = ({data, height}) => {
                     {listRes.map((item) => (
                         <div className={'list-element'}
                              style={{marginLeft: '20px', width:String(window.innerWidth-40)+'px'}}>
-                            <Link to={'/home/' + item.path + '/' + item.id} className={'link-element'}
+                            <Link to={'/card/' + item.id} className={'link-element'}
                                   style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>
 
                                 <img src={item.img} alt={item.title} className={'img-mini'}/>

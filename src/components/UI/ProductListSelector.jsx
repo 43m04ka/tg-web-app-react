@@ -2,13 +2,15 @@ import React, {useCallback, useEffect} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
 import {useNavigate} from "react-router-dom";
 
-const ProductListSelector = ({main_data, page, height}) => {
+const ProductListSelector = ({main_data}) => {
     const [selectCategory, setSelectCategory] = React.useState(0);
     const [selectView, setSelectView] = React.useState(0);
     const [isImgHidden, setIsImgHidden] = React.useState(true);
     const [isBuy, setIsBuy] = React.useState(false);
     const [buttonText, setButtonText] = React.useState('Добавить в корзину');
     const [scrollLeft, setScrollLeft] = React.useState(0);
+
+    console.log(main_data)
 
     const dataOld = main_data.body;
     let data = []

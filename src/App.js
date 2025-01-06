@@ -51,7 +51,6 @@ function App() {
 
                     inputDataCards.map(cardOld => {
                         let card = cardOld.body
-                        console.log(card)
                         card.id = cardOld.id
 
                         const cardTab = card.tab
@@ -59,7 +58,7 @@ function App() {
 
                         let count = 0
                         resultData[cardTab].body['1'].map(category =>{
-                            if(category.path === cardCategory){
+                            if(category.path.replace(/\//g, "") === cardCategory){
                                 resultData[cardTab].body['1'][count].body = [...resultData[cardTab].body['1'][count].body, ...[card]]
                             }
                             count += 1;
@@ -67,7 +66,7 @@ function App() {
 
                         count = 0
                         resultData[cardTab].body['0'].map(category =>{
-                            if(category.path === cardCategory){
+                            if(category.path.replace(/\//g, "")  === cardCategory){
                                 resultData[cardTab].body['0'][count].body = [...resultData[cardTab].body['0'][count].body, ...[card]]
                             }
                             count += 1;
@@ -75,7 +74,6 @@ function App() {
 
                     })
                     setMainData(resultData)
-                    console.log(resultData)
                     setStatus(1)
                 }
             })
@@ -132,7 +130,7 @@ function App() {
                     {mainData.map(platform => (
                         platform.body[1].map(category =>
                             (category.body.map(item =>
-                                    (<Route path={'home/' + item.id} key={item.id}
+                                    (<Route path={'card/' + item.id} key={item.id}
                                             element={<CardProduct mainData={item} height={size}/>}/>)
                                 )
                             ))
@@ -150,13 +148,13 @@ function App() {
                                    element={<ProductListSelector main_data={category} page={platform.id} height={size}/>}/>
                         ))
                     ))}
-                    <Route path={'home/basket'} element={<Basket height={size}/>}/>
+                    <Route path={'basket'} element={<Basket height={size}/>}/>
                     {mainData.map(platform => (
-                        <Route path={'home/search' + String(platform.id)}
+                        <Route path={'search' + String(platform.id)}
                                element={<Search data={platform} height={size}/>}/>
                     ))}
                     <Route path={'admin'} element={<AdminPanel/>}/>
-                    <Route path={'home/info'} element={<Info/>}/>
+                    <Route path={'info'} element={<Info/>}/>
                     <Route path="*" element={<ErrorPage/>}/>
                 </Routes>
 

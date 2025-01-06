@@ -284,6 +284,11 @@ body {
     background-size: cover;
 }
 
+.background-arrow {
+    background-image: url("../icons/arrow.png");
+    background-size: cover;
+}
+
 .button-trash {
     height: 50px;
     width: 50px;

@@ -1,12 +1,17 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {createRef, useCallback, useEffect} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
 import {useNavigate, useParams} from "react-router-dom";
 
+let oldTExtHeight = 0
 const CardProduct = ({mainData}) => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const [isBuy, setIsBuy] = React.useState(false);
     const [buttonText, setButtonText] = React.useState('Добавить в корзину');
+    const [textHeight, setTextHeight] = React.useState(null);
+    const [textHidden, setTextHidden] = React.useState(2);
+    const [signElement, setSignElement] = React.useState();
+    const refText = createRef();
 
     const onBack = useCallback(async () => {
         navigate(-1);
@@ -44,56 +49,116 @@ const CardProduct = ({mainData}) => {
             let Promise = r.json()
             Promise.then(prom => {
                 const result = prom.body
-                if(result) {
+                if (result) {
                     setIsBuy(true)
                     setButtonText('Перейти в корзину')
-                }else{setButtonText('Добавить в корзину')}
+                } else {
+                    setButtonText('Добавить в корзину')
+                }
             })
         })
     }, [sendData])
 
     let buttonColor = '#51a456'
-    let buttonLink = () => {onSendData();setButtonText('Ожидайте...');}
-    if(isBuy) {
+    let buttonLink = () => {
+        onSendData();
+        setButtonText('Ожидайте...');
+    }
+    if (isBuy) {
         buttonColor = '#414BE0FF'
-        buttonLink = () => {onBasket()}
+        buttonLink = () => {
+            onBasket()
+        }
     }
 
     let descriptionText = ''
-    if(typeof mainData.description === 'undefined') {
-         descriptionText = ''
-    }else{
-         descriptionText = 'Описание: '+mainData.description
+    if (typeof mainData.description === 'undefined') {
+        descriptionText = ''
+    } else {
+        descriptionText = 'Описание: ' + mainData.description
     }
 
     let oldPrice = ''
-    if(typeof mainData.oldPrice === 'undefined') {
+    if (typeof mainData.oldPrice === 'undefined') {
         oldPrice = ''
-    }else{
+    } else {
         oldPrice = mainData.oldPrice + ' ₽'
     }
 
     let endDate = ''
-    if(typeof mainData.endDate === 'undefined') {
+    if (typeof mainData.endDate === 'undefined') {
         endDate = ''
-    }else{
+    } else {
         endDate = 'Скидка до ' + mainData.endDate
     }
 
     let language = ''
-    if(typeof mainData.language === 'undefined') {
+    if (typeof mainData.language === 'undefined') {
         language = ''
-    }else{
+    } else {
         language = 'Язык в игре: ' + mainData.language
     }
 
     let region = ''
-    if(typeof mainData.region === 'undefined') {
+    if (typeof mainData.region === 'undefined') {
         region = ''
-    }else{
+    } else {
         region = 'Регион активации: ' + mainData.region
     }
 
+    useEffect(() => {
+        const height = refText.current.getBoundingClientRect().height;
+        if (textHidden === 2) {
+            oldTExtHeight = height
+            if (height > 17.3*6) {
+                setTextHeight(17.3*6)
+                setTextHidden(true)
+                setSignElement(<div style={{width: String(window.innerWidth) + 'px', justifyItems: 'center'}}>
+                    <div className={'background-arrow'}
+                         style={{
+                             width: '20px',
+                             height: '20px',
+                             rotate: '90deg',
+                             transitionProperty: 'rotate',
+                             transitionDuration: '0.3s'
+                         }}/>
+                </div>)
+            } else {
+                setTextHeight(height)
+            }
+        }
+        console.log(height)
+    }, [refText, setTextHeight]);
+
+    const onResize = () => {
+        if (textHidden) {
+            setSignElement(<div style={{width: String(window.innerWidth) + 'px', justifyItems: 'center'}}>
+                <div className={'background-arrow'}
+                     style={{
+                         width: '20px',
+                         height: '20px',
+                         rotate: '-90deg',
+                         transitionProperty: 'rotate',
+                         transitionDuration: '0.3s'
+                     }}/>
+            </div>)
+            setTextHeight(oldTExtHeight)
+            setTextHidden(false)
+        } else {
+            setSignElement(<div style={{width: String(window.innerWidth) + 'px', justifyItems: 'center'}}>
+                <div className={'background-arrow'}
+                     style={{
+                         width: '20px',
+                         height: '20px',
+                         rotate: '90deg',
+                         transitionProperty: 'rotate',
+                         transitionDuration: '0.3s'
+                     }}/>
+            </div>)
+            setTextHeight(17.3*6)
+            setTextHidden(true)
+        }
+    }
 
     return (
         <div className={'card-product'}>
@@ -118,7 +183,7 @@ const CardProduct = ({mainData}) => {
                     marginBottom: '7px'
                 }}>{mainData.title}</div>
 
-                <div style={{marginLeft:'15px'}}>
+                <div style={{marginLeft: '15px'}}>
 
                     <div style={{
                         marginTop: '7px',
@@ -127,7 +192,7 @@ const CardProduct = ({mainData}) => {
                         fontFamily: "'Montserrat', sans-serif",
                         display: 'flex',
                         flexDirection: 'row',
-                        alignItems:'center'
+                        alignItems: 'center'
                     }}>
                         <div style={{fontSize: '20px'}}>{mainData.price + ' ₽'}</div>
                         <div style={{
@@ -148,40 +213,47 @@ const CardProduct = ({mainData}) => {
                         </div>
                     </div>
 
+                    <div onClick={onResize}>
+                        <div style={{
+                            marginTop: '12px',
+                            lineHeight: '17.3px',
+                            height: String(textHeight) + 'px',
+                            fontSize: '14px',
+                            overflow: 'hidden',
+                            color: 'white',
+                            fontFamily: "'Montserrat', sans-serif",
+                            transitionProperty: 'height',
+                            transitionDuration: '0.3s'
+                        }} ref={refText}>{descriptionText}
+                        </div>
+                        {signElement}
+                    </div>
+                    <div style={{
+                        marginTop: '12px',
+                        fontSize: '14px',
+                        color: 'white',
+                        fontFamily: "'Montserrat', sans-serif"
+                    }}>{'Платформа: ' + mainData.platform}
+                    </div>
+
 
                     <div style={{
                         marginTop: '12px',
                         fontSize: '14px',
                         color: 'white',
                         fontFamily: "'Montserrat', sans-serif"
-                    }}>{descriptionText}
+                    }}>
+                        {language}
                     </div>
+
                     <div style={{
                         marginTop: '12px',
                         fontSize: '14px',
                         color: 'white',
-                    fontFamily: "'Montserrat', sans-serif"
-                }}>{'Платформа: ' + mainData.platform}
-                </div>
-
-
-                <div style={{
-                    marginTop: '12px',
-                    fontSize: '14px',
-                    color: 'white',
-                    fontFamily: "'Montserrat', sans-serif"
-                }}>
-                    {language}
-                </div>
-
-                <div style={{
-                    marginTop: '12px',
-                    fontSize: '14px',
-                    color: 'white',
-                    fontFamily: "'Montserrat', sans-serif"
-                }}>
-                    {region}
-                </div>
+                        fontFamily: "'Montserrat', sans-serif"
+                    }}>
+                        {region}
+                    </div>
 
                 </div>
                 <button className={'all-see-button'} onClick={buttonLink}

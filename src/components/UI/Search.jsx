@@ -64,7 +64,9 @@ const Search = ({data, height}) => {
             <div>
                 <div style={{borderBottom: '2px gray solid'}}>
                     <input className={'search'} onChange={onChangeEmpty}
-                           style={{width: String(window.innerWidth - 20) + 'px', border:'0px'}}></input>
+                           style={{width: String(window.innerWidth - 20) + 'px', border:'0px',fontSize: '15px',
+                               fontFamily: "'Montserrat', sans-serif",
+                               paddingLeft: '5px'}}></input>
                 </div>
                 <div className={'scroll-container-y'} style={{height: String(height - 70) + 'px'}}>
                     {listRes.map((item) => (
@@ -98,7 +100,9 @@ const Search = ({data, height}) => {
             <div>
                 <div style={{borderBottom: '2px gray solid'}}>
                     <input className={'search'} onChange={onChangeEmpty}
-                           style={{width: String(window.innerWidth - 20) + 'px', border:'0px'}}></input>
+                           style={{width: String(window.innerWidth - 20) + 'px', border:'0px',fontSize: '15px',
+                               fontFamily: "'Montserrat', sans-serif",
+                               paddingLeft: '5px'}}></input>
 
                 </div>
                 <div style={{
@@ -115,7 +119,9 @@ const Search = ({data, height}) => {
             <div>
                 <div style={{borderBottom: '2px gray solid'}}>
                     <input className={'search'} onChange={onChangeEmpty}
-                           style={{width: String(window.innerWidth - 20) + 'px', border:'0px'}}></input>
+                           style={{width: String(window.innerWidth - 20) + 'px', border:'0px',fontSize: '15px',
+                               fontFamily: "'Montserrat', sans-serif",
+                               paddingLeft: '5px'}}></input>
 
                 </div>
                 <div style={{

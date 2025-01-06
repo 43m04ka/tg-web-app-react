@@ -81,12 +81,6 @@ function App() {
     }
 
     const resizeHandler = () => {
-        if (window.innerWidth > 1000) {
-            try {
-                tg.exitFullscreen()
-            } catch (err) {
-            }
-        }
         setSize(window.innerHeight);
     };
 
@@ -108,7 +102,8 @@ function App() {
     useEffect(() => {
         tg.disableVerticalSwipes();
         try {
-            tg.requestFullscreen()
+            if(tg.platform !== 'tdesktop'){
+            tg.requestFullscreen()}
             tg.expand()
         } catch (err) {
             console.log(err)

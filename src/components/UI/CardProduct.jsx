@@ -130,6 +130,7 @@ const CardProduct = ({mainData}) => {
     }, [refText, setTextHeight]);
 
     const onResize = () => {
+        if(textHidden !== 2){
         if (textHidden) {
             setSignElement(
                 <div className={'background-arrow'}
@@ -157,7 +158,7 @@ const CardProduct = ({mainData}) => {
             setTextHeight(17.3 * 6)
             setTextHidden(true)
         }
-    }
+    }}
 
     return (
         <div className={'card-product'}>

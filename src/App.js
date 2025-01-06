@@ -51,16 +51,24 @@ function App() {
 
                     inputDataCards.map(cardOld => {
                         let card = cardOld.body
+                        console.log(card)
                         card.id = cardOld.id
 
                         const cardTab = card.tab
-                        const cardType = card.type
                         const cardCategory = card.tabCategoryPath
 
                         let count = 0
-                        resultData[cardTab].body[cardType].map(category =>{
+                        resultData[cardTab].body['1'].map(category =>{
                             if(category.path === cardCategory){
-                                resultData[cardTab].body[cardType][count].body = [...resultData[cardTab].body[cardType][count].body, ...[card]]
+                                resultData[cardTab].body['1'][count].body = [...resultData[cardTab].body['1'][count].body, ...[card]]
+                            }
+                            count += 1;
+                        })
+
+                        count = 0
+                        resultData[cardTab].body['0'].map(category =>{
+                            if(category.path === cardCategory){
+                                resultData[cardTab].body['0'][count].body = [...resultData[cardTab].body['0'][count].body, ...[card]]
                             }
                             count += 1;
                         })
@@ -117,7 +125,10 @@ function App() {
                 <div style={{height: String(tg?.contentSafeAreaInset.top) + 'px'}}></div>
                 <div style={{height: String(tg?.safeAreaInset.top) + 'px'}}></div>
                 <Routes>
-                    <Route path="home" element={<Home main_data={mainData} width={window.innerWidth} height={size}/>}/>
+                    {mainData.map(platform =>(
+                        <Route path={'home'+platform.id} element={<Home main_data={platform} page ={platform.id} width={window.innerWidth} height={size}/>}/>
+                    ))}
+
                     {mainData.map(platform => (
                         platform.body[1].map(category =>
                             (category.body.map(item =>

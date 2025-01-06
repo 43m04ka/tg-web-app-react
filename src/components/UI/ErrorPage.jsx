@@ -5,7 +5,7 @@ const ErrorPage = () => {
     return (
         <div>
             <div className={'title price-element'}>Страница не найдена</div>
-            <Link to={'/home'} className={'link-element'}>
+            <Link to={'/home1'} className={'link-element'}>
                 <button className={'all-see-button'}>На главную</button>
             </Link>
         </div>

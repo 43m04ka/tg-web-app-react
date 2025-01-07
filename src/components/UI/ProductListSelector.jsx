@@ -205,7 +205,10 @@ const ProductListSelector = ({main_data}) => {
                             alignItems: 'center'
                         }}>
                             <div style={{fontSize: '13px', fontFamily: "'Montserrat', sans-serif"}}>{el.view}</div>
-                            <div style={{fontSize: '22px', fontFamily: "'Montserrat', sans-serif"}}>{el.price + ' ₽'}</div>
+                            <div style={{
+                                fontSize: '22px',
+                                fontFamily: "'Montserrat', sans-serif"
+                            }}>{el.price + ' ₽'}</div>
                         </div>
                     </div>
                 </div>
@@ -244,7 +247,9 @@ const ProductListSelector = ({main_data}) => {
                     height: '100px',
                     display: 'flex'
                 }}
-                onScroll={(event)=>{setScrollLeft(event.target.scrollLeft)}}>
+                     onScroll={(event) => {
+                         setScrollLeft(event.target.scrollLeft)
+                     }}>
                     {data[selectCategory].body.map(el => (
                         <div key={data[selectCategory].body.indexOf(el)} style={{
                             width: String(((window.innerWidth - 20) / 3)) + 'px',
@@ -268,8 +273,14 @@ const ProductListSelector = ({main_data}) => {
                                     justifyItems: 'center',
                                     alignItems: 'center'
                                 }}>
-                                    <div style={{fontSize: '13px', fontFamily: "'Montserrat', sans-serif"}}>{el.view}</div>
-                                    <div style={{fontSize: '22px', fontFamily: "'Montserrat', sans-serif"}}>{el.price + ' ₽'}</div>
+                                    <div style={{
+                                        fontSize: '13px',
+                                        fontFamily: "'Montserrat', sans-serif"
+                                    }}>{el.view}</div>
+                                    <div style={{
+                                        fontSize: '22px',
+                                        fontFamily: "'Montserrat', sans-serif"
+                                    }}>{el.price + ' ₽'}</div>
                                 </div>
                             </div>
                         </div>
@@ -294,7 +305,7 @@ const ProductListSelector = ({main_data}) => {
                          transitionDuration: '0.2s', transitionBehavior: 'allow-discrete'
                      }}>
                     <img src={url}
-                         style={{borderTopRightRadius: '10px', borderTopLeftRadius: '10px', }}/>
+                         style={{borderTopRightRadius: '10px', borderTopLeftRadius: '10px',}}/>
                 </div>
                 <div style={{
                     color: 'white',
@@ -351,26 +362,31 @@ const ProductListSelector = ({main_data}) => {
                     ))}
                 </div>
                 {scrollerView}
-                <div style={{
-                    marginTop: '7px',
-                    fontSize: '14px',
-                    color: 'white',
-                    fontFamily: "'Montserrat', sans-serif"
-                }}>Описание:
-                </div>
-                <div style={{
-                    marginTop: '7px',
-                    fontSize: '14px',
-                    color: 'white',
-                    fontFamily: "'Montserrat', sans-serif"
-                }}>{thisElement.description}
-                </div>
-                <div style={{
-                    marginTop: '7px',
-                    fontSize: '14px',
-                    color: 'white',
-                    fontFamily: "'Montserrat', sans-serif"
-                }}>{'Платформа: ' + thisElement.platform}
+                <div style={{marginLeft: '10px', width: String(window.innerWidth - 40) + 'px'}}>
+                    <div style={{
+                        marginTop: '7px',
+                        fontSize: '14px',
+                        color: 'white',
+                        textWrap:'wrap',
+                        fontFamily: "'Montserrat', sans-serif"
+                    }}>Описание:
+                    </div>
+                    <div style={{
+                        marginTop: '7px',
+                        fontSize: '14px',
+                        color: 'white',
+                        textWrap:'wrap',
+                        fontFamily: "'Montserrat', sans-serif"
+                    }}>{thisElement.description}
+                    </div>
+                    <div style={{
+                        marginTop: '7px',
+                        fontSize: '14px',
+                        color: 'white',
+                        textWrap:'wrap',
+                        fontFamily: "'Montserrat', sans-serif"
+                    }}>{'Платформа: ' + thisElement.platform}
+                    </div>
                 </div>
                 <button className={'all-see-button'} onClick={buttonLink}
                         style={{

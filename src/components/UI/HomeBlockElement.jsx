@@ -22,6 +22,13 @@ const HomeBlockElement = ({path, data}) => {
         console.log(date.toString());
     }
 
+    let view = ''
+    if (typeof data.view === 'undefined') {
+        view = ''
+    } else {
+        view = ' ' + data.view
+    }
+
     return (
         <div className={'home-block-element'}>
             <Link to={'/card/'  + data.id} className={'link-element'}>
@@ -52,7 +59,7 @@ const HomeBlockElement = ({path, data}) => {
                         }}>{data.platform}</div>
                     </div>
                     <div style={{height: '37px', overflow: 'hidden'}}>
-                        <div className={'text-element name-element'}>{data.title}</div>
+                        <div className={'text-element name-element'}>{data.title+view}</div>
                     </div>
                     <div style={{display: 'flex', justifyContent: 'left'}}>
                         <div className={'text-element price-element'}

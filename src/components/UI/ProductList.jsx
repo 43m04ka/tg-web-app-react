@@ -55,7 +55,6 @@ const ProductList = ({main_data, page, height}) => {
     return (
         <div className={'list'} style={{display: 'flex', flexDirection: 'column'}}>
             <div className={'box-grid-panel'}>
-                <div>{tg.platform}</div>
                 <Link to={'/search' + String(page)} className={'link-element'}>
                     <div className={'search'} style={{padding: '10px', display: 'flex', flexDirection: 'row'}}>
                         <div className={'background-search'} style={{width: '25px', height: '25px'}}></div>

@@ -111,7 +111,7 @@ function App() {
     useEffect(() => {
         tg.disableVerticalSwipes();
         try {
-            if(tg.platform !== 'tdesktop'){
+            if(tg.platform !== 'tdesktop' && tg.platform !== 'macos'){
             tg.requestFullscreen()}
             tg.expand()
         } catch (err) {

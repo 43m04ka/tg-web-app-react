@@ -135,7 +135,7 @@ const Basket = ({height}) => {
                              className={'text-element'}>0 ₽
                         </div>
                     </div>
-                    <Link to={'/home'} className={'link-element'}>
+                    <Link to={'/home0'} className={'link-element'}>
                         <button className={'all-see-button'} style={{marginTop: '10px'}}>На главную
                         </button>
                     </Link>

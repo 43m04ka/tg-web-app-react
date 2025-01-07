@@ -12,7 +12,20 @@ const ProductListSelector = ({main_data}) => {
 
     console.log(main_data)
 
-    const dataOld = main_data.body;
+    const dataOld = main_data.body.sort(function (a, b) {
+        if (a.category > b.category) {
+            return 1;
+        }
+        if (a.category < b.category) {
+            return -1;
+        }
+        if (Number(a.view.split(' ')[0]) > Number(b.view.split(' ')[0])) {
+            return 1;
+        }
+        if (Number(a.view.split(' ')[0]) < Number(b.view.split(' ')[0])) {
+            return -1;
+        }
+    });
     let data = []
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
@@ -233,9 +246,9 @@ const ProductListSelector = ({main_data}) => {
                 }}
                 onScroll={(event)=>{setScrollLeft(event.target.scrollLeft)}}>
                     {data[selectCategory].body.map(el => (
-                        <div key={el.id} style={{
+                        <div key={data[selectCategory].body.indexOf(el)} style={{
                             width: String(((window.innerWidth - 20) / 3)) + 'px',
-                            height: '100px'
+                            height: '70px'
                         }}>
                             <div style={{
                                 justifyContent: 'center',
@@ -245,7 +258,7 @@ const ProductListSelector = ({main_data}) => {
                                 overflow: 'hidden',
                                 width: ((window.innerWidth - 20) / 3) + 'px',
                             }} onClick={() => {
-                                setSelectView(((el.id - 1) % data[selectCategory].body.length))
+                                setSelectView((data[selectCategory].body.indexOf(el) % data[selectCategory].body.length))
                             }}>
                                 <div style={{
                                     color: 'white',

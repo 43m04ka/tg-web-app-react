@@ -25,7 +25,7 @@ const CardProduct = ({mainData}) => {
     }, [onBack])
 
     const onBasket = useCallback(async () => {
-        navigate('/home/basket');
+        navigate('/basket');
     }, [])
 
     useEffect(() => {

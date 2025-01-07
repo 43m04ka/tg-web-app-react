@@ -36,7 +36,7 @@ const Basket = ({height, number}) => {
             let Promise = r.json()
             Promise.then(r => {
                 if (r.body) {
-                    setStatus(2);
+                    setStatus(3);
                 } else {
                     setStatus(0)
                     setButtonText('Оформить заказ и оплатить')
@@ -144,7 +144,7 @@ const Basket = ({height, number}) => {
                        background: '#454545',
                        textAlign: 'center',
                        border: '0px',
-                       fontSize: '14px',
+                       fontSize: '12px',
                        color: 'white',
                        fontFamily: "'Montserrat', sans-serif",
                    }}/>
@@ -158,7 +158,7 @@ const Basket = ({height, number}) => {
                        background: '#454545',
                        textAlign: 'center',
                        border: '0px',
-                       fontSize: '14px',
+                       fontSize: '12px',
                        color: 'white',
                        fontFamily: "'Montserrat', sans-serif",
                    }}/>
@@ -409,7 +409,7 @@ const Basket = ({height, number}) => {
                 width: String(window.innerWidth - 30) + 'px',
                 background: '#52a557'
             }}
-                    onClick={() => setStatus(2)}>{buttonText}
+                    onClick={onClickButton}>{buttonText}
             </button>
         </div>)
     } else if (status === 3) {
@@ -444,7 +444,7 @@ const Basket = ({height, number}) => {
                             onClick={onClickButton}>Написать менеджеру
                     </button>
                 </a>
-                <Link to={'/home'} className={"link-element"}>
+                <Link to={'/home0'} className={"link-element"}>
                     <button className={'all-see-button'} style={{
                         marginTop: '10px',
                         marginLeft: '25px',

@@ -134,7 +134,7 @@ const Basket = ({height, number}) => {
             overflow: 'hidden',
         }}>
             <div className={'text-element'} style={{fontSize: '14px'}}>Введите логин и пароль от аккаунта PSN:</div>
-            <input placeholder={"Введите логин от аккаунта PSN (name@gwstore.ru)"}
+            <input placeholder={"Введите логин от аккаунта PSN"}
                    style={{
                        height: '40px',
                        width: String(window.innerWidth - 20) + 'px',
@@ -143,7 +143,7 @@ const Basket = ({height, number}) => {
                        background: '#454545',
                        textAlign: 'center',
                        border: '0px',
-                       fontSize: '12px',
+                       fontSize: '16px',
                        color: 'white',
                        fontFamily: "'Montserrat', sans-serif",
                    }}/>
@@ -156,14 +156,16 @@ const Basket = ({height, number}) => {
                        borderRadius: '10px',
                        background: '#454545',
                        textAlign: 'center',
+                       textWrap:'wrap',
                        border: '0px',
-                       fontSize: '12px',
+                       fontSize: '16px',
                        color: 'white',
                        fontFamily: "'Montserrat', sans-serif",
                    }}/>
             <div className={'text-element'} style={{fontSize: '14px'}}>Введите резервные коды от аккаунта PSN:</div>
             <div style={{display: 'flex', flexDirection: 'row-'}}>
                 <input placeholder={"Код #1"}
+                       maxLength={6}
                        style={{
                            height: '40px',
                            width: String((window.innerWidth - 60) / 3) + 'px',
@@ -178,6 +180,7 @@ const Basket = ({height, number}) => {
                            fontFamily: "'Montserrat', sans-serif",
                        }}/>
                 <input placeholder={"Код #2"}
+                       maxLength={6}
                        style={{
                            height: '40px',
                            width: String((window.innerWidth - 60) / 3) + 'px',
@@ -194,6 +197,7 @@ const Basket = ({height, number}) => {
                            fontFamily: "'Montserrat', sans-serif",
                        }}/>
                 <input placeholder={"Код #3"}
+                       maxLength={6}
                        style={{
                            height: '40px',
                            width: String((window.innerWidth - 60) / 3) + 'px',
@@ -209,7 +213,7 @@ const Basket = ({height, number}) => {
                        }}/>
             </div>
             <a href={'https://google.com'} className={'link-element'}>
-                <div className={'text-element'} style={{fontSize: '9px', color:'#003dff'}}>Где их взять и что это за коды? Инструкция по
+                <div className={'text-element'} style={{fontSize: '9px', color:'#559fff'}}>Где их взять и что это за коды? Инструкция по
                     настройке.
                 </div>
             </a>

@@ -15,7 +15,8 @@ const CardProduct = ({mainData, basketData}) => {
 
     basketData.map(el=>{
         if(el.id===mainData.id){
-            console.log('В корзине')
+            setButtonText('Перейти в корзину')
+            isBuy(true)
         }
     })
 

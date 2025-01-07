@@ -29,12 +29,10 @@ const Home = ({main_data, height, page}) => {
                     setScrollCtrl(scroll)
                     setHiddenSelector(true)
                     setHeightMenuButton(55)
-                    console.log(true)
                 } else if (scroll < scrollCtrl - 100 || scroll === 0) {
                     setScrollCtrl(scroll)
                     setHiddenSelector(false)
                     setHeightMenuButton(0)
-                    console.log(false)
                 }
                 if (hiddenSelector && scroll > scrollCtrl) {
                     setScrollCtrl(scroll)

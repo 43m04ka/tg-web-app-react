@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Link, Route, Routes} from "react-router-dom";
 import ProductList from "./ProductList";
 import '../styles/style.css';
@@ -7,15 +7,36 @@ import {useTelegram} from "../../hooks/useTelegram";
 import HeadSelector from "./HeadSelector";
 import Slider from "./Slider";
 
-const Home = ({main_data, height, page}) => {
-    const {tg} = useTelegram();
+const Home = ({main_data, height, page, setBasket}) => {
+    const {tg, user} = useTelegram();
     const [scrollCtrl, setScrollCtrl] = useState(0);
     const [hiddenSelector, setHiddenSelector] = useState(false);
     const [heightMenuButton, setHeightMenuButton] = useState(0);
 
     useEffect(() => {
         tg.BackButton.hide();
+        onGetData()
     }, [])
+
+    const sendData = {
+        method: 'get',
+        user: user,
+    }
+
+    const onGetData = useCallback(() => {
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(sendData)
+        }).then(r => {
+            let Promise = r.json()
+            Promise.then(r => {
+                setBasket(r.body);
+            })
+        })
+    }, [sendData])
 
 
     return (

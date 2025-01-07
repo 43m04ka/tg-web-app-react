@@ -127,7 +127,7 @@ function App() {
                 <div style={{height: String(tg?.safeAreaInset.top) + 'px'}}></div>
                 <Routes>
                     {mainData.map(platform =>(
-                        <Route path={'home'+platform.id} element={<Home main_data={platform} page ={platform.id} width={window.innerWidth} height={size}/>}/>
+                        <Route path={'home'+platform.id} element={<Home main_data={platform} page ={platform.id} width={window.innerWidth} height={size} setBasket = {setBasketData}/>}/>
                     ))}
 
                     {mainData.map(platform => (

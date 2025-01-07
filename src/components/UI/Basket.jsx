@@ -220,6 +220,99 @@ const Basket = ({height, number}) => {
         </div>)
     }
 
+    if (number === 1 && myAcc === 1) {
+        menuDesigns = (<div className={'text-element'}
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                textAlign: 'center',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                marginTop: '5px',
+                                overflow: 'hidden',
+                                height: '40px'
+                            }}>Мы оформим заказ на новый аккаунт Xbox и передадим Вам его в полном доступе. Это
+            бесплатно.< /div>)
+    } else if (number === 1 && myAcc === 0) {
+        menuDesigns = (<div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: '5px',
+            overflow: 'hidden',
+        }}>
+            <div className={'text-element'} style={{fontSize: '14px'}}>Введите логин и пароль от аккаунта Xbox:</div>
+            <input placeholder={"Введите логин от аккаунта Xbox"}
+                   style={{
+                       height: '40px',
+                       width: String(window.innerWidth - 20) + 'px',
+                       marginTop: '10px',
+                       borderRadius: '10px',
+                       background: '#454545',
+                       textAlign: 'center',
+                       border: '0px',
+                       fontSize: '16px',
+                       color: 'white',
+                       fontFamily: "'Montserrat', sans-serif",
+                   }}/>
+            <input placeholder={"Введите пароль от аккаунта Xbox"}
+                   style={{
+                       height: '40px',
+                       width: String(window.innerWidth - 20) + 'px',
+                       marginTop: '7px',
+                       marginBottom: '10px',
+                       borderRadius: '10px',
+                       background: '#454545',
+                       textAlign: 'center',
+                       textWrap:'wrap',
+                       border: '0px',
+                       fontSize: '16px',
+                       color: 'white',
+                       fontFamily: "'Montserrat', sans-serif",
+                   }}/>
+            <div className={'text-element'} style={{fontSize: '12px', textAlign:'center'}}>Введите резервную почту или телефон от аккаунта Xbox. Это нужно чтобы отправить код для входа в аккаунт.</div>
+            <div style={{display: 'flex', flexDirection: 'row'}}>
+                <input placeholder={"Резервная почта"}
+                       maxLength={6}
+                       style={{
+                           height: '40px',
+                           width: String((window.innerWidth - 45) / 2) + 'px',
+                           marginTop: '7px',
+                           marginBottom: '10px',
+                           borderRadius: '10px',
+                           background: '#454545',
+                           textAlign: 'center',
+                           border: '0px',
+                           fontSize: '16px',
+                           color: 'white',
+                           fontFamily: "'Montserrat', sans-serif",
+                       }}/>
+                <input placeholder={"Телефон"}
+                       maxLength={6}
+                       style={{
+                           height: '40px',
+                           width: String((window.innerWidth - 45) / 2) + 'px',
+                           marginTop: '7px',
+                           marginBottom: '10px',
+                           borderRadius: '10px',
+                           background: '#454545',
+                           textAlign: 'center',
+                           marginLeft: '7px',
+                           marginRight: '7px',
+                           border: '0px',
+                           fontSize: '16px',
+                           color: 'white',
+                           fontFamily: "'Montserrat', sans-serif",
+                       }}/>
+            </div>
+            <a href={'https://google.com'} className={'link-element'}>
+                <div className={'text-element'} style={{fontSize: '9px', color:'#559fff'}}>Если этот параметр не настроен. Инструкция.
+                </div>
+            </a>
+        </div>)
+    }
+
 
     if (status === 0) {
         onGetData()

@@ -14,7 +14,7 @@ const CardProduct = ({mainData, basketData}) => {
     const refText = createRef();
 
     basketData.map(el=>{
-        if(el.id===mainData.id){
+        if(el.id===mainData.id && !isBuy){
             setButtonText('Перейти в корзину')
             setIsBuy(true)
         }

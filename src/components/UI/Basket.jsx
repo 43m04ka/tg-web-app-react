@@ -73,10 +73,8 @@ const Basket = ({height, number}) => {
         })
     }, [sendData])
 
-    const onBack = useCallback(async () => {
-        if(status===1){
-        navigate(-1);}
-        else{setStatus(1)}
+    let onBack = useCallback(async () => {
+        navigate(-1);
     }, [])
 
     useEffect(() => {

@@ -13,7 +13,7 @@ import AdminPanel from "./components/UI/AdminPanel";
 import Info from "./components/UI/Info";
 import ProductListSelector from "./components/UI/ProductListSelector";
 
-
+let basketDataGlob = null
 
 function App() {
     const {tg, user} = useTelegram();

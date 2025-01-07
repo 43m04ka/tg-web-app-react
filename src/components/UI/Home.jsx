@@ -16,7 +16,7 @@ const Home = ({main_data, height, page, setBasket}) => {
     useEffect(() => {
         tg.BackButton.hide();
         onGetData()
-    }, [onGetData])
+    }, [])
 
     const sendData = {
         method: 'get',
@@ -36,7 +36,7 @@ const Home = ({main_data, height, page, setBasket}) => {
                 setBasket(r.body);
             })
         })
-    }, [sendData])
+    }, [sendData, setBasket])
 
 
     return (

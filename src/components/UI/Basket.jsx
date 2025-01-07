@@ -313,6 +313,16 @@ const Basket = ({height, number}) => {
         </div>)
     }
 
+    let titleText = null
+
+    if(number===0){
+        titleText = 'Ваша корзина Playstation'
+    }if(number===1){
+        titleText = 'Ваша корзина Xbox'
+    }if(number===2){
+        titleText = 'Ваша корзина Сервисы'
+    }
+
 
     if (status === 0) {
         onGetData()
@@ -369,7 +379,7 @@ const Basket = ({height, number}) => {
                             marginLeft: String(window.innerWidth / 2 - 75) + 'px',
                             marginRight: 'auto',
                             marginTop: '10px'
-                        }}>Ваша корзина
+                        }}>{titleText}
                         </div>
                         {basket.map(el => (
                             <ProductItemBasket key={el.id} setBasketF={setBasket} product={el}/>

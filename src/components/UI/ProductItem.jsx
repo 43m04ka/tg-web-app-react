@@ -23,6 +23,13 @@ const ProductItem = ({product, path}) => {
         console.log(date.toString());
     }
 
+    let view = ''
+    if (typeof product.view === 'undefined') {
+        view = ''
+    } else {
+        view = ' ' + product.view
+    }
+
     return (
         <div className={'list-element'} style={{marginLeft: String((window.innerWidth - 150 - 150) / 3) + 'px'}}>
             <Link to={'/card/' + product.id} className={'link-element'}>
@@ -53,7 +60,7 @@ const ProductItem = ({product, path}) => {
                         }}>{product.platform}</div>
                     </div>
                     <div style={{height: '40px', overflow: 'hidden'}}>
-                        <div className={'text-element name-element'}>{product.title}</div>
+                        <div className={'text-element name-element'}>{product.title+view}</div>
                     </div>
                     <div style={{display: 'flex', justifyContent: 'left'}}>
                         <div className={'text-element price-element'}>{String(product.price) + ' ₽'}</div>

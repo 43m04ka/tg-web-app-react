@@ -3,7 +3,7 @@ import {useTelegram} from "../../hooks/useTelegram";
 import {useNavigate, useParams} from "react-router-dom";
 
 let oldTExtHeight = 0
-const CardProduct = ({mainData}) => {
+const CardProduct = ({mainData, basketData}) => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const [isBuy, setIsBuy] = React.useState(false);
@@ -12,6 +12,15 @@ const CardProduct = ({mainData}) => {
     const [textHidden, setTextHidden] = React.useState(2);
     const [signElement, setSignElement] = React.useState();
     const refText = createRef();
+
+    if(()=>{
+        basketData.map(el=>{
+            if(el.id===mainData.id){
+                return true
+            }
+        })
+        return false
+    }){console.log('в корзине')}
 
     const onBack = useCallback(async () => {
         navigate(-1);

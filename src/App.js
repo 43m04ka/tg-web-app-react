@@ -14,10 +14,9 @@ import Info from "./components/UI/Info";
 import ProductListSelector from "./components/UI/ProductListSelector";
 
 
-let isGetData = true;
 
 function App() {
-    const {tg} = useTelegram();
+    const {tg, user} = useTelegram();
     const [size, setSize] = React.useState(window.innerHeight);
     const [mainData, setMainData] = useState([
         {id: 0, page: 'playstation', body: [[], []]}, {
@@ -26,9 +25,9 @@ function App() {
             body: [[], []]
         }, {id: 2, page: 'service', body: [[], []]}]);
     const [status, setStatus] = useState(0);
-
+    const [basketData, setBasketData] = useState(null);
     let dataRequestDatabase = {
-        method: '',
+        method: 'get',
         data: []
     }
 
@@ -43,9 +42,6 @@ function App() {
             let Promise = r.json()
             Promise.then(prom => {
                 console.log(prom)
-                if (dataRequestDatabase.method === 'add') {
-                    setStatus(1)
-                } else if (dataRequestDatabase.method === 'get') {
                     const inputDataCards = prom.cards;
                     let resultData = prom.structure;
 
@@ -75,27 +71,34 @@ function App() {
                     })
                     setMainData(resultData)
                     setStatus(1)
-                }
+
             })
         })
     }, [dataRequestDatabase])
 
-    const sendRequestOnDatabase = (inputData, operation) => {
-        dataRequestDatabase.method = operation
-        dataRequestDatabase.data = inputData
-        sendRequestDatabase()
+    const sendData = {
+        method: 'get',
+        user: user,
     }
+
+    const onGetData = useCallback(() => {
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(sendData)
+        }).then(r => {
+            let Promise = r.json()
+            Promise.then(r => {
+                setBasketData(r.body);
+            })
+        })
+    }, [sendData])
 
     const resizeHandler = () => {
         setSize(window.innerHeight);
     };
-
-    useEffect(() => {
-        if (isGetData) {
-            sendRequestOnDatabase([], 'get')
-            isGetData = false;
-        }
-    }, []);
 
     React.useEffect(() => {
         window.addEventListener("resize", resizeHandler);
@@ -131,7 +134,7 @@ function App() {
                         platform.body[1].map(category =>
                             (category.body.map(item =>
                                     (<Route path={'card/' + item.id} key={item.id}
-                                            element={<CardProduct mainData={item} height={size}/>}/>)
+                                            element={<CardProduct mainData={item} height={size} basketData={basketData}/>}/>)
                                 )
                             ))
                     ))}
@@ -145,7 +148,7 @@ function App() {
                     {mainData.map(platform => (
                         platform.body[0].map(category => (
                             <Route path={category.path} key={category.id}
-                                   element={<ProductListSelector main_data={category} page={platform.id} height={size}/>}/>
+                                   element={<ProductListSelector main_data={category} page={platform.id} height={size} basketData={basketData}/>}/>
                         ))
                     ))}
                     <Route path={'basket'} element={<Basket height={size}/>}/>
@@ -161,6 +164,8 @@ function App() {
             </div>
         );
     } else {
+        sendRequestDatabase()
+        onGetData()
         return (<div className={'pong-loader'} style={{
             border: '2px solid #8cdb8b',
             marginTop: String(size / 2 - 60) + 'px',

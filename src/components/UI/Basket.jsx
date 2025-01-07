@@ -4,7 +4,7 @@ import ProductItem from "./ProductItem";
 import ProductItemBasket from "./ProductItemBasket";
 import {useTelegram} from "../../hooks/useTelegram";
 
-const Basket = ({height}) => {
+const Basket = ({height, number}) => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
 
@@ -60,7 +60,13 @@ const Basket = ({height}) => {
         }).then(r => {
             let Promise = r.json()
             Promise.then(r => {
-                setBasket(r.body);
+                let newArray = []
+                r.body.map(el=>{
+                    if(el.tab === number){
+                        newArray = [...newArray, el]
+                    }
+                })
+                setBasket(newArray);
                 setStatus(1)
             })
         })

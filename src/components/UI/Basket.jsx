@@ -107,6 +107,7 @@ const Basket = ({height, number}) => {
         setColorYes([12, 45, 12]);
     }
 
+    console.log(status)
 
     const styleYes = {background: rgb(colorYes), height: '37px'}
     const styleNo = {background: rgb(colorNo), height: '37px'}

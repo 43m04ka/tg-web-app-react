@@ -151,7 +151,9 @@ function App() {
                                    element={<ProductListSelector main_data={category} page={platform.id} height={size} basketData={basketData}/>}/>
                         ))
                     ))}
-                    <Route path={'basket'} element={<Basket height={size}/>}/>
+                    <Route path={'basket0'} element={<Basket height={size} number={0}/>}/>
+                    <Route path={'basket1'} element={<Basket height={size} number={0}/>}/>
+                    <Route path={'basket2'} element={<Basket height={size} number={0}/>}/>
                     {mainData.map(platform => (
                         <Route path={'search' + String(platform.id)}
                                element={<Search data={platform} height={size}/>}/>

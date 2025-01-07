@@ -33,7 +33,7 @@ const CardProduct = ({mainData, basketData}) => {
     }, [onBack])
 
     const onBasket = useCallback(async () => {
-        navigate('/basket');
+        navigate('/basket'+mainData.tab);
     }, [])
 
     useEffect(() => {

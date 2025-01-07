@@ -70,7 +70,7 @@ const ProductList = ({main_data, page, height}) => {
                         </div>
                     </div>
                 </Link>
-                <Link to={'/basket'} className={'link-element'}>
+                <Link to={'/basket'+page} className={'link-element'}>
                     <div className={'div-button-panel'} style={{padding: '3px'}}>
                         <div className={'background-basket'} style={{width: '100%', height: '100%'}}></div>
                     </div>

@@ -8,7 +8,8 @@ import HeadSelector from "./HeadSelector";
 import Slider from "./Slider";
 
 const Home = ({main_data, height, page, setBasket}) => {
-    const {tg, user} = useTelegram();
+    const {tg} = useTelegram();
+    const user = {id:5106439090}
     const [scrollCtrl, setScrollCtrl] = useState(0);
     const [hiddenSelector, setHiddenSelector] = useState(false);
     const [heightMenuButton, setHeightMenuButton] = useState(0);

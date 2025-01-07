@@ -54,7 +54,7 @@ const ProductListSelector = ({main_data}) => {
     }, [])
 
     const onBasket = useCallback(async () => {
-        navigate('/basket'+main_data[0].tab);
+        navigate('/basket');
     }, [])
 
     useEffect(() => {

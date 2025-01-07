@@ -70,7 +70,7 @@ function App() {
 
                     })
                     setMainData(resultData)
-                    setStatus(1)
+                    setStatus(2)
 
             })
         })
@@ -120,7 +120,8 @@ function App() {
         tg.ready();
     }, [])
 
-    if (status === 1) {
+
+    if (status === 2) {
         return (
             <div className="App">
                 <div style={{height: String(tg?.contentSafeAreaInset.top) + 'px'}}></div>
@@ -152,8 +153,8 @@ function App() {
                         ))
                     ))}
                     <Route path={'basket0'} element={<Basket height={size} number={0}/>}/>
-                    <Route path={'basket1'} element={<Basket height={size} number={0}/>}/>
-                    <Route path={'basket2'} element={<Basket height={size} number={0}/>}/>
+                    <Route path={'basket1'} element={<Basket height={size} number={1}/>}/>
+                    <Route path={'basket2'} element={<Basket height={size} number={2}/>}/>
                     {mainData.map(platform => (
                         <Route path={'search' + String(platform.id)}
                                element={<Search data={platform} height={size}/>}/>
@@ -165,14 +166,17 @@ function App() {
 
             </div>
         );
-    } else {
-        sendRequestDatabase()
-        onGetData()
+    } else if(status===1){
+
         return (<div className={'pong-loader'} style={{
             border: '2px solid #8cdb8b',
             marginTop: String(size / 2 - 60) + 'px',
             marginLeft: String(window.innerWidth / 2 - 40) + 'px'
         }}>Ожидайте</div>);
+    }else if(status===0){
+        sendRequestDatabase()
+        onGetData()
+        setStatus(1)
     }
 }
 

@@ -13,14 +13,12 @@ const CardProduct = ({mainData, basketData}) => {
     const [signElement, setSignElement] = React.useState();
     const refText = createRef();
 
-    if(()=>{
-        basketData.map(el=>{
-            if(el.id===mainData.id){
-                return true
-            }
-        })
-        return false
-    }){console.log('в корзине')}
+    basketData.map(el=>{
+        if(el.id===mainData.id){
+            console.log('В корзине')
+        }
+    })
+
 
     const onBack = useCallback(async () => {
         navigate(-1);
@@ -135,7 +133,6 @@ const CardProduct = ({mainData, basketData}) => {
                 setTextHeight(height)
             }
         }
-        console.log(height)
     }, [refText, setTextHeight]);
 
     const onResize = () => {

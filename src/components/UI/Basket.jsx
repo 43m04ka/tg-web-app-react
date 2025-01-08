@@ -21,8 +21,8 @@ const Basket = ({height, number}) => {
     const sendDataProduct = {
         method: 'buy',
         user: user,
-        accData : '',
-        page:number,
+        accData: '',
+        page: number,
     }
 
     const onRegDataAcc = () => {
@@ -200,7 +200,7 @@ const Basket = ({height, number}) => {
                            fontSize: '18px',
                            color: 'white',
                            fontFamily: "'Montserrat', sans-serif",
-                       }} onChange={(event) => inputData[2]=event.target.value}/>
+                       }} onChange={(event) => inputData[2] = event.target.value}/>
                 <input placeholder={"Код #2"}
                        maxLength={6}
                        style={{
@@ -217,7 +217,7 @@ const Basket = ({height, number}) => {
                            fontSize: '18px',
                            color: 'white',
                            fontFamily: "'Montserrat', sans-serif",
-                       }} onChange={(event) => inputData[3]=event.target.value}/>
+                       }} onChange={(event) => inputData[3] = event.target.value}/>
                 <input placeholder={"Код #3"}
                        maxLength={6}
                        style={{
@@ -232,9 +232,10 @@ const Basket = ({height, number}) => {
                            fontSize: '18px',
                            color: 'white',
                            fontFamily: "'Montserrat', sans-serif",
-                       }} onChange={(event) => inputData[4]=event.target.value}/>
+                       }} onChange={(event) => inputData[4] = event.target.value}/>
             </div>
-            <a href={'https://google.com'} className={'link-element'}>
+            <a href={'https://gwstore.su/tpost/50ky8t2t71-gde-naiti-rezervnie-kodi-ot-akkaunta-psn'}
+               className={'link-element'}>
                 <div className={'text-element'} style={{fontSize: '9px', color: '#559fff'}}>Где их взять и что это за
                     коды? Инструкция по
                     настройке.
@@ -278,7 +279,7 @@ const Basket = ({height, number}) => {
                        fontSize: '16px',
                        color: 'white',
                        fontFamily: "'Montserrat', sans-serif",
-                   }} onChange={(event) => inputData[0]=event.target.value}/>
+                   }} onChange={(event) => inputData[0] = event.target.value}/>
             <input placeholder={"Введите пароль от аккаунта Xbox"}
                    style={{
                        height: '40px',
@@ -293,7 +294,7 @@ const Basket = ({height, number}) => {
                        fontSize: '16px',
                        color: 'white',
                        fontFamily: "'Montserrat', sans-serif",
-                   }} onChange={(event) => inputData[1]=event.target.value}/>
+                   }} onChange={(event) => inputData[1] = event.target.value}/>
             <div className={'text-element'} style={{fontSize: '12px', textAlign: 'center'}}>Введите резервную почту или
                 телефон от аккаунта Xbox. Это нужно чтобы отправить код для входа в аккаунт.
             </div>
@@ -312,7 +313,7 @@ const Basket = ({height, number}) => {
                            fontSize: '16px',
                            color: 'white',
                            fontFamily: "'Montserrat', sans-serif",
-                       }} onChange={(event) => inputData[2]=event.target.value}/>
+                       }} onChange={(event) => inputData[2] = event.target.value}/>
                 <input placeholder={"Телефон"}
                        maxLength={6}
                        style={{
@@ -329,9 +330,10 @@ const Basket = ({height, number}) => {
                            fontSize: '16px',
                            color: 'white',
                            fontFamily: "'Montserrat', sans-serif",
-                       }} onChange={(event) => inputData[3]=event.target.value}/>
+                       }} onChange={(event) => inputData[3] = event.target.value}/>
             </div>
-            <a href={'https://google.com'} className={'link-element'}>
+            <a href={'https://gwstore.su/tpost/xransg8j11-kak-privyazat-rezervnuyu-pochtu-k-akkaun'}
+               className={'link-element'}>
                 <div className={'text-element'} style={{fontSize: '9px', color: '#559fff'}}>Если этот параметр не
                     настроен. Инструкция.
                 </div>
@@ -365,8 +367,8 @@ const Basket = ({height, number}) => {
                 <div style={{display: 'grid'}}>
                     <div style={{
                         height: String(height - 100 - 15 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
-                        marginTop: '15px', width:String(window.innerWidth)+'px', textAlign:'center',
-                        color: 'gray', fontSize:'16px',
+                        marginTop: '15px', width: String(window.innerWidth) + 'px', textAlign: 'center',
+                        color: 'gray', fontSize: '16px',
                     }} className={'text-element'}>
                         Корзина пуста
                     </div>
@@ -404,10 +406,10 @@ const Basket = ({height, number}) => {
                         overflowY: 'scroll'
                     }}>
                         <div className={'title'} style={{
-                            width:String(window.innerWidth)+'px', textAlign:'center',
+                            width: String(window.innerWidth) + 'px', textAlign: 'center',
                             marginRight: 'auto',
                             marginTop: '10px',
-                            marginLeft:'0',
+                            marginLeft: '0',
                         }}>{titleText}
                         </div>
                         {basket.map(el => (
@@ -452,8 +454,8 @@ const Basket = ({height, number}) => {
         return (<div>
             <div style={{marginLeft: '10px', width: String(window.innerWidth - 20) + 'px'}}>
                 <div className={'title'} style={{
-                    width:String(window.innerWidth)+'px', textAlign:'center',
-                    marginLeft:'0',
+                    width: String(window.innerWidth) + 'px', textAlign: 'center',
+                    marginLeft: '0',
                     marginTop: '10px'
                 }}>Оформление заказа
                 </div>
@@ -546,6 +548,13 @@ const Basket = ({height, number}) => {
             }}
                     onClick={onClickButton}>{buttonText}
             </button>
+            <div className={'text-element'} style={{fontSize: '9px', textAlign:'center'}}>
+                Нажимая на кнопку, Вы соглашаетесь с <a href={'https://gwstore.su/pk'} style={{color: '#559fff'}}
+                                                        className={'link-element'}>Условиями
+                обработки персональных данных</a>, а также с <a href={'https://gwstore.su/privacy'}
+                                                                style={{color: '#559fff'}} className={'link-element'}>Пользовательским
+                соглашением</a>
+            </div>
         </div>)
     } else if (status === 3) {
         return (<div style={{flexDirection: 'column', display: 'flex'}}>

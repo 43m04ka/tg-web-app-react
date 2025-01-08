@@ -48,6 +48,14 @@ const Info = () => {
                                              href={'https://vk.com/gameworld.xbox'}>Группа ВК для Xbox</a>
             </div>
 
+            <div style={{margin: '15px'}}><a className={'link-element text-element'}
+                                             href={'https://gwstore.su/faq_playstation'}>Инструкции для PlayStation</a>
+            </div>
+
+            <div style={{margin: '15px'}}><a className={'link-element text-element'}
+                                             href={'https://gwstore.su/faq_xbox'}>Инструкции для Xbox</a>
+            </div>
+
         </div>
     );
 };

@@ -227,9 +227,15 @@ const AdminPanel = () => {
                     </button>
                 </div>
                 {dataCards.map(card=>(
-                    <div style={{display:'flex', flexDirection:'row'}}>
-                    <div>{card.id + ' ' + card.body.title + ' '+ card.body.tabCategoryPath}</div>
-                    <button onClick={()=>{sendRequestOnDatabase(card, 'del')}}>Удалить</button></div>
+                    <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', borderBottom:'1px solid gray'}}>
+                        <div className={'text-element'}>{card.id}</div>
+                        <div className={'text-element'} style={{textWrap:'nowrap', overflow:'hidden'}}>{card.body.title}</div>
+                        <div className={'text-element'}>{card.body.tabCategoryPath}</div>
+                        <button onClick={() => {
+                            sendRequestOnDatabase(card, 'del')
+                        }}>Удалить
+                        </button>
+                    </div>
                 ))}
             </div>)
         }
@@ -250,12 +256,12 @@ const AdminPanel = () => {
                     </button>
                 </div>
                 {dataStructure.map(tab =>(
-                <div style={{border: '2px solid red', borderRadius:'10px', marginTop:'5px'}} key={tab.id}>
-                    <div className={'title'}>{tab.page}</div>
+                <div style={{ borderRadius:'10px', marginTop:'5px', background:'gray'}} key={tab.id}>
+                    <div className={'title'} style={{color:'red'}}>{tab.page}</div>
                     <div>
-                        <div className={'text-element'}>Слайдер</div>
+                        <div className={'text-element'} style={{fontSize:'15px', color:'orange'}}>Карусель</div>
                         {dataStructure[tab.id].body[0].map(category => (
-                            <div style={{border: '2px solid green', borderRadius: '10px'}} key={category.id}>
+                            <div style={{borderRadius: '10px', background:'#232323', marginTop:'7px', marginLeft:'5px', marginRight:'5px'}} key={category.id}>
                                 <div className={'text-element'}>Id: {category.id}</div>
                                 <div className={'text-element'}>Путь: {category.path}</div>
                                 <div className={'text-element'}>Url: {category.url}</div>
@@ -265,7 +271,7 @@ const AdminPanel = () => {
                                 </button>
                             </div>
                         ))}
-                        <div style={{border: '2px solid green', borderRadius: '10px', marginTop:'5px'}}>
+                        <div style={{border: '2px solid green', borderRadius: '10px', marginTop:'5px', background:'#232323', marginLeft:'5px', marginRight:'5px'}}>
                             <div className={'text-element'}>Добавить категорию слайдера</div>
                                 <input defaultValue={'Порядковый_номер'} onChange={(event) => {
                                     setInputCategory1(event.target.value)
@@ -283,9 +289,9 @@ const AdminPanel = () => {
                         </div>
                     </div>
                     <div>
-                        <div className={'text-element'}>Tело</div>
+                        <div className={'text-element'}  style={{fontSize:'15px', color:'orange'}}>Tело</div>
                         {dataStructure[tab.id].body[1].map(category => (
-                            <div style={{border: '2px solid green', borderRadius: '10px', marginTop:'5px'}} key={category.id}>
+                            <div style={{marginTop:'7px', borderRadius: '10px', background:'#232323', marginLeft:'5px', marginRight:'5px'}} key={category.id}>
                                 <div className={'text-element'}>Id: {category.id}</div>
                                 <div className={'text-element'}>Путь: {category.path}</div>
                                 <div className={'text-element'}>Имя: {category.name}</div>
@@ -295,7 +301,7 @@ const AdminPanel = () => {
                                 </button>
                             </div>
                         ))}
-                        <div style={{border: '2px solid green', borderRadius:'10px', marginTop:'5px'}}>
+                        <div style={{border: '2px solid green', borderRadius:'10px', marginTop:'5px', background:'#232323', marginLeft:'5px', marginRight:'5px'}}>
                             <div className={'text-element'}>Добавить категорию тела</div>
                             <input defaultValue={'Порядковый_номер'} onChange={(event) => {
                                 setInputCategory1(event.target.value)

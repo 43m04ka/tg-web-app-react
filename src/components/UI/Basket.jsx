@@ -365,8 +365,8 @@ const Basket = ({height, number}) => {
                 <div style={{display: 'grid'}}>
                     <div style={{
                         height: String(height - 100 - 15 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
-                        marginTop: '15px', marginLeft: String(window.innerWidth / 2 - 45) + 'px',
-                        color: 'gray'
+                        marginTop: '15px', width:String(window.innerWidth)+'px', textAlign:'center',
+                        color: 'gray', fontSize:'16px',
                     }} className={'text-element'}>
                         Корзина пуста
                     </div>
@@ -404,9 +404,10 @@ const Basket = ({height, number}) => {
                         overflowY: 'scroll'
                     }}>
                         <div className={'title'} style={{
-                            marginLeft: String(window.innerWidth / 2 - 75) + 'px',
+                            width:String(window.innerWidth)+'px', textAlign:'center',
                             marginRight: 'auto',
-                            marginTop: '10px'
+                            marginTop: '10px',
+                            marginLeft:'0',
                         }}>{titleText}
                         </div>
                         {basket.map(el => (
@@ -451,8 +452,8 @@ const Basket = ({height, number}) => {
         return (<div>
             <div style={{marginLeft: '10px', width: String(window.innerWidth - 20) + 'px'}}>
                 <div className={'title'} style={{
-                    marginLeft: String(window.innerWidth / 2 - 110) + 'px',
-                    marginRight: 'auto',
+                    width:String(window.innerWidth)+'px', textAlign:'center',
+                    marginLeft:'0',
                     marginTop: '10px'
                 }}>Оформление заказа
                 </div>

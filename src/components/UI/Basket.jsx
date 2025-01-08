@@ -25,7 +25,7 @@ const Basket = ({height, number}) => {
         page:number,
     }
 
-    const onRegDataAcc = ()=> {
+    const onRegDataAcc = () => {
         if (number === 0) {
             if (myAcc === 1) {
                 sendDataProduct.accData = 'Нет своего аккаунта PSN.'
@@ -46,7 +46,8 @@ const Basket = ({height, number}) => {
     }
 
     const onClickButton = useCallback(() => {
-        setButtonText('Оформляем заказ...')
+        setButtonText('Оформляем заказ...');
+        onRegDataAcc();
         fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
             method: 'POST',
             headers: {
@@ -542,7 +543,7 @@ const Basket = ({height, number}) => {
                 width: String(window.innerWidth - 30) + 'px',
                 background: '#52a557'
             }}
-                    onClick={()=> {onClickButton(); onRegDataAcc();}}>{buttonText}
+                    onClick={onClickButton}>{buttonText}
             </button>
         </div>)
     } else if (status === 3) {

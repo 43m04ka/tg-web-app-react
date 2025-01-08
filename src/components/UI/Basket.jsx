@@ -4,6 +4,7 @@ import ProductItem from "./ProductItem";
 import ProductItemBasket from "./ProductItemBasket";
 import {useTelegram} from "../../hooks/useTelegram";
 
+let inputData = [null, null, null, null, null]
 const Basket = ({height, number}) => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
@@ -14,11 +15,29 @@ const Basket = ({height, number}) => {
     const [colorNo, setColorNo] = useState([45, 12, 12]);
     const [status, setStatus] = useState(0);
     const [buttonText, setButtonText] = React.useState('Оформить закказ и оплатить');
+    const [promoInput, setPromoInput] = useState('');
 
     const sendDataProduct = {
         method: 'buy',
         user: user,
+        accData : '',
     }
+    if(number === 0){
+        if(myAcc===1){
+            sendDataProduct.accData = 'Нет своего аккаунта PSN.'
+        }
+        else{
+            sendDataProduct.accData = 'Логин: '+inputData[0]+'\n'+ 'Пароль: '+inputData[1]+'\n'+ 'Резервные коды: '+inputData[2]+', '+inputData[3]+', '+inputData[4]
+        }
+    }else if(number === 1){
+        if(myAcc===1){
+            sendDataProduct.accData = 'Нет своего аккаунта Xbox.'
+        }
+        else{
+            sendDataProduct.accData = 'Логин: '+inputData[0]+'\n'+ 'Пароль: '+inputData[1]+'\n'+ 'Резервные почта: '+inputData[2]+'\n'+  'Резервный номер телефона: '+inputData[3]
+        }
+    }
+    console.log(sendDataProduct.accData)
 
     function rgb([r, g, b]) {
         return '#' + (0x1000000 + (r << 16) + (g << 8) + b).toString(16).substring(1);
@@ -146,7 +165,7 @@ const Basket = ({height, number}) => {
                        fontSize: '16px',
                        color: 'white',
                        fontFamily: "'Montserrat', sans-serif",
-                   }}/>
+                   }} onChange={(event) => inputData[0] = event.target.value}/>
             <input placeholder={"Введите пароль от аккаунта PSN"}
                    style={{
                        height: '40px',
@@ -156,12 +175,12 @@ const Basket = ({height, number}) => {
                        borderRadius: '10px',
                        background: '#454545',
                        textAlign: 'center',
-                       textWrap:'wrap',
+                       textWrap: 'wrap',
                        border: '0px',
                        fontSize: '16px',
                        color: 'white',
                        fontFamily: "'Montserrat', sans-serif",
-                   }}/>
+                   }} onChange={(event) => inputData[1] = event.target.value}/>
             <div className={'text-element'} style={{fontSize: '14px'}}>Введите резервные коды от аккаунта PSN:</div>
             <div style={{display: 'flex', flexDirection: 'row-'}}>
                 <input placeholder={"Код #1"}
@@ -178,7 +197,7 @@ const Basket = ({height, number}) => {
                            fontSize: '18px',
                            color: 'white',
                            fontFamily: "'Montserrat', sans-serif",
-                       }}/>
+                       }} onChange={(event) => inputData[2]=event.target.value}/>
                 <input placeholder={"Код #2"}
                        maxLength={6}
                        style={{
@@ -195,7 +214,7 @@ const Basket = ({height, number}) => {
                            fontSize: '18px',
                            color: 'white',
                            fontFamily: "'Montserrat', sans-serif",
-                       }}/>
+                       }} onChange={(event) => inputData[3]=event.target.value}/>
                 <input placeholder={"Код #3"}
                        maxLength={6}
                        style={{
@@ -210,10 +229,11 @@ const Basket = ({height, number}) => {
                            fontSize: '18px',
                            color: 'white',
                            fontFamily: "'Montserrat', sans-serif",
-                       }}/>
+                       }} onChange={(event) => inputData[4]=event.target.value}/>
             </div>
             <a href={'https://google.com'} className={'link-element'}>
-                <div className={'text-element'} style={{fontSize: '9px', color:'#559fff'}}>Где их взять и что это за коды? Инструкция по
+                <div className={'text-element'} style={{fontSize: '9px', color: '#559fff'}}>Где их взять и что это за
+                    коды? Инструкция по
                     настройке.
                 </div>
             </a>
@@ -255,7 +275,7 @@ const Basket = ({height, number}) => {
                        fontSize: '16px',
                        color: 'white',
                        fontFamily: "'Montserrat', sans-serif",
-                   }}/>
+                   }} onChange={(event) => inputData[0]=event.target.value}/>
             <input placeholder={"Введите пароль от аккаунта Xbox"}
                    style={{
                        height: '40px',
@@ -265,13 +285,15 @@ const Basket = ({height, number}) => {
                        borderRadius: '10px',
                        background: '#454545',
                        textAlign: 'center',
-                       textWrap:'wrap',
+                       textWrap: 'wrap',
                        border: '0px',
                        fontSize: '16px',
                        color: 'white',
                        fontFamily: "'Montserrat', sans-serif",
-                   }}/>
-            <div className={'text-element'} style={{fontSize: '12px', textAlign:'center'}}>Введите резервную почту или телефон от аккаунта Xbox. Это нужно чтобы отправить код для входа в аккаунт.</div>
+                   }} onChange={(event) => inputData[1]=event.target.value}/>
+            <div className={'text-element'} style={{fontSize: '12px', textAlign: 'center'}}>Введите резервную почту или
+                телефон от аккаунта Xbox. Это нужно чтобы отправить код для входа в аккаунт.
+            </div>
             <div style={{display: 'flex', flexDirection: 'row'}}>
                 <input placeholder={"Резервная почта"}
                        maxLength={6}
@@ -287,7 +309,7 @@ const Basket = ({height, number}) => {
                            fontSize: '16px',
                            color: 'white',
                            fontFamily: "'Montserrat', sans-serif",
-                       }}/>
+                       }} onChange={(event) => inputData[2]=event.target.value}/>
                 <input placeholder={"Телефон"}
                        maxLength={6}
                        style={{
@@ -304,10 +326,11 @@ const Basket = ({height, number}) => {
                            fontSize: '16px',
                            color: 'white',
                            fontFamily: "'Montserrat', sans-serif",
-                       }}/>
+                       }} onChange={(event) => inputData[3]=event.target.value}/>
             </div>
             <a href={'https://google.com'} className={'link-element'}>
-                <div className={'text-element'} style={{fontSize: '9px', color:'#559fff'}}>Если этот параметр не настроен. Инструкция.
+                <div className={'text-element'} style={{fontSize: '9px', color: '#559fff'}}>Если этот параметр не
+                    настроен. Инструкция.
                 </div>
             </a>
         </div>)
@@ -315,11 +338,13 @@ const Basket = ({height, number}) => {
 
     let titleText = null
 
-    if(number===0){
+    if (number === 0) {
         titleText = 'Ваша корзина Playstation'
-    }if(number===1){
+    }
+    if (number === 1) {
         titleText = 'Ваша корзина Xbox'
-    }if(number===2){
+    }
+    if (number === 2) {
         titleText = 'Ваша корзина Сервисы'
     }
 
@@ -492,7 +517,7 @@ const Basket = ({height, number}) => {
                                    fontSize: '18px',
                                    color: 'white',
                                    fontFamily: "'Montserrat', sans-serif",
-                               }}/>
+                               }} onChange={(event) => setPromoInput(event.target.value)}/>
                     </div>
                 </div>
                 <div style={{

@@ -24,22 +24,22 @@ const Basket = ({height, number}) => {
         accData : '',
         page:number,
     }
-    if(number === 0){
-        if(myAcc===1){
-            sendDataProduct.accData = 'Нет своего аккаунта PSN.'
-        }
-        else{
-            sendDataProduct.accData = 'Логин: '+inputData[0]+'\n'+ 'Пароль: '+inputData[1]+'\n'+ 'Резервные коды: '+inputData[2]+', '+inputData[3]+', '+inputData[4]
-        }
-    }else if(number === 1){
-        if(myAcc===1){
-            sendDataProduct.accData = 'Нет своего аккаунта Xbox.'
-        }
-        else{
-            sendDataProduct.accData = 'Логин: '+inputData[0]+'\n'+ 'Пароль: '+inputData[1]+'\n'+ 'Резервные почта: '+inputData[2]+'\n'+  'Резервный номер телефона: '+inputData[3]
+
+    const onRegDataAcc = ()=> {
+        if (number === 0) {
+            if (myAcc === 1) {
+                sendDataProduct.accData = 'Нет своего аккаунта PSN.'
+            } else {
+                sendDataProduct.accData = 'Логин: ' + inputData[0] + '\n' + 'Пароль: ' + inputData[1] + '\n' + 'Резервные коды: ' + inputData[2] + ', ' + inputData[3] + ', ' + inputData[4]
+            }
+        } else if (number === 1) {
+            if (myAcc === 1) {
+                sendDataProduct.accData = 'Нет своего аккаунта Xbox.'
+            } else {
+                sendDataProduct.accData = 'Логин: ' + inputData[0] + '\n' + 'Пароль: ' + inputData[1] + '\n' + 'Резервные почта: ' + inputData[2] + '\n' + 'Резервный номер телефона: ' + inputData[3]
+            }
         }
     }
-    console.log(sendDataProduct.accData)
 
     function rgb([r, g, b]) {
         return '#' + (0x1000000 + (r << 16) + (g << 8) + b).toString(16).substring(1);
@@ -542,7 +542,7 @@ const Basket = ({height, number}) => {
                 width: String(window.innerWidth - 30) + 'px',
                 background: '#52a557'
             }}
-                    onClick={onClickButton}>{buttonText}
+                    onClick={()=> {onClickButton(); onRegDataAcc();}}>{buttonText}
             </button>
         </div>)
     } else if (status === 3) {

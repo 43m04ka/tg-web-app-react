@@ -8,6 +8,7 @@ let inputData = [null, null, null, null, null]
 const Basket = ({height, number}) => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
+    console.log(user)
 
     const [basket, setBasket] = useState([])
     const [myAcc, setMyAcc] = useState(0);
@@ -21,6 +22,7 @@ const Basket = ({height, number}) => {
         method: 'buy',
         user: user,
         accData : '',
+        page:number,
     }
     if(number === 0){
         if(myAcc===1){

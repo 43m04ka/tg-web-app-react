@@ -246,7 +246,8 @@ body {
 .box-grid-row {
     display: grid;
     align-items: start;
-    grid-template-rows:1fr 1fr;
+    grid-template-rows:1fr 1fr 1fr;
+    height: 75px;
 }
 
 .text-basket {

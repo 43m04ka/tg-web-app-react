@@ -38,20 +38,29 @@ const ProductItemBasket = ({setBasketF, product}) => {
                 <div className={'box-grid-row'}>
                     <div className={'text-element text-basket'} style={{
                         marginTop: '3px',
-                        lineHeight: '17px',
-                        height: '34x',
-                        fontSize: '15px'
+                        lineHeight: '15px',
+                        height: '30px',
+                        fontSize: '13px',
+                        overflow: 'hidden'
                     }}>{item.title}</div>
                     <div className={'text-element text-basket'} style={{
-                        marginTop: '12px',
+                        marginTop: '3px',
+                        lineHeight: '14px',
+                        height: '14px',
+                        fontSize: '9px',
+                        overflow: 'hidden',
+                        marginBottom:'0px'
+                    }}>{item.platform}</div>
+                    <div className={'text-element text-basket'} style={{
                         lineHeight: '15px',
+                        marginTop:'0',
                         height: '15px',
                         fontSize: '15px'
                     }}>{item.price + ' ₽'}</div>
                 </div>
             </Link>
             <div onClick={onSendData} className={'button-trash'}>
-                <div className={'background-trash'} style={{padding:'6px', height: '24px', width: '24px'}}>
+                <div className={'background-trash'} style={{padding: '6px', height: '24px', width: '24px'}}>
                 </div>
             </div>
         </div>

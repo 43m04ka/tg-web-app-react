@@ -7,7 +7,9 @@ const CardProduct = ({mainData, basketData}) => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const [isBuy, setIsBuy] = React.useState(false);
-    const [buttonText, setButtonText] = React.useState('Добавить в корзину');
+    let inputTextButton = 'Добавить в корзину'
+    if(mainData.isSale===false){inputTextButton = 'Нет в продаже';}
+    const [buttonText, setButtonText] = React.useState(inputTextButton);
     const [textHeight, setTextHeight] = React.useState(null);
     const [textHidden, setTextHidden] = React.useState(2);
     const [signElement, setSignElement] = React.useState();
@@ -19,6 +21,7 @@ const CardProduct = ({mainData, basketData}) => {
             setIsBuy(true)
         }
     })
+
 
 
     const onBack = useCallback(async () => {
@@ -77,6 +80,10 @@ const CardProduct = ({mainData, basketData}) => {
         buttonLink = () => {
             onBasket()
         }
+    }
+    if (mainData.isSale === false) {
+        buttonColor = '#gray'
+        buttonLink = () => {}
     }
 
     let descriptionText = ''

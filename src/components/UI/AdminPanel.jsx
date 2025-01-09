@@ -33,7 +33,7 @@ const AdminPanel = () => {
 
     const dataRequestAdmin = {
         method: 'login',
-        data:{},
+        data: {},
         userData: {login: inputOne, password: inputTwo}
     }
 
@@ -103,6 +103,8 @@ const AdminPanel = () => {
                     setDataStructure(prom.structure)
                     setDataCards(prom.cards)
                     setStatus(2)
+                }else if (dataRequestDatabase.method === 'upd') {
+                    setStatus(1)
                 }
             })
         })
@@ -114,31 +116,47 @@ const AdminPanel = () => {
         sendRequestDatabase()
     }
 
-    const addCategory = (type, tab) =>{
+    const addCategory = (type, tab) => {
         let structure = dataStructure;
-        console.log(structure,dataStructure, 'вход addStructure')
+        console.log(structure, dataStructure, 'вход addStructure')
         let id = 0
         structure[tab].body[type].map(el => {
-            if(el.id> id){id = el.id}
+            if (el.id > id) {
+                id = el.id
+            }
         })
 
 
-        if(type === 0){structure[tab].body[type].splice(parseInt(inputCategory1), 0, {id:id+1, url:inputCategory2, path:inputCategory3, body:[]});}
-        if(type === 1){structure[tab].body[type].splice(parseInt(inputCategory1), 0, {id:id+1, name:inputCategory2, path:inputCategory3, body:[]});}
+        if (type === 0) {
+            structure[tab].body[type].splice(parseInt(inputCategory1), 0, {
+                id: id + 1,
+                url: inputCategory2,
+                path: inputCategory3,
+                body: []
+            });
+        }
+        if (type === 1) {
+            structure[tab].body[type].splice(parseInt(inputCategory1), 0, {
+                id: id + 1,
+                name: inputCategory2,
+                path: inputCategory3,
+                body: []
+            });
+        }
 
-        console.log(structure,dataStructure, 'выход addStructure')
+        console.log(structure, dataStructure, 'выход addStructure')
         sendRequestOnAdmin({body: structure}, 'set')
 
     }
 
-    const deleteCategory = (type, tab, categoryId) =>{
+    const deleteCategory = (type, tab, categoryId) => {
         let structure = dataStructure;
 
         let newArray = []
-        
+
         structure[tab].body[type].map(el => {
-            if(el.id !== categoryId){
-                newArray = [...newArray, ... [el]]
+            if (el.id !== categoryId) {
+                newArray = [...newArray, ...[el]]
             }
         })
 
@@ -148,7 +166,7 @@ const AdminPanel = () => {
 
     }
 
-    const onComputeData = () =>{
+    const onComputeData = () => {
         let inputDataCards = dataCards
         let resultData = dataStructure
 
@@ -161,8 +179,8 @@ const AdminPanel = () => {
             const cardCategory = card.tabCategoryPath
 
             let count = 0
-            resultData[cardTab].body[cardType].map(category =>{
-                if(category.path === cardCategory){
+            resultData[cardTab].body[cardType].map(category => {
+                if (category.path === cardCategory) {
                     resultData[cardTab].body[cardType][count].body = [...resultData[cardTab].body[cardType][count].body, ...[card]]
                 }
                 count += 1;
@@ -211,6 +229,27 @@ const AdminPanel = () => {
             </div>)
         }
         if (pageSelected === 1) {
+            let allCategory = []
+            dataCards.map(card => {
+                let flag = false
+                let count = 0
+                let index = 0
+                allCategory.map(cat => {
+                    if (cat.path === card.body.tabCategoryPath) {
+                        flag = true
+                        index = count
+                    }
+                    count += 1;
+                })
+                if (flag === false) {
+                    allCategory = [...allCategory, {path: card.body.tabCategoryPath, body: [card]}]
+                } else {
+                    allCategory[index].body = [...allCategory[index].body, card]
+                }
+            })
+
+            console.log(allCategory)
+
             return (<div>
                 <div>
                     <button onClick={() => {
@@ -226,17 +265,96 @@ const AdminPanel = () => {
                     }}>Редактировать каталоги
                     </button>
                 </div>
-                {dataCards.map(card=>(
-                    <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', borderBottom:'1px solid gray'}}>
-                        <div className={'text-element'}>{card.id}</div>
-                        <div className={'text-element'} style={{textWrap:'nowrap', overflow:'hidden'}}>{card.body.title}</div>
-                        <div className={'text-element'}>{card.body.tabCategoryPath}</div>
-                        <button onClick={() => {
-                            sendRequestOnDatabase(card, 'del')
-                        }}>Удалить
-                        </button>
+                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 3fr 1fr', borderBottom: '1px solid gray'}}>
+                    <div className={'text-element'}>ID</div>
+                    <div className={'text-element'}
+                         style={{textWrap: 'nowrap', overflow: 'hidden'}}>Name
                     </div>
-                ))}
+                    <div className={'text-element'}>Path</div>
+                    <div className={'text-element'}>В продаже</div>
+                    <div className={'text-element'}>Удаление</div>
+                </div>
+                <div>
+                    {allCategory.map(category => (
+                        <div>
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr 1fr',
+                                borderBottom: '1px solid gray',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}>
+                                <div className={'title'}>{category.path}</div>
+                                <button onClick={() => {
+                                    let newCard = category.body[0]
+                                    let newArray = category.body
+
+                                    let bool = null
+                                    if (newCard.body.isSale === true) {
+                                        bool = false
+                                    } else if (newCard.body.isSale === false) {
+                                        bool = true
+                                    } else {
+                                        bool = true
+                                    }
+                                    newArray.map(card => {
+
+                                        if (card.body.isSale === true) {
+                                            card.body.isSale = bool
+                                        } else if (card.body.isSale === false) {
+                                            card.body.isSale = bool
+                                        } else {
+                                            card.body.isSale = bool
+                                        }
+
+                                    })
+                                    sendRequestOnDatabase(newArray, 'upd');
+                                    setStatus(10);
+                                }}>Убрать\включить в продажу
+                                </button>
+                                <button onClick={async () => {
+                                    sendRequestOnDatabase(category.body, 'del');
+                                    await setStatus(10);
+                                }}>Удалить
+                                </button>
+                            </div>
+                            {category.body.map(card => (
+                                <div style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: '1fr 1fr 1fr 3fr 1fr',
+                                    borderBottom: '1px solid gray'
+                                }}>
+                                    <div className={'text-element'}>{card.id}</div>
+                                    <div className={'text-element'}
+                                         style={{textWrap: 'nowrap', overflow: 'hidden'}}>{card.body.title}</div>
+                                    <div className={'text-element'}>{card.body.tabCategoryPath}</div>
+                                    <div style={{display:'flex', flexDirection:'row'}}>
+                                        В продаже: {String(card.body.isSale)}
+                                    <button onClick={() => {
+                                        let newCard = card
+                                        if (newCard.body.isSale === true) {
+                                            newCard.body.isSale = false
+                                        } else if (newCard.body.isSale === false) {
+                                            newCard.body.isSale = true
+                                        } else {
+                                            newCard.body.isSale = true
+                                        }
+                                        sendRequestOnDatabase([card], 'upd');
+                                        setStatus(10);
+                                    }}>Убрать\включить в продажу
+                                    </button>
+                                    </div>
+                                    <button onClick={() => {
+                                        sendRequestOnDatabase([card], 'del');
+                                        setStatus(10);
+                                    }}>Удалить
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    ))}
+                </div>
+
             </div>)
         }
         if (pageSelected === 2) {
@@ -255,24 +373,37 @@ const AdminPanel = () => {
                     }}>Редактировать каталоги
                     </button>
                 </div>
-                {dataStructure.map(tab =>(
-                <div style={{ borderRadius:'10px', marginTop:'5px', background:'gray'}} key={tab.id}>
-                    <div className={'title'} style={{color:'red'}}>{tab.page}</div>
-                    <div>
-                        <div className={'text-element'} style={{fontSize:'15px', color:'orange'}}>Карусель</div>
-                        {dataStructure[tab.id].body[0].map(category => (
-                            <div style={{borderRadius: '10px', background:'#232323', marginTop:'7px', marginLeft:'5px', marginRight:'5px'}} key={category.id}>
-                                <div className={'text-element'}>Id: {category.id}</div>
-                                <div className={'text-element'}>Путь: {category.path}</div>
-                                <div className={'text-element'}>Url: {category.url}</div>
-                                <button style={{background: '#343434'}} onClick={() => {
-                                    deleteCategory(0, tab.id, category.id)
-                                }}>Удалить категорию
-                                </button>
-                            </div>
-                        ))}
-                        <div style={{border: '2px solid green', borderRadius: '10px', marginTop:'5px', background:'#232323', marginLeft:'5px', marginRight:'5px'}}>
-                            <div className={'text-element'}>Добавить категорию слайдера</div>
+                {dataStructure.map(tab => (
+                    <div style={{borderRadius: '10px', marginTop: '5px', background: 'gray'}} key={tab.id}>
+                        <div className={'title'} style={{color: 'red'}}>{tab.page}</div>
+                        <div>
+                            <div className={'text-element'} style={{fontSize: '15px', color: 'orange'}}>Карусель</div>
+                            {dataStructure[tab.id].body[0].map(category => (
+                                <div style={{
+                                    borderRadius: '10px',
+                                    background: '#232323',
+                                    marginTop: '7px',
+                                    marginLeft: '5px',
+                                    marginRight: '5px'
+                                }} key={category.id}>
+                                    <div className={'text-element'}>Id: {category.id}</div>
+                                    <div className={'text-element'}>Путь: {category.path}</div>
+                                    <div className={'text-element'}>Url: {category.url}</div>
+                                    <button style={{background: '#343434'}} onClick={() => {
+                                        deleteCategory(0, tab.id, category.id)
+                                    }}>Удалить категорию
+                                    </button>
+                                </div>
+                            ))}
+                            <div style={{
+                                border: '2px solid green',
+                                borderRadius: '10px',
+                                marginTop: '5px',
+                                background: '#232323',
+                                marginLeft: '5px',
+                                marginRight: '5px'
+                            }}>
+                                <div className={'text-element'}>Добавить категорию слайдера</div>
                                 <input defaultValue={'Порядковый_номер'} onChange={(event) => {
                                     setInputCategory1(event.target.value)
                                 }}/>
@@ -286,41 +417,62 @@ const AdminPanel = () => {
                                     addCategory(0, tab.id);
                                 }}>Добавить категорию
                                 </button>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <div className={'text-element'}  style={{fontSize:'15px', color:'orange'}}>Tело</div>
-                        {dataStructure[tab.id].body[1].map(category => (
-                            <div style={{marginTop:'7px', borderRadius: '10px', background:'#232323', marginLeft:'5px', marginRight:'5px'}} key={category.id}>
-                                <div className={'text-element'}>Id: {category.id}</div>
-                                <div className={'text-element'}>Путь: {category.path}</div>
-                                <div className={'text-element'}>Имя: {category.name}</div>
+                        <div>
+                            <div className={'text-element'} style={{fontSize: '15px', color: 'orange'}}>Tело</div>
+                            {dataStructure[tab.id].body[1].map(category => (
+                                <div style={{
+                                    marginTop: '7px',
+                                    borderRadius: '10px',
+                                    background: '#232323',
+                                    marginLeft: '5px',
+                                    marginRight: '5px'
+                                }} key={category.id}>
+                                    <div className={'text-element'}>Id: {category.id}</div>
+                                    <div className={'text-element'}>Путь: {category.path}</div>
+                                    <div className={'text-element'}>Имя: {category.name}</div>
+                                    <button style={{background: '#343434'}} onClick={() => {
+                                        deleteCategory(1, tab.id, category.id)
+                                    }}>Удалить категорию
+                                    </button>
+                                </div>
+                            ))}
+                            <div style={{
+                                border: '2px solid green',
+                                borderRadius: '10px',
+                                marginTop: '5px',
+                                background: '#232323',
+                                marginLeft: '5px',
+                                marginRight: '5px'
+                            }}>
+                                <div className={'text-element'}>Добавить категорию тела</div>
+                                <input defaultValue={'Порядковый_номер'} onChange={(event) => {
+                                    setInputCategory1(event.target.value)
+                                }}/>
+                                <input defaultValue={'Имя_категории'} onChange={(event) => {
+                                    setInputCategory2(event.target.value)
+                                }}/>
+                                <input defaultValue={'Путь_до_категории'} onChange={(event) => {
+                                    setInputCategory3(event.target.value)
+                                }}/>
                                 <button style={{background: '#343434'}} onClick={() => {
-                                    deleteCategory(1, tab.id, category.id)
-                                }}>Удалить категорию
+                                    addCategory(1, tab.id)
+                                }}>Добавить категорию
                                 </button>
                             </div>
-                        ))}
-                        <div style={{border: '2px solid green', borderRadius:'10px', marginTop:'5px', background:'#232323', marginLeft:'5px', marginRight:'5px'}}>
-                            <div className={'text-element'}>Добавить категорию тела</div>
-                            <input defaultValue={'Порядковый_номер'} onChange={(event) => {
-                                setInputCategory1(event.target.value)
-                            }}/>
-                            <input defaultValue={'Имя_категории'} onChange={(event) => {
-                                setInputCategory2(event.target.value)
-                            }}/>
-                            <input defaultValue={'Путь_до_категории'} onChange={(event) => {
-                                setInputCategory3(event.target.value)
-                            }}/>
-                            <button style={{background:'#343434'}} onClick={()=>{addCategory(1, tab.id)}}>Добавить категорию</button>
                         </div>
-                    </div>
-                </div>))}
+                    </div>))}
 
             </div>)
         }
     } else if (status === 1) {
         sendRequestOnDatabase([], 'get')
+        return (
+            <div className={'text-element'}>
+                Ожидайте
+            </div>)
+    }else if (status === 10) {
         return (
             <div className={'text-element'}>
                 Ожидайте
@@ -342,7 +494,7 @@ const AdminPanel = () => {
         );
     }
 };
-export  default  AdminPanel;
+export default AdminPanel;
 
 
 class ExcelReader extends Component {

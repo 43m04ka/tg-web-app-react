@@ -13,6 +13,7 @@ const Home = ({main_data, height, page, setBasket}) => {
     const [scrollCtrl, setScrollCtrl] = useState(0);
     const [hiddenSelector, setHiddenSelector] = useState(false);
     const [heightMenuButton, setHeightMenuButton] = useState(0);
+    const [basketLen, setBasketLen] = useState(null);
 
     useEffect(() => {
         tg.BackButton.hide();
@@ -35,6 +36,7 @@ const Home = ({main_data, height, page, setBasket}) => {
             let Promise = r.json()
             Promise.then(r => {
                 setBasket(r.body);
+                setBasketLen(r.body.length);
             })
         })
     }, [sendData, setBasket])
@@ -43,7 +45,7 @@ const Home = ({main_data, height, page, setBasket}) => {
     return (
         <div>
 
-            <HeadSelector page={page} main_data={main_data} hidden={hiddenSelector}/>
+            <HeadSelector page={page} main_data={main_data} basketLen = {basketLen} hidden={hiddenSelector}/>
 
             <div className={'scroll-container-y'} onScroll={(event) => {
                 let scroll = event.target.scrollTop

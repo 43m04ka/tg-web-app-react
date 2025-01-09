@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
 import basket from "../icons/basket.png";
 
-const HeadSelector = ({main_data, hidden, page}) => {
+const HeadSelector = ({main_data, hidden, page, basketLen}) => {
     const [pageSelected, setPageSelected] = useState(page);
 
     let c1, c2, c3 = null
@@ -79,6 +79,22 @@ const HeadSelector = ({main_data, hidden, page}) => {
         buttonMenuHeight = 0
     }
 
+    let basketKolElement = (<></>)
+    if(basketLen !== null && basketLen !== 0){
+        basketKolElement = (<div className={'text-element'} style={{
+            background: '#f83d3d',
+            fontSize: '15px',
+            height: '20px',
+            width: '20px',
+            borderRadius: "50%",
+            textAlign: 'center',
+            lineHeight: '20px',
+            position: 'absolute',
+            marginLeft: '27px',
+            marginTop: '27px'
+        }}>{basketLen}</div>)
+    }
+
     return (
         <div>
             <div className="selector-container" style={{
@@ -121,7 +137,9 @@ const HeadSelector = ({main_data, hidden, page}) => {
                 </Link>
                 <Link to={'/basket'+page} className={'link-element'}>
                     <div className={'div-button-panel'} style={{padding: '3px'}}>
-                        <div className={'background-basket'} style={{width: '100%', height: '100%'}}></div>
+                        <div className={'background-basket'} style={{width: '100%', height: '100%'}}>
+                            {basketKolElement}
+                        </div>
                     </div>
                 </Link>
                 <Link to={'/info'} className={'link-element'}>

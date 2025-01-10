@@ -4,6 +4,7 @@ import ProductItem from "./ProductItem";
 import {useTelegram} from "../../hooks/useTelegram";
 import {useCallback, useEffect} from "react";
 import {Link, useNavigate} from "react-router-dom";
+import FilterCheckBox from "./FilterCheckBox";
 
 
 const getTotalPrice = (items = []) => {
@@ -14,12 +15,13 @@ const getTotalPrice = (items = []) => {
 
 const ProductList = ({main_data, page, height}) => {
     console.log(page)
-    let products = main_data.body
+    const [products, setProducts] = useState(main_data.body)
     const path = main_data.path
     const {tg} = useTelegram();
     const navigate = useNavigate();
     const [sortNap, setSortNap] = useState(true);
     const [stpSort, setStpSort] = useState('Цена↑');
+    const [filterJson, setFilterJson] = useState({platform:[]});
 
     const onBack = useCallback(() => {
         navigate(-1);
@@ -37,19 +39,54 @@ const ProductList = ({main_data, page, height}) => {
     }, [])
 
     const onSort = () => {
-        if(sortNap) {
+        if (sortNap) {
             setSortNap(false)
             setStpSort('Цена↓')
-        }else{
+        } else {
             setSortNap(true)
             setStpSort('Цена↑')
         }
     }
 
-    if(sortNap) {
+    if (sortNap) {
         products.sort((a, b) => (+(a.price - b.price)))
-    }else{
+    } else {
         products.sort((a, b) => (+(b.price - a.price)));
+    }
+
+
+
+    const onSetFilter = (json)=>{
+        setFilterJson(json)
+
+        let newProducts =[]
+        if (typeof products[0].platform !== 'undefined') {
+            main_data.body.map(el => {
+                let flag = true
+                json.platform.map((platform) => {
+                    console.log(flag)
+                    if (el.platform.includes(platform) && flag) {
+                        console.log(platform)
+                        newProducts = [...newProducts, el]
+                        flag = false
+                    }
+                })
+            })
+            console.log(newProducts.length)
+        }
+        if(newProducts.length > 0){
+            setProducts(newProducts)
+            console.log(newProducts.length)
+        }else{
+            setProducts(main_data.body)
+        }
+    }
+
+    let platformElementFilter = (<div></div>)
+    if(products[0].platform.includes('PS')){
+        platformElementFilter = <FilterCheckBox  param = {'platform'} data = {['PS5', 'PS4']} json = {filterJson} preview = {'Платформа'} setJson = {onSetFilter}/>
+    }else if(products[0].platform.includes('One')||products[0].platform.includes('Series')){
+        platformElementFilter = <FilterCheckBox  param = {'platform'} data = {['One', 'Series']} json = {filterJson} preview = {'Платформа'} setJson = {onSetFilter}/>
     }
 
     return (
@@ -70,7 +107,7 @@ const ProductList = ({main_data, page, height}) => {
                         </div>
                     </div>
                 </Link>
-                <Link to={'/basket'+page} className={'link-element'}>
+                <Link to={'/basket' + page} className={'link-element'}>
                     <div className={'div-button-panel'} style={{padding: '3px'}}>
                         <div className={'background-basket'} style={{width: '100%', height: '100%'}}></div>
                     </div>
@@ -81,10 +118,17 @@ const ProductList = ({main_data, page, height}) => {
                     </div>
                 </Link>
             </div>
-            <div className={'text-element'} style={{justifyItems:'right', color:'gray', fontSize:'16px', marginRight:'10px', marginBottom:'5px'}}>
-                <div onClick={onSort}>{stpSort}</div>
+            <div style={{display: 'flex', flexDirection: 'row'}}>
+                <div className={'text-element'} style={{
+                    fontSize: '16px',
+                    marginBottom: '5px'
+                }}>
+                    <div onClick={onSort}>{stpSort}</div>
+                </div>
+                {platformElementFilter}
             </div>
-            <div className={'scroll-container-y'} style={{height:String(height-90- tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top)+'px'}}>
+            <div className={'scroll-container-y'}
+                 style={{height: String(height - 90 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'}}>
                 <div className={'list-grid'}>
                     {products.map(item => (
                         <ProductItem key={item.id} product={item} path={path}/>

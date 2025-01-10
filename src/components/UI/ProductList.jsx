@@ -83,11 +83,12 @@ const ProductList = ({main_data, page, height}) => {
     }
 
     let platformElementFilter = (<div></div>)
+    if (typeof products[0].platform !== 'undefined') {
     if(products[0].platform.includes('PS')){
         platformElementFilter = <FilterCheckBox  param = {'platform'} data = {['PS5', 'PS4']} json = {filterJson} preview = {'Платформа'} setJson = {onSetFilter}/>
     }else if(products[0].platform.includes('One')||products[0].platform.includes('Series')){
         platformElementFilter = <FilterCheckBox  param = {'platform'} data = {['One', 'Series']} json = {filterJson} preview = {'Платформа'} setJson = {onSetFilter}/>
-    }
+    }}
 
     return (
         <div className={'list'} style={{display: 'flex', flexDirection: 'column'}}>

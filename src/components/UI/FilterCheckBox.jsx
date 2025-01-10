@@ -21,11 +21,11 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                     <input type={'checkbox'} onChange={(event) => {
                         const status = event.target.checked;
                         let jsonNew = json
-                        if(param === 'platform'){
-                            if(status){
+                        if (param === 'platform') {
+                            if (status) {
                                 jsonNew.platform = [...jsonNew.platform, el]
                                 setJson(jsonNew);
-                            }else{
+                            } else {
                                 jsonNew.platform.splice(jsonNew.platform.indexOf(el), 1)
                                 setJson(jsonNew);
                             }

@@ -24,9 +24,7 @@ const ProductList = ({main_data, page, height}) => {
     const [sortNap, setSortNap] = useState(true);
     const [stpSort, setStpSort] = useState('Цена↑');
     const [filterJson, setFilterJson] = useState({platform: []});
-    const [filterHeight, setFilterHeight] = useState(null);
-    const [filterWidth, setFilterWidth] = useState(null);
-    const filterRef = useRef();
+    const [filterHeight, setFilterHeight] = useState(0);
 
     const onBack = useCallback(() => {
         navigate(-1);
@@ -85,13 +83,6 @@ const ProductList = ({main_data, page, height}) => {
             setProducts(main_data.body)
         }
     }
-    let width = null
-
-    useEffect(() => {
-        const height = filterRef.current.getBoundingClientRect().height;
-        setFilterHeight(0)
-        width = filterRef.current.getBoundingClientRect().width;
-    }, [filterRef, setFilterHeight]);
 
 
     let platformElementFilter = (<div></div>)
@@ -99,11 +90,11 @@ const ProductList = ({main_data, page, height}) => {
         if (products[0].platform.includes('PS')) {
             platformElementFilter =
                 <FilterCheckBox param={'platform'} data={['PS5', 'PS4']} json={filterJson} preview={'Платформа'}
-                                setJson={onSetFilter} width={filterWidth}/>
+                                setJson={onSetFilter}/>
         } else if (products[0].platform.includes('One') || products[0].platform.includes('Series')) {
             platformElementFilter =
                 <FilterCheckBox param={'platform'} data={['One', 'Series']} json={filterJson} preview={'Платформа'}
-                                setJson={onSetFilter} width={filterWidth}/>
+                                setJson={onSetFilter}/>
         }
     }
 
@@ -148,7 +139,7 @@ const ProductList = ({main_data, page, height}) => {
                     }} className={'text-element'}
                          style={{marginLeft: '15px', fontSize: '18px', lineHeight: '20px'}}>Фильтры
                     </div>
-                    <div ref={filterRef} style={{
+                    <div style={{
                         display: 'flex',
                         marginTop:'7px',
                         marginLeft:'10px',
@@ -157,6 +148,7 @@ const ProductList = ({main_data, page, height}) => {
                         position: 'absolute',
                         overflow: 'hidden',
                         height: String(filterHeight) + 'px',
+                        width:String(window.innerWidth/2)+'px',
                     }}>
                         <div style={{
                             border: '2px solid gray',

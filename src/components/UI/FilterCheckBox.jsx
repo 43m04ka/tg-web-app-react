@@ -56,7 +56,7 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
     return (
         <div style={{marginTop:'4px'}}>
             <div className={'text-element'}
-                 style={{fontSize: '18px', lineHeight: '20px', display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'space-between'}} onClick={() => {
+                 style={{fontSize: '19px', lineHeight: '20px', display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'space-between'}} onClick={() => {
                 onResize()
                 if (filterHeight === oldHeight) {
                     setFilterHeight(0)
@@ -78,8 +78,8 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                      borderBottom: '2px solid gray',
                  }}>
                 {data.map(el => (
-                    <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'left', marginLeft: '15px'}}>
-                        <input type={'checkbox'} style={{transform: 'scale(1.3)'}} onChange={(event) => {
+                    <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'left', marginLeft: '15px', marginTop:'3px', alignItems:'center'}}>
+                        <input type={'checkbox'} style={{transform: 'scale(1.4)'}} onChange={(event) => {
                             const status = event.target.checked;
                             let jsonNew = json
                             if (param === 'platform') {
@@ -101,7 +101,7 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                             }
                             console.log(jsonNew)
                         }}/>
-                        <div className={'text-element'} style={{marginLeft: '5px', fontSize: '18px'}}>{el}</div>
+                        <div className={'text-element'} style={{marginLeft: '7px', fontSize: '15px'}}>{el}</div>
                     </div>))}
             </div>
         </div>

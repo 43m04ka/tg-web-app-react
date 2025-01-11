@@ -8,8 +8,6 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
     let listElement = (<div></div>)
     if (isVisible) {
         listElement = (<div style={{
-            position: 'absolute',
-            marginLeft: '7px',
             marginTop: '5px',
             background: '#171717',
             padding: '4px',
@@ -38,7 +36,7 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
     }
     return (
         <div>
-            <div className={'text-element'} style={{fontSize: '18px',}} onClick={() => {
+            <div className={'text-element'} style={{fontSize: '18px', transitionProperty:'height', transitionDuration:'0.3s'}} onClick={() => {
                 if (isVisible) {
                     setIsVisible(false)
                 } else {

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import '../styles/style.css';
 import ProductItem from "./ProductItem";
 import {useTelegram} from "../../hooks/useTelegram";
@@ -13,6 +13,8 @@ const getTotalPrice = (items = []) => {
     }, 0)
 }
 
+let oldFilterHeight = window.innerHeight-250
+
 const ProductList = ({main_data, page, height}) => {
     console.log(page)
     const [products, setProducts] = useState(main_data.body)
@@ -21,7 +23,10 @@ const ProductList = ({main_data, page, height}) => {
     const navigate = useNavigate();
     const [sortNap, setSortNap] = useState(true);
     const [stpSort, setStpSort] = useState('Цена↑');
-    const [filterJson, setFilterJson] = useState({platform:[]});
+    const [filterJson, setFilterJson] = useState({platform: []});
+    const [filterHeight, setFilterHeight] = useState(null);
+    const [filterWidth, setFilterWidth] = useState(null);
+    const filterRef = useRef();
 
     const onBack = useCallback(() => {
         navigate(-1);
@@ -55,11 +60,10 @@ const ProductList = ({main_data, page, height}) => {
     }
 
 
-
-    const onSetFilter = (json)=>{
+    const onSetFilter = (json) => {
         setFilterJson(json)
 
-        let newProducts =[]
+        let newProducts = []
         if (typeof products[0].platform !== 'undefined') {
             main_data.body.map(el => {
                 let flag = true
@@ -74,21 +78,34 @@ const ProductList = ({main_data, page, height}) => {
             })
             console.log(newProducts.length)
         }
-        if(newProducts.length > 0){
+        if (newProducts.length > 0) {
             setProducts(newProducts)
             console.log(newProducts.length)
-        }else{
+        } else {
             setProducts(main_data.body)
         }
     }
+    let width = null
+
+    useEffect(() => {
+        const height = filterRef.current.getBoundingClientRect().height;
+        setFilterHeight(0)
+        width = filterRef.current.getBoundingClientRect().width;
+    }, [filterRef, setFilterHeight]);
+
 
     let platformElementFilter = (<div></div>)
     if (typeof products[0].platform !== 'undefined') {
-    if(products[0].platform.includes('PS')){
-        platformElementFilter = <FilterCheckBox  param = {'platform'} data = {['PS5', 'PS4']} json = {filterJson} preview = {'Платформа'} setJson = {onSetFilter}/>
-    }else if(products[0].platform.includes('One')||products[0].platform.includes('Series')){
-        platformElementFilter = <FilterCheckBox  param = {'platform'} data = {['One', 'Series']} json = {filterJson} preview = {'Платформа'} setJson = {onSetFilter}/>
-    }}
+        if (products[0].platform.includes('PS')) {
+            platformElementFilter =
+                <FilterCheckBox param={'platform'} data={['PS5', 'PS4']} json={filterJson} preview={'Платформа'}
+                                setJson={onSetFilter} width={filterWidth}/>
+        } else if (products[0].platform.includes('One') || products[0].platform.includes('Series')) {
+            platformElementFilter =
+                <FilterCheckBox param={'platform'} data={['One', 'Series']} json={filterJson} preview={'Платформа'}
+                                setJson={onSetFilter} width={filterWidth}/>
+        }
+    }
 
 
     return (
@@ -120,14 +137,52 @@ const ProductList = ({main_data, page, height}) => {
                     </div>
                 </Link>
             </div>
-            <div style={{display: 'flex', flexDirection: 'row'}}>
+            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                <div style={{}}>
+                    <div onClick={() => {
+                        if (filterHeight === oldFilterHeight) {
+                            setFilterHeight(0)
+                        } else {
+                            setFilterHeight(oldFilterHeight)
+                        }
+                    }} className={'text-element'}
+                         style={{marginLeft: '15px', fontSize: '18px', lineHeight: '20px'}}>Фильтры
+                    </div>
+                    <div ref={filterRef} style={{
+                        display: 'flex',
+                        marginTop:'7px',
+                        marginLeft:'10px',
+                        flexDirection: 'column',
+                        justifyContent: 'left',
+                        position: 'absolute',
+                        overflow: 'hidden',
+                        height: String(filterHeight) + 'px',
+                    }}>
+                        <div style={{
+                            border: '2px solid gray',
+                            borderRadius:'7px',
+                            height:'max-content',
+                            background: '#171717',
+                            transitionProperty: 'height',
+                            transitionDuration: '0.3s',
+                        }}>
+                            <div style={{position:'relative'}}>{platformElementFilter}</div>
+                        <div>21231231</div>
+                        <div>21231231</div>
+                        <div>21231231</div>
+                        <div>21231231</div>
+                        <div>21231231</div>
+                        </div>
+                    </div>
+                </div>
                 <div className={'text-element'} style={{
                     fontSize: '18px',
-                    marginBottom: '5px'
+                    marginBottom: '5px',
+                    marginRight: '15px',
+                    lineHeight: '20px'
                 }}>
                     <div onClick={onSort}>{stpSort}</div>
                 </div>
-                {platformElementFilter}
             </div>
             <div className={'scroll-container-y'}
                  style={{height: String(height - 90 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'}}>

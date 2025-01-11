@@ -43,37 +43,65 @@ function App() {
             Promise.then(async prom => {
                 console.log(prom)
                 const promise = prom
-                    const inputDataCards = promise.cards;
-                    let resultData = promise.structure;
-                    resultData[0].body[1][0].body = []
-                resultData[0].body[1][1].body = []
+                const inputDataCards = promise.cards;
+                let resultData = promise.structure;
+                let count = 0
+                resultData[0].body[1].map(el => {
+                    resultData[0].body[1][count].body = []
+                    count++
+                })
+                count = 0
+                resultData[0].body[0].map(el => {
+                    resultData[0].body[0][count].body = []
+                    count++
+                })
+                count = 0
+                resultData[1].body[1].map(el => {
+                    resultData[1].body[1][count].body = []
+                    count++
+                })
+                count = 0
+                resultData[1].body[0].map(el => {
+                    resultData[1].body[0][count].body = []
+                    count++
+                })
+                count = 0
+                resultData[2].body[1].map(el => {
+                    resultData[2].body[1][count].body = []
+                    count++
+                })
+                count = 0
+                resultData[2].body[0].map(el => {
+                    resultData[2].body[0][count].body = []
+                    count++
+                })
 
-                    await inputDataCards.map(async cardOld => {
-                        let card = cardOld.body
-                        card.id = cardOld.id
+                await inputDataCards.map(async cardOld => {
+                    let card = cardOld.body
+                    card.id = cardOld.id
 
-                        const cardTab = card.tab
-                        const cardCategory = card.tabCategoryPath
+                    const cardTab = card.tab
+                    const cardCategory = card.tabCategoryPath
 
-                        let count = 0
-                        await resultData[cardTab].body['1'].map(async category =>{
-                            if(category.path.replace(/\//g, "") === cardCategory){
-                                resultData[cardTab].body['1'][count].body = [...resultData[cardTab].body['1'][count].body, ...[card]]
-                            }
-                            count += 1;
-                        })
-
-                        count = 0
-                        await resultData[cardTab].body['0'].map(async category =>{
-                            if(category.path.replace(/\//g, "")  === cardCategory){
-                               resultData[cardTab].body['0'][count].body = [...resultData[cardTab].body['0'][count].body, ...[card]]
-                            }
-                            count += 1;
-                        })
-
+                    let count = 0
+                    await resultData[cardTab].body['1'].map(async category => {
+                        if (category.path.replace(/\//g, "") === cardCategory) {
+                            resultData[cardTab].body['1'][count].body = [...resultData[cardTab].body['1'][count].body, ...[card]]
+                        }
+                        count += 1;
                     })
-                    await setMainData(resultData)
-                    await setStatus(2)
+
+                    count = 0
+                    await resultData[cardTab].body['0'].map(async category => {
+                        if (category.path.replace(/\//g, "") === cardCategory) {
+                            resultData[cardTab].body['0'][count].body = [...resultData[cardTab].body['0'][count].body, ...[card]]
+                        }
+                        count += 1;
+                    })
+
+                })
+                await setMainData(resultData)
+                await setStatus(2)
                 console.log(resultData)
 
             })
@@ -115,8 +143,9 @@ function App() {
     useEffect(() => {
         tg.disableVerticalSwipes();
         try {
-            if(tg.platform !== 'tdesktop' && tg.platform !== 'macos'){
-            tg.requestFullscreen()}
+            if (tg.platform !== 'tdesktop' && tg.platform !== 'macos') {
+                tg.requestFullscreen()
+            }
             tg.expand()
         } catch (err) {
             console.log(err)
@@ -131,15 +160,18 @@ function App() {
                 <div style={{height: String(tg?.contentSafeAreaInset.top) + 'px'}}></div>
                 <div style={{height: String(tg?.safeAreaInset.top) + 'px'}}></div>
                 <Routes>
-                    {mainData.map(platform =>(
-                        <Route path={'home'+platform.id} element={<Home main_data={platform} page ={platform.id} width={window.innerWidth} height={size} setBasket = {setBasketData}/>}/>
+                    {mainData.map(platform => (
+                        <Route path={'home' + platform.id}
+                               element={<Home main_data={platform} page={platform.id} width={window.innerWidth}
+                                              height={size} setBasket={setBasketData}/>}/>
                     ))}
 
                     {mainData.map(platform => (
                         platform.body[1].map(category =>
                             (category.body.map(item =>
                                     (<Route path={'card/' + item.id} key={item.id}
-                                            element={<CardProduct mainData={item} height={size} basketData={basketData}/>}/>)
+                                            element={<CardProduct mainData={item} height={size}
+                                                                  basketData={basketData}/>}/>)
                                 )
                             ))
                     ))}
@@ -153,7 +185,8 @@ function App() {
                     {mainData.map(platform => (
                         platform.body[0].map(category => (
                             <Route path={category.path} key={category.id}
-                                   element={<ProductListSelector main_data={category} page={platform.id} height={size} basketData={basketData}/>}/>
+                                   element={<ProductListSelector main_data={category} page={platform.id} height={size}
+                                                                 basketData={basketData}/>}/>
                         ))
                     ))}
                     <Route path={'basket0'} element={<Basket height={size} number={0}/>}/>
@@ -170,14 +203,14 @@ function App() {
 
             </div>
         );
-    } else if(status===1){
+    } else if (status === 1) {
 
         return (<div className={'pong-loader'} style={{
             border: '2px solid #8cdb8b',
             marginTop: String(size / 2 - 60) + 'px',
             marginLeft: String(window.innerWidth / 2 - 40) + 'px'
         }}>Ожидайте</div>);
-    }else if(status===0){
+    } else if (status === 0) {
         sendRequestDatabase()
         onGetData()
         setStatus(1)

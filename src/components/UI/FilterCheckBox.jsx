@@ -17,8 +17,8 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
             borderRadius: '5px'
         }}>
             {data.map(el => (
-                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <input type={'checkbox'} onChange={(event) => {
+                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'left', paddingLeft:'5px'}}>
+                    <input type={'checkbox'} style={{transform:'scale(1.3)'}} onChange={(event) => {
                         const status = event.target.checked;
                         let jsonNew = json
                         if (param === 'platform') {

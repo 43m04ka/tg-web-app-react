@@ -90,6 +90,7 @@ const ProductList = ({main_data, page, height}) => {
         platformElementFilter = <FilterCheckBox  param = {'platform'} data = {['One', 'Series']} json = {filterJson} preview = {'Платформа'} setJson = {onSetFilter}/>
     }}
 
+
     return (
         <div className={'list'} style={{display: 'flex', flexDirection: 'column'}}>
             <div className={'box-grid-panel'}>
@@ -121,7 +122,7 @@ const ProductList = ({main_data, page, height}) => {
             </div>
             <div style={{display: 'flex', flexDirection: 'row'}}>
                 <div className={'text-element'} style={{
-                    fontSize: '16px',
+                    fontSize: '18px',
                     marginBottom: '5px'
                 }}>
                     <div onClick={onSort}>{stpSort}</div>

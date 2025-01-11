@@ -32,13 +32,13 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                         }
                         console.log(jsonNew)
                     }}/>
-                    <div className={'text-element'} style={{marginLeft: '5px'}}>{el}</div>
+                    <div className={'text-element'} style={{marginLeft: '5px', fontSize:'18px'}}>{el}</div>
                 </div>))}
         </div>)
     }
     return (
         <div>
-            <div className={'text-element'} style={{fontSize: '16px',}} onClick={() => {
+            <div className={'text-element'} style={{fontSize: '18px',}} onClick={() => {
                 if (isVisible) {
                     setIsVisible(false)
                 } else {

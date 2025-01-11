@@ -84,7 +84,6 @@ const Basket = ({height, number}) => {
             Promise.then(r => {
                 let newArray = []
                 r.body.map(el => {
-                    console.log(el.tab, number)
                     if (Number(el.tab) === number) {
                         newArray = [...newArray, el]
                     }

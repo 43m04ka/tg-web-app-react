@@ -27,7 +27,7 @@ function App() {
     const [status, setStatus] = useState(0);
     const [basketData, setBasketData] = useState(null);
     let dataRequestDatabase = {
-        method: 'get',
+        method: 'getPreview',
         data: []
     }
 
@@ -40,12 +40,14 @@ function App() {
             body: JSON.stringify(dataRequestDatabase)
         }).then(r => {
             let Promise = r.json()
-            Promise.then(prom => {
+            Promise.then(async prom => {
                 console.log(prom)
-                    const inputDataCards = prom.cards;
-                    let resultData = prom.structure;
+                const promise = prom
+                    const inputDataCards = promise.cards;
+                    let resultData = promise.structure;
+                    resultData[0].body[1][0].body = []
 
-                    inputDataCards.map(cardOld => {
+                    await inputDataCards.map(async cardOld => {
                         let card = cardOld.body
                         card.id = cardOld.id
 
@@ -53,7 +55,7 @@ function App() {
                         const cardCategory = card.tabCategoryPath
 
                         let count = 0
-                        resultData[cardTab].body['1'].map(category =>{
+                        await resultData[cardTab].body['1'].map(async category =>{
                             if(category.path.replace(/\//g, "") === cardCategory){
                                 resultData[cardTab].body['1'][count].body = [...resultData[cardTab].body['1'][count].body, ...[card]]
                             }
@@ -61,16 +63,17 @@ function App() {
                         })
 
                         count = 0
-                        resultData[cardTab].body['0'].map(category =>{
+                        await resultData[cardTab].body['0'].map(async category =>{
                             if(category.path.replace(/\//g, "")  === cardCategory){
-                                resultData[cardTab].body['0'][count].body = [...resultData[cardTab].body['0'][count].body, ...[card]]
+                               resultData[cardTab].body['0'][count].body = [...resultData[cardTab].body['0'][count].body, ...[card]]
                             }
                             count += 1;
                         })
 
                     })
-                    setMainData(resultData)
-                    setStatus(2)
+                    await setMainData(resultData)
+                    await setStatus(2)
+                console.log(resultData)
 
             })
         })

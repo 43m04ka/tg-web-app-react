@@ -128,6 +128,27 @@ const CardProduct = ({mainData, basketData}) => {
         region = 'Регион активации: ' + mainData.region
     }
 
+    useEffect(() => {
+        const height = refText.current.getBoundingClientRect().height;
+        if (textHidden === 2) {
+            oldTExtHeight = height
+            if (height > 17.3 * 6) {
+                setTextHeight(17.3 * 6)
+                setTextHidden(true)
+                setSignElement(
+                    <div className={'background-arrow'}
+                         style={{
+                             width: '20px',
+                             height: '20px',
+                             rotate: '90deg',
+                             transitionProperty: 'rotate',
+                             transitionDuration: '0.3s'
+                         }}/>)
+            } else {
+                setTextHeight(height)
+            }
+        }
+    }, [refText, setTextHeight]);
 
     const onResize = () => {
         if(textHidden !== 2){

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
 import basket from "../icons/basket.png";
 
-const HeadSelector = ({main_data, hidden, page, basketLen}) => {
+const HeadSelector = ({main_data, hidden, page, basketLen, basketReload}) => {
     const [pageSelected, setPageSelected] = useState(page);
 
     let c1, c2, c3 = null
@@ -33,17 +33,20 @@ const HeadSelector = ({main_data, hidden, page, basketLen}) => {
 
     const onclickPS = () => {
         setPageSelected(0);
+        basketReload()
         setColorPS([64, 73, 233]);
         setColorXB([23, 23, 23]);
         setColorSR([23, 23, 23]);
     }
     const onclickXB = () => {
+        basketReload()
         setPageSelected(1);
         setColorXB([73, 233, 64]);
         setColorSR([23, 23, 23]);
         setColorPS([23, 23, 23]);
     }
     const onclickSR = () => {
+        basketReload()
         setPageSelected(2);
         setColorSR([233, 64, 73]);
         setColorPS([23, 23, 23]);

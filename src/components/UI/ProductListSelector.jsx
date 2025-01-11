@@ -11,19 +11,26 @@ const ProductListSelector = ({main_data}) => {
     const [scrollLeft, setScrollLeft] = React.useState(0);
 
     console.log(main_data)
+    let dataOld = main_data.body
 
-    const dataOld = main_data.body.sort(function (a, b) {
-        if (a.category > b.category) {
-            return 1;
+    dataOld = main_data.body.sort(function (a, b) {
+        try {
+            if (a.category > b.category) {
+                return 1;
+            }
+            if (a.category < b.category) {
+                return -1;
+            }
+        } catch (e) {
         }
-        if (a.category < b.category) {
-            return -1;
-        }
-        if (Number(a.view.split(' ')[0]) > Number(b.view.split(' ')[0])) {
-            return 1;
-        }
-        if (Number(a.view.split(' ')[0]) < Number(b.view.split(' ')[0])) {
-            return -1;
+        try {
+            if (Number(a.view.split(' ')[0]) > Number(b.view.split(' ')[0])) {
+                return 1;
+            }
+            if (Number(a.view.split(' ')[0]) < Number(b.view.split(' ')[0])) {
+                return -1;
+            }
+        } catch (e) {
         }
     });
     let data = []
@@ -367,7 +374,7 @@ const ProductListSelector = ({main_data}) => {
                         marginTop: '7px',
                         fontSize: '14px',
                         color: 'white',
-                        textWrap:'wrap',
+                        textWrap: 'wrap',
                         fontFamily: "'Montserrat', sans-serif"
                     }}>Описание:
                     </div>
@@ -375,7 +382,7 @@ const ProductListSelector = ({main_data}) => {
                         marginTop: '7px',
                         fontSize: '14px',
                         color: 'white',
-                        textWrap:'wrap',
+                        textWrap: 'wrap',
                         fontFamily: "'Montserrat', sans-serif"
                     }}>{thisElement.description}
                     </div>
@@ -383,7 +390,7 @@ const ProductListSelector = ({main_data}) => {
                         marginTop: '7px',
                         fontSize: '14px',
                         color: 'white',
-                        textWrap:'wrap',
+                        textWrap: 'wrap',
                         fontFamily: "'Montserrat', sans-serif"
                     }}>{'Платформа: ' + thisElement.platform}
                     </div>

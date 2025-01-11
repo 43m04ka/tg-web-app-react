@@ -13,7 +13,7 @@ const getTotalPrice = (items = []) => {
     }, 0)
 }
 
-let oldFilterHeight = window.innerHeight-250
+let oldFilterHeight = window.innerHeight - 250
 
 const ProductList = ({main_data, page, height}) => {
     console.log(page)
@@ -23,7 +23,7 @@ const ProductList = ({main_data, page, height}) => {
     const navigate = useNavigate();
     const [sortNap, setSortNap] = useState(true);
     const [stpSort, setStpSort] = useState('Цена↑');
-    const [filterJson, setFilterJson] = useState({platform: []});
+    const [filterJson, setFilterJson] = useState({platform: [], category:[]});
     const [filterHeight, setFilterHeight] = useState(0);
 
     const onBack = useCallback(() => {
@@ -62,7 +62,7 @@ const ProductList = ({main_data, page, height}) => {
         setFilterJson(json)
 
         let newProducts = []
-        if (typeof products[0].platform !== 'undefined') {
+        if (typeof main_data.body[0].platform !== 'undefined') {
             main_data.body.map(el => {
                 let flag = true
                 json.platform.map((platform) => {
@@ -75,28 +75,52 @@ const ProductList = ({main_data, page, height}) => {
                 })
             })
             console.log(newProducts.length)
-        }
-        if (newProducts.length > 0) {
-            setProducts(newProducts)
-            console.log(newProducts.length)
-        } else {
-            setProducts(main_data.body)
-        }
-    }
 
+        }if (typeof main_data.body[0].category !== 'undefined') {
+            main_data.body.map(el => {
+                let flag = true
+                json.category.map((platform) => {
+                    console.log(flag)
+                    if (el.category.includes(platform) && flag) {
+                        console.log(platform)
+                        newProducts = [...newProducts, el]
+                        flag = false
+                    }
+                })
+            })
+            console.log(newProducts.length)
+
+        }
+        if(json.platform.length !== 0 || json.category.length !== 0){
+        setProducts(newProducts)}else{setProducts(main_data.body)}
+
+    }
+    
 
     let platformElementFilter = (<div></div>)
-    if (typeof products[0].platform !== 'undefined') {
-        if (products[0].platform.includes('PS')) {
+    try{
+    if (typeof main_data.body[0].platform !== 'undefined') {
+        if (main_data.body[0].platform.includes('PS')) {
             platformElementFilter =
                 <FilterCheckBox param={'platform'} data={['PS5', 'PS4']} json={filterJson} preview={'Платформа'}
                                 setJson={onSetFilter}/>
-        } else if (products[0].platform.includes('One') || products[0].platform.includes('Series')) {
+        } else if (main_data.body[0].platform.includes('One') || products[0].platform.includes('Series')) {
             platformElementFilter =
                 <FilterCheckBox param={'platform'} data={['One', 'Series']} json={filterJson} preview={'Платформа'}
                                 setJson={onSetFilter}/>
         }
-    }
+    }}catch (e){}
+
+    let categoryElementFilter = (<div></div>)
+    try{
+
+        if (typeof products[0].category !== 'undefined') {
+        if (products[0].category.includes('Старый') || products[0].category.includes('Новый')) {
+            categoryElementFilter =
+                <FilterCheckBox param={'category'} data={['Старый аккаунт', 'Новый аккаунт']} json={filterJson} preview={'Вид активации'}
+                                setJson={onSetFilter}/>
+        }
+    }}catch (e){}
 
 
     return (
@@ -141,29 +165,26 @@ const ProductList = ({main_data, page, height}) => {
                     </div>
                     <div style={{
                         display: 'flex',
-                        marginTop:'7px',
-                        marginLeft:'10px',
+                        marginTop: '7px',
+                        marginLeft: '10px',
                         flexDirection: 'column',
                         justifyContent: 'left',
                         position: 'absolute',
                         overflow: 'hidden',
                         height: String(filterHeight) + 'px',
-                        width:String(window.innerWidth/2)+'px',
+                        width: String(window.innerWidth / 2) + 'px',
                     }}>
                         <div style={{
                             border: '2px solid gray',
-                            borderRadius:'7px',
-                            height:'max-content',
+                            borderRadius: '7px',
+                            height: 'max-content',
                             background: '#171717',
                             transitionProperty: 'height',
                             transitionDuration: '0.3s',
                         }}>
-                            <div style={{position:'relative'}}>{platformElementFilter}</div>
-                        <div>21231231</div>
-                        <div>21231231</div>
-                        <div>21231231</div>
-                        <div>21231231</div>
-                        <div>21231231</div>
+                            <div style={{position: 'relative'}}>{platformElementFilter}</div>
+                            <div style={{position: 'relative'}}>{categoryElementFilter}</div>
+
                         </div>
                     </div>
                 </div>

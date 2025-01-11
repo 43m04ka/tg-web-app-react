@@ -90,6 +90,14 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                                     jsonNew.platform.splice(jsonNew.platform.indexOf(el), 1)
                                     setJson(jsonNew);
                                 }
+                            }if (param === 'category') {
+                                if (status) {
+                                    jsonNew.category = [...jsonNew.category, el]
+                                    setJson(jsonNew);
+                                } else {
+                                    jsonNew.category.splice(jsonNew.category.indexOf(el), 1)
+                                    setJson(jsonNew);
+                                }
                             }
                             console.log(jsonNew)
                         }}/>

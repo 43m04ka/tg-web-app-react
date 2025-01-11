@@ -93,6 +93,13 @@ const CardProduct = ({mainData, basketData}) => {
         descriptionText = 'Описание: ' + mainData.description
     }
 
+    let genre = ''
+    if (typeof mainData.genre === 'undefined') {
+        genre = ''
+    } else {
+        genre = 'Жанр: ' + mainData.genre
+    }
+
     let oldPrice = ''
     if (typeof mainData.oldPrice === 'undefined') {
         oldPrice = ''
@@ -269,6 +276,15 @@ const CardProduct = ({mainData, basketData}) => {
                         fontFamily: "'Montserrat', sans-serif"
                     }}>
                         {region}
+                    </div>
+
+                    <div style={{
+                        marginTop: '12px',
+                        fontSize: '14px',
+                        color: 'white',
+                        fontFamily: "'Montserrat', sans-serif"
+                    }}>
+                        {genre}
                     </div>
 
                 </div>

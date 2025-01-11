@@ -75,7 +75,7 @@ const AdminPanel = () => {
             arrayRequest = [...arrayRequest, ...[newCard]]
         })
 
-        sendRequestOnDatabase(arrayRequest.slice(0, 20), 'add')
+        sendRequestOnDatabase(arrayRequest.slice(0, 40), 'add')
     }
 
 

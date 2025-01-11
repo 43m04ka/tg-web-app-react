@@ -46,6 +46,7 @@ function App() {
                     const inputDataCards = promise.cards;
                     let resultData = promise.structure;
                     resultData[0].body[1][0].body = []
+                resultData[0].body[1][1].body = []
 
                     await inputDataCards.map(async cardOld => {
                         let card = cardOld.body

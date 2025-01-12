@@ -76,6 +76,7 @@ const AdminPanel = () => {
             let lang = false
             let voice = false
 
+            if (typeof el.language !== 'undefined' && typeof el.voice !== 'undefined') {
             if(el.language.includes('Russian')){
                 lang  = true
             }
@@ -90,7 +91,7 @@ const AdminPanel = () => {
             }
             else{
                 newCard.languageSelector = 'Без перевода'
-            }
+            }}
         })
 
 

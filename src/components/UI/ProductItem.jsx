@@ -84,7 +84,7 @@ const ProductItem = ({product, path}) => {
                         }}>{product.platform}</div>
                         {parcentEl}
                     </div>
-                    <div style={{height: '40px', overflow: 'hidden'}}>
+                    <div style={{height: '40px', overflow: 'hidden', lineHeight:'20px'}}>
                         <div className={'text-element name-element'}>{product.title+view}</div>
                     </div>
                     <div style={{display: 'flex', justifyContent: 'left'}}>

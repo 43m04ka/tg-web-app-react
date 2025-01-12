@@ -178,7 +178,7 @@ function App() {
                     {mainData.map(platform => (
                         platform.body[1].map(category => (
                             <Route path={'home/' + category.path} key={category.id}
-                                   element={<ProductList main_data={category} page={platform.id} height={size}/>}/>
+                                   element={<ProductList main_data={category} page={platform.id} height={size} path ={category.path}/>}/>
                         ))
                     ))}
 
@@ -209,7 +209,7 @@ function App() {
             border: '2px solid #8cdb8b',
             marginTop: String(size / 2 - 60) + 'px',
             marginLeft: String(window.innerWidth / 2 - 40) + 'px'
-        }}>Ожидайте</div>);
+        }}></div>);
     } else if (status === 0) {
         sendRequestDatabase()
         onGetData()

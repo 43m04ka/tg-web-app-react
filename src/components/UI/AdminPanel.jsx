@@ -64,7 +64,7 @@ const AdminPanel = () => {
     }
 
 
-    const setButtonTableClassic = (table) => {
+    const setButtonTableClassic = async (table) => {
 
         let arrayRequest = []
         table.map(el => {
@@ -75,7 +75,18 @@ const AdminPanel = () => {
             arrayRequest = [...arrayRequest, ...[newCard]]
         })
 
-        sendRequestOnDatabase(arrayRequest.slice(0, 40), 'add')
+
+        let array = arrayRequest; //массив, можно использовать массив объектов
+        let size = 20; //размер подмассива
+        let subarray = []; //массив в который будет выведен результат.
+        for (let i = 0; i <Math.ceil(array.length/size); i++){
+            subarray[i] = array.slice((i*size), (i*size) + size);
+        }
+        await setStatus(10);
+        subarray.map( async el=>{
+            await sendRequestOnDatabase(el, 'add')
+        })
+        await setStatus(1);
     }
 
 
@@ -97,13 +108,13 @@ const AdminPanel = () => {
             let Promise = r.json()
             Promise.then(prom => {
                 console.log(prom, 'возвратил get')
-                if (dataRequestDatabase.method === 'add') {
-                    setStatus(1)
-                } else if (dataRequestDatabase.method === 'get') {
+                if (dataRequestDatabase.method === 'getPreview') {
                     setDataStructure(prom.structure)
                     setDataCards(prom.cards)
                     setStatus(2)
                 }else if (dataRequestDatabase.method === 'upd') {
+                    setStatus(1)
+                }else if (dataRequestDatabase.method === 'del') {
                     setStatus(1)
                 }
             })
@@ -190,6 +201,8 @@ const AdminPanel = () => {
         console.log(resultData)
     }
 
+    console.log(status)
+
 
     if (status === 2) {
         if (pageSelected === 0) {
@@ -223,14 +236,19 @@ const AdminPanel = () => {
                     <ExcelReader setButtonTable={setButtonTableClassic}/>
                 </div>
                 <button onClick={() => {
-                    sendRequestOnDatabase([], 'get')
+                    sendRequestOnDatabase([], 'getPreview')
                 }}>getData
+                </button>
+                <button onClick={() => {
+                    sendRequestOnDatabase([], 'reload')
+                }}>reload
                 </button>
             </div>)
         }
         if (pageSelected === 1) {
             let allCategory = []
             dataCards.map(card => {
+
                 let flag = false
                 let count = 0
                 let index = 0
@@ -467,7 +485,7 @@ const AdminPanel = () => {
             </div>)
         }
     } else if (status === 1) {
-        sendRequestOnDatabase([], 'get')
+        sendRequestOnDatabase([], 'getPreview')
         return (
             <div className={'text-element'}>
                 Ожидайте

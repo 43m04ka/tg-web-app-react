@@ -15,7 +15,7 @@ const getTotalPrice = (items = []) => {
 
 let oldFilterHeight = window.innerHeight - 250
 
-const ProductList = ({main_data, page, height}) => {
+const ProductList = ({main_data, page, height, setData}) => {
     console.log(page)
     const [products, setProducts] = useState([])
     const [status, setStatus] = useState(0);
@@ -50,6 +50,7 @@ const ProductList = ({main_data, page, height}) => {
                 console.log(prom, 'возвратил get')
                 if (dataRequestDatabase.method === 'getList') {
                     setProducts(prom.cards)
+                    setData(prom.cards)
                     console.log(prom.cards)
                     setLen(prom.len)
                     setStatus(1)
@@ -178,6 +179,7 @@ const ProductList = ({main_data, page, height}) => {
             list = 1;
             sendRequestOnDatabase({path: path, number: list}, 'getList');
             setListNumber(list)
+            setStatus(10)
         }}
                        className={'text-element'} style={{
             height: '20px',
@@ -190,7 +192,8 @@ const ProductList = ({main_data, page, height}) => {
         nav2El = (<div onClick={() => {
             list = listNumber - 1;
             sendRequestOnDatabase({path: path, number: list}, 'getList');
-            setListNumber(list)
+            setListNumber(list);
+            setStatus(10)
         }}
                        className={'background-arrow'} style={{
             height: '20px',
@@ -205,7 +208,8 @@ const ProductList = ({main_data, page, height}) => {
         nav3El = (<div onClick={() => {
             list = len;
             sendRequestOnDatabase({path: path, number: list}, 'getList');
-            setListNumber(list)
+            setListNumber(list);
+            setStatus(10)
         }}
                        className={'text-element'} style={{
             height: '20px',
@@ -216,12 +220,13 @@ const ProductList = ({main_data, page, height}) => {
             border: '1px solid gray',
         }}>{len}</div>)
 
-        nav4El= (<div onClick={() => {
+        nav4El = (<div onClick={() => {
             list = listNumber + 1;
             sendRequestOnDatabase({path: path, number: list}, 'getList');
             setListNumber(list)
+            setStatus(10)
         }}
-                      className={'background-arrow'} style={{
+                       className={'background-arrow'} style={{
             height: '20px',
             width: '20px',
             textAlign: 'center',
@@ -306,7 +311,10 @@ const ProductList = ({main_data, page, height}) => {
                     </div>
                 </div>
                 <div className={'scroll-container-y'}
-                     style={{ borderBottom:'2px solid #454545',height: String(height - 130 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'}}>
+                     style={{
+                         borderBottom: '2px solid #454545',
+                         height: String(height - 130 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'
+                     }}>
                     <div className={'list-grid'}>
                         {products.map(item => {
                             let newItem = item.body
@@ -321,7 +329,7 @@ const ProductList = ({main_data, page, height}) => {
                     width: String(window.innerWidth) + 'px',
                     display: 'flex',
                     flexDirection: 'row',
-                    marginTop:'10px'
+                    marginTop: '10px'
                 }}>
                     {nav2El}
                     {nav1El}
@@ -332,7 +340,7 @@ const ProductList = ({main_data, page, height}) => {
                         lineHeight: '20px',
                         borderRadius: '5px',
                         border: '1px solid gray',
-                        background:'#6194ea'
+                        background: '#6194ea'
                     }}>{listNumber}</div>
                     {nav3El}
                     {nav4El}
@@ -346,7 +354,118 @@ const ProductList = ({main_data, page, height}) => {
             marginTop: String(window.innerHeight / 2 - 60) + 'px',
             marginLeft: String(window.innerWidth / 2 - 40) + 'px'
         }}></div>)
+    } else if (status === 10) {
+        return (
+            <div className={'list'} style={{display: 'flex', flexDirection: 'column'}}>
+                <div className={'box-grid-panel'}>
+                    <Link to={'/search' + String(page)} className={'link-element'}>
+                        <div className={'search'} style={{padding: '10px', display: 'flex', flexDirection: 'row'}}>
+                            <div className={'background-search'} style={{width: '25px', height: '25px'}}></div>
+                            <div style={{
+                                height: '25px',
+                                alignContent: 'center',
+                                marginLeft: '3px',
+                                fontSize: "16px",
+                                color: 'black',
+                                fontFamily: "'Montserrat', sans-serif",
+                                fontVariant: 'small-caps'
+                            }}>Найти игру, подписку...
+                            </div>
+                        </div>
+                    </Link>
+                    <Link to={'/basket' + page} className={'link-element'}>
+                        <div className={'div-button-panel'} style={{padding: '3px'}}>
+                            <div className={'background-basket'} style={{width: '100%', height: '100%'}}></div>
+                        </div>
+                    </Link>
+                    <Link to={'/info'} className={'link-element'}>
+                        <div className={'div-button-panel'} style={{padding: '6px'}}>
+                            <div className={'background-profile'} style={{width: '100%', height: '100%'}}></div>
+                        </div>
+                    </Link>
+                </div>
+                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <div style={{}}>
+                        <div onClick={() => {
+                            if (filterHeight === oldFilterHeight) {
+                                setFilterHeight(0)
+                            } else {
+                                setFilterHeight(oldFilterHeight)
+                            }
+                        }} className={'text-element'}
+                             style={{marginLeft: '15px', fontSize: '18px', lineHeight: '20px'}}>Фильтры
+                        </div>
+                        <div style={{
+                            display: 'flex',
+                            marginTop: '7px',
+                            marginLeft: '10px',
+                            flexDirection: 'column',
+                            justifyContent: 'left',
+                            position: 'absolute',
+                            overflow: 'hidden',
+                            height: String(filterHeight) + 'px',
+                            width: String(window.innerWidth / 2) + 'px',
+                        }}>
+                            <div style={{
+                                border: '2px solid gray',
+                                borderRadius: '7px',
+                                height: 'max-content',
+                                background: '#171717',
+                                transitionProperty: 'height',
+                                transitionDuration: '0.3s',
+                            }}>
+                                <div style={{position: 'relative'}}>{platformElementFilter}</div>
+                                <div style={{position: 'relative'}}>{categoryElementFilter}</div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div className={'text-element'} style={{
+                        fontSize: '18px',
+                        marginBottom: '5px',
+                        marginRight: '15px',
+                        lineHeight: '20px'
+                    }}>
+                        <div onClick={onSort}>{stpSort}</div>
+                    </div>
+                </div>
+                <div className={'scroll-container-y'}
+                     style={{
+                         borderBottom: '2px solid #454545',
+                         height: String(height - 130 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'
+                     }}>
+                    <div className={'pong-loader'} style={{
+                        border: '2px solid #8cdb8b',
+                        marginTop: String(window.innerHeight / 2 - 60) + 'px',
+                        marginLeft: String(window.innerWidth / 2 - 40) + 'px'
+                    }}></div>
+                </div>
+                <div style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: String(window.innerWidth) + 'px',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    marginTop: '10px'
+                }}>
+                    {nav2El}
+                    {nav1El}
+                    <div className={'text-element'} style={{
+                        height: '20px',
+                        width: '20px',
+                        textAlign: 'center',
+                        lineHeight: '20px',
+                        borderRadius: '5px',
+                        border: '1px solid gray',
+                        background: '#6194ea'
+                    }}>{listNumber}</div>
+                    {nav3El}
+                    {nav4El}
+                </div>
+            </div>
+        );
     }
+
 };
 
 export default ProductList;

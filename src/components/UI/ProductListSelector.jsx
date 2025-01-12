@@ -80,7 +80,16 @@ const ProductListSelector = ({main_data}) => {
 
     let url = data[selectCategory].body[selectView].img
 
-    let thisElement = dataOld[(selectCategory) * data[0].body.length + selectView]
+    let count = 0
+    let sum = 0
+    data.map(el=>{
+        if((selectCategory-count) * el.body.length >0){
+            sum += (selectCategory-count) * el.body.length
+            console.log(sum)
+        }
+        count+=1
+    })
+    let thisElement = dataOld[sum + + selectView]
 
     let heightImg = window.innerWidth - 20
     if (isImgHidden) {

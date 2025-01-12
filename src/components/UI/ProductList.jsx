@@ -91,9 +91,9 @@ const ProductList = ({main_data, page, height, setData}) => {
     }
 
     if (sortNap) {
-        products.sort((a, b) => (+(a.price - b.price)))
+        products.sort((a, b) => (+(a.body.price - b.body.price)))
     } else {
-        products.sort((a, b) => (+(b.price - a.price)));
+        products.sort((a, b) => (+(b.body.price - a.body.price)));
     }
 
 
@@ -256,41 +256,41 @@ const ProductList = ({main_data, page, height, setData}) => {
                     </Link>
                 </div>
                 <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <div style={{}}>
-                        <div onClick={() => {
-                            if (filterHeight === oldFilterHeight) {
-                                setFilterHeight(0)
-                            } else {
-                                setFilterHeight(oldFilterHeight)
-                            }
-                        }} className={'text-element'}
-                             style={{marginLeft: '15px', fontSize: '18px', lineHeight: '20px'}}>Фильтры
-                        </div>
-                        <div style={{
-                            display: 'flex',
-                            marginTop: '7px',
-                            marginLeft: '10px',
-                            flexDirection: 'column',
-                            justifyContent: 'left',
-                            position: 'absolute',
-                            overflow: 'hidden',
-                            height: String(filterHeight) + 'px',
-                            width: String(window.innerWidth / 2) + 'px',
-                        }}>
-                            <div style={{
-                                border: '2px solid gray',
-                                borderRadius: '7px',
-                                height: 'max-content',
-                                background: '#171717',
-                                transitionProperty: 'height',
-                                transitionDuration: '0.3s',
-                            }}>
-                                <div style={{position: 'relative'}}>{languageElementFilter}</div>
-                                <div style={{position: 'relative'}}>{platformElementFilter}</div>
-                                <div style={{position: 'relative'}}>{categoryElementFilter}</div>
-                            </div>
-                        </div>
-                    </div>
+                    {/*<div style={{}}>*/}
+                    {/*    <div onClick={() => {*/}
+                    {/*        if (filterHeight === oldFilterHeight) {*/}
+                    {/*            setFilterHeight(0)*/}
+                    {/*        } else {*/}
+                    {/*            setFilterHeight(oldFilterHeight)*/}
+                    {/*        }*/}
+                    {/*    }} className={'text-element'}*/}
+                    {/*         style={{marginLeft: '15px', fontSize: '18px', lineHeight: '20px'}}>Фильтры*/}
+                    {/*    </div>*/}
+                    {/*    <div style={{*/}
+                    {/*        display: 'flex',*/}
+                    {/*        marginTop: '7px',*/}
+                    {/*        marginLeft: '10px',*/}
+                    {/*        flexDirection: 'column',*/}
+                    {/*        justifyContent: 'left',*/}
+                    {/*        position: 'absolute',*/}
+                    {/*        overflow: 'hidden',*/}
+                    {/*        height: String(filterHeight) + 'px',*/}
+                    {/*        width: String(window.innerWidth / 2) + 'px',*/}
+                    {/*    }}>*/}
+                    {/*        <div style={{*/}
+                    {/*            border: '2px solid gray',*/}
+                    {/*            borderRadius: '7px',*/}
+                    {/*            height: 'max-content',*/}
+                    {/*            background: '#171717',*/}
+                    {/*            transitionProperty: 'height',*/}
+                    {/*            transitionDuration: '0.3s',*/}
+                    {/*        }}>*/}
+                    {/*            <div style={{position: 'relative'}}>{languageElementFilter}</div>*/}
+                    {/*            <div style={{position: 'relative'}}>{platformElementFilter}</div>*/}
+                    {/*            <div style={{position: 'relative'}}>{categoryElementFilter}</div>*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                     <div className={'text-element'} style={{
                         fontSize: '18px',
                         marginBottom: '5px',
@@ -380,41 +380,41 @@ const ProductList = ({main_data, page, height, setData}) => {
                     </Link>
                 </div>
                 <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <div style={{}}>
-                        <div onClick={() => {
-                            if (filterHeight === oldFilterHeight) {
-                                setFilterHeight(0)
-                            } else {
-                                setFilterHeight(oldFilterHeight)
-                            }
-                        }} className={'text-element'}
-                             style={{marginLeft: '15px', fontSize: '18px', lineHeight: '20px'}}>Фильтры
-                        </div>
-                        <div style={{
-                            display: 'flex',
-                            marginTop: '7px',
-                            marginLeft: '10px',
-                            flexDirection: 'column',
-                            justifyContent: 'left',
-                            position: 'absolute',
-                            overflow: 'hidden',
-                            height: String(filterHeight) + 'px',
-                            width: String(window.innerWidth / 2) + 'px',
-                        }}>
-                            <div style={{
-                                border: '2px solid gray',
-                                borderRadius: '7px',
-                                height: 'max-content',
-                                background: '#171717',
-                                transitionProperty: 'height',
-                                transitionDuration: '0.3s',
-                            }}>
-                                <div style={{position: 'relative'}}>{platformElementFilter}</div>
-                                <div style={{position: 'relative'}}>{categoryElementFilter}</div>
-                                <div style={{position: 'relative'}}>{languageElementFilter}</div>
-                            </div>
-                        </div>
-                    </div>
+                    {/*<div style={{}}>*/}
+                    {/*    <div onClick={() => {*/}
+                    {/*        if (filterHeight === oldFilterHeight) {*/}
+                    {/*            setFilterHeight(0)*/}
+                    {/*        } else {*/}
+                    {/*            setFilterHeight(oldFilterHeight)*/}
+                    {/*        }*/}
+                    {/*    }} className={'text-element'}*/}
+                    {/*         style={{marginLeft: '15px', fontSize: '18px', lineHeight: '20px'}}>Фильтры*/}
+                    {/*    </div>*/}
+                    {/*    <div style={{*/}
+                    {/*        display: 'flex',*/}
+                    {/*        marginTop: '7px',*/}
+                    {/*        marginLeft: '10px',*/}
+                    {/*        flexDirection: 'column',*/}
+                    {/*        justifyContent: 'left',*/}
+                    {/*        position: 'absolute',*/}
+                    {/*        overflow: 'hidden',*/}
+                    {/*        height: String(filterHeight) + 'px',*/}
+                    {/*        width: String(window.innerWidth / 2) + 'px',*/}
+                    {/*    }}>*/}
+                    {/*        <div style={{*/}
+                    {/*            border: '2px solid gray',*/}
+                    {/*            borderRadius: '7px',*/}
+                    {/*            height: 'max-content',*/}
+                    {/*            background: '#171717',*/}
+                    {/*            transitionProperty: 'height',*/}
+                    {/*            transitionDuration: '0.3s',*/}
+                    {/*        }}>*/}
+                    {/*            <div style={{position: 'relative'}}>{platformElementFilter}</div>*/}
+                    {/*            <div style={{position: 'relative'}}>{categoryElementFilter}</div>*/}
+                    {/*            <div style={{position: 'relative'}}>{languageElementFilter}</div>*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                     <div className={'text-element'} style={{
                         fontSize: '18px',
                         marginBottom: '5px',

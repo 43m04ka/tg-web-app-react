@@ -220,7 +220,6 @@ const AdminPanel = () => {
         console.log(resultData)
     }
 
-    console.log(status)
 
 
     if (status === 2) {

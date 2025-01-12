@@ -4,6 +4,9 @@ import {useNavigate, useParams} from "react-router-dom";
 
 let oldTExtHeight = 0
 const CardProduct = ({mainData, basketData}) => {
+    let newMainData = mainData.body
+    newMainData.id = mainData.id
+    mainData = newMainData
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const [isBuy, setIsBuy] = React.useState(false);

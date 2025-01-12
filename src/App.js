@@ -25,6 +25,8 @@ function App() {
             body: [[], []]
         }, {id: 2, page: 'service', body: [[], []]}]);
     const [status, setStatus] = useState(0);
+    const [dataCards, setDataCards] = useState(null)
+    console.log(dataCards)
     const [basketData, setBasketData] = useState(null);
     let dataRequestDatabase = {
         method: 'getPreview',
@@ -44,6 +46,7 @@ function App() {
                 console.log(prom)
                 const promise = prom
                 const inputDataCards = promise.cards;
+                setDataCards(inputDataCards)
                 let resultData = promise.structure;
                 let count = 0
                 resultData[0].body[1].map(el => {
@@ -166,19 +169,17 @@ function App() {
                                               height={size} setBasket={setBasketData}/>}/>
                     ))}
 
-                    {mainData.map(platform => (
-                        platform.body[1].map(category =>
-                            (category.body.map(item =>
-                                    (<Route path={'card/' + item.id} key={item.id}
-                                            element={<CardProduct mainData={item} height={size}
-                                                                  basketData={basketData}/>}/>)
-                                )
-                            ))
-                    ))}
+                    {dataCards.map(item =>
+                        (<Route path={'card/' + item.id} key={item.id}
+                                element={<CardProduct mainData={item} height={size}
+                                                      basketData={basketData}/>}/>)
+                    )
+                    }
                     {mainData.map(platform => (
                         platform.body[1].map(category => (
                             <Route path={'home/' + category.path} key={category.id}
-                                   element={<ProductList main_data={category} page={platform.id} height={size} path ={category.path}/>}/>
+                                   element={<ProductList main_data={category} page={platform.id} height={size}
+                                                         path={category.path}/>}/>
                         ))
                     ))}
 

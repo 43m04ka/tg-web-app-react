@@ -306,7 +306,7 @@ const ProductList = ({main_data, page, height}) => {
                     </div>
                 </div>
                 <div className={'scroll-container-y'}
-                     style={{height: String(height - 120 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'}}>
+                     style={{ borderBottom:'2px solid #454545',height: String(height - 130 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'}}>
                     <div className={'list-grid'}>
                         {products.map(item => {
                             let newItem = item.body
@@ -320,7 +320,8 @@ const ProductList = ({main_data, page, height}) => {
                     alignItems: 'center',
                     width: String(window.innerWidth) + 'px',
                     display: 'flex',
-                    flexDirection: 'row'
+                    flexDirection: 'row',
+                    marginTop:'10px'
                 }}>
                     {nav2El}
                     {nav1El}

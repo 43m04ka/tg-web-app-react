@@ -104,10 +104,32 @@ const CardProduct = ({mainData, basketData}) => {
     }
 
     let oldPrice = ''
+    let parcent = ''
     if (typeof mainData.oldPrice === 'undefined') {
         oldPrice = ''
     } else {
-        oldPrice = mainData.oldPrice + ' ₽'
+        oldPrice = String(mainData.oldPrice) + ' ₽'
+        parcent = '−'+String(Math.ceil((1-mainData.price/mainData.oldPrice)*100))+'%'
+    }
+    let parcentEl = (<div></div>)
+    if(parcent !== ''){
+        parcentEl = (<div style={{
+            lineHeight: '20px',
+            background: '#ff5d5d',
+            paddingLeft: '3px',
+            paddingRight: '3px',
+            borderRadius: '5px',
+            marginBottom: '5px',
+            textDecoration: 'none',
+            textAlign: 'left',
+            marginLeft: '5px',
+            fontFamily: "'Montserrat', sans-serif",
+            fontWeight: 700,
+            fontSize: '12px',
+            overflow: 'hidden',
+            color: 'white',
+            width: 'max-content'
+        }}>{parcent}</div>)
     }
 
     let endDate = ''
@@ -191,13 +213,16 @@ const CardProduct = ({mainData, basketData}) => {
                 marginRight: '10px',
                 width: String(window.innerWidth - 20) + 'px',
                 marginTop: '10px',
-                paddingBottom: '5px'
+                paddingBottom: '5px',
             }}>
-                <img src={mainData.img} className={'img'} style={{
+                <div className={'img'} style={{
                     height: String(window.innerWidth - 20) + 'px',
-                    borderRadius: '10px'
-                }}
-                     alt="Product Image"/>
+                    borderRadius: '10px', backgroundImage:"url('"+mainData.img+"')",
+                    backgroundSize: 'cover',     display:'flex',
+                    flexDirection:'row',
+                    alignItems:'end',
+                    justifyContent: 'space-between',
+                }}>{parcentEl}</div>
                 <div style={{
                     color: 'white',
                     fontSize: '22px',

@@ -4,10 +4,32 @@ import {Link} from "react-router-dom";
 const HomeBlockElement = ({path, data}) => {
 
     let oldPrice = ''
+    let parcent = ''
     if (typeof data.oldPrice === 'undefined') {
         oldPrice = ''
     } else {
         oldPrice = String(data.oldPrice) + ' ₽'
+        parcent = '−'+String(Math.ceil((1-data.price/data.oldPrice)*100))+'%'
+    }
+    let parcentEl = (<div></div>)
+    if(parcent !== ''){
+        parcentEl = (<div style={{
+            lineHeight: '20px',
+            background: '#ff5d5d',
+            paddingLeft: '3px',
+            paddingRight: '3px',
+            borderRadius: '5px',
+            marginBottom: '5px',
+            textDecoration: 'none',
+            textAlign: 'left',
+            marginRight: '5px',
+            fontFamily: "'Montserrat', sans-serif",
+            fontWeight: 700,
+            fontSize: '12px',
+            overflow: 'hidden',
+            color: 'white',
+            width: 'max-content'
+        }}>{parcent}</div>)
     }
 
     let dataRelease = ''
@@ -31,14 +53,16 @@ const HomeBlockElement = ({path, data}) => {
 
     return (
         <div className={'home-block-element'}>
-            <Link to={'/card/'  + data.id} className={'link-element'}>
+            <Link to={'/card/' + data.id} className={'link-element'}>
                 <div className={'box-home-block-element'}>
                     <div style={{
                         backgroundImage: 'url("' + data.img + '+")',
                         backgroundRepeat: 'no-repeat',
                         backgroundSize: 'cover',
-                        alignContent: 'end',
-                        justifyItems: 'left'
+                        display:'flex',
+                        flexDirection:'row',
+                        alignItems:'end',
+                        justifyContent: 'space-between',
                     }} className={'img-home'}>
                         <div style={{
                             lineHeight: '20px',
@@ -48,18 +72,19 @@ const HomeBlockElement = ({path, data}) => {
                             borderRadius: '5px',
                             marginBottom: '5px',
                             textDecoration: 'none',
-                            textAlign:'left',
-                            marginLeft:'5px',
-                            fontFamily:"'Montserrat', sans-serif",
-                            fontWeight:700,
-                            fontSize:'12px',
-                            overflow:'hidden',
-                            color:'white',
-                            width:'max-content'
+                            textAlign: 'left',
+                            marginLeft: '5px',
+                            fontFamily: "'Montserrat', sans-serif",
+                            fontWeight: 700,
+                            fontSize: '12px',
+                            overflow: 'hidden',
+                            color: 'white',
+                            width: 'max-content'
                         }}>{data.platform}</div>
+                        {parcentEl}
                     </div>
                     <div style={{height: '37px', overflow: 'hidden'}}>
-                        <div className={'text-element name-element'}>{data.title+view}</div>
+                        <div className={'text-element name-element'}>{data.title + view}</div>
                     </div>
                     <div style={{display: 'flex', justifyContent: 'left'}}>
                         <div className={'text-element price-element'}

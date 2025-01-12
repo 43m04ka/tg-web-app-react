@@ -5,10 +5,32 @@ import {Link} from "react-router-dom";
 const ProductItem = ({product, path}) => {
 
     let oldPrice = ''
-    if (typeof product.old_price === 'undefined') {
+    let parcent = ''
+    if (typeof product.oldPrice === 'undefined') {
         oldPrice = ''
     } else {
-        oldPrice = String(product.old_price) + ' ₽'
+        oldPrice = String(product.oldPrice) + ' ₽'
+        parcent = '−'+String(Math.ceil((1-product.price/product.oldPrice)*100))+'%'
+    }
+    let parcentEl = (<div></div>)
+    if(parcent !== ''){
+        parcentEl = (<div style={{
+            lineHeight: '20px',
+            background: '#ff5d5d',
+            paddingLeft: '3px',
+            paddingRight: '3px',
+            borderRadius: '5px',
+            marginBottom: '5px',
+            textDecoration: 'none',
+            textAlign: 'left',
+            marginRight: '5px',
+            fontFamily: "'Montserrat', sans-serif",
+            fontWeight: 700,
+            fontSize: '12px',
+            overflow: 'hidden',
+            color: 'white',
+            width: 'max-content'
+        }}>{parcent}</div>)
     }
 
     let dataRelease = ''
@@ -38,8 +60,10 @@ const ProductItem = ({product, path}) => {
                         backgroundImage: 'url("' + product.img + '+")',
                         backgroundRepeat: 'no-repeat',
                         backgroundSize: 'cover',
-                        alignContent: 'end',
-                        justifyItems: 'left'
+                        display:'flex',
+                        flexDirection:'row',
+                        alignItems:'end',
+                        justifyContent: 'space-between',
                     }} className={'img-home'}>
                         <div style={{
                             lineHeight: '20px',
@@ -58,6 +82,7 @@ const ProductItem = ({product, path}) => {
                             color: 'white',
                             width: 'max-content'
                         }}>{product.platform}</div>
+                        {parcentEl}
                     </div>
                     <div style={{height: '40px', overflow: 'hidden'}}>
                         <div className={'text-element name-element'}>{product.title+view}</div>

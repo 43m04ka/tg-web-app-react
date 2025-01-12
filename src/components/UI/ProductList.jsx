@@ -25,7 +25,7 @@ const ProductList = ({main_data, page, height, setData}) => {
     const navigate = useNavigate();
     const [sortNap, setSortNap] = useState(true);
     const [stpSort, setStpSort] = useState('Цена↑');
-    const [filterJson, setFilterJson] = useState({platform: [], category: []});
+    const [filterJson, setFilterJson] = useState({platform: [], category: [], languageSelector:[]});
     const [filterHeight, setFilterHeight] = useState(0);
     let list = 1
     const [listNumber, setListNumber] = useState(1);
@@ -99,44 +99,7 @@ const ProductList = ({main_data, page, height, setData}) => {
 
     const onSetFilter = (json) => {
         setFilterJson(json)
-
-        let newProducts = []
-        if (typeof main_data.body[0].platform !== 'undefined') {
-            main_data.body.map(el => {
-                let flag = true
-                json.platform.map((platform) => {
-                    console.log(flag)
-                    if (el.platform.includes(platform) && flag) {
-                        console.log(platform)
-                        newProducts = [...newProducts, el]
-                        flag = false
-                    }
-                })
-            })
-            console.log(newProducts.length)
-
-        }
-        if (typeof main_data.body[0].category !== 'undefined') {
-            main_data.body.map(el => {
-                let flag = true
-                json.category.map((platform) => {
-                    console.log(flag)
-                    if (el.category.includes(platform) && flag) {
-                        console.log(platform)
-                        newProducts = [...newProducts, el]
-                        flag = false
-                    }
-                })
-            })
-            console.log(newProducts.length)
-
-        }
-        if (json.platform.length !== 0 || json.category.length !== 0) {
-            setProducts(newProducts)
-        } else {
-            setProducts(main_data.body)
-        }
-
+        setStatus(0)
     }
 
 
@@ -170,6 +133,17 @@ const ProductList = ({main_data, page, height, setData}) => {
     } catch (e) {
     }
 
+    let languageElementFilter = (<div></div>)
+    try {
+        if (typeof products[0].body.languageSelector !== 'undefined') {
+                console.log(123)
+                languageElementFilter =  <FilterCheckBox param={'languageSelector'} data={['На русском языке', 'Русские субтитры (текст)', 'Без перевода']} json={filterJson}
+                                    preview={'Язык'}
+                                    setJson={onSetFilter}/>
+        }
+    } catch (e) {
+    }
+
     let nav1El = (<div></div>)
     let nav2El = (<div></div>)
     let nav3El = (<div></div>)
@@ -177,7 +151,11 @@ const ProductList = ({main_data, page, height, setData}) => {
     if (listNumber > 1) {
         nav1El = (<div onClick={() => {
             list = 1;
-            sendRequestOnDatabase({path: path, number: list}, 'getList');
+            if (filterJson.platform.length>0 || filterJson.category.length>0 || filterJson.languageSelector.length>0){
+                sendRequestOnDatabase({path: path, number: list, json:filterJson}, 'getList')
+            }else{
+                sendRequestOnDatabase({path: path, number: list}, 'getList')
+            }
             setListNumber(list)
             setStatus(10)
         }}
@@ -191,7 +169,11 @@ const ProductList = ({main_data, page, height, setData}) => {
         }}>{1}</div>)
         nav2El = (<div onClick={() => {
             list = listNumber - 1;
-            sendRequestOnDatabase({path: path, number: list}, 'getList');
+            if (filterJson.platform.length>0 || filterJson.category.length>0|| filterJson.languageSelector.length>0){
+                sendRequestOnDatabase({path: path, number: list, json:filterJson}, 'getList')
+            }else{
+                sendRequestOnDatabase({path: path, number: list}, 'getList')
+            }
             setListNumber(list);
             setStatus(10)
         }}
@@ -207,7 +189,11 @@ const ProductList = ({main_data, page, height, setData}) => {
     if (listNumber < len) {
         nav3El = (<div onClick={() => {
             list = len;
-            sendRequestOnDatabase({path: path, number: list}, 'getList');
+            if (filterJson.platform.length>0 || filterJson.category.length>0|| filterJson.languageSelector.length>0){
+                sendRequestOnDatabase({path: path, number: list, json:filterJson}, 'getList')
+            }else{
+                sendRequestOnDatabase({path: path, number: list}, 'getList')
+            }
             setListNumber(list);
             setStatus(10)
         }}
@@ -222,7 +208,11 @@ const ProductList = ({main_data, page, height, setData}) => {
 
         nav4El = (<div onClick={() => {
             list = listNumber + 1;
-            sendRequestOnDatabase({path: path, number: list}, 'getList');
+            if (filterJson.platform.length>0 || filterJson.category.length>0|| filterJson.languageSelector.length>0){
+                sendRequestOnDatabase({path: path, number: list, json:filterJson}, 'getList')
+            }else{
+                sendRequestOnDatabase({path: path, number: list}, 'getList')
+            }
             setListNumber(list)
             setStatus(10)
         }}
@@ -295,9 +285,9 @@ const ProductList = ({main_data, page, height, setData}) => {
                                 transitionProperty: 'height',
                                 transitionDuration: '0.3s',
                             }}>
+                                <div style={{position: 'relative'}}>{languageElementFilter}</div>
                                 <div style={{position: 'relative'}}>{platformElementFilter}</div>
                                 <div style={{position: 'relative'}}>{categoryElementFilter}</div>
-
                             </div>
                         </div>
                     </div>
@@ -319,7 +309,7 @@ const ProductList = ({main_data, page, height, setData}) => {
                         {products.map(item => {
                             let newItem = item.body
                             newItem.id = item.id
-                            return (<ProductItem key={item.id} product={newItem} path={path}/>)
+                            return (<ProductItem key={newItem.id} product={newItem} path={path}/>)
                         })}
                     </div>
                 </div>
@@ -348,7 +338,12 @@ const ProductList = ({main_data, page, height, setData}) => {
             </div>
         );
     } else if (status === 0) {
-        sendRequestOnDatabase({path: path, number: list}, 'getList')
+        if (filterJson.platform.length>0 || filterJson.category.length>0|| filterJson.languageSelector.length>0){
+            sendRequestOnDatabase({path: path, number: 1, json:filterJson}, 'getList')
+        }else{
+            sendRequestOnDatabase({path: path, number: 1}, 'getList')
+        }
+
         return (<div className={'pong-loader'} style={{
             border: '2px solid #8cdb8b',
             marginTop: String(window.innerHeight / 2 - 60) + 'px',
@@ -416,7 +411,7 @@ const ProductList = ({main_data, page, height, setData}) => {
                             }}>
                                 <div style={{position: 'relative'}}>{platformElementFilter}</div>
                                 <div style={{position: 'relative'}}>{categoryElementFilter}</div>
-
+                                <div style={{position: 'relative'}}>{languageElementFilter}</div>
                             </div>
                         </div>
                     </div>

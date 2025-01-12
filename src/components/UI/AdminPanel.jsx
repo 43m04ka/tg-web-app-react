@@ -73,6 +73,24 @@ const AdminPanel = () => {
             newCard.tabCategoryPath = inputCategory3
             newCard.type = inputCategory1
             arrayRequest = [...arrayRequest, ...[newCard]]
+            let lang = false
+            let voice = false
+
+            if(el.language.includes('Russian')){
+                lang  = true
+            }
+            if(el.voice.includes('Russian')){
+                voice  = true
+            }
+            if(lang && voice){
+                newCard.languageSelector = 'На русском языке'
+            }
+            else if(voice){
+                newCard.languageSelector = 'Русские субтитры (текст)'
+            }
+            else{
+                newCard.languageSelector = 'Без перевода'
+            }
         })
 
 

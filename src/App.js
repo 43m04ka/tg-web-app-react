@@ -26,7 +26,6 @@ function App() {
         }, {id: 2, page: 'service', body: [[], []]}]);
     const [status, setStatus] = useState(0);
     const [dataCards, setDataCards] = useState(null)
-    console.log(dataCards)
     const [basketData, setBasketData] = useState(null);
     let dataRequestDatabase = {
         method: 'getPreview',

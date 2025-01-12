@@ -98,6 +98,14 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                                     jsonNew.category.splice(jsonNew.category.indexOf(el), 1)
                                     setJson(jsonNew);
                                 }
+                            }if (param === 'languageSelector') {
+                                if (status) {
+                                    jsonNew.languageSelector = [...jsonNew.languageSelector, el]
+                                    setJson(jsonNew);
+                                } else {
+                                    jsonNew.languageSelector.splice(jsonNew.languageSelector.indexOf(el), 1)
+                                    setJson(jsonNew);
+                                }
                             }
                             console.log(jsonNew)
                         }}/>

@@ -86,7 +86,7 @@ const AdminPanel = () => {
             if(lang && voice){
                 newCard.languageSelector = 'На русском языке'
             }
-            else if(voice){
+            else if(lang){
                 newCard.languageSelector = 'Русские субтитры (текст)'
             }
             else{

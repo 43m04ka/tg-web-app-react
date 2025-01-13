@@ -280,6 +280,7 @@ body {
     background-image: url("../icons/cross.png");
     background-size: cover;
 }
+
 .background-heart {
     background-image: url("../icons/heart.png");
     background-size: cover;
@@ -287,6 +288,11 @@ body {
 
 .background-arrow {
     background-image: url("../icons/arrow.png");
+    background-size: cover;
+}
+
+.background-filter {
+    background-image: url("../icons/filter.png");
     background-size: cover;
 }
 

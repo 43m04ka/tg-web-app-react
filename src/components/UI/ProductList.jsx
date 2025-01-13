@@ -5,6 +5,7 @@ import {useTelegram} from "../../hooks/useTelegram";
 import {useCallback, useEffect} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import FilterCheckBox from "./FilterCheckBox";
+import Filer from "./Filer";
 
 
 const getTotalPrice = (items = []) => {
@@ -16,17 +17,12 @@ const getTotalPrice = (items = []) => {
 let oldFilterHeight = window.innerHeight - 250
 
 const ProductList = ({main_data, page, height, setData}) => {
-    console.log(page)
     const [products, setProducts] = useState([])
     const [status, setStatus] = useState(0);
     const path = main_data.path
     const {tg} = useTelegram();
     const [len, setLen] = useState(0);
     const navigate = useNavigate();
-    const [sortNap, setSortNap] = useState(true);
-    const [stpSort, setStpSort] = useState('Цена↑');
-    const [filterJson, setFilterJson] = useState({platform: [], category: [], languageSelector:[]});
-    const [filterHeight, setFilterHeight] = useState(0);
     let list = 1
     const [listNumber, setListNumber] = useState(1);
 
@@ -80,70 +76,6 @@ const ProductList = ({main_data, page, height, setData}) => {
         tg.BackButton.show();
     }, [])
 
-    const onSort = () => {
-        if (sortNap) {
-            setSortNap(false)
-            setStpSort('Цена↓')
-        } else {
-            setSortNap(true)
-            setStpSort('Цена↑')
-        }
-    }
-
-    if (sortNap) {
-        products.sort((a, b) => (+(a.body.price - b.body.price)))
-    } else {
-        products.sort((a, b) => (+(b.body.price - a.body.price)));
-    }
-
-
-    const onSetFilter = (json) => {
-        setFilterJson(json)
-        setStatus(0)
-    }
-
-
-    let platformElementFilter = (<div></div>)
-    try {
-        if (typeof main_data.body[0].platform !== 'undefined') {
-            if (main_data.body[0].platform.includes('PS')) {
-                platformElementFilter =
-                    <FilterCheckBox param={'platform'} data={['PS5', 'PS4']} json={filterJson} preview={'Платформа'}
-                                    setJson={onSetFilter}/>
-            } else if (main_data.body[0].platform.includes('One') || products[0].platform.includes('Series')) {
-                platformElementFilter =
-                    <FilterCheckBox param={'platform'} data={['One', 'Series']} json={filterJson} preview={'Платформа'}
-                                    setJson={onSetFilter}/>
-            }
-        }
-    } catch (e) {
-    }
-
-    let categoryElementFilter = (<div></div>)
-    try {
-
-        if (typeof products[0].category !== 'undefined') {
-            if (products[0].category.includes('Старый') || products[0].category.includes('Новый')) {
-                categoryElementFilter =
-                    <FilterCheckBox param={'category'} data={['Старый аккаунт', 'Новый аккаунт']} json={filterJson}
-                                    preview={'Вид активации'}
-                                    setJson={onSetFilter}/>
-            }
-        }
-    } catch (e) {
-    }
-
-    let languageElementFilter = (<div></div>)
-    try {
-        if (typeof products[0].body.languageSelector !== 'undefined') {
-                console.log(123)
-                languageElementFilter =  <FilterCheckBox param={'languageSelector'} data={['На русском языке', 'Русские субтитры (текст)', 'Без перевода']} json={filterJson}
-                                    preview={'Язык'}
-                                    setJson={onSetFilter}/>
-        }
-    } catch (e) {
-    }
-
     let nav1El = (<div></div>)
     let nav2El = (<div></div>)
     let nav3El = (<div></div>)
@@ -151,11 +83,7 @@ const ProductList = ({main_data, page, height, setData}) => {
     if (listNumber > 1) {
         nav1El = (<div onClick={() => {
             list = 1;
-            if (filterJson.platform.length>0 || filterJson.category.length>0 || filterJson.languageSelector.length>0){
-                sendRequestOnDatabase({path: path, number: list, json:filterJson}, 'getList')
-            }else{
-                sendRequestOnDatabase({path: path, number: list}, 'getList')
-            }
+            sendRequestOnDatabase({path: path, number: list}, 'getList')
             setListNumber(list)
             setStatus(10)
         }}
@@ -169,11 +97,7 @@ const ProductList = ({main_data, page, height, setData}) => {
         }}>{1}</div>)
         nav2El = (<div onClick={() => {
             list = listNumber - 1;
-            if (filterJson.platform.length>0 || filterJson.category.length>0|| filterJson.languageSelector.length>0){
-                sendRequestOnDatabase({path: path, number: list, json:filterJson}, 'getList')
-            }else{
-                sendRequestOnDatabase({path: path, number: list}, 'getList')
-            }
+            sendRequestOnDatabase({path: path, number: list}, 'getList')
             setListNumber(list);
             setStatus(10)
         }}
@@ -189,11 +113,7 @@ const ProductList = ({main_data, page, height, setData}) => {
     if (listNumber < len) {
         nav3El = (<div onClick={() => {
             list = len;
-            if (filterJson.platform.length>0 || filterJson.category.length>0|| filterJson.languageSelector.length>0){
-                sendRequestOnDatabase({path: path, number: list, json:filterJson}, 'getList')
-            }else{
-                sendRequestOnDatabase({path: path, number: list}, 'getList')
-            }
+            sendRequestOnDatabase({path: path, number: list}, 'getList')
             setListNumber(list);
             setStatus(10)
         }}
@@ -208,11 +128,7 @@ const ProductList = ({main_data, page, height, setData}) => {
 
         nav4El = (<div onClick={() => {
             list = listNumber + 1;
-            if (filterJson.platform.length>0 || filterJson.category.length>0|| filterJson.languageSelector.length>0){
-                sendRequestOnDatabase({path: path, number: list, json:filterJson}, 'getList')
-            }else{
-                sendRequestOnDatabase({path: path, number: list}, 'getList')
-            }
+            sendRequestOnDatabase({path: path, number: list}, 'getList')
             setListNumber(list)
             setStatus(10)
         }}
@@ -255,56 +171,13 @@ const ProductList = ({main_data, page, height, setData}) => {
                         </div>
                     </Link>
                 </div>
-                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                    {/*<div style={{}}>*/}
-                    {/*    <div onClick={() => {*/}
-                    {/*        if (filterHeight === oldFilterHeight) {*/}
-                    {/*            setFilterHeight(0)*/}
-                    {/*        } else {*/}
-                    {/*            setFilterHeight(oldFilterHeight)*/}
-                    {/*        }*/}
-                    {/*    }} className={'text-element'}*/}
-                    {/*         style={{marginLeft: '15px', fontSize: '18px', lineHeight: '20px'}}>Фильтры*/}
-                    {/*    </div>*/}
-                    {/*    <div style={{*/}
-                    {/*        display: 'flex',*/}
-                    {/*        marginTop: '7px',*/}
-                    {/*        marginLeft: '10px',*/}
-                    {/*        flexDirection: 'column',*/}
-                    {/*        justifyContent: 'left',*/}
-                    {/*        position: 'absolute',*/}
-                    {/*        overflow: 'hidden',*/}
-                    {/*        height: String(filterHeight) + 'px',*/}
-                    {/*        width: String(window.innerWidth / 2) + 'px',*/}
-                    {/*    }}>*/}
-                    {/*        <div style={{*/}
-                    {/*            border: '2px solid gray',*/}
-                    {/*            borderRadius: '7px',*/}
-                    {/*            height: 'max-content',*/}
-                    {/*            background: '#171717',*/}
-                    {/*            transitionProperty: 'height',*/}
-                    {/*            transitionDuration: '0.3s',*/}
-                    {/*        }}>*/}
-                    {/*            <div style={{position: 'relative'}}>{languageElementFilter}</div>*/}
-                    {/*            <div style={{position: 'relative'}}>{platformElementFilter}</div>*/}
-                    {/*            <div style={{position: 'relative'}}>{categoryElementFilter}</div>*/}
-                    {/*        </div>*/}
-                    {/*    </div>*/}
-                    {/*</div>*/}
-                    <div className={'text-element'} style={{
-                        fontSize: '18px',
-                        marginBottom: '5px',
-                        marginRight: '15px',
-                        lineHeight: '20px'
-                    }}>
-                        <div onClick={onSort}>{stpSort}</div>
-                    </div>
-                </div>
                 <div className={'scroll-container-y'}
                      style={{
-                         borderBottom: '2px solid #454545',
-                         height: String(height - 130 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'
+                         height: String(height - 70 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'
                      }}>
+                    <div style={{position:'absolute'}}>
+                        <Filer height={height}/>
+                    </div>
                     <div className={'list-grid'}>
                         {products.map(item => {
                             let newItem = item.body
@@ -312,37 +185,32 @@ const ProductList = ({main_data, page, height, setData}) => {
                             return (<ProductItem key={newItem.id} product={newItem} path={path}/>)
                         })}
                     </div>
-                </div>
-                <div style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: String(window.innerWidth) + 'px',
-                    display: 'flex',
-                    flexDirection: 'row',
-                    marginTop: '10px'
-                }}>
-                    {nav2El}
-                    {nav1El}
-                    <div className={'text-element'} style={{
-                        height: '20px',
-                        width: '20px',
-                        textAlign: 'center',
-                        lineHeight: '20px',
-                        borderRadius: '5px',
-                        border: '1px solid gray',
-                        background: '#6194ea'
-                    }}>{listNumber}</div>
-                    {nav3El}
-                    {nav4El}
+                    <div style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        marginTop: '10px'
+                    }}>
+                        {nav2El}
+                        {nav1El}
+                        <div className={'text-element'} style={{
+                            height: '20px',
+                            width: '20px',
+                            textAlign: 'center',
+                            lineHeight: '20px',
+                            borderRadius: '5px',
+                            border: '1px solid gray',
+                            background: '#6194ea'
+                        }}>{listNumber}</div>
+                        {nav3El}
+                        {nav4El}
+                    </div>
                 </div>
             </div>
         );
     } else if (status === 0) {
-        if (filterJson.platform.length>0 || filterJson.category.length>0|| filterJson.languageSelector.length>0){
-            sendRequestOnDatabase({path: path, number: 1, json:filterJson}, 'getList')
-        }else{
-            sendRequestOnDatabase({path: path, number: 1}, 'getList')
-        }
+        sendRequestOnDatabase({path: path, number: 1}, 'getList')
 
         return (<div className={'pong-loader'} style={{
             border: '2px solid #8cdb8b',
@@ -378,51 +246,6 @@ const ProductList = ({main_data, page, height, setData}) => {
                             <div className={'background-profile'} style={{width: '100%', height: '100%'}}></div>
                         </div>
                     </Link>
-                </div>
-                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                    {/*<div style={{}}>*/}
-                    {/*    <div onClick={() => {*/}
-                    {/*        if (filterHeight === oldFilterHeight) {*/}
-                    {/*            setFilterHeight(0)*/}
-                    {/*        } else {*/}
-                    {/*            setFilterHeight(oldFilterHeight)*/}
-                    {/*        }*/}
-                    {/*    }} className={'text-element'}*/}
-                    {/*         style={{marginLeft: '15px', fontSize: '18px', lineHeight: '20px'}}>Фильтры*/}
-                    {/*    </div>*/}
-                    {/*    <div style={{*/}
-                    {/*        display: 'flex',*/}
-                    {/*        marginTop: '7px',*/}
-                    {/*        marginLeft: '10px',*/}
-                    {/*        flexDirection: 'column',*/}
-                    {/*        justifyContent: 'left',*/}
-                    {/*        position: 'absolute',*/}
-                    {/*        overflow: 'hidden',*/}
-                    {/*        height: String(filterHeight) + 'px',*/}
-                    {/*        width: String(window.innerWidth / 2) + 'px',*/}
-                    {/*    }}>*/}
-                    {/*        <div style={{*/}
-                    {/*            border: '2px solid gray',*/}
-                    {/*            borderRadius: '7px',*/}
-                    {/*            height: 'max-content',*/}
-                    {/*            background: '#171717',*/}
-                    {/*            transitionProperty: 'height',*/}
-                    {/*            transitionDuration: '0.3s',*/}
-                    {/*        }}>*/}
-                    {/*            <div style={{position: 'relative'}}>{platformElementFilter}</div>*/}
-                    {/*            <div style={{position: 'relative'}}>{categoryElementFilter}</div>*/}
-                    {/*            <div style={{position: 'relative'}}>{languageElementFilter}</div>*/}
-                    {/*        </div>*/}
-                    {/*    </div>*/}
-                    {/*</div>*/}
-                    <div className={'text-element'} style={{
-                        fontSize: '18px',
-                        marginBottom: '5px',
-                        marginRight: '15px',
-                        lineHeight: '20px'
-                    }}>
-                        <div onClick={onSort}>{stpSort}</div>
-                    </div>
                 </div>
                 <div className={'scroll-container-y'}
                      style={{

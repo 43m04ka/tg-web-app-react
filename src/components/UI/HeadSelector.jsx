@@ -104,7 +104,7 @@ const HeadSelector = ({main_data, hidden, page, basketLen, basketReload}) => {
                 height: String(buttonMenuHeight) + 'px',
                 overflow: 'hidden',
                 transitionProperty: 'height',
-                transitionDuration: '0.1s'
+                transitionDuration: '0.5s'
             }}>
                 <Link to={'/home0'} className={'link-element'}>
                     <div className={'div-box-4563'} style={{width: '100%', height: "100%", padding: '3px'}}>

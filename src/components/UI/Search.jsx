@@ -2,46 +2,48 @@ import React, {useCallback, useEffect} from 'react';
 import {Link, useNavigate} from "react-router-dom";
 import {useTelegram} from "../../hooks/useTelegram";
 
-const Search = ({data, height}) => {
+const Search = ({height, page}) => {
     const [listRes, setListRes] = React.useState([]);
-    const [status, setStatus] = React.useState(0);
+    const [status, setStatus] = React.useState(1);
+    const [textInput, setTextInput] = React.useState('');
     const {tg} = useTelegram();
     const navigate = useNavigate();
 
     const onChangeEmpty = (event) => {
-        const valueInput = event.target.value
-        const category = [...data.body[1], ...data.body[0]]
-
         let allCard = []
-        category.map(el => {
-            const array = el.body
-            array.map(card => {
-                card.path = el.path
-                allCard = [...allCard, card]
-            })
-        })
-        let result = []
+        let result = null
         allCard.map(card => {
             if (card.title.toLowerCase().includes(valueInput.toLowerCase())) {
                 result = [...result, card]
             }
         })
 
-        if (valueInput.length > 2) {
-            if (result.length === 0) {
-                setStatus(2)
-            } else {
-                setStatus(1)
-                setListRes(result)
-            }
-        } else {
-            setStatus(0)
-            setListRes([])
-        }
-
-        console.log(result)
     }
-    console.log(data)
+
+    let dataRequestDatabase = {
+        method: 'getSearch',
+        data: {str:textInput, page:page}
+    }
+
+    const sendRequestDatabase = useCallback(() => {
+        console.log(dataRequestDatabase, 'inputRequestDb')
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/database', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataRequestDatabase)
+        }).then(r => {
+            let Promise = r.json()
+            Promise.then(prom => {
+                console.log(prom, 'возвратил get')
+                if (dataRequestDatabase.method === 'getSearch') {
+                    setListRes(prom.cards)
+                    setStatus(1)
+                }
+            })
+        })
+    }, [dataRequestDatabase])
 
     const onBack = useCallback(() => {
         navigate(-1);
@@ -62,74 +64,82 @@ const Search = ({data, height}) => {
     if (status === 1) {
         return (
             <div>
-                <div style={{borderBottom: '2px gray solid'}}>
-                    <input className={'search'} onChange={onChangeEmpty}
-                           style={{width: String(window.innerWidth - 20) + 'px', border:'0px',fontSize: '15px',
+                <div style={{
+                    borderBottom: '2px gray solid',
+                    display: "grid",
+                    gridTemplateColumns: '1fr 55px',
+                    width: String(window.innerWidth) + 'px'
+                }}>
+                    <input className={'search'} placeholder={'Найти игру, водписку, валюту...'}
+                           onChange={() => setTextInput(event.target.value)}
+                           style={{
+                               border: '0px', fontSize: '15px',
                                fontFamily: "'Montserrat', sans-serif",
-                               paddingLeft: '5px'}}></input>
+                               paddingLeft: '5px'
+                           }}></input>
+                    <div className={'div-button-panel'} style={{padding: '3px'}} onClick={()=>{
+                        setStatus(0)
+                        sendRequestDatabase()
+                    }}>
+                        <div className={'background-search'} style={{width: '100%', height: '100%'}}></div>
+                    </div>
                 </div>
                 <div className={'scroll-container-y'} style={{height: String(height - 70) + 'px'}}>
                     {listRes.map((item) => (
                         <div className={'list-element'}
-                             style={{marginLeft: '20px', width:String(window.innerWidth-40)+'px'}}>
-                            <Link to={'/card/' + item.id} className={'link-element'}
+                             style={{marginLeft: '20px', width: String(window.innerWidth - 40) + 'px'}}>
+                            <Link to={'/card/' + item.body.id} className={'link-element'}
                                   style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>
 
-                                <img src={item.img} alt={item.title} className={'img-mini'}/>
+                                <img src={item.body.img} alt={item.body.title} className={'img-mini'}/>
                                 <div className={'box-grid-row'}>
                                     <div className={'text-element text-basket'} style={{
                                         marginTop: '3px',
                                         lineHeight: '17px',
-                                        height: '34x',
+                                        overflow:'hidden',
+                                        height: '34px',
                                         fontSize: '15px'
-                                    }}>{item.title}</div>
+                                    }}>{item.body.title}</div>
                                     <div className={'text-element text-basket'} style={{
                                         marginTop: '12px',
                                         lineHeight: '15px',
                                         height: '15px',
                                         fontSize: '15px'
-                                    }}>{item.price + ' ₽'}</div>
+                                    }}>{item.body.price + ' ₽'}</div>
                                 </div>
                             </Link>
                         </div>))}
                 </div>
             </div>
         );
-    } else if (status === 2) {
+    }
+
+    if (status === 0) {
         return (
             <div>
-                <div style={{borderBottom: '2px gray solid'}}>
-                    <input className={'search'} onChange={onChangeEmpty}
-                           style={{width: String(window.innerWidth - 20) + 'px', border:'0px',fontSize: '15px',
-                               fontFamily: "'Montserrat', sans-serif",
-                               paddingLeft: '5px'}}></input>
-
-                </div>
                 <div style={{
-                    height: String(height - 100 - 15 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
-                    marginTop: '15px', marginLeft: String(window.innerWidth / 2 - 50) + 'px',
-                    color: 'gray'
-                }} className={'text-element'}>
-                    Нет результатов
-                </div>
-            </div>
-        );
-    } else if (status === 0) {
-        return (
-            <div>
-                <div style={{borderBottom: '2px gray solid'}}>
-                    <input className={'search'} onChange={onChangeEmpty}
-                           style={{width: String(window.innerWidth - 20) + 'px', border:'0px',fontSize: '15px',
+                    borderBottom: '2px gray solid',
+                    display: "grid",
+                    gridTemplateColumns: '1fr 55px',
+                    width: String(window.innerWidth) + 'px'
+                }}>
+                    <input className={'search'} placeholder={'Найти игру, водписку, валюту...'}
+                           onChange={() => setTextInput(event.target.value)}
+                           style={{
+                               border: '0px', fontSize: '15px',
                                fontFamily: "'Montserrat', sans-serif",
-                               paddingLeft: '5px'}}></input>
-
+                               paddingLeft: '5px'
+                           }}></input>
+                    <div className={'div-button-panel'} style={{padding: '3px'}} onClick={() => {
+                    }}>
+                        <div className={'background-search'} style={{width: '100%', height: '100%'}}></div>
+                    </div>
                 </div>
-                <div style={{
-                    marginTop: '15px', marginLeft: String(window.innerWidth / 2 - 55) + 'px',
-                    color: 'gray'
-                }} className={'text-element'}>
-                    Начните вводить
-                </div>
+                <div className={'pong-loader'} style={{
+                    border: '2px solid #8cdb8b',
+                    marginTop: String((window.innerHeight - 60) / 2 - 60) + 'px',
+                    marginLeft: String(window.innerWidth / 2 - 40) + 'px'
+                }}></div>
             </div>
         );
     }

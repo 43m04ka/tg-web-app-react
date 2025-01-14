@@ -5,12 +5,13 @@ import FilterCheckBox from "./FilterCheckBox";
 const Filter = ({height, elementKeys, onRequestFilter}) => {
     const {tg} = useTelegram();
     const [panelIsVisible, setPanelIsVisible] = useState(false);
-    const [jsonFilter, setJsonFilter] = useState({platform: [], price: {min: 0, max: 50000, sort: null}});
+    const [jsonFilter, setJsonFilter] = useState({platform: [], price: {min: 0, max: 50000, sort: null}, category:[]});
 
     let panelWidth = 0
     if (panelIsVisible) {
         panelWidth = window.innerWidth / 2;
     }
+    console.log(elementKeys)
     let platformElement = (<></>)
     if (elementKeys.includes('platformPS')) {
         platformElement = (
@@ -22,6 +23,16 @@ const Filter = ({height, elementKeys, onRequestFilter}) => {
             <FilterCheckBox param={'platform'} setJson={setJsonFilter} json={jsonFilter} data={['One', 'Series']}
                             preview={'Консоль'}/>)
     }
+    let categoryElement = (<></>)
+    if (elementKeys.includes('categoryXB')) {
+        categoryElement = (
+            <FilterCheckBox param={'category'} setJson={setJsonFilter} json={jsonFilter} data={['Старый аккаунт', 'Новый аккаунт']}
+                            preview={'Тип активации'}/>)
+    }
+    let priceElement = (
+        <FilterCheckBox param={'price'} setJson={setJsonFilter} json={jsonFilter} data={['По возрастанию', 'По убыванию']}
+                        preview={'Цена'}/>)
+
     return (
         <div style={{display: 'flex', flexDirection: 'row',}}>
             <div style={{
@@ -36,7 +47,9 @@ const Filter = ({height, elementKeys, onRequestFilter}) => {
             }}>
                 <div
                     style={{height: String(height - 70 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 45) + 'px'}}>
+                    {priceElement}
                     {platformElement}
+                    {categoryElement}
                 </div>
                 <button onClick={()=>{onRequestFilter(jsonFilter)}}
                     className={'text-element'} style={{

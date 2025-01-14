@@ -4,12 +4,13 @@ import {isElementOfType} from "react-dom/test-utils";
 
 const FilterCheckBox = ({param, data, json, preview, setJson}) => {
     if(json === null){
-        json = {platform: [], price: {min: 0, max: 50000, sort: null}}
+        json = {platform: [], price: {min: 0, max: 50000, sort: null}, category:[]}
     }
     const [isVisible, setIsVisible] = useState(true);
     const [filterHeight, setFilterHeight] = useState(null);
     let oldHeight = data.length * 30
     const filterRef = useRef();
+    const [localJson, setLocalJson] = useState(json)
     const [signElement, setSignElement] = useState(
         <div className={'background-arrow'}
              style={{
@@ -80,6 +81,9 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                  }}>
                 {data.map(el => {
                     const [isCheck, setIsCheck] = useState(false);
+                    if(((!localJson.price.sort && el === 'По возрастанию') || (localJson.price.sort && el === 'По убыванию')) && localJson.price.sort !== null && isCheck){
+                        setIsCheck(false)
+                    }
                     return(<div style={{display: 'flex', flexDirection: 'row', justifyContent: 'left', marginLeft: '15px', marginTop:'3px', alignItems:'center'}}
                                 onClick={() => {
                                     setIsCheck(!isCheck)
@@ -89,37 +93,52 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                                         if (status) {
                                             jsonNew.platform = [...jsonNew.platform, el]
                                             setJson(jsonNew);
+                                            setLocalJson(jsonNew)
                                         } else {
                                             jsonNew.platform.splice(jsonNew.platform.indexOf(el), 1)
-                                            if(jsonNew.platform.length === 0 && jsonNew.price.sort===null) {
+                                            if(jsonNew.platform.length === 0 && jsonNew.price.sort===null && jsonNew.category.length===0) {
                                                 setJson(null)
+                                                setLocalJson(null);
                                             }else {
                                                 setJson(jsonNew);
+                                                setLocalJson(jsonNew)
                                             }
                                         }
                                     }if (param === 'category') {
                                         if (status) {
                                             jsonNew.category = [...jsonNew.category, el]
                                             setJson(jsonNew);
+                                            setLocalJson(jsonNew)
                                         } else {
                                             jsonNew.category.splice(jsonNew.category.indexOf(el), 1)
-                                            if(jsonNew.platform.length === 0 && jsonNew.price.sort===null) {
+                                            if(jsonNew.platform.length === 0 && jsonNew.price.sort===null&& jsonNew.category.length===0) {
                                                 setJson(null)
+                                                setLocalJson(null);
                                             }else {
                                                 setJson(jsonNew);
+                                                setLocalJson(jsonNew)
                                             }
                                         }
                                     }if (param === 'languageSelector') {
                                         if (status) {
                                             jsonNew.languageSelector = [...jsonNew.languageSelector, el]
                                             setJson(jsonNew);
+                                            setLocalJson(jsonNew)
                                         } else {
                                             jsonNew.languageSelector.splice(jsonNew.languageSelector.indexOf(el), 1)
-                                            if(jsonNew.platform.length === 0 && jsonNew.price.sort===null) {
+                                            if(jsonNew.platform.length === 0 && jsonNew.price.sort===null&& jsonNew.category.length===0) {
                                                 setJson(null)
+                                                setLocalJson(null);
                                             }else {
                                                 setJson(jsonNew);
+                                                setLocalJson(jsonNew)
                                             }
+                                        }
+                                    }if (param === 'price') {
+                                        if (status) {
+                                            jsonNew.price.sort = el === 'По возрастанию';
+                                            setJson(jsonNew);
+                                            setLocalJson(jsonNew)
                                         }
                                     }
                                 }}>

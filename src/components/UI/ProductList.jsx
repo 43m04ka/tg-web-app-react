@@ -25,6 +25,7 @@ const ProductList = ({main_data, page, height, setData}) => {
     let list = 1
     const [listNumber, setListNumber] = useState(1);
     const [jsonFilter, setJsonFilter] = useState(null);
+    console.log(jsonFilter)
 
 
     let dataRequestDatabase = {
@@ -152,7 +153,9 @@ const ProductList = ({main_data, page, height, setData}) => {
     let elementKeys = []
     try {
         if (typeof products[0].body.category !== 'undefined') {
-            elementKeys = [...elementKeys, 'category']
+            if (products[0].body.category.includes('акк')) {
+                elementKeys = [...elementKeys, 'categoryXB']
+            }
         }
     }catch (e){}
 
@@ -163,6 +166,13 @@ const ProductList = ({main_data, page, height, setData}) => {
             } else {
                 elementKeys = [...elementKeys, 'platformXB']
             }
+        }
+    }catch (e) {}
+
+    try {
+        if (typeof products[0].languageSelector !== 'undefined') {
+            elementKeys = [...elementKeys, 'languageSelector']
+
         }
     }catch (e) {}
 

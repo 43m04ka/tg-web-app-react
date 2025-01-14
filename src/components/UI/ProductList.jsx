@@ -215,9 +215,6 @@ const ProductList = ({main_data, page, height, setData}) => {
                      style={{
                          height: String(height - 70 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'
                      }}>
-                    <div style={{position:'absolute'}}>
-                        <Filter height={height} elementKeys={elementKeys} onRequestFilter={onRequestFilter}/>
-                    </div>
                     <div className={'list-grid'}>
                         {products.map(item => {
                             let newItem = item.body
@@ -245,6 +242,9 @@ const ProductList = ({main_data, page, height, setData}) => {
                         }}>{listNumber}</div>
                         {nav3El}
                         {nav4El}
+                    </div>
+                    <div style={{position: 'absolute'}}>
+                        <Filter height={height} elementKeys={elementKeys} onRequestFilter={onRequestFilter}/>
                     </div>
                 </div>
             </div>

@@ -54,7 +54,7 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
 
 
     return (
-        <div style={{marginTop:'4px'}}>
+        <div style={{marginTop:'4px', overflow:'hidden', width: String(window.innerWidth / 2) + 'px',}}>
             <div className={'text-element'}
                  style={{fontSize: '19px', lineHeight: '20px', display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'space-between'}} onClick={() => {
                 onResize()

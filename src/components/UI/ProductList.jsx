@@ -165,7 +165,9 @@ const ProductList = ({main_data, page, height, setData}) => {
         }
     }catch (e) {}
 
-    console.log(elementKeys)
+    const onRequestFilter = (json) => {
+        sendRequestOnDatabase({path: path, number: 1, filter:json}, 'getList')
+    }
 
     if (status === 1) {
         return (
@@ -202,7 +204,7 @@ const ProductList = ({main_data, page, height, setData}) => {
                          height: String(height - 70 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'
                      }}>
                     <div style={{position:'absolute'}}>
-                        <Filer height={height} elementKeys={elementKeys}/>
+                        <Filer height={height} elementKeys={elementKeys} onRequestFilter={onRequestFilter}/>
                     </div>
                     <div className={'list-grid'}>
                         {products.map(item => {

@@ -141,6 +141,32 @@ const ProductList = ({main_data, page, height, setData}) => {
         }}></div>)
     }
 
+    let elementKeys = []
+    try {
+        if (typeof products[0].body.category !== 'undefined') {
+            elementKeys = [...elementKeys, 'category']
+        }
+    }catch (e){}
+
+    try {
+        if (typeof products[0].body.platform !== 'undefined') {
+            if (products[0].body.platform.includes('PS4')) {
+                elementKeys = [...elementKeys, 'platformPS']
+            } else {
+                elementKeys = [...elementKeys, 'platformXB']
+            }
+        }
+    }catch (e) {}
+
+    try {
+        if (typeof products[0].languageSelector !== 'undefined') {
+            elementKeys = [...elementKeys, 'languageSelector']
+
+        }
+    }catch (e) {}
+
+    console.log(elementKeys)
+
     if (status === 1) {
         return (
             <div className={'list'} style={{display: 'flex', flexDirection: 'column'}}>
@@ -176,7 +202,7 @@ const ProductList = ({main_data, page, height, setData}) => {
                          height: String(height - 70 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'
                      }}>
                     <div style={{position:'absolute'}}>
-                        <Filer height={height}/>
+                        <Filer height={height} elementKeys={elementKeys}/>
                     </div>
                     <div className={'list-grid'}>
                         {products.map(item => {

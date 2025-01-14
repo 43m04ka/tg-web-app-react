@@ -2,10 +2,10 @@ import React, {useEffect, useRef, useState} from 'react';
 import {calculateNewValue} from "@testing-library/user-event/dist/utils";
 import {isElementOfType} from "react-dom/test-utils";
 
-let oldHeight = 0
 const FilterCheckBox = ({param, data, json, preview, setJson}) => {
     const [isVisible, setIsVisible] = useState(true);
     const [filterHeight, setFilterHeight] = useState(null);
+    let oldHeight = data.length * 30
     const filterRef = useRef();
     const [signElement, setSignElement] = useState(
         <div className={'background-arrow'}
@@ -74,12 +74,10 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                      height: String(filterHeight) + 'px',
                      overflow: 'hidden',
                      marginTop: '5px',
-                     background: '#171717',
-                     borderBottom: '2px solid gray',
                  }}>
                 {data.map(el => (
                     <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'left', marginLeft: '15px', marginTop:'3px', alignItems:'center'}}>
-                        <input type={'checkbox'} style={{transform: 'scale(1.4)'}} onChange={(event) => {
+                        <input type={'checkbox'} style={{transform: 'scale(1.4)', borderRadius:'50%'}} onChange={(event) => {
                             const status = event.target.checked;
                             let jsonNew = json
                             if (param === 'platform') {

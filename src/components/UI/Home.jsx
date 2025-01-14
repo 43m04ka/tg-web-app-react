@@ -7,14 +7,13 @@ import {useTelegram} from "../../hooks/useTelegram";
 import HeadSelector from "./HeadSelector";
 import Slider from "./Slider";
 
+let scrollCtrl = 0;
 const Home = ({main_data, height, page, setBasket}) => {
     const {tg, user} = useTelegram();
-    let scrollCtrl = 0;
     const [hiddenSelector, setHiddenSelector] = useState(false);
     const [heightMenuButton, setHeightMenuButton] = useState(0);
     const [basketLen, setBasketLen] = useState(null);
     const [basketData, setBasketData] = useState([]);
-    console.log(123)
 
     useEffect(() => {
         tg.BackButton.hide();
@@ -81,7 +80,7 @@ const Home = ({main_data, height, page, setBasket}) => {
                 }
                 if (hiddenSelector && scroll > scrollCtrl) {
                     scrollCtrl = scroll
-                } else if (!hiddenSelector && scroll < scrollCtrl) {
+                } else if (!hiddenSelector&&scroll < scrollCtrl) {
                     scrollCtrl = scroll
                 }
             }}

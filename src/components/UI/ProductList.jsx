@@ -15,7 +15,7 @@ const getTotalPrice = (items = []) => {
 
 let oldFilterHeight = window.innerHeight - 250
 
-const ProductList = ({main_data, page, height, setData}) => {
+const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
     const [products, setProducts] = useState([])
     const [status, setStatus] = useState(0);
     const path = main_data.path
@@ -64,6 +64,7 @@ const ProductList = ({main_data, page, height, setData}) => {
 
     const onBack = useCallback(() => {
         navigate(-1);
+        setStatusApp(0)
     }, [])
 
     useEffect(() => {

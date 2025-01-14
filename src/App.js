@@ -178,7 +178,7 @@ function App() {
                         platform.body[1].map(category => (
                             <Route path={'home/' + category.path} key={category.id}
                                    element={<ProductList main_data={category} page={platform.id} height={size}
-                                                         path={category.path} setData={setDataCards}/>}/>
+                                                         path={category.path} setData={setDataCards} setStatusApp={setStatus}/>}/>
                         ))
                     ))}
 

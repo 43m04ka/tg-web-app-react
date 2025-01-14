@@ -51,7 +51,7 @@ const Filter = ({height, elementKeys, onRequestFilter}) => {
                     {platformElement}
                     {categoryElement}
                 </div>
-                <button onClick={()=>{onRequestFilter(jsonFilter)}}
+                <button onClick={()=>{onRequestFilter(jsonFilter); setPanelIsVisible(false)}}
                     className={'text-element'} style={{
                     width: String(window.innerWidth / 2 - 10) + 'px',
                     marginLeft: '5px',

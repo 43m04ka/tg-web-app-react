@@ -3,6 +3,9 @@ import {calculateNewValue} from "@testing-library/user-event/dist/utils";
 import {isElementOfType} from "react-dom/test-utils";
 
 const FilterCheckBox = ({param, data, json, preview, setJson}) => {
+    if(json === null){
+        json = {platform: [], price: {min: 0, max: 50000, sort: null}}
+    }
     const [isVisible, setIsVisible] = useState(true);
     const [filterHeight, setFilterHeight] = useState(null);
     let oldHeight = data.length * 30
@@ -75,40 +78,54 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                      overflow: 'hidden',
                      marginTop: '5px',
                  }}>
-                {data.map(el => (
-                    <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'left', marginLeft: '15px', marginTop:'3px', alignItems:'center'}}>
-                        <input type={'checkbox'} style={{transform: 'scale(1.4)', borderRadius:'50%'}} onChange={(event) => {
-                            const status = event.target.checked;
-                            let jsonNew = json
-                            if (param === 'platform') {
-                                if (status) {
-                                    jsonNew.platform = [...jsonNew.platform, el]
-                                    setJson(jsonNew);
-                                } else {
-                                    jsonNew.platform.splice(jsonNew.platform.indexOf(el), 1)
-                                    setJson(jsonNew);
-                                }
-                            }if (param === 'category') {
-                                if (status) {
-                                    jsonNew.category = [...jsonNew.category, el]
-                                    setJson(jsonNew);
-                                } else {
-                                    jsonNew.category.splice(jsonNew.category.indexOf(el), 1)
-                                    setJson(jsonNew);
-                                }
-                            }if (param === 'languageSelector') {
-                                if (status) {
-                                    jsonNew.languageSelector = [...jsonNew.languageSelector, el]
-                                    setJson(jsonNew);
-                                } else {
-                                    jsonNew.languageSelector.splice(jsonNew.languageSelector.indexOf(el), 1)
-                                    setJson(jsonNew);
-                                }
-                            }
-                            console.log(jsonNew)
-                        }}/>
+                {data.map(el => {
+                    const [isCheck, setIsCheck] = useState(false);
+                    return(<div style={{display: 'flex', flexDirection: 'row', justifyContent: 'left', marginLeft: '15px', marginTop:'3px', alignItems:'center'}}
+                                onClick={() => {
+                                    setIsCheck(!isCheck)
+                                    const status = !isCheck
+                                    let jsonNew = json
+                                    if (param === 'platform') {
+                                        if (status) {
+                                            jsonNew.platform = [...jsonNew.platform, el]
+                                            setJson(jsonNew);
+                                        } else {
+                                            jsonNew.platform.splice(jsonNew.platform.indexOf(el), 1)
+                                            if(jsonNew.platform.length === 0 && jsonNew.price.sort===null) {
+                                                setJson(null)
+                                            }else {
+                                                setJson(jsonNew);
+                                            }
+                                        }
+                                    }if (param === 'category') {
+                                        if (status) {
+                                            jsonNew.category = [...jsonNew.category, el]
+                                            setJson(jsonNew);
+                                        } else {
+                                            jsonNew.category.splice(jsonNew.category.indexOf(el), 1)
+                                            if(jsonNew.platform.length === 0 && jsonNew.price.sort===null) {
+                                                setJson(null)
+                                            }else {
+                                                setJson(jsonNew);
+                                            }
+                                        }
+                                    }if (param === 'languageSelector') {
+                                        if (status) {
+                                            jsonNew.languageSelector = [...jsonNew.languageSelector, el]
+                                            setJson(jsonNew);
+                                        } else {
+                                            jsonNew.languageSelector.splice(jsonNew.languageSelector.indexOf(el), 1)
+                                            if(jsonNew.platform.length === 0 && jsonNew.price.sort===null) {
+                                                setJson(null)
+                                            }else {
+                                                setJson(jsonNew);
+                                            }
+                                        }
+                                    }
+                                }}>
+                        <input type={'radio'} checked={isCheck} style={{transform: 'scale(1.4)', borderRadius:'50%'}} />
                         <div className={'text-element'} style={{marginLeft: '7px', fontSize: '15px'}}>{el}</div>
-                    </div>))}
+                    </div>)})}
             </div>
         </div>
     );

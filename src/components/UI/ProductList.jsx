@@ -4,8 +4,7 @@ import ProductItem from "./ProductItem";
 import {useTelegram} from "../../hooks/useTelegram";
 import {useCallback, useEffect} from "react";
 import {Link, useNavigate} from "react-router-dom";
-import FilterCheckBox from "./FilterCheckBox";
-import Filer from "./Filer";
+import Filter from "./Filter";
 
 
 const getTotalPrice = (items = []) => {
@@ -25,6 +24,7 @@ const ProductList = ({main_data, page, height, setData}) => {
     const navigate = useNavigate();
     let list = 1
     const [listNumber, setListNumber] = useState(1);
+    const [jsonFilter, setJsonFilter] = useState(null);
 
 
     let dataRequestDatabase = {
@@ -83,7 +83,9 @@ const ProductList = ({main_data, page, height, setData}) => {
     if (listNumber > 1) {
         nav1El = (<div onClick={() => {
             list = 1;
-            sendRequestOnDatabase({path: path, number: list}, 'getList')
+            if(jsonFilter === null){
+                sendRequestOnDatabase({path: path, number: list}, 'getList')}
+            else{sendRequestOnDatabase({path: path, number: list, filter:jsonFilter}, 'getList')}
             setListNumber(list)
             setStatus(10)
         }}
@@ -97,7 +99,9 @@ const ProductList = ({main_data, page, height, setData}) => {
         }}>{1}</div>)
         nav2El = (<div onClick={() => {
             list = listNumber - 1;
-            sendRequestOnDatabase({path: path, number: list}, 'getList')
+            if(jsonFilter === null){
+                sendRequestOnDatabase({path: path, number: list}, 'getList')}
+            else{sendRequestOnDatabase({path: path, number: list, filter:jsonFilter}, 'getList')}
             setListNumber(list);
             setStatus(10)
         }}
@@ -113,7 +117,9 @@ const ProductList = ({main_data, page, height, setData}) => {
     if (listNumber < len) {
         nav3El = (<div onClick={() => {
             list = len;
-            sendRequestOnDatabase({path: path, number: list}, 'getList')
+            if(jsonFilter === null){
+                sendRequestOnDatabase({path: path, number: list}, 'getList')}
+            else{sendRequestOnDatabase({path: path, number: list, filter:jsonFilter}, 'getList')}
             setListNumber(list);
             setStatus(10)
         }}
@@ -128,7 +134,9 @@ const ProductList = ({main_data, page, height, setData}) => {
 
         nav4El = (<div onClick={() => {
             list = listNumber + 1;
-            sendRequestOnDatabase({path: path, number: list}, 'getList')
+            if(jsonFilter === null){
+            sendRequestOnDatabase({path: path, number: list}, 'getList')}
+            else{sendRequestOnDatabase({path: path, number: list, filter:jsonFilter}, 'getList')}
             setListNumber(list)
             setStatus(10)
         }}
@@ -150,7 +158,7 @@ const ProductList = ({main_data, page, height, setData}) => {
 
     try {
         if (typeof products[0].body.platform !== 'undefined') {
-            if (products[0].body.platform.includes('PS4')) {
+            if (products[0].body.platform.includes('PS4') || products[0].body.platform.includes('PS5')) {
                 elementKeys = [...elementKeys, 'platformPS']
             } else {
                 elementKeys = [...elementKeys, 'platformXB']
@@ -166,7 +174,11 @@ const ProductList = ({main_data, page, height, setData}) => {
     }catch (e) {}
 
     const onRequestFilter = (json) => {
-        sendRequestOnDatabase({path: path, number: 1, filter:json}, 'getList')
+        setJsonFilter(json)
+        if(json === null){
+            sendRequestOnDatabase({path: path, number: 1}, 'getList')}
+        else{sendRequestOnDatabase({path: path, number: 1, filter:json}, 'getList')}
+        setListNumber(1)
     }
 
     if (status === 1) {
@@ -204,7 +216,7 @@ const ProductList = ({main_data, page, height, setData}) => {
                          height: String(height - 70 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'
                      }}>
                     <div style={{position:'absolute'}}>
-                        <Filer height={height} elementKeys={elementKeys} onRequestFilter={onRequestFilter}/>
+                        <Filter height={height} elementKeys={elementKeys} onRequestFilter={onRequestFilter}/>
                     </div>
                     <div className={'list-grid'}>
                         {products.map(item => {

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
 import FilterCheckBox from "./FilterCheckBox";
 
-const Filer = ({height, elementKeys, onRequestFilter}) => {
+const Filter = ({height, elementKeys, onRequestFilter}) => {
     const {tg} = useTelegram();
     const [panelIsVisible, setPanelIsVisible] = useState(false);
     const [jsonFilter, setJsonFilter] = useState({platform: [], price: {min: 0, max: 50000, sort: null}});
@@ -71,4 +71,4 @@ const Filer = ({height, elementKeys, onRequestFilter}) => {
     );
 };
 
-export default Filer;
+export default Filter;

@@ -6,12 +6,8 @@ const Filter = ({height, elementKeys, onRequestFilter}) => {
     const {tg} = useTelegram();
     const [panelIsVisible, setPanelIsVisible] = useState(false);
     const [jsonFilter, setJsonFilter] = useState({platform: [], price: {min: 0, max: 50000, sort: null}, category:[]});
+    const [panelWidth, setPanelWidth] = useState(0);
 
-    let panelWidth = 0
-    if (panelIsVisible) {
-        panelWidth = window.innerWidth / 2;
-    }
-    console.log(elementKeys)
     let platformElement = (<></>)
     if (elementKeys.includes('platformPS')) {
         platformElement = (
@@ -74,8 +70,10 @@ const Filter = ({height, elementKeys, onRequestFilter}) => {
             }} onClick={() => {
                 if (panelIsVisible) {
                     setPanelIsVisible(false);
+                    setPanelWidth(0)
                 } else {
                     setPanelIsVisible(true);
+                    setPanelWidth(window.innerWidth/2)
                 }
             }}>
                 <div className={'background-filter'} style={{height: '35px', width: '35px'}}></div>

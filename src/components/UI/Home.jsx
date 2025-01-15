@@ -20,17 +20,6 @@ const Home = ({main_data, height, page, setBasket}) => {
         onGetData()
     }, [])
 
-    const basketColReload = () => {
-        let newArray = []
-        basketData.map(el => {
-            console.log(el.tab, page)
-            if (Number(el.tab) === page - 1) {
-                newArray = [...newArray, el]
-            }
-        })
-        setBasketLen(newArray.length);
-    }
-
     const sendData = {
         method: 'get',
         user: user,
@@ -64,8 +53,7 @@ const Home = ({main_data, height, page, setBasket}) => {
     return (
         <div>
 
-            <HeadSelector page={page} main_data={main_data} basketLen={basketLen} hidden={hiddenSelector}
-                          basketReload={basketColReload}/>
+            <HeadSelector page={page} main_data={main_data} basketData={basketData} hidden={hiddenSelector} setLenBasket={setBasketLen}/>
 
             <div className={'scroll-container-y'} onScroll={(event) => {
                 let scroll = event.target.scrollTop

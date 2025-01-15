@@ -9,34 +9,33 @@ const ProductListSelector = ({main_data}) => {
     const [isBuy, setIsBuy] = React.useState(false);
     const [buttonText, setButtonText] = React.useState('Добавить в корзину');
     const [scrollLeft, setScrollLeft] = React.useState(0);
+    const {tg, user} = useTelegram();
+    const navigate = useNavigate();
 
-    console.log(main_data)
     let dataOld = main_data.body
 
     dataOld = main_data.body.sort(function (a, b) {
         try {
-            if (a.category > b.category) {
+            if (a.position > b.position) {
                 return 1;
             }
-            if (a.category < b.category) {
+            if (a.position < b.position) {
                 return -1;
             }
         } catch (e) {
-        }
-        try {
-            if (Number(a.view.split(' ')[0]) > Number(b.view.split(' ')[0])) {
-                return 1;
+            try {
+                if (a.category > b.category) {
+                    return 1;
+                }
+                if (a.category < b.category) {
+                    return -1;
+                }
+            } catch (e) {
             }
-            if (Number(a.view.split(' ')[0]) < Number(b.view.split(' ')[0])) {
-                return -1;
-            }
-        } catch (e) {
         }
     });
-    let data = []
-    const {tg, user} = useTelegram();
-    const navigate = useNavigate();
 
+    let data = []
     let lastName = ''
     let vsArray = []
     let lastId = 0
@@ -55,6 +54,31 @@ const ProductListSelector = ({main_data}) => {
 
     })
     data = [...data, ...vsArray]
+
+    let count = 0
+    data.map(el => {
+        data[count].body = el.body.sort(function (a, b) {
+            try {
+                if (Number(a.view.split(' ')[0]) > Number(b.view.split(' ')[0])) {
+                    return 1;
+                }
+                if (Number(a.view.split(' ')[0]) < Number(b.view.split(' ')[0])) {
+                    return -1;
+                }
+            } catch (e) {
+            }
+            try {
+                if (Number(a.view) > Number(b.view)) {
+                    return 1;
+                }
+                if (Number(a.view) < Number(b.view)) {
+                    return -1;
+                }
+            } catch (e) {
+            }
+        })
+        count++
+    })
 
     const onBack = useCallback(async () => {
         navigate(-1);
@@ -80,16 +104,7 @@ const ProductListSelector = ({main_data}) => {
 
     let url = data[selectCategory].body[selectView].img
 
-    let count = 0
-    let sum = 0
-    data.map(el=>{
-        if((selectCategory-count) * el.body.length >0){
-            sum += (selectCategory-count) * el.body.length
-            console.log(sum)
-        }
-        count+=1
-    })
-    let thisElement = dataOld[sum + + selectView]
+    let thisElement = data[selectCategory].body[selectView]
 
     let heightImg = window.innerWidth - 20
     if (isImgHidden) {
@@ -143,37 +158,6 @@ const ProductListSelector = ({main_data}) => {
         }
     }
 
-    let selecterView = (<>{data[selectCategory].body.map(el => (
-        <div key={el.id} style={{
-            position: 'absolute',
-            marginLeft: String(((el.id - 1) % 3) * (window.innerWidth - 20) / data[selectCategory].body.length + 'px'),
-            width: String((window.innerWidth - 30) / data[selectCategory].body.length) + 'px',
-            height: '100px'
-        }}>
-            <div style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                display: 'flex',
-                height: '95px',
-                overflow: 'hidden',
-                width: String((window.innerWidth - 30) / data[selectCategory].body.length) + 'px',
-            }} onClick={() => {
-                setSelectView(((el.id - 1) % 3))
-            }}>
-                <div style={{
-                    color: 'white',
-                    height: '70px',
-                    display: 'grid',
-                    gridTemplateRows: '1fr 1fr',
-                    justifyItems: 'center',
-                    alignItems: 'center'
-                }}>
-                    <div style={{fontSize: '13px'}}>{el.view}</div>
-                    <div style={{fontSize: '22px'}}>{el.price + ' ₽'}</div>
-                </div>
-            </div>
-        </div>
-    ))}</>)
     let scrollerView = (<>
         <div style={{
             display: 'grid',
@@ -195,40 +179,43 @@ const ProductListSelector = ({main_data}) => {
                 transitionProperty: 'margin-left',
                 transitionDuration: '0.2s',
             }}></div>
-            {data[selectCategory].body.map(el => (
-                <div key={el.id} style={{
-                    position: 'absolute',
-                    marginLeft: String(((el.id - 1) % 3) * (window.innerWidth - 20) / data[selectCategory].body.length + 'px'),
-                    width: String((window.innerWidth - 30) / data[selectCategory].body.length) + 'px',
-                    height: '100px'
-                }}>
-                    <div style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        display: 'flex',
-                        height: '95px',
-                        overflow: 'hidden',
+            {data[selectCategory].body.map(el => {
+                console.log(data[selectCategory].body)
+                return (
+                    <div key={el.id} style={{
+                        position: 'absolute',
+                        marginLeft: String(((el.id + 1) % data[selectCategory].body.length) * (window.innerWidth - 20) / data[selectCategory].body.length + 'px'),
                         width: String((window.innerWidth - 30) / data[selectCategory].body.length) + 'px',
-                    }} onClick={() => {
-                        setSelectView(((el.id - 1) % 3))
+                        height: '100px'
                     }}>
                         <div style={{
-                            color: 'white',
-                            height: '70px',
-                            display: 'grid',
-                            gridTemplateRows: '1fr 1fr',
-                            justifyItems: 'center',
-                            alignItems: 'center'
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            display: 'flex',
+                            height: '95px',
+                            overflow: 'hidden',
+                            width: String((window.innerWidth - 30) / data[selectCategory].body.length) + 'px',
+                        }} onClick={() => {
+                            setSelectView(((el.id + 1) % data[selectCategory].body.length))
                         }}>
-                            <div style={{fontSize: '13px', fontFamily: "'Montserrat', sans-serif"}}>{el.view}</div>
                             <div style={{
-                                fontSize: '22px',
-                                fontFamily: "'Montserrat', sans-serif"
-                            }}>{el.price + ' ₽'}</div>
+                                color: 'white',
+                                height: '70px',
+                                display: 'grid',
+                                gridTemplateRows: '1fr 1fr',
+                                justifyItems: 'center',
+                                alignItems: 'center'
+                            }}>
+                                <div style={{fontSize: '13px', fontFamily: "'Montserrat', sans-serif"}}>{el.view}</div>
+                                <div style={{
+                                    fontSize: '22px',
+                                    fontFamily: "'Montserrat', sans-serif"
+                                }}>{el.price + ' ₽'}</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            ))}
+                )
+            })}
 
         </div>
     </>)
@@ -305,6 +292,14 @@ const ProductListSelector = ({main_data}) => {
             </div>
         </div>)
     }
+
+    let platform = ''
+    if (typeof thisElement.platform === 'undefined') {
+        platform = ''
+    } else {
+        platform = 'Консоли: ' + thisElement.platform
+    }
+
     return (
         <div>
             <div style={{
@@ -401,7 +396,7 @@ const ProductListSelector = ({main_data}) => {
                         color: 'white',
                         textWrap: 'wrap',
                         fontFamily: "'Montserrat', sans-serif"
-                    }}>{'Платформа: ' + thisElement.platform}
+                    }}>{platform}
                     </div>
                 </div>
                 <button className={'all-see-button'} onClick={buttonLink}

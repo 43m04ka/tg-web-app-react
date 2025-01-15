@@ -85,9 +85,11 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
     if (listNumber > 1) {
         nav1El = (<div onClick={() => {
             list = 1;
-            if(jsonFilter === null){
-                sendRequestOnDatabase({path: path, number: list}, 'getList')}
-            else{sendRequestOnDatabase({path: path, number: list, filter:jsonFilter}, 'getList')}
+            if (jsonFilter === null) {
+                sendRequestOnDatabase({path: path, number: list}, 'getList')
+            } else {
+                sendRequestOnDatabase({path: path, number: list, filter: jsonFilter}, 'getList')
+            }
             setListNumber(list)
             setStatus(10)
         }}
@@ -101,9 +103,11 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
         }}>{1}</div>)
         nav2El = (<div onClick={() => {
             list = listNumber - 1;
-            if(jsonFilter === null){
-                sendRequestOnDatabase({path: path, number: list}, 'getList')}
-            else{sendRequestOnDatabase({path: path, number: list, filter:jsonFilter}, 'getList')}
+            if (jsonFilter === null) {
+                sendRequestOnDatabase({path: path, number: list}, 'getList')
+            } else {
+                sendRequestOnDatabase({path: path, number: list, filter: jsonFilter}, 'getList')
+            }
             setListNumber(list);
             setStatus(10)
         }}
@@ -119,9 +123,11 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
     if (listNumber < len) {
         nav3El = (<div onClick={() => {
             list = len;
-            if(jsonFilter === null){
-                sendRequestOnDatabase({path: path, number: list}, 'getList')}
-            else{sendRequestOnDatabase({path: path, number: list, filter:jsonFilter}, 'getList')}
+            if (jsonFilter === null) {
+                sendRequestOnDatabase({path: path, number: list}, 'getList')
+            } else {
+                sendRequestOnDatabase({path: path, number: list, filter: jsonFilter}, 'getList')
+            }
             setListNumber(list);
             setStatus(10)
         }}
@@ -136,9 +142,11 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
 
         nav4El = (<div onClick={() => {
             list = listNumber + 1;
-            if(jsonFilter === null){
-            sendRequestOnDatabase({path: path, number: list}, 'getList')}
-            else{sendRequestOnDatabase({path: path, number: list, filter:jsonFilter}, 'getList')}
+            if (jsonFilter === null) {
+                sendRequestOnDatabase({path: path, number: list}, 'getList')
+            } else {
+                sendRequestOnDatabase({path: path, number: list, filter: jsonFilter}, 'getList')
+            }
             setListNumber(list)
             setStatus(10)
         }}
@@ -158,7 +166,8 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
                 elementKeys = [...elementKeys, 'categoryXB']
             }
         }
-    }catch (e){}
+    } catch (e) {
+    }
 
     try {
         if (typeof products[0].body.platform !== 'undefined') {
@@ -168,31 +177,75 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
                 elementKeys = [...elementKeys, 'platformXB']
             }
         }
-    }catch (e) {}
+    } catch (e) {
+    }
 
     try {
         if (typeof products[0].languageSelector !== 'undefined') {
             elementKeys = [...elementKeys, 'languageSelector']
 
         }
-    }catch (e) {}
+    } catch (e) {
+    }
 
     try {
         if (typeof products[0].languageSelector !== 'undefined') {
             elementKeys = [...elementKeys, 'languageSelector']
 
         }
-    }catch (e) {}
+    } catch (e) {
+    }
 
     const onRequestFilter = (json) => {
         setJsonFilter(json)
-        if(json === null){
-            sendRequestOnDatabase({path: path, number: 1}, 'getList')}
-        else{sendRequestOnDatabase({path: path, number: 1, filter:json}, 'getList')}
+        if (json === null) {
+            sendRequestOnDatabase({path: path, number: 1}, 'getList')
+        } else {
+            sendRequestOnDatabase({path: path, number: 1, filter: json}, 'getList')
+        }
         setListNumber(1)
     }
 
-    if (status === 1) {
+    let bodyElement = (<div>
+            <div className={'list-grid'}>
+                {products.map(item => {
+                    let newItem = item.body
+                    newItem.id = item.id
+                    return (<ProductItem key={newItem.id} product={newItem} path={path}/>)
+                })}
+            </div>
+            <div style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                display: 'flex',
+                flexDirection: 'row',
+                marginTop: '10px'
+            }}>
+                {nav2El}
+                {nav1El}
+                <div className={'text-element'} style={{
+                    height: '20px',
+                    width: '20px',
+                    textAlign: 'center',
+                    lineHeight: '20px',
+                    borderRadius: '5px',
+                    border: '1px solid gray',
+                    background: '#6194ea'
+                }}>{listNumber}</div>
+                {nav3El}
+                {nav4El}
+            </div>
+        </div>
+    )
+    if (status === 10) {
+            bodyElement= (<div className={'pong-loader'} style={{
+                border: '2px solid #8cdb8b',
+                marginTop: String(window.innerHeight / 2 - 60) + 'px',
+                marginLeft: String(window.innerWidth / 2 - 40) + 'px'
+            }}></div>)
+    }
+
+    if (status === 1 || status === 10) {
         return (
             <div className={'list'} style={{display: 'flex', flexDirection: 'column'}}>
                 <div className={'box-grid-panel'}>
@@ -226,34 +279,7 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
                      style={{
                          height: String(height - 70 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'
                      }}>
-                    <div className={'list-grid'}>
-                        {products.map(item => {
-                            let newItem = item.body
-                            newItem.id = item.id
-                            return (<ProductItem key={newItem.id} product={newItem} path={path}/>)
-                        })}
-                    </div>
-                    <div style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        display: 'flex',
-                        flexDirection: 'row',
-                        marginTop: '10px'
-                    }}>
-                        {nav2El}
-                        {nav1El}
-                        <div className={'text-element'} style={{
-                            height: '20px',
-                            width: '20px',
-                            textAlign: 'center',
-                            lineHeight: '20px',
-                            borderRadius: '5px',
-                            border: '1px solid gray',
-                            background: '#6194ea'
-                        }}>{listNumber}</div>
-                        {nav3El}
-                        {nav4El}
-                    </div>
+                    {bodyElement}
                     <div style={{position: 'absolute'}}>
                         <Filter height={height} elementKeys={elementKeys} onRequestFilter={onRequestFilter}/>
                     </div>
@@ -268,71 +294,6 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
             marginTop: String(window.innerHeight / 2 - 60) + 'px',
             marginLeft: String(window.innerWidth / 2 - 40) + 'px'
         }}></div>)
-    } else if (status === 10) {
-        return (
-            <div className={'list'} style={{display: 'flex', flexDirection: 'column'}}>
-                <div className={'box-grid-panel'}>
-                    <Link to={'/search' + String(page)} className={'link-element'}>
-                        <div className={'search'} style={{padding: '10px', display: 'flex', flexDirection: 'row'}}>
-                            <div className={'background-search'} style={{width: '25px', height: '25px'}}></div>
-                            <div style={{
-                                height: '25px',
-                                alignContent: 'center',
-                                marginLeft: '3px',
-                                fontSize: "16px",
-                                color: 'black',
-                                fontFamily: "'Montserrat', sans-serif",
-                                fontVariant: 'small-caps'
-                            }}>Найти игру, подписку...
-                            </div>
-                        </div>
-                    </Link>
-                    <Link to={'/basket' + page} className={'link-element'}>
-                        <div className={'div-button-panel'} style={{padding: '3px'}}>
-                            <div className={'background-basket'} style={{width: '100%', height: '100%'}}></div>
-                        </div>
-                    </Link>
-                    <Link to={'/info'} className={'link-element'}>
-                        <div className={'div-button-panel'} style={{padding: '6px'}}>
-                            <div className={'background-profile'} style={{width: '100%', height: '100%'}}></div>
-                        </div>
-                    </Link>
-                </div>
-                <div className={'scroll-container-y'}
-                     style={{
-                         borderBottom: '2px solid #454545',
-                         height: String(height - 130 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'
-                     }}>
-                    <div className={'pong-loader'} style={{
-                        border: '2px solid #8cdb8b',
-                        marginTop: String((window.innerHeight-200) / 2 - 60) + 'px',
-                        marginLeft: String(window.innerWidth / 2 - 40) + 'px'
-                    }}></div>
-                </div>
-                <div style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: String(window.innerWidth) + 'px',
-                    display: 'flex',
-                    flexDirection: 'row',
-                    marginTop: '10px'
-                }}>
-                    {nav2El}
-                    {nav1El}
-                    <div className={'text-element'} style={{
-                        height: '20px',
-                        width: '20px',
-                        textAlign: 'center',
-                        lineHeight: '20px',
-                        borderRadius: '5px',
-                        border: '1px solid gray',
-                        background: '#6194ea'
-                    }}>{listNumber}</div>
-                    {nav3El}
-                    {nav4El}
-                </div>
-            </div>
-        );
     }
 
 };

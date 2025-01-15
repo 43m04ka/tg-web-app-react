@@ -2,8 +2,34 @@ import React, {useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
 import basket from "../icons/basket.png";
 
-const HeadSelector = ({main_data, hidden, page, basketLen, basketReload}) => {
+const HeadSelector = ({main_data, hidden, basketData, setLenBasket, page}) => {
     const [pageSelected, setPageSelected] = useState(page);
+    const [basketLen, setBasketLen] = useState(0);
+
+
+    let newArray = []
+    basketData.map(el => {
+        console.log(el.tab, page)
+        if (Number(el.tab) === page) {
+            newArray = [...newArray, el]
+        }
+    })
+    if(newArray.length!==basketLen) {
+        setLenBasket(newArray.length);
+        setBasketLen(newArray.length)
+    }
+
+    const basketColReload = (page) => {
+        let newArray = []
+        basketData.map(el => {
+            console.log(el.tab, page)
+            if (Number(el.tab) === page) {
+                newArray = [...newArray, el]
+            }
+        })
+        setLenBasket(newArray.length);
+        setBasketLen(newArray.length)
+    }
 
     let c1, c2, c3 = null
     if (page === 0) {
@@ -33,20 +59,20 @@ const HeadSelector = ({main_data, hidden, page, basketLen, basketReload}) => {
 
     const onclickPS = () => {
         setPageSelected(0);
-        basketReload()
+        basketColReload(0)
         setColorPS([64, 73, 233]);
         setColorXB([23, 23, 23]);
         setColorSR([23, 23, 23]);
     }
     const onclickXB = () => {
-        basketReload()
+        basketColReload(1)
         setPageSelected(1);
         setColorXB([73, 233, 64]);
         setColorSR([23, 23, 23]);
         setColorPS([23, 23, 23]);
     }
     const onclickSR = () => {
-        basketReload()
+        basketColReload(2)
         setPageSelected(2);
         setColorSR([233, 64, 73]);
         setColorPS([23, 23, 23]);

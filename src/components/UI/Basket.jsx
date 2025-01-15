@@ -184,7 +184,7 @@ const Basket = ({height, number}) => {
                        fontFamily: "'Montserrat', sans-serif",
                    }} onChange={(event) => inputData[1] = event.target.value}/>
             <div className={'text-element'} style={{fontSize: '14px'}}>Введите резервные коды от аккаунта PSN:</div>
-            <div style={{display: 'flex', flexDirection: 'row-'}}>
+            <div style={{display: 'flex', flexDirection: 'row'}}>
                 <input placeholder={"Код #1"}
                        maxLength={6}
                        style={{

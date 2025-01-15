@@ -112,7 +112,7 @@ const HeadSelector = ({main_data, hidden, basketData, setLenBasket, page}) => {
     if(basketLen !== null && basketLen !== 0){
         basketKolElement = (<div className={'text-element'} style={{
             background: '#f83d3d',
-            fontSize: '15px',
+            fontSize: '12px',
             height: '20px',
             width: '20px',
             borderRadius: "50%",

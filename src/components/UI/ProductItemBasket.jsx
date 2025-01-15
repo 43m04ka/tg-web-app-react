@@ -28,6 +28,17 @@ const ProductItemBasket = ({setBasketF, product}) => {
         })
     }, [sendData])
 
+    let platform = ''
+    if (typeof item.platform === 'undefined') {
+        if (typeof item.platform === 'undefined') {
+            platform = item.view
+        }else{
+            platform = ''
+        }
+    } else {
+        platform = item.platform
+    }
+
     return (
         <div className={'box-item-basket'}>
             <div className={'title'} style={{marginLeft: '10px'}}>{item.number + '.'}</div>
@@ -50,7 +61,7 @@ const ProductItemBasket = ({setBasketF, product}) => {
                         fontSize: '9px',
                         overflow: 'hidden',
                         marginBottom:'0px'
-                    }}>{item.platform}</div>
+                    }}>{platform}</div>
                     <div className={'text-element text-basket'} style={{
                         lineHeight: '15px',
                         marginTop:'0',

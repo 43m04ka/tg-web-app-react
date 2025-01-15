@@ -2,7 +2,7 @@ import React, {useCallback, useEffect} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
 import {useNavigate} from "react-router-dom";
 
-const ProductListSelector = ({main_data}) => {
+const ProductListSelector = ({main_data, page}) => {
     const [selectCategory, setSelectCategory] = React.useState(0);
     const [selectView, setSelectView] = React.useState(0);
     const [isImgHidden, setIsImgHidden] = React.useState(true);
@@ -85,7 +85,7 @@ const ProductListSelector = ({main_data}) => {
     }, [])
 
     const onBasket = useCallback(async () => {
-        navigate('/basket');
+        navigate('/basket'+page);
     }, [])
 
     useEffect(() => {

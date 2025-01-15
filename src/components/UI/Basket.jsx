@@ -106,7 +106,7 @@ const Basket = ({height, number}) => {
             }
         }, [onBack])
     }
-    if (status === 1) {
+    if (status === 2) {
         useEffect(() => {
             tg.onEvent('backButtonClicked', setStatus(1))
             return () => {

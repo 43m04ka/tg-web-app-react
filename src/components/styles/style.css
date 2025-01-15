@@ -296,6 +296,11 @@ body {
     background-size: cover;
 }
 
+.background-searchFon {
+    background-image: url("../icons/searchFon.png");
+    background-size: cover;
+}
+
 .button-trash {
     height: 50px;
     width: 50px;

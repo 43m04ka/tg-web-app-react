@@ -194,7 +194,7 @@ function App() {
                     <Route path={'basket2'} element={<Basket height={size} number={2}/>}/>
                     {mainData.map(platform => (
                         <Route path={'search' + String(platform.id)}
-                               element={<Search height={size} page={platform.id}/>}/>
+                               element={<Search height={size} setData={setDataCards} setStatusApp={setStatus} page={platform.id}/>}/>
                     ))}
                     <Route path={'admin'} element={<AdminPanel/>}/>
                     <Route path={'info'} element={<Info/>}/>

@@ -63,8 +63,8 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
     }
 
     const onBack = useCallback(() => {
-        navigate(-1);
         setStatusApp(0)
+        navigate(-1);
     }, [])
 
     useEffect(() => {

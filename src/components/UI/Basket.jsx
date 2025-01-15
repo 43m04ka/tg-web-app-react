@@ -98,12 +98,22 @@ const Basket = ({height, number}) => {
         navigate(-1);
     }, [])
 
-    useEffect(() => {
-        tg.onEvent('backButtonClicked', onBack)
-        return () => {
-            tg.offEvent('backButtonClicked', onBack)
-        }
-    }, [onBack])
+    if (status === 1) {
+        useEffect(() => {
+            tg.onEvent('backButtonClicked', onBack)
+            return () => {
+                tg.offEvent('backButtonClicked', onBack)
+            }
+        }, [onBack])
+    }
+    if (status === 1) {
+        useEffect(() => {
+            tg.onEvent('backButtonClicked', setStatus(1))
+            return () => {
+                tg.offEvent('backButtonClicked', setStatus(1))
+            }
+        }, [onBack])
+    }
 
     useEffect(() => {
         tg.BackButton.show();
@@ -547,7 +557,7 @@ const Basket = ({height, number}) => {
             }}
                     onClick={onClickButton}>{buttonText}
             </button>
-            <div className={'text-element'} style={{fontSize: '9px', textAlign:'center'}}>
+            <div className={'text-element'} style={{fontSize: '9px', textAlign: 'center'}}>
                 Нажимая на кнопку, Вы соглашаетесь с <a href={'https://gwstore.su/pk'} style={{color: '#559fff'}}
                                                         className={'link-element'}>Условиями
                 обработки персональных данных</a>, а также с <a href={'https://gwstore.su/privacy'}

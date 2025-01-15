@@ -98,22 +98,13 @@ const Basket = ({height, number}) => {
         navigate(-1);
     }, [])
 
-    if (status === 1) {
-        useEffect(() => {
-            tg.onEvent('backButtonClicked', onBack)
-            return () => {
-                tg.offEvent('backButtonClicked', onBack)
-            }
-        }, [onBack])
-    }
-    if (status === 2) {
-        useEffect(() => {
-            tg.onEvent('backButtonClicked', setStatus(1))
-            return () => {
-                tg.offEvent('backButtonClicked', setStatus(1))
-            }
-        }, [onBack])
-    }
+    useEffect(() => {
+        tg.onEvent('backButtonClicked', onBack)
+        return () => {
+            tg.offEvent('backButtonClicked', onBack)
+        }
+    }, [onBack])
+
 
     useEffect(() => {
         tg.BackButton.show();

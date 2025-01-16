@@ -25,6 +25,8 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
     let list = 1
     const [listNumber, setListNumber] = useState(1);
     const [jsonFilter, setJsonFilter] = useState(null);
+    const [panelIsVisible, setPanelIsVisible] = useState(false);
+    const [panelWidth, setPanelWidth] = useState(0);
     console.log(jsonFilter)
 
 
@@ -281,7 +283,7 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
                      }}>
                     {bodyElement}
                     <div style={{position: 'absolute'}}>
-                        <Filter height={height} elementKeys={elementKeys} onRequestFilter={onRequestFilter}/>
+                        <Filter height={height} elementKeys={elementKeys} onRequestFilter={onRequestFilter} panelIsVisible={panelIsVisible} setPanelIsVisible={setPanelIsVisible} panelWidth={panelWidth} setPanelWidth={ setPanelWidth}/>
                     </div>
                 </div>
             </div>

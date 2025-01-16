@@ -15,7 +15,7 @@ const Basket = ({height, number}) => {
     const [colorYes, setColorYes] = useState([81, 164, 86]);
     const [colorNo, setColorNo] = useState([45, 12, 12]);
     const [status, setStatus] = useState(0);
-    const [buttonText, setButtonText] = React.useState('Оформить закказ и оплатить');
+    const [buttonText, setButtonText] = React.useState('Оформить заказ и оплатить');
     const [promoInput, setPromoInput] = useState('');
 
     const sendDataProduct = {
@@ -329,7 +329,7 @@ const Basket = ({height, number}) => {
                            border: '0px',
                            fontSize: '16px',
                            color: 'white',
-                           fontFamily: "'Montserrat', sans-serif",
+                           fontFafmily: "'Montserrat', sans-serif",
                        }} onChange={(event) => inputData[3] = event.target.value}/>
             </div>
             <a href={'https://gwstore.su/tpost/xransg8j11-kak-privyazat-rezervnuyu-pochtu-k-akkaun'}

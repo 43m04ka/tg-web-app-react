@@ -87,9 +87,11 @@ const Home = ({main_data, height, page, setBasket}) => {
                 <div style={{width: String(window.innerWidth) + 'px'}}>
                     <Slider data={main_data.body[0]}/>
                 </div>
+                <div style={{marginBottom:'15px'}}>
                 {main_data.body[1].map(category => (
                     <HomeBlock key={category.id} path={category.path} data={category}/>
                 ))}
+                </div>
             </div>
         </div>
     )

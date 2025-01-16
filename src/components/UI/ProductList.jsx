@@ -14,8 +14,10 @@ const getTotalPrice = (items = []) => {
 }
 
 let oldFilterHeight = window.innerHeight - 250
+let scrollCtrl = 0;
 
 const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
+    console.log(1)
     const [products, setProducts] = useState([])
     const [status, setStatus] = useState(0);
     const path = main_data.path
@@ -27,7 +29,8 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
     const [jsonFilter, setJsonFilter] = useState(null);
     const [panelIsVisible, setPanelIsVisible] = useState(false);
     const [panelWidth, setPanelWidth] = useState(0);
-    console.log(jsonFilter)
+    const [hiddenSelector, setHiddenSelector] = useState(false);
+    const [heightMenuButton, setHeightMenuButton] = useState(60);
 
 
     let dataRequestDatabase = {
@@ -36,7 +39,6 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
     }
 
     const sendRequestDatabase = useCallback(() => {
-        console.log(dataRequestDatabase, 'inputRequestDb')
         fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/database', {
             method: 'POST',
             headers: {
@@ -46,11 +48,9 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
         }).then(r => {
             let Promise = r.json()
             Promise.then(async prom => {
-                console.log(prom, 'возвратил get')
                 if (dataRequestDatabase.method === 'getList') {
                     await setProducts(prom.cards)
                     await setData(prom.cards)
-                    console.log(prom.cards)
                     await setLen(prom.len)
                     await setStatus(1)
                     await setPanelIsVisible(false)
@@ -253,7 +253,7 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
     if (status === 1 || status === 10) {
         return (
             <div className={'list'} style={{display: 'flex', flexDirection: 'column'}}>
-                <div className={'box-grid-panel'}>
+                <div className={'box-grid-panel'} style={{height:String(heightMenuButton)+'px', overflow:'hidden', transitionProperty:'height',transitionDuration:'0.3s'}}>
                     <Link to={'/search' + String(page)} className={'link-element'}>
                         <div className={'search'} style={{padding: '10px', display: 'flex', flexDirection: 'row'}}>
                             <div className={'background-search'} style={{width: '25px', height: '25px'}}></div>
@@ -281,12 +281,39 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
                     </Link>
                 </div>
                 <div className={'scroll-container-y'}
+                     onScroll={(event) => {
+                         let scroll = event.target.scrollTop
+                         if (scroll > scrollCtrl + 200 && !hiddenSelector) {
+                             scrollCtrl = scroll
+                             setHiddenSelector(true)
+                             setHeightMenuButton(0)
+                         } else if ((scroll < scrollCtrl - 100 || scroll === 0) && hiddenSelector) {
+                             scrollCtrl = scroll
+                             setHiddenSelector(false)
+                             setHeightMenuButton(60)
+                         }
+                         if (hiddenSelector && scroll > scrollCtrl) {
+                             scrollCtrl = scroll
+                         } else if (!hiddenSelector && scroll < scrollCtrl) {
+                             scrollCtrl = scroll
+                         }
+                     }}
                      style={{
-                         height: String(height - 70 - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'
+                         height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - heightMenuButton) + 'px',
+                         transitionProperty: 'height',
+                         transitionDuration: '0.3s',
                      }}>
+                    <div style={{
+                        height: String(60-heightMenuButton) + 'px',
+                        transitionProperty: 'height',
+                        transitionDuration: '0.3s',
+                    }}>
+                        <div style={{height: '300px', overflow: 'hidden'}}></div>
+                    </div>
                     {bodyElement}
                     <div style={{position: 'absolute'}}>
-                        <Filter height={height} elementKeys={elementKeys} onRequestFilter={onRequestFilter}
+                        <Filter height={height + 60 - heightMenuButton} elementKeys={elementKeys}
+                                onRequestFilter={onRequestFilter}
                                 panelIsVisible={panelIsVisible} setPanelIsVisible={setPanelIsVisible}
                                 panelWidth={panelWidth} setPanelWidth={setPanelWidth}/>
                     </div>

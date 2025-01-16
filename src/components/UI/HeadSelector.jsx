@@ -9,7 +9,6 @@ const HeadSelector = ({main_data, hidden, basketData, setLenBasket, page}) => {
 
     let newArray = []
     basketData.map(el => {
-        console.log(el.tab, page)
         if (Number(el.tab) === page) {
             newArray = [...newArray, el]
         }

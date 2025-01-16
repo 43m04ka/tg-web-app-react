@@ -42,6 +42,7 @@ const Search = ({height, page, setData, setStatusApp}) => {
                     setData(prom.cards)
                     console.log(prom.cards)
                     setStatus(1)
+
                 }
             })
         })

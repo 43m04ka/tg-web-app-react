@@ -45,14 +45,16 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
             body: JSON.stringify(dataRequestDatabase)
         }).then(r => {
             let Promise = r.json()
-            Promise.then(prom => {
+            Promise.then(async prom => {
                 console.log(prom, 'возвратил get')
                 if (dataRequestDatabase.method === 'getList') {
-                    setProducts(prom.cards)
-                    setData(prom.cards)
+                    await setProducts(prom.cards)
+                    await setData(prom.cards)
                     console.log(prom.cards)
-                    setLen(prom.len)
-                    setStatus(1)
+                    await setLen(prom.len)
+                    await setStatus(1)
+                    await setPanelIsVisible(false)
+                    await setPanelWidth(0)
                 }
             })
         })

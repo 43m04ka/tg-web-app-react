@@ -221,7 +221,8 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
                 alignItems: 'center',
                 display: 'flex',
                 flexDirection: 'row',
-                marginTop: '10px'
+                marginTop: '15px',
+                marginBottom:'15px',
             }}>
                 {nav2El}
                 {nav1El}
@@ -240,11 +241,11 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
         </div>
     )
     if (status === 10) {
-            bodyElement= (<div className={'pong-loader'} style={{
-                border: '2px solid #8cdb8b',
-                marginTop: String(window.innerHeight / 2 - 60) + 'px',
-                marginLeft: String(window.innerWidth / 2 - 40) + 'px'
-            }}></div>)
+        bodyElement = (<div className={'pong-loader'} style={{
+            border: '2px solid #8cdb8b',
+            marginTop: String(window.innerHeight / 2 - 60) + 'px',
+            marginLeft: String(window.innerWidth / 2 - 40) + 'px'
+        }}></div>)
     }
 
     if (status === 1 || status === 10) {
@@ -279,11 +280,13 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
                 </div>
                 <div className={'scroll-container-y'}
                      style={{
-                         height: String(height - 70 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'
+                         height: String(height - 70 - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'
                      }}>
                     {bodyElement}
                     <div style={{position: 'absolute'}}>
-                        <Filter height={height} elementKeys={elementKeys} onRequestFilter={onRequestFilter} panelIsVisible={panelIsVisible} setPanelIsVisible={setPanelIsVisible} panelWidth={panelWidth} setPanelWidth={ setPanelWidth}/>
+                        <Filter height={height} elementKeys={elementKeys} onRequestFilter={onRequestFilter}
+                                panelIsVisible={panelIsVisible} setPanelIsVisible={setPanelIsVisible}
+                                panelWidth={panelWidth} setPanelWidth={setPanelWidth}/>
                     </div>
                 </div>
             </div>

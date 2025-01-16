@@ -72,7 +72,7 @@ const Home = ({main_data, height, page, setBasket}) => {
                     scrollCtrl = scroll
                 }
             }}
-                 style={{height: String(height - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 120 + heightMenuButton) + 'px'}}>
+                 style={{transitionProperty:'height', transitionDuration:'0.3s',height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 120 + heightMenuButton) + 'px'}}>
                 <div style={{width: String(window.innerWidth) + 'px'}}>
                     <Slider data={main_data.body[0]}/>
                 </div>

@@ -92,8 +92,6 @@ const Search = ({height, page, setData, setStatusApp}) => {
     if(listRes.length===0){
         bodyElement = (<div className={'background-searchFon'} style={{marginLeft:String(window.innerWidth/2 - 125) + 'px', width:'250px', height:'250px', marginTop:String(window.innerHeight/2-200)+'px'}}/>)
     }
-
-
     if (status === 1) {
         return (
             <div>
@@ -103,7 +101,7 @@ const Search = ({height, page, setData, setStatusApp}) => {
                     gridTemplateColumns: '1fr 55px',
                     width: String(window.innerWidth) + 'px'
                 }}>
-                    <input className={'search'} placeholder={'Найти игру, водписку, валюту...'}
+                    <input className={'search'} placeholder={'Найти игру, подписку, валюту...'}
                            onChange={() => setTextInput(event.target.value)}
                            style={{
                                border: '0px', fontSize: '15px',

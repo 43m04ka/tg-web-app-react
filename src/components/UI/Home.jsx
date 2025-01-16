@@ -68,11 +68,22 @@ const Home = ({main_data, height, page, setBasket}) => {
                 }
                 if (hiddenSelector && scroll > scrollCtrl) {
                     scrollCtrl = scroll
-                } else if (!hiddenSelector&&scroll < scrollCtrl) {
+                } else if (!hiddenSelector && scroll < scrollCtrl) {
                     scrollCtrl = scroll
                 }
             }}
-                 style={{transitionProperty:'height', transitionDuration:'0.3s',height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 120 + heightMenuButton) + 'px'}}>
+                 style={{
+                     transitionProperty: 'height',
+                     transitionDuration: '0.3s',
+                     height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 120 + heightMenuButton) + 'px'
+                 }}>
+                <div style={{
+                    height: String(heightMenuButton) + 'px',
+                    transitionProperty: 'height',
+                    transitionDuration: '0.3s',
+                }}>
+                    <div style={{height: '300px', overflow: 'hidden'}}></div>
+                </div>
                 <div style={{width: String(window.innerWidth) + 'px'}}>
                     <Slider data={main_data.body[0]}/>
                 </div>

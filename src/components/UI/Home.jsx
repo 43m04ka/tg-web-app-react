@@ -6,6 +6,7 @@ import HomeBlock from "./HomeBlock";
 import {useTelegram} from "../../hooks/useTelegram";
 import HeadSelector from "./HeadSelector";
 import Slider from "./Slider";
+import HomeBlockDon from "./HomeBlockDon";
 
 let scrollCtrl = 0;
 const Home = ({main_data, height, page, setBasket}) => {
@@ -53,7 +54,8 @@ const Home = ({main_data, height, page, setBasket}) => {
     return (
         <div>
 
-            <HeadSelector page={page} main_data={main_data} basketData={basketData} hidden={hiddenSelector} setLenBasket={setBasketLen}/>
+            <HeadSelector page={page} main_data={main_data} basketData={basketData} hidden={hiddenSelector}
+                          setLenBasket={setBasketLen}/>
 
             <div className={'scroll-container-y'} onScroll={(event) => {
                 let scroll = event.target.scrollTop
@@ -87,10 +89,18 @@ const Home = ({main_data, height, page, setBasket}) => {
                 <div style={{width: String(window.innerWidth) + 'px'}}>
                     <Slider data={main_data.body[0]}/>
                 </div>
-                <div style={{marginBottom:'15px'}}>
-                {main_data.body[1].map(category => (
-                    <HomeBlock key={category.id} path={category.path} data={category}/>
-                ))}
+                <div style={{marginBottom: '15px'}}>
+                    {main_data.body[1].map(category => {
+                        if(typeof category.body[0].title !== 'undefined' && category.name !== '') {
+                            return (
+                                <HomeBlock key={category.id} path={category.path} data={category}/>
+                            )
+                        }else if(typeof category.body[0].path !== 'undefined'){
+                            return (
+                                <HomeBlockDon key={category.id} path={category.path} data={category}/>
+                            )
+                        }
+                    })}
                 </div>
             </div>
         </div>

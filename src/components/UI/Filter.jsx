@@ -35,8 +35,7 @@ const Filter = ({height, elementKeys, onRequestFilter, panelIsVisible, setPanelI
                 width: String(panelWidth) + 'px',
                 borderTopRightRadius: '10px',
                 borderBottomRightRadius: '10px',
-                transitionProperty: 'width, height',
-                transitionDuration: '0.3s',
+                transitionProperty: 'height',
                 overflow: 'hidden',
             }}>
                 <div

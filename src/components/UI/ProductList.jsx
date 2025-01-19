@@ -50,6 +50,7 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
                     await setData(prom.cards)
                     await setLen(prom.len)
                     await setStatus(1)
+                    await setHeightMenuButton(65)
                 }
             })
         })

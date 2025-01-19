@@ -35,7 +35,7 @@ const Filter = ({height, elementKeys, onRequestFilter}) => {
         <div style={{display: 'flex', flexDirection: 'row',}}>
             <div style={{
                 background: '#232323',
-                height: String(height - 70 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
+                height: String(height - 60 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
                 width: String(width) + 'px',
                 borderTopRightRadius: '10px',
                 borderBottomRightRadius: '10px',
@@ -44,7 +44,7 @@ const Filter = ({height, elementKeys, onRequestFilter}) => {
                 overflow: 'hidden',
             }}>
                 <div
-                    style={{height: String(height - 70 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 45) + 'px'}}>
+                    style={{height: String(height - 60 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 45) + 'px'}}>
                     {priceElement}
                     {platformElement}
                     {categoryElement}

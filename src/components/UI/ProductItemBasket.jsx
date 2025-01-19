@@ -41,7 +41,7 @@ const ProductItemBasket = ({setBasketF, product}) => {
 
     return (
         <div className={'box-item-basket'}>
-            <div className={'title'} style={{marginLeft: '10px'}}>{item.number + '.'}</div>
+            {/*<div className={'title'} style={{marginLeft: '10px'}}>{item.number + '.'}</div>*/}
             <Link to={'/card/' + item.id} className={'link-element'}
                   style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>
 
@@ -71,7 +71,7 @@ const ProductItemBasket = ({setBasketF, product}) => {
                 </div>
             </Link>
             <div onClick={onSendData} className={'button-trash'}>
-                <div className={'background-trash'} style={{padding: '6px', height: '24px', width: '24px'}}>
+                <div className={'background-trash'} style={{padding: '10px', height: '20px', width: '20px'}}>
                 </div>
             </div>
         </div>

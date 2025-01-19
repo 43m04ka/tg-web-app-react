@@ -232,7 +232,7 @@ body {
     margin-right: 10px;
     margin-bottom: 10px;
     display: grid;
-    grid-template-columns: 40px 1fr 50px;
+    grid-template-columns: 1fr 50px;
 }
 
 .img-mini {

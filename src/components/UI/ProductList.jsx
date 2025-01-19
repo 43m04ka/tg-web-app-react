@@ -20,7 +20,7 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
     const [products, setProducts] = useState([])
     const [status, setStatus] = useState(0);
     const path = main_data.path
-    const {tg} = useTelegram();
+    const {tg, user} = useTelegram();
     const [len, setLen] = useState(0);
     const navigate = useNavigate();
     let list = 1
@@ -28,12 +28,56 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
     const [jsonFilter, setJsonFilter] = useState(null);
     const [hiddenSelector, setHiddenSelector] = useState(false);
     const [heightMenuButton, setHeightMenuButton] = useState(65);
+    const [basketLen, setBasketLen] = useState(0);
+    const [basketData, setBasketData] = useState([]);
 
 
     let dataRequestDatabase = {
         method: 'getList',
         data: {}
     }
+
+
+    let newArray = []
+    basketData.map(el => {
+        if (Number(el.tab) === page) {
+            newArray = [...newArray, el]
+        }
+    })
+    if (newArray.length !== basketLen) {
+        setBasketLen(newArray.length)
+    }
+
+    const basketColReload = (page) => {
+        let newArray = []
+        basketData.map(el => {
+            console.log(el.tab, page)
+            if (Number(el.tab) === page) {
+                newArray = [...newArray, el]
+            }
+        })
+        setBasketLen(newArray.length)
+    }
+
+    const sendData = {
+        method: 'get',
+        user: user,
+    }
+
+    const onGetData = useCallback(() => {
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(sendData)
+        }).then(r => {
+            let Promise = r.json()
+            Promise.then(r => {
+                setBasketData(r.body);
+            })
+        })
+    }, [sendData])
 
     const sendRequestDatabase = useCallback(() => {
         fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/database', {
@@ -55,6 +99,22 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
             })
         })
     }, [dataRequestDatabase])
+
+    let basketKolElement = (<></>)
+    if (basketLen !== null && basketLen !== 0) {
+        basketKolElement = (<div className={'text-element'} style={{
+            background: '#f83d3d',
+            fontSize: '12px',
+            height: '20px',
+            width: '20px',
+            borderRadius: "50%",
+            textAlign: 'center',
+            lineHeight: '20px',
+            position: 'absolute',
+            marginLeft: '27px',
+            marginTop: '27px'
+        }}>{basketLen}</div>)
+    }
 
     const sendRequestOnDatabase = (inputData, operation) => {
         dataRequestDatabase.method = operation
@@ -277,7 +337,9 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
                     </Link>
                     <Link to={'/basket' + page} className={'link-element'}>
                         <div className={'div-button-panel'} style={{padding: '3px'}}>
-                            <div className={'background-basket'} style={{width: '100%', height: '100%'}}></div>
+                            <div className={'background-basket'} style={{width: '100%', height: '100%'}}>
+                                {basketKolElement}
+                            </div>
                         </div>
                     </Link>
                     <Link to={'/info'} className={'link-element'}>
@@ -324,7 +386,7 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
         );
     } else if (status === 0) {
         sendRequestOnDatabase({path: path, number: 1}, 'getList')
-
+        onGetData()
         return (<div className={'pong-loader'} style={{
             border: '2px solid #8cdb8b',
             marginTop: String(window.innerHeight / 2 - 60) + 'px',

@@ -170,8 +170,7 @@ function App() {
 
                     {dataCards.map(item =>
                         (<Route path={'card/' + item.id} key={item.id}
-                                element={<CardProduct mainData={item} height={size}
-                                                      basketData={basketData}/>}/>)
+                                element={<CardProduct mainData={item} basketData={basketData}/>}/>)
                     )
                     }
                     {mainData.map(platform => (

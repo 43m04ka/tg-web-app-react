@@ -4,7 +4,7 @@ import FilterCheckBox from "./FilterCheckBox";
 
 const Filter = ({height, elementKeys, onRequestFilter}) => {
     const {tg} = useTelegram();
-    const [jsonFilter, setJsonFilter] = useState({platform: [], price: {min: 0, max: 50000, sort: null}, category:[]});
+    const [jsonFilter, setJsonFilter] = useState({platform: [], price: {min: 0, max: 50000, sort: null}, category: [], languageSelector:[]});
     const [panelIsVisible, setPanelIsVisible] = useState(false);
     const [panelWidth, setPanelWidth] = useState(0);
 
@@ -22,12 +22,23 @@ const Filter = ({height, elementKeys, onRequestFilter}) => {
     let categoryElement = (<></>)
     if (elementKeys.includes('categoryXB')) {
         categoryElement = (
-            <FilterCheckBox param={'category'} setJson={setJsonFilter} json={jsonFilter} data={['Старый аккаунт', 'Новый аккаунт']}
+            <FilterCheckBox param={'category'} setJson={setJsonFilter} json={jsonFilter}
+                            data={['Старый аккаунт', 'Новый аккаунт']}
                             preview={'Тип активации'}/>)
     }
     let priceElement = (
-        <FilterCheckBox param={'price'} setJson={setJsonFilter} json={jsonFilter} data={['По возрастанию', 'По убыванию']}
+        <FilterCheckBox param={'price'} setJson={setJsonFilter} json={jsonFilter}
+                        data={['По возрастанию', 'По убыванию']}
                         preview={'Цена'}/>)
+
+    let languageElement =(<></>)
+
+    if (elementKeys.includes('languageSelector')) {
+        languageElement = (
+            <FilterCheckBox param={'languageSelector'} setJson={setJsonFilter} json={jsonFilter}
+                            data={['На русском языке', 'Русские субтитры (текст)', 'Без перевода']}
+                            preview={'Язык'}/>)
+    }
 
     let width = panelWidth
     return (
@@ -40,7 +51,7 @@ const Filter = ({height, elementKeys, onRequestFilter}) => {
                 borderTopRightRadius: '10px',
                 borderBottomRightRadius: '10px',
                 transitionProperty: 'height, width',
-                transitionDuration:'0.3s',
+                transitionDuration: '0.3s',
                 overflow: 'hidden',
             }}>
                 <div
@@ -48,9 +59,14 @@ const Filter = ({height, elementKeys, onRequestFilter}) => {
                     {priceElement}
                     {platformElement}
                     {categoryElement}
+                    {languageElement}
                 </div>
-                <button onClick={async ()=>{await setPanelIsVisible(false); await setPanelWidth(0); await onRequestFilter(jsonFilter);}}
-                    className={'text-element'} style={{
+                <button onClick={async () => {
+                    await setPanelIsVisible(false);
+                    await setPanelWidth(0);
+                    await onRequestFilter(jsonFilter);
+                }}
+                        className={'text-element'} style={{
                     width: String(window.innerWidth / 2 - 10) + 'px',
                     marginLeft: '5px',
                     height: '35px',
@@ -75,7 +91,7 @@ const Filter = ({height, elementKeys, onRequestFilter}) => {
                     setPanelWidth(0)
                 } else {
                     setPanelIsVisible(true);
-                    setPanelWidth(window.innerWidth/2)
+                    setPanelWidth(window.innerWidth / 2)
                 }
             }}>
                 <div className={'background-filter'} style={{height: '35px', width: '35px'}}></div>

@@ -240,17 +240,8 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
     }
 
     try {
-        if (typeof products[0].languageSelector !== 'undefined') {
+        if (typeof products[0].body.languageSelector !== 'undefined') {
             elementKeys = [...elementKeys, 'languageSelector']
-
-        }
-    } catch (e) {
-    }
-
-    try {
-        if (typeof products[0].languageSelector !== 'undefined') {
-            elementKeys = [...elementKeys, 'languageSelector']
-
         }
     } catch (e) {
     }

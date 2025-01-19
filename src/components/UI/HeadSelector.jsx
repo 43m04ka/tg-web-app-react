@@ -13,7 +13,7 @@ const HeadSelector = ({main_data, hidden, basketData, setLenBasket, page}) => {
             newArray = [...newArray, el]
         }
     })
-    if(newArray.length!==basketLen) {
+    if (newArray.length !== basketLen) {
         setLenBasket(newArray.length);
         setBasketLen(newArray.length)
     }
@@ -40,7 +40,8 @@ const HeadSelector = ({main_data, hidden, basketData, setLenBasket, page}) => {
         c1 = [23, 23, 23]
         c2 = [64, 233, 73]
         c3 = [23, 23, 23]
-    }if (page === 2) {
+    }
+    if (page === 2) {
         c1 = [23, 23, 23]
         c2 = [23, 23, 23]
         c3 = [233, 73, 64]
@@ -108,7 +109,7 @@ const HeadSelector = ({main_data, hidden, basketData, setLenBasket, page}) => {
     }
 
     let basketKolElement = (<></>)
-    if(basketLen !== null && basketLen !== 0){
+    if (basketLen !== null && basketLen !== 0) {
         basketKolElement = (<div className={'text-element'} style={{
             background: '#f83d3d',
             fontSize: '12px',
@@ -125,8 +126,46 @@ const HeadSelector = ({main_data, hidden, basketData, setLenBasket, page}) => {
 
     return (
         <div>
+            <div className={'box-grid-panel'} style={{
+                position: 'absolute',
+                zIndex: 120,
+                background: '#171717',
+                borderBottom: '2px solid #454545',
+                marginTop: String(buttonMenuHeight) + 'px',
+                width:String(window.innerWidth) + 'px',
+                transitionProperty:'margin',
+                transitionDuration: '0.3s',
+            }}>
+                <Link to={'/search' + String(pageSelected)} className={'link-element'}>
+                    <div className={'search'} style={{padding: '10px', display: 'flex', flexDirection: 'row'}}>
+                        <div className={'background-search'} style={{width: '25px', height: '25px'}}></div>
+                        <div style={{
+                            height: '25px',
+                            alignContent: 'center',
+                            marginLeft: '3px',
+                            fontSize: "16px",
+                            color: 'black',
+                            fontFamily: "'Montserrat', sans-serif",
+                            fontVariant: 'small-caps'
+                        }}>Найти игру, подписку...
+                        </div>
+                    </div>
+                </Link>
+                <Link to={'/basket' + page} className={'link-element'}>
+                    <div className={'div-button-panel'} style={{padding: '3px'}}>
+                        <div className={'background-basket'} style={{width: '100%', height: '100%'}}>
+                            {basketKolElement}
+                        </div>
+                    </div>
+                </Link>
+                <Link to={'/info'} className={'link-element'}>
+                    <div className={'div-button-panel'} style={{padding: '6px'}}>
+                        <div className={'background-profile'} style={{width: '100%', height: '100%'}}></div>
+                    </div>
+                </Link>
+            </div>
             <div className="selector-container" style={{
-                height: String(buttonMenuHeight) + 'px',
+                height: '50px',
                 overflow: 'hidden',
                 transitionProperty: 'height',
                 transitionDuration: '0.3s'
@@ -144,35 +183,6 @@ const HeadSelector = ({main_data, hidden, basketData, setLenBasket, page}) => {
                 <Link to={'/home2'} className={'link-element'}>
                     <div className={'div-box-4563'} style={{width: '100%', height: "100%", padding: '3px'}}>
                         <button className={'selector-button'} onClick={onclickSR} style={styleSR}>СЕРВИСЫ</button>
-                    </div>
-                </Link>
-            </div>
-            <div className={'box-grid-panel'}>
-                <Link to={'/search' + String(pageSelected)} className={'link-element'}>
-                    <div className={'search'} style={{padding: '10px', display: 'flex', flexDirection: 'row'}}>
-                        <div className={'background-search'} style={{width: '25px', height: '25px'}}></div>
-                        <div style={{
-                            height: '25px',
-                            alignContent: 'center',
-                            marginLeft: '3px',
-                            fontSize: "16px",
-                            color: 'black',
-                            fontFamily: "'Montserrat', sans-serif",
-                            fontVariant: 'small-caps'
-                        }}>Найти игру, подписку...
-                        </div>
-                    </div>
-                </Link>
-                <Link to={'/basket'+page} className={'link-element'}>
-                    <div className={'div-button-panel'} style={{padding: '3px'}}>
-                        <div className={'background-basket'} style={{width: '100%', height: '100%'}}>
-                            {basketKolElement}
-                        </div>
-                    </div>
-                </Link>
-                <Link to={'/info'} className={'link-element'}>
-                    <div className={'div-button-panel'} style={{padding: '6px'}}>
-                        <div className={'background-profile'} style={{width: '100%', height: '100%'}}></div>
                     </div>
                 </Link>
             </div>

@@ -75,14 +75,10 @@ const Home = ({main_data, height, page, setBasket}) => {
                 }
             }}
                  style={{
-                     transitionProperty: 'height',
-                     transitionDuration: '0.3s',
-                     height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 120 + heightMenuButton) + 'px'
+                     height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 50) + 'px'
                  }}>
                 <div style={{
-                    height: String(heightMenuButton) + 'px',
-                    transitionProperty: 'height',
-                    transitionDuration: '0.3s',
+                    height: '65px'
                 }}>
                     <div style={{height: '300px', overflow: 'hidden'}}></div>
                 </div>

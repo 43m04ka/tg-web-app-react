@@ -16,7 +16,6 @@ const getTotalPrice = (items = []) => {
 let scrollCtrl = 0;
 
 const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
-    console.log(1)
     const [products, setProducts] = useState([])
     const [status, setStatus] = useState(0);
     const path = main_data.path

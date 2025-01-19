@@ -518,7 +518,7 @@ const Basket = ({height, number}) => {
                     }}>
                         <input placeholder={"Введите промокод"}
                                style={{
-                                   height: '40px',
+                                   height: '38px',
                                    width: '200px',
                                    borderRadius: '10px',
                                    background: '#454545',

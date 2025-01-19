@@ -7,6 +7,7 @@ const CardProduct = ({mainData, basketData}) => {
     let newMainData = mainData.body
     newMainData.id = mainData.id
     mainData = newMainData
+    console.log(newMainData)
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const [isBuy, setIsBuy] = React.useState(false);
@@ -143,7 +144,11 @@ const CardProduct = ({mainData, basketData}) => {
     if (typeof mainData.language === 'undefined') {
         language = ''
     } else {
-        language = 'Язык в игре: ' + mainData.language
+        if(typeof mainData.languageSelector !== 'undefined'){
+            language = mainData.languageSelector
+        }else {
+            language = 'Язык в игре: ' + mainData.language
+        }
     }
 
     let region = ''

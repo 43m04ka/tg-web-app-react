@@ -13,7 +13,6 @@ const getTotalPrice = (items = []) => {
     }, 0)
 }
 
-let oldFilterHeight = window.innerHeight - 250
 let scrollCtrl = 0;
 
 const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
@@ -27,8 +26,6 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
     let list = 1
     const [listNumber, setListNumber] = useState(1);
     const [jsonFilter, setJsonFilter] = useState(null);
-    const [panelIsVisible, setPanelIsVisible] = useState(false);
-    const [panelWidth, setPanelWidth] = useState(0);
     const [hiddenSelector, setHiddenSelector] = useState(false);
     const [heightMenuButton, setHeightMenuButton] = useState(65);
 
@@ -53,8 +50,6 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
                     await setData(prom.cards)
                     await setLen(prom.len)
                     await setStatus(1)
-                    await setPanelIsVisible(false)
-                    await setPanelWidth(0)
                 }
             })
         })
@@ -208,6 +203,7 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
             sendRequestOnDatabase({path: path, number: 1, filter: json}, 'getList')
         }
         setListNumber(1)
+        setStatus(10)
     }
 
     let bodyElement = (<div>
@@ -317,12 +313,10 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
                     </div>
                     {bodyElement}
                     <div style={{
-                        position: 'absolute', marginTop: String(heightMenuButton-5) + 'px',transitionProperty:'margin',transitionDuration:'0.3s'
+                        position: 'absolute', marginTop: String(heightMenuButton) + 'px',transitionProperty:'margin',transitionDuration:'0.3s'
                     }}>
                         <Filter height={height + 60 - heightMenuButton} elementKeys={elementKeys}
-                                onRequestFilter={onRequestFilter}
-                                panelIsVisible={panelIsVisible} setPanelIsVisible={setPanelIsVisible}
-                                panelWidth={panelWidth} setPanelWidth={setPanelWidth}/>
+                                onRequestFilter={onRequestFilter}/>
                     </div>
                 </div>
             </div>

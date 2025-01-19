@@ -2,9 +2,11 @@ import React, {useState} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
 import FilterCheckBox from "./FilterCheckBox";
 
-const Filter = ({height, elementKeys, onRequestFilter, panelIsVisible, setPanelIsVisible, panelWidth, setPanelWidth}) => {
+const Filter = ({height, elementKeys, onRequestFilter}) => {
     const {tg} = useTelegram();
     const [jsonFilter, setJsonFilter] = useState({platform: [], price: {min: 0, max: 50000, sort: null}, category:[]});
+    const [panelIsVisible, setPanelIsVisible] = useState(false);
+    const [panelWidth, setPanelWidth] = useState(0);
 
     let platformElement = (<></>)
     if (elementKeys.includes('platformPS')) {
@@ -27,15 +29,17 @@ const Filter = ({height, elementKeys, onRequestFilter, panelIsVisible, setPanelI
         <FilterCheckBox param={'price'} setJson={setJsonFilter} json={jsonFilter} data={['По возрастанию', 'По убыванию']}
                         preview={'Цена'}/>)
 
+    let width = panelWidth
     return (
+
         <div style={{display: 'flex', flexDirection: 'row',}}>
             <div style={{
                 background: '#232323',
                 height: String(height - 70 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
-                width: String(panelWidth) + 'px',
+                width: String(width) + 'px',
                 borderTopRightRadius: '10px',
                 borderBottomRightRadius: '10px',
-                transitionProperty: 'height',
+                transitionProperty: 'height, width',
                 transitionDuration:'0.3s',
                 overflow: 'hidden',
             }}>
@@ -45,7 +49,7 @@ const Filter = ({height, elementKeys, onRequestFilter, panelIsVisible, setPanelI
                     {platformElement}
                     {categoryElement}
                 </div>
-                <button onClick={()=>{onRequestFilter(jsonFilter); setPanelIsVisible(false);setPanelWidth(0)}}
+                <button onClick={async ()=>{await setPanelIsVisible(false); await setPanelWidth(0); await onRequestFilter(jsonFilter);}}
                     className={'text-element'} style={{
                     width: String(window.innerWidth / 2 - 10) + 'px',
                     marginLeft: '5px',

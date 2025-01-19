@@ -30,7 +30,7 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
     const [panelIsVisible, setPanelIsVisible] = useState(false);
     const [panelWidth, setPanelWidth] = useState(0);
     const [hiddenSelector, setHiddenSelector] = useState(false);
-    const [heightMenuButton, setHeightMenuButton] = useState(60);
+    const [heightMenuButton, setHeightMenuButton] = useState(65);
 
 
     let dataRequestDatabase = {
@@ -224,7 +224,7 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
                 display: 'flex',
                 flexDirection: 'row',
                 marginTop: '15px',
-                marginBottom:'15px',
+                marginBottom: '15px',
             }}>
                 {nav2El}
                 {nav1El}
@@ -253,7 +253,16 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
     if (status === 1 || status === 10) {
         return (
             <div className={'list'} style={{display: 'flex', flexDirection: 'column'}}>
-                <div className={'box-grid-panel'} style={{height:String(heightMenuButton)+'px', overflow:'hidden', transitionProperty:'height',transitionDuration:'0.3s'}}>
+                <div className={'box-grid-panel'} style={{
+                    height: String(heightMenuButton) + 'px',
+                    overflow: 'hidden',
+                    transitionProperty: 'height',
+                    transitionDuration: '0.3s',
+                    position: 'absolute',
+                    background: '#171717',
+                    width:String(window.innerWidth)+'px',
+                    borderBottom:'2px solid #454545',
+                }}>
                     <Link to={'/search' + String(page)} className={'link-element'}>
                         <div className={'search'} style={{padding: '10px', display: 'flex', flexDirection: 'row'}}>
                             <div className={'background-search'} style={{width: '25px', height: '25px'}}></div>
@@ -290,7 +299,7 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
                          } else if ((scroll < scrollCtrl - 100 || scroll === 0) && hiddenSelector) {
                              scrollCtrl = scroll
                              setHiddenSelector(false)
-                             setHeightMenuButton(60)
+                             setHeightMenuButton(65)
                          }
                          if (hiddenSelector && scroll > scrollCtrl) {
                              scrollCtrl = scroll
@@ -299,19 +308,17 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
                          }
                      }}
                      style={{
-                         height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - heightMenuButton) + 'px',
-                         transitionProperty: 'height',
-                         transitionDuration: '0.3s',
+                         height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'
                      }}>
                     <div style={{
-                        height: String(60-heightMenuButton) + 'px',
-                        transitionProperty: 'height',
-                        transitionDuration: '0.3s',
+                        height: String(60) + 'px'
                     }}>
                         <div style={{height: '300px', overflow: 'hidden'}}></div>
                     </div>
                     {bodyElement}
-                    <div style={{position: 'absolute'}}>
+                    <div style={{
+                        position: 'absolute', marginTop: String(heightMenuButton-5) + 'px',transitionProperty:'margin',transitionDuration:'0.3s'
+                    }}>
                         <Filter height={height + 60 - heightMenuButton} elementKeys={elementKeys}
                                 onRequestFilter={onRequestFilter}
                                 panelIsVisible={panelIsVisible} setPanelIsVisible={setPanelIsVisible}

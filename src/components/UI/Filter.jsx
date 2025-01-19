@@ -36,6 +36,7 @@ const Filter = ({height, elementKeys, onRequestFilter, panelIsVisible, setPanelI
                 borderTopRightRadius: '10px',
                 borderBottomRightRadius: '10px',
                 transitionProperty: 'height',
+                transitionDuration:'0.3s',
                 overflow: 'hidden',
             }}>
                 <div

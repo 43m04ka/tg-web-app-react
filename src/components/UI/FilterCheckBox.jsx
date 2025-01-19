@@ -185,7 +185,7 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                                      }
                                  }}>
                         <input type={'radio'} checked={isCheck} style={{transform: 'scale(1.4)', borderRadius: '50%'}}/>
-                        <div className={'text-element'} style={{marginLeft: '7px', fontSize: '15px', overflow:'hidden'}}>{el}</div>
+                        <div className={'text-element'} style={{marginLeft: '7px', fontSize: '12px', overflow:'hidden'}}>{el}</div>
                     </div>)
                 })}
             </div>

@@ -81,9 +81,10 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                  }}>
                 {data.map(el => {
                     const [isCheck, setIsCheck] = useState(false);
+                    try{
                     if(((!localJson.price.sort && el === 'По возрастанию') || (localJson.price.sort && el === 'По убыванию')) && localJson.price.sort !== null && isCheck){
                         setIsCheck(false)
-                    }
+                    }}catch (e) {}
                     return(<div style={{display: 'flex', flexDirection: 'row', justifyContent: 'left', marginLeft: '15px', marginTop:'5px', alignItems:'center'}}
                                 onClick={() => {
                                     setIsCheck(!isCheck)
@@ -139,6 +140,12 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                                             jsonNew.price.sort = el === 'По возрастанию';
                                             setJson(jsonNew);
                                             setLocalJson(jsonNew)
+                                            console.log(jsonNew)
+                                        }
+                                        if (!status && el === 'По возрастанию' && jsonNew.price.sort  === true || !status && el !== 'По возрастанию' && jsonNew.price.sort  === false) {
+                                            setJson(null);
+                                            setLocalJson(null)
+                                            console.log(jsonNew)
                                         }
                                     }
                                 }}>

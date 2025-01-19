@@ -46,10 +46,10 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
             let Promise = r.json()
             Promise.then(async prom => {
                 if (dataRequestDatabase.method === 'getList') {
+                    await setStatus(1)
                     await setProducts(prom.cards)
                     await setData(prom.cards)
                     await setLen(prom.len)
-                    await setStatus(1)
                     await setHeightMenuButton(65)
                 }
             })
@@ -314,7 +314,7 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
                     </div>
                     {bodyElement}
                     <div style={{
-                        position: 'absolute', marginTop: String(heightMenuButton) + 'px',transitionProperty:'margin',transitionDuration:'0.3s'
+                        position: 'absolute', marginTop: String(heightMenuButton-3) + 'px',transitionProperty:'margin',transitionDuration:'0.3s'
                     }}>
                         <Filter height={height + 60 - heightMenuButton} elementKeys={elementKeys}
                                 onRequestFilter={onRequestFilter}/>

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
 import basket from "../icons/basket.png";
 
-const HeadSelector = ({main_data, hidden, basketData, setLenBasket, page}) => {
+const HeadSelector = ({main_data, hidden, basketData, page}) => {
     const [pageSelected, setPageSelected] = useState(page);
     const [basketLen, setBasketLen] = useState(0);
 
@@ -14,7 +14,6 @@ const HeadSelector = ({main_data, hidden, basketData, setLenBasket, page}) => {
         }
     })
     if (newArray.length !== basketLen) {
-        setLenBasket(newArray.length);
         setBasketLen(newArray.length)
     }
 
@@ -26,7 +25,6 @@ const HeadSelector = ({main_data, hidden, basketData, setLenBasket, page}) => {
                 newArray = [...newArray, el]
             }
         })
-        setLenBasket(newArray.length);
         setBasketLen(newArray.length)
     }
 

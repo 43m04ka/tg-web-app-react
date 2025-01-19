@@ -13,7 +13,6 @@ const Home = ({main_data, height, page, setBasket}) => {
     const {tg, user} = useTelegram();
     const [hiddenSelector, setHiddenSelector] = useState(false);
     const [heightMenuButton, setHeightMenuButton] = useState(0);
-    const [basketLen, setBasketLen] = useState(null);
     const [basketData, setBasketData] = useState([]);
 
     useEffect(() => {
@@ -45,7 +44,6 @@ const Home = ({main_data, height, page, setBasket}) => {
                 })
                 setBasket(r.body);
                 setBasketData(r.body);
-                setBasketLen(newArray.length);
             })
         })
     }, [sendData, setBasket])
@@ -54,8 +52,7 @@ const Home = ({main_data, height, page, setBasket}) => {
     return (
         <div>
 
-            <HeadSelector page={page} main_data={main_data} basketData={basketData} hidden={hiddenSelector}
-                          setLenBasket={setBasketLen}/>
+            <HeadSelector page={page} main_data={main_data} basketData={basketData} hidden={hiddenSelector}/>
 
             <div className={'scroll-container-y'} onScroll={(event) => {
                 let scroll = event.target.scrollTop

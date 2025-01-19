@@ -99,7 +99,7 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                         flexDirection: 'row',
                         justifyContent: 'left',
                         alignItems: 'center',
-                        height:'15px',marginLeft: '15px', marginTop:'6px',
+                        height:'15px',marginLeft: '15px', marginTop:'10px',
                     }}
                                  onClick={() => {
                                      setIsCheck(!isCheck)

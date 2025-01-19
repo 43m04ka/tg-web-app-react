@@ -342,6 +342,36 @@ const Basket = ({height, number}) => {
     }
 
     let titleText = null
+    let selectAcc = (<div style={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginTop: '5px',
+        height: '40px'
+    }}>
+        <div className={"text-element"}
+             style={{fontSize: '15px', marginLeft: '0', marginRight: '0',}}>У
+            меня есть свой аккаунт:
+        </div>
+        <div style={{
+            width: '140px',
+            justifyContent: 'space-between',
+            display: 'flex',
+            flexDirection: 'row',
+        }}>
+            <div
+                style={{width: '65px'}}>
+                <button className={'selector-button'} onClick={onclickYes} style={styleYes}>Да
+                </button>
+            </div>
+            <div
+                style={{width: '65px'}}>
+                <button className={'selector-button'} onClick={onclickNo} style={styleNo}>Нет
+                </button>
+            </div>
+        </div>
+    </div>)
 
     if (number === 0) {
         titleText = 'Ваша корзина Playstation'
@@ -351,7 +381,10 @@ const Basket = ({height, number}) => {
     }
     if (number === 2) {
         titleText = 'Ваша корзина Сервисы'
+        selectAcc = (<></>)
     }
+
+
 
 
     if (status === 0) {
@@ -459,36 +492,7 @@ const Basket = ({height, number}) => {
                     marginTop: '10px'
                 }}>Оформление заказа
                 </div>
-                <div style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginTop: '5px',
-                    height: '40px'
-                }}>
-                    <div className={"text-element"}
-                         style={{fontSize: '15px', marginLeft: '0', marginRight: '0',}}>У
-                        меня есть свой аккаунт:
-                    </div>
-                    <div style={{
-                        width: '140px',
-                        justifyContent: 'space-between',
-                        display: 'flex',
-                        flexDirection: 'row',
-                    }}>
-                        <div
-                            style={{width: '65px'}}>
-                            <button className={'selector-button'} onClick={onclickYes} style={styleYes}>Да
-                            </button>
-                        </div>
-                        <div
-                            style={{width: '65px'}}>
-                            <button className={'selector-button'} onClick={onclickNo} style={styleNo}>Нет
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                {selectAcc}
                 <div style={{
                     transitionProperty: 'height',
                     transitionDuration: '0.2s',

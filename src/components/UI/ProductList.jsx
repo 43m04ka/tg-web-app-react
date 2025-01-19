@@ -376,7 +376,7 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
                     </div>
                     {bodyElement}
                     <div style={{
-                        position: 'absolute', marginTop: String(heightMenuButton-3) + 'px',transitionProperty:'margin',transitionDuration:'0.3s'
+                        position: 'absolute', marginTop: String(heightMenuButton-2) + 'px',transitionProperty:'margin',transitionDuration:'0.3s'
                     }}>
                         <Filter height={height + 60 - heightMenuButton} elementKeys={elementKeys}
                                 onRequestFilter={onRequestFilter}/>

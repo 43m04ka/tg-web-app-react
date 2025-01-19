@@ -98,9 +98,8 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                         display: 'flex',
                         flexDirection: 'row',
                         justifyContent: 'left',
-                        marginLeft: '15px',
-                        marginTop: '5px',
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        height:'15px',marginLeft: '15px', marginTop:'6px',
                     }}
                                  onClick={() => {
                                      setIsCheck(!isCheck)
@@ -185,7 +184,7 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                                      }
                                  }}>
                         <input type={'radio'} checked={isCheck} style={{transform: 'scale(1.4)', borderRadius: '50%'}}/>
-                        <div className={'text-element'} style={{marginLeft: '7px', fontSize: '12px', overflow:'hidden'}}>{el}</div>
+                        <div className={'text-element'} style={{fontSize: '12px'}}>{el}</div>
                     </div>)
                 })}
             </div>

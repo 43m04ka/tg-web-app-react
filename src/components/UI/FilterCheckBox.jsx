@@ -58,7 +58,7 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
 
 
     return (
-        <div style={{marginTop: '4px', overflow: 'hidden', width: String(window.innerWidth / 2) + 'px',}}>
+        <div style={{marginTop: '10px', overflow: 'hidden', width: String(window.innerWidth / 2) + 'px',}}>
             <div className={'text-element'}
                  style={{
                      fontSize: '19px',
@@ -185,7 +185,7 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                                      }
                                  }}>
                         <input type={'radio'} checked={isCheck} style={{transform: 'scale(1.4)', borderRadius: '50%'}}/>
-                        <div className={'text-element'} style={{marginLeft: '7px', fontSize: '15px'}}>{el}</div>
+                        <div className={'text-element'} style={{marginLeft: '7px', fontSize: '15px', overflow:'hidden'}}>{el}</div>
                     </div>)
                 })}
             </div>

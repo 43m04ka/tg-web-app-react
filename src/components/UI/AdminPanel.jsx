@@ -141,6 +141,9 @@ const AdminPanel = () => {
                 }else if (dataRequestDatabase.method === 'delCategory') {
                     onReload()
                     setStatus(1)
+                }else if (dataRequestDatabase.method === 'updCategory') {
+                    onReload()
+                    setStatus(1)
                 }
             })
         })
@@ -204,6 +207,10 @@ const AdminPanel = () => {
 
     const deleteCategoryCards = (path) => {
         sendRequestOnDatabase(path, 'delCategory');
+    }
+
+    const updateCategoryCards = (path) => {
+        sendRequestOnDatabase(path, 'updCategory');
     }
 
     const onReload = async () =>{
@@ -324,6 +331,8 @@ const AdminPanel = () => {
                         <ExcelReader setButtonTable={setButtonTableClassic}/>
                     </div>
                 </div>
+
+                <button onClick={()=>{onReload()}}>Обновить</button>
             </div>
         }
         if (pageSelected === 1) {
@@ -388,31 +397,9 @@ const AdminPanel = () => {
                                 justifyContent: 'center'
                             }}>
                                 <div className={'title'}>{category.path}</div>
-                                <button onClick={() => {
-                                    let newCard = category.body[0]
-                                    let newArray = category.body
-
-                                    let bool = null
-                                    if (newCard.body.isSale === true) {
-                                        bool = false
-                                    } else if (newCard.body.isSale === false) {
-                                        bool = true
-                                    } else {
-                                        bool = true
-                                    }
-                                    newArray.map(card => {
-
-                                        if (card.body.isSale === true) {
-                                            card.body.isSale = bool
-                                        } else if (card.body.isSale === false) {
-                                            card.body.isSale = bool
-                                        } else {
-                                            card.body.isSale = bool
-                                        }
-
-                                    })
-                                    sendRequestOnDatabase(newArray, 'upd');
-                                    setStatus(10);
+                                <button onClick={async () => {
+                                    await updateCategoryCards(category.path)
+                                    await setStatus(10);
                                 }}>Убрать\включить в продажу
                                 </button>
                                 <button onClick={async () => {
@@ -431,7 +418,7 @@ const AdminPanel = () => {
                                     <div className={'text-element'}
                                          style={{textWrap: 'nowrap', overflow: 'hidden'}}>{card.body.title}</div>
                                     <div className={'text-element'}>{card.body.tabCategoryPath}</div>
-                                    <div style={{display: 'flex', flexDirection: 'row'}}>
+                                    <div style={{display: 'flex', flexDirection: 'row'}} className={'text-element'}>
                                         В продаже: {String(card.body.isSale)}
                                         <button onClick={() => {
                                             let newCard = card

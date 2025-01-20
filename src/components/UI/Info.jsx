@@ -29,7 +29,7 @@ const Info = () => {
             </div>
 
             <div style={{margin: '15px'}}><a className={'link-element text-element'}
-                                             href={'https://vk.cc/cHqXsW'}>Пользовательское соглашение</a>
+                                             href={'https://telegra.ph/Hhhg-01-20'}>Пользовательское соглашение</a>
             </div>
 
             <div style={{margin: '15px'}}><a className={'link-element text-element'}

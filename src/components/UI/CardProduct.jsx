@@ -144,7 +144,7 @@ const CardProduct = ({mainData, basketData}) => {
         language = ''
     } else {
         if(typeof mainData.languageSelector !== 'undefined'){
-            language = mainData.languageSelector
+            language = 'Язык в игре: ' + mainData.languageSelector
         }else {
             language = 'Язык в игре: ' + mainData.language
         }

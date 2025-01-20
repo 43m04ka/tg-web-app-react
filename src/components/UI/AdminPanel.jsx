@@ -49,6 +49,7 @@ const AdminPanel = () => {
             console.log(r, 'выход setAdmin')
             if (r.status === 200) {
                 userData = dataRequestAdmin.userData
+                onReload()
                 setStatus(1)
             } else {
                 alert('Неверный логин или пароль')
@@ -77,34 +78,34 @@ const AdminPanel = () => {
             let voice = false
 
             if (typeof el.language !== 'undefined' && typeof el.voice !== 'undefined') {
-            if(el.language.includes('Russian')){
-                lang  = true
+                if (el.language.includes('Russian')) {
+                    lang = true
+                }
+                if (el.voice.includes('Russian')) {
+                    voice = true
+                }
+                if (lang && voice) {
+                    newCard.languageSelector = 'На русском языке'
+                } else if (lang) {
+                    newCard.languageSelector = 'Русские субтитры (текст)'
+                } else {
+                    newCard.languageSelector = 'Без перевода'
+                }
             }
-            if(el.voice.includes('Russian')){
-                voice  = true
-            }
-            if(lang && voice){
-                newCard.languageSelector = 'На русском языке'
-            }
-            else if(lang){
-                newCard.languageSelector = 'Русские субтитры (текст)'
-            }
-            else{
-                newCard.languageSelector = 'Без перевода'
-            }}
         })
 
 
         let array = arrayRequest; //массив, можно использовать массив объектов
         let size = 20; //размер подмассива
         let subarray = []; //массив в который будет выведен результат.
-        for (let i = 0; i <Math.ceil(array.length/size); i++){
-            subarray[i] = array.slice((i*size), (i*size) + size);
+        for (let i = 0; i < Math.ceil(array.length / size); i++) {
+            subarray[i] = array.slice((i * size), (i * size) + size);
         }
         await setStatus(10);
-        subarray.map( async el=>{
+        subarray.map(async el => {
             await sendRequestOnDatabase(el, 'add')
         })
+        await onReload()
         await setStatus(1);
     }
 
@@ -131,9 +132,14 @@ const AdminPanel = () => {
                     setDataStructure(prom.structure)
                     setDataCards(prom.cards)
                     setStatus(2)
-                }else if (dataRequestDatabase.method === 'upd') {
+                } else if (dataRequestDatabase.method === 'upd') {
+                    onReload()
                     setStatus(1)
-                }else if (dataRequestDatabase.method === 'del') {
+                } else if (dataRequestDatabase.method === 'del') {
+                    onReload()
+                    setStatus(1)
+                }else if (dataRequestDatabase.method === 'delCategory') {
+                    onReload()
                     setStatus(1)
                 }
             })
@@ -176,10 +182,10 @@ const AdminPanel = () => {
 
         console.log(structure, dataStructure, 'выход addStructure')
         sendRequestOnAdmin({body: structure}, 'set')
-
     }
 
     const deleteCategory = (type, tab, categoryId) => {
+
         let structure = dataStructure;
 
         let newArray = []
@@ -194,6 +200,15 @@ const AdminPanel = () => {
 
         sendRequestOnAdmin({body: structure}, 'set')
 
+    }
+
+    const deleteCategoryCards = (path) => {
+        sendRequestOnDatabase(path, 'delCategory');
+    }
+
+    const onReload = async () =>{
+        await sendRequestOnDatabase([], 'reload');
+        await sendRequestOnDatabase([], 'getPreview');
     }
 
     const onComputeData = () => {
@@ -221,10 +236,9 @@ const AdminPanel = () => {
     }
 
 
-
     if (status === 2) {
         if (pageSelected === 0) {
-            return (<div>
+            return <div>
                 <div>
                     <button onClick={() => {
                         setPageSelected(0)
@@ -239,29 +253,78 @@ const AdminPanel = () => {
                     }}>Редактировать каталоги
                     </button>
                 </div>
-                <div style={{display: 'grid', padding: '10px', borderTop: '3px gray solid', marginTop: '10px'}}>
-                    <div className={'text-element'}>Загрузить карты на сервер</div>
-                    <input defaultValue={'Вид категории'} onChange={(event) => {
-                        setInputCategory1(event.target.value)
-                    }}/>
-                    <input defaultValue={'Tab_number'} onChange={(event) => {
-                        setInputCategory2(event.target.value)
-                    }}/>
-                    <input defaultValue={'Путь_до_категории'} onChange={(event) => {
-                        setInputCategory3(event.target.value)
-                    }}/>
-                    <div className={'text-element'}>Таблица с данными категории</div>
-                    <ExcelReader setButtonTable={setButtonTableClassic}/>
+                <div style={{
+                    display: 'grid',
+                    padding: '10px',
+                    border: '2px gray solid',
+                    marginTop: '10px',
+                    margin: '10px',
+                    borderRadius: '10px',
+                    background: '#454545'
+                }}>
+                    <div className={'text-element'} style={{
+                        fontSize: '15px',
+                        textAlign: 'center',
+                        width: String(window.innerWidth - 60) + 'px',
+                        textJustify: 'center'
+                    }}>Загрузить карты на сервер
+                    </div>
+                    <div className={'text-element'} >Выберете страницу</div>
+                    <div className={'text-element'} style={{display: 'flex', flexDirection: 'column', paddingLeft: '20px'}}>
+                        <div>
+                            1.
+                            <button style={{
+                                width: '150px',
+                                height: '25px',
+                                marginTop: '7px',
+                                borderRadius: '4px',
+                                border: '0px'
+                            }} onClick={() => {
+                                setInputCategory2(0)
+                            }}>Playstation
+                            </button>
+                        </div>
+                        <div>
+                            2.
+                            <button style={{
+                                width: '150px',
+                                height: '25px',
+                                marginTop: '7px',
+                                borderRadius: '4px',
+                                border: '0px'
+                            }} onClick={() => {
+                                setInputCategory2(1)
+                            }}>Xbox
+                            </button>
+                        </div>
+                        <div>
+                            3.
+                            <button style={{
+                                width: '150px',
+                                height: '25px',
+                                marginTop: '7px',
+                                borderRadius: '4px',
+                                border: '0px'
+                            }} onClick={() => {
+                                setInputCategory2(2)
+                            }}>Сервисы
+                            </button>
+                        </div>
+                        <div>{'Выбрано: ' + (inputCategory2 + 1)}</div>
+                    </div>
+                    <div className={'text-element'} style={{display: 'flex', flexDirection: 'column', marginTop: '15px'}}>
+                        Введите уникальный путь до категории:
+                        <input style={{marginLeft: '20px'}} onChange={(event) => {
+                            setInputCategory3(event.target.value)
+                        }}/>
+                    </div>
+
+                    <div style={{marginTop:'15px'}} className={'text-element'}>Таблица с данными категории</div>
+                    <div style={{marginLeft:'20px'}}>
+                        <ExcelReader setButtonTable={setButtonTableClassic}/>
+                    </div>
                 </div>
-                <button onClick={() => {
-                    sendRequestOnDatabase([], 'getPreview')
-                }}>getData
-                </button>
-                <button onClick={() => {
-                    sendRequestOnDatabase([], 'reload')
-                }}>reload
-                </button>
-            </div>)
+            </div>
         }
         if (pageSelected === 1) {
             let allCategory = []
@@ -301,7 +364,11 @@ const AdminPanel = () => {
                     }}>Редактировать каталоги
                     </button>
                 </div>
-                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 3fr 1fr', borderBottom: '1px solid gray'}}>
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr 1fr 3fr 1fr',
+                    borderBottom: '1px solid gray'
+                }}>
                     <div className={'text-element'}>ID</div>
                     <div className={'text-element'}
                          style={{textWrap: 'nowrap', overflow: 'hidden'}}>Name
@@ -349,7 +416,7 @@ const AdminPanel = () => {
                                 }}>Убрать\включить в продажу
                                 </button>
                                 <button onClick={async () => {
-                                    sendRequestOnDatabase(category.body, 'del');
+                                    deleteCategoryCards(category.path)
                                     await setStatus(10);
                                 }}>Удалить
                                 </button>
@@ -364,21 +431,21 @@ const AdminPanel = () => {
                                     <div className={'text-element'}
                                          style={{textWrap: 'nowrap', overflow: 'hidden'}}>{card.body.title}</div>
                                     <div className={'text-element'}>{card.body.tabCategoryPath}</div>
-                                    <div style={{display:'flex', flexDirection:'row'}}>
+                                    <div style={{display: 'flex', flexDirection: 'row'}}>
                                         В продаже: {String(card.body.isSale)}
-                                    <button onClick={() => {
-                                        let newCard = card
-                                        if (newCard.body.isSale === true) {
-                                            newCard.body.isSale = false
-                                        } else if (newCard.body.isSale === false) {
-                                            newCard.body.isSale = true
-                                        } else {
-                                            newCard.body.isSale = true
-                                        }
-                                        sendRequestOnDatabase([card], 'upd');
-                                        setStatus(10);
-                                    }}>Убрать\включить в продажу
-                                    </button>
+                                        <button onClick={() => {
+                                            let newCard = card
+                                            if (newCard.body.isSale === true) {
+                                                newCard.body.isSale = false
+                                            } else if (newCard.body.isSale === false) {
+                                                newCard.body.isSale = true
+                                            } else {
+                                                newCard.body.isSale = true
+                                            }
+                                            sendRequestOnDatabase([card], 'upd');
+                                            setStatus(10);
+                                        }}>Убрать\включить в продажу
+                                        </button>
                                     </div>
                                     <button onClick={() => {
                                         sendRequestOnDatabase([card], 'del');
@@ -508,7 +575,7 @@ const AdminPanel = () => {
             <div className={'text-element'}>
                 Ожидайте
             </div>)
-    }else if (status === 10) {
+    } else if (status === 10) {
         return (
             <div className={'text-element'}>
                 Ожидайте
@@ -579,9 +646,9 @@ class ExcelReader extends Component {
     render() {
         return (
             <div style={{display: 'grid'}}>
-                <input type="file" id="file" style={{color: 'white', marginLeft: '15px'}} accept={SheetJSFT}
+                <input type="file" id="file" style={{color: 'white'}} accept={SheetJSFT}
                        onChange={this.handleChange}/>
-                <button onClick={this.handleFile}>Загрузить</button>
+                <button className={'all-see-button'} style={{background:'#373737', justifyContent:'left', marginLeft:'20px'}} onClick={this.handleFile}>Загрузить</button>
             </div>
 
         )

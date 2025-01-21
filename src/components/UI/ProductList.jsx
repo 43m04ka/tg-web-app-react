@@ -379,7 +379,7 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
         onGetData()
         return (<div className={'pong-loader'} style={{
             border: '2px solid #8cdb8b',
-            marginTop: String(window.innerHeight / 2 - 60) + 'px',
+            marginTop: String(window.innerHeight / 2 - 120) + 'px',
             marginLeft: String(window.innerWidth / 2 - 40) + 'px'
         }}></div>)
     }

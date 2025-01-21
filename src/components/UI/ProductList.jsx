@@ -375,7 +375,7 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
             </div>
         );
     } else if (status === 0) {
-        sendRequestOnDatabase({path: path, number: 1}, 'getList')
+        sendRequestOnDatabase({path: path, number: list}, 'getList')
         onGetData()
         return (<div className={'pong-loader'} style={{
             border: '2px solid #8cdb8b',

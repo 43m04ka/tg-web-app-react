@@ -722,7 +722,7 @@ body {
 .swiper-slide {
     background: #171717;
     text-align: center;
-    padding: 5px;
+    padding-bottom: 5px;
 }
 
 #box {

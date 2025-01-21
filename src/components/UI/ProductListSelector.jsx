@@ -23,15 +23,15 @@ const ProductListSelector = ({main_data, page}) => {
                 return -1;
             }
         } catch (e) {
-            try {
-                if (a.category > b.category) {
-                    return 1;
-                }
-                if (a.category < b.category) {
-                    return -1;
-                }
-            } catch (e) {
+        }
+        try {
+            if (a.category > b.category) {
+                return 1;
             }
+            if (a.category < b.category) {
+                return -1;
+            }
+        } catch (e) {
         }
     });
 
@@ -78,6 +78,14 @@ const ProductListSelector = ({main_data, page}) => {
             }
         })
         count++
+    })
+
+    count = 0
+    data.map(cat=>{
+        cat.body.map(el=>{
+            el.localId = count
+            count++
+        })
     })
 
     const onBack = useCallback(async () => {
@@ -180,11 +188,10 @@ const ProductListSelector = ({main_data, page}) => {
                 transitionDuration: '0.2s',
             }}></div>
             {data[selectCategory].body.map(el => {
-                console.log(data[selectCategory].body)
                 return (
-                    <div key={el.id} style={{
+                    <div key={el.localId} style={{
                         position: 'absolute',
-                        marginLeft: String(((el.id + 1) % data[selectCategory].body.length) * (window.innerWidth - 20) / data[selectCategory].body.length + 'px'),
+                        marginLeft: String(((el.localId) % data[selectCategory].body.length) * (window.innerWidth - 20) / data[selectCategory].body.length + 'px'),
                         width: String((window.innerWidth - 30) / data[selectCategory].body.length) + 'px',
                         height: '100px'
                     }}>
@@ -196,7 +203,7 @@ const ProductListSelector = ({main_data, page}) => {
                             overflow: 'hidden',
                             width: String((window.innerWidth - 30) / data[selectCategory].body.length) + 'px',
                         }} onClick={() => {
-                            setSelectView(((el.id + 1) % data[selectCategory].body.length))
+                            setSelectView(((el.localId) % data[selectCategory].body.length))
                         }}>
                             <div style={{
                                 color: 'white',

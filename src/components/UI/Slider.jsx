@@ -17,6 +17,13 @@ import {Link} from "react-router-dom";
 const Slider = ({data}) => {
     const [swiperElement, setSwiperElement] = useState(null);
 
+    const pagination = {
+        clickable: true,
+        renderBullet: function (index, className) {
+            return '<span class="' + className + '"></span>';
+        },
+    };
+
     let loop = false
     if(data.length > 3){loop = true}
     return (
@@ -30,9 +37,7 @@ const Slider = ({data}) => {
                         delay: 7000,
                         disableOnInteraction: false,
                     }}
-                    pagination={{
-                        clickable: false,
-                    }}
+                    pagination={pagination}
                     loop={loop}
                     modules={[Autoplay, Pagination, Controller]}
             >

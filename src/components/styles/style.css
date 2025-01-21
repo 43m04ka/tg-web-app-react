@@ -729,4 +729,12 @@ body {
     border-radius: 15px;
 }
 
+.swiper-pagination-bullet {
+    background: rgba(255, 255, 255) !important;
+}
+
+.swiper-pagination-bullet-active {
+    background: #007aff !important;
+}
+
 

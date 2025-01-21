@@ -730,11 +730,10 @@ body {
 }
 
 .swiper-pagination-bullet {
-    background: rgba(255, 255, 255) !important;
-}
+    background: rgba(255, 255, 255, 1) !important;}
 
 .swiper-pagination-bullet-active {
-    background: #007aff !important;
+    background: rgba(45, 70, 230, 1) !important;
 }
 
 

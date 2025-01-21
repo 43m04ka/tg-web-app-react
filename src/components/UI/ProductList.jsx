@@ -14,6 +14,7 @@ const getTotalPrice = (items = []) => {
 }
 
 let scrollCtrl = 0;
+let list = 1
 
 const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
     const [products, setProducts] = useState([])
@@ -22,8 +23,7 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
     const {tg, user} = useTelegram();
     const [len, setLen] = useState(0);
     const navigate = useNavigate();
-    let list = 1
-    const [listNumber, setListNumber] = useState(1);
+    const [listNumber, setListNumber] = useState(list);
     const [jsonFilter, setJsonFilter] = useState(null);
     const [hiddenSelector, setHiddenSelector] = useState(false);
     const [heightMenuButton, setHeightMenuButton] = useState(65);

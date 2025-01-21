@@ -75,7 +75,7 @@ const Home = ({main_data, height, page, setBasket}) => {
                      height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 50) + 'px'
                  }}>
                 <div style={{
-                    height: '65px'
+                    height: '70px'
                 }}>
                     <div style={{height: '300px', overflow: 'hidden'}}></div>
                 </div>

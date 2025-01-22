@@ -16,7 +16,7 @@ const getTotalPrice = (items = []) => {
 let scrollCtrl = 0;
 let list = 1
 
-const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
+const ProductList = ({main_data, page, height, setDataDop}) => {
     const [products, setProducts] = useState([])
     const [status, setStatus] = useState(0);
     const path = main_data.path
@@ -91,7 +91,7 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
                 if (dataRequestDatabase.method === 'getList') {
                     await setStatus(1)
                     await setProducts(prom.cards)
-                    await setData(prom.cards)
+                    await setDataDop(prom.cards)
                     await setLen(prom.len)
                     await setHeightMenuButton(65)
                 }
@@ -122,7 +122,6 @@ const ProductList = ({main_data, page, height, setData, setStatusApp}) => {
     }
 
     const onBack = useCallback(() => {
-        setStatusApp(0)
         navigate(-1);
     }, [])
 

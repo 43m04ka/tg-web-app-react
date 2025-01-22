@@ -26,6 +26,7 @@ function App() {
         }, {id: 2, page: 'service', body: [[], []]}]);
     const [status, setStatus] = useState(0);
     const [dataCards, setDataCards] = useState(null)
+    const [dataCardsDop, setDataCardsDop] = useState([])
     const [basketData, setBasketData] = useState(null);
     let dataRequestDatabase = {
         method: 'getPreview',
@@ -170,14 +171,19 @@ function App() {
 
                     {dataCards.map(item =>
                         (<Route path={'card/' + item.id} key={item.id}
-                                element={<CardProduct mainData={item} basketData={basketData}/>}/>)
+                                element={<CardProduct mainData={item} basketData={basketData} setDataDop={setDataCardsDop}/>}/>)
+                    )
+                    }
+                    {dataCardsDop.map(item =>
+                        (<Route path={'card/' + item.id} key={item.id}
+                                element={<CardProduct mainData={item} basketData={basketData} setDataDop={setDataCardsDop} dataDop={dataCardsDop}/>}/>)
                     )
                     }
                     {mainData.map(platform => (
                         platform.body[1].map(category => (
                             <Route path={'home/' + category.path} key={category.id}
                                    element={<ProductList main_data={category} page={platform.id} height={size}
-                                                         path={category.path} setData={setDataCards} setStatusApp={setStatus}/>}/>
+                                                         path={category.path} setDataDop={setDataCardsDop}/>}/>
                         ))
                     ))}
 

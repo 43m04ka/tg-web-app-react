@@ -1,22 +1,74 @@
-import React, {createRef, useCallback, useEffect} from 'react';
+import React, {createRef, useCallback, useEffect, useState} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
+import HomeBlock from "./HomeBlock";
+import HomeBlockElement from "./HomeBlockElement";
+import ProductItem from "./ProductItem";
 
 let oldTExtHeight = 0
-const CardProduct = ({mainData, basketData}) => {
-    let newMainData = mainData.body
-    newMainData.id = mainData.id
-    mainData = newMainData
-    const {tg, user} = useTelegram();
-    const navigate = useNavigate();
-    const [isBuy, setIsBuy] = React.useState(false);
+const CardProduct = ({mainData, basketData, setDataDop, dataDop}) => {
+    let newMainData1 = mainData.body
+    newMainData1.id = mainData.id
+
+    let dataRequestDatabase = {
+        method: 'getRandom',
+        data: mainData.body.tab
+    }
+
+    const sendRequestDatabase = useCallback(() => {
+        console.log(dataRequestDatabase, 'inputRequestDb')
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/database', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataRequestDatabase)
+        }).then(r => {
+            let Promise = r.json()
+            Promise.then(prom => {
+                console.log(prom, 'возвратил get')
+                setDataCards(prom.cards)
+                try{
+                setDataDop([...prom.cards, ...dataDop])}
+                catch (e) {
+                    setDataDop(prom.cards)
+                }
+            })
+        })
+    }, [dataRequestDatabase])
+
     let inputTextButton = 'Добавить в корзину'
     if(mainData.isSale===false){inputTextButton = 'Нет в продаже';}
+
+    const [newMainData, setNewMainData] = useState(newMainData1)
     const [buttonText, setButtonText] = React.useState(inputTextButton);
+    const [isBuy, setIsBuy] = React.useState(false);
+
+    if(newMainData1.id !== newMainData.id){
+        setNewMainData(newMainData1)
+        sendRequestDatabase()
+        if(newMainData1.isSale===false){setButtonText('Нет в продаже')}
+
+        let isBuyBool = true
+        basketData.map(el=>{
+            if(el.id===mainData.id && !isBuy){
+                setButtonText('Перейти в корзину')
+                setIsBuy(true)
+                isBuyBool = false
+            }
+        })
+        if(isBuyBool){
+            setIsBuy(false)
+            setButtonText('Добавить в корзину')
+        }
+    }
+    const {tg, user} = useTelegram();
+    const navigate = useNavigate();
     const [textHeight, setTextHeight] = React.useState(null);
     const [textHidden, setTextHidden] = React.useState(2);
     const [signElement, setSignElement] = React.useState();
     const refText = createRef();
+    const [dataCards, setDataCards] = React.useState([]);
 
     basketData.map(el=>{
         if(el.id===mainData.id && !isBuy){
@@ -25,7 +77,9 @@ const CardProduct = ({mainData, basketData}) => {
         }
     })
 
-
+    useEffect(() => {
+        sendRequestDatabase()
+    }, []);
 
     const onBack = useCallback(async () => {
         navigate(-1);
@@ -39,7 +93,7 @@ const CardProduct = ({mainData, basketData}) => {
     }, [onBack])
 
     const onBasket = useCallback(async () => {
-        navigate('/basket'+mainData.tab);
+        navigate('/basket'+newMainData.tab);
     }, [])
 
     useEffect(() => {
@@ -48,7 +102,7 @@ const CardProduct = ({mainData, basketData}) => {
 
     const sendData = {
         method: 'add',
-        mainData: mainData,
+        mainData: newMainData,
         user: user,
     }
 
@@ -84,32 +138,32 @@ const CardProduct = ({mainData, basketData}) => {
             onBasket()
         }
     }
-    if (mainData.isSale === false) {
+    if (newMainData.isSale === false) {
         buttonColor = '#gray'
         buttonLink = () => {}
     }
 
     let descriptionText = ''
-    if (typeof mainData.description === 'undefined') {
+    if (typeof newMainData.description === 'undefined') {
         descriptionText = ''
     } else {
-        descriptionText = 'Описание: ' + mainData.description
+        descriptionText = 'Описание: ' + newMainData.description
     }
 
     let genre = ''
-    if (typeof mainData.genre === 'undefined') {
+    if (typeof newMainData.genre === 'undefined') {
         genre = ''
     } else {
-        genre = 'Жанр: ' + mainData.genre
+        genre = 'Жанр: ' + newMainData.genre
     }
 
     let oldPrice = ''
     let parcent = ''
-    if (typeof mainData.oldPrice === 'undefined') {
+    if (typeof newMainData.oldPrice === 'undefined') {
         oldPrice = ''
     } else {
-        oldPrice = String(mainData.oldPrice) + ' ₽'
-        parcent = '−'+String(Math.ceil((1-mainData.price/mainData.oldPrice)*100))+'%'
+        oldPrice = String(newMainData.oldPrice) + ' ₽'
+        parcent = '−'+String(Math.ceil((1-newMainData.price/newMainData.oldPrice)*100))+'%'
     }
     let parcentEl = (<div></div>)
     if(parcent !== ''){
@@ -133,28 +187,28 @@ const CardProduct = ({mainData, basketData}) => {
     }
 
     let endDate = ''
-    if (typeof mainData.endDate === 'undefined') {
+    if (typeof newMainData.endDate === 'undefined') {
         endDate = ''
     } else {
-        endDate = 'Скидка до ' + mainData.endDate
+        endDate = 'Скидка до ' + newMainData.endDate
     }
 
     let language = ''
-    if (typeof mainData.language === 'undefined') {
+    if (typeof newMainData.language === 'undefined') {
         language = ''
     } else {
-        if(typeof mainData.languageSelector !== 'undefined'){
-            language = 'Язык в игре: ' + mainData.languageSelector
+        if(typeof newMainData.languageSelector !== 'undefined'){
+            language = 'Язык в игре: ' + newMainData.languageSelector
         }else {
-            language = 'Язык в игре: ' + mainData.language
+            language = 'Язык в игре: ' + newMainData.language
         }
     }
 
     let region = ''
-    if (typeof mainData.region === 'undefined') {
+    if (typeof newMainData.region === 'undefined') {
         region = ''
     } else {
-        region = 'Регион активации: ' + mainData.region
+        region = 'Регион активации: ' + newMainData.region
     }
 
     useEffect(() => {
@@ -210,6 +264,20 @@ const CardProduct = ({mainData, basketData}) => {
         }
     }}
 
+    let seeLove = (<div/>)
+    if(dataCards.length!==0){
+        seeLove = (<div>
+            <div className={"title"}>Может понравится</div>
+            <div className={'list-grid'}>
+                {dataCards.map(item => {
+                    let newItem = item.body
+                    newItem.id = item.id
+                    return (<ProductItem key={newItem.id} product={newItem}/>)
+                })}
+            </div>
+        </div>)
+    }
+
     return (
         <div className={'card-product'}>
             <div style={{
@@ -221,10 +289,10 @@ const CardProduct = ({mainData, basketData}) => {
             }}>
                 <div className={'img'} style={{
                     height: String(window.innerWidth - 20) + 'px',
-                    borderRadius: '10px', backgroundImage:"url('"+mainData.img+"')",
-                    backgroundSize: 'cover',     display:'flex',
-                    flexDirection:'row',
-                    alignItems:'end',
+                    borderRadius: '10px', backgroundImage: "url('" + newMainData.img + "')",
+                    backgroundSize: 'cover', display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'end',
                     justifyContent: 'space-between',
                 }}>{parcentEl}</div>
                 <div style={{
@@ -234,7 +302,7 @@ const CardProduct = ({mainData, basketData}) => {
                     fontFamily: "'Montserrat', sans-serif",
                     marginTop: '7px',
                     marginBottom: '7px'
-                }}>{mainData.title}</div>
+                }}>{newMainData.title}</div>
 
                 <div style={{marginLeft: '15px'}}>
 
@@ -247,7 +315,7 @@ const CardProduct = ({mainData, basketData}) => {
                         flexDirection: 'row',
                         alignItems: 'center'
                     }}>
-                        <div style={{fontSize: '20px'}}>{mainData.price + ' ₽'}</div>
+                        <div style={{fontSize: '20px'}}>{newMainData.price + ' ₽'}</div>
                         <div style={{
                             textDecoration: 'line-through',
                             color: 'gray',
@@ -288,7 +356,7 @@ const CardProduct = ({mainData, basketData}) => {
                         fontSize: '14px',
                         color: 'white',
                         fontFamily: "'Montserrat', sans-serif"
-                    }}>{'Платформа: ' + mainData.platform}
+                    }}>{'Платформа: ' + newMainData.platform}
                     </div>
 
 
@@ -329,6 +397,7 @@ const CardProduct = ({mainData, basketData}) => {
                         }}>{buttonText}
                 </button>
             </div>
+            {seeLove}
         </div>
     );
 };

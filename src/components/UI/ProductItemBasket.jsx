@@ -42,7 +42,7 @@ const ProductItemBasket = ({setBasketF, product}) => {
     return (
         <div className={'box-item-basket'}>
             <div className={'title'} style={{marginLeft: '10px'}}>{item.number + '.'}</div>
-            <Link to={'/card/' + item.id} className={'link-element'}
+            <div className={'link-element'}
                   style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>
 
                 <img src={item.img} alt={item.title} className={'img-mini'}/>
@@ -69,7 +69,7 @@ const ProductItemBasket = ({setBasketF, product}) => {
                         fontSize: '15px'
                     }}>{item.price + ' ₽'}</div>
                 </div>
-            </Link>
+            </div>
             <div onClick={onSendData} className={'button-trash'}>
                 <div className={'background-trash'} style={{padding: '10px', height: '20px', width: '20px'}}>
                 </div>

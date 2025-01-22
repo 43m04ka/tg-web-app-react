@@ -276,7 +276,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
     let seeLove = (<div/>)
     if(dataCards.length!==0){
         seeLove = (<div>
-            <div className={"title"}>Может понравится</div>
+            <div className={"title"}>Может понравиться</div>
             <div className={'list-grid'}>
                 {dataCards.map(item => {
                     let newItem = item.body

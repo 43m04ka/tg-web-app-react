@@ -127,6 +127,11 @@ function App() {
             let Promise = r.json()
             Promise.then(r => {
                 setBasketData(r.body);
+                if(dataCardsDop.length === 0){
+                    setDataCardsDop(r.body)
+                }else{
+                    setDataCardsDop([...r.body, ...dataCardsDop])
+                }
             })
         })
     }, [sendData])

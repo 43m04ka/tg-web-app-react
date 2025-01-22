@@ -6,7 +6,7 @@ import HomeBlockElement from "./HomeBlockElement";
 import ProductItem from "./ProductItem";
 
 let oldTExtHeight = 0
-const CardProduct = ({mainData, basketData, setDataDop, dataDop}) => {
+const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => {
     let newMainData1 = mainData.body
     newMainData1.id = mainData.id
 
@@ -33,6 +33,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop}) => {
                 catch (e) {
                     setDataDop(prom.cards)
                 }
+                onGetData()
             })
         })
     }, [dataRequestDatabase])
@@ -43,15 +44,17 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop}) => {
     const [newMainData, setNewMainData] = useState(newMainData1)
     const [buttonText, setButtonText] = React.useState(inputTextButton);
     const [isBuy, setIsBuy] = React.useState(false);
+    const [textHidden, setTextHidden] = React.useState(2);
 
     if(newMainData1.id !== newMainData.id){
         setNewMainData(newMainData1)
+        setTextHidden(2)
         sendRequestDatabase()
         if(newMainData1.isSale===false){setButtonText('Нет в продаже')}
 
         let isBuyBool = true
         basketData.map(el=>{
-            if(el.id===mainData.id && !isBuy){
+            if(el.id===newMainData.id && !isBuy){
                 setButtonText('Перейти в корзину')
                 setIsBuy(true)
                 isBuyBool = false
@@ -65,13 +68,12 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop}) => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const [textHeight, setTextHeight] = React.useState(null);
-    const [textHidden, setTextHidden] = React.useState(2);
     const [signElement, setSignElement] = React.useState();
     const refText = createRef();
     const [dataCards, setDataCards] = React.useState([]);
 
     basketData.map(el=>{
-        if(el.id===mainData.id && !isBuy){
+        if(el.id===newMainData.id && !isBuy){
             setButtonText('Перейти в корзину')
             setIsBuy(true)
         }

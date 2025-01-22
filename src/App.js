@@ -171,12 +171,12 @@ function App() {
 
                     {dataCards.map(item =>
                         (<Route path={'card/' + item.id} key={item.id}
-                                element={<CardProduct mainData={item} basketData={basketData} setDataDop={setDataCardsDop}/>}/>)
+                                element={<CardProduct mainData={item} basketData={basketData} setDataDop={setDataCardsDop} onGetData={onGetData}/>}/>)
                     )
                     }
                     {dataCardsDop.map(item =>
                         (<Route path={'card/' + item.id} key={item.id}
-                                element={<CardProduct mainData={item} basketData={basketData} setDataDop={setDataCardsDop} dataDop={dataCardsDop}/>}/>)
+                                element={<CardProduct mainData={item} basketData={basketData} setDataDop={setDataCardsDop} dataDop={dataCardsDop} onGetData={onGetData}/>}/>)
                     )
                     }
                     {mainData.map(platform => (

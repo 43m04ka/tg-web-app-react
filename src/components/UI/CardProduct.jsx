@@ -213,6 +213,13 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
         region = 'Регион активации: ' + newMainData.region
     }
 
+    let numPlayers = ''
+    if (typeof newMainData.numPlayers === 'undefined') {
+        numPlayers = ''
+    } else {
+        numPlayers = 'Количество игроков: ' + newMainData.numPlayers
+    }
+
     useEffect(() => {
         const height = refText.current.getBoundingClientRect().height;
         if (textHidden === 2) {
@@ -359,6 +366,15 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                         color: 'white',
                         fontFamily: "'Montserrat', sans-serif"
                     }}>{'Платформа: ' + newMainData.platform}
+                    </div>
+
+                    <div style={{
+                        marginTop: '12px',
+                        fontSize: '14px',
+                        color: 'white',
+                        fontFamily: "'Montserrat', sans-serif"
+                    }}>
+                        {numPlayers}
                     </div>
 
 

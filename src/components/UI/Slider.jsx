@@ -29,7 +29,7 @@ const Slider = ({data}) => {
     return (
         <div style={{width:String(window.innerWidth)+'px', overflowX:'hidden'}}>
             <Swiper watchSlidesProgress={true} slidesPerView={3} className="swiper"
-                    style={{width: String(window.innerWidth+200) + 'px',justifyItems:'center', marginLeft:'-100px'}}
+                    style={{width: String(window.innerWidth+220) + 'px',justifyItems:'center', marginLeft:'-110px'}}
                     spaceBetween={30}
                     centeredSlides={true}
                     effect={'coverflow'}
@@ -54,7 +54,7 @@ const Slider = ({data}) => {
                     return (<SwiperSlide key={el.id}>
                         <div>
                             <Link to={el.path} className={'link-element'}>
-                                <img src={el.url} id={'box'} alt={''} style={{width:String((window.innerWidth+150)/3) + 'px',  marginBottom:'15px', marginLeft:'0'}}/>
+                                <img src={el.url} id={'box'} alt={''} style={{width:String((window.innerWidth+220)/3) + 'px',  marginBottom:'15px', marginLeft:'0',}}/>
                             </Link>
                         </div>
                     </SwiperSlide>)

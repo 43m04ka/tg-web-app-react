@@ -231,7 +231,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
         if (typeof products[0].body.platform !== 'undefined') {
             if (products[0].body.platform.includes('PS4') || products[0].body.platform.includes('PS5')) {
                 elementKeys = [...elementKeys, 'platformPS']
-            } else {
+            } else if(products[0].body.platform.includes('One') || products[0].body.platform.includes('Series')){
                 elementKeys = [...elementKeys, 'platformXB']
             }
         }

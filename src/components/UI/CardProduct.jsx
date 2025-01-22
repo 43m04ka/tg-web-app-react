@@ -192,7 +192,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
     if (typeof newMainData.endDate === 'undefined') {
         endDate = ''
     } else {
-        endDate = 'Скидка до ' + newMainData.endDate
+        endDate = 'Скидка ' + newMainData.endDate
     }
 
     let language = ''

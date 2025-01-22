@@ -10,12 +10,10 @@ import 'swiper/css/autoplay';
 
 // import required modules
 import {Autoplay, Pagination,  Controller, EffectCoverflow} from 'swiper/modules';
-import ElementSlider from "./ElementSlider";
 import {Link} from "react-router-dom";
 
 
 const Slider = ({data}) => {
-    const [swiperElement, setSwiperElement] = useState(null);
 
     const pagination = {
         clickable: true,
@@ -29,7 +27,7 @@ const Slider = ({data}) => {
     return (
         <div style={{width:String(window.innerWidth)+'px', overflowX:'hidden'}}>
             <Swiper watchSlidesProgress={true} slidesPerView={3} className="swiper"
-                    style={{width: String(window.innerWidth+220) + 'px',justifyItems:'center', marginLeft:'-110px'}}
+                    style={{width: String(window.innerWidth+220) + 'px',justifyItems:'left', marginLeft:'-110px'}}
                     spaceBetween={30}
                     centeredSlides={true}
                     effect={'coverflow'}
@@ -41,7 +39,6 @@ const Slider = ({data}) => {
                         slideShadows: false,
                         scale:0.83
                     }}
-                    onSlideChange={(event) => {if(event.realIndex !== swiperElement){setSwiperElement(event.realIndex)}}}
                     autoplay={{
                         delay: 7000,
                         disableOnInteraction: false,
@@ -53,8 +50,8 @@ const Slider = ({data}) => {
                 {data.map(el => {
                     return (<SwiperSlide key={el.id}>
                         <div>
-                            <Link to={el.path} className={'link-element'} style={{justifyContent:'left', marginLeft:'0px'}}>
-                                <img src={el.url} id={'box'} alt={''} style={{width:String((window.innerWidth+220)/3) + 'px',  marginBottom:'15px', marginLeft:'0', justifyContent:'left',}}/>
+                            <Link to={el.path} className={'link-element'} style={{justifyContent:'left', marginLeft:'0px',marginRight:'0'}}>
+                                <img src={el.url} id={'box'} alt={''} style={{width:String((window.innerWidth+220)/3) + 'px',  marginBottom:'15px', marginLeft:'0', justifyContent:'left',marginRight:'0'}}/>
                             </Link>
                         </div>
                     </SwiperSlide>)

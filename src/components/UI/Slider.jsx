@@ -53,8 +53,8 @@ const Slider = ({data}) => {
                 {data.map(el => {
                     return (<SwiperSlide key={el.id}>
                         <div>
-                            <Link to={el.path} className={'link-element'}>
-                                <img src={el.url} id={'box'} alt={''} style={{width:String((window.innerWidth+220)/3) + 'px',  marginBottom:'15px', marginLeft:'0',}}/>
+                            <Link to={el.path} className={'link-element'} style={{justifyContent:'left', marginLeft:'0px'}}>
+                                <img src={el.url} id={'box'} alt={''} style={{width:String((window.innerWidth+220)/3) + 'px',  marginBottom:'15px', marginLeft:'0', justifyContent:'left',}}/>
                             </Link>
                         </div>
                     </SwiperSlide>)

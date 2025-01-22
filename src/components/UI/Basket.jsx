@@ -351,7 +351,7 @@ const Basket = ({height, number}) => {
         height: '40px'
     }}>
         <div className={"text-element"}
-             style={{fontSize: '15px', marginLeft: '0', marginRight: '0',}}>У
+             style={{fontSize: '15px', marginLeft: '0',}}>У
             меня есть свой аккаунт:
         </div>
         <div style={{
@@ -436,7 +436,7 @@ const Basket = ({height, number}) => {
                 <div style={{display: 'grid'}}>
                     <div style={{
                         height: String(height - 110 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
-                        overflowY: 'scroll'
+                        overflow: 'scroll'
                     }}>
                         <div className={'title'} style={{
                             width: String(window.innerWidth) + 'px', textAlign: 'center',
@@ -449,7 +449,8 @@ const Basket = ({height, number}) => {
                             <ProductItemBasket key={el.id} setBasketF={setBasket} product={el}/>
                         ))}
                     </div>
-                    <div style={{paddingLeft: '15px', borderTop: '2px solid gray'}}>
+                    <div style={{borderTop: '2px solid gray'}}>
+                    <div style={{marginLeft: '15px'}}>
                         <div style={{width: String(window.innerWidth - 30) + 'px'}}>
                             <div style={{
                                 display: 'flex',
@@ -479,6 +480,7 @@ const Basket = ({height, number}) => {
                                 }}>Перейти к оформлению заказа
                         </button>
                     </div>
+                    </div>
                 </div>
 
             );
@@ -487,7 +489,7 @@ const Basket = ({height, number}) => {
         return (<div>
             <div style={{marginLeft: '10px', width: String(window.innerWidth - 20) + 'px'}}>
                 <div className={'title'} style={{
-                    width: String(window.innerWidth) + 'px', textAlign: 'center',
+                    width: String(window.innerWidth-40) + 'px', textAlign: 'center',
                     marginLeft: '0',
                     marginTop: '10px'
                 }}>Оформление заказа
@@ -585,7 +587,7 @@ const Basket = ({height, number}) => {
                     <button className={'all-see-button'} style={{
                         marginTop: '15px',
                         height: '50px',
-                        marginLeft: '20px',
+                        marginLeft: '18px',
                         width: String(window.innerWidth - 50) + 'px',
                         background: '#52a557'
                     }}

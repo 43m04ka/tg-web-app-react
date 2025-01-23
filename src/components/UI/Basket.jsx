@@ -17,6 +17,7 @@ const Basket = ({height, number}) => {
     const [status, setStatus] = useState(0);
     const [buttonText, setButtonText] = React.useState('Оформить заказ и оплатить');
     const [promoInput, setPromoInput] = useState('');
+    const [promoIsUse, setPromoIsUse] = useState(false);
 
     const sendDataProduct = {
         method: 'buy',
@@ -116,6 +117,7 @@ const Basket = ({height, number}) => {
         return sumPrice += el.price
     })
 
+
     const onclickYes = () => {
         setMyAcc(0);
         setColorYes([81, 164, 86]);
@@ -131,6 +133,50 @@ const Basket = ({height, number}) => {
 
     const styleYes = {background: rgb(colorYes), height: '37px'}
     const styleNo = {background: rgb(colorNo), height: '37px'}
+
+    let priceElement = (<div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginTop: '5px',
+            height: '40px'
+        }}>
+            <div style={{marginTop: '10px', fontSize: '15px', marginLeft: '0', marginRight: '0'}}
+                 className={'text-element'}>Итого:
+            </div>
+            <div style={{marginTop: '10px', fontSize: '17px', marginLeft: '0', marginRight: '0'}}
+                 className={'text-element'}>{String(sumPrice)} ₽
+            </div>
+        </div>
+    )
+    if (promoIsUse) {
+        priceElement = (<div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginTop: '5px',
+            height: '40px'
+        }}>
+            <div style={{marginTop: '10px', fontSize: '15px', marginLeft: '0', marginRight: '0'}}
+                 className={'text-element'}>Итого:
+            </div>
+            <div style={{display: 'flex', flexDirection: 'row'}}>
+                <div style={{marginTop: '10px', fontSize: '17px', marginLeft: '0', marginRight: '15px'}}
+                     className={'text-element'}>{String(sumPrice - sumPrice * 0.1)} ₽
+                </div>
+                <div style={{
+                    marginTop: '10px',
+                    fontSize: '17px',
+                    marginLeft: '0',
+                    marginRight: '0',
+                    textDecoration: 'line-through',
+                    color: 'gray',
+                }}
+                     className={'text-element'}>{String(sumPrice)} ₽
+                </div>
+            </div>
+        </div>)
+    }
 
     let menuDesigns = null
     if (number === 0 && myAcc === 1) {
@@ -385,8 +431,6 @@ const Basket = ({height, number}) => {
     }
 
 
-
-
     if (status === 0) {
         onGetData()
         return (<div className={'pong-loader'} style={{
@@ -450,36 +494,36 @@ const Basket = ({height, number}) => {
                         ))}
                     </div>
                     <div style={{borderTop: '2px solid gray'}}>
-                    <div style={{marginLeft: '15px'}}>
-                        <div style={{width: String(window.innerWidth - 30) + 'px'}}>
-                            <div style={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                marginTop: '5px',
-                                height: '40px'
-                            }}>
-                                <div
-                                    style={{marginTop: '10px', fontSize: '15px', marginLeft: '0', marginRight: '0'}}
-                                    className={'text-element'}>Итого:
-                                </div>
-                                <div
-                                    style={{marginTop: '10px', fontSize: '17px', marginLeft: '0', marginRight: '0'}}
-                                    className={'text-element'}>{String(sumPrice)} ₽
+                        <div style={{marginLeft: '15px'}}>
+                            <div style={{width: String(window.innerWidth - 30) + 'px'}}>
+                                <div style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    marginTop: '5px',
+                                    height: '40px'
+                                }}>
+                                    <div
+                                        style={{marginTop: '10px', fontSize: '15px', marginLeft: '0', marginRight: '0'}}
+                                        className={'text-element'}>Итого:
+                                    </div>
+                                    <div
+                                        style={{marginTop: '10px', fontSize: '17px', marginLeft: '0', marginRight: '0'}}
+                                        className={'text-element'}>{String(sumPrice)} ₽
+                                    </div>
                                 </div>
                             </div>
+                            <button className={'all-see-button'} style={{
+                                marginTop: '10px',
+                                width: String(window.innerWidth - 30) + 'px',
+                                background: '#52a557',
+                                marginLeft: '0px'
+                            }}
+                                    onClick={() => {
+                                        setStatus(2)
+                                    }}>Перейти к оформлению заказа
+                            </button>
                         </div>
-                        <button className={'all-see-button'} style={{
-                            marginTop: '10px',
-                            width: String(window.innerWidth - 30) + 'px',
-                            background: '#52a557',
-                            marginLeft: '0px'
-                        }}
-                                onClick={() => {
-                                    setStatus(2)
-                                }}>Перейти к оформлению заказа
-                        </button>
-                    </div>
                     </div>
                 </div>
 
@@ -489,7 +533,7 @@ const Basket = ({height, number}) => {
         return (<div>
             <div style={{marginLeft: '10px', width: String(window.innerWidth - 20) + 'px'}}>
                 <div className={'title'} style={{
-                    width: String(window.innerWidth-40) + 'px', textAlign: 'center',
+                    width: String(window.innerWidth - 40) + 'px', textAlign: 'center',
                     marginLeft: '0',
                     marginTop: '10px'
                 }}>Оформление заказа
@@ -529,23 +573,19 @@ const Basket = ({height, number}) => {
                                    fontSize: '18px',
                                    color: 'white',
                                    fontFamily: "'Montserrat', sans-serif",
-                               }} onChange={(event) => setPromoInput(event.target.value)}/>
+                               }} onChange={(event) => {
+                            console.log(event.target.value)
+                            if (event.target.value === 'January2025') {
+                                console.log('use')
+                                setPromoIsUse(true)
+                            }else{
+                                setPromoIsUse(false)
+                            }
+                            setPromoInput(event.target.value);
+                        }}/>
                     </div>
                 </div>
-                <div style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    marginTop: '5px',
-                    height: '40px'
-                }}>
-                    <div style={{marginTop: '10px', fontSize: '15px', marginLeft: '0', marginRight: '0'}}
-                         className={'text-element'}>Итого:
-                    </div>
-                    <div style={{marginTop: '10px', fontSize: '17px', marginLeft: '0', marginRight: '0'}}
-                         className={'text-element'}>{String(sumPrice)} ₽
-                    </div>
-                </div>
+                    {priceElement}
             </div>
             <button className={'all-see-button'} style={{
                 marginTop: '10px',

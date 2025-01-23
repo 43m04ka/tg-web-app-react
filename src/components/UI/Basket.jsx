@@ -50,6 +50,7 @@ const Basket = ({height, number}) => {
                             setParcent(prom.parcent)
                             promo = promoInput
                             console.log('yes')
+                            setPromoMassage('Успешное применение')
                         }
                         else{
                             setPromoMassage('Количество использований исчерпано')
@@ -291,6 +292,7 @@ const Basket = ({height, number}) => {
             }}>Использовать
             </button>
         </div>
+        <div className={'text-element'} style={{textAlign:'center'}}>{promoMassage}</div>
     </div>)
 
     if (myPromo) {

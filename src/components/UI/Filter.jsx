@@ -4,7 +4,7 @@ import FilterCheckBox from "./FilterCheckBox";
 
 const Filter = ({height, elementKeys, onRequestFilter}) => {
     const {tg} = useTelegram();
-    const [jsonFilter, setJsonFilter] = useState({platform: [], price: {min: 0, max: 50000, sort: null}, category: [], languageSelector:[]});
+    const [jsonFilter, setJsonFilter] = useState({platform: [], price: {min: 0, max: 50000, sort: null}, category: [], languageSelector:[], numPlayers:[]});
     const [panelIsVisible, setPanelIsVisible] = useState(false);
     const [panelWidth, setPanelWidth] = useState(0);
 
@@ -39,6 +39,13 @@ const Filter = ({height, elementKeys, onRequestFilter}) => {
                             data={['На русском языке', 'Русские субтитры (текст)', 'Без перевода']}
                             preview={'Язык'}/>)
     }
+    let playerElement = (<></>)
+    if (elementKeys.includes('numPlayers')) {
+        playerElement = (
+            <FilterCheckBox param={'numPlayers'} setJson={setJsonFilter} json={jsonFilter}
+                            data={['1', '1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-8']}
+                            preview={'Кол-во игроков'}/>)
+    }
 
     let width = panelWidth
     return (
@@ -60,6 +67,7 @@ const Filter = ({height, elementKeys, onRequestFilter}) => {
                     {platformElement}
                     {categoryElement}
                     {languageElement}
+                    {playerElement}
                 </div>
                 <button onClick={async () => {
                     await setPanelIsVisible(false);

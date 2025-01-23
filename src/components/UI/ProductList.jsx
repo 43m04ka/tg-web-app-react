@@ -15,6 +15,8 @@ const getTotalPrice = (items = []) => {
 
 let scrollCtrl = 0;
 let list = 1
+let bool = true
+let elementKeys = []
 
 const ProductList = ({main_data, page, height, setDataDop}) => {
     const [products, setProducts] = useState([])
@@ -78,6 +80,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
         })
     }, [sendData])
 
+
     const sendRequestDatabase = useCallback(() => {
         fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/database', {
             method: 'POST',
@@ -88,10 +91,11 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
         }).then(r => {
             let Promise = r.json()
             Promise.then(async prom => {
+                console.log(prom.cards)
                 if (dataRequestDatabase.method === 'getList') {
                     await setStatus(1)
-                    await setProducts(prom.cards)
-                    await setDataDop(prom.cards)
+                    await setProducts(prom.cards || [])
+                    await setDataDop(prom.cards || [])
                     await setLen(prom.len)
                     await setHeightMenuButton(65)
                 }
@@ -217,32 +221,43 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
         }}></div>)
     }
 
-    let elementKeys = []
-    try {
-        if (typeof products[0].body.category !== 'undefined') {
-            if (products[0].body.category.includes('акк')) {
-                elementKeys = [...elementKeys, 'categoryXB']
+    if(bool || elementKeys.length === 0) {
+        try {
+            if (typeof products[0].body.category !== 'undefined') {
+                if (products[0].body.category.includes('акк')) {
+                    elementKeys = [...elementKeys, 'categoryXB']
+                }
             }
+        } catch (e) {
         }
-    } catch (e) {
-    }
 
-    try {
-        if (typeof products[0].body.platform !== 'undefined') {
-            if (products[0].body.platform.includes('PS4') || products[0].body.platform.includes('PS5')) {
-                elementKeys = [...elementKeys, 'platformPS']
-            } else if(products[0].body.platform.includes('One') || products[0].body.platform.includes('Series')){
-                elementKeys = [...elementKeys, 'platformXB']
+        try {
+            if (typeof products[0].body.platform !== 'undefined') {
+                if (products[0].body.platform.includes('PS4') || products[0].body.platform.includes('PS5')) {
+                    elementKeys = [...elementKeys, 'platformPS']
+                } else if (products[0].body.platform.includes('One') || products[0].body.platform.includes('Series')) {
+                    elementKeys = [...elementKeys, 'platformXB']
+                }
             }
+        } catch (e) {
         }
-    } catch (e) {
-    }
 
-    try {
-        if (typeof products[0].body.languageSelector !== 'undefined') {
-            elementKeys = [...elementKeys, 'languageSelector']
+        try {
+            if (typeof products[0].body.languageSelector !== 'undefined') {
+                elementKeys = [...elementKeys, 'languageSelector']
+            }
+        } catch (e) {
         }
-    } catch (e) {
+
+        try {
+            if (typeof products[0].body.numPlayers !== 'undefined') {
+                if (String(products[0].body.numPlayers) === '1' || products[0].body.numPlayers.includes('-')) {
+                    elementKeys = [...elementKeys, 'numPlayers']
+                }
+            }
+        } catch (e) {
+        }
+        bool = false
     }
 
     const onRequestFilter = (json) => {
@@ -255,39 +270,47 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
         setListNumber(1)
         setStatus(10)
     }
+    let bodyElement = (<div/>)
 
-    let bodyElement = (<div>
-            <div className={'list-grid'}>
-                {products.map(item => {
-                    let newItem = item.body
-                    newItem.id = item.id
-                    return (<ProductItem key={newItem.id} product={newItem} path={path}/>)
-                })}
+    if (products.length !== 0) {
+        bodyElement = (<div>
+                <div className={'list-grid'}>
+                    {products.map(item => {
+                        let newItem = item.body
+                        newItem.id = item.id
+                        return (<ProductItem key={newItem.id} product={newItem} path={path}/>)
+                    })}
+                </div>
+                <div style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    marginTop: '15px',
+                    marginBottom: '15px',
+                }}>
+                    {nav2El}
+                    {nav1El}
+                    <div className={'text-element'} style={{
+                        height: '20px',
+                        width: '20px',
+                        textAlign: 'center',
+                        lineHeight: '20px',
+                        borderRadius: '5px',
+                        border: '1px solid gray',
+                        background: '#6194ea'
+                    }}>{listNumber}</div>
+                    {nav3El}
+                    {nav4El}
+                </div>
             </div>
-            <div style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                display: 'flex',
-                flexDirection: 'row',
-                marginTop: '15px',
-                marginBottom: '15px',
-            }}>
-                {nav2El}
-                {nav1El}
-                <div className={'text-element'} style={{
-                    height: '20px',
-                    width: '20px',
-                    textAlign: 'center',
-                    lineHeight: '20px',
-                    borderRadius: '5px',
-                    border: '1px solid gray',
-                    background: '#6194ea'
-                }}>{listNumber}</div>
-                {nav3El}
-                {nav4El}
-            </div>
-        </div>
-    )
+        )
+    } else {
+        bodyElement = (<div>
+            <div className={'text-element'} style={{textAlign:'center', marginTop:'30px', fontSize:'18px'}}>Ничего не найдено</div>
+            <button className={'all-see-button'} onClick={()=>{setStatus(10);sendRequestOnDatabase({path: path, number: list}, 'getList')}}>Сбросить фильтры</button>
+        </div>)
+    }
     if (status === 10) {
         bodyElement = (<div className={'pong-loader'} style={{
             border: '2px solid #8cdb8b',
@@ -306,8 +329,8 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
                     transitionDuration: '0.3s',
                     position: 'absolute',
                     background: '#171717',
-                    width:String(window.innerWidth)+'px',
-                    borderBottom:'2px solid #454545',
+                    width: String(window.innerWidth) + 'px',
+                    borderBottom: '2px solid #454545',
                 }}>
                     <Link to={'/search' + String(page)} className={'link-element'}>
                         <div className={'search'} style={{padding: '10px', display: 'flex', flexDirection: 'row'}}>
@@ -365,7 +388,10 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
                     </div>
                     {bodyElement}
                     <div style={{
-                        position: 'absolute', marginTop: String(heightMenuButton-2) + 'px',transitionProperty:'margin',transitionDuration:'0.3s'
+                        position: 'absolute',
+                        marginTop: String(heightMenuButton - 2) + 'px',
+                        transitionProperty: 'margin',
+                        transitionDuration: '0.3s'
                     }}>
                         <Filter height={height + 60 - heightMenuButton} elementKeys={elementKeys}
                                 onRequestFilter={onRequestFilter}/>

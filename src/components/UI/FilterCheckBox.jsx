@@ -4,7 +4,7 @@ import {isElementOfType} from "react-dom/test-utils";
 
 const FilterCheckBox = ({param, data, json, preview, setJson}) => {
     if (json === null) {
-        json = {platform: [], price: {min: 0, max: 50000, sort: null}, category: [], languageSelector: []}
+        json = {platform: [], price: {min: 0, max: 50000, sort: null}, category: [], languageSelector: [], numPlayers: []}
     }
     const [isVisible, setIsVisible] = useState(true);
     const [filterHeight, setFilterHeight] = useState(null);
@@ -99,7 +99,7 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                         flexDirection: 'row',
                         justifyContent: 'left',
                         alignItems: 'center',
-                        height:'15px',marginLeft: '15px', marginTop:'10px',
+                        height: '15px', marginLeft: '15px', marginTop: '10px',
                     }}
                                  onClick={() => {
                                      setIsCheck(!isCheck)
@@ -112,7 +112,7 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                                              setLocalJson(jsonNew)
                                          } else {
                                              jsonNew.platform.splice(jsonNew.platform.indexOf(el), 1)
-                                             if (jsonNew.platform.length === 0 && jsonNew.price.sort === null && jsonNew.category.length === 0 && jsonNew.languageSelector.length === 0) {
+                                             if (jsonNew.platform.length === 0 && jsonNew.price.sort === null && jsonNew.category.length === 0 && jsonNew.languageSelector.length === 0 && jsonNew.numPlayers.length === 0) {
                                                  setJson(null)
                                                  setLocalJson(null);
                                              } else {
@@ -128,7 +128,7 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                                              setLocalJson(jsonNew)
                                          } else {
                                              jsonNew.category.splice(jsonNew.category.indexOf(el), 1)
-                                             if (jsonNew.platform.length === 0 && jsonNew.price.sort === null && jsonNew.category.length === 0 && jsonNew.languageSelector.length === 0) {
+                                             if (jsonNew.platform.length === 0 && jsonNew.price.sort === null && jsonNew.category.length === 0 && jsonNew.languageSelector.length === 0 && jsonNew.numPlayers.length === 0) {
                                                  setJson(null)
                                                  setLocalJson(null);
                                              } else {
@@ -144,7 +144,24 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                                              setLocalJson(jsonNew)
                                          } else {
                                              jsonNew.languageSelector.splice(jsonNew.languageSelector.indexOf(el), 1)
-                                             if (jsonNew.platform.length === 0 && jsonNew.price.sort === null && jsonNew.category.length === 0 && jsonNew.languageSelector.length === 0) {
+                                             if (jsonNew.platform.length === 0 && jsonNew.price.sort === null && jsonNew.category.length === 0 && jsonNew.languageSelector.length === 0 && jsonNew.numPlayers.length === 0) {
+                                                 setJson(null)
+                                                 setLocalJson(null);
+                                             } else {
+                                                 setJson(jsonNew);
+                                                 setLocalJson(jsonNew)
+                                             }
+                                         }
+                                     }
+                                     if (param === 'numPlayers') {
+                                         if (status) {
+                                             jsonNew.numPlayers = [...jsonNew.numPlayers, el]
+                                             console.log(123)
+                                             setJson(jsonNew);
+                                             setLocalJson(jsonNew)
+                                         } else {
+                                             jsonNew.numPlayers.splice(jsonNew.numPlayers.indexOf(el), 1)
+                                             if (jsonNew.platform.length === 0 && jsonNew.price.sort === null && jsonNew.category.length === 0 && jsonNew.languageSelector.length === 0 && jsonNew.numPlayers.length === 0) {
                                                  setJson(null)
                                                  setLocalJson(null);
                                              } else {
@@ -160,7 +177,7 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                                              setLocalJson(jsonNew)
                                              console.log(jsonNew)
                                          }
-                                         if (!status && el === 'По возрастанию' && jsonNew.price.sort === true || !status && el !== 'По возрастанию' && jsonNew.price.sort === false) {
+                                         if (!status && el === 'По возрастанию' && jsonNew.price.sort === true || !status && el !== 'По возрастанию' && jsonNew.price.sort === false && jsonNew.numPlayers.length === 0) {
                                              setJson(null);
                                              setLocalJson(null)
                                              console.log(jsonNew)
@@ -173,7 +190,7 @@ const FilterCheckBox = ({param, data, json, preview, setJson}) => {
                                              setLocalJson(jsonNew)
                                          } else {
                                              jsonNew.languageSelector.splice(jsonNew.languageSelector.indexOf(el), 1)
-                                             if (jsonNew.platform.length === 0 && jsonNew.price.sort === null && jsonNew.category.length === 0 && jsonNew.languageSelector.length === 0) {
+                                             if (jsonNew.platform.length === 0 && jsonNew.price.sort === null && jsonNew.category.length === 0 && jsonNew.languageSelector.length === 0 && jsonNew.numPlayers.length === 0) {
                                                  setJson(null)
                                                  setLocalJson(null);
                                              } else {

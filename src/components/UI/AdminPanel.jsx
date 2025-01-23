@@ -26,7 +26,8 @@ const AdminPanel = () => {
 
     const [dataStructure, setDataStructure] = useState(null);
     const [dataCards, setDataCards] = useState(null);
-    const [computeData, setComputeData] = useState(null);
+    const [dataPromo, setDataPromo] = useState([]);
+    console.log(dataPromo)
 
     const [status, setStatus] = useState(0)
 
@@ -138,10 +139,10 @@ const AdminPanel = () => {
                 } else if (dataRequestDatabase.method === 'del') {
                     onReload()
                     setStatus(1)
-                }else if (dataRequestDatabase.method === 'delCategory') {
+                } else if (dataRequestDatabase.method === 'delCategory') {
                     onReload()
                     setStatus(1)
-                }else if (dataRequestDatabase.method === 'updCategory') {
+                } else if (dataRequestDatabase.method === 'updCategory') {
                     onReload()
                     setStatus(1)
                 }
@@ -153,6 +154,40 @@ const AdminPanel = () => {
         dataRequestDatabase.method = operation
         dataRequestDatabase.data = inputData
         sendRequestDatabase()
+    }
+
+    let dataRequestPromo = {
+        method: '',
+        userData: userData,
+        data: []
+    }
+
+    const sendRequestPromo = useCallback(() => {
+        console.log(dataRequestPromo, 'inputRequestDb')
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/promo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataRequestPromo)
+        }).then(r => {
+            let Promise = r.json()
+            Promise.then(prom => {
+                console.log(prom, 'возвратил get')
+                if (dataRequestPromo.method === 'get') {
+                    setDataPromo(prom.promo)
+                }
+                if (dataRequestPromo.method === 'add') {
+                    setStatus(1)
+                }
+            })
+        })
+    }, [dataRequestPromo])
+
+    const sendRequestOnPromo = (inputData, operation) => {
+        dataRequestPromo.method = operation
+        dataRequestPromo.data = inputData
+        sendRequestPromo()
     }
 
     const addCategory = (type, tab) => {
@@ -213,33 +248,13 @@ const AdminPanel = () => {
         sendRequestOnDatabase(path, 'updCategory');
     }
 
-    const onReload = async () =>{
+    const onReload = async () => {
         await sendRequestOnDatabase([], 'reload');
         await sendRequestOnDatabase([], 'getPreview');
     }
 
-    const onComputeData = () => {
-        let inputDataCards = dataCards
-        let resultData = dataStructure
-
-        inputDataCards.map(cardOld => {
-            let card = cardOld.body
-            card.id = cardOld.id
-
-            const cardTab = card.tab
-            const cardType = card.type
-            const cardCategory = card.tabCategoryPath
-
-            let count = 0
-            resultData[cardTab].body[cardType].map(category => {
-                if (category.path === cardCategory) {
-                    resultData[cardTab].body[cardType][count].body = [...resultData[cardTab].body[cardType][count].body, ...[card]]
-                }
-                count += 1;
-            })
-
-        })
-        console.log(resultData)
+    const addPromo = () => {
+        sendRequestOnPromo({str: inputCategory1, count: inputCategory2, parcent: inputCategory3}, 'add')
     }
 
 
@@ -259,6 +274,10 @@ const AdminPanel = () => {
                         setPageSelected(2)
                     }}>Редактировать каталоги
                     </button>
+                    <button onClick={() => {
+                        setPageSelected(3)
+                    }}>Редактировать промокоды
+                    </button>
                 </div>
                 <div style={{
                     display: 'grid',
@@ -276,8 +295,9 @@ const AdminPanel = () => {
                         textJustify: 'center'
                     }}>Загрузить карты на сервер
                     </div>
-                    <div className={'text-element'} >Выберете страницу</div>
-                    <div className={'text-element'} style={{display: 'flex', flexDirection: 'column', paddingLeft: '20px'}}>
+                    <div className={'text-element'}>Выберете страницу</div>
+                    <div className={'text-element'}
+                         style={{display: 'flex', flexDirection: 'column', paddingLeft: '20px'}}>
                         <div>
                             1.
                             <button style={{
@@ -319,20 +339,24 @@ const AdminPanel = () => {
                         </div>
                         <div>{'Выбрано: ' + (inputCategory2 + 1)}</div>
                     </div>
-                    <div className={'text-element'} style={{display: 'flex', flexDirection: 'column', marginTop: '15px'}}>
+                    <div className={'text-element'}
+                         style={{display: 'flex', flexDirection: 'column', marginTop: '15px'}}>
                         Введите уникальный путь до категории:
                         <input style={{marginLeft: '20px'}} onChange={(event) => {
                             setInputCategory3(event.target.value)
                         }}/>
                     </div>
 
-                    <div style={{marginTop:'15px'}} className={'text-element'}>Таблица с данными категории</div>
-                    <div style={{marginLeft:'20px'}}>
+                    <div style={{marginTop: '15px'}} className={'text-element'}>Таблица с данными категории</div>
+                    <div style={{marginLeft: '20px'}}>
                         <ExcelReader setButtonTable={setButtonTableClassic}/>
                     </div>
                 </div>
 
-                <button onClick={()=>{onReload()}}>Обновить</button>
+                <button onClick={() => {
+                    onReload()
+                }}>Обновить
+                </button>
             </div>
         }
         if (pageSelected === 1) {
@@ -371,6 +395,10 @@ const AdminPanel = () => {
                     <button onClick={() => {
                         setPageSelected(2)
                     }}>Редактировать каталоги
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(3)
+                    }}>Редактировать промокоды
                     </button>
                 </div>
                 <div style={{
@@ -462,6 +490,10 @@ const AdminPanel = () => {
                         setPageSelected(2)
                     }}>Редактировать каталоги
                     </button>
+                    <button onClick={() => {
+                        setPageSelected(3)
+                    }}>Редактировать промокоды
+                    </button>
                 </div>
                 {dataStructure.map(tab => (
                     <div style={{borderRadius: '10px', marginTop: '5px', background: 'gray'}} key={tab.id}>
@@ -476,7 +508,6 @@ const AdminPanel = () => {
                                     marginLeft: '5px',
                                     marginRight: '5px'
                                 }} key={category.id}>
-                                    <div className={'text-element'}>Id: {category.id}</div>
                                     <div className={'text-element'}>Путь: {category.path}</div>
                                     <div className={'text-element'}>Url: {category.url}</div>
                                     <button style={{background: '#343434'}} onClick={() => {
@@ -494,13 +525,13 @@ const AdminPanel = () => {
                                 marginRight: '5px'
                             }}>
                                 <div className={'text-element'}>Добавить категорию слайдера</div>
-                                <input defaultValue={'Порядковый_номер'} onChange={(event) => {
+                                <input placeholder={'Порядковый_номер'} onChange={(event) => {
                                     setInputCategory1(event.target.value)
                                 }}/>
-                                <input defaultValue={'url_изображения'} onChange={(event) => {
+                                <input placeholder={'url_изображения'} onChange={(event) => {
                                     setInputCategory2(event.target.value)
                                 }}/>
-                                <input defaultValue={'Путь_до_категории'} onChange={(event) => {
+                                <input placeholder={'Путь_до_категории'} onChange={(event) => {
                                     setInputCategory3(event.target.value)
                                 }}/>
                                 <button style={{background: '#343434'}} onClick={() => {
@@ -519,7 +550,6 @@ const AdminPanel = () => {
                                     marginLeft: '5px',
                                     marginRight: '5px'
                                 }} key={category.id}>
-                                    <div className={'text-element'}>Id: {category.id}</div>
                                     <div className={'text-element'}>Путь: {category.path}</div>
                                     <div className={'text-element'}>Имя: {category.name}</div>
                                     <button style={{background: '#343434'}} onClick={() => {
@@ -537,13 +567,13 @@ const AdminPanel = () => {
                                 marginRight: '5px'
                             }}>
                                 <div className={'text-element'}>Добавить категорию тела</div>
-                                <input defaultValue={'Порядковый_номер'} onChange={(event) => {
+                                <input placeholder={'Порядковый_номер'} onChange={(event) => {
                                     setInputCategory1(event.target.value)
                                 }}/>
-                                <input defaultValue={'Имя_категории'} onChange={(event) => {
+                                <input placeholder={'Имя_категории'} onChange={(event) => {
                                     setInputCategory2(event.target.value)
                                 }}/>
-                                <input defaultValue={'Путь_до_категории'} onChange={(event) => {
+                                <input placeholder={'Путь_до_категории'} onChange={(event) => {
                                     setInputCategory3(event.target.value)
                                 }}/>
                                 <button style={{background: '#343434'}} onClick={() => {
@@ -556,12 +586,71 @@ const AdminPanel = () => {
 
             </div>)
         }
+        if (pageSelected === 3) {
+            return (<div>
+                <div>
+                    <button onClick={() => {
+                        setPageSelected(0)
+                    }}>Загрузить новые данные
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(1)
+                    }}>Редактировать карты
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(2)
+                    }}>Редактировать каталоги
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(3)
+                    }}>Редактировать промокоды
+                    </button>
+                </div>
+                {dataPromo.map(promo => (
+                    <div style={{
+                        marginTop: '7px',
+                        borderRadius: '10px',
+                        background: '#232323',
+                        marginLeft: '5px',
+                        marginRight: '5px'
+                    }} key={promo.id}>
+                        <div className={'text-element'}>Кодовое слово: {promo.body}</div>
+                        <div className={'text-element'}>Осталось использований: {promo.number}</div>
+                        <div className={'text-element'}>Процент скидки: {promo.parcent}</div>
+                        <button style={{background: '#343434'}} onClick={() => {
+                        }}>Удалить категорию
+                        </button>
+                    </div>
+                ))}
+                <div style={{
+                    border: '2px solid green',
+                    borderRadius: '10px',
+                    marginTop: '5px',
+                    background: '#232323',
+                    marginLeft: '5px',
+                    marginRight: '5px'
+                }}>
+                    <div className={'text-element'}>Добавить промокод</div>
+                    <input placeholder={'Кодовое слово'} onChange={(event) => {
+                        setInputCategory1(event.target.value)
+                    }}/>
+                    <input placeholder={'Количество использований'} onChange={(event) => {
+                        setInputCategory2(event.target.value)
+                    }}/>
+                    <input placeholder={'Процент скидки(от 0 до 100)'} onChange={(event) => {
+                        setInputCategory3(event.target.value)
+                    }}/>
+                    <button style={{background: '#343434'}} onClick={() => {
+                        addPromo()
+                    }}>Добавить промокод
+                    </button>
+                </div>
+            </div>)
+        }
     } else if (status === 1) {
         sendRequestOnDatabase([], 'getPreview')
-        return (
-            <div className={'text-element'}>
-                Ожидайте
-            </div>)
+        sendRequestOnPromo([], 'get')
+        setStatus(10)
     } else if (status === 10) {
         return (
             <div className={'text-element'}>
@@ -635,7 +724,10 @@ class ExcelReader extends Component {
             <div style={{display: 'grid'}}>
                 <input type="file" id="file" style={{color: 'white'}} accept={SheetJSFT}
                        onChange={this.handleChange}/>
-                <button className={'all-see-button'} style={{background:'#373737', justifyContent:'left', marginLeft:'20px'}} onClick={this.handleFile}>Загрузить</button>
+                <button className={'all-see-button'}
+                        style={{background: '#373737', justifyContent: 'left', marginLeft: '20px'}}
+                        onClick={this.handleFile}>Загрузить
+                </button>
             </div>
 
         )

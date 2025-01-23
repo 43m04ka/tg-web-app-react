@@ -12,8 +12,11 @@ const Basket = ({height, number}) => {
 
     const [basket, setBasket] = useState([])
     const [myAcc, setMyAcc] = useState(0);
+    const [myPromo, setMyPromo] = useState(1);
     const [colorYes, setColorYes] = useState([81, 164, 86]);
     const [colorNo, setColorNo] = useState([45, 12, 12]);
+    const [colorYesPromo, setColorYesPromo] = useState([12, 45, 12]);
+    const [colorNoPromo, setColorNoPromo] = useState([164, 30, 30]);
     const [status, setStatus] = useState(0);
     const [buttonText, setButtonText] = React.useState('Оформить заказ и оплатить');
     const [promoInput, setPromoInput] = useState('');
@@ -129,10 +132,24 @@ const Basket = ({height, number}) => {
         setColorYes([12, 45, 12]);
     }
 
+    const onclickYesPromo = () => {
+        setMyPromo(0);
+        setColorYesPromo([81, 164, 86]);
+        setColorNoPromo([45, 12, 12]);
+    }
+    const onclickNoPromo = () => {
+        setMyPromo(1);
+        setColorNoPromo([164, 30, 30]);
+        setColorYesPromo([12, 45, 12]);
+    }
+
     console.log(status)
 
     const styleYes = {background: rgb(colorYes), height: '37px'}
     const styleNo = {background: rgb(colorNo), height: '37px'}
+
+    const styleYesPromo = {background: rgb(colorYesPromo), height: '37px'}
+    const styleNoPromo = {background: rgb(colorNoPromo), height: '37px'}
 
     let priceElement = (<div style={{
             display: 'flex',
@@ -169,6 +186,8 @@ const Basket = ({height, number}) => {
                     fontSize: '17px',
                     marginLeft: '0',
                     marginRight: '0',
+
+
                     textDecoration: 'line-through',
                     color: 'gray',
                 }}
@@ -176,6 +195,48 @@ const Basket = ({height, number}) => {
                 </div>
             </div>
         </div>)
+    }
+
+    let promoElement = (<div><div style={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: '5px',
+        height: '40px'
+    }}>
+        <div>
+            <div style={{
+                width: '200px',
+            }}>
+                <input placeholder={"Введите промокод"}
+                       style={{
+                           height: '38px',
+                           width: '200px',
+                           borderRadius: '10px',
+                           background: '#454545',
+                           textAlign: 'center',
+                           border: '0px',
+                           fontSize: '18px',
+                           color: 'white',
+                           fontFamily: "'Montserrat', sans-serif",
+                       }} onChange={(event) => {
+                    if (event.target.value === 'January2025') {
+                        console.log('use')
+                        setPromoIsUse(true)
+                    } else {
+                        setPromoIsUse(false)
+                    }
+                    setPromoInput(event.target.value);
+                }}/>
+            </div>
+        </div>
+        <button className={'text-element'} style={{color:'black', background:'white', border:'0px', borderRadius:'10px', width:'100px', height:'37px', marginLeft:'7px', textAlign:'center'}}>Использовать</button>
+    </div>
+    </div>)
+
+    if (myPromo) {
+        promoElement = (<div></div>)
     }
 
     let menuDesigns = null
@@ -546,7 +607,6 @@ const Basket = ({height, number}) => {
                     marginBottom: '20px'
                 }}>{menuDesigns}</div>
 
-
                 <div style={{
                     display: 'flex',
                     flexDirection: 'row',
@@ -556,36 +616,29 @@ const Basket = ({height, number}) => {
                     height: '40px'
                 }}>
                     <div className={"text-element"}
-                         style={{fontSize: '15px', marginLeft: '0', marginRight: '0',}}>У
-                        меня есть промокод:
+                         style={{fontSize: '15px', marginLeft: '0',}}>У
+                        меня есть Промокод:
                     </div>
                     <div style={{
-                        width: '200px',
+                        width: '140px',
+                        justifyContent: 'space-between',
+                        display: 'flex',
+                        flexDirection: 'row',
                     }}>
-                        <input placeholder={"Введите промокод"}
-                               style={{
-                                   height: '38px',
-                                   width: '200px',
-                                   borderRadius: '10px',
-                                   background: '#454545',
-                                   textAlign: 'center',
-                                   border: '0px',
-                                   fontSize: '18px',
-                                   color: 'white',
-                                   fontFamily: "'Montserrat', sans-serif",
-                               }} onChange={(event) => {
-                            console.log(event.target.value)
-                            if (event.target.value === 'January2025') {
-                                console.log('use')
-                                setPromoIsUse(true)
-                            }else{
-                                setPromoIsUse(false)
-                            }
-                            setPromoInput(event.target.value);
-                        }}/>
+                        <div
+                            style={{width: '65px'}}>
+                            <button className={'selector-button'} onClick={onclickYesPromo} style={styleYesPromo}>Да
+                            </button>
+                        </div>
+                        <div
+                            style={{width: '65px'}}>
+                            <button className={'selector-button'} onClick={onclickNoPromo} style={styleNoPromo}>Нет
+                            </button>
+                        </div>
                     </div>
                 </div>
-                    {priceElement}
+                {promoElement}
+                {priceElement}
             </div>
             <button className={'all-see-button'} style={{
                 marginTop: '10px',

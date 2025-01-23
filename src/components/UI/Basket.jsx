@@ -5,6 +5,7 @@ import ProductItemBasket from "./ProductItemBasket";
 import {useTelegram} from "../../hooks/useTelegram";
 
 let inputData = [null, null, null, null, null]
+let promo = ''
 const Basket = ({height, number}) => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
@@ -21,11 +22,54 @@ const Basket = ({height, number}) => {
     const [buttonText, setButtonText] = React.useState('Оформить заказ и оплатить');
     const [promoInput, setPromoInput] = useState('');
     const [promoIsUse, setPromoIsUse] = useState(false);
+    const [parcent, setParcent] = useState(0);
+    const [promoMassage, setPromoMassage] = useState('');
+
+
+    let dataRequestPromo = {
+        method: 'use',
+        data:{str: promoInput},
+    }
+
+    const sendRequestPromo = useCallback(() => {
+        console.log(dataRequestPromo, 'inputRequestDb')
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/promo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataRequestPromo)
+        }).then(r => {
+            let Promise = r.json()
+            Promise.then(prom => {
+                console.log(prom, 'возвратил get')
+                if (dataRequestPromo.method === 'use') {
+                    if(prom.answer === true){
+                        if(prom.parcent !==0){
+                            setPromoIsUse(true)
+                            setParcent(prom.parcent)
+                            promo = promoInput
+                            console.log('yes')
+                        }
+                        else{
+                            setPromoMassage('Количество использований исчерпано')
+                            console.log('yes1')
+                        }
+                    }else{
+                        setPromoMassage('Промокод не найден')
+                        console.log('no')
+                    }
+                }
+            })
+        })
+    }, [dataRequestPromo])
+
 
     const sendDataProduct = {
         method: 'buy',
         user: user,
         accData: '',
+        promo : promo,
         page: number,
     }
 
@@ -67,6 +111,12 @@ const Basket = ({height, number}) => {
                     setStatus(0)
                     setButtonText('Оформить заказ и оплатить')
                 }
+                promo = ''
+                setPromoIsUse(false)
+                setColorYesPromo([12, 45, 12])
+                setColorNo([164, 30, 30])
+                setPromoInput('')
+                setParcent(0)
             })
         })
     }, [sendDataProduct])
@@ -179,7 +229,7 @@ const Basket = ({height, number}) => {
             </div>
             <div style={{display: 'flex', flexDirection: 'row'}}>
                 <div style={{marginTop: '10px', fontSize: '17px', marginLeft: '0', marginRight: '15px'}}
-                     className={'text-element'}>{String(sumPrice - sumPrice * 0.1)} ₽
+                     className={'text-element'}>{String(sumPrice - sumPrice * (parcent/100))} ₽
                 </div>
                 <div style={{
                     marginTop: '10px',
@@ -197,42 +247,50 @@ const Basket = ({height, number}) => {
         </div>)
     }
 
-    let promoElement = (<div><div style={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: '5px',
-        height: '40px'
-    }}>
-        <div>
-            <div style={{
-                width: '200px',
-            }}>
-                <input placeholder={"Введите промокод"}
-                       style={{
-                           height: '38px',
-                           width: '200px',
-                           borderRadius: '10px',
-                           background: '#454545',
-                           textAlign: 'center',
-                           border: '0px',
-                           fontSize: '18px',
-                           color: 'white',
-                           fontFamily: "'Montserrat', sans-serif",
-                       }} onChange={(event) => {
-                    if (event.target.value === 'January2025') {
-                        console.log('use')
-                        setPromoIsUse(true)
-                    } else {
-                        setPromoIsUse(false)
-                    }
-                    setPromoInput(event.target.value);
-                }}/>
+    let promoElement = (<div>
+        <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: '5px',
+            height: '40px'
+        }}>
+            <div>
+                <div style={{
+                    width: '200px',
+                }}>
+                    <input placeholder={"Введите промокод"}
+                           style={{
+                               height: '38px',
+                               width: '200px',
+                               borderRadius: '10px',
+                               background: '#454545',
+                               textAlign: 'center',
+                               border: '0px',
+                               fontSize: '18px',
+                               color: 'white',
+                               fontFamily: "'Montserrat', sans-serif",
+                           }} onChange={(event) => {
+                        setPromoInput(event.target.value.toUpperCase());
+                    }}/>
+                </div>
             </div>
+            <button className={'text-element'} style={{
+                color: 'black',
+                background: 'white',
+                border: '0px',
+                borderRadius: '10px',
+                width: '100px',
+                height: '37px',
+                marginLeft: '7px',
+                textAlign: 'center'
+            }}
+            onClick={()=>{
+                sendRequestPromo()
+            }}>Использовать
+            </button>
         </div>
-        <button className={'text-element'} style={{color:'black', background:'white', border:'0px', borderRadius:'10px', width:'100px', height:'37px', marginLeft:'7px', textAlign:'center'}}>Использовать</button>
-    </div>
     </div>)
 
     if (myPromo) {

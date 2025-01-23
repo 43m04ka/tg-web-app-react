@@ -617,7 +617,7 @@ const Basket = ({height, number}) => {
                 }}>
                     <div className={"text-element"}
                          style={{fontSize: '15px', marginLeft: '0',}}>У
-                        меня есть Промокод:
+                        меня есть промокод:
                     </div>
                     <div style={{
                         width: '140px',

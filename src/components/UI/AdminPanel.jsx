@@ -180,6 +180,9 @@ const AdminPanel = () => {
                 if (dataRequestPromo.method === 'add') {
                     setStatus(1)
                 }
+                if (dataRequestPromo.method === 'del') {
+                    setStatus(1)
+                }
             })
         })
     }, [dataRequestPromo])
@@ -617,7 +620,7 @@ const AdminPanel = () => {
                         <div className={'text-element'}>Кодовое слово: {promo.body}</div>
                         <div className={'text-element'}>Осталось использований: {promo.number}</div>
                         <div className={'text-element'}>Процент скидки: {promo.parcent}</div>
-                        <button style={{background: '#343434'}} onClick={() => {
+                        <button style={{background: '#343434'}} onClick={() => { sendRequestOnPromo({id:promo.id}, 'del')
                         }}>Удалить категорию
                         </button>
                     </div>

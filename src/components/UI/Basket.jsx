@@ -282,14 +282,14 @@ const Basket = ({height, number}) => {
                 background: 'white',
                 border: '0px',
                 borderRadius: '10px',
-                width: '100px',
+                width: '120px',
                 height: '37px',
                 marginLeft: '7px',
-                textAlign: 'center'
+                textAlign: 'center',
             }}
             onClick={()=>{
                 sendRequestPromo()
-            }}>Использовать
+            }}>Применить
             </button>
         </div>
         <div className={'text-element'} style={{textAlign:'center'}}>{promoMassage}</div>

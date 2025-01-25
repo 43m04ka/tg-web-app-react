@@ -9,12 +9,15 @@ const HomeBlock = ({data}) => {
         <div className={"homeBlock"}>
             <div className={"title"}>{data.name}</div>
             <div className={"scroll-container"} style={{alignItems:'center'}}>
+                <div style={{width:'10px'}}>
+                    <div style={{width:'10px'}}/>
+                </div>
                 {data.body.slice(0, 6).map(item => (
                         <HomeBlockElement key={item.id} path={data.path} data={item}/>
                     )
                 )}
                 <div className={'box-home-block-element home-block-element'}>
-                    <div style={{marginLeft:'2px', marginRight:'2px'}}>
+                    <div style={{marginLeft:'2px', marginRight:'7px'}}>
                         <Link to={'/home/' + data.path} className={'link-element'}>
                             <button className={'all-see-button'} style={{
                                 height: '37px',

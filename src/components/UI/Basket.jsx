@@ -401,7 +401,7 @@ const Basket = ({height, number}) => {
                            fontFamily: "'Montserrat', sans-serif",
                        }} onChange={(event) => inputData[4] = event.target.value}/>
             </div>
-            <a href={'https://gwstore.su/tpost/50ky8t2t71-gde-naiti-rezervnie-kodi-ot-akkaunta-psn'}
+            <a href={'https://t.me/gwstore_faq/10'}
                className={'link-element'}>
                 <div className={'text-element'} style={{fontSize: '9px', color: '#559fff'}}>Где их взять и что это за
                     коды? Инструкция по
@@ -499,7 +499,7 @@ const Basket = ({height, number}) => {
                            fontFafmily: "'Montserrat', sans-serif",
                        }} onChange={(event) => inputData[3] = event.target.value}/>
             </div>
-            <a href={'https://gwstore.su/tpost/xransg8j11-kak-privyazat-rezervnuyu-pochtu-k-akkaun'}
+            <a href={'https://t.me/gwstore_faq/9'}
                className={'link-element'}>
                 <div className={'text-element'} style={{fontSize: '9px', color: '#559fff'}}>Если этот параметр не
                     настроен. Инструкция.
@@ -708,9 +708,9 @@ const Basket = ({height, number}) => {
                     onClick={onClickButton}>{buttonText}
             </button>
             <div className={'text-element'} style={{fontSize: '9px', textAlign: 'center'}}>
-                Нажимая на кнопку, Вы соглашаетесь с <a href={'https://gwstore.su/pk'} style={{color: '#559fff'}}
+                Нажимая на кнопку, Вы соглашаетесь с <a href={'https://t.me/gwstore_faq/12'} style={{color: '#559fff'}}
                                                         className={'link-element'}>Условиями
-                обработки персональных данных</a>, а также с <a href={'https://gwstore.su/privacy'}
+                обработки персональных данных</a>, а также с <a href={'https://t.me/gwstore_faq/11'}
                                                                 style={{color: '#559fff'}} className={'link-element'}>Пользовательским
                 соглашением</a>
             </div>

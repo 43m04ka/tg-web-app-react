@@ -29,7 +29,7 @@ const Info = () => {
             </div>
 
             <div style={{margin: '15px'}}><a className={'link-element text-element'}
-                                             href={'https://t.me/gwstore_faq/2'}>Пользовательское соглашение</a>
+                                             href={'https://t.me/gwstore_faq/11'}>Пользовательское соглашение</a>
             </div>
 
             <div style={{margin: '15px'}}><a className={'link-element text-element'}
@@ -49,11 +49,11 @@ const Info = () => {
             </div>
 
             <div style={{margin: '15px'}}><a className={'link-element text-element'}
-                                             href={'https://gwstore.su/faq_playstation'}>Инструкции для PlayStation</a>
+                                             href={'https://t.me/gwstore_faq/10'}>Инструкции для PlayStation</a>
             </div>
 
             <div style={{margin: '15px'}}><a className={'link-element text-element'}
-                                             href={'https://gwstore.su/faq_xbox'}>Инструкции для Xbox</a>
+                                             href={'https://t.me/gwstore_faq/9'}>Инструкции для Xbox</a>
             </div>
 
         </div>

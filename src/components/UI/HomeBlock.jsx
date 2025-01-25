@@ -8,19 +8,20 @@ const HomeBlock = ({data}) => {
     return (
         <div className={"homeBlock"}>
             <div className={"title"}>{data.name}</div>
-            <div className={"scroll-container"}>
+            <div className={"scroll-container"} style={{alignItems:'center'}}>
                 {data.body.slice(0, 6).map(item => (
                         <HomeBlockElement key={item.id} path={data.path} data={item}/>
                     )
                 )}
                 <div className={'box-home-block-element home-block-element'}>
-                    <div style={{width: '160px', height: '210px'}}>
+                    <div style={{marginLeft:'2px', marginRight:'2px'}}>
                         <Link to={'/home/' + data.path} className={'link-element'}>
                             <button className={'all-see-button'} style={{
-                                height: '100%',
-                                width: '100%',
+                                height: '37px',
+                                width: '150px',
                                 marginTop: '0',
-                                background: '#464646',
+                                fontSize:'12.5px',
+                                border:'2px solid #454545', background:'#171717'
                             }}>Смотреть больше
                             </button>
                         </Link>

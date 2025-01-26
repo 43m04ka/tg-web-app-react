@@ -77,7 +77,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
     }
 
     basketData.map(el => {
-        if (el.id === newMainData.id && !isBuy) {
+        if (el.id === newMainData.body.id && !isBuy) {
             setButtonText('Перейти в корзину')
             setIsBuy(true)
         }
@@ -99,7 +99,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
     }, [onBack])
 
     const onBasket = useCallback(async () => {
-        navigate('/basket' + newMainData.tab);
+        navigate('/basket' + newMainData.body.tab);
     }, [])
 
     useEffect(() => {

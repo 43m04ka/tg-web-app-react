@@ -171,7 +171,6 @@ const Basket = ({height, number}) => {
         return sumPrice += el.body.price
     })
 
-
     const onclickYes = () => {
         setMyAcc(0);
         setColorYes([81, 164, 86]);

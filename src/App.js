@@ -169,12 +169,22 @@ function App() {
 
                     {dataCards.map(item =>
                         (<Route path={'card/' + item.id} key={item.id}
-                                element={<CardProduct mainData={item} basketData={basketData} setDataDop={setDataCardsDop} onGetData={onGetData}/>}/>)
+                                element={<CardProduct mainData={item} basketData={basketData}
+                                                      setDataDop={setDataCardsDop} onGetData={onGetData}/>}/>)
                     )
                     }
                     {dataCardsDop.map(item =>
                         (<Route path={'card/' + item.id} key={item.id}
-                                element={<CardProduct mainData={item} basketData={basketData} setDataDop={setDataCardsDop} dataDop={dataCardsDop} onGetData={onGetData}/>}/>)
+                                element={<CardProduct mainData={item} basketData={basketData}
+                                                      setDataDop={setDataCardsDop} dataDop={dataCardsDop}
+                                                      onGetData={onGetData}/>}/>)
+                    )
+                    }
+                    {basketData.map(item =>
+                        (<Route path={'card/' + item.id} key={item.id}
+                                element={<CardProduct mainData={item} basketData={basketData}
+                                                      setDataDop={setDataCardsDop} dataDop={dataCardsDop}
+                                                      onGetData={onGetData}/>}/>)
                     )
                     }
                     {mainData.map(platform => (
@@ -197,7 +207,8 @@ function App() {
                     <Route path={'basket2'} element={<Basket height={size} number={2}/>}/>
                     {mainData.map(platform => (
                         <Route path={'search' + String(platform.id)}
-                               element={<Search height={size} setData={setDataCards} setStatusApp={setStatus} page={platform.id}/>}/>
+                               element={<Search height={size} setData={setDataCards} setStatusApp={setStatus}
+                                                page={platform.id}/>}/>
                     ))}
                     <Route path={'admin'} element={<AdminPanel/>}/>
                     <Route path={'info'} element={<Info/>}/>

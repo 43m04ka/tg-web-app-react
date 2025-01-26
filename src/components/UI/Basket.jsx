@@ -139,7 +139,7 @@ const Basket = ({height, number}) => {
             Promise.then(r => {
                 let newArray = []
                 r.body.map(el => {
-                    if (Number(el.tab) === number) {
+                    if (Number(el.body.tab) === number) {
                         newArray = [...newArray, el]
                     }
                 })
@@ -168,7 +168,7 @@ const Basket = ({height, number}) => {
     let sumPrice = 0
 
     basket.map(el => {
-        return sumPrice += el.price
+        return sumPrice += el.body.price
     })
 
 

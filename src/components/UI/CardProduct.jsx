@@ -53,7 +53,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
         setNewMainData(mainData)
         setTextHidden(2)
         sendRequestDatabase()
-        if (mainData.isSale === false) {
+        if (mainData.body.isSale === false) {
             setButtonText('Нет в продаже')
         }
 
@@ -77,7 +77,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
     }
 
     basketData.map(el => {
-        if (el.id === newMainData.body.id && !isBuy) {
+        if (el.id === newMainData.id && !isBuy) {
             setButtonText('Перейти в корзину')
             setIsBuy(true)
         }

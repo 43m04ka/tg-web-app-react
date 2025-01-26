@@ -41,7 +41,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
 
     let newArray = []
     basketData.map(el => {
-        if (Number(el.tab) === page) {
+        if (Number(el.body.tab) === page) {
             newArray = [...newArray, el]
         }
     })
@@ -52,8 +52,8 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
     const basketColReload = (page) => {
         let newArray = []
         basketData.map(el => {
-            console.log(el.tab, page)
-            if (Number(el.tab) === page) {
+            console.log(el.body.tab, page)
+            if (Number(el.body.tab) === page) {
                 newArray = [...newArray, el]
             }
         })

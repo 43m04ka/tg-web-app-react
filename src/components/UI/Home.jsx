@@ -36,9 +36,10 @@ const Home = ({main_data, height, page, setBasket}) => {
             let Promise = r.json()
             Promise.then(r => {
                 let newArray = []
+                console.log(r.body)
                 r.body.map(el => {
-                    console.log(el.tab, page - 1)
-                    if (Number(el.tab) === page - 1) {
+                    console.log(el.body.tab, page - 1)
+                    if (Number(el.body.tab) === page - 1) {
                         newArray = [...newArray, el]
                     }
                 })

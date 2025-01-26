@@ -29,23 +29,23 @@ const ProductItemBasket = ({setBasketF, product}) => {
     }, [sendData])
 
     let platform = ''
-    if (typeof item.platform === 'undefined') {
-        if (typeof item.platform === 'undefined') {
-            platform = item.view
+    if (typeof item.body.platform === 'undefined') {
+        if (typeof item.body.platform === 'undefined') {
+            platform = item.body.view
         }else{
             platform = ''
         }
     } else {
-        platform = item.platform
+        platform = item.body.platform
     }
 
     return (
         <div className={'box-item-basket'}>
             <div className={'title'} style={{marginLeft: '10px'}}>{item.number + '.'}</div>
-            <div className={'link-element'}
+            <Link to={'/card/'+item.id} className={'link-element'}
                   style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>
 
-                <img src={item.img} alt={item.title} className={'img-mini'}/>
+                <img src={item.body.img} alt={item.body.title} className={'img-mini'}/>
                 <div className={'box-grid-row'}>
                     <div className={'text-element text-basket'} style={{
                         marginTop: '3px',
@@ -53,7 +53,7 @@ const ProductItemBasket = ({setBasketF, product}) => {
                         height: '30px',
                         fontSize: '13px',
                         overflow: 'hidden'
-                    }}>{item.title}</div>
+                    }}>{item.body.title}</div>
                     <div className={'text-element text-basket'} style={{
                         marginTop: '3px',
                         lineHeight: '14px',
@@ -67,9 +67,9 @@ const ProductItemBasket = ({setBasketF, product}) => {
                         marginTop:'0',
                         height: '15px',
                         fontSize: '15px'
-                    }}>{item.price + ' ₽'}</div>
+                    }}>{item.body.price + ' ₽'}</div>
                 </div>
-            </div>
+            </Link>
             <div onClick={onSendData} className={'button-trash'}>
                 <div className={'background-trash'} style={{padding: '10px', height: '20px', width: '20px'}}>
                 </div>

@@ -6,11 +6,11 @@ const ProductItem = ({product, path}) => {
 
     let oldPrice = ''
     let parcent = ''
-    if (typeof product.oldPrice === 'undefined') {
+    if (typeof product.body.oldPrice === 'undefined') {
         oldPrice = ''
     } else {
-        oldPrice = String(product.oldPrice) + ' ₽'
-        parcent = '−'+String(Math.ceil((1-product.price/product.oldPrice)*100))+'%'
+        oldPrice = String(product.body.oldPrice) + ' ₽'
+        parcent = '−'+String(Math.ceil((1-product.body.price/product.body.oldPrice)*100))+'%'
     }
     let parcentEl = (<div></div>)
     if(parcent !== ''){
@@ -34,10 +34,10 @@ const ProductItem = ({product, path}) => {
     }
 
     let dataRelease = ''
-    if (typeof product.release === 'undefined') {
+    if (typeof product.body.release === 'undefined') {
         dataRelease = ''
     } else {
-        const val = product.release * 1000000;
+        const val = product.body.release * 1000000;
         const msecsPerDay = 24 * 60 * 60 * 1000;
         const ms = Math.round(val / 1E+6 * msecsPerDay);
         const start = new Date(1900, 0, 1);
@@ -46,10 +46,10 @@ const ProductItem = ({product, path}) => {
     }
 
     let view = ''
-    if (typeof product.view === 'undefined') {
+    if (typeof product.body.view === 'undefined') {
         view = ''
     } else {
-        view = ' ' + product.view
+        view = ' ' + product.body.view
     }
 
     return (
@@ -57,7 +57,7 @@ const ProductItem = ({product, path}) => {
             <Link to={'/card/' + product.id} className={'link-element'}>
                 <div className={'box-home-block-element'}>
                     <div style={{
-                        backgroundImage: 'url("' + product.img + '+")',
+                        backgroundImage: 'url("' + product.body.img + '+")',
                         backgroundRepeat: 'no-repeat',
                         backgroundSize: 'cover',
                         display:'flex',
@@ -81,14 +81,14 @@ const ProductItem = ({product, path}) => {
                             overflow: 'hidden',
                             color: 'white',
                             width: 'max-content'
-                        }}>{product.platform}</div>
+                        }}>{product.body.platform}</div>
                         {parcentEl}
                     </div>
-                    <div style={{height: '40px', overflow: 'hidden', lineHeight:'20px'}}>
-                        <div className={'text-element name-element'}>{product.title+view}</div>
+                    <div style={{height: '39px', overflow: 'hidden', lineHeight:'20px'}}>
+                        <div className={'text-element name-element'}>{product.body.title+view}</div>
                     </div>
                     <div style={{display: 'flex', justifyContent: 'left'}}>
-                        <div className={'text-element price-element'}>{String(product.price) + ' ₽'}</div>
+                        <div className={'text-element price-element'}>{String(product.body.price) + ' ₽'}</div>
                         <div className={'text-element price-element'}
                              style={{textDecoration: 'line-through', color: 'gray'}}>{oldPrice}</div>
                     </div>

@@ -276,9 +276,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
         bodyElement = (<div>
                 <div className={'list-grid'}>
                     {products.map(item => {
-                        let newItem = item.body
-                        newItem.id = item.id
-                        return (<ProductItem key={newItem.id} product={newItem} path={path}/>)
+                        return (<ProductItem key={item.id} product={item} path={path}/>)
                     })}
                 </div>
                 <div style={{

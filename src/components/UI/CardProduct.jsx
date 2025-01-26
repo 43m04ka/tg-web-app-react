@@ -5,10 +5,8 @@ import HomeBlock from "./HomeBlock";
 import HomeBlockElement from "./HomeBlockElement";
 import ProductItem from "./ProductItem";
 
-let oldTExtHeight = 0
+let heightText = null
 const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => {
-    let newMainData1 = mainData.body
-    newMainData1.id = mainData.id
 
     let dataRequestDatabase = {
         method: 'getRandom',
@@ -16,7 +14,6 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
     }
 
     const sendRequestDatabase = useCallback(() => {
-        console.log(dataRequestDatabase, 'inputRequestDb')
         fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/database', {
             method: 'POST',
             headers: {
@@ -26,11 +23,10 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
         }).then(r => {
             let Promise = r.json()
             Promise.then(prom => {
-                console.log(prom, 'возвратил get')
                 setDataCards(prom.cards)
-                try{
-                setDataDop([...prom.cards, ...dataDop])}
-                catch (e) {
+                try {
+                    setDataDop([...prom.cards, ...dataDop])
+                } catch (e) {
                     setDataDop(prom.cards)
                 }
                 onGetData()
@@ -39,41 +35,49 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
     }, [dataRequestDatabase])
 
     let inputTextButton = 'Добавить в корзину'
-    if(mainData.isSale===false){inputTextButton = 'Нет в продаже';}
+    if (mainData.isSale === false) {
+        inputTextButton = 'Нет в продаже';
+    }
 
-    const [newMainData, setNewMainData] = useState(newMainData1)
+    const {tg, user} = useTelegram();
+    const refText = createRef();
+    const navigate = useNavigate();
+
+    const [newMainData, setNewMainData] = useState(mainData)
     const [buttonText, setButtonText] = React.useState(inputTextButton);
     const [isBuy, setIsBuy] = React.useState(false);
-    const [textHidden, setTextHidden] = React.useState(2);
+    const [textHidden, setTextHidden] = React.useState(null);
+    const [dataCards, setDataCards] = React.useState([]);
 
-    if(newMainData1.id !== newMainData.id){
-        setNewMainData(newMainData1)
+    if (mainData.id !== newMainData.id) {
+        setNewMainData(mainData)
         setTextHidden(2)
         sendRequestDatabase()
-        if(newMainData1.isSale===false){setButtonText('Нет в продаже')}
+        if (mainData.isSale === false) {
+            setButtonText('Нет в продаже')
+        }
 
         let isBuyBool = true
-        basketData.map(el=>{
-            if(el.id===newMainData.id && !isBuy){
+        basketData.map(el => {
+            if (el.id === newMainData.id && !isBuy) {
                 setButtonText('Перейти в корзину')
                 setIsBuy(true)
                 isBuyBool = false
             }
         })
-        if(isBuyBool){
+        if (isBuyBool) {
             setIsBuy(false)
             setButtonText('Добавить в корзину')
         }
-    }
-    const {tg, user} = useTelegram();
-    const navigate = useNavigate();
-    const [textHeight, setTextHeight] = React.useState(null);
-    const [signElement, setSignElement] = React.useState();
-    const refText = createRef();
-    const [dataCards, setDataCards] = React.useState([]);
 
-    basketData.map(el=>{
-        if(el.id===newMainData.id && !isBuy){
+        setTextHidden(null)
+        heightText = null
+
+        window.scroll(0, 0)
+    }
+
+    basketData.map(el => {
+        if (el.id === newMainData.id && !isBuy) {
             setButtonText('Перейти в корзину')
             setIsBuy(true)
         }
@@ -95,7 +99,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
     }, [onBack])
 
     const onBasket = useCallback(async () => {
-        navigate('/basket'+newMainData.tab);
+        navigate('/basket' + newMainData.tab);
     }, [])
 
     useEffect(() => {
@@ -142,33 +146,34 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
     }
     if (newMainData.isSale === false) {
         buttonColor = '#gray'
-        buttonLink = () => {}
+        buttonLink = () => {
+        }
     }
 
     let descriptionText = ''
-    if (typeof newMainData.description === 'undefined') {
+    if (typeof newMainData.body.description === 'undefined') {
         descriptionText = ''
     } else {
-        descriptionText = 'Описание: ' + newMainData.description
+        descriptionText = 'Описание: ' + newMainData.body.description
     }
 
     let genre = ''
-    if (typeof newMainData.genre === 'undefined') {
+    if (typeof newMainData.body.genre === 'undefined') {
         genre = ''
     } else {
-        genre = 'Жанр: ' + newMainData.genre
+        genre = 'Жанр: ' + newMainData.body.genre
     }
 
     let oldPrice = ''
     let parcent = ''
-    if (typeof newMainData.oldPrice === 'undefined') {
+    if (typeof newMainData.body.oldPrice === 'undefined') {
         oldPrice = ''
     } else {
-        oldPrice = String(newMainData.oldPrice) + ' ₽'
-        parcent = '−'+String(Math.ceil((1-newMainData.price/newMainData.oldPrice)*100))+'%'
+        oldPrice = String(newMainData.body.oldPrice) + ' ₽'
+        parcent = '−' + String(Math.ceil((1 - newMainData.body.price / newMainData.body.oldPrice) * 100)) + '%'
     }
     let parcentEl = (<div></div>)
-    if(parcent !== ''){
+    if (parcent !== '') {
         parcentEl = (<div style={{
             lineHeight: '20px',
             background: '#ff5d5d',
@@ -189,63 +194,56 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
     }
 
     let endDate = ''
-    if (typeof newMainData.endDate === 'undefined') {
+    if (typeof newMainData.body.endDate === 'undefined') {
         endDate = ''
     } else {
-        endDate = 'Скидка ' + newMainData.endDate
+        endDate = 'Скидка ' + newMainData.body.endDate
     }
 
     let language = ''
-    if (typeof newMainData.language === 'undefined') {
+    if (typeof newMainData.body.language === 'undefined') {
         language = ''
     } else {
-        if(typeof newMainData.languageSelector !== 'undefined'){
-            language = 'Язык в игре: ' + newMainData.languageSelector
-        }else {
-            language = 'Язык в игре: ' + newMainData.language
+        if (typeof newMainData.body.languageSelector !== 'undefined') {
+            language = 'Язык в игре: ' + newMainData.body.languageSelector
+        } else {
+            language = 'Язык в игре: ' + newMainData.body.language
         }
     }
 
     let region = ''
-    if (typeof newMainData.region === 'undefined') {
+    if (typeof newMainData.body.region === 'undefined') {
         region = ''
     } else {
-        region = 'Регион активации: ' + newMainData.region
+        region = 'Регион активации: ' + newMainData.body.region
     }
 
     let numPlayers = ''
-    if (typeof newMainData.numPlayers === 'undefined') {
+    if (typeof newMainData.body.numPlayers === 'undefined') {
         numPlayers = ''
     } else {
-        numPlayers = 'Количество игроков: ' + newMainData.numPlayers
+        numPlayers = 'Количество игроков: ' + newMainData.body.numPlayers
     }
 
+
+    let signElement = (<div></div>)
+    let textElementHeight = null
     useEffect(() => {
-        const height = refText.current.getBoundingClientRect().height;
-        if (textHidden === 2) {
-            oldTExtHeight = height
-            if (height > 17.3 * 6) {
-                setTextHeight(17.3 * 6)
-                setTextHidden(true)
-                setSignElement(
-                    <div className={'background-arrow'}
-                         style={{
-                             width: '20px',
-                             height: '20px',
-                             rotate: '90deg',
-                             transitionProperty: 'rotate',
-                             transitionDuration: '0.3s'
-                         }}/>)
+        if(textHidden === null) {
+            heightText = refText.current.getBoundingClientRect().height;
+            if (heightText > 17.3 * 6) {
+                setTextHidden(false)
+                console.log(true + '---')
             } else {
-                setTextHeight(height)
+                setTextHidden(0)
+                console.log(false + '---')
             }
         }
-    }, [refText, setTextHeight]);
+    }, [refText]);
 
-    const onResize = () => {
-        if(textHidden !== 2){
+    if (textHidden !== 0 && textHidden !== null) {
         if (textHidden) {
-            setSignElement(
+            signElement = (
                 <div className={'background-arrow'}
                      style={{
                          width: '20px',
@@ -255,10 +253,9 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                          transitionDuration: '0.3s'
                      }}/>
             )
-            setTextHeight(oldTExtHeight)
-            setTextHidden(false)
+            textElementHeight = (heightText)
         } else {
-            setSignElement(
+            signElement = (
                 <div className={'background-arrow'}
                      style={{
                          width: '20px',
@@ -268,20 +265,18 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                          transitionDuration: '0.3s'
                      }}/>
             )
-            setTextHeight(17.3 * 6)
-            setTextHidden(true)
+            textElementHeight = (17.3 * 6)
         }
-    }}
+    }
+
 
     let seeLove = (<div/>)
-    if(dataCards.length!==0){
+    if (dataCards.length !== 0) {
         seeLove = (<div>
             <div className={"title"}>Может понравиться</div>
             <div className={'list-grid'}>
                 {dataCards.map(item => {
-                    let newItem = item.body
-                    newItem.id = item.id
-                    return (<ProductItem key={newItem.id} product={newItem}/>)
+                    return (<ProductItem key={item.id} product={item}/>)
                 })}
             </div>
         </div>)
@@ -298,7 +293,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
             }}>
                 <div className={'img'} style={{
                     height: String(window.innerWidth - 20) + 'px',
-                    borderRadius: '10px', backgroundImage: "url('" + newMainData.img + "')",
+                    borderRadius: '10px', backgroundImage: "url('" + newMainData.body.img + "')",
                     backgroundSize: 'cover', display: 'flex',
                     flexDirection: 'row',
                     alignItems: 'end',
@@ -311,7 +306,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                     fontFamily: "'Montserrat', sans-serif",
                     marginTop: '7px',
                     marginBottom: '7px'
-                }}>{newMainData.title}</div>
+                }}>{newMainData.body.title}</div>
 
                 <div style={{marginLeft: '15px'}}>
 
@@ -324,7 +319,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                         flexDirection: 'row',
                         alignItems: 'center'
                     }}>
-                        <div style={{fontSize: '20px'}}>{newMainData.price + ' ₽'}</div>
+                        <div style={{fontSize: '20px'}}>{newMainData.body.price + ' ₽'}</div>
                         <div style={{
                             textDecoration: 'line-through',
                             color: 'gray',
@@ -343,18 +338,26 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                         </div>
                     </div>
 
-                    <div onClick={onResize}>
+                    <div onClick={() => {
+                        if (textHidden===true) {
+                            setTextHidden(false)
+                        } else if (textHidden===false){
+                            setTextHidden(true)
+                        }
+
+                    }}>
                         <div style={{
                             marginTop: '12px',
                             lineHeight: '17.3px',
-                            height: String(textHeight) + 'px',
+                            height: String(textElementHeight) + 'px',
                             fontSize: '14px',
                             overflow: 'hidden',
                             color: 'white',
                             fontFamily: "'Montserrat', sans-serif",
                             transitionProperty: 'height',
                             transitionDuration: '0.3s'
-                        }} ref={refText}>{descriptionText}
+                        }}>
+                            <div ref={refText}>{descriptionText}</div>
                         </div>
                         <div style={{
                             justifyItems: 'center'
@@ -365,7 +368,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                         fontSize: '14px',
                         color: 'white',
                         fontFamily: "'Montserrat', sans-serif"
-                    }}>{'Платформа: ' + newMainData.platform}
+                    }}>{'Платформа: ' + newMainData.body.platform}
                     </div>
 
                     <div style={{

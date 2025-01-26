@@ -84,7 +84,7 @@ const Home = ({main_data, height, page, setBasket}) => {
                 </div>
                 <div style={{marginBottom: '15px'}}>
                     {main_data.body[1].map(category => {
-                        if(typeof category.body[0].title !== 'undefined' && category.name !== '') {
+                        if(typeof category.body[0].body.title !== 'undefined' && category.name !== '') {
                             return (
                                 <HomeBlock key={category.id} path={category.path} data={category}/>
                             )

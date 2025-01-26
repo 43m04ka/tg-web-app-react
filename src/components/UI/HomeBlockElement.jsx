@@ -5,11 +5,11 @@ const HomeBlockElement = ({path, data}) => {
 
     let oldPrice = ''
     let parcent = ''
-    if (typeof data.oldPrice === 'undefined') {
+    if (typeof data.body.oldPrice === 'undefined') {
         oldPrice = ''
     } else {
-        oldPrice = String(data.oldPrice) + ' ₽'
-        parcent = '−'+String(Math.ceil((1-data.price/data.oldPrice)*100))+'%'
+        oldPrice = String(data.body.oldPrice) + ' ₽'
+        parcent = '−'+String(Math.ceil((1-data.price/data.body.oldPrice)*100))+'%'
     }
     let parcentEl = (<div></div>)
     if(parcent !== ''){
@@ -33,10 +33,10 @@ const HomeBlockElement = ({path, data}) => {
     }
 
     let dataRelease = ''
-    if (typeof data.release === 'undefined') {
+    if (typeof data.body.release === 'undefined') {
         dataRelease = ''
     } else {
-        const val = data.release * 1000000;
+        const val = data.body.release * 1000000;
         const msecsPerDay = 24 * 60 * 60 * 1000;
         const ms = Math.round(val / 1E+6 * msecsPerDay);
         const start = new Date(1900, 0, 1);
@@ -45,10 +45,10 @@ const HomeBlockElement = ({path, data}) => {
     }
 
     let view = ''
-    if (typeof data.view === 'undefined') {
+    if (typeof data.body.view === 'undefined') {
         view = ''
     } else {
-        view = ' ' + data.view
+        view = ' ' + data.body.view
     }
 
     return (
@@ -56,7 +56,7 @@ const HomeBlockElement = ({path, data}) => {
             <Link to={'/card/' + data.id} className={'link-element'}>
                 <div className={'box-home-block-element'}>
                     <div style={{
-                        backgroundImage: 'url("' + data.img + '+")',
+                        backgroundImage: 'url("' + data.body.img + '+")',
                         backgroundRepeat: 'no-repeat',
                         backgroundSize: 'cover',
                         display:'flex',
@@ -80,15 +80,15 @@ const HomeBlockElement = ({path, data}) => {
                             overflow: 'hidden',
                             color: 'white',
                             width: 'max-content'
-                        }}>{data.platform}</div>
+                        }}>{data.body.platform}</div>
                         {parcentEl}
                     </div>
                     <div style={{height: '37px', overflow: 'hidden'}}>
-                        <div className={'text-element name-element'}>{data.title + view}</div>
+                        <div className={'text-element name-element'}>{data.body.title + view}</div>
                     </div>
                     <div style={{display: 'flex', justifyContent: 'left'}}>
                         <div className={'text-element price-element'}
-                             style={{fontSize: '14px'}}>{String(data.price) + ' ₽'}</div>
+                             style={{fontSize: '14px'}}>{String(data.body.price) + ' ₽'}</div>
                         <div className={'text-element price-element'}
                              style={{textDecoration: 'line-through', color: 'gray', fontSize: '14px'}}>{oldPrice}</div>
                         {/*<div className={'text-element price-element'}*/}

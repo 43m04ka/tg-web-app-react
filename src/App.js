@@ -17,7 +17,6 @@ let basketDataGlob = null
 
 function App() {
     const {tg, user} = useTelegram();
-    console.log(tg)
     const [size, setSize] = React.useState(window.innerHeight);
     const [mainData, setMainData] = useState([
         {id: 0, page: 'playstation', body: [[], []]}, {
@@ -44,7 +43,6 @@ function App() {
         }).then(r => {
             let Promise = r.json()
             Promise.then(async prom => {
-                console.log(prom)
                 const promise = prom
                 const inputDataCards = promise.cards;
                 setDataCards(inputDataCards)
@@ -80,12 +78,10 @@ function App() {
                     count++
                 })
 
-                await inputDataCards.map(async cardOld => {
-                    let card = cardOld.body
-                    card.id = cardOld.id
+                await inputDataCards.map(async card => {
 
-                    const cardTab = card.tab
-                    const cardCategory = card.tabCategoryPath
+                    const cardTab = card.body.tab
+                    const cardCategory = card.body.tabCategoryPath
 
                     let count = 0
                     await resultData[cardTab].body['1'].map(async category => {

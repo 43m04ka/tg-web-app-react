@@ -379,7 +379,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
                          }
                      }}
                      style={{
-                         height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'
+                         height: String(window.innerHeight - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'
                      }}>
                     <div style={{
                         height: String(60) + 'px'

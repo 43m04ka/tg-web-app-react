@@ -29,7 +29,7 @@ const HeadSelector = ({hidden, basketData, page}) => {
         setBasketLen(newArray.length)
     }
 
-    let buttonMenuHeight = 35
+    let buttonMenuHeight = 40
     if (hidden) {
         buttonMenuHeight = 0
     }
@@ -111,7 +111,7 @@ const HeadSelector = ({hidden, basketData, page}) => {
             </div>
 
             <div className="selector-container" style={{
-                height: '35px',
+                height: '40px',
                 overflow: 'hidden',
                 transitionProperty: 'background',
                 transitionDuration: '0.3s',
@@ -142,78 +142,84 @@ const HeadSelector = ({hidden, basketData, page}) => {
                                 <div className={'text-element'} style={{textDecoration: 'none',
                                     fontFamily: "'Montserrat', sans-serif",
                                     textAlign:'center',
-                                    height:'30px',
+                                    height:'40px',
                                     fontVariant: 'small-caps',
                                     fontWeight: '700',
                                     color: 'white',
-                                    fontSize: '18px',
-                                    lineHeight:'18px',
-                                    marginTop:'5px',
+                                    fontSize: '16px',
+                                    lineHeight:'16px',
+                                    marginTop:'10px',
+                                    overflow:'hidden'
                                 }}>playstation</div>
                     </SwiperSlide>
-                    <SwiperSlide virtualIndex={1}  style={{background:'none'}}>
+                    <SwiperSlide virtualIndex={1}  style={{background:'none', overflow:'hidden'}}>
                                 <div className={'text-element'} style={{textDecoration: 'none',
                                     fontFamily: "'Montserrat', sans-serif",
                                     textAlign:'center',
-                                    height:'30px',
+                                    height:'40px',
                                     fontVariant: 'small-caps',
                                     fontWeight: '700',
                                     color: 'white',
-                                    fontSize: '18px',
-                                    lineHeight:'18px',
-                                    marginTop:'5px',
+                                    fontSize: '16px',
+                                    lineHeight:'16px',
+                                    marginTop:'10px',
+                                    overflow:'hidden'
                                 }}>xbox</div>
                     </SwiperSlide>
                     <SwiperSlide  virtualIndex={2} style={{background:'none'}}>
                                 <div className={'text-element'} style={{textDecoration: 'none',
                                     fontFamily: "'Montserrat', sans-serif",
                                     textAlign:'center',
-                                    height:'30px',
+                                    height:'40px',
                                     fontVariant: 'small-caps',
                                     fontWeight: '700',
                                     color: 'white',
-                                    fontSize: '18px',
-                                    lineHeight:'18px',
-                                    marginTop:'5px',
+                                    fontSize: '16px',
+                                    lineHeight:'16px',
+                                    marginTop:'10px',
+                                    overflow:'hidden'
                                 }}>сервисы</div>
                     </SwiperSlide>
                     <SwiperSlide virtualIndex={3} style={{background:'none'}}>
                         <div className={'text-element'} style={{textDecoration: 'none',
                             fontFamily: "'Montserrat', sans-serif",
                             textAlign:'center',
-                            height:'30px',
+                            height:'40px',
                             fontVariant: 'small-caps',
                             fontWeight: '700',
                             color: 'white',
-                            fontSize: '18px',
-                            lineHeight:'18px',
-                            marginTop:'5px',
+                            fontSize: '16px',
+                            lineHeight:'16px',
+                            marginTop:'10px',
+                            overflow:'hidden'
                         }}>playstation</div>
                     </SwiperSlide>
                     <SwiperSlide virtualIndex={4}  style={{background:'none'}}>
                         <div className={'text-element'} style={{textDecoration: 'none',
                             fontFamily: "'Montserrat', sans-serif",
                             textAlign:'center',
-                            height:'30px',
+                            height:'40px',
                             fontVariant: 'small-caps',
                             fontWeight: '700',
                             color: 'white',
-                            fontSize: '18px',
-                            lineHeight:'18px',
-                            marginTop:'5px',
+                            fontSize: '16px',
+                            lineHeight:'16px',
+                            marginTop:'10px',
+                            overflow:'hidden'
                         }}>xbox</div>
                     </SwiperSlide>
                     <SwiperSlide  virtualIndex={5} style={{background:'none'}}>
                         <div className={'text-element'} style={{textDecoration: 'none',
                             fontFamily: "'Montserrat', sans-serif",
                             textAlign:'center',
-                            height:'30px',
+                            height:'40px',
                             fontVariant: 'small-caps',
                             fontWeight: '700',
                             color: 'white',
-                            fontSize: '18px',
-                            lineHeight:'18px',
-                            marginTop:'5px',
+                            fontSize: '16px',
+                            lineHeight:'16px',
+                            marginTop:'10px',
+                            overflow:'hidden'
                         }}>сервисы</div>
                     </SwiperSlide>
                 </Swiper>

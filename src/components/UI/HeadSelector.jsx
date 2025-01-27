@@ -135,11 +135,10 @@ const HeadSelector = ({hidden, basketData, page}) => {
                             slideShadows: false,
                             scale:0.8
                         }}
-                        loop={false}
+                        loop={true}
                         modules={[Autoplay, Pagination, Controller, EffectCoverflow]}
                 >
                     <SwiperSlide virtualIndex={0} style={{background:'none'}}>
-                        <div onClick={()=>{swiperRef.slideTo(0, 300);console.log(0+'slide')}}>
                                 <div className={'text-element'} style={{textDecoration: 'none',
                                     fontFamily: "'Montserrat', sans-serif",
                                     textAlign:'center',
@@ -147,14 +146,12 @@ const HeadSelector = ({hidden, basketData, page}) => {
                                     fontVariant: 'small-caps',
                                     fontWeight: '700',
                                     color: 'white',
-                                    fontSize: '16px',
-                                    lineHeight:'16px',
-                                    marginTop:'7px',
+                                    fontSize: '18px',
+                                    lineHeight:'18px',
+                                    marginTop:'5px',
                                 }}>playstation</div>
-                        </div>
                     </SwiperSlide>
                     <SwiperSlide virtualIndex={1}  style={{background:'none'}}>
-                        <div onClick={()=>{swiperRef.slideTo(1, 300);console.log(1+'slide')}}>
                                 <div className={'text-element'} style={{textDecoration: 'none',
                                     fontFamily: "'Montserrat', sans-serif",
                                     textAlign:'center',
@@ -162,14 +159,12 @@ const HeadSelector = ({hidden, basketData, page}) => {
                                     fontVariant: 'small-caps',
                                     fontWeight: '700',
                                     color: 'white',
-                                    fontSize: '16px',
-                                    lineHeight:'16px',
-                                    marginTop:'7px'
+                                    fontSize: '18px',
+                                    lineHeight:'18px',
+                                    marginTop:'5px',
                                 }}>xbox</div>
-                        </div>
                     </SwiperSlide>
                     <SwiperSlide  virtualIndex={2} style={{background:'none'}}>
-                        <div onClick={()=>{swiperRef.slideTo(1, 300);console.log(2+'slide')}}>
                                 <div className={'text-element'} style={{textDecoration: 'none',
                                     fontFamily: "'Montserrat', sans-serif",
                                     textAlign:'center',
@@ -177,11 +172,49 @@ const HeadSelector = ({hidden, basketData, page}) => {
                                     fontVariant: 'small-caps',
                                     fontWeight: '700',
                                     color: 'white',
-                                    fontSize: '16px',
-                                    lineHeight:'16px',
-                                    marginTop:'7px'
+                                    fontSize: '18px',
+                                    lineHeight:'18px',
+                                    marginTop:'5px',
                                 }}>сервисы</div>
-                        </div>
+                    </SwiperSlide>
+                    <SwiperSlide virtualIndex={3} style={{background:'none'}}>
+                        <div className={'text-element'} style={{textDecoration: 'none',
+                            fontFamily: "'Montserrat', sans-serif",
+                            textAlign:'center',
+                            height:'30px',
+                            fontVariant: 'small-caps',
+                            fontWeight: '700',
+                            color: 'white',
+                            fontSize: '18px',
+                            lineHeight:'18px',
+                            marginTop:'5px',
+                        }}>playstation</div>
+                    </SwiperSlide>
+                    <SwiperSlide virtualIndex={4}  style={{background:'none'}}>
+                        <div className={'text-element'} style={{textDecoration: 'none',
+                            fontFamily: "'Montserrat', sans-serif",
+                            textAlign:'center',
+                            height:'30px',
+                            fontVariant: 'small-caps',
+                            fontWeight: '700',
+                            color: 'white',
+                            fontSize: '18px',
+                            lineHeight:'18px',
+                            marginTop:'5px',
+                        }}>xbox</div>
+                    </SwiperSlide>
+                    <SwiperSlide  virtualIndex={5} style={{background:'none'}}>
+                        <div className={'text-element'} style={{textDecoration: 'none',
+                            fontFamily: "'Montserrat', sans-serif",
+                            textAlign:'center',
+                            height:'30px',
+                            fontVariant: 'small-caps',
+                            fontWeight: '700',
+                            color: 'white',
+                            fontSize: '18px',
+                            lineHeight:'18px',
+                            marginTop:'5px',
+                        }}>сервисы</div>
                     </SwiperSlide>
                 </Swiper>
             </div>
@@ -190,3 +223,20 @@ const HeadSelector = ({hidden, basketData, page}) => {
 };
 
 export default HeadSelector;
+
+
+// <SwiperSlide virtualIndex={0} style={{background:'none'}}>
+//     <div onClick={()=>{swiperRef.slideTo(2, 300);console.log(2+'slide')}}>
+//         <div className={'text-element'} style={{textDecoration: 'none',
+//             fontFamily: "'Montserrat', sans-serif",
+//             textAlign:'center',
+//             height:'30px',
+//             fontVariant: 'small-caps',
+//             fontWeight: '700',
+//             color: 'white',
+//             fontSize: '16px',
+//             lineHeight:'16px',
+//             marginTop:'7px',
+//         }}>playstation</div>
+//     </div>
+// </SwiperSlide>

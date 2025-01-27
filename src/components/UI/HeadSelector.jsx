@@ -1,6 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
 import basket from "../icons/basket.png";
+import {Swiper, SwiperSlide} from "swiper/react";
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import 'swiper/css/autoplay';
+
+
+import {Autoplay, Pagination,  Controller, EffectCoverflow} from 'swiper/modules';
 
 const HeadSelector = ({main_data, hidden, basketData, page}) => {
     const [pageSelected, setPageSelected] = useState(page);
@@ -101,7 +109,7 @@ const HeadSelector = ({main_data, hidden, basketData, page}) => {
         })
     }
 
-    let buttonMenuHeight = 50
+    let buttonMenuHeight = 35
     if (hidden) {
         buttonMenuHeight = 0
     }
@@ -162,27 +170,85 @@ const HeadSelector = ({main_data, hidden, basketData, page}) => {
                     </div>
                 </Link>
             </div>
+
             <div className="selector-container" style={{
-                height: '50px',
+                height: '35px',
                 overflow: 'hidden',
                 transitionProperty: 'height',
-                transitionDuration: '0.3s'
+                transitionDuration: '0.3s',
+                border:'2px solid #454545',
+                marginTop:'5px',
+                justifyItems:'center'
             }}>
-                <Link to={'/home0'} className={'link-element'}>
-                    <div className={'div-box-4563'} style={{width: '100%', height: "100%", padding: '3px'}}>
-                        <button className={'selector-button'} onClick={onclickPS} style={stylePs}>PLAYSTATION</button>
-                    </div>
-                </Link>
-                <Link to={'/home1'} className={'link-element'}>
-                    <div className={'div-box-4563'} style={{width: '100%', height: "100%", padding: '3px'}}>
-                        <button className={'selector-button'} onClick={onclickXB} style={styleXB}>XBOX</button>
-                    </div>
-                </Link>
-                <Link to={'/home2'} className={'link-element'}>
-                    <div className={'div-box-4563'} style={{width: '100%', height: "100%", padding: '3px'}}>
-                        <button className={'selector-button'} onClick={onclickSR} style={styleSR}>СЕРВИСЫ</button>
-                    </div>
-                </Link>
+                <Swiper watchSlidesProgress={true} slidesPerView={3} className="swiper"
+                        style={{width: String(window.innerWidth-20) + 'px',alignContent:'center'}}
+                        spaceBetween={30}
+                        centeredSlides={true}
+                        onActiveIndexChange={(event)=>{console.log(event)}}
+                        effect={'coverflow'}
+                        coverflowEffect={{
+                            rotate: 0,
+                            stretch: 0,
+                            depth: 100,
+                            modifier: 1,
+                            slideShadows: false,
+                            scale:0.8
+                        }}
+                        loop={false}
+                        modules={[Autoplay, Pagination, Controller, EffectCoverflow]}
+                >
+                    <SwiperSlide>
+                        <div>
+                            <Link to={'/home0'} className={'link-element'}>
+                                <div className={'text-element'} style={{textDecoration: 'none',
+                                    fontFamily: "'Montserrat', sans-serif",
+                                    textAlign:'center',
+                                    height:'30px',
+                                    fontVariant: 'small-caps',
+                                    fontWeight: '700',
+                                    color: 'white',
+                                    fontSize: '16px',
+                                    lineHeight:'16px',
+                                    marginTop:'7px'
+                                }}>playstation</div>
+                            </Link>
+                        </div>
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <div>
+                            <Link to={'/home0'} className={'link-element'}>
+                                <div className={'text-element'} style={{textDecoration: 'none',
+                                    fontFamily: "'Montserrat', sans-serif",
+                                    textAlign:'center',
+                                    height:'30px',
+                                    fontVariant: 'small-caps',
+                                    fontWeight: '700',
+                                    color: 'white',
+                                    fontSize: '16px',
+                                    lineHeight:'16px',
+                                    marginTop:'7px'
+                                }}>playstation</div>
+                            </Link>
+                        </div>
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <div>
+                            <Link to={'/home0'} className={'link-element'}>
+                                <div className={'text-element'} style={{textDecoration: 'none',
+                                    fontFamily: "'Montserrat', sans-serif",
+                                    textAlign:'center',
+                                    height:'30px',
+                                    fontVariant: 'small-caps',
+                                    fontWeight: '700',
+                                    color: 'white',
+                                    fontSize: '16px',
+                                    lineHeight:'16px',
+                                    marginTop:'7px'
+                                }}>playstation</div>
+                            </Link>
+                        </div>
+                    </SwiperSlide>
+                </Swiper>
             </div>
         </div>
     );

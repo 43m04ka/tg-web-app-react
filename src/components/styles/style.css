@@ -85,7 +85,6 @@
     overflow-y: scroll;
     flex: 0 1 auto;
     max-width: 100%;
-    border-top: 2px solid rgb(69, 69, 69);
 }
 
 .home-block-element {
@@ -180,7 +179,7 @@ body {
     font-family: 'Montserrat', sans-serif;
     font-variant: small-caps;
     font-size: 16px;
-    height: 45px;
+    height: 30px;
     width: 100%;
     transition-property: background-color;
     transition-duration: 0.3s;

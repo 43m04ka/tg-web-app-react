@@ -12,7 +12,6 @@ let scrollCtrl = 0;
 const Home = ({main_data, height, page, setBasket}) => {
     const {tg, user} = useTelegram();
     const [hiddenSelector, setHiddenSelector] = useState(false);
-    const [heightMenuButton, setHeightMenuButton] = useState(0);
     const [basketData, setBasketData] = useState([]);
 
     useEffect(() => {
@@ -60,11 +59,9 @@ const Home = ({main_data, height, page, setBasket}) => {
                 if (scroll > scrollCtrl + 200 && !hiddenSelector) {
                     scrollCtrl = scroll
                     setHiddenSelector(true)
-                    setHeightMenuButton(55)
                 } else if ((scroll < scrollCtrl - 100 || scroll === 0) && hiddenSelector) {
                     scrollCtrl = scroll
                     setHiddenSelector(false)
-                    setHeightMenuButton(0)
                 }
                 if (hiddenSelector && scroll > scrollCtrl) {
                     scrollCtrl = scroll
@@ -73,7 +70,7 @@ const Home = ({main_data, height, page, setBasket}) => {
                 }
             }}
                  style={{
-                     height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 50) + 'px'
+                     height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 40) + 'px'
                  }}>
                 <div style={{
                     height: '70px'

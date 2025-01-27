@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import basket from "../icons/basket.png";
 import {Swiper, SwiperSlide} from "swiper/react";
 import 'swiper/css';
@@ -10,9 +10,13 @@ import 'swiper/css/autoplay';
 
 import {Autoplay, Pagination,  Controller, EffectCoverflow} from 'swiper/modules';
 
-const HeadSelector = ({main_data, hidden, basketData, page}) => {
+const HeadSelector = ({hidden, basketData, page}) => {
+    const navigate = useNavigate();
+
     const [pageSelected, setPageSelected] = useState(page);
     const [basketLen, setBasketLen] = useState(0);
+    const [colorSlider, setColorSlider] = useState('#404adf');
+    const [swiperRef, setSwiperRef] = useState(null);
 
 
     let newArray = []
@@ -23,90 +27,6 @@ const HeadSelector = ({main_data, hidden, basketData, page}) => {
     })
     if (newArray.length !== basketLen) {
         setBasketLen(newArray.length)
-    }
-
-    const basketColReload = (page) => {
-        let newArray = []
-        basketData.map(el => {
-            console.log(el.body.tab, page)
-            if (Number(el.body.tab) === page) {
-                newArray = [...newArray, el]
-            }
-        })
-        setBasketLen(newArray.length)
-    }
-
-    let c1, c2, c3 = null
-    if (page === 0) {
-        c1 = [64, 73, 233]
-        c2 = [23, 23, 23]
-        c3 = [23, 23, 23]
-    }
-    if (page === 1) {
-        c1 = [23, 23, 23]
-        c2 = [64, 233, 73]
-        c3 = [23, 23, 23]
-    }
-    if (page === 2) {
-        c1 = [23, 23, 23]
-        c2 = [23, 23, 23]
-        c3 = [233, 73, 64]
-    }
-
-    const [colorPS, setColorPS] = useState(c1);
-    const [colorXB, setColorXB] = useState(c2);
-    const [colorSR, setColorSR] = useState(c3);
-
-
-    function rgb([r, g, b]) {
-        return '#' + (0x1000000 + (r << 16) + (g << 8) + b).toString(16).substring(1);
-    }
-
-
-    const onclickPS = () => {
-        setPageSelected(0);
-        basketColReload(0)
-        setColorPS([64, 73, 233]);
-        setColorXB([23, 23, 23]);
-        setColorSR([23, 23, 23]);
-    }
-    const onclickXB = () => {
-        basketColReload(1)
-        setPageSelected(1);
-        setColorXB([73, 233, 64]);
-        setColorSR([23, 23, 23]);
-        setColorPS([23, 23, 23]);
-    }
-    const onclickSR = () => {
-        basketColReload(2)
-        setPageSelected(2);
-        setColorSR([233, 64, 73]);
-        setColorPS([23, 23, 23]);
-        setColorXB([23, 23, 23]);
-    }
-
-
-    const stylePs = {background: rgb(colorPS)}
-    const styleXB = {background: rgb(colorXB)}
-    const styleSR = {background: rgb(colorSR)}
-
-    const onChangeEmpty = (event) => {
-        const valueInput = event.target.value
-        const category = main_data[pageSelected].body
-
-        let allCard = []
-        category.map(el => {
-            const array = el.body
-            array.map(card => {
-                allCard = [...allCard, card]
-            })
-        })
-        let result = []
-        allCard.map(card => {
-            if (card.title.toLowerCase().includes(valueInput.toLowerCase())) {
-                result = [...result, card]
-            }
-        })
     }
 
     let buttonMenuHeight = 35
@@ -129,6 +49,25 @@ const HeadSelector = ({main_data, hidden, basketData, page}) => {
             marginTop: '27px'
         }}>{basketLen}</div>)
     }
+
+    const onIndexChange = (index) =>{
+        console.log('-----------------------')
+        console.log(index+'tek')
+        if(index===0 || index===3){
+            setColorSlider('#404adf')
+            navigate('/home0')
+        }if(index===1 || index===4){
+            setColorSlider('#40df70')
+            navigate('/home1')
+        }if(index===2 || index===5){
+            setColorSlider('#c64138')
+            navigate('/home2')
+        }
+    }
+
+    const slideTo = (index) => {
+        swiperRef.slideTo(index - 1, 0);
+    };
 
     return (
         <div>
@@ -174,18 +113,20 @@ const HeadSelector = ({main_data, hidden, basketData, page}) => {
             <div className="selector-container" style={{
                 height: '35px',
                 overflow: 'hidden',
-                transitionProperty: 'height',
+                transitionProperty: 'background',
                 transitionDuration: '0.3s',
                 border:'2px solid #454545',
                 marginTop:'5px',
-                justifyItems:'center'
+                justifyItems:'center',
+                background:colorSlider
             }}>
                 <Swiper watchSlidesProgress={true} slidesPerView={3} className="swiper"
                         style={{width: String(window.innerWidth-20) + 'px',alignContent:'center'}}
                         spaceBetween={30}
                         centeredSlides={true}
-                        onActiveIndexChange={(event)=>{console.log(event)}}
+                        onRealIndexChange={(event)=>{onIndexChange(event.realIndex)}}
                         effect={'coverflow'}
+                        onSwiper={setSwiperRef}
                         coverflowEffect={{
                             rotate: 0,
                             stretch: 0,
@@ -197,9 +138,8 @@ const HeadSelector = ({main_data, hidden, basketData, page}) => {
                         loop={false}
                         modules={[Autoplay, Pagination, Controller, EffectCoverflow]}
                 >
-                    <SwiperSlide>
-                        <div>
-                            <Link to={'/home0'} className={'link-element'}>
+                    <SwiperSlide virtualIndex={0} style={{background:'none'}}>
+                        <div onClick={()=>{swiperRef.slideTo(0, 300);console.log(0+'slide')}}>
                                 <div className={'text-element'} style={{textDecoration: 'none',
                                     fontFamily: "'Montserrat', sans-serif",
                                     textAlign:'center',
@@ -209,14 +149,12 @@ const HeadSelector = ({main_data, hidden, basketData, page}) => {
                                     color: 'white',
                                     fontSize: '16px',
                                     lineHeight:'16px',
-                                    marginTop:'7px'
+                                    marginTop:'7px',
                                 }}>playstation</div>
-                            </Link>
                         </div>
                     </SwiperSlide>
-                    <SwiperSlide>
-                        <div>
-                            <Link to={'/home0'} className={'link-element'}>
+                    <SwiperSlide virtualIndex={1}  style={{background:'none'}}>
+                        <div onClick={()=>{swiperRef.slideTo(1, 300);console.log(1+'slide')}}>
                                 <div className={'text-element'} style={{textDecoration: 'none',
                                     fontFamily: "'Montserrat', sans-serif",
                                     textAlign:'center',
@@ -227,13 +165,11 @@ const HeadSelector = ({main_data, hidden, basketData, page}) => {
                                     fontSize: '16px',
                                     lineHeight:'16px',
                                     marginTop:'7px'
-                                }}>playstation</div>
-                            </Link>
+                                }}>xbox</div>
                         </div>
                     </SwiperSlide>
-                    <SwiperSlide>
-                        <div>
-                            <Link to={'/home0'} className={'link-element'}>
+                    <SwiperSlide  virtualIndex={2} style={{background:'none'}}>
+                        <div onClick={()=>{swiperRef.slideTo(1, 300);console.log(2+'slide')}}>
                                 <div className={'text-element'} style={{textDecoration: 'none',
                                     fontFamily: "'Montserrat', sans-serif",
                                     textAlign:'center',
@@ -244,8 +180,7 @@ const HeadSelector = ({main_data, hidden, basketData, page}) => {
                                     fontSize: '16px',
                                     lineHeight:'16px',
                                     marginTop:'7px'
-                                }}>playstation</div>
-                            </Link>
+                                }}>сервисы</div>
                         </div>
                     </SwiperSlide>
                 </Swiper>

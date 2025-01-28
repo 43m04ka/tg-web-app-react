@@ -56,15 +56,15 @@ const HeadSelector = ({hidden, basketData, page}) => {
         console.log(index + '--vern')
         if (window.location.pathname === '/home0' || window.location.pathname === '/home1' || window.location.pathname === '/home2') {
             if (index === 0 || index === 3) {
-                setColorSlider('#404adf')
+                setColorSlider('linear-gradient(90deg, rgba(198,65,56,1) 0%, rgba(64,74,223,1) 40%, rgba(64,74,223,1) 60%, rgba(69,217,110,1) 100%)')
                 navigate('/home0')
             }
             if (index === 1 || index === 4) {
-                setColorSlider('#40df70')
+                setColorSlider('linear-gradient(90deg, rgba(64,74,223,1) 0%, rgba(64,223,112,1) 40%, rgba(69,217,110,1) 60%, rgba(198,65,56,1) 100%)')
                 navigate('/home1')
             }
             if (index === 2 || index === 5) {
-                setColorSlider('#c64138')
+                setColorSlider('linear-gradient(90deg, rgba(69,217,110,1) 0%, rgba(198,65,56,1) 40%, rgba(198,65,56,1) 60%, rgba(64,74,223,1) 100%)')
                 navigate('/home2')
             }
         }

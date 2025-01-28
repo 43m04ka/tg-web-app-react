@@ -303,6 +303,16 @@ body {
     background-size: cover;
 }
 
+.background-serSel {
+    background-image: url("../icons/serSel.png");
+    background-size: cover;
+}
+
+.background-xbSel {
+    background-image: url("../icons/xbSel.png");
+    background-size: cover;
+}
+
 .button-trash {
     height: 50px;
     width: 50px;

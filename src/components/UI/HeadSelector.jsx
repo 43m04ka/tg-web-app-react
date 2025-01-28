@@ -203,36 +203,48 @@ const HeadSelector = ({hidden, basketData, page}) => {
                     </SwiperSlide>
                     <SwiperSlide virtualIndex={1} style={{
                         background: 'none',
-                        alignContent: 'center',
                         width: String((window.innerWidth - 14) / 3) + 'px',
+                        padding: '0',
+                        alignContent: 'center',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        justifyItems: 'center',
+                        display: 'flex',
+                        flexDirection: 'row',
                     }}>
-                        <div className={'text-element'} style={{
+                        <div className={'background-xbSel'} style={{height: '20px', width: '20px'}}/>
+                        <div style={{
                             textDecoration: 'none',
                             fontFamily: "'Montserrat', sans-serif",
-                            textAlign: 'center',
-                            fontVariant: 'small-caps',
                             fontWeight: '700',
                             color: 'white',
-                            fontSize: '19px',
-                            overflow: 'hidden'
-                        }}>xbox
+                            fontSize: '12px',
+                            marginTop: '0',
+                            marginLeft:'5px'
+                        }}>XBOX
                         </div>
                     </SwiperSlide>
                     <SwiperSlide virtualIndex={2} style={{
                         background: 'none',
-                        alignContent: 'center',
                         width: String((window.innerWidth - 14) / 3) + 'px',
+                        padding: '0',
+                        alignContent: 'center',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        justifyItems: 'center',
+                        display: 'flex',
+                        flexDirection: 'row',
                     }}>
-                        <div className={'text-element'} style={{
+                        <div className={'background-serSel'} style={{height: '20px', width: '20px'}}/>
+                        <div style={{
                             textDecoration: 'none',
                             fontFamily: "'Montserrat', sans-serif",
-                            textAlign: 'center',
-                            fontVariant: 'small-caps',
                             fontWeight: '700',
                             color: 'white',
-                            fontSize: '19px',
-                            overflow: 'hidden'
-                        }}>сервисы
+                            fontSize: '12px',
+                            marginTop: '0',
+                            marginLeft:'5px'
+                        }}>СЕРВИСЫ
                         </div>
                     </SwiperSlide>
                     <SwiperSlide virtualIndex={3} style={{
@@ -260,36 +272,48 @@ const HeadSelector = ({hidden, basketData, page}) => {
                     </SwiperSlide>
                     <SwiperSlide virtualIndex={4} style={{
                         background: 'none',
+                        width: String((window.innerWidth - 14) / 3) + 'px',
+                        padding: '0',
                         alignContent: 'center',
-                        width: String((window.innerWidth - 14) / 3) + 'px'
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        justifyItems: 'center',
+                        display: 'flex',
+                        flexDirection: 'row',
                     }}>
-                        <div className={'text-element'} style={{
+                        <div className={'background-xbSel'} style={{height: '20px', width: '20px'}}/>
+                        <div style={{
                             textDecoration: 'none',
                             fontFamily: "'Montserrat', sans-serif",
-                            textAlign: 'center',
-                            fontVariant: 'small-caps',
                             fontWeight: '700',
                             color: 'white',
-                            fontSize: '19px',
-                            overflow: 'hidden'
-                        }}>xbox
+                            fontSize: '12px',
+                            marginTop: '0',
+                            marginLeft:'5px'
+                        }}>XBOX
                         </div>
                     </SwiperSlide>
                     <SwiperSlide virtualIndex={5} style={{
                         background: 'none',
+                        width: String((window.innerWidth - 14) / 3) + 'px',
+                        padding: '0',
                         alignContent: 'center',
-                        width: String((window.innerWidth - 14) / 3) + 'px'
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        justifyItems: 'center',
+                        display: 'flex',
+                        flexDirection: 'row',
                     }}>
-                        <div className={'text-element'} style={{
+                        <div className={'background-serSel'} style={{height: '20px', width: '20px'}}/>
+                        <div style={{
                             textDecoration: 'none',
                             fontFamily: "'Montserrat', sans-serif",
-                            textAlign: 'center',
-                            fontVariant: 'small-caps',
                             fontWeight: '700',
                             color: 'white',
-                            fontSize: '19px',
-                            overflow: 'hidden'
-                        }}>сервисы
+                            fontSize: '12px',
+                            marginTop: '0',
+                            marginLeft:'5px'
+                        }}>СЕРВИСЫ
                         </div>
                     </SwiperSlide>
                 </Swiper>

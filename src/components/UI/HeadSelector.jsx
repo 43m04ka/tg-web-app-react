@@ -123,9 +123,8 @@ const HeadSelector = ({hidden, basketData, page}) => {
             }}>
                 <Swiper watchSlidesProgress={true} slidesPerView={3} className="swiper"
                         style={{
-                            width: String(window.innerWidth - 30) + 'px',
-                            alignContent: 'center',
-                            border: '2px solid red'
+                            width: String(window.innerWidth - 14) + 'px',
+                            alignContent: 'center'
                         }}
                         centeredSlides={true}
                         onActiveIndexChange={(ev) => {
@@ -155,7 +154,7 @@ const HeadSelector = ({hidden, basketData, page}) => {
                         modules={[Autoplay, Pagination, Controller, EffectCoverflow]}
                         onClick={(ev) => {
                             console.log(ev.touches.currentX);
-                            if(ev.touches.currentX > (window.innerWidth-30)/3*2){
+                            if(ev.touches.currentX > (window.innerWidth-14)/3*2){
                                 let nI = realIndex + 1
 
                                 if(nI === 6){
@@ -165,7 +164,7 @@ const HeadSelector = ({hidden, basketData, page}) => {
                                     swiperRef.slideToLoop(realIndex + 1, 300, false);
                                     realIndex += 1
                                 }
-                            }if(ev.touches.currentX < (window.innerWidth-30)/3){
+                            }if(ev.touches.currentX < (window.innerWidth-14)/3){
                                 let nI = realIndex - 1
                                 console.log(nI)
                                 if(nI === -1){
@@ -181,7 +180,7 @@ const HeadSelector = ({hidden, basketData, page}) => {
                     <SwiperSlide virtualIndex={0} style={{
                         background: 'none',
                         alignContent: 'center',
-                        width: String((window.innerWidth - 30) / 3) + 'px',
+                        width: String((window.innerWidth - 14) / 3) + 'px',
                     }}>
                         <div className={'text-element'} style={{
                             textDecoration: 'none',
@@ -198,7 +197,7 @@ const HeadSelector = ({hidden, basketData, page}) => {
                     <SwiperSlide virtualIndex={1} style={{
                         background: 'none',
                         alignContent: 'center',
-                        width: String((window.innerWidth - 30) / 3) + 'px',
+                        width: String((window.innerWidth - 14) / 3) + 'px',
                     }}>
                         <div className={'text-element'} style={{
                             textDecoration: 'none',
@@ -215,7 +214,7 @@ const HeadSelector = ({hidden, basketData, page}) => {
                     <SwiperSlide virtualIndex={2} style={{
                         background: 'none',
                         alignContent: 'center',
-                        width: String((window.innerWidth - 30) / 3) + 'px',
+                        width: String((window.innerWidth - 14) / 3) + 'px',
                     }}>
                         <div className={'text-element'} style={{
                             textDecoration: 'none',
@@ -232,7 +231,7 @@ const HeadSelector = ({hidden, basketData, page}) => {
                     <SwiperSlide virtualIndex={3} style={{
                         background: 'none',
                         alignContent: 'center',
-                        width: String((window.innerWidth - 30) / 3) + 'px'
+                        width: String((window.innerWidth - 14) / 3) + 'px'
                     }}>
                         <div className={'text-element'} style={{
                             textDecoration: 'none',
@@ -249,7 +248,7 @@ const HeadSelector = ({hidden, basketData, page}) => {
                     <SwiperSlide virtualIndex={4} style={{
                         background: 'none',
                         alignContent: 'center',
-                        width: String((window.innerWidth - 30) / 3) + 'px'
+                        width: String((window.innerWidth - 14) / 3) + 'px'
                     }}>
                         <div className={'text-element'} style={{
                             textDecoration: 'none',
@@ -266,7 +265,7 @@ const HeadSelector = ({hidden, basketData, page}) => {
                     <SwiperSlide virtualIndex={5} style={{
                         background: 'none',
                         alignContent: 'center',
-                        width: String((window.innerWidth - 30) / 3) + 'px'
+                        width: String((window.innerWidth - 14) / 3) + 'px'
                     }}>
                         <div className={'text-element'} style={{
                             textDecoration: 'none',

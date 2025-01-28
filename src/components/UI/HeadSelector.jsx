@@ -179,19 +179,23 @@ const HeadSelector = ({hidden, basketData, page}) => {
                 >
                     <SwiperSlide virtualIndex={0} style={{
                         background: 'none',
-                        alignContent: 'center',
+                        alignItems: 'center',
+                        justifyItems:'center',
                         width: String((window.innerWidth - 14) / 3) + 'px',
+                        display:'flex',
+                        flexDirection: 'row',
+                        padding:'0',
                     }}>
+                        <div className={'background-psSel'} style={{height:'20px', width:'20px'}}/>
                         <div className={'text-element'} style={{
                             textDecoration: 'none',
                             fontFamily: "'Montserrat', sans-serif",
-                            textAlign: 'center',
-                            fontVariant: 'small-caps',
                             fontWeight: '700',
                             color: 'white',
-                            fontSize: '19px',
-                            overflow: 'hidden'
-                        }}>playstation
+                            fontSize: '12px',
+                            marginTop:'0',
+                            overflow: 'hidden',
+                        }}>PLAYSTATION
                         </div>
                     </SwiperSlide>
                     <SwiperSlide virtualIndex={1} style={{
@@ -230,19 +234,23 @@ const HeadSelector = ({hidden, basketData, page}) => {
                     </SwiperSlide>
                     <SwiperSlide virtualIndex={3} style={{
                         background: 'none',
-                        alignContent: 'center',
-                        width: String((window.innerWidth - 14) / 3) + 'px'
+                        alignItems: 'center',
+                        justifyItems:'center',
+                        width: String((window.innerWidth - 14) / 3) + 'px',
+                        display:'flex',
+                        flexDirection: 'row',
+                        padding:'0',
                     }}>
+                        <div className={'background-psSel'} style={{height:'20px', width:'20px'}}/>
                         <div className={'text-element'} style={{
                             textDecoration: 'none',
                             fontFamily: "'Montserrat', sans-serif",
-                            textAlign: 'center',
-                            fontVariant: 'small-caps',
                             fontWeight: '700',
                             color: 'white',
-                            fontSize: '19px',
-                            overflow: 'hidden'
-                        }}>playstation
+                            fontSize: '12px',
+                            marginTop:'0',
+                            overflow: 'hidden',
+                        }}>PLAYSTATION
                         </div>
                     </SwiperSlide>
                     <SwiperSlide virtualIndex={4} style={{

@@ -8,7 +8,8 @@ import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 
 
-import {Autoplay, Pagination,  Controller, EffectCoverflow} from 'swiper/modules';
+import {Autoplay, Pagination, Controller, EffectCoverflow} from 'swiper/modules';
+
 let realIndex = 0
 let isScroll = false
 
@@ -51,9 +52,9 @@ const HeadSelector = ({hidden, basketData, page}) => {
         }}>{basketLen}</div>)
     }
 
-    const onIndexChange = (index) =>{
-        if(window.location.pathname === '/home0' || window.location.pathname ===  '/home1' || window.location.pathname === '/home2') {
-            console.log(window.location.pathname === '/home0')
+    const onIndexChange = (index) => {
+        console.log(index + '--vern')
+        if (window.location.pathname === '/home0' || window.location.pathname === '/home1' || window.location.pathname === '/home2') {
             if (index === 0 || index === 3) {
                 setColorSlider('#404adf')
                 navigate('/home0')
@@ -77,8 +78,8 @@ const HeadSelector = ({hidden, basketData, page}) => {
                 background: '#171717',
                 borderBottom: '2px solid #454545',
                 marginTop: String(buttonMenuHeight) + 'px',
-                width:String(window.innerWidth) + 'px',
-                transitionProperty:'margin',
+                width: String(window.innerWidth) + 'px',
+                transitionProperty: 'margin',
                 transitionDuration: '0.3s',
             }}>
                 <Link to={'/search' + String(page)} className={'link-element'}>
@@ -115,20 +116,31 @@ const HeadSelector = ({hidden, basketData, page}) => {
                 overflow: 'hidden',
                 transitionProperty: 'background',
                 transitionDuration: '0.3s',
-                border:'2px solid #454545',
-                marginTop:'5px',
-                justifyItems:'center',
-                background:colorSlider
+                border: '2px solid #454545',
+                marginTop: '5px',
+                justifyItems: 'center',
+                background: colorSlider
             }}>
                 <Swiper watchSlidesProgress={true} slidesPerView={3} className="swiper"
-                        style={{width: String(window.innerWidth-20) + 'px',alignContent:'center'}}
+                        style={{
+                            width: String(window.innerWidth - 30) + 'px',
+                            alignContent: 'center',
+                            border: '2px solid red'
+                        }}
                         centeredSlides={true}
-                        onActiveIndexChange={(ev)=>{realIndex = ev.realIndex;
-                        if(!isScroll){
-                            onIndexChange(ev.realIndex)
-                        }}}
-                        onTouchEnd={()=>{onIndexChange(realIndex);  console.log(realIndex); isScroll = false}}
-                        onTouchStart={()=>{isScroll = true}}
+                        onActiveIndexChange={(ev) => {
+                            realIndex = ev.realIndex;
+                            if (!isScroll) {
+                                onIndexChange(ev.realIndex)
+                            }
+                        }}
+                        onTouchEnd={() => {
+                            onIndexChange(realIndex);
+                            isScroll = false
+                        }}
+                        onTouchStart={() => {
+                            isScroll = true
+                        }}
                         effect={'coverflow'}
                         onSwiper={setSwiperRef}
                         coverflowEffect={{
@@ -137,77 +149,136 @@ const HeadSelector = ({hidden, basketData, page}) => {
                             depth: 0,
                             modifier: 1,
                             slideShadows: false,
-                            scale:0.7
+                            scale: 0.7
                         }}
                         loop={true}
                         modules={[Autoplay, Pagination, Controller, EffectCoverflow]}
-                        onClick={(ev)=>{console.log(ev.clickedIndex); swiperRef.slideTo(ev.clickedIndex, 300);}}
+                        onClick={(ev) => {
+                            console.log(ev.touches.currentX);
+                            if(ev.touches.currentX > (window.innerWidth-30)/3*2){
+                                let nI = realIndex + 1
+
+                                if(nI === 6){
+                                    swiperRef.slideToLoop(0, 300, false);
+                                    realIndex = 0
+                                }else {
+                                    swiperRef.slideToLoop(realIndex + 1, 300, false);
+                                    realIndex += 1
+                                }
+                            }if(ev.touches.currentX < (window.innerWidth-30)/3){
+                                let nI = realIndex - 1
+                                console.log(nI)
+                                if(nI === -1){
+                                    swiperRef.slideToLoop(5, 300, false);
+                                    realIndex = 5
+                                }else {
+                                    swiperRef.slideToLoop(realIndex - 1, 300, false);
+                                    realIndex -= 1
+                                }
+                            }
+                        }}
                 >
-                    <SwiperSlide virtualIndex={0} style={{background:'none', alignContent:'center'}}>
-                                <div className={'text-element'} style={{textDecoration: 'none',
-                                    fontFamily: "'Montserrat', sans-serif",
-                                    textAlign:'center',
-                                    fontVariant: 'small-caps',
-                                    fontWeight: '700',
-                                    color: 'white',
-                                    fontSize: '19px',
-                                    overflow:'hidden'
-                                }}>playstation</div>
-                    </SwiperSlide>
-                    <SwiperSlide virtualIndex={1}  style={{background:'none', alignContent:'center'}}>
-                                <div className={'text-element'} style={{textDecoration: 'none',
-                                    fontFamily: "'Montserrat', sans-serif",
-                                    textAlign:'center',
-                                    fontVariant: 'small-caps',
-                                    fontWeight: '700',
-                                    color: 'white',
-                                    fontSize: '19px',
-                                    overflow:'hidden'
-                                }}>xbox</div>
-                    </SwiperSlide>
-                    <SwiperSlide  virtualIndex={2} style={{background:'none', alignContent:'center'}}>
-                                <div className={'text-element'} style={{textDecoration: 'none',
-                                    fontFamily: "'Montserrat', sans-serif",
-                                    textAlign:'center',
-                                    fontVariant: 'small-caps',
-                                    fontWeight: '700',
-                                    color: 'white',
-                                    fontSize: '19px',
-                                    overflow:'hidden'
-                                }}>сервисы</div>
-                    </SwiperSlide>
-                    <SwiperSlide virtualIndex={3} style={{background:'none', alignContent:'center'}}>
-                        <div className={'text-element'} style={{textDecoration: 'none',
+                    <SwiperSlide virtualIndex={0} style={{
+                        background: 'none',
+                        alignContent: 'center',
+                        width: String((window.innerWidth - 30) / 3) + 'px',
+                    }}>
+                        <div className={'text-element'} style={{
+                            textDecoration: 'none',
                             fontFamily: "'Montserrat', sans-serif",
-                            textAlign:'center',
+                            textAlign: 'center',
                             fontVariant: 'small-caps',
                             fontWeight: '700',
                             color: 'white',
                             fontSize: '19px',
-                            overflow:'hidden'
-                        }}>playstation</div>
+                            overflow: 'hidden'
+                        }}>playstation
+                        </div>
                     </SwiperSlide>
-                    <SwiperSlide virtualIndex={4}  style={{background:'none', alignContent:'center'}}>
-                        <div className={'text-element'} style={{textDecoration: 'none',
+                    <SwiperSlide virtualIndex={1} style={{
+                        background: 'none',
+                        alignContent: 'center',
+                        width: String((window.innerWidth - 30) / 3) + 'px',
+                    }}>
+                        <div className={'text-element'} style={{
+                            textDecoration: 'none',
                             fontFamily: "'Montserrat', sans-serif",
-                            textAlign:'center',
+                            textAlign: 'center',
                             fontVariant: 'small-caps',
                             fontWeight: '700',
                             color: 'white',
                             fontSize: '19px',
-                            overflow:'hidden'
-                        }}>xbox</div>
+                            overflow: 'hidden'
+                        }}>xbox
+                        </div>
                     </SwiperSlide>
-                    <SwiperSlide  virtualIndex={5} style={{background:'none', alignContent:'center'}}>
-                        <div className={'text-element'} style={{textDecoration: 'none',
+                    <SwiperSlide virtualIndex={2} style={{
+                        background: 'none',
+                        alignContent: 'center',
+                        width: String((window.innerWidth - 30) / 3) + 'px',
+                    }}>
+                        <div className={'text-element'} style={{
+                            textDecoration: 'none',
                             fontFamily: "'Montserrat', sans-serif",
-                            textAlign:'center',
+                            textAlign: 'center',
                             fontVariant: 'small-caps',
                             fontWeight: '700',
                             color: 'white',
                             fontSize: '19px',
-                            overflow:'hidden'
-                        }}>сервисы</div>
+                            overflow: 'hidden'
+                        }}>сервисы
+                        </div>
+                    </SwiperSlide>
+                    <SwiperSlide virtualIndex={3} style={{
+                        background: 'none',
+                        alignContent: 'center',
+                        width: String((window.innerWidth - 30) / 3) + 'px'
+                    }}>
+                        <div className={'text-element'} style={{
+                            textDecoration: 'none',
+                            fontFamily: "'Montserrat', sans-serif",
+                            textAlign: 'center',
+                            fontVariant: 'small-caps',
+                            fontWeight: '700',
+                            color: 'white',
+                            fontSize: '19px',
+                            overflow: 'hidden'
+                        }}>playstation
+                        </div>
+                    </SwiperSlide>
+                    <SwiperSlide virtualIndex={4} style={{
+                        background: 'none',
+                        alignContent: 'center',
+                        width: String((window.innerWidth - 30) / 3) + 'px'
+                    }}>
+                        <div className={'text-element'} style={{
+                            textDecoration: 'none',
+                            fontFamily: "'Montserrat', sans-serif",
+                            textAlign: 'center',
+                            fontVariant: 'small-caps',
+                            fontWeight: '700',
+                            color: 'white',
+                            fontSize: '19px',
+                            overflow: 'hidden'
+                        }}>xbox
+                        </div>
+                    </SwiperSlide>
+                    <SwiperSlide virtualIndex={5} style={{
+                        background: 'none',
+                        alignContent: 'center',
+                        width: String((window.innerWidth - 30) / 3) + 'px'
+                    }}>
+                        <div className={'text-element'} style={{
+                            textDecoration: 'none',
+                            fontFamily: "'Montserrat', sans-serif",
+                            textAlign: 'center',
+                            fontVariant: 'small-caps',
+                            fontWeight: '700',
+                            color: 'white',
+                            fontSize: '19px',
+                            overflow: 'hidden'
+                        }}>сервисы
+                        </div>
                     </SwiperSlide>
                 </Swiper>
             </div>

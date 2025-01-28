@@ -15,7 +15,6 @@ let isScroll = false
 const HeadSelector = ({hidden, basketData, page}) => {
     const navigate = useNavigate();
 
-    const [pageSelected, setPageSelected] = useState(page);
     const [basketLen, setBasketLen] = useState(0);
     const [colorSlider, setColorSlider] = useState('#404adf');
     const [swiperRef, setSwiperRef] = useState(null);
@@ -53,21 +52,22 @@ const HeadSelector = ({hidden, basketData, page}) => {
     }
 
     const onIndexChange = (index) =>{
-        if(index===0 || index===3){
-            setColorSlider('#404adf')
-            navigate('/home0')
-        }if(index===1 || index===4){
-            setColorSlider('#40df70')
-            navigate('/home1')
-        }if(index===2 || index===5){
-            setColorSlider('#c64138')
-            navigate('/home2')
+        if(window.location.pathname === '/home0' || window.location.pathname ===  '/home1' || window.location.pathname === '/home2') {
+            console.log(window.location.pathname === '/home0')
+            if (index === 0 || index === 3) {
+                setColorSlider('#404adf')
+                navigate('/home0')
+            }
+            if (index === 1 || index === 4) {
+                setColorSlider('#40df70')
+                navigate('/home1')
+            }
+            if (index === 2 || index === 5) {
+                setColorSlider('#c64138')
+                navigate('/home2')
+            }
         }
     }
-
-    const slideTo = (index) => {
-        swiperRef.slideTo(index - 1, 0);
-    };
 
     return (
         <div>
@@ -81,7 +81,7 @@ const HeadSelector = ({hidden, basketData, page}) => {
                 transitionProperty:'margin',
                 transitionDuration: '0.3s',
             }}>
-                <Link to={'/search' + String(pageSelected)} className={'link-element'}>
+                <Link to={'/search' + String(page)} className={'link-element'}>
                     <div className={'search'} style={{padding: '10px', display: 'flex', flexDirection: 'row'}}>
                         <div className={'background-search'} style={{width: '25px', height: '25px'}}></div>
                         <div style={{

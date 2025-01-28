@@ -154,23 +154,24 @@ const HeadSelector = ({hidden, basketData, page}) => {
                         modules={[Autoplay, Pagination, Controller, EffectCoverflow]}
                         onClick={(ev) => {
                             console.log(ev.touches.currentX);
-                            if(ev.touches.currentX > (window.innerWidth-14)/3*2){
+                            if (ev.touches.currentX > (window.innerWidth - 14) / 3 * 2) {
                                 let nI = realIndex + 1
 
-                                if(nI === 6){
+                                if (nI === 6) {
                                     swiperRef.slideToLoop(0, 300, false);
                                     realIndex = 0
-                                }else {
+                                } else {
                                     swiperRef.slideToLoop(realIndex + 1, 300, false);
                                     realIndex += 1
                                 }
-                            }if(ev.touches.currentX < (window.innerWidth-14)/3){
+                            }
+                            if (ev.touches.currentX < (window.innerWidth - 14) / 3) {
                                 let nI = realIndex - 1
                                 console.log(nI)
-                                if(nI === -1){
+                                if (nI === -1) {
                                     swiperRef.slideToLoop(5, 300, false);
                                     realIndex = 5
-                                }else {
+                                } else {
                                     swiperRef.slideToLoop(realIndex - 1, 300, false);
                                     realIndex -= 1
                                 }
@@ -179,23 +180,25 @@ const HeadSelector = ({hidden, basketData, page}) => {
                 >
                     <SwiperSlide virtualIndex={0} style={{
                         background: 'none',
-                        alignItems: 'center',
-                        justifyItems:'center',
                         width: String((window.innerWidth - 14) / 3) + 'px',
-                        display:'flex',
+                        padding: '0',
+                        alignContent: 'center',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        justifyItems: 'center',
+                        display: 'flex',
                         flexDirection: 'row',
-                        padding:'0',
                     }}>
-                        <div className={'background-psSel'} style={{height:'20px', width:'20px'}}/>
-                        <div className={'text-element'} style={{
-                            textDecoration: 'none',
-                            fontFamily: "'Montserrat', sans-serif",
-                            fontWeight: '700',
-                            color: 'white',
-                            fontSize: '12px',
-                            marginTop:'0',
-                            overflow: 'hidden',
-                        }}>PLAYSTATION
+                            <div className={'background-psSel'} style={{height: '20px', width: '20px'}}/>
+                            <div style={{
+                                textDecoration: 'none',
+                                fontFamily: "'Montserrat', sans-serif",
+                                fontWeight: '700',
+                                color: 'white',
+                                fontSize: '12px',
+                                marginTop: '0',
+                                marginLeft:'5px'
+                            }}>PLAYSTATION
                         </div>
                     </SwiperSlide>
                     <SwiperSlide virtualIndex={1} style={{
@@ -234,22 +237,24 @@ const HeadSelector = ({hidden, basketData, page}) => {
                     </SwiperSlide>
                     <SwiperSlide virtualIndex={3} style={{
                         background: 'none',
-                        alignItems: 'center',
-                        justifyItems:'center',
                         width: String((window.innerWidth - 14) / 3) + 'px',
-                        display:'flex',
+                        padding: '0',
+                        alignContent: 'center',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        justifyItems: 'center',
+                        display: 'flex',
                         flexDirection: 'row',
-                        padding:'0',
                     }}>
-                        <div className={'background-psSel'} style={{height:'20px', width:'20px'}}/>
-                        <div className={'text-element'} style={{
+                        <div className={'background-psSel'} style={{height: '20px', width: '20px'}}/>
+                        <div style={{
                             textDecoration: 'none',
                             fontFamily: "'Montserrat', sans-serif",
                             fontWeight: '700',
                             color: 'white',
                             fontSize: '12px',
-                            marginTop:'0',
-                            overflow: 'hidden',
+                            marginTop: '0',
+                            marginLeft:'5px'
                         }}>PLAYSTATION
                         </div>
                     </SwiperSlide>

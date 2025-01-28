@@ -9,6 +9,8 @@ import 'swiper/css/autoplay';
 
 
 import {Autoplay, Pagination,  Controller, EffectCoverflow} from 'swiper/modules';
+let realIndex = 0
+let isScroll = false
 
 const HeadSelector = ({hidden, basketData, page}) => {
     const navigate = useNavigate();
@@ -51,8 +53,6 @@ const HeadSelector = ({hidden, basketData, page}) => {
     }
 
     const onIndexChange = (index) =>{
-        console.log('-----------------------')
-        console.log(index+'tek')
         if(index===0 || index===3){
             setColorSlider('#404adf')
             navigate('/home0')
@@ -123,7 +123,12 @@ const HeadSelector = ({hidden, basketData, page}) => {
                 <Swiper watchSlidesProgress={true} slidesPerView={3} className="swiper"
                         style={{width: String(window.innerWidth-20) + 'px',alignContent:'center'}}
                         centeredSlides={true}
-                        onRealIndexChange={(event)=>{onIndexChange(event.realIndex)}}
+                        onActiveIndexChange={(ev)=>{realIndex = ev.realIndex;
+                        if(!isScroll){
+                            onIndexChange(ev.realIndex)
+                        }}}
+                        onTouchEnd={()=>{onIndexChange(realIndex);  console.log(realIndex); isScroll = false}}
+                        onTouchStart={()=>{isScroll = true}}
                         effect={'coverflow'}
                         onSwiper={setSwiperRef}
                         coverflowEffect={{
@@ -136,6 +141,7 @@ const HeadSelector = ({hidden, basketData, page}) => {
                         }}
                         loop={true}
                         modules={[Autoplay, Pagination, Controller, EffectCoverflow]}
+                        onClick={(ev)=>{console.log(ev.clickedIndex); swiperRef.slideTo(ev.clickedIndex, 300);}}
                 >
                     <SwiperSlide virtualIndex={0} style={{background:'none', alignContent:'center'}}>
                                 <div className={'text-element'} style={{textDecoration: 'none',
@@ -169,6 +175,39 @@ const HeadSelector = ({hidden, basketData, page}) => {
                                     fontSize: '19px',
                                     overflow:'hidden'
                                 }}>сервисы</div>
+                    </SwiperSlide>
+                    <SwiperSlide virtualIndex={3} style={{background:'none', alignContent:'center'}}>
+                        <div className={'text-element'} style={{textDecoration: 'none',
+                            fontFamily: "'Montserrat', sans-serif",
+                            textAlign:'center',
+                            fontVariant: 'small-caps',
+                            fontWeight: '700',
+                            color: 'white',
+                            fontSize: '19px',
+                            overflow:'hidden'
+                        }}>playstation</div>
+                    </SwiperSlide>
+                    <SwiperSlide virtualIndex={4}  style={{background:'none', alignContent:'center'}}>
+                        <div className={'text-element'} style={{textDecoration: 'none',
+                            fontFamily: "'Montserrat', sans-serif",
+                            textAlign:'center',
+                            fontVariant: 'small-caps',
+                            fontWeight: '700',
+                            color: 'white',
+                            fontSize: '19px',
+                            overflow:'hidden'
+                        }}>xbox</div>
+                    </SwiperSlide>
+                    <SwiperSlide  virtualIndex={5} style={{background:'none', alignContent:'center'}}>
+                        <div className={'text-element'} style={{textDecoration: 'none',
+                            fontFamily: "'Montserrat', sans-serif",
+                            textAlign:'center',
+                            fontVariant: 'small-caps',
+                            fontWeight: '700',
+                            color: 'white',
+                            fontSize: '19px',
+                            overflow:'hidden'
+                        }}>сервисы</div>
                     </SwiperSlide>
                 </Swiper>
             </div>

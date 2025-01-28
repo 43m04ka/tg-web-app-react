@@ -137,7 +137,7 @@ const HeadSelector = ({hidden, basketData, page}) => {
                         loop={true}
                         modules={[Autoplay, Pagination, Controller, EffectCoverflow]}
                 >
-                    <SwiperSlide virtualIndex={0} style={{background:'none', border:'2px solid red', alignContent:'center'}}>
+                    <SwiperSlide virtualIndex={0} style={{background:'none', alignContent:'center'}}>
                                 <div className={'text-element'} style={{textDecoration: 'none',
                                     fontFamily: "'Montserrat', sans-serif",
                                     textAlign:'center',

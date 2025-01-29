@@ -168,8 +168,8 @@ const Info = () => {
                         alignItems: 'center'
                     }}>
                         <div style={{
-                            display: 'flex',
-                            flexDirection: 'row',
+                            display: 'grid',
+                            gridTemplateColumns: '34px 1fr',
                             alignItems: 'center',
                         }}>
                             <div className={'background-tgInfo'} style={{
@@ -201,8 +201,8 @@ const Info = () => {
                         alignItems: 'center'
                     }}>
                         <div style={{
-                            display: 'flex',
-                            flexDirection: 'row',
+                            display: 'grid',
+                            gridTemplateColumns: '34px 1fr',
                             alignItems: 'center',
                         }}>
                             <div className={'background-tgInfo'} style={{
@@ -234,8 +234,8 @@ const Info = () => {
                         alignItems: 'center'
                     }}>
                         <div style={{
-                            display: 'flex',
-                            flexDirection: 'row',
+                            display: 'grid',
+                            gridTemplateColumns: '34px 1fr',
                             alignItems: 'center',
                         }}>
                             <div className={'background-vkInfo'} style={{
@@ -267,8 +267,8 @@ const Info = () => {
                         alignItems: 'center'
                     }}>
                         <div style={{
-                            display: 'flex',
-                            flexDirection: 'row',
+                            display: 'grid',
+                            gridTemplateColumns: '34px 1fr',
                             alignItems: 'center',
                         }}>
                             <div className={'background-vkInfo'} style={{
@@ -303,8 +303,8 @@ const Info = () => {
                         alignItems: 'center'
                     }}>
                         <div style={{
-                            display: 'flex',
-                            flexDirection: 'row',
+                            display: 'grid',
+                            gridTemplateColumns: '34px 1fr',
                             alignItems: 'center',
                         }}>
                             <div className={'background-pzInfo'} style={{
@@ -335,8 +335,8 @@ const Info = () => {
                             alignItems: 'center'
                         }}>
                             <div style={{
-                                display: 'flex',
-                                flexDirection: 'row',
+                                display: 'grid',
+                                gridTemplateColumns: '34px 1fr',
                                 alignItems: 'center',
                             }}>
                                 <div className={'background-pkInfo'} style={{
@@ -371,8 +371,8 @@ const Info = () => {
                         alignItems: 'center'
                     }}>
                         <div style={{
-                            display: 'flex',
-                            flexDirection: 'row',
+                            display: 'grid',
+                            gridTemplateColumns: '34px 1fr',
                             alignItems: 'center',
                         }}>
                             <div className={'background-supportInfo'} style={{
@@ -391,7 +391,7 @@ const Info = () => {
                         <div className={'background-arrowGray'}
                              style={{width: '20px', height: '20px', marginRight: '5px'}}/>
                     </div>
-                </a>
+            </a>
                 <a style={{textDecoration: 'none'}}
                    href={'https://t.me/gwstore_admin'}>
                     <div style={{
@@ -403,8 +403,8 @@ const Info = () => {
                         alignItems: 'center'
                     }}>
                         <div style={{
-                            display: 'flex',
-                            flexDirection: 'row',
+                            display: 'grid',
+                            gridTemplateColumns:'34px 1fr',
                             alignItems: 'center',
                         }}>
                             <div className={'background-ideaInfo'} style={{
@@ -416,7 +416,7 @@ const Info = () => {
                                 marginBottom: '5px'
                             }}>
                             </div>
-                            <div className={'text-element'} style={{fontSize: '13px', marginLeft: '15px'}}>
+                            <div className={'text-element'} style={{fontSize: '13px', marginLeft: '15px', textWrap:'pretty'}}>
                                 Предложить идею для улучшения бота
                             </div>
                         </div>

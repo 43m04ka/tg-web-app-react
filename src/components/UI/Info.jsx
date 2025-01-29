@@ -281,7 +281,7 @@ const Info = () => {
                             }}>
                             </div>
                             <div className={'text-element'} style={{fontSize: '15px', marginLeft: '15px'}}>
-                                Группа ВК для xbox
+                                Группа ВК для Xbox
                             </div>
                         </div>
                         <div className={'background-arrowGray'}

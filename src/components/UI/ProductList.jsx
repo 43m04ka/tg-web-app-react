@@ -28,7 +28,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
     const [listNumber, setListNumber] = useState(list);
     const [jsonFilter, setJsonFilter] = useState(null);
     const [hiddenSelector, setHiddenSelector] = useState(false);
-    const [heightMenuButton, setHeightMenuButton] = useState(65);
+    const [heightMenuButton, setHeightMenuButton] = useState(50);
     const [basketLen, setBasketLen] = useState(0);
     const [basketData, setBasketData] = useState([]);
 
@@ -97,7 +97,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
                     await setProducts(prom.cards || [])
                     await setDataDop(prom.cards || [])
                     await setLen(prom.len)
-                    await setHeightMenuButton(65)
+                    await setHeightMenuButton(50)
                 }
             })
         })
@@ -107,15 +107,15 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
     if (basketLen !== null && basketLen !== 0) {
         basketKolElement = (<div className={'text-element'} style={{
             background: '#f83d3d',
-            fontSize: '12px',
-            height: '20px',
-            width: '20px',
+            fontSize: '9px',
+            height: '16px',
+            width: '16px',
             borderRadius: "50%",
             textAlign: 'center',
-            lineHeight: '20px',
+            lineHeight: '16px',
             position: 'absolute',
-            marginLeft: '27px',
-            marginTop: '27px'
+            marginLeft: '22px',
+            marginTop: '22px'
         }}>{basketLen}</div>)
     }
 
@@ -331,13 +331,13 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
                     borderBottom: '2px solid #454545',
                 }}>
                     <Link to={'/search' + String(page)} className={'link-element'}>
-                        <div className={'search'} style={{padding: '10px', display: 'flex', flexDirection: 'row'}}>
-                            <div className={'background-search'} style={{width: '25px', height: '25px'}}></div>
+                        <div className={'search'} style={{padding: '7px', display: 'flex', flexDirection: 'row'}}>
+                            <div className={'background-search'} style={{width: '21px', height: '21px'}}></div>
                             <div style={{
-                                height: '25px',
+                                height: '20px',
                                 alignContent: 'center',
                                 marginLeft: '3px',
-                                fontSize: "16px",
+                                fontSize: "14px",
                                 color: 'black',
                                 fontFamily: "'Montserrat', sans-serif",
                                 fontVariant: 'small-caps'
@@ -368,7 +368,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
                          } else if ((scroll < scrollCtrl - 100 || scroll === 0) && hiddenSelector) {
                              scrollCtrl = scroll
                              setHiddenSelector(false)
-                             setHeightMenuButton(65)
+                             setHeightMenuButton(50)
                          }
                          if (hiddenSelector && scroll > scrollCtrl) {
                              scrollCtrl = scroll
@@ -380,7 +380,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
                          height: String(window.innerHeight - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
                      }}>
                     <div style={{
-                        height: String(60) + 'px'
+                        height: String(45) + 'px'
                     }}>
                         <div style={{height: '300px', overflow: 'hidden'}}></div>
                     </div>

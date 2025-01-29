@@ -99,7 +99,7 @@ const Search = ({height, page, setData, setStatusApp}) => {
                 <div style={{
                     borderBottom: '2px gray solid',
                     display: "grid",
-                    gridTemplateColumns: '1fr 55px',
+                    gridTemplateColumns: '1fr 45px',
                     width: String(window.innerWidth) + 'px'
                 }}>
                     <input className={'search'} placeholder={'Найти игру, подписку, валюту...'}
@@ -107,7 +107,7 @@ const Search = ({height, page, setData, setStatusApp}) => {
                            style={{
                                border: '0px', fontSize: '15px',
                                fontFamily: "'Montserrat', sans-serif",
-                               paddingLeft: '5px'
+                               paddingLeft: '7px'
                            }}></input>
                     <div className={'div-button-panel'} style={{padding: '3px'}} onClick={()=>{
                         setStatus(0)

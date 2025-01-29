@@ -316,7 +316,7 @@ const Info = () => {
                                 marginBottom: '5px'
                             }}>
                             </div>
-                            <div className={'text-element'} style={{fontSize: '15px', marginLeft: '15px'}}>
+                            <div className={'text-element'} style={{fontSize: '13px', marginLeft: '15px'}}>
                                 Пользовательское соглашение
                             </div>
                         </div>
@@ -348,7 +348,7 @@ const Info = () => {
                                     marginBottom: '5px'
                                 }}>
                                 </div>
-                                <div className={'text-element'} style={{fontSize: '15px', marginLeft: '15px'}}>
+                                <div className={'text-element'} style={{fontSize: '13px', marginLeft: '15px'}}>
                                     Политика конфиденциальности
                                 </div>
                             </div>
@@ -384,7 +384,7 @@ const Info = () => {
                                 marginBottom: '5px'
                             }}>
                             </div>
-                            <div className={'text-element'} style={{fontSize: '15px', marginLeft: '15px'}}>
+                            <div className={'text-element'} style={{fontSize: '13px', marginLeft: '15px'}}>
                                 Поддержка бота в Telegram
                             </div>
                         </div>

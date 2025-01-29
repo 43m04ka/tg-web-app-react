@@ -97,7 +97,7 @@ const HeadSelector = ({hidden, basketData, page}) => {
                             color: 'black',
                             fontFamily: "'Montserrat', sans-serif",
                             fontVariant: 'small-caps'
-                        }}>Найти игру, подписку, смысл жизни...
+                        }}>Найти игру, подписку...
                         </div>
                     </div>
                 </Link>

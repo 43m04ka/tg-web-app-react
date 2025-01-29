@@ -318,8 +318,8 @@ body {
     background-size: cover;
 }
 
-.background-arrowMini {
-    background-image: url("../icons/arrowMini.png");
+.background-arrowGray {
+    background-image: url("../icons/arrowGray.png");
     background-size: cover;
 }
 
@@ -335,6 +335,36 @@ body {
 
 .background-xbInfo {
     background-image: url("../icons/xboxInfo.png");
+    background-size: cover;
+}
+
+.background-tgInfo {
+    background-image: url("../icons/tgInfo.png");
+    background-size: cover;
+}
+
+.background-vkInfo {
+    background-image: url("../icons/vkInfo.png");
+    background-size: cover;
+}
+
+.background-pzInfo {
+    background-image: url("../icons/pzInfo.png");
+    background-size: cover;
+}
+
+.background-pkInfo {
+    background-image: url("../icons/pkInfo.png");
+    background-size: cover;
+}
+
+.background-supportInfo {
+    background-image: url("../icons/supportInfo.png");
+    background-size: cover;
+}
+
+.background-ideaInfo {
+    background-image: url("../icons/ideaInfo.png");
     background-size: cover;
 }
 

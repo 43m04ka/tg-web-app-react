@@ -40,15 +40,15 @@ const HeadSelector = ({hidden, basketData, page}) => {
     if (basketLen !== null && basketLen !== 0) {
         basketKolElement = (<div className={'text-element'} style={{
             background: '#f83d3d',
-            fontSize: '12px',
-            height: '20px',
-            width: '20px',
+            fontSize: '9px',
+            height: '16px',
+            width: '16px',
             borderRadius: "50%",
             textAlign: 'center',
-            lineHeight: '20px',
+            lineHeight: '16px',
             position: 'absolute',
-            marginLeft: '27px',
-            marginTop: '27px'
+            marginLeft: '22px',
+            marginTop: '22px'
         }}>{basketLen}</div>)
     }
 
@@ -83,13 +83,13 @@ const HeadSelector = ({hidden, basketData, page}) => {
                 transitionDuration: '0.3s',
             }}>
                 <Link to={'/search' + String(page)} className={'link-element'}>
-                    <div className={'search'} style={{padding: '10px', display: 'flex', flexDirection: 'row'}}>
-                        <div className={'background-search'} style={{width: '25px', height: '25px'}}></div>
+                    <div className={'search'} style={{padding: '7px', display: 'flex', flexDirection: 'row'}}>
+                        <div className={'background-search'} style={{width: '21px', height: '21px'}}></div>
                         <div style={{
-                            height: '25px',
+                            height: '20px',
                             alignContent: 'center',
                             marginLeft: '3px',
-                            fontSize: "16px",
+                            fontSize: "14px",
                             color: 'black',
                             fontFamily: "'Montserrat', sans-serif",
                             fontVariant: 'small-caps'
@@ -116,10 +116,11 @@ const HeadSelector = ({hidden, basketData, page}) => {
                 overflow: 'hidden',
                 transitionProperty: 'background',
                 transitionDuration: '0.3s',
-                border: '2px solid #454545',
+                border: '0px solid white',
                 marginTop: '5px',
                 justifyItems: 'center',
-                background: colorSlider
+                background: colorSlider,
+                marginBottom:'2px'
             }}>
                 <Swiper watchSlidesProgress={true} slidesPerView={3} className="swiper"
                         style={{

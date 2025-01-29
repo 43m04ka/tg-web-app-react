@@ -162,7 +162,7 @@ body {
 }
 
 .selector-container {
-    border-radius: 10px;
+    border-radius: 7px;
     height: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -198,14 +198,14 @@ body {
 
 .box-grid-panel {
     display: grid;
-    grid-template-columns: 1fr 55px 55px;
+    grid-template-columns: 1fr 40px 42px;
 }
 
 .search {
     background: white;
-    margin: 10px;
-    height: 45px;
-    border-radius: 10px;
+    margin: 7px;
+    height: 35px;
+    border-radius: 7px;
     text-align: left;
 }
 
@@ -215,12 +215,12 @@ body {
     align-items: center;
     justify-content: center;
     background: white;
-    margin-top: 10px;
-    margin-right: 10px;
-    border-radius: 10px;
+    margin-top: 7px;
+    margin-right: 5px;
+    border-radius: 7px;
     color: white;
-    height: 45px;
-    width: 45px;
+    height: 35px;
+    width: 35px;
 }
 
 .box-item-basket {

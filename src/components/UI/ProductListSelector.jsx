@@ -16,19 +16,19 @@ const ProductListSelector = ({main_data, page}) => {
 
     dataOld = main_data.body.sort(function (a, b) {
         try {
-            if (a.position > b.position) {
+            if (a.body.position > b.body.position) {
                 return 1;
             }
-            if (a.position < b.position) {
+            if (a.body.position < b.body.position) {
                 return -1;
             }
         } catch (e) {
         }
         try {
-            if (a.category > b.category) {
+            if (a.body.category > b.body.category) {
                 return 1;
             }
-            if (a.category < b.category) {
+            if (a.body.category < b.body.category) {
                 return -1;
             }
         } catch (e) {
@@ -40,13 +40,13 @@ const ProductListSelector = ({main_data, page}) => {
     let vsArray = []
     let lastId = 0
     dataOld.map(el => {
-        if (lastName !== el.category) {
+        if (lastName !== el.body.category) {
             data = [...data, ...vsArray]
-            lastName = el.category
+            lastName = el.body.category
             vsArray = [{}]
             vsArray[0].id = lastId
-            vsArray[0].title = el.category
             vsArray[0].body = [el]
+            vsArray[0].body.title = el.category
             lastId += 1
         } else {
             vsArray[0].body = [...vsArray[0].body, ...[el]]
@@ -54,24 +54,25 @@ const ProductListSelector = ({main_data, page}) => {
 
     })
     data = [...data, ...vsArray]
+    console.log(data)
 
     let count = 0
     data.map(el => {
         data[count].body = el.body.sort(function (a, b) {
             try {
-                if (Number(a.view.split(' ')[0]) > Number(b.view.split(' ')[0])) {
+                if (Number(a.body.view.split(' ')[0]) > Number(b.body.view.split(' ')[0])) {
                     return 1;
                 }
-                if (Number(a.view.split(' ')[0]) < Number(b.view.split(' ')[0])) {
+                if (Number(a.body.view.split(' ')[0]) < Number(b.body.view.split(' ')[0])) {
                     return -1;
                 }
             } catch (e) {
             }
             try {
-                if (Number(a.view) > Number(b.view)) {
+                if (Number(a.body.view) > Number(b.body.view)) {
                     return 1;
                 }
-                if (Number(a.view) < Number(b.view)) {
+                if (Number(a.body.view) < Number(b.body.view)) {
                     return -1;
                 }
             } catch (e) {
@@ -83,7 +84,7 @@ const ProductListSelector = ({main_data, page}) => {
     count = 0
     data.map(cat=>{
         cat.body.map(el=>{
-            el.localId = count
+            el.body.localId = count
             count++
         })
     })
@@ -110,7 +111,7 @@ const ProductListSelector = ({main_data, page}) => {
     let cordCategory = (window.innerWidth - 20 - 2 - 2) / data.length * selectCategory + 1.5
     let cordView = (window.innerWidth - 20 - 2 - 2) / data[selectCategory].body.length * selectView + 1.5
 
-    let url = data[selectCategory].body[selectView].img
+    let url = data[selectCategory].body[selectView].body.img
 
     let thisElement = data[selectCategory].body[selectView]
 
@@ -191,7 +192,7 @@ const ProductListSelector = ({main_data, page}) => {
                 return (
                     <div key={el.localId} style={{
                         position: 'absolute',
-                        marginLeft: String(((el.localId) % data[selectCategory].body.length) * (window.innerWidth - 20) / data[selectCategory].body.length + 'px'),
+                        marginLeft: String(((el.body.localId) % data[selectCategory].body.length) * (window.innerWidth - 20) / data[selectCategory].body.length + 'px'),
                         width: String((window.innerWidth - 30) / data[selectCategory].body.length) + 'px',
                         height: '100px'
                     }}>
@@ -203,7 +204,7 @@ const ProductListSelector = ({main_data, page}) => {
                             overflow: 'hidden',
                             width: String((window.innerWidth - 30) / data[selectCategory].body.length) + 'px',
                         }} onClick={() => {
-                            setSelectView(((el.localId) % data[selectCategory].body.length))
+                            setSelectView(((el.body.localId) % data[selectCategory].body.length))
                         }}>
                             <div style={{
                                 color: 'white',
@@ -213,11 +214,11 @@ const ProductListSelector = ({main_data, page}) => {
                                 justifyItems: 'center',
                                 alignItems: 'center'
                             }}>
-                                <div style={{fontSize: '13px', fontFamily: "'Montserrat', sans-serif"}}>{el.view}</div>
+                                <div style={{fontSize: '13px', fontFamily: "'Montserrat', sans-serif"}}>{el.body.view}</div>
                                 <div style={{
                                     fontSize: '22px',
                                     fontFamily: "'Montserrat', sans-serif"
-                                }}>{el.price + ' ₽'}</div>
+                                }}>{el.body.price + ' ₽'}</div>
                             </div>
                         </div>
                     </div>
@@ -286,11 +287,11 @@ const ProductListSelector = ({main_data, page}) => {
                                     <div style={{
                                         fontSize: '13px',
                                         fontFamily: "'Montserrat', sans-serif"
-                                    }}>{el.view}</div>
+                                    }}>{el.body.view}</div>
                                     <div style={{
                                         fontSize: '22px',
                                         fontFamily: "'Montserrat', sans-serif"
-                                    }}>{el.price + ' ₽'}</div>
+                                    }}>{el.body.price + ' ₽'}</div>
                                 </div>
                             </div>
                         </div>
@@ -301,10 +302,10 @@ const ProductListSelector = ({main_data, page}) => {
     }
 
     let platform = ''
-    if (typeof thisElement.platform === 'undefined') {
+    if (typeof thisElement.body.platform === 'undefined') {
         platform = ''
     } else {
-        platform = 'Консоли: ' + thisElement.platform
+        platform = 'Консоли: ' + thisElement.body.platform
     }
 
     return (
@@ -332,7 +333,7 @@ const ProductListSelector = ({main_data, page}) => {
                     fontFamily: "'Montserrat', sans-serif",
                     marginTop: '7px',
                     marginBottom: '7px'
-                }}>{thisElement.title + ' ' + thisElement.view}</div>
+                }}>{thisElement.body.title + ' ' + thisElement.body.view}</div>
                 <div style={{
                     display: 'grid',
                     alignItems: 'center',

@@ -85,10 +85,6 @@ const Info = () => {
                 </div>
             </div>
 
-            <div className={'text-element'} style={{color: 'gray', fontSize: '9px', textAlign: 'center'}}>
-                Добавьте данные от своего аккаунта, что бы бот оформлял заказы быстрее
-            </div>
-
             <div style={{background: '#454545', borderRadius: '7px', margin: '15px'}}>
                 <div style={{
                     marginLeft: '3px',
@@ -151,8 +147,71 @@ const Info = () => {
                 </div>
             </div>
 
-            <div className={'text-element'} style={{color: 'gray', fontSize: '9px', textAlign: 'center'}}>
-                Наши социальные сети с интересными новостями и розыгрышами
+            <div style={{background: '#454545', borderRadius: '7px', margin: '15px'}}>
+                <a style={{textDecoration: 'none'}}
+                   href={'https://t.me/gwstore_faq/10'}>
+                    <div style={{
+                        marginLeft: '3px',
+                        marginRight: '3px',
+                        borderBottom: '1px solid gray',
+                        display: "flex",
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                    }}>
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                        }}>
+                            <div className={'background-psInfo'} style={{
+                                width: '30px',
+                                height: '30px',
+                                borderRadius: '7px',
+                                marginLeft: '4px',
+                                marginTop: '5px',
+                                marginBottom: '5px'
+                            }}>
+                            </div>
+                            <div className={'text-element'} style={{fontSize: '15px', marginLeft: '15px'}}>
+                                Инструкции для PlayStation
+                            </div>
+                        </div>
+                        <div className={'background-arrowGray'}
+                             style={{width: '20px', height: '20px', marginRight: '5px'}}/>
+                    </div>
+                </a><a style={{textDecoration: 'none'}}
+                       href={'https://t.me/gwstore_faq/9'}>
+                <div style={{
+                    marginLeft: '3px',
+                    marginRight: '3px',
+                    display: "flex",
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                }}>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                    }}>
+                        <div className={'background-xbInfo'} style={{
+                            width: '30px',
+                            height: '30px',
+                            borderRadius: '7px',
+                            marginLeft: '4px',
+                            marginTop: '5px',
+                            marginBottom: '5px'
+                        }}>
+                        </div>
+                        <div className={'text-element'} style={{fontSize: '15px', marginLeft: '15px'}}>
+                            Инструкции для Xbox
+                        </div>
+                    </div>
+                    <div className={'background-arrowGray'}
+                         style={{width: '20px', height: '20px', marginRight: '5px'}}/>
+                </div>
+            </a>
             </div>
 
             <div style={{background: '#454545', borderRadius: '7px', margin: '15px'}}>
@@ -324,42 +383,42 @@ const Info = () => {
                              style={{width: '20px', height: '20px', marginRight: '5px'}}/>
                     </div>
                 </a>
-                    <a style={{textDecoration: 'none'}}
-                       href={'https://t.me/gwstore_faq/12'}>
+                <a style={{textDecoration: 'none'}}
+                   href={'https://t.me/gwstore_faq/12'}>
+                    <div style={{
+                        marginLeft: '3px',
+                        marginRight: '3px',
+                        display: "flex",
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                    }}>
                         <div style={{
-                            marginLeft: '3px',
-                            marginRight: '3px',
-                            display: "flex",
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center'
+                            display: 'grid',
+                            gridTemplateColumns: '34px 1fr',
+                            alignItems: 'center',
                         }}>
-                            <div style={{
-                                display: 'grid',
-                                gridTemplateColumns: '34px 1fr',
-                                alignItems: 'center',
+                            <div className={'background-pkInfo'} style={{
+                                width: '30px',
+                                height: '30px',
+                                borderRadius: '7px',
+                                marginLeft: '4px',
+                                marginTop: '5px',
+                                marginBottom: '5px'
                             }}>
-                                <div className={'background-pkInfo'} style={{
-                                    width: '30px',
-                                    height: '30px',
-                                    borderRadius: '7px',
-                                    marginLeft: '4px',
-                                    marginTop: '5px',
-                                    marginBottom: '5px'
-                                }}>
-                                </div>
-                                <div className={'text-element'} style={{fontSize: '13px', marginLeft: '15px'}}>
-                                    Политика конфиденциальности
-                                </div>
                             </div>
-                            <div className={'background-arrowGray'}
-                                 style={{width: '20px', height: '20px', marginRight: '5px'}}/>
+                            <div className={'text-element'} style={{fontSize: '13px', marginLeft: '15px'}}>
+                                Политика конфиденциальности
+                            </div>
                         </div>
-                    </a>
+                        <div className={'background-arrowGray'}
+                             style={{width: '20px', height: '20px', marginRight: '5px'}}/>
+                    </div>
+                </a>
             </div>
 
             <div style={{background: '#454545', borderRadius: '7px', margin: '15px'}}>
-            <a style={{textDecoration: 'none'}}
+                <a style={{textDecoration: 'none'}}
                    href={'https://t.me/gwstore_admin'}>
                     <div style={{
                         marginLeft: '3px',
@@ -391,7 +450,7 @@ const Info = () => {
                         <div className={'background-arrowGray'}
                              style={{width: '20px', height: '20px', marginRight: '5px'}}/>
                     </div>
-            </a>
+                </a>
                 <a style={{textDecoration: 'none'}}
                    href={'https://t.me/gwstore_admin'}>
                     <div style={{
@@ -404,7 +463,7 @@ const Info = () => {
                     }}>
                         <div style={{
                             display: 'grid',
-                            gridTemplateColumns:'34px 1fr',
+                            gridTemplateColumns: '34px 1fr',
                             alignItems: 'center',
                         }}>
                             <div className={'background-ideaInfo'} style={{
@@ -416,7 +475,8 @@ const Info = () => {
                                 marginBottom: '5px'
                             }}>
                             </div>
-                            <div className={'text-element'} style={{fontSize: '13px', marginLeft: '15px', textWrap:'pretty'}}>
+                            <div className={'text-element'}
+                                 style={{fontSize: '13px', marginLeft: '15px', textWrap: 'pretty'}}>
                                 Предложить идею для улучшения бота
                             </div>
                         </div>
@@ -426,15 +486,6 @@ const Info = () => {
                 </a>
             </div>
 
-
-
-            <div style={{margin: '15px'}}><a className={'link-element text-element'}
-                                             href={'https://t.me/gwstore_faq/10'}>Инструкции для PlayStation</a>
-            </div>
-
-            <div style={{margin: '15px'}}><a className={'link-element text-element'}
-                                             href={'https://t.me/gwstore_faq/9'}>Инструкции для Xbox</a>
-            </div>
 
         </div>
     );

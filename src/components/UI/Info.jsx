@@ -325,7 +325,7 @@ const Info = () => {
                     </div>
                 </a>
                     <a style={{textDecoration: 'none'}}
-                       href={'https://t.me/gwstore_admin'}>
+                       href={'https://t.me/gwstore_faq/12'}>
                         <div style={{
                             marginLeft: '3px',
                             marginRight: '3px',
@@ -360,7 +360,7 @@ const Info = () => {
 
             <div style={{background: '#454545', borderRadius: '7px', margin: '15px'}}>
             <a style={{textDecoration: 'none'}}
-                   href={'https://t.me/gwstore_faq/12'}>
+                   href={'https://t.me/gwstore_admin'}>
                     <div style={{
                         marginLeft: '3px',
                         marginRight: '3px',

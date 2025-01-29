@@ -28,7 +28,7 @@ const Basket = ({height, number}) => {
 
     let dataRequestPromo = {
         method: 'use',
-        data:{str: promoInput},
+        data: {str: promoInput},
     }
 
     const sendRequestPromo = useCallback(() => {
@@ -44,19 +44,18 @@ const Basket = ({height, number}) => {
             Promise.then(prom => {
                 console.log(prom, 'возвратил get')
                 if (dataRequestPromo.method === 'use') {
-                    if(prom.answer === true){
-                        if(prom.parcent !==0){
+                    if (prom.answer === true) {
+                        if (prom.parcent !== 0) {
                             setPromoIsUse(true)
                             setParcent(prom.parcent)
                             promo = promoInput
                             console.log('yes')
                             setPromoMassage('Успешное применение')
-                        }
-                        else{
+                        } else {
                             setPromoMassage('Количество использований исчерпано')
                             console.log('yes1')
                         }
-                    }else{
+                    } else {
                         setPromoMassage('Промокод не найден')
                         console.log('no')
                     }
@@ -70,7 +69,7 @@ const Basket = ({height, number}) => {
         method: 'buy',
         user: user,
         accData: '',
-        promo : promo,
+        promo: promo,
         page: number,
     }
 
@@ -229,7 +228,7 @@ const Basket = ({height, number}) => {
             </div>
             <div style={{display: 'flex', flexDirection: 'row'}}>
                 <div style={{marginTop: '10px', fontSize: '17px', marginLeft: '0', marginRight: '15px'}}
-                     className={'text-element'}>{String(sumPrice - sumPrice * (parcent/100))} ₽
+                     className={'text-element'}>{String(sumPrice - sumPrice * (parcent / 100))} ₽
                 </div>
                 <div style={{
                     marginTop: '10px',
@@ -286,12 +285,12 @@ const Basket = ({height, number}) => {
                 marginLeft: '7px',
                 textAlign: 'center',
             }}
-            onClick={()=>{
-                sendRequestPromo()
-            }}>Применить
+                    onClick={() => {
+                        sendRequestPromo()
+                    }}>Применить
             </button>
         </div>
-        <div className={'text-element'} style={{textAlign:'center'}}>{promoMassage}</div>
+        <div className={'text-element'} style={{textAlign: 'center'}}>{promoMassage}</div>
     </div>)
 
     if (myPromo) {
@@ -566,29 +565,18 @@ const Basket = ({height, number}) => {
                         height: String(height - 100 - 15 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
                         marginTop: '15px', width: String(window.innerWidth) + 'px', textAlign: 'center',
                         color: 'gray', fontSize: '16px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center'
                     }} className={'text-element'}>
-                        Корзина пуста
+                        <div className={'background-basketSaid'} style={{width: '65px', height: '83px'}}/>
+                        <div className={'text-element'}>В корзине ничего нет...</div>
                     </div>
-                    <div style={{marginBottom: '0px', position: 'relative'}}>
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            width: '100%',
-                            justifyContent: 'space-between',
-                            borderTop: '2px solid gray'
-                        }}>
-                            <div style={{marginTop: '10px', fontSize: '20px', marginLeft: '20px'}}
-                                 className={'text-element'}>Итого:
-                            </div>
-                            <div style={{marginTop: '10px', fontSize: '20px', marginRight: '20px'}}
-                                 className={'text-element'}>0 ₽
-                            </div>
-                        </div>
-                        <Link to={'/home0'} className={'link-element'}>
-                            <button className={'all-see-button'} style={{marginTop: '10px'}}>На главную
-                            </button>
-                        </Link>
-                    </div>
+                    <Link to={'/home0'} className={'link-element'} style={{marginTop:"75px"}}>
+                        <button className={'all-see-button'} style={{marginTop: '10px', width:String(window.innerWidth-40)+'px'}}>На главную
+                        </button>
+                    </Link>
                 </div>)
         } else {
             let count = 1;

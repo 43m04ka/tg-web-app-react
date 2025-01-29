@@ -368,6 +368,11 @@ body {
     background-size: cover;
 }
 
+.background-basketSaid {
+    background-image: url("../icons/saidBasket.png");
+    background-size: cover;
+}
+
 .button-trash {
     height: 50px;
     width: 50px;

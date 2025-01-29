@@ -562,8 +562,8 @@ const Basket = ({height, number}) => {
             return (
                 <div style={{display: 'grid'}}>
                     <div style={{
-                        height: String(height - 100 - 15 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
-                        marginTop: '15px', width: String(window.innerWidth) + 'px', textAlign: 'center',
+                        height: String(height - 60 - 15 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
+                        marginTop: '15px', textAlign: 'center',
                         color: 'gray', fontSize: '16px',
                         display: 'flex',
                         flexDirection: 'column',
@@ -573,8 +573,8 @@ const Basket = ({height, number}) => {
                         <div className={'background-basketSaid'} style={{width: '65px', height: '83px'}}/>
                         <div className={'text-element'}>В корзине ничего нет...</div>
                     </div>
-                    <Link to={'/home0'} className={'link-element'} style={{marginTop:"75px"}}>
-                        <button className={'all-see-button'} style={{marginTop: '10px', width:String(window.innerWidth-40)+'px'}}>На главную
+                    <Link to={'/home0'} className={'link-element'}>
+                        <button className={'all-see-button'} style={{marginTop: '10px', width:String(300)+'px'}}>На главную
                         </button>
                     </Link>
                 </div>)

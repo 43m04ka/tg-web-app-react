@@ -10,8 +10,10 @@ import 'swiper/css/autoplay';
 
 import {Autoplay, Pagination, Controller, EffectCoverflow} from 'swiper/modules';
 
-let realIndex = 0
+
 let isScroll = false
+let realIndex = 0
+let isPage = false
 
 const HeadSelector = ({hidden, basketData, page}) => {
     const navigate = useNavigate();
@@ -19,6 +21,9 @@ const HeadSelector = ({hidden, basketData, page}) => {
     const [basketLen, setBasketLen] = useState(0);
     const [colorSlider, setColorSlider] = useState('#404adf');
     const [swiperRef, setSwiperRef] = useState(null);
+
+    console.log(realIndex+'ind');
+
 
 
     let newArray = []
@@ -53,7 +58,6 @@ const HeadSelector = ({hidden, basketData, page}) => {
     }
 
     const onIndexChange = (index) => {
-        console.log(index + '--vern')
         if (window.location.pathname === '/home0' || window.location.pathname === '/home1' || window.location.pathname === '/home2') {
             if (index === 0 || index === 3) {
                 setColorSlider('linear-gradient(90deg, rgba(198,65,56,1) 0%, rgba(64,74,223,1) 40%, rgba(64,74,223,1) 60%, rgba(69,217,110,1) 100%)')
@@ -127,6 +131,7 @@ const HeadSelector = ({hidden, basketData, page}) => {
                             width: String(window.innerWidth - 14) + 'px',
                             alignContent: 'center'
                         }}
+                        initialSlide={page}
                         centeredSlides={true}
                         onActiveIndexChange={(ev) => {
                             realIndex = ev.realIndex;
@@ -154,7 +159,6 @@ const HeadSelector = ({hidden, basketData, page}) => {
                         loop={true}
                         modules={[Autoplay, Pagination, Controller, EffectCoverflow]}
                         onClick={(ev) => {
-                            console.log(ev.touches.currentX);
                             if (ev.touches.currentX > (window.innerWidth - 14) / 3 * 2) {
                                 let nI = realIndex + 1
 
@@ -168,7 +172,6 @@ const HeadSelector = ({hidden, basketData, page}) => {
                             }
                             if (ev.touches.currentX < (window.innerWidth - 14) / 3) {
                                 let nI = realIndex - 1
-                                console.log(nI)
                                 if (nI === -1) {
                                     swiperRef.slideToLoop(5, 300, false);
                                     realIndex = 5

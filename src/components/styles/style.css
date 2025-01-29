@@ -313,6 +313,31 @@ body {
     background-size: cover;
 }
 
+.background-loveInfo {
+    background-image: url("../icons/loveInfo.png");
+    background-size: cover;
+}
+
+.background-arrowMini {
+    background-image: url("../icons/arrowMini.png");
+    background-size: cover;
+}
+
+.background-basketInfo {
+    background-image: url("../icons/basketInfo.png");
+    background-size: cover;
+}
+
+.background-psInfo {
+    background-image: url("../icons/playstationInfo.png");
+    background-size: cover;
+}
+
+.background-xbInfo {
+    background-image: url("../icons/xboxInfo.png");
+    background-size: cover;
+}
+
 .button-trash {
     height: 50px;
     width: 50px;

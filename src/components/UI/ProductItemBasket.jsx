@@ -44,7 +44,6 @@ const ProductItemBasket = ({setBasketF, product}) => {
             <div className={'title'} style={{marginLeft: '10px'}}>{item.number + '.'}</div>
             <Link to={'/card/'+item.id} className={'link-element'}
                   style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>
-
                 <img src={item.body.img} alt={item.body.title} className={'img-mini'}/>
                 <div className={'box-grid-row'}>
                     <div className={'text-element text-basket'} style={{

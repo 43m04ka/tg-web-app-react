@@ -12,11 +12,11 @@ const Basket = ({height, number}) => {
     console.log(user)
 
     const [basket, setBasket] = useState([])
-    const [myAcc, setMyAcc] = useState(0);
+    const [myAcc, setMyAcc] = useState(1);
     const [myPromo, setMyPromo] = useState(1);
-    const [colorYes, setColorYes] = useState([81, 164, 86]);
-    const [colorNo, setColorNo] = useState([45, 12, 12]);
-    const [colorYesPromo, setColorYesPromo] = useState([12, 45, 12]);
+    const [colorYes, setColorYes] = useState([69, 69, 69]);
+    const [colorNo, setColorNo] = useState([164, 30, 30]);
+    const [colorYesPromo, setColorYesPromo] = useState([69, 69, 69]);
     const [colorNoPromo, setColorNoPromo] = useState([164, 30, 30]);
     const [status, setStatus] = useState(0);
     const [buttonText, setButtonText] = React.useState('Оформить заказ и оплатить');
@@ -24,6 +24,7 @@ const Basket = ({height, number}) => {
     const [promoIsUse, setPromoIsUse] = useState(false);
     const [parcent, setParcent] = useState(0);
     const [promoMassage, setPromoMassage] = useState('');
+    const [promoColor, setPromoColor] = useState([255, 255, 255])
 
 
     let dataRequestPromo = {
@@ -113,7 +114,7 @@ const Basket = ({height, number}) => {
                 }
                 promo = ''
                 setPromoIsUse(false)
-                setColorYesPromo([12, 45, 12])
+                setColorYesPromo([69, 69, 69])
                 setColorNo([164, 30, 30])
                 setPromoInput('')
                 setParcent(0)
@@ -173,23 +174,23 @@ const Basket = ({height, number}) => {
     const onclickYes = () => {
         setMyAcc(0);
         setColorYes([81, 164, 86]);
-        setColorNo([45, 12, 12]);
+        setColorNo([69, 69, 69]);
     }
     const onclickNo = () => {
         setMyAcc(1);
         setColorNo([164, 30, 30]);
-        setColorYes([12, 45, 12]);
+        setColorYes([69, 69, 69]);
     }
 
     const onclickYesPromo = () => {
         setMyPromo(0);
         setColorYesPromo([81, 164, 86]);
-        setColorNoPromo([45, 12, 12]);
+        setColorNoPromo([69, 69, 69]);
     }
     const onclickNoPromo = () => {
         setMyPromo(1);
         setColorNoPromo([164, 30, 30]);
-        setColorYesPromo([12, 45, 12]);
+        setColorYesPromo([69, 69, 69]);
     }
 
     console.log(status)
@@ -324,29 +325,29 @@ const Basket = ({height, number}) => {
             <input placeholder={"Введите логин от аккаунта PSN"}
                    style={{
                        height: '40px',
-                       width: String(window.innerWidth - 20) + 'px',
+                       width: String(window.innerWidth - 60) + 'px',
                        marginTop: '10px',
-                       borderRadius: '10px',
-                       background: '#454545',
+                       borderRadius: '7px',
+                       background: 'white',
                        textAlign: 'center',
                        border: '0px',
                        fontSize: '16px',
-                       color: 'white',
+                       color: 'black',
                        fontFamily: "'Montserrat', sans-serif",
                    }} onChange={(event) => inputData[0] = event.target.value}/>
             <input placeholder={"Введите пароль от аккаунта PSN"}
                    style={{
                        height: '40px',
-                       width: String(window.innerWidth - 20) + 'px',
+                       width: String(window.innerWidth - 60) + 'px',
                        marginTop: '7px',
                        marginBottom: '10px',
-                       borderRadius: '10px',
-                       background: '#454545',
+                       borderRadius: '7px',
+                       background: 'white',
                        textAlign: 'center',
                        textWrap: 'wrap',
                        border: '0px',
                        fontSize: '16px',
-                       color: 'white',
+                       color: 'black',
                        fontFamily: "'Montserrat', sans-serif",
                    }} onChange={(event) => inputData[1] = event.target.value}/>
             <div className={'text-element'} style={{fontSize: '14px'}}>Введите резервные коды от аккаунта PSN:</div>
@@ -355,47 +356,44 @@ const Basket = ({height, number}) => {
                        maxLength={6}
                        style={{
                            height: '40px',
-                           width: String((window.innerWidth - 60) / 3) + 'px',
+                           width: String((window.innerWidth - 74) / 3) + 'px',
                            marginTop: '7px',
                            marginBottom: '10px',
-                           borderRadius: '10px',
-                           background: '#454545',
+                           borderRadius: '7px',
+                           background: 'white',
                            textAlign: 'center',
                            border: '0px',
                            fontSize: '18px',
-                           color: 'white',
                            fontFamily: "'Montserrat', sans-serif",
                        }} onChange={(event) => inputData[2] = event.target.value}/>
                 <input placeholder={"Код #2"}
                        maxLength={6}
                        style={{
                            height: '40px',
-                           width: String((window.innerWidth - 60) / 3) + 'px',
+                           width: String((window.innerWidth - 74) / 3) + 'px',
                            marginTop: '7px',
                            marginBottom: '10px',
-                           borderRadius: '10px',
-                           background: '#454545',
+                           borderRadius: '7px',
+                           background: 'white',
                            textAlign: 'center',
                            marginLeft: '7px',
                            marginRight: '7px',
                            border: '0px',
                            fontSize: '18px',
-                           color: 'white',
                            fontFamily: "'Montserrat', sans-serif",
                        }} onChange={(event) => inputData[3] = event.target.value}/>
                 <input placeholder={"Код #3"}
                        maxLength={6}
                        style={{
                            height: '40px',
-                           width: String((window.innerWidth - 60) / 3) + 'px',
+                           width: String((window.innerWidth - 74) / 3) + 'px',
                            marginTop: '7px',
                            marginBottom: '10px',
-                           borderRadius: '10px',
-                           background: '#454545',
+                           borderRadius: '7px',
+                           background: 'white',
                            textAlign: 'center',
                            border: '0px',
                            fontSize: '18px',
-                           color: 'white',
                            fontFamily: "'Montserrat', sans-serif",
                        }} onChange={(event) => inputData[4] = event.target.value}/>
             </div>
@@ -574,7 +572,8 @@ const Basket = ({height, number}) => {
                         <div className={'text-element'}>В корзине ничего нет...</div>
                     </div>
                     <Link to={'/home0'} className={'link-element'}>
-                        <button className={'all-see-button'} style={{marginTop: '10px', width:String(300)+'px'}}>На главную
+                        <button className={'all-see-button'} style={{marginTop: '10px', width: String(300) + 'px'}}>На
+                            главную
                         </button>
                     </Link>
                 </div>)
@@ -646,45 +645,60 @@ const Basket = ({height, number}) => {
                     marginTop: '10px'
                 }}>Оформление заказа
                 </div>
-                {selectAcc}
                 <div style={{
-                    transitionProperty: 'height',
-                    transitionDuration: '0.2s',
-                    marginTop: '20px',
-                    marginBottom: '20px'
-                }}>{menuDesigns}</div>
-
-                <div style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginTop: '5px',
-                    height: '40px'
+                    background: '#454545',
+                    padding: '5px',
+                    borderRadius: '7px', marginBottom: '10px'
                 }}>
-                    <div className={"text-element"}
-                         style={{fontSize: '15px', marginLeft: '0',}}>У
-                        меня есть промокод:
-                    </div>
+                    {selectAcc}
                     <div style={{
-                        width: '140px',
-                        justifyContent: 'space-between',
-                        display: 'flex',
-                        flexDirection: 'row',
-                    }}>
-                        <div
-                            style={{width: '65px'}}>
-                            <button className={'selector-button'} onClick={onclickYesPromo} style={styleYesPromo}>Да
-                            </button>
+                        transitionProperty: 'height',
+                        transitionDuration: '0.2s',
+                        marginTop: '20px',
+                        marginBottom: '20px'
+                    }}>{menuDesigns}</div>
+                </div>
+                <div style={{
+                    marginTop: '5px',
+                    background: '#454545',
+                    padding: '5px',
+                    borderRadius: '7px',
+                }}>
+                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                        }}>
+                            <div className={"text-element"}
+                                 style={{fontSize: '15px', marginLeft: '0',}}>У
+                                меня есть промокод:
+                            </div>
+                            <div style={{
+                                width: '140px',
+                                justifyContent: 'space-between',
+                                display: 'flex',
+                                flexDirection: 'row',
+                            }}>
+                                <div
+                                    style={{width: '65px'}}>
+                                    <button className={'selector-button'} onClick={onclickYesPromo}
+                                            style={styleYesPromo}>Да
+                                    </button>
+                                </div>
+                                <div
+                                    style={{width: '65px'}}>
+                                    <button className={'selector-button'} onClick={onclickNoPromo}
+                                            style={styleNoPromo}>Нет
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div
-                            style={{width: '65px'}}>
-                            <button className={'selector-button'} onClick={onclickNoPromo} style={styleNoPromo}>Нет
-                            </button>
-                        </div>
+                        {promoElement}
                     </div>
                 </div>
-                {promoElement}
+
                 {priceElement}
             </div>
             <button className={'all-see-button'} style={{

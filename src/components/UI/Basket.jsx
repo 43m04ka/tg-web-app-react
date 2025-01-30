@@ -23,8 +23,9 @@ const Basket = ({height, number}) => {
     const [promoInput, setPromoInput] = useState('');
     const [promoIsUse, setPromoIsUse] = useState(false);
     const [parcent, setParcent] = useState(0);
-    const [promoMassage, setPromoMassage] = useState('');
     const [promoColor, setPromoColor] = useState([255, 255, 255])
+    const [promoButtonColor, setPromoButtonColor] = useState([69, 69, 69]);
+    const [promoButtonText, setPromoButtonText] = useState('Применить');
 
 
     let dataRequestPromo = {
@@ -50,15 +51,18 @@ const Basket = ({height, number}) => {
                             setPromoIsUse(true)
                             setParcent(prom.parcent)
                             promo = promoInput
-                            console.log('yes')
-                            setPromoMassage('Успешное применение')
+                            setPromoColor([82, 165, 87])
+                            setPromoButtonColor([82, 165, 87])
+                            setPromoButtonText('Скидка активна')
                         } else {
-                            setPromoMassage('Количество использований исчерпано')
-                            console.log('yes1')
+                            setPromoColor([164, 30, 30])
+                            setPromoButtonColor([164, 30, 30])
+                            setPromoButtonText('Кол-во исчерпано')
                         }
                     } else {
-                        setPromoMassage('Промокод не найден')
-                        console.log('no')
+                        setPromoColor([164, 30, 30])
+                        setPromoButtonColor([164, 30, 30])
+                        setPromoButtonText('Промокод не найден')
                     }
                 }
             })
@@ -201,6 +205,22 @@ const Basket = ({height, number}) => {
     const styleYesPromo = {background: rgb(colorYesPromo), height: '37px'}
     const styleNoPromo = {background: rgb(colorNoPromo), height: '37px'}
 
+    const stylePromoInput = {background: rgb(promoColor), height: '38px',
+        borderRadius: '7px',
+        textAlign: 'center',
+        border: '0px',
+        fontSize: '18px',
+        marginLeft: '5px',
+        fontFamily: "'Montserrat', sans-serif",}
+
+    const stylePromoButton = {background: rgb(promoButtonColor),
+        border: '2px solid gray',
+        borderRadius: '7px',
+        height: '39px',
+        marginLeft: '4px',
+        color:'white',
+        textAlign: 'center',}
+
     let priceElement = (<div style={{
             display: 'flex',
             flexDirection: 'row',
@@ -247,52 +267,27 @@ const Basket = ({height, number}) => {
         </div>)
     }
 
-    let promoElement = (<div>
+    let promoElement = (
         <div style={{
-            display: 'flex',
-            flexDirection: 'row',
+            display: 'grid',
+            gridTemplateColumns:'6fr 5fr',
             alignItems: 'center',
             justifyContent: 'center',
             marginTop: '5px',
             height: '40px'
         }}>
             <div>
-                <div style={{
-                    width: '200px',
-                }}>
-                    <input placeholder={"Введите промокод"}
-                           style={{
-                               height: '38px',
-                               width: '200px',
-                               borderRadius: '10px',
-                               background: '#454545',
-                               textAlign: 'center',
-                               border: '0px',
-                               fontSize: '18px',
-                               color: 'white',
-                               fontFamily: "'Montserrat', sans-serif",
-                           }} onChange={(event) => {
-                        setPromoInput(event.target.value.toUpperCase());
-                    }}/>
-                </div>
+                <input placeholder={"Введите промокод"}
+                       style={stylePromoInput} onChange={(event) => {
+                    setPromoInput(event.target.value.toUpperCase());
+                }}/>
             </div>
-            <button className={'text-element'} style={{
-                color: 'black',
-                background: 'white',
-                border: '0px',
-                borderRadius: '10px',
-                width: '120px',
-                height: '37px',
-                marginLeft: '7px',
-                textAlign: 'center',
-            }}
+            <button className={'text-element'} style={stylePromoButton}
                     onClick={() => {
                         sendRequestPromo()
-                    }}>Применить
+                    }}>{promoButtonText}
             </button>
-        </div>
-        <div className={'text-element'} style={{textAlign: 'center'}}>{promoMassage}</div>
-    </div>)
+        </div>)
 
     if (myPromo) {
         promoElement = (<div></div>)
@@ -433,29 +428,27 @@ const Basket = ({height, number}) => {
             <input placeholder={"Введите логин от аккаунта Xbox"}
                    style={{
                        height: '40px',
-                       width: String(window.innerWidth - 20) + 'px',
+                       width: String(window.innerWidth - 60) + 'px',
                        marginTop: '10px',
-                       borderRadius: '10px',
-                       background: '#454545',
+                       borderRadius: '7px',
+                       background: 'white',
                        textAlign: 'center',
                        border: '0px',
                        fontSize: '16px',
-                       color: 'white',
                        fontFamily: "'Montserrat', sans-serif",
                    }} onChange={(event) => inputData[0] = event.target.value}/>
             <input placeholder={"Введите пароль от аккаунта Xbox"}
                    style={{
                        height: '40px',
-                       width: String(window.innerWidth - 20) + 'px',
+                       width: String(window.innerWidth - 60) + 'px',
                        marginTop: '7px',
                        marginBottom: '10px',
-                       borderRadius: '10px',
-                       background: '#454545',
+                       borderRadius: '7px',
+                       background: 'white',
                        textAlign: 'center',
                        textWrap: 'wrap',
                        border: '0px',
                        fontSize: '16px',
-                       color: 'white',
                        fontFamily: "'Montserrat', sans-serif",
                    }} onChange={(event) => inputData[1] = event.target.value}/>
             <div className={'text-element'} style={{fontSize: '12px', textAlign: 'center'}}>Введите резервную почту или
@@ -466,33 +459,31 @@ const Basket = ({height, number}) => {
                        maxLength={6}
                        style={{
                            height: '40px',
-                           width: String((window.innerWidth - 45) / 2) + 'px',
+                           width: String((window.innerWidth - 67) / 2) + 'px',
                            marginTop: '7px',
                            marginBottom: '10px',
-                           borderRadius: '10px',
-                           background: '#454545',
+                           borderRadius: '7px',
+                           background: 'white',
                            textAlign: 'center',
                            border: '0px',
                            fontSize: '16px',
-                           color: 'white',
                            fontFamily: "'Montserrat', sans-serif",
                        }} onChange={(event) => inputData[2] = event.target.value}/>
                 <input placeholder={"Телефон"}
                        maxLength={6}
                        style={{
                            height: '40px',
-                           width: String((window.innerWidth - 45) / 2) + 'px',
+                           width: String((window.innerWidth - 67) / 2) + 'px',
                            marginTop: '7px',
                            marginBottom: '10px',
-                           borderRadius: '10px',
-                           background: '#454545',
+                           borderRadius: '7px',
+                           background: 'white',
                            textAlign: 'center',
                            marginLeft: '7px',
                            marginRight: '7px',
                            border: '0px',
                            fontSize: '16px',
-                           color: 'white',
-                           fontFafmily: "'Montserrat', sans-serif",
+                           fontFamily: "'Montserrat', sans-serif",
                        }} onChange={(event) => inputData[3] = event.target.value}/>
             </div>
             <a href={'https://t.me/gwstore_faq/9'}

@@ -55,11 +55,13 @@ const Basket = ({height, number}) => {
                             setPromoButtonColor([82, 165, 87])
                             setPromoButtonText('Скидка активна')
                         } else {
+                            setPromoIsUse(false)
                             setPromoColor([164, 30, 30])
                             setPromoButtonColor([164, 30, 30])
                             setPromoButtonText('Кол-во исчерпано')
                         }
                     } else {
+                        setPromoIsUse(false)
                         setPromoColor([164, 30, 30])
                         setPromoButtonColor([164, 30, 30])
                         setPromoButtonText('Промокод не найден')
@@ -205,7 +207,7 @@ const Basket = ({height, number}) => {
     const styleYesPromo = {background: rgb(colorYesPromo), height: '37px'}
     const styleNoPromo = {background: rgb(colorNoPromo), height: '37px'}
 
-    const stylePromoInput = {background: rgb(promoColor), height: '38px',
+    const stylePromoInput = {background: rgb(promoColor), height: '34px',
         borderRadius: '7px',
         textAlign: 'center',
         border: '0px',
@@ -216,7 +218,7 @@ const Basket = ({height, number}) => {
     const stylePromoButton = {background: rgb(promoButtonColor),
         border: '2px solid gray',
         borderRadius: '7px',
-        height: '39px',
+        height: '34px',
         marginLeft: '4px',
         color:'white',
         textAlign: 'center',}
@@ -274,12 +276,19 @@ const Basket = ({height, number}) => {
             alignItems: 'center',
             justifyContent: 'center',
             marginTop: '5px',
-            height: '40px'
         }}>
             <div>
                 <input placeholder={"Введите промокод"}
                        style={stylePromoInput} onChange={(event) => {
                     setPromoInput(event.target.value.toUpperCase());
+                }}
+                onClick={()=>{
+                    if(!promoIsUse){
+                        setPromoColor([255, 255, 255])
+                        setPromoButtonColor([69, 69, 69]);
+                        setPromoButtonText('Применить');
+                        setPromoIsUse(null)
+                    }
                 }}/>
             </div>
             <button className={'text-element'} style={stylePromoButton}
@@ -319,7 +328,7 @@ const Basket = ({height, number}) => {
             <div className={'text-element'} style={{fontSize: '14px'}}>Введите логин и пароль от аккаунта PSN:</div>
             <input placeholder={"Введите логин от аккаунта PSN"}
                    style={{
-                       height: '40px',
+                       height: '34px',
                        width: String(window.innerWidth - 60) + 'px',
                        marginTop: '10px',
                        borderRadius: '7px',
@@ -332,7 +341,7 @@ const Basket = ({height, number}) => {
                    }} onChange={(event) => inputData[0] = event.target.value}/>
             <input placeholder={"Введите пароль от аккаунта PSN"}
                    style={{
-                       height: '40px',
+                       height: '34px',
                        width: String(window.innerWidth - 60) + 'px',
                        marginTop: '7px',
                        marginBottom: '10px',
@@ -350,7 +359,7 @@ const Basket = ({height, number}) => {
                 <input placeholder={"Код #1"}
                        maxLength={6}
                        style={{
-                           height: '40px',
+                           height: '34px',
                            width: String((window.innerWidth - 74) / 3) + 'px',
                            marginTop: '7px',
                            marginBottom: '10px',
@@ -364,7 +373,7 @@ const Basket = ({height, number}) => {
                 <input placeholder={"Код #2"}
                        maxLength={6}
                        style={{
-                           height: '40px',
+                           height: '34px',
                            width: String((window.innerWidth - 74) / 3) + 'px',
                            marginTop: '7px',
                            marginBottom: '10px',
@@ -380,7 +389,7 @@ const Basket = ({height, number}) => {
                 <input placeholder={"Код #3"}
                        maxLength={6}
                        style={{
-                           height: '40px',
+                           height: '34px',
                            width: String((window.innerWidth - 74) / 3) + 'px',
                            marginTop: '7px',
                            marginBottom: '10px',
@@ -412,7 +421,7 @@ const Basket = ({height, number}) => {
                                 justifyContent: 'space-between',
                                 marginTop: '5px',
                                 overflow: 'hidden',
-                                height: '40px'
+                                height: '30px'
                             }}>Мы оформим заказ на новый аккаунт Xbox и передадим Вам его в полном доступе. Это
             бесплатно.< /div>)
     } else if (number === 1 && myAcc === 0) {
@@ -427,7 +436,7 @@ const Basket = ({height, number}) => {
             <div className={'text-element'} style={{fontSize: '14px'}}>Введите логин и пароль от аккаунта Xbox:</div>
             <input placeholder={"Введите логин от аккаунта Xbox"}
                    style={{
-                       height: '40px',
+                       height: '34px',
                        width: String(window.innerWidth - 60) + 'px',
                        marginTop: '10px',
                        borderRadius: '7px',
@@ -439,7 +448,7 @@ const Basket = ({height, number}) => {
                    }} onChange={(event) => inputData[0] = event.target.value}/>
             <input placeholder={"Введите пароль от аккаунта Xbox"}
                    style={{
-                       height: '40px',
+                       height: '34px',
                        width: String(window.innerWidth - 60) + 'px',
                        marginTop: '7px',
                        marginBottom: '10px',
@@ -458,7 +467,7 @@ const Basket = ({height, number}) => {
                 <input placeholder={"Резервная почта"}
                        maxLength={6}
                        style={{
-                           height: '40px',
+                           height: '34px',
                            width: String((window.innerWidth - 67) / 2) + 'px',
                            marginTop: '7px',
                            marginBottom: '10px',
@@ -472,7 +481,7 @@ const Basket = ({height, number}) => {
                 <input placeholder={"Телефон"}
                        maxLength={6}
                        style={{
-                           height: '40px',
+                           height: '34px',
                            width: String((window.innerWidth - 67) / 2) + 'px',
                            marginTop: '7px',
                            marginBottom: '10px',

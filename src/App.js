@@ -25,9 +25,9 @@ function App() {
             body: [[], []]
         }, {id: 2, page: 'service', body: [[], []]}]);
     const [status, setStatus] = useState(0);
-    const [dataCards, setDataCards] = useState(null)
+    const [dataCards, setDataCards] = useState([])
     const [dataCardsDop, setDataCardsDop] = useState([])
-    const [basketData, setBasketData] = useState(null);
+    const [basketData, setBasketData] = useState([]);
     let dataRequestDatabase = {
         method: 'getPreview',
         data: []
@@ -141,8 +141,12 @@ function App() {
     }, []);
 
     useEffect(() => {
-        tg.disableVerticalSwipes();
-        tg.lockOrientation();
+        try {
+            tg.disableVerticalSwipes();
+            tg.lockOrientation();
+        }catch (e)
+        {console.log(e)}
+
         try {
             if (tg.platform !== 'tdesktop' && tg.platform !== 'macos') {
                 tg.requestFullscreen()

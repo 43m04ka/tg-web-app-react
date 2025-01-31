@@ -207,21 +207,25 @@ const Basket = ({height, number}) => {
     const styleYesPromo = {background: rgb(colorYesPromo), height: '37px'}
     const styleNoPromo = {background: rgb(colorNoPromo), height: '37px'}
 
-    const stylePromoInput = {background: rgb(promoColor), height: '34px',
+    const stylePromoInput = {
+        background: rgb(promoColor), height: '34px',
         borderRadius: '7px',
         textAlign: 'center',
         border: '0px',
         fontSize: '18px',
         marginLeft: '5px',
-        fontFamily: "'Montserrat', sans-serif",}
+        fontFamily: "'Montserrat', sans-serif",
+    }
 
-    const stylePromoButton = {background: rgb(promoButtonColor),
+    const stylePromoButton = {
+        background: rgb(promoButtonColor),
         border: '2px solid gray',
         borderRadius: '7px',
         height: '34px',
         marginLeft: '4px',
-        color:'white',
-        textAlign: 'center',}
+        color: 'white',
+        textAlign: 'center',
+    }
 
     let priceElement = (<div style={{
             display: 'flex',
@@ -272,24 +276,27 @@ const Basket = ({height, number}) => {
     let promoElement = (
         <div style={{
             display: 'grid',
-            gridTemplateColumns:'6fr 5fr',
+            gridTemplateColumns: '6fr 5fr',
             alignItems: 'center',
             justifyContent: 'center',
             marginTop: '5px',
         }}>
             <div>
-                <input placeholder={"Введите промокод"}
+                <input placeholder={"Введите промокод"} value={promoInput}
                        style={stylePromoInput} onChange={(event) => {
-                    setPromoInput(event.target.value.toUpperCase());
-                }}
-                onClick={()=>{
-                    if(!promoIsUse){
-                        setPromoColor([255, 255, 255])
-                        setPromoButtonColor([69, 69, 69]);
-                        setPromoButtonText('Применить');
-                        setPromoIsUse(null)
+                    if (!promoIsUse) {
+                        setPromoInput(event.target.value.toUpperCase());
                     }
-                }}/>
+                }}
+                       onClick={() => {
+                           if (!promoIsUse) {
+                               setPromoColor([255, 255, 255])
+                               setPromoButtonColor([69, 69, 69]);
+                               setPromoButtonText('Применить');
+                               setPromoInput('')
+                               setPromoIsUse(null)
+                           }
+                       }}/>
             </div>
             <button className={'text-element'} style={stylePromoButton}
                     onClick={() => {

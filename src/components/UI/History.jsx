@@ -17,22 +17,15 @@ const History = ({historyData}) => {
         }
     }, [onBack])
 
-    let arr = historyData
-    let newArr = [], index;
-    for (let i = arr.length; i > 0; i--) {
-        index = arr.length - i;
-        newArr[i] = arr[index];
-    }
 
-
-    if(newArr.length >0) {
+    if(historyData.length >0) {
         return (
             <div>
                 <div className={'title'}
                      style={{marginTop: '5px', marginLeft: 'auto', textAlign: 'center'}}>История
                     заказов
                 </div>
-                {newArr.map(order => (
+                {historyData.map(order => (
                     <Link to={'/history/' + String(order.id)} className={'link-element'}>
                         <div style={{
                             background: '#131313',

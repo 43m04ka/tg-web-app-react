@@ -62,6 +62,27 @@ const History = ({historyData}) => {
                 ))}
             </div>
         );
+    }else{
+        return (
+            <div style={{display: 'grid'}}>
+                <div style={{
+                    height: String(height - 60 - 15 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
+                    marginTop: '15px', textAlign: 'center',
+                    color: 'gray', fontSize: '16px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }} className={'text-element'}>
+                    <div className={'background-basketSaid'} style={{width: '65px', height: '83px'}}/>
+                    <div className={'text-element'}>История покупок пуста...</div>
+                </div>
+                <Link to={'/home0'} className={'link-element'}>
+                    <button className={'all-see-button'} style={{marginTop: '10px', width: String(300) + 'px'}}>На
+                        главную
+                    </button>
+                </Link>
+            </div>)
     }
 };
 

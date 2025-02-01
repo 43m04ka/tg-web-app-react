@@ -41,7 +41,7 @@ const History = ({historyData}) => {
                                 <div style={{display: 'flex', justifyContent: 'left', alignItems: 'center'}}>
                                     <div className={'text-element'}>{'Заказ №' + String(order.id)}</div>
                                     <div className={'text-element'} style={{marginLeft: '30px'}}>
-                                        {'от ' + String(order.date)}
+                                        {'от ' + String(order.date).replaceAll('/', '.')}
                                     </div>
                                 </div>
                                 <div className={'text-element'} style={{marginTop: '5px'}}>

@@ -18,7 +18,7 @@ const History = ({historyData}) => {
     }, [onBack])
 
 
-    if(historyData.length >0) {
+    if(historyData.length !==0) {
         return (
             <div>
                 <div className={'title'}

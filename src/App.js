@@ -12,6 +12,8 @@ import Basket from "./components/UI/Basket";
 import AdminPanel from "./components/UI/AdminPanel";
 import Info from "./components/UI/Info";
 import ProductListSelector from "./components/UI/ProductListSelector";
+import History from "./components/UI/History";
+import Order from "./components/UI/Order";
 
 let basketDataGlob = null
 
@@ -28,6 +30,7 @@ function App() {
     const [dataCards, setDataCards] = useState([])
     const [dataCardsDop, setDataCardsDop] = useState([])
     const [basketData, setBasketData] = useState([]);
+    const [historyData, setHistoryData] = React.useState([]);
     let dataRequestDatabase = {
         method: 'getPreview',
         data: []
@@ -158,6 +161,26 @@ function App() {
         tg.ready();
     }, [])
 
+    const sendDataOrders = {
+        method: 'get',
+        user: user,
+    }
+
+    const onSendDataOrders = useCallback(() => {
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/history', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(sendDataOrders)
+        }).then(r => {
+            let Promise = r.json()
+            Promise.then(prom => {
+                setHistoryData(prom.body)
+            })
+        })
+    }, [sendDataOrders])
+
 
     if (status === 2) {
         return (
@@ -216,6 +239,10 @@ function App() {
                     ))}
                     <Route path={'admin'} element={<AdminPanel/>}/>
                     <Route path={'info'} element={<Info/>}/>
+                    <Route path={'history'} element={<History historyData={historyData}/>}/>
+                    {historyData.map(order=>(
+                        <Route path={'history/'+String(order.id)} key={order.id} element={<Order data={order}/>}/>
+                    ))}
                     <Route path="*" element={<ErrorPage/>}/>
                 </Routes>
 
@@ -231,6 +258,7 @@ function App() {
     } else if (status === 0) {
         sendRequestDatabase()
         onGetData()
+        onSendDataOrders()
         setStatus(1)
     }
 }

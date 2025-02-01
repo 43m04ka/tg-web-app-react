@@ -561,7 +561,7 @@ const Basket = ({height, number}) => {
             border: '2px solid #8cdb8b',
             marginTop: String(height / 2 - 60) + 'px',
             marginLeft: String(window.innerWidth / 2 - 40) + 'px'
-        }}>Ожидайте</div>);
+        }}></div>);
     } else if (status === 1) {
         if (basket.length === 0) {
             return (
@@ -653,7 +653,7 @@ const Basket = ({height, number}) => {
                 }}>Оформление заказа
                 </div>
                 <div style={{
-                    background: '#454545',
+                    background: '#131313',
                     padding: '5px',
                     borderRadius: '7px', marginBottom: '10px'
                 }}>

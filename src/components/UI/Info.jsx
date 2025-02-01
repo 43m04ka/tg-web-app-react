@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 const Info = () => {
     const {tg} = useTelegram();
@@ -54,36 +54,39 @@ const Info = () => {
                     <div className={'background-arrowGray'}
                          style={{width: '20px', height: '20px', marginRight: '5px'}}/>
                 </div>
-                <div style={{
-                    marginLeft: '3px',
-                    marginRight: '3px',
-                    display: "flex",
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                }}>
+                <Link to={'/history'} className={'link-element'}>
                     <div style={{
-                        display: 'flex',
+                        marginLeft: '3px',
+                        marginRight: '3px',
+                        display: "flex",
                         flexDirection: 'row',
-                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
                     }}>
-                        <div className={'background-basketInfo'} style={{
-                            width: '30px',
-                            height: '30px',
-                            borderRadius: '7px',
-                            marginLeft: '4px',
-                            marginTop: '5px',
-                            marginBottom: '5px'
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
                         }}>
+                            <div className={'background-basketInfo'} style={{
+                                width: '30px',
+                                height: '30px',
+                                borderRadius: '7px',
+                                marginLeft: '4px',
+                                marginTop: '5px',
+                                marginBottom: '5px'
+                            }}>
+                            </div>
+                            <div className={'text-element'} style={{fontSize: '15px', marginLeft: '15px'}}>
+                                Мои покупки
+                            </div>
                         </div>
-                        <div className={'text-element'} style={{fontSize: '15px', marginLeft: '15px'}}>
-                            Мои покупки
-                        </div>
+                        <div className={'background-arrowGray'}
+                             style={{width: '20px', height: '20px', marginRight: '5px'}}/>
                     </div>
-                    <div className={'background-arrowGray'}
-                         style={{width: '20px', height: '20px', marginRight: '5px'}}/>
-                </div>
+                </Link>
             </div>
+
 
             <div style={{background: '#454545', borderRadius: '7px', margin: '15px'}}>
                 <div style={{

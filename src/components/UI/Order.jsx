@@ -1,8 +1,11 @@
 import React, {useCallback, useEffect} from 'react';
 import {Link, useNavigate} from "react-router-dom";
+import {useTelegram} from "../../hooks/useTelegram";
 
 const Order = ({data}) => {
     const navigate = useNavigate();
+    const {tg} = useTelegram();
+
 
     const onBack = useCallback(async () => {
         navigate(-1);

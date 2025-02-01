@@ -4,6 +4,7 @@ import {useTelegram} from "../../hooks/useTelegram";
 
 const History = ({historyData}) => {
     const navigate = useNavigate();
+    const {tg} = useTelegram();
 
     const onBack = useCallback(async () => {
         navigate(-1);

@@ -1,8 +1,21 @@
-import React, {useCallback} from 'react';
-import {Link} from "react-router-dom";
+import React, {useCallback, useEffect} from 'react';
+import {Link, useNavigate} from "react-router-dom";
 import {useTelegram} from "../../hooks/useTelegram";
 
 const History = ({historyData}) => {
+    const navigate = useNavigate();
+
+    const onBack = useCallback(async () => {
+        navigate(-1);
+    }, [])
+
+    useEffect(() => {
+        tg.onEvent('backButtonClicked', onBack)
+        return () => {
+            tg.offEvent('backButtonClicked', onBack)
+        }
+    }, [onBack])
+
     let arr = historyData
     let newArr = [], index;
     for (let i = arr.length; i > 0; i--) {

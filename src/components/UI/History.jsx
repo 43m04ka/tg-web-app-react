@@ -59,7 +59,7 @@ const History = ({historyData}) => {
         return (
             <div style={{display: 'grid'}}>
                 <div style={{
-                    height: String(height - 60 - 15 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
+                    height: String(window.innerHeight - 60 - 15 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
                     marginTop: '15px', textAlign: 'center',
                     color: 'gray', fontSize: '16px',
                     display: 'flex',

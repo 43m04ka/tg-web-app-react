@@ -6,6 +6,7 @@ import {useTelegram} from "../../hooks/useTelegram";
 
 let inputData = [null, null, null, null, null]
 let promo = ''
+let orderId = 0
 const Basket = ({height, number, updateOrders}) => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
@@ -115,6 +116,7 @@ const Basket = ({height, number, updateOrders}) => {
                 if (r.body) {
                     setStatus(3);
                     updateOrders()
+                    orderId = r.number
                 } else {
                     setStatus(0)
                     setButtonText('Оформить заказ и оплатить')
@@ -732,8 +734,7 @@ const Basket = ({height, number, updateOrders}) => {
                     textAlign: 'center',
                     fontSize: '20px',
                     marginLeft: '0px'
-                }}>Заказ
-                    успешно оформлен, спасибо!
+                }}>{'Заказ №'+ String(orderId)+' успешно оформлен, спасибо!'}
                 </div>
                 <div className={'background-heart'}
                      style={{height: '60px', width: '60px', marginLeft: String(window.innerWidth / 2 - 30) + 'px'}}/>

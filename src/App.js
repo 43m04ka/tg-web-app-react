@@ -229,9 +229,9 @@ function App() {
                                                                  basketData={basketData}/>}/>
                         ))
                     ))}
-                    <Route path={'basket0'} element={<Basket height={size} number={0}/>}/>
-                    <Route path={'basket1'} element={<Basket height={size} number={1}/>}/>
-                    <Route path={'basket2'} element={<Basket height={size} number={2}/>}/>
+                    <Route path={'basket0'} element={<Basket height={size} number={0} setStatusApp={setStatus}/>}/>
+                    <Route path={'basket1'} element={<Basket height={size} number={1} setStatusApp={setStatus}/>}/>
+                    <Route path={'basket2'} element={<Basket height={size} number={2} setStatusApp={setStatus}/>}/>
                     {mainData.map(platform => (
                         <Route path={'search' + String(platform.id)} key={platform.id}
                                element={<Search height={size} setData={setDataCards} setStatusApp={setStatus}

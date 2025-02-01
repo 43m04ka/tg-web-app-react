@@ -6,7 +6,7 @@ import {useTelegram} from "../../hooks/useTelegram";
 
 let inputData = [null, null, null, null, null]
 let promo = ''
-const Basket = ({height, number}) => {
+const Basket = ({height, number, setStatusApp}) => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     console.log(user)
@@ -114,6 +114,7 @@ const Basket = ({height, number}) => {
             Promise.then(r => {
                 if (r.body) {
                     setStatus(3);
+                    setStatusApp(0)
                 } else {
                     setStatus(0)
                     setButtonText('Оформить заказ и оплатить')

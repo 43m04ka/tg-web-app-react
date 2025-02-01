@@ -3,13 +3,21 @@ import {Link} from "react-router-dom";
 import {useTelegram} from "../../hooks/useTelegram";
 
 const History = ({historyData}) => {
+    let arr = historyData
+    let newArr = [], index;
+    for (let i = arr.length; i > 0; i--) {
+        index = arr.length - i;
+        newArr[i] = arr[index];
+    }
+
+
     return (
         <div>
             <div className={'title'}
                  style={{marginTop: '5px', marginLeft: 'auto', textAlign: 'center'}}>История
                 заказов
             </div>
-            {historyData.map(order => (
+            {newArr.map(order => (
                 <Link to={'/history/' + String(order.id)} className={'link-element'}>
                     <div style={{
                         background: '#131313',

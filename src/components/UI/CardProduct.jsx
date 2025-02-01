@@ -231,7 +231,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
     useEffect(() => {
         if(textHidden === null) {
             heightText = refText.current.getBoundingClientRect().height;
-            if (heightText > 17.3 * 6) {
+            if (heightText > 17.3 * 3) {
                 setTextHidden(false)
                 console.log(true + '---')
             } else {
@@ -265,7 +265,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                          transitionDuration: '0.3s'
                      }}/>
             )
-            textElementHeight = (17.3 * 6)
+            textElementHeight = (17.3 * 3)
         }
     }
 

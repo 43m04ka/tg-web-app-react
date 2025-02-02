@@ -18,6 +18,7 @@ const Cassa = () => {
         }).then(r => {
             let Promise = r.json()
             Promise.then(prom => {
+
                 console.log(prom)
             })
         })

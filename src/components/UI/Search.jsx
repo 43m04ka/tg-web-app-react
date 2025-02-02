@@ -22,7 +22,7 @@ const Search = ({height, page, setData, setStatusApp}) => {
 
     let dataRequestDatabase = {
         method: 'getSearch',
-        data: {str:textInput, page:page}
+        data: {str: textInput, page: page}
     }
 
     const sendRequestDatabase = useCallback(() => {
@@ -41,8 +41,11 @@ const Search = ({height, page, setData, setStatusApp}) => {
                     setListRes(prom.cards)
                     setData(prom.cards)
                     console.log(prom.cards)
-                    setStatus(1)
-
+                    if(prom.cards.length===0){
+                        setStatus(3)
+                    }else{
+                        setStatus(1)
+                    }
                 }
             })
         })
@@ -64,6 +67,13 @@ const Search = ({height, page, setData, setStatusApp}) => {
         }
     }, [onBack])
 
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            setStatus(0)
+            sendRequestDatabase()
+        }
+    };
+
     let bodyElement = (<div>
         {listRes.map((item) => (
             <div className={'list-element'}
@@ -76,7 +86,7 @@ const Search = ({height, page, setData, setStatusApp}) => {
                         <div className={'text-element text-basket'} style={{
                             marginTop: '3px',
                             lineHeight: '17px',
-                            overflow:'hidden',
+                            overflow: 'hidden',
                             height: '34px',
                             fontSize: '15px'
                         }}>{item.body.title}</div>
@@ -90,33 +100,56 @@ const Search = ({height, page, setData, setStatusApp}) => {
                 </Link>
             </div>))}
     </div>)
-    if(listRes.length===0){
-        bodyElement = (<div className={'background-searchFon'} style={{marginLeft:String(window.innerWidth/2 - 125) + 'px', width:'250px', height:'250px', marginTop:String(window.innerHeight/2-200)+'px'}}/>)
+    if (listRes.length === 0) {
+        bodyElement = (<div className={'background-searchFon'} style={{
+            marginLeft: String(window.innerWidth / 2 - 125) + 'px',
+            width: '250px',
+            height: '250px',
+            marginTop: String(window.innerHeight / 2 - 200) + 'px'
+        }}/>)
     }
-    if (status === 1) {
+    if (status === 3) {
+        bodyElement = (<div>
+            <div className={'text-element'} style={{textAlign:'center', marginTop:'300px'}}>Ничего не найдено...</div>
+            <div className={'background-searchFon'} style={{
+                marginLeft: String(window.innerWidth / 2 - 125) + 'px',
+                width: '250px',
+                height: '250px',
+                marginTop: String(window.innerHeight / 2-470) + 'px'
+            }}></div>
+        </div>)
+    }
+    if (status === 1 || status === 3) {
         return (
             <div>
                 <div style={{
                     borderBottom: '2px gray solid',
                     display: "grid",
-                    gridTemplateColumns: '1fr 45px',
+                    gridTemplateColumns: '1fr 60px',
                     width: String(window.innerWidth) + 'px'
                 }}>
                     <input className={'search'} placeholder={'Найти игру, подписку, валюту...'}
-                           onChange={() => {setTextInput(event.target.value);
-                               if(event.target.value === '/admin'){
-                                    navigate('/admin')
-                               }}}
+                           onChange={() => setTextInput(event.target.value)}
+                           onKeyPress={handleKeyPress}
                            style={{
                                border: '0px', fontSize: '15px',
                                fontFamily: "'Montserrat', sans-serif",
-                               paddingLeft: '7px'
+                               paddingLeft: '7px',
                            }}></input>
-                    <div className={'div-button-panel'} style={{padding: '3px'}} onClick={()=>{
+                    <div className={'text-element'}
+                         style={{
+                             background: 'white',
+                             marginTop: '7px',
+                             marginBottom: '7px',
+                             marginRight: '7px',
+                             borderRadius: '7px',
+                             color: 'black',
+                             marginLeft: '0',
+                         }} onClick={() => {
                         setStatus(0)
                         sendRequestDatabase()
                     }}>
-                        <div className={'background-search'} style={{width: '100%', height: '100%'}}></div>
+                        <div style={{textAlign: 'center', marginTop: '10px', lineHeight: '15px'}}>Найти</div>
                     </div>
                 </div>
                 <div className={'scroll-container-y'} style={{height: String(height - 70) + 'px'}}>
@@ -132,19 +165,31 @@ const Search = ({height, page, setData, setStatusApp}) => {
                 <div style={{
                     borderBottom: '2px gray solid',
                     display: "grid",
-                    gridTemplateColumns: '1fr 55px',
+                    gridTemplateColumns: '1fr 60px',
                     width: String(window.innerWidth) + 'px'
                 }}>
-                    <input className={'search'} placeholder={'Найти игру, водписку, валюту...'}
+                    <input className={'search'} placeholder={'Найти игру, подписку, валюту...'}
                            onChange={() => setTextInput(event.target.value)}
+                           onKeyPress={handleKeyPress}
                            style={{
                                border: '0px', fontSize: '15px',
                                fontFamily: "'Montserrat', sans-serif",
-                               paddingLeft: '5px'
+                               paddingLeft: '7px',
                            }}></input>
-                    <div className={'div-button-panel'} style={{padding: '3px'}} onClick={() => {
+                    <div className={'text-element'}
+                         style={{
+                             background: 'white',
+                             marginTop: '7px',
+                             marginBottom: '7px',
+                             marginRight: '7px',
+                             borderRadius: '7px',
+                             color: 'black',
+                             marginLeft: '0',
+                         }} onClick={() => {
+                        setStatus(0)
+                        sendRequestDatabase()
                     }}>
-                        <div className={'background-search'} style={{width: '100%', height: '100%'}}></div>
+                        <div style={{textAlign: 'center', marginTop: '10px', lineHeight: '15px'}}>Найти</div>
                     </div>
                 </div>
                 <div className={'pong-loader'} style={{
@@ -155,6 +200,7 @@ const Search = ({height, page, setData, setStatusApp}) => {
             </div>
         );
     }
+
 }
 
 export default Search;

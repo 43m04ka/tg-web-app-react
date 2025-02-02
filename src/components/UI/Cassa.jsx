@@ -3,22 +3,18 @@ import React, {useCallback} from 'react';
 const Cassa = () => {
 
     let dataRequestDatabase = {
-        userName:'Admin-bot',
-        password:'49ODAvir',
+        userName: 'Admin-bot',
+        password: '49ODAvir',
 
     }
 
     const sendRequestDatabase = useCallback(() => {
         fetch('https://alfa.rbsuat.com/payment/rest/register.do', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
             body: JSON.stringify(dataRequestDatabase)
         }).then(r => {
             let Promise = r.json()
             Promise.then(prom => {
-
                 console.log(prom)
             })
         })

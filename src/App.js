@@ -14,6 +14,7 @@ import Info from "./components/UI/Info";
 import ProductListSelector from "./components/UI/ProductListSelector";
 import History from "./components/UI/History";
 import Order from "./components/UI/Order";
+import Cassa from "./components/UI/Cassa";
 
 let basketDataGlob = null
 
@@ -240,6 +241,7 @@ function App() {
                     <Route path={'admin'} element={<AdminPanel/>}/>
                     <Route path={'info'} element={<Info/>}/>
                     <Route path={'history'} element={<History historyData={historyData}/>}/>
+                    <Route path={'cassa'} element={<Cassa/>}/>
                     {historyData.map(order=>(
                         <Route path={'history/'+String(order.id)} key={order.id} element={<Order data={order}/>}/>
                     ))}

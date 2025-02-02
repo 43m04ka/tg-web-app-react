@@ -103,7 +103,10 @@ const Search = ({height, page, setData, setStatusApp}) => {
                     width: String(window.innerWidth) + 'px'
                 }}>
                     <input className={'search'} placeholder={'Найти игру, подписку, валюту...'}
-                           onChange={() => setTextInput(event.target.value)}
+                           onChange={() => {setTextInput(event.target.value);
+                               if(event.target.value === '/admin'){
+                                    navigate('/admin')
+                               }}}
                            style={{
                                border: '0px', fontSize: '15px',
                                fontFamily: "'Montserrat', sans-serif",

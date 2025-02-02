@@ -118,18 +118,24 @@ function App() {
     }
 
     const onGetData = useCallback(() => {
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(sendData)
-        }).then(r => {
-            let Promise = r.json()
-            Promise.then(r => {
-                setBasketData(r.body);
+        try {
+            fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(sendData)
+            }).then(r => {
+                let Promise = r.json()
+                Promise.then(r => {
+                    if(typeof r.body !== 'undefined') {
+                        setBasketData(r.body);
+                    }
+                })
             })
-        })
+        }catch (e) {
+            
+        }
     }, [sendData])
 
     const resizeHandler = () => {
@@ -168,18 +174,24 @@ function App() {
     }
 
     const onSendDataOrders = useCallback(() => {
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/history', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(sendDataOrders)
-        }).then(r => {
-            let Promise = r.json()
-            Promise.then(prom => {
-                setHistoryData(prom.body)
+        try {
+            fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/history', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(sendDataOrders)
+            }).then(r => {
+                let Promise = r.json()
+                Promise.then(prom => {
+                    if(typeof prom.body !== 'undefined') {
+                        setHistoryData(prom.body)
+                    }
+                })
             })
-        })
+        }catch (e) {
+            
+        }
     }, [sendDataOrders])
 
 

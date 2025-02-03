@@ -656,7 +656,7 @@ const Basket = ({height, number, updateOrders}) => {
                 }}>Оформление заказа
                 </div>
                 <div style={{
-                    background: '#131313',
+                    background: '#454545',
                     padding: '5px',
                     borderRadius: '7px', marginBottom: '10px'
                 }}>

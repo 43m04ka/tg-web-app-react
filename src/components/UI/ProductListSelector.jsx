@@ -46,7 +46,7 @@ const ProductListSelector = ({main_data, page}) => {
             vsArray = [{}]
             vsArray[0].id = lastId
             vsArray[0].body = [el]
-            vsArray[0].body.title = el.category
+            vsArray[0].title = el.body.category
             lastId += 1
         } else {
             vsArray[0].body = [...vsArray[0].body, ...[el]]
@@ -360,7 +360,7 @@ const ProductListSelector = ({main_data, page}) => {
                             position: 'absolute',
                             marginLeft: String((el.id) * (window.innerWidth - 20) / data.length) + 'px',
                             width: String((window.innerWidth - 30) / data.length) + 'px',
-                            height: '50px'
+                            height: '50px',
                         }}>
                             <div style={{
                                 justifyContent: 'center',
@@ -369,6 +369,7 @@ const ProductListSelector = ({main_data, page}) => {
                                 height: '50px',
                                 overflow: 'hidden',
                             }} onClick={() => {
+                                console.log(el)
                                 setSelectCategory(el.id)
                                 setSelectView(0)
                             }}>
@@ -396,7 +397,7 @@ const ProductListSelector = ({main_data, page}) => {
                         color: 'white',
                         textWrap: 'wrap',
                         fontFamily: "'Montserrat', sans-serif"
-                    }}>{thisElement.description}
+                    }}>{thisElement.body.description}
                     </div>
                     <div style={{
                         marginTop: '7px',

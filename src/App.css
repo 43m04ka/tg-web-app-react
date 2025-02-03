@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 body {
-  background: var(--tg-theme-bg-color);
+  background: rgb(23,23,23);
   color: var(--tg-theme-text-color);
 }
 .red{

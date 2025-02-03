@@ -41,9 +41,9 @@ const Search = ({height, page, setData, setStatusApp}) => {
                     setListRes(prom.cards)
                     setData(prom.cards)
                     console.log(prom.cards)
-                    if(prom.cards.length===0){
+                    if (prom.cards.length === 0) {
                         setStatus(3)
-                    }else{
+                    } else {
                         setStatus(1)
                     }
                 }
@@ -110,12 +110,11 @@ const Search = ({height, page, setData, setStatusApp}) => {
     }
     if (status === 3) {
         bodyElement = (<div>
-            <div className={'text-element'} style={{textAlign:'center', marginTop:'300px'}}>Ничего не найдено...</div>
+            <div className={'text-element'} style={{textAlign: 'center', marginTop: String(window.innerHeight / 2 - 170) + 'px'}}>Ничего не найдено...</div>
             <div className={'background-searchFon'} style={{
                 marginLeft: String(window.innerWidth / 2 - 125) + 'px',
                 width: '250px',
                 height: '250px',
-                marginTop: String(window.innerHeight / 2-470) + 'px'
             }}></div>
         </div>)
     }

@@ -9,7 +9,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 
 // import required modules
-import {Autoplay, Pagination,  Controller, EffectCoverflow} from 'swiper/modules';
+import {Autoplay, Pagination, Controller, EffectCoverflow} from 'swiper/modules';
 import {Link} from "react-router-dom";
 
 
@@ -23,21 +23,23 @@ const Slider = ({data}) => {
     };
 
     let loop = false
-    if(data.length > 3){loop = true}
+    if (data.length > 3) {
+        loop = true
+    }
     return (
-        <div style={{width:String(window.innerWidth)+'px', overflowX:'hidden'}}>
+        <div style={{width: String(window.innerWidth) + 'px', overflowX: 'hidden'}}>
             <Swiper watchSlidesProgress={true} slidesPerView={3} className="swiper"
-                    style={{width: String(window.innerWidth+220) + 'px',justifyItems:'left', marginLeft:'-110px'}}
+                    style={{width: String(window.innerWidth + 220) + 'px', justifyItems: 'left', marginLeft: '-110px'}}
                     spaceBetween={30}
                     centeredSlides={true}
                     effect={'coverflow'}
                     coverflowEffect={{
                         rotate: 0,
-                        stretch: 0,
+                        stretch: 100,
                         depth: 1000,
                         modifier: 0.1,
                         slideShadows: false,
-                        scale:0.83
+                        scale: 0.83
                     }}
                     autoplay={{
                         delay: 7000,
@@ -48,10 +50,21 @@ const Slider = ({data}) => {
                     modules={[Autoplay, Pagination, Controller, EffectCoverflow]}
             >
                 {data.map(el => {
-                    return (<SwiperSlide key={el.id}>
-                        <div style={{border:'1px solid red'}}>
-                            <Link to={el.path} className={'link-element'} style={{justifyContent:'left', marginLeft:'0px',marginRight:'0'}}>
-                                <img src={el.url} id={'box'} alt={''} style={{width:String((window.innerWidth+160)/3) + 'px',  marginBottom:'15px', marginLeft:'0', justifyContent:'left',marginRight:'0'}}/>
+                    return (<SwiperSlide key={el.id} style={{border:'1px solid blue'}}>
+                        <div style={{border: '1px solid red'}}>
+                            <Link to={el.path} className={'link-element'}
+                                  style={{justifyContent: 'left', marginLeft: '0px', marginRight: '0', border:'1px solid green'}}>
+                                <div style={{
+                                    width: String((window.innerWidth + 160) / 3) + 'px',
+                                    height:String((window.innerWidth + 160) / 3 * 800 / 560) + 'px',
+                                    marginBottom: '15px',
+                                    marginLeft: '0',
+                                    justifyContent: 'left',
+                                    marginRight: '0',
+                                    backgroundImage: "url('" + el.url + "')",
+                                    backgroundSize:'cover',
+                                    borderRadius:'10px'
+                                }}/>
                             </Link>
                         </div>
                     </SwiperSlide>)

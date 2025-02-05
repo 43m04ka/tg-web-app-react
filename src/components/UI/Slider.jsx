@@ -34,7 +34,7 @@ const Slider = ({data}) => {
                     coverflowEffect={{
                         rotate: 0,
                         stretch: 0,
-                        depth: 400,
+                        depth: 1000,
                         modifier: 0.1,
                         slideShadows: false,
                         scale:0.83
@@ -49,9 +49,9 @@ const Slider = ({data}) => {
             >
                 {data.map(el => {
                     return (<SwiperSlide key={el.id}>
-                        <div>
+                        <div style={{border:'1px solid red'}}>
                             <Link to={el.path} className={'link-element'} style={{justifyContent:'left', marginLeft:'0px',marginRight:'0'}}>
-                                <img src={el.url} id={'box'} alt={''} style={{width:String((window.innerWidth+220)/3) + 'px',  marginBottom:'15px', marginLeft:'0', justifyContent:'left',marginRight:'0'}}/>
+                                <img src={el.url} id={'box'} alt={''} style={{width:String((window.innerWidth+160)/3) + 'px',  marginBottom:'15px', marginLeft:'0', justifyContent:'left',marginRight:'0'}}/>
                             </Link>
                         </div>
                     </SwiperSlide>)

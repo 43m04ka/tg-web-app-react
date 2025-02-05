@@ -419,6 +419,7 @@ const AdminPanel = () => {
                         }else{
                             height = 0
                         }
+
                         return (
                             <div>
                                 <div style={{
@@ -449,8 +450,7 @@ const AdminPanel = () => {
                                     </button>
                                 </div>
                                 <div style={{overflow: 'hidden', height: String(height) + 'px'}}>
-                                    <AdminProductList main_data={category} page={0} height={1000}
-                                                      path={category.path} setDataDop={setDataCardsDop}/></div>
+                                    <AdminProductList main_data={category} setDataDop={setDataCardsDop} update={async ()=>{await onReload();}}/></div>
                             </div>
                         )
                     })}

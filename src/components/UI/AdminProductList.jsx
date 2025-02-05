@@ -18,7 +18,7 @@ let list = 1
 let bool = true
 let elementKeys = []
 
-const AdminProductList = ({main_data, page, height, setDataDop}) => {
+const AdminProductList = ({main_data,  setDataDop, update}) => {
     const [products, setProducts] = useState([])
     const [status, setStatus] = useState(0);
     const path = main_data.path
@@ -53,6 +53,9 @@ const AdminProductList = ({main_data, page, height, setDataDop}) => {
                     await setDataDop(prom.cards || [])
                     await setLen(prom.len)
                     await setHeightMenuButton(50)
+                }else{
+                    await update()
+                    await setStatus(1)
                 }
             })
         })

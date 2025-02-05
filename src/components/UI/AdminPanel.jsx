@@ -106,12 +106,9 @@ const AdminPanel = () => {
         for (let i = 0; i < Math.ceil(array.length / size); i++) {
             subarray[i] = array.slice((i * size), (i * size) + size);
         }
-        await setStatus(10);
         subarray.map(async el => {
             await sendRequestOnDatabase(el, 'add')
         })
-        await onReload()
-        await setStatus(1);
     }
 
 

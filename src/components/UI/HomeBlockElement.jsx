@@ -9,7 +9,7 @@ const HomeBlockElement = ({path, data}) => {
         oldPrice = ''
     } else {
         oldPrice = String(data.body.oldPrice) + ' ₽'
-        parcent = '−'+String(Math.ceil((1-data.price/data.body.oldPrice)*100))+'%'
+        parcent = '−'+String(Math.ceil((1-data.body.price/data.body.oldPrice)*100))+'%'
     }
     let parcentEl = (<div></div>)
     if(parcent !== ''){

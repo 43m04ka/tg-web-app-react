@@ -82,14 +82,18 @@ const Home = ({main_data, height, page, setBasket}) => {
                 </div>
                 <div style={{marginBottom: '15px'}}>
                     {main_data.body[1].map(category => {
-                        if(typeof category.body[0].body.title !== 'undefined' && category.name !== '') {
-                            return (
-                                <HomeBlock key={category.id} path={category.path} data={category}/>
-                            )
-                        }else if(typeof category.body[0].path !== 'undefined'){
-                            return (
-                                <HomeBlockDon key={category.id} path={category.path} data={category}/>
-                            )
+                        try {
+                            if (typeof category.body[0].body.title !== 'undefined' && category.name !== '') {
+                                return (
+                                    <HomeBlock key={category.id} path={category.path} data={category}/>
+                                )
+                            } else if (typeof category.body[0].path !== 'undefined') {
+                                return (
+                                    <HomeBlockDon key={category.id} path={category.path} data={category}/>
+                                )
+                            }
+                        }catch (e) {
+                            
                         }
                     })}
                 </div>

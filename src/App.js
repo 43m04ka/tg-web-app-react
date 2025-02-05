@@ -48,7 +48,7 @@ function App() {
             let Promise = r.json()
             Promise.then(async prom => {
                 const promise = prom
-                const inputDataCards = promise.cards;
+                let inputDataCards = promise.cards;
                 setDataCards(inputDataCards)
                 let resultData = promise.structure;
                 let count = 0
@@ -81,9 +81,8 @@ function App() {
                     resultData[2].body[0][count].body = []
                     count++
                 })
-
                 await inputDataCards.map(async card => {
-
+                    console.log(card)
                     const cardTab = card.body.tab
                     const cardCategory = card.body.tabCategoryPath
 
@@ -109,7 +108,9 @@ function App() {
                 console.log(resultData)
 
             })
+
         })
+
     }, [dataRequestDatabase])
 
     const sendData = {

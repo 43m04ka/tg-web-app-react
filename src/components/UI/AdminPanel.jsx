@@ -1,6 +1,8 @@
 import React, {Component, useCallback, useEffect, useRef, useState} from 'react';
 import * as XLSX from "xlsx";
 import {useTelegram} from "../../hooks/useTelegram";
+import ProductList from "./ProductList";
+import AdminProductList from "./AdminProductList";
 
 const make_cols = refstr => {
     let o = [], C = XLSX.utils.decode_range(refstr).e.c + 1;
@@ -27,6 +29,8 @@ const AdminPanel = () => {
     const [dataStructure, setDataStructure] = useState(null);
     const [dataCards, setDataCards] = useState(null);
     const [dataPromo, setDataPromo] = useState([]);
+
+    const [selectCatalog, setSelectCatalog] = useState('')
     console.log(dataPromo)
 
     const [status, setStatus] = useState(0)
@@ -383,6 +387,9 @@ const AdminPanel = () => {
                 }
             })
 
+            const setDataCardsDop = () => {
+            }
+
             console.log(allCategory)
 
             return (<div>
@@ -404,76 +411,49 @@ const AdminPanel = () => {
                     }}>Редактировать промокоды
                     </button>
                 </div>
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr 1fr 3fr 1fr',
-                    borderBottom: '1px solid gray'
-                }}>
-                    <div className={'text-element'}>ID</div>
-                    <div className={'text-element'}
-                         style={{textWrap: 'nowrap', overflow: 'hidden'}}>Name
-                    </div>
-                    <div className={'text-element'}>Path</div>
-                    <div className={'text-element'}>В продаже</div>
-                    <div className={'text-element'}>Удаление</div>
-                </div>
                 <div>
-                    {allCategory.map(category => (
-                        <div>
-                            <div style={{
-                                display: 'grid',
-                                gridTemplateColumns: '1fr 1fr 1fr',
-                                borderBottom: '1px solid gray',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}>
-                                <div className={'title'}>{category.path}</div>
-                                <button onClick={async () => {
-                                    await updateCategoryCards(category.path)
-                                    await setStatus(10);
-                                }}>Убрать\включить в продажу
-                                </button>
-                                <button onClick={async () => {
-                                    deleteCategoryCards(category.path)
-                                    await setStatus(10);
-                                }}>Удалить
-                                </button>
-                            </div>
-                            {category.body.map(card => (
+                    {allCategory.map(category => {
+                        let height
+                        if(selectCatalog===category.path){
+                            height = 1000
+                        }else{
+                            height = 0
+                        }
+                        return (
+                            <div>
                                 <div style={{
                                     display: 'grid',
-                                    gridTemplateColumns: '1fr 1fr 1fr 3fr 1fr',
-                                    borderBottom: '1px solid gray'
+                                    gridTemplateColumns: '2fr 3fr 3fr 1fr ',
+                                    borderBottom: '1px solid gray',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
                                 }}>
-                                    <div className={'text-element'}>{card.id}</div>
-                                    <div className={'text-element'}
-                                         style={{textWrap: 'nowrap', overflow: 'hidden'}}>{card.body.title}</div>
-                                    <div className={'text-element'}>{card.body.tabCategoryPath}</div>
-                                    <div style={{display: 'flex', flexDirection: 'row'}} className={'text-element'}>
-                                        В продаже: {String(card.body.isSale)}
-                                        <button onClick={() => {
-                                            let newCard = card
-                                            if (newCard.body.isSale === true) {
-                                                newCard.body.isSale = false
-                                            } else if (newCard.body.isSale === false) {
-                                                newCard.body.isSale = true
-                                            } else {
-                                                newCard.body.isSale = true
-                                            }
-                                            sendRequestOnDatabase([card], 'upd');
-                                            setStatus(10);
-                                        }}>Убрать\включить в продажу
-                                        </button>
-                                    </div>
-                                    <button onClick={() => {
-                                        sendRequestOnDatabase([card], 'del');
-                                        setStatus(10);
+                                    <div className={'title'}>{category.path}</div>
+                                    <button onClick={async () => {
+                                        if(selectCatalog===category.path){
+                                            setSelectCatalog('')
+                                        }else{
+                                            setSelectCatalog(category.path)
+                                        }
+                                    }}>Скрыть/показать карты
+                                    </button>
+                                    <button onClick={async () => {
+                                        await updateCategoryCards(category.path)
+                                        await setStatus(10);
+                                    }}>Убрать\включить в продажу
+                                    </button>
+                                    <button onClick={async () => {
+                                        deleteCategoryCards(category.path)
+                                        await setStatus(10);
                                     }}>Удалить
                                     </button>
                                 </div>
-                            ))}
-                        </div>
-                    ))}
+                                <div style={{overflow: 'hidden', height: String(height) + 'px'}}>
+                                    <AdminProductList main_data={category} page={0} height={1000}
+                                                      path={category.path} setDataDop={setDataCardsDop}/></div>
+                            </div>
+                        )
+                    })}
                 </div>
 
             </div>)
@@ -620,7 +600,8 @@ const AdminPanel = () => {
                         <div className={'text-element'}>Кодовое слово: {promo.body}</div>
                         <div className={'text-element'}>Осталось использований: {promo.number}</div>
                         <div className={'text-element'}>Процент скидки: {promo.parcent}</div>
-                        <button style={{background: '#343434'}} onClick={() => { sendRequestOnPromo({id:promo.id}, 'del')
+                        <button style={{background: '#343434'}} onClick={() => {
+                            sendRequestOnPromo({id: promo.id}, 'del')
                         }}>Удалить категорию
                         </button>
                     </div>

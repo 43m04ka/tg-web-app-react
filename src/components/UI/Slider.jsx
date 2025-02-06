@@ -86,7 +86,7 @@ const Slider = ({data}) => {
                                 <div style={{
                                     width: String(window.innerWidth * 0.5) + 'px',
                                     height:String(window.innerWidth * 0.5 * 800 / 560) + 'px',
-                                    marginBottom: '15px',
+                                    marginBottom: '20px',
                                     marginLeft: '0',
                                     justifyContent: 'left',
                                     marginRight: '0',

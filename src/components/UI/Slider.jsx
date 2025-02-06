@@ -30,7 +30,7 @@ const Slider = ({data}) => {
         <div style={{width: String(window.innerWidth) + 'px', overflowX: 'hidden'}}>
             <Swiper slidesPerView={3} className="swiper"
                     style={{width: String(window.innerWidth + 220) + 'px', marginLeft: '-110px'}}
-                    spaceBetween={30}
+                    spaceBetween={0}
                     centeredSlides={true}
                     effect={'coverflow'}
                     coverflowEffect={{
@@ -55,8 +55,8 @@ const Slider = ({data}) => {
                             <Link to={el.path} className={'link-element'}
                                   style={{justifyContent: 'left', marginLeft: '0px', marginRight: '0', border:'1px solid green'}}>
                                 <div style={{
-                                    width: String((window.innerWidth + 160) / 3) + 'px',
-                                    height:String((window.innerWidth + 160) / 3 * 800 / 560) + 'px',
+                                    width: String((window.innerWidth + 200) / 3) + 'px',
+                                    height:String((window.innerWidth + 200) / 3 * 800 / 560) + 'px',
                                     marginBottom: '15px',
                                     marginLeft: '0',
                                     justifyContent: 'left',

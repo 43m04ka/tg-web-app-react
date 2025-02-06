@@ -61,7 +61,7 @@ const Slider = ({data}) => {
                     modules={[Autoplay, Pagination, Controller, EffectCoverflow]}
                     onClick={(ev) => {
                         setNumber(ev.touches.currentX)
-                        if (ev.touches.currentX > (window.innerWidth - 14) / 3 * 2) {
+                        if (ev.touches.currentX > window.innerWidth * 0.75) {
                             if(realIndex !== data.length-1) {
                                 console.log(realIndex + 1)
                                 navigate(data[realIndex+1].path)
@@ -69,7 +69,7 @@ const Slider = ({data}) => {
                                 navigate(data[0].path)
                             }
                         }
-                        else if (ev.touches.currentX < (window.innerWidth - 14) / 3) {
+                        else if (ev.touches.currentX < window.innerWidth * 0.25) {
                             if(realIndex !== 0) {
                                 navigate(data[realIndex-1].path)
                             }else{

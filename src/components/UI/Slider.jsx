@@ -50,7 +50,7 @@ const Slider = ({data}) => {
                         depth: 100,
                         modifier: 0.1,
                         slideShadows: false,
-                        scale: 0.83
+                        scale: 0.73
                     }}
                     autoplay={{
                         delay: 7000,

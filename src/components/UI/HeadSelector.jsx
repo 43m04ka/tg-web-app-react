@@ -22,8 +22,6 @@ const HeadSelector = ({hidden, basketData, page}) => {
     const [colorSlider, setColorSlider] = useState('#404adf');
     const [swiperRef, setSwiperRef] = useState(null);
 
-    console.log(realIndex+'ind');
-
 
 
     let newArray = []

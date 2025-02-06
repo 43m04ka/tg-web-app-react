@@ -10,12 +10,13 @@ import 'swiper/css/autoplay';
 
 // import required modules
 import {Autoplay, Pagination, Controller, EffectCoverflow} from 'swiper/modules';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
-
+let realIndex = 0
 const Slider = ({data}) => {
 
     const [number, setNumber] = useState(0);
+    const navigate = useNavigate();
 
     const pagination = {
         clickable: true,
@@ -23,6 +24,11 @@ const Slider = ({data}) => {
             return '<span class="' + className + '"></span>';
         },
     };
+
+    const onIndexChange = (index) => {
+        setNumber(index)
+        realIndex = index
+    }
 
     let loop = false
     if (data.length > 3) {
@@ -36,6 +42,9 @@ const Slider = ({data}) => {
                     spaceBetween={0}
                     centeredSlides={true}
                     effect={'coverflow'}
+                    onActiveIndexChange={(ev) => {
+                        onIndexChange(ev.realIndex)
+                    }}
                     coverflowEffect={{
                         rotate: 0,
                         stretch: 10,
@@ -51,12 +60,29 @@ const Slider = ({data}) => {
                     pagination={pagination}
                     loop={loop}
                     modules={[Autoplay, Pagination, Controller, EffectCoverflow]}
+                    onClick={(ev) => {
+                        setNumber(ev.touches.currentX)
+                        if (ev.touches.currentX > (window.innerWidth - 14) / 3 * 2) {
+                            if(realIndex !== data.length-1) {
+                                console.log(realIndex + 1)
+                                navigate(data[realIndex+1].path)
+                            }else{
+                                navigate(data[0].path)
+                            }
+                        }
+                        else if (ev.touches.currentX < (window.innerWidth - 14) / 3) {
+                            if(realIndex !== 0) {
+                                navigate(data[realIndex-1].path)
+                            }else{
+                                navigate(data[data.length -1].path)
+                            }
+                        }else{
+                            navigate(data[realIndex].path)
+                        }
+                    }}
             >
                 {data.map(el => {
-                    return (<SwiperSlide key={el.id} style={{border:'1px solid blue'}} onClick={(ev) => {
-                        console.log(ev)
-                        setNumber(ev.screenX)
-                    }}>
+                    return (<SwiperSlide key={el.id} style={{border:'1px solid blue'}}>
                         <div style={{border: '1px solid red', zIndex:'50'}}>
                             {/*<Link to={el.path} className={'link-element'}*/}
                             {/*      style={{justifyContent: 'left', marginLeft: '0px', marginRight: '0', border:'1px solid green'}}>*/}

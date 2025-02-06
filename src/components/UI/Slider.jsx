@@ -28,15 +28,15 @@ const Slider = ({data}) => {
     }
     return (
         <div style={{width: String(window.innerWidth) + 'px', overflowX: 'hidden'}}>
-            <Swiper watchSlidesProgress={true} slidesPerView={3} className="swiper"
-                    style={{width: String(window.innerWidth + 220) + 'px', justifyItems: 'left', marginLeft: '-110px'}}
+            <Swiper slidesPerView={3} className="swiper"
+                    style={{width: String(window.innerWidth + 220) + 'px', marginLeft: '-110px'}}
                     spaceBetween={30}
                     centeredSlides={true}
                     effect={'coverflow'}
                     coverflowEffect={{
                         rotate: 0,
-                        stretch: 100,
-                        depth: 1000,
+                        stretch: 10,
+                        depth: 300,
                         modifier: 0.1,
                         slideShadows: false,
                         scale: 0.83
@@ -51,7 +51,7 @@ const Slider = ({data}) => {
             >
                 {data.map(el => {
                     return (<SwiperSlide key={el.id} style={{border:'1px solid blue'}}>
-                        <div style={{border: '1px solid red'}}>
+                        <div style={{border: '1px solid red', zIndex:'50'}}>
                             <Link to={el.path} className={'link-element'}
                                   style={{justifyContent: 'left', marginLeft: '0px', marginRight: '0', border:'1px solid green'}}>
                                 <div style={{
@@ -63,7 +63,7 @@ const Slider = ({data}) => {
                                     marginRight: '0',
                                     backgroundImage: "url('" + el.url + "')",
                                     backgroundSize:'cover',
-                                    borderRadius:'10px'
+                                    borderRadius:'10px',
                                 }}/>
                             </Link>
                         </div>

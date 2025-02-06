@@ -15,6 +15,8 @@ import {Link} from "react-router-dom";
 
 const Slider = ({data}) => {
 
+    const [number, setNumber] = useState(0);
+
     const pagination = {
         clickable: true,
         renderBullet: function (index, className) {
@@ -28,6 +30,7 @@ const Slider = ({data}) => {
     }
     return (
         <div style={{width: String(window.innerWidth) + 'px', overflowX: 'hidden'}}>
+            <div className={'text-element'}>{number}</div>
             <Swiper slidesPerView={3} className="swiper"
                     style={{width: String(window.innerWidth + 220) + 'px', marginLeft: '-110px'}}
                     spaceBetween={0}
@@ -50,10 +53,13 @@ const Slider = ({data}) => {
                     modules={[Autoplay, Pagination, Controller, EffectCoverflow]}
             >
                 {data.map(el => {
-                    return (<SwiperSlide key={el.id} style={{border:'1px solid blue'}}>
+                    return (<SwiperSlide key={el.id} style={{border:'1px solid blue'}} onClick={(ev) => {
+                        console.log(ev)
+                        setNumber(ev.screenX)
+                    }}>
                         <div style={{border: '1px solid red', zIndex:'50'}}>
-                            <Link to={el.path} className={'link-element'}
-                                  style={{justifyContent: 'left', marginLeft: '0px', marginRight: '0', border:'1px solid green'}}>
+                            {/*<Link to={el.path} className={'link-element'}*/}
+                            {/*      style={{justifyContent: 'left', marginLeft: '0px', marginRight: '0', border:'1px solid green'}}>*/}
                                 <div style={{
                                     width: String((window.innerWidth + 200) / 3) + 'px',
                                     height:String((window.innerWidth + 200) / 3 * 800 / 560) + 'px',
@@ -65,7 +71,7 @@ const Slider = ({data}) => {
                                     backgroundSize:'cover',
                                     borderRadius:'10px',
                                 }}/>
-                            </Link>
+                            {/*</Link>*/}
                         </div>
                     </SwiperSlide>)
                 })}

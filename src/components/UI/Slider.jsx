@@ -36,10 +36,9 @@ const Slider = ({data}) => {
     }
     return (
         <div style={{width: String(window.innerWidth) + 'px', overflowX: 'hidden'}}>
-            <div className={'text-element'}>{number}</div>
             <Swiper slidesPerView={3} className="swiper"
-                    style={{width: String(window.innerWidth + 220) + 'px', marginLeft: '-110px'}}
-                    spaceBetween={0}
+                    style={{width: String(window.innerWidth * 0.5 * 3 + 14) + 'px', marginLeft: '-'+String((window.innerWidth * 0.5 * 3 + 14 - window.innerWidth)/2)+'px'}}
+                    spaceBetween={7}
                     centeredSlides={true}
                     effect={'coverflow'}
                     onActiveIndexChange={(ev) => {
@@ -48,7 +47,7 @@ const Slider = ({data}) => {
                     coverflowEffect={{
                         rotate: 0,
                         stretch: 10,
-                        depth: 300,
+                        depth: 100,
                         modifier: 0.1,
                         slideShadows: false,
                         scale: 0.83
@@ -82,13 +81,11 @@ const Slider = ({data}) => {
                     }}
             >
                 {data.map(el => {
-                    return (<SwiperSlide key={el.id} style={{border:'1px solid blue'}}>
-                        <div style={{border: '1px solid red', zIndex:'50'}}>
-                            {/*<Link to={el.path} className={'link-element'}*/}
-                            {/*      style={{justifyContent: 'left', marginLeft: '0px', marginRight: '0', border:'1px solid green'}}>*/}
+                    return (<SwiperSlide key={el.id}>
+                        <div style={{zIndex:'50'}}>
                                 <div style={{
-                                    width: String((window.innerWidth + 200) / 3) + 'px',
-                                    height:String((window.innerWidth + 200) / 3 * 800 / 560) + 'px',
+                                    width: String(window.innerWidth * 0.5) + 'px',
+                                    height:String(window.innerWidth * 0.5 * 800 / 560) + 'px',
                                     marginBottom: '15px',
                                     marginLeft: '0',
                                     justifyContent: 'left',
@@ -97,7 +94,6 @@ const Slider = ({data}) => {
                                     backgroundSize:'cover',
                                     borderRadius:'10px',
                                 }}/>
-                            {/*</Link>*/}
                         </div>
                     </SwiperSlide>)
                 })}

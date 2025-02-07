@@ -266,9 +266,8 @@ function App() {
     } else if (status === 1) {
 
         return (<div className={'pong-loader'} style={{
-            border: '2px solid #8cdb8b',
-            marginTop: String(size / 2 - 60) + 'px',
-            marginLeft: String(window.innerWidth / 2 - 40) + 'px'
+            marginTop: String(size / 2 - 50) + 'px',
+            marginLeft: String(window.innerWidth / 2 - 50) + 'px'
         }}></div>);
     } else if (status === 0) {
         sendRequestDatabase()

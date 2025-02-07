@@ -311,9 +311,8 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
     }
     if (status === 10) {
         bodyElement = (<div className={'pong-loader'} style={{
-            border: '2px solid #8cdb8b',
-            marginTop: String(window.innerHeight / 2 - 60) + 'px',
-            marginLeft: String(window.innerWidth / 2 - 40) + 'px'
+            marginTop: String(window.innerHeight / 2-50) + 'px',
+            marginLeft: String(window.innerWidth / 2-50) + 'px'
         }}></div>)
     }
 
@@ -401,9 +400,8 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
         sendRequestOnDatabase({path: path, number: list}, 'getList')
         onGetData()
         return (<div className={'pong-loader'} style={{
-            border: '2px solid #8cdb8b',
-            marginTop: String(window.innerHeight / 2 - 120) + 'px',
-            marginLeft: String(window.innerWidth / 2 - 40) + 'px'
+            marginTop: String(window.innerHeight / 2 - 110) + 'px',
+            marginLeft: String(window.innerWidth / 2 - 50) + 'px'
         }}></div>)
     }
 

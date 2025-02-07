@@ -561,9 +561,8 @@ const Basket = ({height, number, updateOrders}) => {
     if (status === 0) {
         onGetData()
         return (<div className={'pong-loader'} style={{
-            border: '2px solid #8cdb8b',
-            marginTop: String(height / 2 - 60) + 'px',
-            marginLeft: String(window.innerWidth / 2 - 40) + 'px'
+            marginTop: String(height / 2 - 50) + 'px',
+            marginLeft: String(window.innerWidth / 2 - 50) + 'px'
         }}></div>);
     } else if (status === 1) {
         if (basket.length === 0) {

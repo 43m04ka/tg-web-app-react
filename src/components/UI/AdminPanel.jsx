@@ -163,9 +163,9 @@ const AdminPanel = () => {
         data: []
     }
 
-    const sendRequestPromo = useCallback(() => {
+    const sendRequestPromo = useCallback(async () => {
         console.log(dataRequestPromo, 'inputRequestDb')
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/promo', {
+        await fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/promo', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -261,8 +261,14 @@ const AdminPanel = () => {
         sendRequestOnPromo({str: inputCategory1, count: inputCategory2, parcent: inputCategory3}, 'add')
     }
 
+    const setButtonTablePromo = async (table) => {
+        table.map(async promoData=>{
+            await sendRequestOnPromo({str: promoData.text, count: promoData.count, parcent: promoData.parcent}, 'add')
+        })
+    }
 
-    if (status === 2) {
+
+        if (status === 2) {
         if (pageSelected === 0) {
             return <div>
                 <div>
@@ -625,6 +631,27 @@ const AdminPanel = () => {
                         addPromo()
                     }}>Добавить промокод
                     </button>
+                </div>
+                <div style={{
+                    display: 'grid',
+                    padding: '10px',
+                    border: '2px gray solid',
+                    marginTop: '10px',
+                    margin: '10px',
+                    borderRadius: '10px',
+                    background: '#454545'
+                }}>
+                    <div className={'text-element'} style={{
+                        fontSize: '15px',
+                        textAlign: 'center',
+                        width: String(window.innerWidth - 60) + 'px',
+                        textJustify: 'center'
+                    }}>Загрузить промокоды
+                    </div>
+                    <div style={{marginTop: '15px'}} className={'text-element'}>Таблица с данными категории</div>
+                    <div style={{marginLeft: '20px'}}>
+                        <ExcelReader setButtonTable={setButtonTablePromo}/>
+                    </div>
                 </div>
             </div>)
         }

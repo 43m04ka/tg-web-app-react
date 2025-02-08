@@ -292,7 +292,7 @@ const AdminProductList = ({main_data,  setDataDop, update}) => {
         </div>)
     }
     if (status === 10) {
-        bodyElement = (<div className={'pong-loader'} style={{
+        bodyElement = (<div className={'plup-loader'} style={{
             border: '2px solid #8cdb8b',
             marginTop: String(window.innerHeight / 2 - 60) + 'px',
             marginLeft: String(window.innerWidth / 2 - 40) + 'px'
@@ -310,7 +310,7 @@ const AdminProductList = ({main_data,  setDataDop, update}) => {
         );
     } else if (status === 0) {
         sendRequestOnDatabase({path: path, number: list}, 'getList')
-        return (<div className={'pong-loader'} style={{
+        return (<div className={'plup-loader'} style={{
             border: '2px solid #8cdb8b',
             marginTop: String(window.innerHeight / 2 - 120) + 'px',
             marginLeft: String(window.innerWidth / 2 - 40) + 'px'

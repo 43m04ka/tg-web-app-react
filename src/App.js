@@ -265,7 +265,7 @@ function App() {
         );
     } else if (status === 1) {
 
-        return (<div className={'pong-loader'} style={{
+        return (<div className={'plup-loader-in'} style={{
             marginTop: String(size / 2 - 50) + 'px',
             marginLeft: String(window.innerWidth / 2 - 50) + 'px'
         }}></div>);

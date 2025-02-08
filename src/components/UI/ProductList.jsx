@@ -310,7 +310,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
         </div>)
     }
     if (status === 10) {
-        bodyElement = (<div className={'pong-loader'} style={{
+        bodyElement = (<div className={'plup-loader'} style={{
             marginTop: String(window.innerHeight / 2-50) + 'px',
             marginLeft: String(window.innerWidth / 2-50) + 'px'
         }}></div>)
@@ -399,7 +399,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
     } else if (status === 0) {
         sendRequestOnDatabase({path: path, number: list}, 'getList')
         onGetData()
-        return (<div className={'pong-loader'} style={{
+        return (<div className={'plup-loader'} style={{
             marginTop: String(window.innerHeight / 2 - 110) + 'px',
             marginLeft: String(window.innerWidth / 2 - 50) + 'px'
         }}></div>)

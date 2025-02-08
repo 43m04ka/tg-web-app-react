@@ -560,7 +560,7 @@ const Basket = ({height, number, updateOrders}) => {
 
     if (status === 0) {
         onGetData()
-        return (<div className={'pong-loader'} style={{
+        return (<div className={'plup-loader'} style={{
             marginTop: String(height / 2 - 50) + 'px',
             marginLeft: String(window.innerWidth / 2 - 50) + 'px'
         }}></div>);

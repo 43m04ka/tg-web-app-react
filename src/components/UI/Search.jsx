@@ -191,7 +191,7 @@ const Search = ({height, page, setData, setStatusApp}) => {
                         <div style={{textAlign: 'center', marginTop: '10px', lineHeight: '15px'}}>Найти</div>
                     </div>
                 </div>
-                <div className={'pong-loader'} style={{
+                <div className={'plup-loader'} style={{
                     border: '2px solid #8cdb8b',
                     marginTop: String((window.innerHeight - 60) / 2 - 60) + 'px',
                     marginLeft: String(window.innerWidth / 2 - 40) + 'px'

@@ -225,6 +225,13 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
         numPlayers = 'Количество игроков: ' + newMainData.body.numPlayers
     }
 
+    let platform = ''
+    if (typeof newMainData.body.platform === 'undefined') {
+        platform = ''
+    } else {
+        platform = 'Платформа: ' + newMainData.body.platform
+    }
+
 
     let signElement = (<div></div>)
     let textElementHeight = null
@@ -368,7 +375,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                         fontSize: '14px',
                         color: 'white',
                         fontFamily: "'Montserrat', sans-serif"
-                    }}>{'Платформа: ' + newMainData.body.platform}
+                    }}>{platform}
                     </div>
 
                     <div style={{

@@ -392,11 +392,21 @@ body {
 }
 
 .plup-loader {
-    animation: plup1 0.4s linear infinite;
+    animation: plup1 0.4s ease-in-out infinite;
 }
 
 .plup-loader-in {
-    animation: plup2 0.6s linear;
+    width: 100px;
+    height: 100px;
+    background: url("https://i.postimg.cc/DZcrwWCX/image.png");
+    background-size: cover;
+    left: 50%;
+    top: 50%;
+    margin: -50px 0 0 -50px;
+}
+
+.plup-loader-in {
+    animation: plup2 0.4s ease-in-out;
 }
 
 @keyframes plup1 {

@@ -23,6 +23,7 @@ const AdminPanel = () => {
     const [inputCategory1, setInputCategory1] = useState('')
     const [inputCategory2, setInputCategory2] = useState('')
     const [inputCategory3, setInputCategory3] = useState('')
+    const [inputCategory4, setInputCategory4] = useState('')
 
     const [pageSelected, setPageSelected] = useState(0);
 
@@ -206,6 +207,12 @@ const AdminPanel = () => {
             }
         })
 
+        let color
+        if(inputCategory4 !== ''){
+            color = inputCategory4
+        }else{
+            color = 'none'
+        }
 
         if (type === 0) {
             structure[tab].body[type].splice(parseInt(inputCategory1), 0, {
@@ -220,6 +227,7 @@ const AdminPanel = () => {
                 id: id + 1,
                 name: inputCategory2,
                 path: inputCategory3,
+                backgroundColor : color,
                 body: []
             });
         }
@@ -552,7 +560,9 @@ const AdminPanel = () => {
                                 marginTop: '5px',
                                 background: '#232323',
                                 marginLeft: '5px',
-                                marginRight: '5px'
+                                marginRight: '5px',
+                                display:'flex',
+                                flexDirection:'column'
                             }}>
                                 <div className={'text-element'}>Добавить категорию тела</div>
                                 <input placeholder={'Порядковый_номер'} onChange={(event) => {
@@ -563,6 +573,9 @@ const AdminPanel = () => {
                                 }}/>
                                 <input placeholder={'Путь_до_категории'} onChange={(event) => {
                                     setInputCategory3(event.target.value)
+                                }}/>
+                                <input placeholder={'Выделение_цветом'} onChange={(event) => {
+                                    setInputCategory4(event.target.value)
                                 }}/>
                                 <button style={{background: '#343434'}} onClick={() => {
                                     addCategory(1, tab.id)

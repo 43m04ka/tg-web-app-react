@@ -6,7 +6,7 @@ const HomeBlock = ({data}) => {
 
 
     return (
-        <div className={"homeBlock"}>
+        <div className={"homeBlock"} style={{background:data.backgroundColor, paddingBottom:'10px', paddingTop:'3px'}}>
             <div className={"title"}>{data.name}</div>
             <div className={"scroll-container"} style={{alignItems:'center'}}>
                 <div style={{width:'10px'}}>

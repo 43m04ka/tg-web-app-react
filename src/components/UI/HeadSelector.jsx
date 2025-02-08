@@ -19,7 +19,7 @@ const HeadSelector = ({hidden, basketData, page}) => {
     const navigate = useNavigate();
 
     const [basketLen, setBasketLen] = useState(0);
-    const [colorSlider, setColorSlider] = useState('#404adf');
+    const [colorSlider, setColorSlider] = useState('linear-gradient(90deg, rgba(198,65,56,1) 0%, rgba(64,74,223,1) 40%, rgba(64,74,223,1) 60%, rgba(69,217,110,1) 100%)');
     const [swiperRef, setSwiperRef] = useState(null);
 
 
@@ -54,9 +54,12 @@ const HeadSelector = ({hidden, basketData, page}) => {
             marginTop: '22px'
         }}>{basketLen}</div>)
     }
+    useEffect(()=>{
+        onIndexChange(page)
+    }, [page])
 
     const onIndexChange = (index) => {
-        if (window.location.pathname === '/home0' || window.location.pathname === '/home1' || window.location.pathname === '/home2') {
+        if (window.location.pathname === '/home0' || window.location.pathname === '/home1' || window.location.pathname === '/home2' || window.location.pathname === '/home0/' || window.location.pathname === '/home1/' || window.location.pathname === '/home2/') {
             if (index === 0 || index === 3) {
                 setColorSlider('linear-gradient(90deg, rgba(198,65,56,1) 0%, rgba(64,74,223,1) 40%, rgba(64,74,223,1) 60%, rgba(69,217,110,1) 100%)')
                 navigate('/home0')

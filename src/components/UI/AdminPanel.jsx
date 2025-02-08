@@ -42,19 +42,19 @@ const AdminPanel = () => {
         userData: {login: inputOne, password: inputTwo}
     }
 
-    const sendRequestAdmin = useCallback(() => {
+    const sendRequestAdmin = useCallback(async () => {
         console.log(dataRequestAdmin, 'input setAdmin')
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/admin', {
+        await fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/admin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(dataRequestAdmin)
-        }).then(r => {
+        }).then(async r => {
             console.log(r, 'выход setAdmin')
             if (r.status === 200) {
                 userData = dataRequestAdmin.userData
-                onReload()
+                await onReload()
                 setStatus(1)
             } else {
                 alert('Неверный логин или пароль')
@@ -63,10 +63,10 @@ const AdminPanel = () => {
     }, [dataRequestAdmin])
 
 
-    const sendRequestOnAdmin = (inputData, operation) => {
+    const sendRequestOnAdmin = async (inputData, operation) => {
         dataRequestAdmin.method = operation
         dataRequestAdmin.data = inputData
-        sendRequestAdmin()
+        await sendRequestAdmin()
     }
 
 
@@ -106,9 +106,11 @@ const AdminPanel = () => {
         for (let i = 0; i < Math.ceil(array.length / size); i++) {
             subarray[i] = array.slice((i * size), (i * size) + size);
         }
+        setStatus(10)
         subarray.map(async el => {
             await sendRequestOnDatabase(el, 'add')
         })
+        setStatus(1)
     }
 
 

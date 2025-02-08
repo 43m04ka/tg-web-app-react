@@ -391,21 +391,18 @@ body {
 }
 
 .pong-loader {
-    animation: spin 0.4s linear infinite;
+    animation: spin 0.4s ease-in-out infinite;
 }
 
 @keyframes spin {
     0% {
-        transform: scale(0%);
-    }
-    60% {
-        transform: scale(120%);
-    }
-    80% {
         transform: scale(80%);
     }
+    50% {
+        transform: scale(100%);
+    }
     100% {
-        transform: scale(85%);
+        transform: scale(80%);
     }
 }
 

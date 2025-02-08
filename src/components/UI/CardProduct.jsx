@@ -218,6 +218,13 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
         region = 'Регион активации: ' + newMainData.body.region
     }
 
+    let releaseDate = ''
+    if (typeof newMainData.body.releaseDate === 'undefined') {
+        releaseDate = ''
+    } else {
+        releaseDate = 'Дата релиза: ' + newMainData.body.releaseDate.replace('#', '')
+    }
+
     let numPlayers = ''
     if (typeof newMainData.body.numPlayers === 'undefined') {
         numPlayers = ''
@@ -346,9 +353,9 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                     </div>
 
                     <div onClick={() => {
-                        if (textHidden===true) {
+                        if (textHidden === true) {
                             setTextHidden(false)
-                        } else if (textHidden===false){
+                        } else if (textHidden === false) {
                             setTextHidden(true)
                         }
 
@@ -369,6 +376,13 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                         <div style={{
                             justifyItems: 'center'
                         }}>{signElement}</div>
+                    </div>
+                    <div style={{
+                        marginTop: '12px',
+                        fontSize: '14px',
+                        color: 'white',
+                        fontFamily: "'Montserrat', sans-serif"
+                    }}>{releaseDate}
                     </div>
                     <div style={{
                         marginTop: '12px',

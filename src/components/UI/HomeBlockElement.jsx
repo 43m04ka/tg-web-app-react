@@ -6,7 +6,11 @@ const HomeBlockElement = ({path, data}) => {
     let oldPrice = ''
     let parcent = ''
     if (typeof data.body.oldPrice === 'undefined') {
-        oldPrice = ''
+        if (typeof data.body.releaseDate === 'undefined') {
+            parcent = ''
+        } else {
+            parcent = data.body.releaseDate.replace('#', '')
+        }
     } else {
         oldPrice = String(data.body.oldPrice) + ' ₽'
         parcent = '−'+String(Math.ceil((1-data.body.price/data.body.oldPrice)*100))+'%'
@@ -33,15 +37,10 @@ const HomeBlockElement = ({path, data}) => {
     }
 
     let dataRelease = ''
-    if (typeof data.body.release === 'undefined') {
-        dataRelease = ''
+    if (typeof data.body.releaseDate === 'undefined') {
+
     } else {
-        const val = data.body.release * 1000000;
-        const msecsPerDay = 24 * 60 * 60 * 1000;
-        const ms = Math.round(val / 1E+6 * msecsPerDay);
-        const start = new Date(1900, 0, 1);
-        const date = new Date(ms + start.valueOf());
-        console.log(date.toString());
+        dataRelease = data.body.releaseDate.replace('#', '')
     }
 
     let view = ''

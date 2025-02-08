@@ -316,14 +316,9 @@ const Basket = ({height, number, updateOrders}) => {
     if (number === 0 && myAcc === 1) {
         menuDesigns = (<div className={'text-element'}
                             style={{
-                                display: 'flex',
-                                flexDirection: 'row',
                                 textAlign: 'center',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
                                 marginTop: '5px',
-                                overflow: 'hidden',
-                                height: '40px'
+                                lineHeight:'18px',
                             }}>Мы оформим заказ на новый аккаунт PSN и передадим Вам его в полном доступе. Это
             бесплатно.< /div>)
     } else if (number === 0 && myAcc === 0) {
@@ -424,14 +419,9 @@ const Basket = ({height, number, updateOrders}) => {
     if (number === 1 && myAcc === 1) {
         menuDesigns = (<div className={'text-element'}
                             style={{
-                                display: 'flex',
-                                flexDirection: 'row',
                                 textAlign: 'center',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
                                 marginTop: '5px',
-                                overflow: 'hidden',
-                                height: '30px'
+                                lineHeight:'18px',
                             }}>Мы оформим заказ на новый аккаунт Xbox и передадим Вам его в полном доступе. Это
             бесплатно.< /div>)
     } else if (number === 1 && myAcc === 0) {
@@ -515,36 +505,51 @@ const Basket = ({height, number, updateOrders}) => {
     }
 
     let titleText = null
-    let selectAcc = (<div style={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginTop: '5px',
-        height: '40px'
-    }}>
-        <div className={"text-element"}
-             style={{fontSize: '15px', marginLeft: '0',}}>У
-            меня есть свой аккаунт:
-        </div>
+    let selectAcc = (
         <div style={{
-            width: '140px',
-            justifyContent: 'space-between',
-            display: 'flex',
-            flexDirection: 'row',
+            background: '#454545',
+            padding: '5px',
+            borderRadius: '7px', marginBottom: '10px'
         }}>
-            <div
-                style={{width: '65px'}}>
-                <button className={'selector-button'} onClick={onclickYes} style={styleYes}>Да
-                </button>
+            <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginTop: '5px',
+                padding: '5px',
+                height: '40px'
+            }}>
+                <div className={"text-element"}
+                     style={{fontSize: '15px', marginLeft: '0',}}>У
+                    меня есть свой аккаунт:
+                </div>
+                <div style={{
+                    width: '140px',
+                    justifyContent: 'space-between',
+                    display: 'flex',
+                    flexDirection: 'row',
+                }}>
+                    <div
+                        style={{width: '65px'}}>
+                        <button className={'selector-button'} onClick={onclickYes} style={styleYes}>Да
+                        </button>
+                    </div>
+                    <div
+                        style={{width: '65px'}}>
+                        <button className={'selector-button'} onClick={onclickNo} style={styleNo}>Нет
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div
-                style={{width: '65px'}}>
-                <button className={'selector-button'} onClick={onclickNo} style={styleNo}>Нет
-                </button>
-            </div>
+            <div style={{
+                transitionProperty: 'height',
+                transitionDuration: '0.2s',
+                marginTop: '20px',
+                marginBottom: '20px'
+            }}>{menuDesigns}</div>
         </div>
-    </div>)
+    )
 
     if (number === 0) {
         titleText = 'Ваша корзина Playstation'
@@ -654,19 +659,7 @@ const Basket = ({height, number, updateOrders}) => {
                     marginTop: '10px'
                 }}>Оформление заказа
                 </div>
-                <div style={{
-                    background: '#454545',
-                    padding: '5px',
-                    borderRadius: '7px', marginBottom: '10px'
-                }}>
-                    {selectAcc}
-                    <div style={{
-                        transitionProperty: 'height',
-                        transitionDuration: '0.2s',
-                        marginTop: '20px',
-                        marginBottom: '20px'
-                    }}>{menuDesigns}</div>
-                </div>
+                {selectAcc}
                 <div style={{
                     marginTop: '5px',
                     background: '#454545',
@@ -733,7 +726,7 @@ const Basket = ({height, number, updateOrders}) => {
                     textAlign: 'center',
                     fontSize: '20px',
                     marginLeft: '0px'
-                }}>{'Заказ №'+ String(orderId)+' успешно оформлен, спасибо!'}
+                }}>{'Заказ №' + String(orderId) + ' успешно оформлен, спасибо!'}
                 </div>
                 <div className={'background-heart'}
                      style={{height: '60px', width: '60px', marginLeft: String(window.innerWidth / 2 - 30) + 'px'}}/>

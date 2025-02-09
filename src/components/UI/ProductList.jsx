@@ -17,6 +17,7 @@ let scrollCtrl = 0;
 let list = 1
 let bool = true
 let elementKeys = []
+
 let lastScroll = 0
 let lastList = []
 let lastLen = 1
@@ -142,6 +143,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
         lastList = []
         lastLen = 1
         lastScroll = 0
+        elementKeys = []
     }, [])
 
     useEffect(() => {

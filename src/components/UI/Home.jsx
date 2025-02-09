@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Link, Route, Routes} from "react-router-dom";
 import ProductList from "./ProductList";
 import '../styles/style.css';
@@ -9,14 +9,19 @@ import Slider from "./Slider";
 import HomeBlockDon from "./HomeBlockDon";
 
 let scrollCtrl = 0;
+let lastScroll = 0;
+
 const Home = ({main_data, height, page, setBasket}) => {
     const {tg, user} = useTelegram();
     const [hiddenSelector, setHiddenSelector] = useState(false);
     const [basketData, setBasketData] = useState([]);
+    const scrollContainer = useRef();
 
     useEffect(() => {
         tg.BackButton.hide();
         onGetData()
+        console.log(scrollContainer)
+        scrollContainer.current.scrollTop = lastScroll;
     }, [])
 
     const sendData = {
@@ -68,7 +73,8 @@ const Home = ({main_data, height, page, setBasket}) => {
                 } else if (!hiddenSelector && scroll < scrollCtrl) {
                     scrollCtrl = scroll
                 }
-            }}
+                lastScroll = scroll
+            }} ref={scrollContainer}
                  style={{
                      height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 50) + 'px'
                  }}>
@@ -92,8 +98,8 @@ const Home = ({main_data, height, page, setBasket}) => {
                                     <HomeBlockDon key={category.id} path={category.path} data={category}/>
                                 )
                             }
-                        }catch (e) {
-                            
+                        } catch (e) {
+
                         }
                     })}
                 </div>

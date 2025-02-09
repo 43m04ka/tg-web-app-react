@@ -82,7 +82,7 @@ function App() {
                     count++
                 })
                 await inputDataCards.map(async card => {
-                    console.log(card)
+
                     const cardTab = card.body.tab
                     const cardCategory = card.body.tabCategoryPath
 
@@ -265,7 +265,7 @@ function App() {
         );
     } else if (status === 1) {
 
-        return (<div className={'plup-loader-in'} style={{
+        return (<div className={'plup-loader'} style={{
             marginTop: String(size / 2 - 50) + 'px',
             marginLeft: String(window.innerWidth / 2 - 50) + 'px'
         }}></div>);

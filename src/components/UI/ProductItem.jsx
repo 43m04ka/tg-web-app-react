@@ -7,7 +7,11 @@ const ProductItem = ({product, path}) => {
     let oldPrice = ''
     let parcent = ''
     if (typeof product.body.oldPrice === 'undefined') {
-        oldPrice = ''
+        if (typeof product.body.releaseDate === 'undefined') {
+            parcent = ''
+        } else {
+            parcent = product.body.releaseDate.replace('#', '')
+        }
     } else {
         oldPrice = String(product.body.oldPrice) + ' ₽'
         parcent = '−'+String(Math.ceil((1-product.body.price/product.body.oldPrice)*100))+'%'
@@ -31,18 +35,6 @@ const ProductItem = ({product, path}) => {
             color: 'white',
             width: 'max-content'
         }}>{parcent}</div>)
-    }
-
-    let dataRelease = ''
-    if (typeof product.body.release === 'undefined') {
-        dataRelease = ''
-    } else {
-        const val = product.body.release * 1000000;
-        const msecsPerDay = 24 * 60 * 60 * 1000;
-        const ms = Math.round(val / 1E+6 * msecsPerDay);
-        const start = new Date(1900, 0, 1);
-        const date = new Date(ms + start.valueOf());
-        console.log(date.toString());
     }
 
     let view = ''

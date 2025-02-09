@@ -1,11 +1,16 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {Link, useNavigate} from "react-router-dom";
 import {useTelegram} from "../../hooks/useTelegram";
 
+let lastListRes = []
+let lastText = ''
+let lastScroll = 0
 const Search = ({height, page, setData, setStatusApp}) => {
-    const [listRes, setListRes] = React.useState([]);
+    const [listRes, setListRes] = React.useState(lastListRes);
     const [status, setStatus] = React.useState(1);
     const [textInput, setTextInput] = React.useState('');
+    const textRef = useRef();
+    const scrollRef = useRef();
     const {tg} = useTelegram();
     const navigate = useNavigate();
 
@@ -39,6 +44,7 @@ const Search = ({height, page, setData, setStatusApp}) => {
                 console.log(prom, 'возвратил get')
                 if (dataRequestDatabase.method === 'getSearch') {
                     setListRes(prom.cards)
+                    lastListRes = prom.cards
                     setData(prom.cards)
                     console.log(prom.cards)
                     if (prom.cards.length === 0) {
@@ -54,11 +60,16 @@ const Search = ({height, page, setData, setStatusApp}) => {
     const onBack = useCallback(() => {
         setStatusApp(0)
         navigate(-1);
+        lastScroll=0
+        lastText=0
+        lastListRes=0
     }, [])
 
     useEffect(() => {
         tg.BackButton.show();
-    }, [])
+        textRef.current.value = lastText;
+        scrollRef.current.scrollTop = lastScroll;
+    }, [textRef, scrollRef])
 
     useEffect(() => {
         tg.onEvent('backButtonClicked', onBack)
@@ -110,7 +121,10 @@ const Search = ({height, page, setData, setStatusApp}) => {
     }
     if (status === 3) {
         bodyElement = (<div>
-            <div className={'text-element'} style={{textAlign: 'center', marginTop: String(window.innerHeight / 2 - 170) + 'px'}}>Ничего не найдено...</div>
+            <div className={'text-element'}
+                 style={{textAlign: 'center', marginTop: String(window.innerHeight / 2 - 170) + 'px'}}>Ничего не
+                найдено...
+            </div>
             <div className={'background-searchFon'} style={{
                 marginLeft: String(window.innerWidth / 2 - 125) + 'px',
                 width: '250px',
@@ -128,8 +142,12 @@ const Search = ({height, page, setData, setStatusApp}) => {
                     width: String(window.innerWidth) + 'px'
                 }}>
                     <input className={'search'} placeholder={'Найти игру, подписку, валюту...'}
-                           onChange={() => setTextInput(event.target.value)}
+                           onChange={() => {
+                               setTextInput(event.target.value);
+                               lastText = event.target.value
+                           }}
                            onKeyPress={handleKeyPress}
+                           ref={textRef}
                            style={{
                                border: '0px', fontSize: '15px',
                                fontFamily: "'Montserrat', sans-serif",
@@ -151,7 +169,10 @@ const Search = ({height, page, setData, setStatusApp}) => {
                         <div style={{textAlign: 'center', marginTop: '10px', lineHeight: '15px'}}>Найти</div>
                     </div>
                 </div>
-                <div className={'scroll-container-y'} style={{height: String(height - 70) + 'px'}}>
+                <div className={'scroll-container-y'} style={{height: String(height - 70) + 'px'}}
+                     onScroll={(event) => {
+                         lastScroll = (event.target.scrollTop);
+                     }} ref={scrollRef}>
                     {bodyElement}
                 </div>
             </div>

@@ -17,10 +17,18 @@ let scrollCtrl = 0;
 let list = 1
 let bool = true
 let elementKeys = []
+let lastScroll = 0
+let lastList = []
 
 const ProductList = ({main_data, page, height, setDataDop}) => {
-    const [products, setProducts] = useState([])
-    const [status, setStatus] = useState(0);
+
+    let stStatus = 0
+    if(lastList.length !== 0){
+        stStatus = (1)
+    }
+
+    const [products, setProducts] = useState(lastList)
+    const [status, setStatus] = useState(stStatus);
     const path = main_data.path
     const {tg, user} = useTelegram();
     const [len, setLen] = useState(0);
@@ -31,6 +39,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
     const [heightMenuButton, setHeightMenuButton] = useState(50);
     const [basketLen, setBasketLen] = useState(0);
     const [basketData, setBasketData] = useState([]);
+    const scrollRef = useRef();
 
 
     let dataRequestDatabase = {
@@ -95,6 +104,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
                 if (dataRequestDatabase.method === 'getList') {
                     await setStatus(1)
                     await setProducts(prom.cards || [])
+                    lastList = prom.cards || []
                     await setDataDop(prom.cards || [])
                     await setLen(prom.len)
                     await setHeightMenuButton(50)
@@ -137,8 +147,16 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
     }, [onBack])
 
     useEffect(() => {
+        if(status===0){
+            sendRequestOnDatabase({path: path, number: list}, 'getList')
+            onGetData()
+            setStatus(10)
+        }
         tg.BackButton.show();
-    }, [])
+        try {
+            scrollRef.current.scrollTop = lastScroll;
+        }catch (e) {}
+    }, [scrollRef])
 
     let nav1El = (<div></div>)
     let nav2El = (<div></div>)
@@ -357,9 +375,10 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
                         </div>
                     </Link>
                 </div>
-                <div className={'scroll-container-y'}
+                <div className={'scroll-container-y'} ref={scrollRef}
                      onScroll={(event) => {
                          let scroll = event.target.scrollTop
+                         lastScroll = scroll
                          if (scroll > scrollCtrl + 200 && !hiddenSelector) {
                              scrollCtrl = scroll
                              setHiddenSelector(true)
@@ -396,15 +415,12 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
                 </div>
             </div>
         );
-    } else if (status === 0) {
-        sendRequestOnDatabase({path: path, number: list}, 'getList')
-        onGetData()
-        return (<div className={'plup-loader'} style={{
-            marginTop: String(window.innerHeight / 2 - 110) + 'px',
-            marginLeft: String(window.innerWidth / 2 - 50) + 'px'
-        }}></div>)
     }
 
 };
 
 export default ProductList;
+
+
+// sendRequestOnDatabase({path: path, number: list}, 'getList')
+// onGetData()

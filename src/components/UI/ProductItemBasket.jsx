@@ -39,6 +39,13 @@ const ProductItemBasket = ({setBasketF, product}) => {
         platform = item.body.platform
     }
 
+    let price = ''
+    if(item.body.isSale){
+        price = item.body.price + ' ₽'
+    }else {
+        price = 'Нет в продаже!'
+    }
+
     return (
         <div className={'box-item-basket'}>
             <div className={'title'} style={{marginLeft: '10px'}}>{item.number + '.'}</div>
@@ -66,7 +73,7 @@ const ProductItemBasket = ({setBasketF, product}) => {
                         marginTop:'0',
                         height: '15px',
                         fontSize: '15px'
-                    }}>{item.body.price + ' ₽'}</div>
+                    }}>{price}</div>
                 </div>
             </Link>
             <div onClick={onSendData} className={'button-trash'}>

@@ -177,7 +177,9 @@ const Basket = ({height, number, updateOrders}) => {
     let sumPrice = 0
 
     basket.map(el => {
-        return sumPrice += el.body.price
+        if(el.body.isSale) {
+            sumPrice += el.body.price
+        }
     })
 
     const onclickYes = () => {

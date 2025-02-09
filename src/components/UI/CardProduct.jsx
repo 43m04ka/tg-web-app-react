@@ -35,7 +35,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
     }, [dataRequestDatabase])
 
     let inputTextButton = 'Добавить в корзину'
-    if (mainData.isSale === false) {
+    if (mainData.body.isSale === false) {
         inputTextButton = 'Нет в продаже';
     }
 
@@ -144,7 +144,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
             onBasket()
         }
     }
-    if (newMainData.isSale === false) {
+    if (newMainData.body.isSale === false) {
         buttonColor = '#gray'
         buttonLink = () => {
         }

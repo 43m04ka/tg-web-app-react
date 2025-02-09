@@ -140,6 +140,8 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
     const onBack = useCallback(() => {
         navigate(-1);
         lastList = []
+        lastLen = 1
+        lastScroll = 0
     }, [])
 
     useEffect(() => {

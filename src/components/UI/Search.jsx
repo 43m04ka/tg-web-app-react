@@ -172,7 +172,7 @@ const Search = ({height, page, setData, setStatusApp}) => {
                         <div style={{textAlign: 'center', marginTop: '10px', lineHeight: '15px'}}>Найти</div>
                     </div>
                 </div>
-                <div className={'scroll-container-y'} style={{height: String(height - 70) + 'px'}}
+                <div className={'scroll-container-y'} style={{height: String(height - 50 - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'}}
                      onScroll={(event) => {
                          lastScroll = (event.target.scrollTop);
                      }} ref={scrollRef}>

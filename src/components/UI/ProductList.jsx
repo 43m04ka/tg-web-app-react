@@ -92,7 +92,6 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
 
 
     const sendRequestDatabase = useCallback(() => {
-        console.log(dataRequestDatabase)
         fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/database', {
             method: 'POST',
             headers: {
@@ -144,6 +143,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
         lastLen = 1
         lastScroll = 0
         elementKeys = []
+        list = 1
     }, [])
 
     useEffect(() => {

@@ -19,6 +19,7 @@ let bool = true
 let elementKeys = []
 let lastScroll = 0
 let lastList = []
+let lastLen = 1
 
 const ProductList = ({main_data, page, height, setDataDop}) => {
 
@@ -31,7 +32,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
     const [status, setStatus] = useState(stStatus);
     const path = main_data.path
     const {tg, user} = useTelegram();
-    const [len, setLen] = useState(0);
+    const [len, setLen] = useState(lastLen);
     const navigate = useNavigate();
     const [listNumber, setListNumber] = useState(list);
     const [jsonFilter, setJsonFilter] = useState(null);
@@ -107,6 +108,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
                     lastList = prom.cards || []
                     await setDataDop(prom.cards || [])
                     await setLen(prom.len)
+                    lastLen = prom.len
                     await setHeightMenuButton(50)
                 }
             })

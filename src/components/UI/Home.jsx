@@ -20,7 +20,13 @@ const Home = ({main_data, height, page, setBasket}) => {
     useEffect(() => {
         tg.BackButton.hide();
         onGetData()
-        scrollContainer.current.scrollTop = lastScroll;
+        // scrollContainer.current.translate = false;
+        // scrollContainer.current.scrollTop = lastScroll;
+        console.log(scrollContainer)
+        scrollContainer.current.scrollTo({
+            top: lastScroll,
+            behavior: "instant",
+        });
     }, [])
 
     const sendData = {

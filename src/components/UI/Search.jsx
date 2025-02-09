@@ -68,7 +68,10 @@ const Search = ({height, page, setData, setStatusApp}) => {
     useEffect(() => {
         tg.BackButton.show();
         textRef.current.value = lastText;
-        scrollRef.current.scrollTop = lastScroll;
+        scrollRef.current.scrollTo({
+            top: lastScroll,
+            behavior: "instant",
+        });
     }, [textRef, scrollRef])
 
     useEffect(() => {

@@ -157,7 +157,10 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
         }
         tg.BackButton.show();
         try {
-            scrollRef.current.scrollTop = lastScroll;
+            scrollRef.current.scrollTo({
+                top: lastScroll,
+                behavior: "instant",
+            });
         }catch (e) {}
     }, [scrollRef])
 

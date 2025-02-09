@@ -339,7 +339,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
     }
     if (status === 10) {
         bodyElement = (<div className={'plup-loader'} style={{
-            marginTop: String(window.innerHeight / 2-50) + 'px',
+            marginTop: String(window.innerHeight / 2-100) + 'px',
             marginLeft: String(window.innerWidth / 2-50) + 'px'
         }}></div>)
     }

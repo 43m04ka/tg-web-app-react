@@ -6,8 +6,8 @@ import HomeBlockElement from "./HomeBlockElement";
 import ProductItem from "./ProductItem";
 
 let heightText = null
+let textElementHeight = null
 const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => {
-
     let dataRequestDatabase = {
         method: 'getRandom',
         data: mainData.body.tab
@@ -34,53 +34,24 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
         })
     }, [dataRequestDatabase])
 
-    let inputTextButton = 'Добавить в корзину'
-    if (mainData.body.isSale === false) {
-        inputTextButton = 'Нет в продаже';
-    }
-
     const {tg, user} = useTelegram();
     const refText = createRef();
     const navigate = useNavigate();
 
     const [newMainData, setNewMainData] = useState(mainData)
-    const [buttonText, setButtonText] = React.useState(inputTextButton);
-    const [isBuy, setIsBuy] = React.useState(false);
+    const [isBuy, setIsBuy] = React.useState(null);
     const [textHidden, setTextHidden] = React.useState(null);
     const [dataCards, setDataCards] = React.useState([]);
 
     if (mainData.id !== newMainData.id) {
         setNewMainData(mainData)
-        setTextHidden(2)
-        sendRequestDatabase()
-        let isBuyBool = true
-        basketData.map(el => {
-            if (el.id === newMainData.id && !isBuy) {
-                setButtonText('Перейти в корзину')
-                setIsBuy(true)
-                isBuyBool = false
-            }
-        })
-        if (isBuyBool) {
-            setIsBuy(false)
-            setButtonText('Добавить в корзину')
-        }
-        if (!mainData.body.isSale) {
-            setButtonText('Нет в продаже')
-        }
-
         setTextHidden(null)
+        setIsBuy(false);
+        sendRequestDatabase();
         heightText = null
-
+        textElementHeight = null
         window.scroll(0, 0)
     }
-
-    basketData.map(el => {
-        if (el.id === newMainData.id && !isBuy) {
-            setButtonText('Перейти в корзину')
-            setIsBuy(true)
-        }
-    })
 
     useEffect(() => {
         sendRequestDatabase()
@@ -124,30 +95,52 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                 const result = prom.body
                 if (result) {
                     setIsBuy(true)
-                    setButtonText('Перейти в корзину')
-                } else {
-                    setButtonText('Добавить в корзину')
                 }
             })
         })
     }, [sendData])
 
-    let buttonColor = '#51a456'
-    let buttonLink = () => {
-        onSendData();
-        setButtonText('Ожидайте...');
+
+    let buttonColor
+    let buttonText
+    let buttonLink
+
+    if (newMainData.body.isSale === true) {
+        basketData.map(el => {
+            if (el.id === newMainData.id && !isBuy) {
+                setIsBuy(true)
+            }
+        })
     }
-    if (isBuy) {
-        buttonColor = '#414BE0FF'
-        buttonLink = () => {
-            onBasket()
+
+    if (newMainData.body.isSale === true) {
+        if (isBuy === true) {
+            buttonColor = '#414BE0FF'
+            buttonText = 'Перейти в корзину'
+            buttonLink = () => {
+                onBasket()
+            }
+        }else if (isBuy === false){
+            buttonColor = '#51a456'
+            buttonText = ('Добавить в корзину')
+            buttonLink = () => {
+                setIsBuy(null)
+                onSendData();
+            }
+        }else{
+            buttonColor = '#51a456'
+            buttonText = ('Секунду...')
+            buttonLink = () => {
+            }
         }
+    }else{
+        buttonColor = 'gray'
+        buttonText = 'Нет в продаже'
+        buttonLink = () => {}
     }
-    if (!newMainData.body.isSale) {
-        buttonColor = '#gray'
-        buttonLink = () => {
-        }
-    }
+
+
+
 
     let descriptionText = ''
     if (typeof newMainData.body.description === 'undefined') {
@@ -240,16 +233,13 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
 
 
     let signElement = (<div></div>)
-    let textElementHeight = null
     useEffect(() => {
         if(textHidden === null) {
             heightText = refText.current.getBoundingClientRect().height;
             if (heightText > 17.3 * 4) {
                 setTextHidden(false)
-                console.log(true + '---')
             } else {
                 setTextHidden(0)
-                console.log(false + '---')
             }
         }
     }, [refText]);
@@ -266,7 +256,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                          transitionDuration: '0.3s'
                      }}/>
             )
-            textElementHeight = (heightText)
+            textElementHeight = heightText
         } else {
             signElement = (
                 <div className={'background-arrow'}
@@ -278,11 +268,9 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                          transitionDuration: '0.3s'
                      }}/>
             )
-            textElementHeight = (17.3 * 3)
+            textElementHeight = 17.3 * 3
         }
     }
-
-
     let seeLove = (<div/>)
     if (dataCards.length !== 0) {
         seeLove = (<div>
@@ -294,7 +282,6 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
             </div>
         </div>)
     }
-
     return (
         <div className={'card-product'}>
             <div style={{

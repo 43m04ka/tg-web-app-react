@@ -153,6 +153,7 @@ const Basket = ({height, number, updateOrders}) => {
                     }
                 })
                 setBasket(newArray);
+                console.log(newArray)
                 setStatus(1)
             })
         })

@@ -154,6 +154,7 @@ const Basket = ({height, number, updateOrders}) => {
                 })
                 setBasket(newArray);
                 console.log(newArray)
+                console.log(r.body)
                 setStatus(1)
             })
         })

@@ -29,14 +29,14 @@ const ProductItemBasket = ({setBasketF, product}) => {
     }, [sendData])
 
     let platform = ''
-    if (typeof item.body.platform === 'undefined') {
-        if (typeof item.body.platform === 'undefined') {
-            platform = item.body.view
+    if (typeof item.body.platform !== 'undefined') {
+        if (typeof item.body.view === 'undefined') {
+            platform = item.body.platform
         }else{
-            platform = ''
+            platform = item.body.view
         }
     } else {
-        platform = item.body.platform
+        platform = ''
     }
 
     let price = ''

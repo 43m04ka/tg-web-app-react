@@ -91,14 +91,14 @@ const Search = ({height, page, setData}) => {
     let bodyElement = (<div>
         {listRes.map((item) => {
             let platform = ''
-            if (typeof item.body.platform === 'undefined') {
-                if (typeof item.body.platform === 'undefined') {
-                    platform = item.body.view
+            if (typeof item.body.platform !== 'undefined') {
+                if (typeof item.body.view === 'undefined') {
+                    platform = item.body.platform
                 }else{
-                    platform = ''
+                    platform = item.body.view
                 }
             } else {
-                platform = item.body.platform
+                platform = ''
             }
 
             return (

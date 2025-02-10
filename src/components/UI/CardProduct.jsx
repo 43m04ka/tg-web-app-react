@@ -107,7 +107,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
 
     if (newMainData.body.isSale === true) {
         basketData.map(el => {
-            if (el === newMainData && !isBuy) {
+            if (el.id === newMainData.id && !isBuy) {
                 setIsBuy(true)
             }
         })

@@ -61,7 +61,7 @@ const Search = ({height, page, setData}) => {
         navigate(-1);
         lastScroll=0
         lastText=0
-        lastListRes=0
+        lastListRes=[]
     }, [])
 
     useEffect(() => {

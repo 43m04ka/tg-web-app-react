@@ -8,7 +8,7 @@ const ProductItemBasket = ({setBasketF, product}) => {
 
     const sendData = {
         method: 'del',
-        mainData: item,
+        mainData: item.id,
         user: user,
     }
 

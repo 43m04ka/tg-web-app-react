@@ -130,6 +130,7 @@ function App() {
                 let Promise = r.json()
                 Promise.then(r => {
                     if(typeof r.body !== 'undefined') {
+                        console.log(r.body)
                         setBasketData(r.body);
                     }
                 })

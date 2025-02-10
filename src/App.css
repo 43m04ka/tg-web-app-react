@@ -4,18 +4,9 @@
   box-sizing: border-box;
 }
 body {
-  background: rgb(23,23,23);
-  color: var(--tg-theme-text-color);
+  background: #171717;
 }
-.red{
-  border: 2px solid red;
-}
-.blue{
-  border: 2px solid blue;
-}
-.green{
-  border: 2px solid green;
-}
+
 #app-head{
   display: grid;
   grid-template-columns: 8fr 1fr 1fr 1fr;

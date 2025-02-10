@@ -1,19 +1,6 @@
 
-.red {
-    border: 1px solid red;
-}
-
-.green {
-    border: 1px solid green;
-}
-
-.button {
-    padding: 10px 15px;
-    background: var(--tg-theme-bg-color);
-    color: var(--tg-theme-button-text-color);
-    border: none;
-    outline: none;
-    cursor: pointer;
+body {
+    background: #232323;
 }
 
 .header {
@@ -23,15 +10,6 @@
     align-items: center;
     padding: 0 20px;
 }
-
-.product {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--tg-theme-button-color);
-    padding: 15px;
-    width: 340px;
-}
-
 
 .img-wrap img {
     width: 100%;

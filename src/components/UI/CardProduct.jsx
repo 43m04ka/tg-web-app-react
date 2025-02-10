@@ -53,10 +53,6 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
         setNewMainData(mainData)
         setTextHidden(2)
         sendRequestDatabase()
-        if (mainData.body.isSale === false) {
-            setButtonText('Нет в продаже')
-        }
-
         let isBuyBool = true
         basketData.map(el => {
             if (el.id === newMainData.id && !isBuy) {
@@ -68,6 +64,9 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
         if (isBuyBool) {
             setIsBuy(false)
             setButtonText('Добавить в корзину')
+        }
+        if (!mainData.body.isSale) {
+            setButtonText('Нет в продаже')
         }
 
         setTextHidden(null)
@@ -144,7 +143,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
             onBasket()
         }
     }
-    if (newMainData.body.isSale === false) {
+    if (!newMainData.body.isSale) {
         buttonColor = '#gray'
         buttonLink = () => {
         }

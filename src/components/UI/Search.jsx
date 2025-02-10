@@ -5,7 +5,7 @@ import {useTelegram} from "../../hooks/useTelegram";
 let lastListRes = []
 let lastText = ''
 let lastScroll = 0
-const Search = ({height, page, setData, setStatusApp}) => {
+const Search = ({height, page, setData}) => {
     const [listRes, setListRes] = React.useState(lastListRes);
     const [status, setStatus] = React.useState(1);
     const [textInput, setTextInput] = React.useState('');
@@ -58,7 +58,6 @@ const Search = ({height, page, setData, setStatusApp}) => {
     }, [dataRequestDatabase])
 
     const onBack = useCallback(() => {
-        setStatusApp(0)
         navigate(-1);
         lastScroll=0
         lastText=0
@@ -172,7 +171,7 @@ const Search = ({height, page, setData, setStatusApp}) => {
                         <div style={{textAlign: 'center', marginTop: '10px', lineHeight: '15px'}}>Найти</div>
                     </div>
                 </div>
-                <div className={'scroll-container-y'} style={{height: String(height - 50 - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px'}}
+                <div className={'scroll-container-y'} style={{height: String(height - 50 - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px', border: '1px solid red'}}
                      onScroll={(event) => {
                          lastScroll = (event.target.scrollTop);
                      }} ref={scrollRef}>
@@ -216,7 +215,6 @@ const Search = ({height, page, setData, setStatusApp}) => {
                     </div>
                 </div>
                 <div className={'plup-loader'} style={{
-                    border: '2px solid #8cdb8b',
                     marginTop: String((window.innerHeight - 60) / 2 - 60) + 'px',
                     marginLeft: String(window.innerWidth / 2 - 40) + 'px'
                 }}></div>

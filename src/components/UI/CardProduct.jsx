@@ -78,7 +78,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
 
     const sendData = {
         method: 'add',
-        mainData: newMainData,
+        mainData: newMainData.id,
         user: user,
     }
 

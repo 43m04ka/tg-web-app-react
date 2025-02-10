@@ -130,7 +130,7 @@ const ProductListSelector = ({main_data, page}) => {
 
     const sendData = {
         method: 'add',
-        mainData: thisElement,
+        mainData: thisElement.id,
         user: user,
     }
 

@@ -148,7 +148,7 @@ const Basket = ({height, number, updateOrders}) => {
             Promise.then(r => {
                 let newArray = []
                 r.body.map(el => {
-                    if (Number(el.body.tab) === number) {
+                    if (Number(el.body.tab) === number && el.body.isSale) {
                         newArray = [...newArray, el]
                     }
                 })

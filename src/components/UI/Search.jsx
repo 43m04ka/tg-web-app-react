@@ -59,9 +59,9 @@ const Search = ({height, page, setData}) => {
 
     const onBack = useCallback(() => {
         navigate(-1);
-        lastScroll=0
-        lastText=0
-        lastListRes=[]
+        lastScroll = 0
+        lastText = 0
+        lastListRes = []
     }, [])
 
     useEffect(() => {
@@ -171,7 +171,9 @@ const Search = ({height, page, setData}) => {
                         <div style={{textAlign: 'center', marginTop: '10px', lineHeight: '15px'}}>Найти</div>
                     </div>
                 </div>
-                <div className={'scroll-container-y'} style={{height: String(height - 50 - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px', border: '1px solid red'}}
+                <div className={'scroll-container-y'} style={{
+                    height: String(height - 52 - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
+                }}
                      onScroll={(event) => {
                          lastScroll = (event.target.scrollTop);
                      }} ref={scrollRef}>

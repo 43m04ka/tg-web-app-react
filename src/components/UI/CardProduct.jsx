@@ -106,11 +106,16 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
     let buttonLink
 
     if (newMainData.body.isSale === true) {
+        let flag = true
         basketData.map(el => {
             if (el.id === newMainData.id && !isBuy) {
                 setIsBuy(true)
+                flag = false
             }
         })
+        if(flag){
+            setIsBuy(false)
+        }
     }
 
     if (newMainData.body.isSale === true) {

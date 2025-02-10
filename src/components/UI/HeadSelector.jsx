@@ -26,7 +26,7 @@ const HeadSelector = ({hidden, basketData, page}) => {
 
     let newArray = []
     basketData.map(el => {
-        if (Number(el.body.tab) === page) {
+        if (Number(el.body.tab) === page && el.body.isSale) {
             newArray = [...newArray, el]
         }
     })

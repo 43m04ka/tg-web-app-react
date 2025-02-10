@@ -40,9 +40,8 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
     const [hiddenSelector, setHiddenSelector] = useState(false);
     const [heightMenuButton, setHeightMenuButton] = useState(50);
     const [basketLen, setBasketLen] = useState(0);
-    const [basketData, setBasketData] = useState([]);
+    const [basketData, setBasketData] = useState(null);
     const scrollRef = useRef();
-
 
     let dataRequestDatabase = {
         method: 'getList',
@@ -52,21 +51,11 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
 
     let newArray = []
     basketData.map(el => {
-        if (Number(el.body.tab) === page) {
+        if (Number(el.body.tab) === page && el.body.isSale) {
             newArray = [...newArray, el]
         }
     })
     if (newArray.length !== basketLen) {
-        setBasketLen(newArray.length)
-    }
-
-    const basketColReload = (page) => {
-        let newArray = []
-        basketData.map(el => {
-            if (Number(el.body.tab) === page) {
-                newArray = [...newArray, el]
-            }
-        })
         setBasketLen(newArray.length)
     }
 

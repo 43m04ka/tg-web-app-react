@@ -114,7 +114,9 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
             }
         })
         if(flag){
-            setIsBuy(false)
+            if(isBuy) {
+                setIsBuy(false)
+            }
         }
     }
 

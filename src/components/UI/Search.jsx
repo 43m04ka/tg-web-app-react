@@ -83,6 +83,7 @@ const Search = ({height, page, setData}) => {
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {
             setStatus(0)
+            textRef.current.blur();
             sendRequestDatabase()
         }
     };

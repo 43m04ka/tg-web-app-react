@@ -60,7 +60,7 @@ const Search = ({height, page, setData}) => {
     const onBack = useCallback(() => {
         navigate(-1);
         lastScroll = 0
-        lastText = 0
+        lastText = ''
         lastListRes = []
     }, [])
 

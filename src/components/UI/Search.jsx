@@ -88,30 +88,51 @@ const Search = ({height, page, setData}) => {
     };
 
     let bodyElement = (<div>
-        {listRes.map((item) => (
-            <div className={'list-element'}
-                 style={{marginLeft: '20px', width: String(window.innerWidth - 40) + 'px'}}>
-                <Link to={'/card/' + item.id} className={'link-element'}
-                      style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>
+        {listRes.map((item) => {
+            let platform = ''
+            if (typeof item.body.platform === 'undefined') {
+                if (typeof item.body.platform === 'undefined') {
+                    platform = item.body.view
+                }else{
+                    platform = ''
+                }
+            } else {
+                platform = item.body.platform
+            }
 
-                    <img src={item.body.img} alt={item.body.title} className={'img-mini'}/>
-                    <div className={'box-grid-row'}>
-                        <div className={'text-element text-basket'} style={{
-                            marginTop: '3px',
-                            lineHeight: '17px',
-                            overflow: 'hidden',
-                            height: '34px',
-                            fontSize: '15px'
-                        }}>{item.body.title}</div>
-                        <div className={'text-element text-basket'} style={{
-                            marginTop: '12px',
-                            lineHeight: '15px',
-                            height: '15px',
-                            fontSize: '15px'
-                        }}>{item.body.price + ' ₽'}</div>
-                    </div>
-                </Link>
-            </div>))}
+            return (
+                <div className={'list-element'}
+                     style={{marginLeft: '20px', width: String(window.innerWidth - 40) + 'px'}}>
+                    <Link to={'/card/' + item.id} className={'link-element'}
+                          style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>
+
+                        <img src={item.body.img} alt={item.body.title} className={'img-mini'}/>
+                        <div className={'box-grid-row'}>
+                            <div className={'text-element text-basket'} style={{
+                                marginTop: '3px',
+                                lineHeight: '15px',
+                                height: '30px',
+                                fontSize: '13px',
+                                overflow: 'hidden'
+                            }}>{item.body.title}</div>
+                            <div className={'text-element text-basket'} style={{
+                                marginTop: '3px',
+                                lineHeight: '14px',
+                                height: '14px',
+                                fontSize: '9px',
+                                overflow: 'hidden',
+                                marginBottom: '0px'
+                            }}>{platform}</div>
+                            <div className={'text-element text-basket'} style={{
+                                lineHeight: '15px',
+                                marginTop: '0',
+                                height: '15px',
+                                fontSize: '15px'
+                            }}>{item.body.price + ' ₽'}</div>
+                        </div>
+                    </Link>
+                </div>)
+        })}
     </div>)
     if (listRes.length === 0) {
         bodyElement = (<div className={'background-searchFon'} style={{

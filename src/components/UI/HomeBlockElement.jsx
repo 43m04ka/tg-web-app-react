@@ -10,6 +10,7 @@ const HomeBlockElement = ({path, data}) => {
             parcent = ''
         } else {
             parcent = data.body.releaseDate.replace('#', '')
+            parcent = parcent.slice(0, 6)+ parcent.slice(8, 10)
         }
     } else {
         oldPrice = String(data.body.oldPrice) + ' ₽'

@@ -113,20 +113,20 @@ const Basket = ({height, number, updateOrders}) => {
         }).then(r => {
             let Promise = r.json()
             Promise.then(r => {
-                if (r.body) {
+                if (r.body === true) {
                     setStatus(3);
                     updateOrders()
                     orderId = r.number
+                    promo = ''
+                    setPromoIsUse(false)
+                    setColorYesPromo([69, 69, 69])
+                    setColorNo([164, 30, 30])
+                    setPromoInput('')
+                    setParcent(0)
                 } else {
                     setStatus(0)
                     setButtonText('Оформить заказ и оплатить')
                 }
-                promo = ''
-                setPromoIsUse(false)
-                setColorYesPromo([69, 69, 69])
-                setColorNo([164, 30, 30])
-                setPromoInput('')
-                setParcent(0)
             })
         })
     }, [sendDataProduct])

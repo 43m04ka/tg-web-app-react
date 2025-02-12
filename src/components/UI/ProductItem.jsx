@@ -11,6 +11,7 @@ const ProductItem = ({product, path}) => {
             parcent = ''
         } else {
             parcent = product.body.releaseDate.replace('#', '')
+            parcent = parcent.slice(0, 6)+ parcent.slice(8, 10)
         }
     } else {
         oldPrice = String(product.body.oldPrice) + ' ₽'

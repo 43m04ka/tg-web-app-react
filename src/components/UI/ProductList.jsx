@@ -25,7 +25,7 @@ let lastLen = 1
 const ProductList = ({main_data, page, height, setDataDop}) => {
 
     let stStatus = 0
-    if(lastList.length !== 0){
+    if (lastList.length !== 0) {
         stStatus = (1)
     }
 
@@ -143,7 +143,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
     }, [onBack])
 
     useEffect(() => {
-        if(status===0){
+        if (status === 0) {
             sendRequestOnDatabase({path: path, number: list}, 'getList')
             onGetData()
             setStatus(10)
@@ -154,7 +154,8 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
                 top: lastScroll,
                 behavior: "instant",
             });
-        }catch (e) {}
+        } catch (e) {
+        }
     }, [scrollRef])
 
     let nav1El = (<div></div>)
@@ -238,7 +239,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
         }}></div>)
     }
 
-    if(bool || elementKeys.length === 0) {
+    if (bool || elementKeys.length === 0) {
         try {
             if (typeof products[0].body.category !== 'undefined') {
                 if (products[0].body.category.includes('акк')) {
@@ -318,19 +319,26 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
                     {nav3El}
                     {nav4El}
                 </div>
-                <div style={{height:String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom+10)+'px'}}></div>
+                <div
+                    style={{height: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 10) + 'px'}}></div>
             </div>
         )
     } else {
         bodyElement = (<div>
-            <div className={'text-element'} style={{textAlign:'center', marginTop:'30px', fontSize:'18px'}}>Ничего не найдено</div>
-            <button className={'all-see-button'} onClick={()=>{setStatus(10);sendRequestOnDatabase({path: path, number: list}, 'getList')}}>Сбросить фильтры</button>
+            <div className={'text-element'} style={{textAlign: 'center', marginTop: '30px', fontSize: '18px'}}>Ничего не
+                найдено
+            </div>
+            <button className={'all-see-button'} onClick={() => {
+                setStatus(10);
+                sendRequestOnDatabase({path: path, number: list}, 'getList')
+            }}>Сбросить фильтры
+            </button>
         </div>)
     }
     if (status === 10) {
         bodyElement = (<div className={'plup-loader'} style={{
-            marginTop: String(window.innerHeight / 2-100) + 'px',
-            marginLeft: String(window.innerWidth / 2-50) + 'px'
+            marginTop: String(window.innerHeight / 2 - 100) + 'px',
+            marginLeft: String(window.innerWidth / 2 - 50) + 'px'
         }}></div>)
     }
 

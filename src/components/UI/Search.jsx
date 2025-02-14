@@ -84,6 +84,11 @@ const Search = ({height, page, setData}) => {
         if (event.key === 'Enter') {
             setStatus(0)
             textRef.current.blur();
+            scrollRef.current.scrollTo({
+                top: 0,
+                behavior: "instant",
+            });
+            lastScroll = 0
             sendRequestDatabase()
         }
     };
@@ -188,6 +193,11 @@ const Search = ({height, page, setData}) => {
                              marginLeft: '0',
                          }} onClick={() => {
                         setStatus(0)
+                        scrollRef.current.scrollTo({
+                            top: 0,
+                            behavior: "instant",
+                        });
+                        lastScroll = 0
                         sendRequestDatabase()
                     }}>
                         <div style={{textAlign: 'center', marginTop: '10px', lineHeight: '15px'}}>Найти</div>

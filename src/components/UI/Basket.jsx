@@ -10,8 +10,6 @@ let orderId = 0
 const Basket = ({height, number, updateOrders}) => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
-    console.log(user)
-
     const [basket, setBasket] = useState([])
     const [myAcc, setMyAcc] = useState(1);
     const [myPromo, setMyPromo] = useState(1);
@@ -27,6 +25,12 @@ const Basket = ({height, number, updateOrders}) => {
     const [promoColor, setPromoColor] = useState([255, 255, 255])
     const [promoButtonColor, setPromoButtonColor] = useState([69, 69, 69]);
     const [promoButtonText, setPromoButtonText] = useState('Применить');
+
+    let getUse = false
+    if (typeof user.username !== 'undefined') {
+        getUse = true
+    }
+    const [isGetUsername, setIsGetUsername] = useState(getUse);
 
 
     let dataRequestPromo = {
@@ -179,7 +183,7 @@ const Basket = ({height, number, updateOrders}) => {
     let sumPrice = 0
 
     basket.map(el => {
-        if(el.body.isSale) {
+        if (el.body.isSale) {
             sumPrice += el.body.price
         }
     })
@@ -322,7 +326,7 @@ const Basket = ({height, number, updateOrders}) => {
                             style={{
                                 textAlign: 'center',
                                 marginTop: '5px',
-                                lineHeight:'18px',
+                                lineHeight: '18px',
                             }}>Мы оформим заказ на новый аккаунт PSN и передадим Вам его в полном доступе. Это
             бесплатно.< /div>)
     } else if (number === 0 && myAcc === 0) {
@@ -425,7 +429,7 @@ const Basket = ({height, number, updateOrders}) => {
                             style={{
                                 textAlign: 'center',
                                 marginTop: '5px',
-                                lineHeight:'18px',
+                                lineHeight: '18px',
                             }}>Мы оформим заказ на новый аккаунт Xbox и передадим Вам его в полном доступе. Это
             бесплатно.< /div>)
     } else if (number === 1 && myAcc === 0) {
@@ -566,6 +570,33 @@ const Basket = ({height, number, updateOrders}) => {
         selectAcc = (<></>)
     }
 
+    let usernameInput = (<></>)
+
+    if (typeof user.username === 'undefined') {
+        usernameInput = (<div style={{
+            background: '#454545',
+            padding: '5px',
+            borderRadius: '7px', marginBottom: '10px',
+            justifyItems:'center',
+            marginTop:'10px'
+        }}>
+            <div className={'text-element'} style={{fontSize: '14px'}}>Введите логин и пароль от аккаунта PSN:</div>
+            <input placeholder={"Введите логин от аккаунта PSN"}
+                   style={{
+                       height: '34px',
+                       width: String(window.innerWidth - 60) + 'px',
+                       marginTop: '10px',
+                       borderRadius: '7px',
+                       background: 'white',
+                       textAlign: 'center',
+                       border: '0px',
+                       fontSize: '16px',
+                       color: 'black',
+                       fontFamily: "'Montserrat', sans-serif",
+                   }} onChange={(event) => inputData[0] = event.target.value}/>
+        </div>)
+    }
+
 
     if (status === 0) {
         onGetData()
@@ -704,6 +735,7 @@ const Basket = ({height, number, updateOrders}) => {
                         {promoElement}
                     </div>
                 </div>
+                {usernameInput}
 
                 {priceElement}
             </div>

@@ -318,6 +318,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
                     {nav3El}
                     {nav4El}
                 </div>
+                <div style={{height:String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom)+'px'}}></div>
             </div>
         )
     } else {

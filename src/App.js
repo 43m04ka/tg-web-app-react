@@ -38,7 +38,7 @@ function App() {
     }
 
     const sendRequestDatabase = useCallback(() => {
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/database', {
+        fetch('http://79.174.94.6:8000/database', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -38,7 +38,7 @@ function App() {
     }
 
     const sendRequestDatabase = useCallback(() => {
-        fetch('http://79.174.94.6:8000/database', {
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/database', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -47,6 +47,8 @@ function App() {
         }).then(r => {
             let Promise = r.json()
             Promise.then(async prom => {
+
+
                 const promise = prom
                 let inputDataCards = promise.cards;
                 setDataCards(inputDataCards)
@@ -249,7 +251,7 @@ function App() {
                     <Route path={'basket2'} element={<Basket height={size} number={2} updateOrders={onSendDataOrders}/>}/>
                     {mainData.map(platform => (
                         <Route path={'search' + String(platform.id)} key={platform.id}
-                               element={<Search height={size} setData={setDataCards} setStatusApp={setStatus}
+                               element={<Search height={size} setData={setDataCardsDop} setStatusApp={setStatus}
                                                 page={platform.id}/>}/>
                     ))}
                     <Route path={'admin'} element={<AdminPanel/>}/>

@@ -4,7 +4,13 @@ import FilterCheckBox from "./FilterCheckBox";
 
 const Filter = ({height, elementKeys, onRequestFilter}) => {
     const {tg} = useTelegram();
-    const [jsonFilter, setJsonFilter] = useState({platform: [], price: {min: 0, max: 50000, sort: null}, category: [], languageSelector:[], numPlayers:[]});
+    const [jsonFilter, setJsonFilter] = useState({
+        platform: [],
+        price: {min: 0, max: 50000, sort: null},
+        category: [],
+        languageSelector: [],
+        numPlayers: []
+    });
     const [panelIsVisible, setPanelIsVisible] = useState(false);
     const [panelWidth, setPanelWidth] = useState(0);
 
@@ -31,7 +37,7 @@ const Filter = ({height, elementKeys, onRequestFilter}) => {
                         data={['По возрастанию', 'По убыванию']}
                         preview={'Цена'}/>)
 
-    let languageElement =(<></>)
+    let languageElement = (<></>)
 
     if (elementKeys.includes('languageSelector')) {
         languageElement = (
@@ -53,7 +59,7 @@ const Filter = ({height, elementKeys, onRequestFilter}) => {
         <div style={{display: 'flex', flexDirection: 'row',}}>
             <div style={{
                 background: '#232323',
-                height: String(height - 60 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
+                height: String(height / 3 * 2 - 60 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
                 width: String(width) + 'px',
                 borderTopRightRadius: '10px',
                 borderBottomRightRadius: '10px',
@@ -62,7 +68,12 @@ const Filter = ({height, elementKeys, onRequestFilter}) => {
                 overflow: 'hidden',
             }}>
                 <div
-                    style={{height: String(height - 60 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 45) + 'px'}}>
+                    style={{
+                        height: String(height / 3 * 2 - 60 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 50) + 'px',
+                        transitionProperty: 'height, width',
+                        transitionDuration: '0.3s',
+                        overflowY:'scroll'
+                    }}>
                     {priceElement}
                     {platformElement}
                     {categoryElement}

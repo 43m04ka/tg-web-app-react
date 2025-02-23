@@ -143,7 +143,7 @@ function App() {
     }, [sendData])
 
     const resizeHandler = () => {
-        setSize(tg.viewportHeight);
+        setSize(window.innerHeight);
     };
 
     React.useEffect(() => {

@@ -580,7 +580,7 @@ const Basket = ({height, number, updateOrders}) => {
             justifyItems:'center',
             marginTop:'10px'
         }}>
-            <div className={'text-element'} style={{fontSize: '14px'}}>Введите логин и пароль от аккаунта PSN:</div>
+            <div className={'text-element'} style={{fontSize: '14px'}}>:</div>
             <input placeholder={"Введите логин от аккаунта PSN"}
                    style={{
                        height: '34px',

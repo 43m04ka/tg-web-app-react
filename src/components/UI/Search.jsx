@@ -106,36 +106,54 @@ const Search = ({height, page, setData}) => {
                 platform = ''
             }
 
-            let oldPrice = ''
-            let parcent = ''
+            let parcent
+            let type = 0
             if (typeof item.body.oldPrice === 'undefined') {
                 if (typeof item.body.releaseDate === 'undefined') {
                     parcent = ''
+                    type = 0
                 } else {
                     parcent = item.body.releaseDate.replace('#', '')
                     parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
+                    type = 2
                 }
             } else {
-                oldPrice = String(item.body.oldPrice) + ' ₽'
-                parcent = '−' + String(Math.ceil((1 - item.body.price / item.body.oldPrice) * 100)) + '%'
+                type = 1
             }
             let priceEl = (<div className={'text-element text-basket'} style={{
                 lineHeight: '15px',
                 marginTop: '0',
                 height: '15px',
                 fontSize: '15px',
-                marginLeft:'0px'
             }}>{item.body.price+' ₽'}</div>)
 
-            if (parcent !== '') {
+            let oldPriceEl = (<div></div>)
+
+            if (type === 1) {
                 priceEl = (<div className={'text-element text-basket'} style={{
                     lineHeight: '15px',
                     marginTop: '0',
-                    color: '#ff5d5d',
                     height: '15px',
                     fontSize: '15px',
-                    marginLeft:'0px'
+                    color: '#ff5d5d',
                 }}>{item.body.price+' ₽'}</div>)
+                oldPriceEl = (<div className={'text-element text-basket'} style={{
+                    lineHeight: '15px',
+                    marginTop: '0',
+                    height: '15px',
+                    fontSize: '15px',
+                    color:'gray',
+                    textDecoration:'line-through'
+                }}>{item.body.oldPrice+' ₽'}</div>)
+            }
+            if(type === 2){
+                oldPriceEl = (<div className={'text-element text-basket'} style={{
+                    lineHeight: '15px',
+                    marginTop: '0',
+                    height: '15px',
+                    fontSize: '15px',
+                    color: '#4a9ed6',
+                }}>Предзаказ!</div>)
             }
 
             return (
@@ -177,10 +195,9 @@ const Search = ({height, page, setData}) => {
                                 overflow: 'hidden',
                                 marginBottom: '0px'
                             }}>{platform}</div>
-                            <div style={{display: 'flex', justifyContent: 'left'}}>
-                                <div className={'text-element price-element'}>{priceEl}</div>
-                                <div className={'text-element price-element'}
-                                     style={{textDecoration: 'line-through', color: 'gray', fontSize:'15px', lineHeight: '15px',}}>{oldPrice}</div>
+                            <div style={{display: 'flex', justifyContent: 'left', alignItems:'center', height:'15px'}}>
+                                {priceEl}
+                                {oldPriceEl}
                             </div>
                         </div>
                     </Link>

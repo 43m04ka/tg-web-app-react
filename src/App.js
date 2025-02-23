@@ -1,5 +1,6 @@
 //import logo from './logo.svg';
 import './App.css';
+
 import React, {useCallback, useEffect, useState} from "react";
 import {useTelegram} from "./hooks/useTelegram";
 import {Route, Routes} from "react-router-dom";
@@ -47,8 +48,6 @@ function App() {
         }).then(r => {
             let Promise = r.json()
             Promise.then(async prom => {
-
-
                 const promise = prom
                 let inputDataCards = promise.cards;
                 setDataCards(inputDataCards)
@@ -90,7 +89,7 @@ function App() {
 
                     let count = 0
                     await resultData[cardTab].body['1'].map(async category => {
-                        if (category.path.replace(/\//g, "") === cardCategory) {
+                        if (cardCategory.includes(category.path.replace(/\//g, ""))) {
                             resultData[cardTab].body['1'][count].body = [...resultData[cardTab].body['1'][count].body, ...[card]]
                         }
                         count += 1;
@@ -98,7 +97,7 @@ function App() {
 
                     count = 0
                     await resultData[cardTab].body['0'].map(async category => {
-                        if (category.path.replace(/\//g, "") === cardCategory) {
+                        if (cardCategory.includes(category.path.replace(/\//g, ""))) {
                             resultData[cardTab].body['0'][count].body = [...resultData[cardTab].body['0'][count].body, ...[card]]
                         }
                         count += 1;
@@ -143,7 +142,7 @@ function App() {
     }, [sendData])
 
     const resizeHandler = () => {
-        setSize(window.innerHeight);
+        setSize(tg.viewportStableHeight);
     };
 
     React.useEffect(() => {

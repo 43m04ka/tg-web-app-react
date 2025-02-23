@@ -1,6 +1,4 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {calculateNewValue} from "@testing-library/user-event/dist/utils";
-import {isElementOfType} from "react-dom/test-utils";
 
 const FilterCheckBox = ({param, data, json, preview, setJson}) => {
     if (json === null) {

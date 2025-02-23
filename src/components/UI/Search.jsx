@@ -99,11 +99,45 @@ const Search = ({height, page, setData}) => {
             if (typeof item.body.platform !== 'undefined') {
                 if (typeof item.body.view === 'undefined') {
                     platform = item.body.platform
-                }else{
+                } else {
                     platform = item.body.view
                 }
             } else {
                 platform = ''
+            }
+
+            let oldPrice = ''
+            let parcent = ''
+            if (typeof item.body.oldPrice === 'undefined') {
+                if (typeof item.body.releaseDate === 'undefined') {
+                    parcent = ''
+                } else {
+                    parcent = item.body.releaseDate.replace('#', '')
+                    parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
+                }
+            } else {
+                oldPrice = String(item.body.oldPrice) + ' ₽'
+                parcent = '−' + String(Math.ceil((1 - item.body.price / item.body.oldPrice) * 100)) + '%'
+            }
+            let parcentEl = (<div></div>)
+            if (parcent !== '') {
+                parcentEl = (<div style={{
+                    lineHeight: '20px',
+                    background: '#ff5d5d',
+                    paddingLeft: '3px',
+                    paddingRight: '3px',
+                    borderRadius: '5px',
+                    marginBottom: '5px',
+                    textDecoration: 'none',
+                    textAlign: 'left',
+                    marginRight: '5px',
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontWeight: 700,
+                    fontSize: '12px',
+                    overflow: 'hidden',
+                    color: 'white',
+                    width: 'max-content'
+                }}>{parcent}</div>)
             }
 
             return (
@@ -111,8 +145,25 @@ const Search = ({height, page, setData}) => {
                      style={{marginLeft: '20px', width: String(window.innerWidth - 40) + 'px'}}>
                     <Link to={'/card/' + item.id} className={'link-element'}
                           style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>
-
-                        <img src={item.body.img} alt={item.body.title} className={'img-mini'}/>
+                        <div style={{
+                            height: '75px',
+                            width: '75px',
+                        }}>
+                            <div style={{
+                                backgroundImage: 'url("' + item.body.img + '+")',
+                                backgroundRepeat: 'no-repeat',
+                                backgroundSize: 'cover',
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'end',
+                                height: '75px',
+                                width: '75px',
+                                paddingLeft:'5px',
+                                borderRadius:'7px'
+                            }}>
+                                {parcentEl}
+                            </div>
+                        </div>
                         <div className={'box-grid-row'}>
                             <div className={'text-element text-basket'} style={{
                                 marginTop: '3px',

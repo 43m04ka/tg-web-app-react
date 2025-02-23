@@ -119,25 +119,23 @@ const Search = ({height, page, setData}) => {
                 oldPrice = String(item.body.oldPrice) + ' ₽'
                 parcent = '−' + String(Math.ceil((1 - item.body.price / item.body.oldPrice) * 100)) + '%'
             }
-            let parcentEl = (<div></div>)
+            let priceEl = (<div className={'text-element text-basket'} style={{
+                lineHeight: '15px',
+                marginTop: '0',
+                height: '15px',
+                fontSize: '15px',
+                marginLeft:'0px'
+            }}>{item.body.price+' ₽'}</div>)
+
             if (parcent !== '') {
-                parcentEl = (<div style={{
-                    lineHeight: '20px',
-                    background: '#ff5d5d',
-                    paddingLeft: '3px',
-                    paddingRight: '3px',
-                    borderRadius: '5px',
-                    marginBottom: '5px',
-                    textDecoration: 'none',
-                    textAlign: 'left',
-                    marginRight: '5px',
-                    fontFamily: "'Montserrat', sans-serif",
-                    fontWeight: 700,
-                    fontSize: '12px',
-                    overflow: 'hidden',
-                    color: 'white',
-                    width: 'max-content'
-                }}>{parcent}</div>)
+                priceEl = (<div className={'text-element text-basket'} style={{
+                    lineHeight: '15px',
+                    marginTop: '0',
+                    color: '#ff5d5d',
+                    height: '15px',
+                    fontSize: '15px',
+                    marginLeft:'0px'
+                }}>{item.body.price+' ₽'}</div>)
             }
 
             return (
@@ -158,10 +156,9 @@ const Search = ({height, page, setData}) => {
                                 alignItems: 'end',
                                 height: '75px',
                                 width: '75px',
-                                paddingLeft:'5px',
-                                borderRadius:'7px'
+                                paddingLeft: '5px',
+                                borderRadius: '7px'
                             }}>
-                                {parcentEl}
                             </div>
                         </div>
                         <div className={'box-grid-row'}>
@@ -180,12 +177,11 @@ const Search = ({height, page, setData}) => {
                                 overflow: 'hidden',
                                 marginBottom: '0px'
                             }}>{platform}</div>
-                            <div className={'text-element text-basket'} style={{
-                                lineHeight: '15px',
-                                marginTop: '0',
-                                height: '15px',
-                                fontSize: '15px'
-                            }}>{item.body.price + ' ₽'}</div>
+                            <div style={{display: 'flex', justifyContent: 'left'}}>
+                                <div className={'text-element price-element'}>{priceEl}</div>
+                                <div className={'text-element price-element'}
+                                     style={{textDecoration: 'line-through', color: 'gray', fontSize:'15px', lineHeight: '15px',}}>{oldPrice}</div>
+                            </div>
                         </div>
                     </Link>
                 </div>)

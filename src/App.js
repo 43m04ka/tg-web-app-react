@@ -21,6 +21,7 @@ let basketDataGlob = null
 
 function App() {
     const {tg, user} = useTelegram();
+    console.log(tg)
     const [size, setSize] = React.useState(window.innerHeight);
     const [mainData, setMainData] = useState([
         {id: 0, page: 'playstation', body: [[], []]}, {
@@ -142,7 +143,7 @@ function App() {
     }, [sendData])
 
     const resizeHandler = () => {
-        setSize(tg.viewportStableHeight);
+        setSize(tg.viewportHeight);
     };
 
     React.useEffect(() => {

@@ -59,7 +59,7 @@ const Filter = ({height, elementKeys, onRequestFilter}) => {
         <div style={{display: 'flex', flexDirection: 'row',}}>
             <div style={{
                 background: '#232323',
-                height: String(height / 3 * 2 - 60 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
+                height: String(height - 350 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
                 width: String(width) + 'px',
                 borderTopRightRadius: '10px',
                 borderBottomRightRadius: '10px',
@@ -69,7 +69,7 @@ const Filter = ({height, elementKeys, onRequestFilter}) => {
             }}>
                 <div
                     style={{
-                        height: String(height / 3 * 2 - 60 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 50) + 'px',
+                        height: String(height  - 350 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 40) + 'px',
                         transitionProperty: 'height, width',
                         transitionDuration: '0.3s',
                         overflowY:'scroll'

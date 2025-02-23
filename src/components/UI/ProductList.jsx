@@ -413,11 +413,11 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
                     {bodyElement}
                     <div style={{
                         position: 'absolute',
-                        marginTop: String(heightMenuButton - 2) + 'px',
+                        marginTop: String(heightMenuButton) + 'px',
                         transitionProperty: 'margin',
                         transitionDuration: '0.3s'
                     }}>
-                        <Filter height={height + 60 - heightMenuButton} elementKeys={elementKeys}
+                        <Filter height={height + 50 - heightMenuButton} elementKeys={elementKeys}
                                 onRequestFilter={onRequestFilter}/>
                     </div>
                 </div>

@@ -580,8 +580,8 @@ const Basket = ({height, number, updateOrders}) => {
             justifyItems:'center',
             marginTop:'10px'
         }}>
-            <div className={'text-element'} style={{fontSize: '14px'}}>:</div>
-            <input placeholder={"Введите логин от аккаунта PSN"}
+            <div className={'text-element'} style={{fontSize: '14px'}}>Ваш контакт для связи с администратором:</div>
+            <input placeholder={'@gwstore_admin или gwstore@mail.ru'}
                    style={{
                        height: '34px',
                        width: String(window.innerWidth - 60) + 'px',

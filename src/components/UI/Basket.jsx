@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Link, useNavigate} from "react-router-dom";
 import ProductItem from "./ProductItem";
 import ProductItemBasket from "./ProductItemBasket";
@@ -25,12 +25,12 @@ const Basket = ({height, number, updateOrders}) => {
     const [promoColor, setPromoColor] = useState([255, 255, 255])
     const [promoButtonColor, setPromoButtonColor] = useState([69, 69, 69]);
     const [promoButtonText, setPromoButtonText] = useState('Применить');
+    const userRef = useRef();
 
     let getUse = false
     if (typeof user.username !== 'undefined') {
         getUse = true
     }
-    const [isGetUsername, setIsGetUsername] = useState(getUse);
 
 
     let dataRequestPromo = {
@@ -107,6 +107,11 @@ const Basket = ({height, number, updateOrders}) => {
 
     const onClickButton = useCallback(() => {
         setButtonText('Оформляем заказ...');
+
+        if(!getUse){
+            sendDataProduct.user.username = userRef.current.value
+        }
+
         onRegDataAcc();
         fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
             method: 'POST',
@@ -580,8 +585,8 @@ const Basket = ({height, number, updateOrders}) => {
             justifyItems:'center',
             marginTop:'10px'
         }}>
-            <div className={'text-element'} style={{fontSize: '14px'}}>Ваш контакт для связи с администратором:</div>
-            <input placeholder={'@gwstore_admin или gwstore@mail.ru'}
+            <div className={'text-element'} style={{fontSize: '14px', textAlign:'center'}}>Ваш контакт для связи с администратором(обязательно):</div>
+            <input placeholder={'@gwstore_admin'}
                    style={{
                        height: '34px',
                        width: String(window.innerWidth - 60) + 'px',
@@ -593,7 +598,7 @@ const Basket = ({height, number, updateOrders}) => {
                        fontSize: '16px',
                        color: 'black',
                        fontFamily: "'Montserrat', sans-serif",
-                   }} onChange={(event) => inputData[0] = event.target.value}/>
+                   }} ref={userRef}/>
         </div>)
     }
 

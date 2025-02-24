@@ -153,7 +153,7 @@ const Search = ({height, page, setData}) => {
                     height: '15px',
                     fontSize: '15px',
                     color: '#4a9ed6',
-                }}>Предзаказ!</div>)
+                }}>Предзаказ</div>)
             }
 
             return (

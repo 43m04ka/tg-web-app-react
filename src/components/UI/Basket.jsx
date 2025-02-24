@@ -108,7 +108,7 @@ const Basket = ({height, number, updateOrders}) => {
     const onClickButton = useCallback(() => {
         setButtonText('Оформляем заказ...');
 
-        if(!getUse){
+        if(typeof user.username === 'undefined'){
             sendDataProduct.user.username = userRef.current.value
         }
 

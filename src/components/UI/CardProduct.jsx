@@ -345,6 +345,15 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                         </div>
                     </div>
 
+                    <button className={'all-see-button'} onClick={buttonLink}
+                            style={{
+                                background: buttonColor,
+                                width: String(window.innerWidth - 20 - 8) + 'px',
+                                transitionProperty: 'background',
+                                transitionDuration: '0.2s',
+                            }}>{buttonText}
+                    </button>
+
                     <div onClick={() => {
                         if (textHidden === true) {
                             setTextHidden(false)
@@ -423,14 +432,6 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                     </div>
 
                 </div>
-                <button className={'all-see-button'} onClick={buttonLink}
-                        style={{
-                            background: buttonColor,
-                            width: String(window.innerWidth - 20 - 8) + 'px',
-                            transitionProperty: 'background',
-                            transitionDuration: '0.2s',
-                        }}>{buttonText}
-                </button>
             </div>
             {seeLove}
         </div>

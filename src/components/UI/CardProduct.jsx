@@ -352,7 +352,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                                 style={{
                                     background: buttonColor,
                                     borderRadius: '12px',
-                                    width: String(window.innerWidth - 80) + 'px',
+                                    width: String(window.innerWidth - 75) + 'px',
                                     transitionProperty: 'background',
                                     transitionDuration: '0.2s',
                                     marginLeft: '5px',

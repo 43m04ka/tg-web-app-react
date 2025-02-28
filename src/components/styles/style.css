@@ -261,6 +261,11 @@ body {
     background-size: cover;
 }
 
+.background-whiteHeart {
+    background-image: url("../icons/heartWhite.png");
+    background-size: cover;
+}
+
 .background-arrow {
     background-image: url("../icons/arrow.png");
     background-size: cover;

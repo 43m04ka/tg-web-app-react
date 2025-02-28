@@ -86,7 +86,7 @@ function App() {
                 await inputDataCards.map(async card => {
 
                     const cardTab = card.body.tab
-                    const cardCategory = card.body.tabCategoryPath
+                    const cardCategory = card.category
 
                     let count = 0
                     await resultData[cardTab].body['1'].map(async category => {

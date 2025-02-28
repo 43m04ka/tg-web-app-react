@@ -341,28 +341,35 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                         display: 'flex',
                         flexDirection: 'row',
                         marginLeft: '15px',
-                        paddingBottom:'10px'
+                        paddingBottom: '10px'
                     }}>
                         {endDate}
                     </div>
 
-                    <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
+                    <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
 
-                    <button className={'all-see-button'} onClick={buttonLink}
-                            style={{
-                                background: buttonColor,
-                                borderRadius: '12px',
-                                width: String(window.innerWidth - 70) + 'px',
-                                transitionProperty: 'background',
-                                transitionDuration: '0.2s',
-                                marginLeft: '0',
-                                marginTop:'0px'
-                            }}>{buttonText}
-                    </button>
-                        <div style={{height:'40px', width:'40px', background:'#969696', borderRadius:'12px', padding:'7.5px'}}>
-                            <div  className={'background-whiteHeart'} style={{height:'25px', width:'25px'}}></div>
+                        <button className={'all-see-button'} onClick={buttonLink}
+                                style={{
+                                    background: buttonColor,
+                                    borderRadius: '12px',
+                                    width: String(window.innerWidth - 80) + 'px',
+                                    transitionProperty: 'background',
+                                    transitionDuration: '0.2s',
+                                    marginLeft: '5px',
+                                    marginTop: '0px'
+                                }}>{buttonText}
+                        </button>
+                        <div style={{
+                            height: '40px',
+                            width: '40px',
+                            background: '#969696',
+                            borderRadius: '12px',
+                            padding: '7.5px',
+                            marginRight:'5px'
+                        }}>
+                            <div className={'background-whiteHeart'} style={{height: '25px', width: '25px'}}></div>
                         </div>
-                </div>
+                    </div>
                     <div style={{marginLeft: '15px', fontWeight: '600'}}>
 
                         <div style={{
@@ -438,15 +445,23 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                     }
 
                 }}>
-                    <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginLeft:'15px', height:'20px', alignItems: 'center'}}>
-                        <div style={{fontWeight:'600', marginLeft:'0px', fontSize:'14px', lineHeight:'17px'}} className={'text-element'}>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginLeft: '15px',
+                        height: '20px',
+                        alignItems: 'center'
+                    }}>
+                        <div style={{fontWeight: '600', marginLeft: '0px', fontSize: '14px', lineHeight: '17px'}}
+                             className={'text-element'}>
                             Описание игры
                         </div>
                         <div>{signElement}</div>
                     </div>
                     <div>
                         <div style={{
-                            marginLeft:'15px',
+                            marginLeft: '15px',
                             lineHeight: '19px',
                             height: String(textElementHeight) + 'px',
                             fontSize: '16px',

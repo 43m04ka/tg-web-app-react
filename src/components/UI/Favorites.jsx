@@ -203,7 +203,7 @@ const Favorites = ({height}) => {
                             }
 
                             return (
-                                <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', padding:'5px', background:'#232323', borderRadius:'10px', margin:'10px'}}>
+                                <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', padding:'5px', background:'#232323', borderRadius:'10px', margin:'10px 0 0 10px', width:String(window.innerWidth-20)+'px'}}>
                                     <Link to={'/card/' + item.id} className={'link-element'}
                                           style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>
                                         <div className={'img'} style={{

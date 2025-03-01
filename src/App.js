@@ -258,6 +258,14 @@ function App() {
                                                       onGetData={onGetData} onGetDataF={onGetDataF}/>}/>)
                     )
                     }
+                    {favoriteData.map(item =>
+                        (<Route path={'card/' + item.id} key={item.id}
+                                element={<CardProduct mainData={item} basketData={basketData}
+                                                      favoriteData = {favoriteData}
+                                                      setDataDop={setDataCardsDop} dataDop={dataCardsDop}
+                                                      onGetData={onGetData} onGetDataF={onGetDataF}/>}/>)
+                    )
+                    }
                     {mainData.map(platform => (
                         platform.body[1].map(category => (
                             <Route path={'home/' + category.path} key={category.id}

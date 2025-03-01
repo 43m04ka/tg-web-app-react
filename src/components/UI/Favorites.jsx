@@ -82,10 +82,6 @@ const Favorites = ({height}) => {
         } else {
             return (
                 <div style={{display: 'grid'}}>
-                    <div style={{
-                        height: String(height - 110 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
-                        overflow: 'scroll'
-                    }}>
                         <div className={'title'} style={{
                             width: String(window.innerWidth) + 'px', textAlign: 'center',
                             marginRight: 'auto',
@@ -269,7 +265,6 @@ const Favorites = ({height}) => {
                                 </div>
                             );
                         })}
-                    </div>
                 </div>
 
             );

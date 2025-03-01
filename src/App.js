@@ -16,6 +16,7 @@ import ProductListSelector from "./components/UI/ProductListSelector";
 import History from "./components/UI/History";
 import Order from "./components/UI/Order";
 import Cassa from "./components/UI/Cassa";
+import Favorites from "./components/UI/Favorites";
 
 let basketDataGlob = null
 
@@ -33,6 +34,7 @@ function App() {
     const [dataCards, setDataCards] = useState([])
     const [dataCardsDop, setDataCardsDop] = useState([])
     const [basketData, setBasketData] = useState([]);
+    const [favoriteData, setFavoriteData] = useState([])
     const [historyData, setHistoryData] = React.useState([]);
     let dataRequestDatabase = {
         method: 'getPreview',
@@ -142,6 +144,27 @@ function App() {
         }
     }, [sendData])
 
+    const onGetDataF = useCallback(() => {
+        try {
+            fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/favorites', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(sendData)
+            }).then(r => {
+                let Promise = r.json()
+                Promise.then(r => {
+                    if(typeof r.body !== 'undefined') {
+                        setFavoriteData(r.body);
+                    }
+                })
+            })
+        }catch (e) {
+
+        }
+    }, [sendData])
+
     const resizeHandler = () => {
         setSize(window.innerHeight);
     };
@@ -214,21 +237,25 @@ function App() {
                     {dataCards.map(item =>
                         (<Route path={'card/' + item.id} key={item.id}
                                 element={<CardProduct mainData={item} basketData={basketData}
-                                                      setDataDop={setDataCardsDop} onGetData={onGetData}/>}/>)
+                                                      favoriteData = {favoriteData}
+                                                      setDataDop={setDataCardsDop} onGetData={onGetData}
+                                                      onGetDataF={onGetDataF}/>}/>)
                     )
                     }
                     {dataCardsDop.map(item =>
                         (<Route path={'card/' + item.id} key={item.id}
                                 element={<CardProduct mainData={item} basketData={basketData}
+                                                      favoriteData = {favoriteData}
                                                       setDataDop={setDataCardsDop} dataDop={dataCardsDop}
-                                                      onGetData={onGetData}/>}/>)
+                                                      onGetData={onGetData} onGetDataF={onGetDataF}/>}/>)
                     )
                     }
                     {basketData.map(item =>
                         (<Route path={'card/' + item.id} key={item.id}
                                 element={<CardProduct mainData={item} basketData={basketData}
+                                                      favoriteData = {favoriteData}
                                                       setDataDop={setDataCardsDop} dataDop={dataCardsDop}
-                                                      onGetData={onGetData}/>}/>)
+                                                      onGetData={onGetData} onGetDataF={onGetDataF}/>}/>)
                     )
                     }
                     {mainData.map(platform => (
@@ -249,6 +276,9 @@ function App() {
                     <Route path={'basket0'} element={<Basket height={size} number={0} updateOrders={onSendDataOrders}/>}/>
                     <Route path={'basket1'} element={<Basket height={size} number={1} updateOrders={onSendDataOrders}/>}/>
                     <Route path={'basket2'} element={<Basket height={size} number={2} updateOrders={onSendDataOrders}/>}/>
+
+                    <Route path={'favorites'} element={<Favorites height={size}/>}/>
+
                     {mainData.map(platform => (
                         <Route path={'search' + String(platform.id)} key={platform.id}
                                element={<Search height={size} setData={setDataCardsDop} setStatusApp={setStatus}
@@ -275,6 +305,7 @@ function App() {
     } else if (status === 0) {
         sendRequestDatabase()
         onGetData()
+        onGetDataF()
         onSendDataOrders()
         setStatus(1)
     }

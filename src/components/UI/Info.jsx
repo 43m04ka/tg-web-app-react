@@ -24,36 +24,38 @@ const Info = () => {
     return (
         <div>
             <div style={{background: '#454545', borderRadius: '7px', margin: '15px'}}>
-                <div style={{
-                    marginLeft: '3px',
-                    marginRight: '3px',
-                    borderBottom: '1px solid gray',
-                    display: "flex",
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                }}>
+                <Link to={'/favorites'} className={'link-element'}>
                     <div style={{
-                        display: 'flex',
+                        marginLeft: '3px',
+                        marginRight: '3px',
+                        borderBottom: '1px solid gray',
+                        display: "flex",
                         flexDirection: 'row',
-                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
                     }}>
-                        <div className={'background-loveInfo'} style={{
-                            width: '30px',
-                            height: '30px',
-                            borderRadius: '7px',
-                            marginLeft: '4px',
-                            marginTop: '5px',
-                            marginBottom: '5px'
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
                         }}>
+                            <div className={'background-loveInfo'} style={{
+                                width: '30px',
+                                height: '30px',
+                                borderRadius: '7px',
+                                marginLeft: '4px',
+                                marginTop: '5px',
+                                marginBottom: '5px'
+                            }}>
+                            </div>
+                            <div className={'text-element'} style={{fontSize: '15px', marginLeft: '15px'}}>
+                                Избранное
+                            </div>
                         </div>
-                        <div className={'text-element'} style={{fontSize: '15px', marginLeft: '15px'}}>
-                            Избранное
-                        </div>
+                        <div className={'background-arrowGray'}
+                             style={{width: '20px', height: '20px', marginRight: '5px'}}/>
                     </div>
-                    <div className={'background-arrowGray'}
-                         style={{width: '20px', height: '20px', marginRight: '5px'}}/>
-                </div>
+                </Link>
                 <Link to={'/history'} className={'link-element'}>
                     <div style={{
                         marginLeft: '3px',

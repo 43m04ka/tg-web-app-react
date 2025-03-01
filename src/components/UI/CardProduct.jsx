@@ -7,7 +7,7 @@ import ProductItem from "./ProductItem";
 
 let heightText = null
 let textElementHeight = null
-const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => {
+const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData, favoriteData, onGetDataF}) => {
     let dataRequestDatabase = {
         method: 'getRandom',
         data: mainData.body.tab
@@ -30,6 +30,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                     setDataDop(prom.cards)
                 }
                 onGetData()
+                onGetDataF()
             })
         })
     }, [dataRequestDatabase])
@@ -42,11 +43,13 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
     const [isBuy, setIsBuy] = React.useState(null);
     const [textHidden, setTextHidden] = React.useState(null);
     const [dataCards, setDataCards] = React.useState([]);
+    const [isFavorite, setIsFavorite] = React.useState(null);
 
     if (mainData.id !== newMainData.id) {
         setNewMainData(mainData)
         setTextHidden(null)
         setIsBuy(false);
+        setIsFavorite(null)
         sendRequestDatabase();
         heightText = null
         textElementHeight = null
@@ -100,6 +103,35 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
         })
     }, [sendData])
 
+    const sendDataF = {
+        method: 'add',
+        mainData: newMainData.id,
+        user: user,
+    }
+
+    const onSendDataF = useCallback(() => {
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/favorites', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(sendDataF)
+        }).then(r => {
+            let Promise = r.json()
+            Promise.then(prom => {
+                const result = prom.body
+                if (result) {
+                    if(isFavorite){
+                        setIsFavorite(false)
+                    }else{
+                        setIsFavorite(true)
+                    }
+
+                }
+            })
+        })
+    }, [sendData])
+
 
     let buttonColor
     let buttonText
@@ -117,6 +149,19 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
             if (isBuy === null) {
                 setIsBuy(false)
             }
+        }
+    }
+
+    let flag1 = true
+    favoriteData.map(el => {
+        if (el.id === newMainData.id && !isFavorite) {
+            setIsFavorite(true)
+            flag1 = false
+        }
+    })
+    if (flag1) {
+        if (isFavorite === null) {
+            setIsFavorite(false)
         }
     }
 
@@ -145,6 +190,11 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
         buttonText = 'Нет в продаже'
         buttonLink = () => {
         }
+    }
+
+    let backgroundColor = '#696969'
+    if(isFavorite){
+        backgroundColor = '#ff5d5d'
     }
 
 
@@ -362,10 +412,20 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData}) => 
                         <div style={{
                             height: '40px',
                             width: '40px',
-                            background: '#969696',
+                            background: backgroundColor,
                             borderRadius: '12px',
                             padding: '7.5px',
-                            marginRight:'5px'
+                            marginRight:'5px',
+                            transitionProperty: 'background',
+                            transitionDuration: '0.2s',
+                        }} onClick={()=>{
+                            if(isFavorite){
+                                sendDataF.method = 'del'
+                                onSendDataF()
+                            }else{
+                                sendDataF.method = 'add'
+                                onSendDataF()
+                            }
                         }}>
                             <div className={'background-whiteHeart'} style={{height: '25px', width: '25px'}}></div>
                         </div>

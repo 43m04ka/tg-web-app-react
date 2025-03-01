@@ -85,8 +85,9 @@ const Favorites = ({height}) => {
                         <div className={'title'} style={{
                             width: String(window.innerWidth) + 'px', textAlign: 'center',
                             marginRight: 'auto',
-                            marginTop: '10px',
+                            marginTop: '3px',
                             marginLeft: '0',
+                            marginBottom:'0px'
                         }}>Избранное
                         </div>
                         {favorites.map(item => {

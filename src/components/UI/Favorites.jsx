@@ -127,6 +127,13 @@ const Favorites = ({height}) => {
                                 oldPrice = String(item.body.oldPrice) + ' ₽'
                                 parcent = '−'+String(Math.ceil((1-item.body.price/item.body.oldPrice)*100))+'%'
                             }
+
+                            let endDate = ''
+                            if (typeof item.body.endDate === 'undefined') {
+                                endDate = ''
+                            } else {
+                                endDate = 'Скидка ' + parcent + ' ' + item.body.endDate
+                            }
                             let parcentEl = (<div></div>)
                             if(parcent !== ''){
                                 parcentEl = (<div style={{
@@ -178,6 +185,7 @@ const Favorites = ({height}) => {
                                     height: '15px',
                                     fontSize: '15px',
                                     color: '#ff5d5d',
+                                    marginRight:'0px'
                                 }}>{item.body.price+' ₽'}</div>)
                                 oldPriceEl = (<div className={'text-element text-basket'} style={{
                                     lineHeight: '15px',
@@ -203,8 +211,8 @@ const Favorites = ({height}) => {
                                     <Link to={'/card/' + item.id} className={'link-element'}
                                           style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>
                                         <div className={'img'} style={{
-                                            height:'75px',
-                                            width:'75px',
+                                            height:'80px',
+                                            width:'80px',
                                             borderRadius: '7px',
                                             backgroundImage: "url('" + item.body.img + "')",
                                             backgroundSize: 'cover',
@@ -213,28 +221,22 @@ const Favorites = ({height}) => {
                                             alignItems: 'end',
                                             justifyContent: 'space-between',
                                         }}></div>
-                                        <div className={'box-grid-row'}>
-                                            <div style={{display:'flex'}}>
+                                        <div style={{
+                                            width: String(window.innerWidth - 140) + 'px',
+                                            display: 'grid',
+                                            gridTemplateRows: '30fr 15px 15fr',
+                                            height:'75px'
+                                        }}>
                                             <div className={'text-element text-basket'} style={{
-                                                marginTop: '3px',
+                                                marginTop: '5px',
                                                 lineHeight: '15px',
                                                 height: '30px',
                                                 fontSize: '13px',
                                                 overflow: 'hidden',
-                                                display:'flex',
-                                                maxWidth:String(window.innerWidth-250)+'px'
-                                            }}>{item.body.title}</div>
-                                                {parcentEl}
-                                            </div>
-                                            <div className={'text-element text-basket'} style={{
-                                                marginTop: '3px',
-                                                lineHeight: '14px',
-                                                height: '14px',
-                                                fontSize: '9px',
-                                                overflow: 'hidden',
-                                                marginBottom: '0px'
-                                            }}>{platform}</div>
+                                                display: 'flex',
+                                            }}>{platform + ' • ' + item.body.title}</div>
                                             <div style={{
+                                                marginTop:'0px',
                                                 display: 'flex',
                                                 justifyContent: 'left',
                                                 alignItems: 'center',
@@ -242,6 +244,16 @@ const Favorites = ({height}) => {
                                             }}>
                                                 {priceEl}
                                                 {oldPriceEl}
+                                            </div>
+                                            <div className={'text-element'} style={{
+                                                fontSize: '13px',
+                                                color: '#696969',
+                                                overflow: 'hidden',
+                                                lineHeight: '15px',
+                                                height: '15px',
+                                                marginTop:'5px'
+                                            }}>
+                                                {endDate}
                                             </div>
                                         </div>
                                     </Link>

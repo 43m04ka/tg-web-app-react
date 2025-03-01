@@ -221,7 +221,8 @@ const Favorites = ({height}) => {
                                                 height: '30px',
                                                 fontSize: '13px',
                                                 overflow: 'hidden',
-                                                display:'flex'
+                                                display:'flex',
+                                                maxWidth:String(window.innerWidth-250)+'px'
                                             }}>{item.body.title}</div>
                                                 {parcentEl}
                                             </div>

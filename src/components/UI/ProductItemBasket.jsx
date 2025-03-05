@@ -2,7 +2,7 @@ import React, {useCallback} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
 import {Link} from "react-router-dom";
 
-const ProductItemBasket = ({setBasketF, product}) => {
+const ProductItemBasket = ({setBasketF, product, number}) => {
     const item = product;
     const {user} = useTelegram();
 
@@ -22,8 +22,13 @@ const ProductItemBasket = ({setBasketF, product}) => {
         }).then(r => {
             let Promise = r.json()
             Promise.then(r => {
-                console.log(r.body)
-                return setBasketF(r.body);
+                let newArray = []
+                r.body.map(el => {
+                    if (Number(el.body.tab) === number && el.body.isSale) {
+                        newArray = [...newArray, el]
+                    }
+                })
+                return setBasketF(newArray);
             })
         })
     }, [sendData])
@@ -199,9 +204,7 @@ const ProductItemBasket = ({setBasketF, product}) => {
                 </div>
             </Link>
             <div onClick={() => {
-                sendData.mainData = item.id;
-                sendData.method = 'del'
-                onGetData()
+                onSendData()
             }} style={{justifyContent: 'center', alignContent: "center", marginRight: '20px'}}>
                 <div className={'background-trash'}
                      style={{padding: '10px', height: '20px', width: '20px'}}>

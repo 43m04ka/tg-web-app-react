@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react';
-import HomeBlockElement from "./HomeBlockElement";
 import {Link, useNavigate} from "react-router-dom";
+import ProductItem from "./ProductItem";
 
 const HomeBlock = ({data}) => {
 
@@ -13,7 +13,9 @@ const HomeBlock = ({data}) => {
                     <div style={{width:'10px'}}/>
                 </div>
                 {data.body.slice(0, 6).map(item => (
-                        <HomeBlockElement key={item.id} path={data.path} data={item}/>
+                    <div style={{marginRight:'5px'}}>
+                        <ProductItem key={item.id} product={item}/>
+                    </div>
                     )
                 )}
                 <div className={'box-home-block-element home-block-element'}>

@@ -1,8 +1,6 @@
 import React, {createRef, useCallback, useEffect, useState} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
 import {Link, useNavigate, useParams} from "react-router-dom";
-import HomeBlock from "./HomeBlock";
-import HomeBlockElement from "./HomeBlockElement";
 import ProductItem from "./ProductItem";
 
 let heightText = null
@@ -121,9 +119,9 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData, favo
             Promise.then(prom => {
                 const result = prom.body
                 if (result) {
-                    if(isFavorite){
+                    if (isFavorite) {
                         setIsFavorite(false)
-                    }else{
+                    } else {
                         setIsFavorite(true)
                     }
 
@@ -193,7 +191,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData, favo
     }
 
     let backgroundColor = '#696969'
-    if(isFavorite){
+    if (isFavorite) {
         backgroundColor = '#ff5d5d'
     }
 
@@ -206,15 +204,22 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData, favo
     }
 
     let genre = ''
-    if (typeof newMainData.body.genre === 'undefined') {
+    if (typeof newMainData.body.genre === 'undefined' || newMainData.body.genre === 'NA') {
         genre = ''
     } else {
         genre = 'Жанр: ' + newMainData.body.genre
+        genre = (<div style={{
+            marginTop: '12px',
+            fontSize: '14px',
+            color: 'white',
+            fontFamily: "'Montserrat', sans-serif"
+        }}>{genre}
+        </div>)
     }
 
     let oldPrice = ''
     let parcent = ''
-    if (typeof newMainData.body.oldPrice === 'undefined') {
+    if (typeof newMainData.body.oldPrice === 'undefined' || newMainData.body.oldPrice === 'NA') {
         oldPrice = ''
     } else {
         oldPrice = newMainData.body.oldPrice.toLocaleString() + ' ₽'
@@ -222,49 +227,106 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData, favo
     }
 
     let endDate = ''
-    if (typeof newMainData.body.endDate === 'undefined') {
+    if (typeof newMainData.body.endDate === 'undefined' || newMainData.body.endDate === 'NA') {
         endDate = ''
     } else {
         endDate = 'Скидка ' + parcent + ' ' + newMainData.body.endDate
     }
 
     let language = ''
-    if (typeof newMainData.body.language === 'undefined') {
+    if (typeof newMainData.body.language === 'undefined' || newMainData.body.language === 'NA') {
         language = ''
     } else {
-        if (typeof newMainData.body.languageSelector !== 'undefined') {
+        if (typeof newMainData.body.languageSelector !== 'undefined' || newMainData.body.languageSelector === 'NA') {
             language = 'Язык в игре: ' + newMainData.body.languageSelector
+            language = (<div style={{
+                marginTop: '12px',
+                fontSize: '14px',
+                color: 'white',
+                fontFamily: "'Montserrat', sans-serif"
+            }}>{language}
+            </div>)
         } else {
             language = 'Язык в игре: ' + newMainData.body.language
+            language = (<div style={{
+                marginTop: '12px',
+                fontSize: '14px',
+                color: 'white',
+                fontFamily: "'Montserrat', sans-serif"
+            }}>{language}
+            </div>)
         }
     }
 
     let region = ''
-    if (typeof newMainData.body.region === 'undefined') {
+    if (typeof newMainData.body.region === 'undefined' || newMainData.body.region === 'NA') {
         region = ''
     } else {
         region = 'Регион активации: ' + newMainData.body.region
+        region = (<div style={{
+            marginTop: '12px',
+            fontSize: '14px',
+            color: 'white',
+            fontFamily: "'Montserrat', sans-serif"
+        }}>{region}
+        </div>)
+
     }
 
     let releaseDate = ''
-    if (typeof newMainData.body.releaseDate === 'undefined') {
+    if (typeof newMainData.body.releaseDate === 'undefined' || newMainData.body.releaseDate === 'NA') {
         releaseDate = ''
     } else {
         releaseDate = 'Дата релиза: ' + newMainData.body.releaseDate.replace('#', '')
+        releaseDate = (<div style={{
+            marginTop: '12px',
+            fontSize: '14px',
+            color: 'white',
+            fontFamily: "'Montserrat', sans-serif"
+        }}>{releaseDate}
+        </div>)
     }
 
     let numPlayers = ''
-    if (typeof newMainData.body.numPlayers === 'undefined') {
+    if (typeof newMainData.body.numPlayers === 'undefined' || newMainData.body.numPlayers === 'NA') {
         numPlayers = ''
     } else {
         numPlayers = 'Количество игроков: ' + newMainData.body.numPlayers
+        numPlayers = (<div style={{
+            marginTop: '12px',
+            fontSize: '14px',
+            color: 'white',
+            fontFamily: "'Montserrat', sans-serif"
+        }}>{numPlayers}
+        </div>)
     }
 
     let platform = ''
-    if (typeof newMainData.body.platform === 'undefined') {
+    if (typeof newMainData.body.platform === 'undefined' || newMainData.body.platform === 'NA') {
         platform = ''
     } else {
         platform = 'Платформа: ' + newMainData.body.platform
+        platform = (<div style={{
+            marginTop: '12px',
+            fontSize: '14px',
+            color: 'white',
+            fontFamily: "'Montserrat', sans-serif"
+        }}>{platform}
+        </div>)
+    }
+
+    let view = ''
+    if (typeof newMainData.body.view === 'undefined' || newMainData.body.view === 'NA') {
+        view = ''
+    } else {
+        view = 'Срок подписки: ' + newMainData.body.view
+        view = (<div style={{
+            marginTop: '12px',
+            fontSize: '14px',
+            color: 'white',
+            fontFamily: "'Montserrat', sans-serif"
+        }}>{view}
+        </div>)
     }
 
 
@@ -313,7 +375,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData, favo
             <div className={"title"}>Рекомендуем:</div>
             <div className={'list-grid'}>
                 {dataCards.map(item => {
-                    return (<ProductItem key={item.id} product={item}/>)
+                    return (<div style={{marginLeft: String((window.innerWidth - 150 - 150) / 3) + 'px'}}><ProductItem key={item.id} product={item}/></div>)
                 })}
             </div>
         </div>)
@@ -415,14 +477,14 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData, favo
                             background: backgroundColor,
                             borderRadius: '12px',
                             padding: '7.5px',
-                            marginRight:'5px',
+                            marginRight: '5px',
                             transitionProperty: 'background',
                             transitionDuration: '0.2s',
-                        }} onClick={()=>{
-                            if(isFavorite){
+                        }} onClick={() => {
+                            if (isFavorite) {
                                 sendDataF.method = 'del'
                                 onSendDataF()
-                            }else{
+                            } else {
                                 sendDataF.method = 'add'
                                 onSendDataF()
                             }
@@ -431,59 +493,13 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData, favo
                         </div>
                     </div>
                     <div style={{marginLeft: '15px', fontWeight: '600'}}>
-
-                        <div style={{
-                            marginTop: '12px',
-                            fontSize: '14px',
-                            color: 'white',
-                            fontFamily: "'Montserrat', sans-serif"
-                        }}>{releaseDate}
-                        </div>
-                        <div style={{
-                            marginTop: '12px',
-                            fontSize: '14px',
-                            color: 'white',
-                            fontFamily: "'Montserrat', sans-serif"
-                        }}>{platform}
-                        </div>
-
-                        <div style={{
-                            marginTop: '12px',
-                            fontSize: '14px',
-                            color: 'white',
-                            fontFamily: "'Montserrat', sans-serif"
-                        }}>
-                            {numPlayers}
-                        </div>
-
-
-                        <div style={{
-                            marginTop: '12px',
-                            fontSize: '14px',
-                            color: 'white',
-                            fontFamily: "'Montserrat', sans-serif"
-                        }}>
-                            {language}
-                        </div>
-
-                        <div style={{
-                            marginTop: '12px',
-                            fontSize: '14px',
-                            color: 'white',
-                            fontFamily: "'Montserrat', sans-serif"
-                        }}>
-                            {region}
-                        </div>
-
-                        <div style={{
-                            marginTop: '12px',
-                            fontSize: '14px',
-                            color: 'white',
-                            fontFamily: "'Montserrat', sans-serif"
-                        }}>
-                            {genre}
-                        </div>
-
+                        {releaseDate}
+                        {platform}
+                        {numPlayers}
+                        {view}
+                        {language}
+                        {region}
+                        {genre}
                     </div>
                 </div>
                 <div style={{

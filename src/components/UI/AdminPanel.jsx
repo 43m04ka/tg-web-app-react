@@ -1,7 +1,5 @@
-import React, {Component, useCallback, useEffect, useRef, useState} from 'react';
+import React, {Component, useCallback, useRef, useState} from 'react';
 import * as XLSX from "xlsx";
-import {useTelegram} from "../../hooks/useTelegram";
-import ProductList from "./ProductList";
 import AdminProductList from "./AdminProductList";
 
 const make_cols = refstr => {
@@ -31,8 +29,10 @@ const AdminPanel = () => {
     const [dataCards, setDataCards] = useState([]);
     const [dataCategory, setDataCategory] = useState([]);
     const [dataPromo, setDataPromo] = useState([]);
+    const [dataOrderHistory, setDataOrderHistory] = useState([]);
 
     const [page, setPage] = useState(0);
+    const [selectedId, setSelectedId] = useState(-1);
 
     const searchInput = useRef();
 
@@ -46,7 +46,8 @@ const AdminPanel = () => {
     }
 
     const sendRequestAdmin = useCallback(async () => {
-        console.log(dataRequestAdmin, 'input setAdmin')
+        console.log(dataRequestAdmin, 'inputAdmin')
+        let method = dataRequestAdmin.method
         await fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/admin', {
             method: 'POST',
             headers: {
@@ -55,12 +56,20 @@ const AdminPanel = () => {
             body: JSON.stringify(dataRequestAdmin)
         }).then(async r => {
             console.log(r, 'выход setAdmin')
-            if (r.status === 200) {
-                userData = dataRequestAdmin.userData
-                await onReload()
-                setStatus(1)
-            } else {
-                alert('Неверный логин или пароль')
+            if (method === 'login') {
+                if (r.status === 200) {
+                    userData = dataRequestAdmin.userData
+                    await onReload()
+                    setStatus(1)
+                } else {
+                    alert('Неверный логин или пароль')
+                }
+            } else if (method === 'sendMessage') {
+                if (r.status === 201) {
+                    alert('Сообщение отправлено!')
+                } else {
+                    alert('Возникла ошибка при отправке сообщения!')
+                }
             }
         })
     }, [dataRequestAdmin])
@@ -110,9 +119,10 @@ const AdminPanel = () => {
             subarray[i] = array.slice((i * size), (i * size) + size);
         }
         setStatus(10)
-        subarray.map(async el => {
-            await sendRequestOnDatabase(el, 'add')
-        })
+        for (let i = 0; i < subarray.length; i++) {
+            await sendRequestOnDatabase(subarray[i], 'add')
+        }
+        setStatus(1)
     }
 
 
@@ -124,6 +134,7 @@ const AdminPanel = () => {
 
     const sendRequestDatabase = useCallback(async () => {
         console.log(dataRequestDatabase, 'inputRequestDb')
+        let method = dataRequestDatabase.method
         await fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/database', {
             method: 'POST',
             headers: {
@@ -134,7 +145,7 @@ const AdminPanel = () => {
             let Promise = r.json()
             Promise.then(async prom => {
                 console.log(prom, 'возвратил get')
-                if (dataRequestDatabase.method === 'getDataAdmin') {
+                if (method === 'getDataAdmin') {
                     setDataStructure(prom.structure)
                     let DataCat = []
                     for (let i = 0; i < prom.allCategory.length; i++) {
@@ -142,12 +153,9 @@ const AdminPanel = () => {
                     }
                     setDataCategory(DataCat)
                     setStatus(2)
-                } else if (dataRequestDatabase.method === 'getSearch') {
+                } else if (method === 'getSearch') {
                     setDataCards(prom.cards)
-                } else if (dataRequestDatabase.method === 'add') {
-                    await onReload()
-                    setStatus(1)
-                } else if (dataRequestDatabase.method === 'changeStatus' || dataRequestDatabase.method === 'delete') {
+                } else if (method === 'changeStatus' || method === 'delete' || method === 'editPriceCard') {
                     try {
                         dataRequestDatabase.method = 'getSearch'
                         dataRequestDatabase.data = {str: searchInput.current.value, page: page}
@@ -156,6 +164,8 @@ const AdminPanel = () => {
                         await onReload()
                     }
                     setStatus(2)
+                } else if (method === 'getOrderHistory') {
+                    setDataOrderHistory(prom.allOrders)
                 }
             })
         })
@@ -264,6 +274,7 @@ const AdminPanel = () => {
 
     const onReload = async () => {
         await sendRequestOnDatabase([], 'getDataAdmin');
+        await sendRequestOnDatabase([], 'getOrderHistory');
     }
 
     const addPromo = () => {
@@ -305,6 +316,10 @@ const AdminPanel = () => {
                     <button onClick={() => {
                         setPageSelected(4)
                     }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Промокоды
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(5)
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>История заказов
                     </button>
                     <button onClick={async () => {
                         await onReload()
@@ -355,7 +370,7 @@ const AdminPanel = () => {
                     <div className={'text-element'}
                          style={{display: 'flex', flexDirection: 'column', marginTop: '15px'}}>
                         Введите уникальный путь до категории:
-                        <input style={{marginLeft: '20px'}} onChange={(event) => {
+                        <input onChange={(event) => {
                             setInputCategory3(event.target.value)
                         }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>
                     </div>
@@ -395,6 +410,11 @@ const AdminPanel = () => {
                         <button onClick={() => {
                             setPageSelected(4)
                         }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Промокоды
+                        </button>
+                        <button onClick={() => {
+                            setPageSelected(5)
+                        }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>История
+                            заказов
                         </button>
                         <button onClick={async () => {
                             await onReload()
@@ -509,6 +529,11 @@ const AdminPanel = () => {
                             setPageSelected(4)
                         }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Промокоды
                         </button>
+                        <button onClick={() => {
+                            setPageSelected(5)
+                        }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>История
+                            заказов
+                        </button>
                         <button onClick={async () => {
                             await onReload()
                         }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Обновить
@@ -593,177 +618,366 @@ const AdminPanel = () => {
                                         colorButtonStatus = '#ef7474'
                                         textColorButtonStatus = 'white'
                                     }
+
+                                    let height = 0
+                                    let textButton = 'Изменить цену'
+                                    let buttonColor = 'black'
+                                    let buttonBackground = 'white'
+                                    if (selectedId === card.id) {
+                                        height = card.category.length * 30 + 30
+                                        textButton = 'Скрыть поле поле'
+                                        buttonBackground = '#ef7474'
+                                        buttonColor = 'white'
+                                        if (typeof card.body.endDate !== 'undefined') {
+                                            height += 30
+                                        }
+                                    }
+                                    let newPriceArr = card.price
+
+                                    let oldPriceEditElement = (<></>)
+                                    let oldPriceValue = null
+
+                                    if (typeof card.body.endDate !== 'undefined') {
+                                        oldPriceValue = card.body.oldPrice
+                                        oldPriceEditElement = (<div style={{height: '25px'}}>
+                                                    <div style={{
+                                                        display: 'flex',
+                                                        flexDirection: 'row',
+                                                        height: '25px',
+                                                        marginTop: '5px',
+                                                        width: 'max-content'
+                                                    }}>
+                                                        <div className={'text-element'} style={{
+                                                            marginLeft: '0px',
+                                                            background: '#131313',
+                                                            lineHeight: '15px',
+                                                            padding: '5px',
+                                                            borderRadius: '100px',
+                                                        }}>
+                                                            <div style={{
+                                                                marginLeft: '5px',
+                                                                marginRight: '5px',
+                                                                height: '15px',
+                                                                overflow: 'hidden'
+                                                            }}>
+                                                                {card.category.length + 1 + ' - Старая цена'}
+                                                            </div>
+                                                        </div>
+                                                        <div className={'text-element'} style={{
+                                                            marginLeft: '0px',
+                                                            background: '#131313',
+                                                            lineHeight: '15px',
+                                                            borderRadius: '100px',
+                                                        }}>
+                                                            <div style={{
+                                                                marginLeft: '5px',
+                                                                height: '25px',
+                                                                overflow: 'hidden',
+                                                                display: 'flex',
+                                                            }}>
+                                                                <div style={{marginRight: '3px', marginTop: '5px',}}>
+                                                                    Цена:
+                                                                </div>
+                                                                <input defaultValue={oldPriceValue}
+                                                                       onChange={(event) => {
+                                                                           oldPriceValue = parseInt(event.target.value)
+                                                                       }} style={{
+                                                                    borderRadius: '100px',
+                                                                    border: '0px',
+                                                                    paddingLeft: '5px'
+                                                                }}/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )
+                                    }
+
                                     return (
                                         <div style={{
-                                            display: 'flex',
-                                            flexDirection: 'row',
-                                            paddingTop: '5px',
                                             borderBottom: '1px solid grey',
                                             paddingBottom: '5px'
                                         }}>
-                                            <img src={card.body.img} alt={card.body.title} style={{
-                                                height: '85px',
-                                                width: '85px',
-                                                backgroundSize: 'cover',
-                                                borderRadius: '10px'
-                                            }}/>
-                                            <div style={{display: 'flex', flexDirection: 'column'}}
-                                                 className={'text-element text-basket'}>
-                                                <div style={{
-                                                    display: 'flex',
-                                                    flexDirection: 'row',
-                                                    height: '25px',
-                                                }}>
+                                            <div style={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                paddingTop: '5px',
+                                            }}>
+                                                <img src={card.body.img} alt={card.body.title} style={{
+                                                    height: '85px',
+                                                    width: '85px',
+                                                    backgroundSize: 'cover',
+                                                    borderRadius: '10px'
+                                                }}/>
+                                                <div style={{display: 'flex', flexDirection: 'column'}}
+                                                     className={'text-element text-basket'}>
                                                     <div style={{
-                                                        background: '#131313',
-                                                        lineHeight: '15px',
-                                                        padding: '5px',
-                                                        borderRadius: '100px',
+                                                        display: 'flex',
+                                                        flexDirection: 'row',
+                                                        height: '25px',
                                                     }}>
                                                         <div style={{
-                                                            marginLeft: '5px',
-                                                            marginRight: '5px',
-                                                            height: '15px',
-                                                            overflow: 'hidden'
+                                                            background: '#131313',
+                                                            lineHeight: '15px',
+                                                            padding: '5px',
+                                                            borderRadius: '100px',
                                                         }}>
-                                                            {'Имя: ' + card.body.title}
+                                                            <div style={{
+                                                                marginLeft: '5px',
+                                                                marginRight: '5px',
+                                                                height: '15px',
+                                                                overflow: 'hidden'
+                                                            }}>
+                                                                {'Имя: ' + card.body.title}
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div style={{
-                                                    display: 'flex',
-                                                    flexDirection: 'row',
-                                                    height: '25px',
-                                                    marginTop: '5px',
-                                                    width: 'max-content'
-                                                }}>
                                                     <div style={{
-                                                        background: '#131313',
-                                                        lineHeight: '15px',
-                                                        padding: '5px',
-                                                        borderRadius: '100px',
+                                                        display: 'flex',
+                                                        flexDirection: 'row',
+                                                        height: '25px',
+                                                        marginTop: '5px',
+                                                        width: 'max-content'
                                                     }}>
                                                         <div style={{
-                                                            marginLeft: '5px',
-                                                            marginRight: '5px',
-                                                            height: '15px',
-                                                            overflow: 'hidden'
+                                                            background: '#131313',
+                                                            lineHeight: '15px',
+                                                            padding: '5px',
+                                                            borderRadius: '100px',
                                                         }}>
-                                                            {'Цена: ' + card.body.price}
+                                                            <div style={{
+                                                                marginLeft: '5px',
+                                                                marginRight: '5px',
+                                                                height: '15px',
+                                                                overflow: 'hidden'
+                                                            }}>
+                                                                {'Цена: ' + card.body.price}
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div style={{
-                                                        marginLeft: '5px',
-                                                        background: '#131313',
-                                                        lineHeight: '15px',
-                                                        padding: '5px',
-                                                        borderRadius: '100px',
-                                                    }}>
                                                         <div style={{
                                                             marginLeft: '5px',
-                                                            marginRight: '5px',
-                                                            height: '15px',
-                                                            overflow: 'hidden'
+                                                            background: '#131313',
+                                                            lineHeight: '15px',
+                                                            padding: '5px',
+                                                            borderRadius: '100px',
                                                         }}>
-                                                            {'Платформа: ' + card.body.platform}
+                                                            <div style={{
+                                                                marginLeft: '5px',
+                                                                marginRight: '5px',
+                                                                height: '15px',
+                                                                overflow: 'hidden'
+                                                            }}>
+                                                                {'Платформа: ' + card.body.platform}
+                                                            </div>
+                                                        </div>
+                                                        <div style={{
+                                                            marginLeft: '5px',
+                                                            background: '#131313',
+                                                            lineHeight: '15px',
+                                                            padding: '5px',
+                                                            borderRadius: '100px',
+                                                        }}>
+                                                            <div style={{
+                                                                marginLeft: '5px',
+                                                                marginRight: '5px',
+                                                                height: '15px',
+                                                                overflow: 'hidden'
+                                                            }}>
+                                                                {'Каталоги: ' + String(card.category)}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div style={{
-                                                        marginLeft: '5px',
-                                                        background: '#131313',
-                                                        lineHeight: '15px',
-                                                        padding: '5px',
-                                                        borderRadius: '100px',
+                                                        display: 'flex',
+                                                        flexDirection: 'row',
+                                                        height: '25px',
+                                                        marginTop: '5px',
+                                                        width: 'max-content'
                                                     }}>
                                                         <div style={{
-                                                            marginLeft: '5px',
-                                                            marginRight: '5px',
-                                                            height: '15px',
-                                                            overflow: 'hidden'
+                                                            background: '#131313',
+                                                            lineHeight: '15px',
+                                                            padding: '5px',
+                                                            borderRadius: '100px',
                                                         }}>
-                                                            {'Каталоги: ' + String(card.category)}
+                                                            <div style={{
+                                                                marginLeft: '5px',
+                                                                marginRight: '5px',
+                                                                height: '15px',
+                                                                overflow: 'hidden'
+                                                            }}>
+                                                                {'Id: ' + card.id}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                                <div style={{
-                                                    display: 'flex',
-                                                    flexDirection: 'row',
-                                                    height: '25px',
-                                                    marginTop: '5px',
-                                                    width: 'max-content'
-                                                }}>
-                                                    <div style={{
-                                                        background: '#131313',
-                                                        lineHeight: '15px',
-                                                        padding: '5px',
-                                                        borderRadius: '100px',
-                                                    }}>
                                                         <div style={{
                                                             marginLeft: '5px',
-                                                            marginRight: '5px',
-                                                            height: '15px',
-                                                            overflow: 'hidden'
+                                                            background: colorButtonStatus,
+                                                            color: textColorButtonStatus,
+                                                            lineHeight: '15px',
+                                                            padding: '5px',
+                                                            borderRadius: '100px',
                                                         }}>
-                                                            {'Id: ' + card.id}
-                                                        </div>
-                                                    </div>
-                                                    <div style={{
-                                                        marginLeft: '5px',
-                                                        background: colorButtonStatus,
-                                                        color: textColorButtonStatus,
-                                                        lineHeight: '15px',
-                                                        padding: '5px',
-                                                        borderRadius: '100px',
-                                                    }}>
-                                                        <div style={{
-                                                            marginLeft: '5px',
-                                                            marginRight: '5px',
-                                                            height: '15px',
-                                                            overflow: 'hidden'
-                                                        }} onClick={async () => {
-                                                            dataRequestDatabase.method = 'changeStatus'
-                                                            dataRequestDatabase.data = card.category[0]
-                                                            dataRequestDatabase.idList = [card.id]
-                                                            await sendRequestDatabase()
-                                                        }}>
-                                                            {textButtonStatus}
-                                                        </div>
-                                                    </div>
-                                                    <div style={{
-                                                        marginLeft: '5px',
-                                                        background: colorButtonStatus,
-                                                        color: textColorButtonStatus,
-                                                        lineHeight: '15px',
-                                                        padding: '5px',
-                                                        borderRadius: '100px',
-                                                    }}>
-                                                        <div style={{
-                                                            marginLeft: '5px',
-                                                            marginRight: '5px',
-                                                            height: '15px',
-                                                            overflow: 'hidden'
-                                                        }} onClick={async () => {
-                                                            if(card.category.length > 1){
-                                                                const name = prompt("Введите путь категории(ничего не вводить для удаления из всех)");
-                                                                dataRequestDatabase.method = 'delete'
-                                                                dataRequestDatabase.data = name
+                                                            <div style={{
+                                                                marginLeft: '5px',
+                                                                marginRight: '5px',
+                                                                height: '15px',
+                                                                overflow: 'hidden'
+                                                            }} onClick={async () => {
+                                                                dataRequestDatabase.method = 'changeStatus'
+                                                                dataRequestDatabase.data = card.category[0]
                                                                 dataRequestDatabase.idList = [card.id]
                                                                 await sendRequestDatabase()
-                                                            }else{
-                                                                const result = confirm("Точно хотите удалить?");
-                                                                console.log(name)
-                                                                if (result === true) {
+                                                            }}>
+                                                                {textButtonStatus}
+                                                            </div>
+                                                        </div>
+                                                        <div style={{
+                                                            marginLeft: '5px',
+                                                            background: buttonBackground,
+                                                            color: buttonColor,
+                                                            lineHeight: '15px',
+                                                            padding: '5px',
+                                                            borderRadius: '100px',
+                                                        }}>
+                                                            <div style={{
+                                                                marginLeft: '5px',
+                                                                marginRight: '5px',
+                                                                height: '15px',
+                                                                overflow: 'hidden'
+                                                            }} onClick={async () => {
+                                                                if (card.id !== selectedId) {
+                                                                    setSelectedId(card.id)
+                                                                } else {
+                                                                    setSelectedId(-1)
+                                                                }
+                                                            }}>
+                                                                {textButton}
+                                                            </div>
+                                                        </div>
+                                                        <div style={{
+                                                            marginLeft: '5px',
+                                                            background: 'white',
+                                                            color: 'black',
+                                                            lineHeight: '15px',
+                                                            padding: '5px',
+                                                            borderRadius: '100px',
+                                                        }}>
+                                                            <div style={{
+                                                                marginLeft: '5px',
+                                                                marginRight: '5px',
+                                                                height: '15px',
+                                                                overflow: 'hidden'
+                                                            }} onClick={async () => {
+                                                                if (card.category.length > 1) {
+                                                                    const name = prompt("Введите путь категории(ничего не вводить для удаления из всех)");
                                                                     dataRequestDatabase.method = 'delete'
-                                                                    dataRequestDatabase.data = card.category[0]
+                                                                    dataRequestDatabase.data = name
                                                                     dataRequestDatabase.idList = [card.id]
                                                                     await sendRequestDatabase()
+                                                                } else {
+                                                                    const result = confirm("Точно хотите удалить?");
+                                                                    console.log(name)
+                                                                    if (result === true) {
+                                                                        dataRequestDatabase.method = 'delete'
+                                                                        dataRequestDatabase.data = card.category[0]
+                                                                        dataRequestDatabase.idList = [card.id]
+                                                                        await sendRequestDatabase()
+                                                                    }
                                                                 }
-                                                            }
 
-                                                        }}>
-                                                            Удалить
+                                                            }}>
+                                                                Удалить
+                                                            </div>
                                                         </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div style={{height: String(height) + 'px', overflow: 'hidden'}}>
+                                                {card.category.map(categoryCard => {
+                                                    let index = card.category.indexOf(categoryCard)
+                                                    return (<div style={{height: '25px'}}>
+                                                        <div style={{
+                                                            display: 'flex',
+                                                            flexDirection: 'row',
+                                                            height: '25px',
+                                                            marginTop: '5px',
+                                                            width: 'max-content'
+                                                        }}>
+                                                            <div className={'text-element'} style={{
+                                                                marginLeft: '0px',
+                                                                background: '#131313',
+                                                                lineHeight: '15px',
+                                                                padding: '5px',
+                                                                borderRadius: '100px',
+                                                            }}>
+                                                                <div style={{
+                                                                    marginLeft: '5px',
+                                                                    marginRight: '5px',
+                                                                    height: '15px',
+                                                                    overflow: 'hidden'
+                                                                }}>
+                                                                    {index + 1 + ' - Каталог: ' + categoryCard}
+                                                                </div>
+                                                            </div>
+                                                            <div className={'text-element'} style={{
+                                                                marginLeft: '0px',
+                                                                background: '#131313',
+                                                                lineHeight: '15px',
+                                                                borderRadius: '100px',
+                                                            }}>
+                                                                <div style={{
+                                                                    marginLeft: '5px',
+                                                                    height: '25px',
+                                                                    overflow: 'hidden',
+                                                                    display: 'flex',
+                                                                }}>
+                                                                    <div
+                                                                        style={{marginRight: '3px', marginTop: '5px',}}>
+                                                                        Цена:
+                                                                    </div>
+                                                                    <input defaultValue={newPriceArr[index]}
+                                                                           onChange={(event) => {
+                                                                               newPriceArr[index] = parseInt(event.target.value)
+                                                                           }} style={{
+                                                                        borderRadius: '100px',
+                                                                        border: '0px',
+                                                                        paddingLeft: '5px'
+                                                                    }}/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>)
+                                                })}
+                                                {oldPriceEditElement}
+                                                <div style={{
+                                                    marginLeft: '5px',
+                                                    marginTop: '5px',
+                                                    background: 'white',
+                                                    color: 'black',
+                                                    lineHeight: '15px',
+                                                    padding: '5px',
+                                                    borderRadius: '100px',
+                                                    width: 'max-content',
+                                                }}>
+                                                    <div className={'text-element'} style={{
+                                                        marginLeft: '5px',
+                                                        marginRight: '5px',
+                                                        height: '15px',
+                                                        width: 'max-content',
+                                                        color: 'black'
+                                                    }} onClick={async () => {
+                                                        let json = {
+                                                            id: card.id,
+                                                            priceArray: newPriceArr
+                                                        }
+                                                        if(oldPriceValue !== null){
+                                                            json.oldPrice = oldPriceValue
+                                                        }
+                                                        await sendRequestOnDatabase(json, 'editPriceCard')
+                                                        setSelectedId(-1)
+                                                    }}>
+                                                        Сохранить
                                                     </div>
                                                 </div>
                                             </div>
@@ -803,6 +1017,10 @@ const AdminPanel = () => {
                     <button onClick={() => {
                         setPageSelected(4)
                     }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Промокоды
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(5)
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>История заказов
                     </button>
                     <button onClick={async () => {
                         await onReload()
@@ -880,7 +1098,7 @@ const AdminPanel = () => {
                             <input placeholder={'Путь_до_категории'} onChange={(event) => {
                                 setInputCategory3(event.target.value)
                             }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>
-                            <button style={{background: '#343434'}} onClick={() => {
+                            <button onClick={() => {
                                 addCategory(0, dataStructure[page].id);
                             }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Добавить
                                 категорию
@@ -932,7 +1150,7 @@ const AdminPanel = () => {
                             <input placeholder={'Выделение_цветом'} onChange={(event) => {
                                 setInputCategory4(event.target.value)
                             }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>
-                            <button style={{background: '#343434'}} onClick={() => {
+                            <button onClick={() => {
                                 addCategory(1, dataStructure[page].id)
                             }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Добавить
                                 категорию
@@ -971,6 +1189,10 @@ const AdminPanel = () => {
                         background: '#ef7474'
                     }}>Промокоды
                     </button>
+                    <button onClick={() => {
+                        setPageSelected(5)
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>История заказов
+                    </button>
                     <button onClick={async () => {
                         await onReload()
                     }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Обновить
@@ -989,7 +1211,7 @@ const AdminPanel = () => {
                         <div className={'text-element'} style={{margin: "3px"}}> Осталось
                             использований: {promo.number} </div>
                         <div className={'text-element'} style={{margin: "3px"}}> Процент скидки: {promo.parcent} </div>
-                        <button style={{background: '#343434'}} onClick={() => {
+                        <button onClick={() => {
                             sendRequestOnPromo({id: promo.id}, 'del')
                         }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Удалить
                             категорию
@@ -1016,7 +1238,7 @@ const AdminPanel = () => {
                     <input placeholder={'Процент скидки(от 0 до 100)'} onChange={(event) => {
                         setInputCategory3(event.target.value)
                     }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>
-                    <button style={{background: '#343434'}} onClick={() => {
+                    <button onClick={() => {
                         addPromo()
                     }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Добавить промокод
                     </button>
@@ -1038,9 +1260,194 @@ const AdminPanel = () => {
                 </div>
             </div>)
         }
+        if (pageSelected === 5) {
+            return (<div>
+                <div style={{borderBottom: '2px', color: 'white'}}>
+                    <button onClick={() => {
+                        setPageSelected(0)
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Загрузить новые
+                        данные
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(1)
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Редактировать
+                        данные
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(3)
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Редактировать
+                        структуру
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(4)
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Промокоды
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(5)
+                    }} style={{
+                        margin: '5px',
+                        borderRadius: '100px',
+                        padding: '5px',
+                        border: '0px',
+                        background: '#ef7474'
+                    }}>История заказов
+                    </button>
+                    <button onClick={async () => {
+                        await onReload()
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Обновить
+                    </button>
+                </div>
+                {dataOrderHistory.map(order => {
+                    let height = 0
+                    let textButton = 'Показать список товаров'
+                    let buttonColor = 'black'
+                    let buttonBackground = 'white'
+                    if (selectedId === order.id) {
+                        height = order.body.length * 30
+                        textButton = 'Скрыть список товаров'
+                        buttonBackground = '#ef7474'
+                        buttonColor = 'white'
+                    }
+
+                    return (
+                        <div style={{
+                            marginTop: '7px',
+                            borderRadius: '10px',
+                            background: '#232323',
+                            marginLeft: '5px',
+                            marginRight: '5px',
+                            padding: '5px'
+                        }} key={order.id}>
+                            <div className={'text-element'} style={{margin: "3px"}}> Номер
+                                заказа: {order.id + '-' + order.createdAt.slice(5, 10).replace('-', '.')} </div>
+                            <div className={'text-element'} style={{margin: "3px"}}> Сумма
+                                заказа: {order.summa.toLocaleString() + ' ₽'} </div>
+                            <button onClick={async () => {
+                                await sendRequestOnAdmin({chatId: order.chatId}, 'sendMessage')
+                            }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px'}}>Отправить
+                                сообщение
+                            </button>
+                            <button onClick={async () => {
+                                if (order.id !== selectedId) {
+                                    setSelectedId(order.id)
+                                } else {
+                                    setSelectedId(-1)
+                                }
+                            }} style={{
+                                margin: '5px',
+                                borderRadius: '100px',
+                                padding: '5px',
+                                border: '0px',
+                                background: buttonBackground,
+                                color: buttonColor
+                            }}>{textButton}
+                            </button>
+                            <div style={{height: String(height) + 'px', overflow: 'hidden'}}>
+                                {order.body.map(card => (
+                                    <div style={{height: '30px'}} key={order.id}>
+                                        <div style={{display: 'flex', flexDirection: 'column'}}
+                                             className={'text-element text-basket'}>
+                                            <div style={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                height: '25px',
+                                            }}>
+                                                <div style={{
+                                                    background: '#131313',
+                                                    lineHeight: '15px',
+                                                    padding: '5px',
+                                                    borderRadius: '100px',
+                                                }}>
+                                                    <div style={{
+                                                        marginLeft: '5px',
+                                                        marginRight: '5px',
+                                                        height: '15px',
+                                                        overflow: 'hidden'
+                                                    }}>
+                                                        {'Id: ' + card.id}
+                                                    </div>
+                                                </div>
+
+                                                <div style={{
+                                                    background: '#131313',
+                                                    lineHeight: '15px',
+                                                    marginLeft: '5px',
+                                                    padding: '5px',
+                                                    borderRadius: '100px',
+                                                }}>
+                                                    <div style={{
+                                                        marginLeft: '5px',
+                                                        marginRight: '5px',
+                                                        height: '15px',
+                                                        maxWidth: '200px',
+                                                        overflow: 'hidden'
+                                                    }}>
+                                                        {'Имя: ' + card.body.title}
+                                                    </div>
+                                                </div>
+                                                <div style={{
+                                                    background: '#131313',
+                                                    lineHeight: '15px',
+                                                    padding: '5px',
+                                                    marginLeft: '5px',
+                                                    borderRadius: '100px',
+                                                }}>
+                                                    <div style={{
+                                                        marginLeft: '5px',
+                                                        marginRight: '5px',
+                                                        height: '15px',
+                                                        overflow: 'hidden'
+                                                    }}>
+                                                        {'Цена: ' + card.body.price}
+                                                    </div>
+                                                </div>
+
+                                                <div style={{
+                                                    marginLeft: '5px',
+                                                    background: '#131313',
+                                                    lineHeight: '15px',
+                                                    padding: '5px',
+                                                    borderRadius: '100px',
+                                                }}>
+                                                    <div style={{
+                                                        marginLeft: '5px',
+                                                        marginRight: '5px',
+                                                        height: '15px',
+                                                        overflow: 'hidden'
+                                                    }}>
+                                                        {'Платформа: ' + card.body.platform}
+                                                    </div>
+                                                </div>
+                                                <div style={{
+                                                    marginLeft: '5px',
+                                                    background: '#131313',
+                                                    lineHeight: '15px',
+                                                    padding: '5px',
+                                                    borderRadius: '100px',
+                                                }}>
+                                                    <div style={{
+                                                        marginLeft: '5px',
+                                                        marginRight: '5px',
+                                                        height: '15px',
+                                                        overflow: 'hidden'
+                                                    }}>
+                                                        {'Каталоги: ' + String(card.category)}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )
+                })}
+            </div>)
+        }
     } else if (status === 1) {
         sendRequestOnDatabase([], 'getDataAdmin')
         sendRequestOnPromo([], 'get')
+        sendRequestOnDatabase([], 'getOrderHistory')
         setStatus(10)
     } else if (status === 10) {
         return (

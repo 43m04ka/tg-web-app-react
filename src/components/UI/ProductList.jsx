@@ -294,7 +294,8 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
         bodyElement = (<div>
                 <div className={'list-grid'}>
                     {products.map(item => {
-                        return (<ProductItem key={item.id} product={item} path={path}/>)
+                        return (
+                            <div style={{marginLeft: String((window.innerWidth - 150 - 150) / 3) + 'px'}}><ProductItem key={item.id} product={item} path={path}/></div>)
                     })}
                 </div>
                 <div style={{

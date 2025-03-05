@@ -560,7 +560,8 @@ const Basket = ({height, number, updateOrders}) => {
                 width: String(window.innerWidth - 40) + 'px',
                 display: 'flex',
                 flexDirection: "row",
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
+                marginBottom:'4px'
             }}>
                 <button className={'text-element'} style={{
                     background: rgb([41, 165, 229]),
@@ -605,7 +606,7 @@ const Basket = ({height, number, updateOrders}) => {
                 gridTemplateColumns: '7fr 3fr',
                 width: String(window.innerWidth - 40) + 'px',
                 background: 'white',
-                borderRadius: '17px',
+                borderRadius: '19px',
                 border:'2px solid #29a5e5'
             }}>
                 <input placeholder={"Ваш никнейм Telegram @name"}
@@ -641,7 +642,7 @@ const Basket = ({height, number, updateOrders}) => {
                 gridTemplateColumns: '7fr 3fr',
                 width: String(window.innerWidth - 40) + 'px',
                 background: 'white',
-                borderRadius: '17px',
+                borderRadius: '19px',
                 border:'2px solid #51a456'
             }}>
                 <input placeholder={"Ваш контакт WhatsApp"}
@@ -677,7 +678,7 @@ const Basket = ({height, number, updateOrders}) => {
                 gridTemplateColumns: '7fr 3fr',
                 width: String(window.innerWidth - 40) + 'px',
                 background: 'white',
-                borderRadius: '17px',
+                borderRadius: '19px',
                 border:'2px solid #171717'
             }}>
                 <input placeholder={"Ваша почта E-Mail"}

@@ -70,6 +70,8 @@ const AdminPanel = () => {
                 } else {
                     alert('Возникла ошибка при отправке сообщения!')
                 }
+            } else if(method === 'set'){
+                setDataStructure(dataRequestAdmin.data.body)
             }
         })
     }, [dataRequestAdmin])
@@ -1098,8 +1100,8 @@ const AdminPanel = () => {
                             <input placeholder={'Путь_до_категории'} onChange={(event) => {
                                 setInputCategory3(event.target.value)
                             }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>
-                            <button onClick={() => {
-                                addCategory(0, dataStructure[page].id);
+                            <button onClick={async () => {
+                                await addCategory(0, dataStructure[page].id);
                             }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Добавить
                                 категорию
                             </button>

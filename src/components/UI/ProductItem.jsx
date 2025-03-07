@@ -67,6 +67,13 @@ const ProductItem = ({product}) => {
         }}>{product.body.platform}</div>)
     }
 
+    let price = ''
+    try{
+        price = product.body.price.toLocaleString() + ' ₽'
+    }catch (e) {
+        
+    }
+
 
     return (
         <div className={'list-element'}>
@@ -88,7 +95,7 @@ const ProductItem = ({product}) => {
                         <div className={'text-element name-element'}>{product.body.title + view}</div>
                     </div>
                     <div style={{display: 'flex', justifyContent: 'left'}}>
-                        <div className={'text-element price-element'}>{product.body.price.toLocaleString() + ' ₽'}</div>
+                        <div className={'text-element price-element'}>{price}</div>
                         <div className={'text-element price-element'}
                              style={{textDecoration: 'line-through', color: 'gray'}}>{oldPrice}</div>
                     </div>

@@ -90,15 +90,22 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
         }).then(r => {
             let Promise = r.json()
             Promise.then(async prom => {
-                console.log(prom.cards + '----------------')
                 if (dataRequestDatabase.method === 'getList') {
-                    await setStatus(1)
-                    await setProducts(prom.cards || [])
-                    lastList = prom.cards || []
-                    await setDataDop(prom.cards || [])
-                    await setLen(prom.len)
-                    lastLen = prom.len
-                    await setHeightMenuButton(50)
+                    console.log(lastList.length)
+                    if (lastList.length > 0) {
+                        lastList = [...products, ...prom.cards] || []
+                        await setProducts([...products, ...prom.cards] || [])
+                        await setDataDop([...products, ...prom.cards] || [])
+                        await setStatus(1)
+                    }else {
+                        lastList = prom.cards || []
+                        await setProducts(prom.cards || [])
+                        await setDataDop(prom.cards || [])
+                        await setLen(prom.len)
+                        lastLen = prom.len
+                        await setHeightMenuButton(50)
+                        await setStatus(1)
+                    }
                 }
             })
         })
@@ -158,84 +165,11 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
         }
     }, [scrollRef])
 
-    let nav1El = (<div></div>)
-    let nav2El = (<div></div>)
-    let nav3El = (<div></div>)
-    let nav4El = (<div></div>)
-    if (listNumber > 1) {
-        nav1El = (<div onClick={() => {
-            list = 1;
-            if (jsonFilter === null) {
-                sendRequestOnDatabase({path: path, number: list}, 'getList')
-            } else {
-                sendRequestOnDatabase({path: path, number: list, filter: jsonFilter}, 'getList')
-            }
-            setListNumber(list)
-            setStatus(10)
-        }}
-                       className={'text-element'} style={{
-            height: '20px',
-            width: '20px',
-            textAlign: 'center',
-            lineHeight: '20px',
-            borderRadius: '5px',
-            border: '1px solid gray',
-        }}>{1}</div>)
-        nav2El = (<div onClick={() => {
-            list = listNumber - 1;
-            if (jsonFilter === null) {
-                sendRequestOnDatabase({path: path, number: list}, 'getList')
-            } else {
-                sendRequestOnDatabase({path: path, number: list, filter: jsonFilter}, 'getList')
-            }
-            setListNumber(list);
-            setStatus(10)
-        }}
-                       className={'background-arrow'} style={{
-            height: '20px',
-            width: '20px',
-            textAlign: 'center',
-            lineHeight: '20px',
-            borderRadius: '50%',
-            rotate: '180deg'
-        }}></div>)
-    }
-    if (listNumber < len) {
-        nav3El = (<div onClick={() => {
-            list = len;
-            if (jsonFilter === null) {
-                sendRequestOnDatabase({path: path, number: list}, 'getList')
-            } else {
-                sendRequestOnDatabase({path: path, number: list, filter: jsonFilter}, 'getList')
-            }
-            setListNumber(list);
-            setStatus(10)
-        }}
-                       className={'text-element'} style={{
-            height: '20px',
-            width: '20px',
-            textAlign: 'center',
-            lineHeight: '20px',
-            borderRadius: '5px',
-            border: '1px solid gray',
-        }}>{len}</div>)
-
-        nav4El = (<div onClick={() => {
-            list = listNumber + 1;
-            if (jsonFilter === null) {
-                sendRequestOnDatabase({path: path, number: list}, 'getList')
-            } else {
-                sendRequestOnDatabase({path: path, number: list, filter: jsonFilter}, 'getList')
-            }
-            setListNumber(list)
-            setStatus(10)
-        }}
-                       className={'background-arrow'} style={{
-            height: '20px',
-            width: '20px',
-            textAlign: 'center',
-            lineHeight: '20px',
-            borderRadius: '50%',
+    let plupLoaderElem = (<div></div>)
+    if(status === 11){
+        plupLoaderElem = (<div className={'plup-loader'} style={{
+            marginTop: '10px',
+            marginLeft: String(window.innerWidth / 2 - 50) + 'px'
         }}></div>)
     }
 
@@ -279,14 +213,17 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
     }
 
     const onRequestFilter = (json) => {
+        setStatus(10)
+        lastList = []
         setJsonFilter(json)
+        list = 1
+        setListNumber(1)
+        setProducts([])
         if (json === null) {
             sendRequestOnDatabase({path: path, number: 1}, 'getList')
         } else {
             sendRequestOnDatabase({path: path, number: 1, filter: json}, 'getList')
         }
-        setListNumber(1)
-        setStatus(10)
     }
     let bodyElement = (<div/>)
 
@@ -298,28 +235,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
                             <div style={{marginLeft: String((window.innerWidth - 150 - 150) / 3) + 'px'}}><ProductItem key={item.id} product={item} path={path}/></div>)
                     })}
                 </div>
-                <div style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    display: 'flex',
-                    flexDirection: 'row',
-                    marginTop: '15px',
-                    marginBottom: '15px',
-                }}>
-                    {nav2El}
-                    {nav1El}
-                    <div className={'text-element'} style={{
-                        height: '20px',
-                        width: '20px',
-                        textAlign: 'center',
-                        lineHeight: '20px',
-                        borderRadius: '5px',
-                        border: '1px solid gray',
-                        background: '#6194ea'
-                    }}>{listNumber}</div>
-                    {nav3El}
-                    {nav4El}
-                </div>
+                {plupLoaderElem}
                 <div
                     style={{height: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 10) + 'px'}}></div>
             </div>
@@ -343,7 +259,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
         }}></div>)
     }
 
-    if (status === 1 || status === 10) {
+    if (status === 1 || status === 10 || status === 11) {
         return (
             <div className={'list'} style={{display: 'flex', flexDirection: 'column'}}>
                 <div className={'box-grid-panel'} style={{
@@ -385,8 +301,21 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
                     </Link>
                 </div>
                 <div className={'scroll-container-y'} ref={scrollRef}
-                     onScroll={(event) => {
+                     onScroll={async (event) => {
                          let scroll = event.target.scrollTop
+                         let scrollHeight = scrollRef.current.scrollHeight
+
+                         if (listNumber < len && scroll + 1200 > scrollHeight && status !== 11) {
+                             list = listNumber + 1;
+                             await setStatus(11)
+                             await setListNumber(list)
+                             if (jsonFilter === null) {
+                                 await sendRequestOnDatabase({path: path, number: list}, 'getList')
+                             } else {
+                                 await sendRequestOnDatabase({path: path, number: list, filter: jsonFilter}, 'getList')
+                             }
+                         }
+
                          lastScroll = scroll
                          if (scroll > scrollCtrl + 200 && !hiddenSelector) {
                              scrollCtrl = scroll

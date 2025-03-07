@@ -23,11 +23,7 @@ const Basket = ({height, number, updateOrders}) => {
     const [contactStatus, setContactStatus] = useState(0);
     const [promoButtonText, setPromoButtonText] = useState('ПРИМЕНИТЬ');
     const userRef = useRef();
-
-    let getUse = false
-    if (typeof user.username !== 'undefined') {
-        getUse = true
-    }
+    const [alertElement, setAlertElement] = useState(<div></div>);
 
 
     let dataRequestPromo = {
@@ -100,40 +96,51 @@ const Basket = ({height, number, updateOrders}) => {
     }
 
     const onClickButton = useCallback(() => {
-        setButtonText('Оформляем заказ...');
-
         try {
-            if (typeof user.username === 'undefined') {
-                sendDataProduct.user.username = userRef.current.value
+            if (typeof user.username !== 'undefined') {
+                sendDataProduct.user.username = '@' + sendDataProduct.user.username
             }
         } catch (e) {}
 
+        if(sendDataProduct.user.username !== '' && typeof sendDataProduct.user.username !== 'undefined') {
 
-        onRegDataAcc();
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(sendDataProduct)
-        }).then(r => {
-            let Promise = r.json()
-            Promise.then(r => {
-                if (r.body === true) {
-                    setStatus(3);
-                    updateOrders()
-                    orderId = r.number
-                    promo = ''
-                    setPromoIsUse(false)
-                    setColorNo([164, 30, 30])
-                    setPromoInput('')
-                    setParcent(0)
-                } else {
-                    setStatus(0)
-                    setButtonText('Оформить заказ и оплатить')
+            setButtonText('Оформляем заказ...');
+            if (typeof user.username === 'undefined') {
+                sendDataProduct.user.username = userRef.current.value
+                if(contactStatus === 1){
+                    sendDataProduct.user.username = '@' + sendDataProduct.user.username
                 }
+            }
+            onRegDataAcc();
+            fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(sendDataProduct)
+            }).then(r => {
+                let Promise = r.json()
+                Promise.then(r => {
+                    if (r.body === true) {
+                        setStatus(3);
+                        updateOrders()
+                        orderId = r.number
+                        promo = ''
+                        setPromoIsUse(false)
+                        setColorNo([164, 30, 30])
+                        setPromoInput('')
+                        setParcent(0)
+                    } else {
+                        setStatus(0)
+                        setButtonText('Оформить заказ и оплатить')
+                    }
+                })
             })
-        })
+        }else{
+            if(typeof sendDataProduct.user.username === 'undefined'){
+                setAlertElement(<div className={'text-element'} style={{color:'#ef7474', textAlign:'center', marginLeft:'10px', paddingTop:'3px'}}>Выберете мессенджер и оставьте ваш контакт для дальнейшего оформления заказа</div>)
+            }
+        }
     }, [sendDataProduct])
 
     const sendData = {
@@ -561,7 +568,6 @@ const Basket = ({height, number, updateOrders}) => {
                 display: 'flex',
                 flexDirection: "row",
                 justifyContent: 'space-between',
-                marginBottom:'4px'
             }}>
                 <button className={'text-element'} style={{
                     background: rgb([41, 165, 229]),
@@ -606,26 +612,26 @@ const Basket = ({height, number, updateOrders}) => {
                 gridTemplateColumns: '7fr 3fr',
                 width: String(window.innerWidth - 40) + 'px',
                 background: 'white',
-                borderRadius: '19px',
+                borderRadius: '17px',
                 border:'2px solid #29a5e5'
             }}>
                 <input placeholder={"Ваш никнейм Telegram @name"}
                        className={'text-element'}
                        style={{
-                           height: '34px',
+                           height: '30px',
                            marginLeft: '0px',
                            marginTop: '0px',
-                           borderTopLeftRadius: '17px',
-                           borderBottomLeftRadius: '17px',
+                           borderTopLeftRadius: '15px',
+                           borderBottomLeftRadius: '15px',
                            border: '0',
                            textAlign: 'center',
                            color: "black"
-                       }} ref={userRef}/>
+                       }} ref={userRef} onChange={()=>{setAlertElement(<div></div>)}}/>
                 <button className={'text-element'} style={{
                     background: rgb([174, 174, 174]),
                     border: '0px white',
-                    borderRadius: '17px',
-                    height: '34px',
+                    borderRadius: '15px',
+                    height: '30px',
                     color: 'white',
                     textAlign: 'center',
                     marginRight:'0px',
@@ -633,6 +639,7 @@ const Basket = ({height, number, updateOrders}) => {
                 }}
                         onClick={() => {
                             setContactStatus(0)
+                            setAlertElement(<div></div>)
                         }}>НАЗАД
                 </button>
             </div>)
@@ -642,26 +649,26 @@ const Basket = ({height, number, updateOrders}) => {
                 gridTemplateColumns: '7fr 3fr',
                 width: String(window.innerWidth - 40) + 'px',
                 background: 'white',
-                borderRadius: '19px',
+                borderRadius: '17px',
                 border:'2px solid #51a456'
             }}>
                 <input placeholder={"Ваш контакт WhatsApp"}
                        className={'text-element'}
                        style={{
-                           height: '34px',
+                           height: '30px',
                            marginLeft: '0px',
                            marginTop: '0px',
-                           borderTopLeftRadius: '17px',
-                           borderBottomLeftRadius: '17px',
+                           borderTopLeftRadius: '15px',
+                           borderBottomLeftRadius: '15px',
                            border: '0',
                            textAlign: 'center',
                            color: "black"
-                       }} ref={userRef}/>
+                       }} ref={userRef} onChange={()=>{setAlertElement(<div></div>)}}/>
                 <button className={'text-element'} style={{
                     background: rgb([174, 174, 174]),
                     border: '0px white',
-                    borderRadius: '17px',
-                    height: '34px',
+                    borderRadius: '15px',
+                    height: '30px',
                     color: 'white',
                     textAlign: 'center',
                     marginRight:'0px',
@@ -669,6 +676,7 @@ const Basket = ({height, number, updateOrders}) => {
                 }}
                         onClick={() => {
                             setContactStatus(0)
+                            setAlertElement(<div></div>)
                         }}>НАЗАД
                 </button>
             </div>)
@@ -678,26 +686,26 @@ const Basket = ({height, number, updateOrders}) => {
                 gridTemplateColumns: '7fr 3fr',
                 width: String(window.innerWidth - 40) + 'px',
                 background: 'white',
-                borderRadius: '19px',
+                borderRadius: '17px',
                 border:'2px solid #171717'
             }}>
                 <input placeholder={"Ваша почта E-Mail"}
                        className={'text-element'}
                        style={{
-                           height: '34px',
+                           height: '30px',
                            marginLeft: '0px',
                            marginTop: '0px',
-                           borderTopLeftRadius: '17px',
-                           borderBottomLeftRadius: '17px',
+                           borderTopLeftRadius: '15px',
+                           borderBottomLeftRadius: '15px',
                            border: '0',
                            textAlign: 'center',
                            color: "black"
-                       }} ref={userRef}/>
+                       }} ref={userRef} onChange={()=>{setAlertElement(<div></div>)}}/>
                 <button className={'text-element'} style={{
                     background: rgb([174, 174, 174]),
                     border: '0px white',
-                    borderRadius: '17px',
-                    height: '34px',
+                    borderRadius: '15px',
+                    height: '30px',
                     color: 'white',
                     textAlign: 'center',
                     marginRight:'0px',
@@ -705,21 +713,25 @@ const Basket = ({height, number, updateOrders}) => {
                 }}
                         onClick={() => {
                             setContactStatus(0)
+                            setAlertElement(<div></div>)
                         }}>НАЗАД
                 </button>
             </div>)
         }
         usernameInput = (<div style={{
             background: '#454545',
-            padding: '5px',
             borderRadius: '17px', marginBottom: '10px',
-            justifyItems: 'center',
-            marginTop: '10px'
+            marginTop: '10px',
+            paddingTop:'7px',
+            paddingBottom:'5px',
         }}>
             <div className={'text-element'}
                  style={{fontSize: '16px', textAlign: 'center', marginBottom: '6px'}}>Контакты для связи:
             </div>
-            {usernameInput1}
+            <div style={{marginLeft:'10px', marginBottom:'5px'}}>
+                {usernameInput1}
+                {alertElement}
+            </div>
         </div>)
     }
 

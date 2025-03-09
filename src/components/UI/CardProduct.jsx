@@ -390,7 +390,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData, favo
             }}>
                 <div className={'img'} style={{
                     height: String(window.innerWidth - 20) + 'px',
-                    borderRadius: '15px', backgroundImage: "url('" + newMainData.body.img + "')",
+                    borderRadius: '15px', backgroundImage: "url('" + newMainData.body.img + "0')",
                     backgroundSize: 'cover', display: 'flex',
                     flexDirection: 'row',
                     alignItems: 'end',

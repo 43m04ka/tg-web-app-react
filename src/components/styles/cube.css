@@ -1,0 +1,47 @@
+body { padding: 5em 0 0; perspective: 45em; }
+.faceopt {
+    position: absolute;
+    visibility: hidden;
+    z-index: -1;
+}
+.faceopt + label {
+    display: inline-block;
+    padding: .25em 1em;
+    border-radius: .5em;
+    box-shadow: 0 1px 0 black, 0 -1px 0 #96d1f8;
+    background: #65a9d7;
+    color: white;
+    font: 1em Century Gothic, Verdana, sans-serif;
+    text-shadow: 0 1px 0 black;
+    transition: .5s;
+    cursor: pointer;
+}
+.faceopt + label:hover, .faceopt:checked + label { color: yellow; }
+.house {
+    margin: 5em auto;
+    transform-style: preserve-3d;
+    transition: transform 1s;
+}
+.house, .face { width: 10em; height: 10em; }
+.face {
+    box-sizing: border-box;
+    position: absolute;
+    padding: 1em;
+}
+.front { transform: translateZ(5em);
+    background: rgba(255, 165, 0, .75); }
+.back {
+    transform: rotateY(180deg) translateZ(5em);
+    background: rgba(30, 144, 255, .75);
+}
+.right {
+    transform: rotateY(90deg) translateZ(5em);
+    background: rgba(220, 20, 60, .75);
+}
+.left {
+    transform: rotateY(-90deg) translateZ(5em);
+    background: rgba(127, 255, 0, .75);
+}
+#left:checked ~ .house { transform: rotateY(45deg) rotateZ(45deg)}
+#back:checked ~ .house { transform: rotateY(180deg); }
+#right:checked ~ .house { transform: rotateY(-90deg); }

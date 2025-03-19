@@ -13,22 +13,21 @@ const getTotalPrice = (items = []) => {
     }, 0)
 }
 
-let scrollCtrl = 0;
 let list = 1
-let bool = true
-let elementKeys = []
+let lastPath = ''
 
-const AdminProductList = ({main_data,  setDataDop, update}) => {
+const AdminProductList = ({path}) => {
+    if(lastPath !== path){
+        list = 1
+        lastPath = path
+    }
     const [products, setProducts] = useState([])
     const [status, setStatus] = useState(0);
-    const path = main_data.path
     const {tg, user} = useTelegram();
     const [len, setLen] = useState(0);
     const navigate = useNavigate();
     const [listNumber, setListNumber] = useState(list);
-    const [jsonFilter, setJsonFilter] = useState(null);
-    const [hiddenSelector, setHiddenSelector] = useState(false);
-    const [heightMenuButton, setHeightMenuButton] = useState(50);
+    const [selectedId, setSelectedId] = useState(-1);
 
 
     let dataRequestDatabase = {
@@ -50,11 +49,8 @@ const AdminProductList = ({main_data,  setDataDop, update}) => {
                 if (dataRequestDatabase.method === 'getList') {
                     await setStatus(1)
                     await setProducts(prom.cards || [])
-                    await setDataDop(prom.cards || [])
                     await setLen(prom.len)
-                    await setHeightMenuButton(50)
-                }else{
-                    await update()
+                } else {
                     await setStatus(1)
                 }
             })
@@ -89,11 +85,7 @@ const AdminProductList = ({main_data,  setDataDop, update}) => {
     if (listNumber > 1) {
         nav1El = (<div onClick={() => {
             list = 1;
-            if (jsonFilter === null) {
-                sendRequestOnDatabase({path: path, number: list}, 'getList')
-            } else {
-                sendRequestOnDatabase({path: path, number: list, filter: jsonFilter}, 'getList')
-            }
+            sendRequestOnDatabase({path: path, number: list}, 'getList')
             setListNumber(list)
             setStatus(10)
         }}
@@ -107,11 +99,8 @@ const AdminProductList = ({main_data,  setDataDop, update}) => {
         }}>{1}</div>)
         nav2El = (<div onClick={() => {
             list = listNumber - 1;
-            if (jsonFilter === null) {
-                sendRequestOnDatabase({path: path, number: list}, 'getList')
-            } else {
-                sendRequestOnDatabase({path: path, number: list, filter: jsonFilter}, 'getList')
-            }
+            sendRequestOnDatabase({path: path, number: list}, 'getList')
+
             setListNumber(list);
             setStatus(10)
         }}
@@ -127,11 +116,7 @@ const AdminProductList = ({main_data,  setDataDop, update}) => {
     if (listNumber < len) {
         nav3El = (<div onClick={() => {
             list = len;
-            if (jsonFilter === null) {
-                sendRequestOnDatabase({path: path, number: list}, 'getList')
-            } else {
-                sendRequestOnDatabase({path: path, number: list, filter: jsonFilter}, 'getList')
-            }
+            sendRequestOnDatabase({path: path, number: list}, 'getList')
             setListNumber(list);
             setStatus(10)
         }}
@@ -146,11 +131,7 @@ const AdminProductList = ({main_data,  setDataDop, update}) => {
 
         nav4El = (<div onClick={() => {
             list = listNumber + 1;
-            if (jsonFilter === null) {
-                sendRequestOnDatabase({path: path, number: list}, 'getList')
-            } else {
-                sendRequestOnDatabase({path: path, number: list, filter: jsonFilter}, 'getList')
-            }
+            sendRequestOnDatabase({path: path, number: list}, 'getList')
             setListNumber(list)
             setStatus(10)
         }}
@@ -163,97 +144,387 @@ const AdminProductList = ({main_data,  setDataDop, update}) => {
         }}></div>)
     }
 
-    if(bool || elementKeys.length === 0) {
-        try {
-            if (typeof products[0].body.category !== 'undefined') {
-                if (products[0].body.category.includes('акк')) {
-                    elementKeys = [...elementKeys, 'categoryXB']
-                }
-            }
-        } catch (e) {
-        }
-
-        try {
-            if (typeof products[0].body.platform !== 'undefined') {
-                if (products[0].body.platform.includes('PS4') || products[0].body.platform.includes('PS5')) {
-                    elementKeys = [...elementKeys, 'platformPS']
-                } else if (products[0].body.platform.includes('One') || products[0].body.platform.includes('Series')) {
-                    elementKeys = [...elementKeys, 'platformXB']
-                }
-            }
-        } catch (e) {
-        }
-
-        try {
-            if (typeof products[0].body.languageSelector !== 'undefined') {
-                elementKeys = [...elementKeys, 'languageSelector']
-            }
-        } catch (e) {
-        }
-
-        try {
-            if (typeof products[0].body.numPlayers !== 'undefined') {
-                if (String(products[0].body.numPlayers) === '1' || products[0].body.numPlayers.includes('-')) {
-                    elementKeys = [...elementKeys, 'numPlayers']
-                }
-            }
-        } catch (e) {
-        }
-        bool = false
-    }
-
-    const onRequestFilter = (json) => {
-        setJsonFilter(json)
-        if (json === null) {
-            sendRequestOnDatabase({path: path, number: 1}, 'getList')
-        } else {
-            sendRequestOnDatabase({path: path, number: 1, filter: json}, 'getList')
-        }
-        setListNumber(1)
-        setStatus(10)
-    }
     let bodyElement = (<div/>)
 
     if (products.length !== 0) {
         bodyElement = (<div>
-                <div className={'list-grid'} style={{overflow:'hidden'}}>
-                    {products.map(card => (
-                        <div>
-                            <div style={{
-                                display: 'flex',
-                                flexDirection:'column',
-                                borderBottom: '1px solid gray',
-                                background:'#454545',
-                                borderRadius:'7px',
-                                margin:'5px'
-                            }}>
-                                <div className={'text-element'}>{'id - ' + card.id}</div>
-                                <div className={'text-element'}
-                                     style={{textWrap: 'nowrap', overflow: 'hidden'}}>{card.body.title}</div>
-                                <div style={{display: 'flex', flexDirection: 'row'}} className={'text-element'}>
-                                    В продаже: {String(card.body.isSale)}
-                                    <button onClick={() => {
-                                        let newCard = card
-                                        if (newCard.body.isSale === true) {
-                                            newCard.body.isSale = false
-                                        } else if (newCard.body.isSale === false) {
-                                            newCard.body.isSale = true
-                                        } else {
-                                            newCard.body.isSale = true
-                                        }
-                                        sendRequestOnDatabase([card], 'upd');
-                                        setStatus(10);
-                                    }}>Убрать\включить в продажу
-                                    </button>
+                <div className={'list-grid'}>
+                    {products.map(card => {
+                            let colorButtonStatus, textColorButtonStatus, textButtonStatus
+
+                            if (card.body.isSale) {
+                                textButtonStatus = 'Убрать с продажи'
+                                colorButtonStatus = 'white'
+                                textColorButtonStatus = 'black'
+                            } else {
+                                textButtonStatus = 'Включить в продажу'
+                                colorButtonStatus = '#ef7474'
+                                textColorButtonStatus = 'white'
+                            }
+
+                            let height = 0
+                            let textButton = 'Изменить цену'
+                            let buttonColor = 'black'
+                            let buttonBackground = 'white'
+                            if (selectedId === card.id) {
+                                height = card.category.length * 30 + 60
+                                textButton = 'Скрыть поле поле'
+                                buttonBackground = '#ef7474'
+                                buttonColor = 'white'
+                            }
+                            let newPriceArr = card.price
+
+                        let oldPriceValue = null
+
+                        if (typeof card.body.endDate !== 'undefined') {
+                            oldPriceValue = card.body.oldPrice
+                        }
+
+                            let oldPriceEditElement = (<div style={{height: '25px'}}>
+                                    <div style={{
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        height: '25px',
+                                        marginTop: '5px',
+                                        width: 'max-content'
+                                    }}>
+                                        <div className={'text-element'} style={{
+                                            marginLeft: '0px',
+                                            background: '#131313',
+                                            lineHeight: '15px',
+                                            padding: '5px',
+                                            borderRadius: '100px',
+                                        }}>
+                                            <div style={{
+                                                marginLeft: '5px',
+                                                marginRight: '5px',
+                                                height: '15px',
+                                                overflow: 'hidden'
+                                            }}>
+                                                {card.category.length + 1 + ' - Старая цена'}
+                                            </div>
+                                        </div>
+                                        <div className={'text-element'} style={{
+                                            marginLeft: '0px',
+                                            background: '#131313',
+                                            lineHeight: '15px',
+                                            borderRadius: '100px',
+                                        }}>
+                                            <div style={{
+                                                marginLeft: '5px',
+                                                height: '25px',
+                                                overflow: 'hidden',
+                                                display: 'flex',
+                                            }}>
+                                                <div style={{marginRight: '3px', marginTop: '5px',}}>
+                                                    Цена:
+                                                </div>
+                                                <input defaultValue={oldPriceValue}
+                                                       onChange={(event) => {
+                                                           oldPriceValue = parseInt(event.target.value)
+                                                       }} style={{
+                                                    borderRadius: '100px',
+                                                    border: '0px',
+                                                    paddingLeft: '5px'
+                                                }}/>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <button onClick={() => {
-                                    sendRequestOnDatabase([card], 'del');
-                                    setStatus(10);
-                                }}>Удалить
-                                </button>
-                            </div>
-                        </div>
-                    ))}
+                            )
+
+                            return (
+                                <div style={{
+                                    borderBottom: '1px solid grey',
+                                    paddingBottom: '5px'
+                                }}>
+                                    <div style={{
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        paddingTop: '5px',
+                                    }}>
+                                        <img src={card.body.img} alt={card.body.title} style={{
+                                            height: '85px',
+                                            width: '85px',
+                                            backgroundSize: 'cover',
+                                            borderRadius: '10px'
+                                        }}/>
+                                        <div style={{display: 'flex', flexDirection: 'column'}}
+                                             className={'text-element text-basket'}>
+                                            <div style={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                height: '25px',
+                                            }}>
+                                                <div style={{
+                                                    background: '#131313',
+                                                    lineHeight: '15px',
+                                                    padding: '5px',
+                                                    borderRadius: '100px',
+                                                }}>
+                                                    <div style={{
+                                                        marginLeft: '5px',
+                                                        marginRight: '5px',
+                                                        height: '15px',
+                                                        overflow: 'hidden'
+                                                    }}>
+                                                        {'Имя: ' + card.body.title}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div style={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                height: '25px',
+                                                marginTop: '5px',
+                                                width: 'max-content'
+                                            }}>
+                                                <div style={{
+                                                    background: '#131313',
+                                                    lineHeight: '15px',
+                                                    padding: '5px',
+                                                    borderRadius: '100px',
+                                                }}>
+                                                    <div style={{
+                                                        marginLeft: '5px',
+                                                        marginRight: '5px',
+                                                        height: '15px',
+                                                        overflow: 'hidden'
+                                                    }}>
+                                                        {'Цена: ' + card.body.price}
+                                                    </div>
+                                                </div>
+
+                                                <div style={{
+                                                    marginLeft: '5px',
+                                                    background: '#131313',
+                                                    lineHeight: '15px',
+                                                    padding: '5px',
+                                                    borderRadius: '100px',
+                                                }}>
+                                                    <div style={{
+                                                        marginLeft: '5px',
+                                                        marginRight: '5px',
+                                                        height: '15px',
+                                                        overflow: 'hidden'
+                                                    }}>
+                                                        {'Платформа: ' + card.body.platform}
+                                                    </div>
+                                                </div>
+                                                <div style={{
+                                                    marginLeft: '5px',
+                                                    background: '#131313',
+                                                    lineHeight: '15px',
+                                                    padding: '5px',
+                                                    borderRadius: '100px',
+                                                }}>
+                                                    <div style={{
+                                                        marginLeft: '5px',
+                                                        marginRight: '5px',
+                                                        height: '15px',
+                                                        overflow: 'hidden'
+                                                    }}>
+                                                        {'Каталоги: ' + String(card.category)}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div style={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                height: '25px',
+                                                marginTop: '5px',
+                                                width: 'max-content'
+                                            }}>
+                                                <div style={{
+                                                    background: '#131313',
+                                                    lineHeight: '15px',
+                                                    padding: '5px',
+                                                    borderRadius: '100px',
+                                                }}>
+                                                    <div style={{
+                                                        marginLeft: '5px',
+                                                        marginRight: '5px',
+                                                        height: '15px',
+                                                        overflow: 'hidden'
+                                                    }}>
+                                                        {'Id: ' + card.id}
+                                                    </div>
+                                                </div>
+                                                <div style={{
+                                                    marginLeft: '5px',
+                                                    background: colorButtonStatus,
+                                                    color: textColorButtonStatus,
+                                                    lineHeight: '15px',
+                                                    padding: '5px',
+                                                    borderRadius: '100px',
+                                                }}>
+                                                    <div style={{
+                                                        marginLeft: '5px',
+                                                        marginRight: '5px',
+                                                        height: '15px',
+                                                        overflow: 'hidden'
+                                                    }} onClick={async () => {
+                                                        dataRequestDatabase.method = 'changeStatus'
+                                                        dataRequestDatabase.data = card.category[0]
+                                                        dataRequestDatabase.idList = [card.id]
+                                                        await sendRequestDatabase()
+                                                    }}>
+                                                        {textButtonStatus}
+                                                    </div>
+                                                </div>
+                                                <div style={{
+                                                    marginLeft: '5px',
+                                                    background: buttonBackground,
+                                                    color: buttonColor,
+                                                    lineHeight: '15px',
+                                                    padding: '5px',
+                                                    borderRadius: '100px',
+                                                }}>
+                                                    <div style={{
+                                                        marginLeft: '5px',
+                                                        marginRight: '5px',
+                                                        height: '15px',
+                                                        overflow: 'hidden'
+                                                    }} onClick={async () => {
+                                                        if (card.id !== selectedId) {
+                                                            setSelectedId(card.id)
+                                                        } else {
+                                                            setSelectedId(-1)
+                                                        }
+                                                    }}>
+                                                        {textButton}
+                                                    </div>
+                                                </div>
+                                                <div style={{
+                                                    marginLeft: '5px',
+                                                    background: 'white',
+                                                    color: 'black',
+                                                    lineHeight: '15px',
+                                                    padding: '5px',
+                                                    borderRadius: '100px',
+                                                }}>
+                                                    <div style={{
+                                                        marginLeft: '5px',
+                                                        marginRight: '5px',
+                                                        height: '15px',
+                                                        overflow: 'hidden'
+                                                    }} onClick={async () => {
+                                                        if (card.category.length > 1) {
+                                                            const name = prompt("Введите путь категории(ничего не вводить для удаления из всех)");
+                                                            dataRequestDatabase.method = 'delete'
+                                                            dataRequestDatabase.data = name
+                                                            dataRequestDatabase.idList = [card.id]
+                                                            await sendRequestDatabase()
+                                                        } else {
+                                                            const result = confirm("Точно хотите удалить?");
+                                                            console.log(name)
+                                                            if (result === true) {
+                                                                dataRequestDatabase.method = 'delete'
+                                                                dataRequestDatabase.data = card.category[0]
+                                                                dataRequestDatabase.idList = [card.id]
+                                                                await sendRequestDatabase()
+                                                            }
+                                                        }
+
+                                                    }}>
+                                                        Удалить
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{height: String(height) + 'px', overflow: 'hidden'}}>
+                                        {card.category.map(categoryCard => {
+                                            let index = card.category.indexOf(categoryCard)
+                                            return (<div style={{height: '25px'}}>
+                                                <div style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'row',
+                                                    height: '25px',
+                                                    marginTop: '5px',
+                                                    width: 'max-content'
+                                                }}>
+                                                    <div className={'text-element'} style={{
+                                                        marginLeft: '0px',
+                                                        background: '#131313',
+                                                        lineHeight: '15px',
+                                                        padding: '5px',
+                                                        borderRadius: '100px',
+                                                    }}>
+                                                        <div style={{
+                                                            marginLeft: '5px',
+                                                            marginRight: '5px',
+                                                            height: '15px',
+                                                            overflow: 'hidden'
+                                                        }}>
+                                                            {index + 1 + ' - Каталог: ' + categoryCard}
+                                                        </div>
+                                                    </div>
+                                                    <div className={'text-element'} style={{
+                                                        marginLeft: '0px',
+                                                        background: '#131313',
+                                                        lineHeight: '15px',
+                                                        borderRadius: '100px',
+                                                    }}>
+                                                        <div style={{
+                                                            marginLeft: '5px',
+                                                            height: '25px',
+                                                            overflow: 'hidden',
+                                                            display: 'flex',
+                                                        }}>
+                                                            <div
+                                                                style={{marginRight: '3px', marginTop: '5px',}}>
+                                                                Цена:
+                                                            </div>
+                                                            <input defaultValue={newPriceArr[index]}
+                                                                   onChange={(event) => {
+                                                                       newPriceArr[index] = parseInt(event.target.value)
+                                                                   }} style={{
+                                                                borderRadius: '100px',
+                                                                border: '0px',
+                                                                paddingLeft: '5px'
+                                                            }}/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>)
+                                        })}
+                                        {oldPriceEditElement}
+                                        <div style={{
+                                            marginLeft: '5px',
+                                            marginTop: '5px',
+                                            background: 'white',
+                                            color: 'black',
+                                            lineHeight: '15px',
+                                            padding: '5px',
+                                            borderRadius: '100px',
+                                            width: 'max-content',
+                                        }}>
+                                            <div className={'text-element'} style={{
+                                                marginLeft: '5px',
+                                                marginRight: '5px',
+                                                height: '15px',
+                                                width: 'max-content',
+                                                color: 'black'
+                                            }} onClick={async () => {
+                                                let json = {
+                                                    id: card.id,
+                                                    priceArray: newPriceArr
+                                                }
+                                                if(oldPriceValue !== null && oldPriceValue !== ''){
+                                                    json.oldPrice = oldPriceValue
+                                                }
+                                                await sendRequestOnDatabase(json, 'editPriceCard')
+                                                setSelectedId(-1)
+                                            }}>
+                                                Сохранить
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
                 </div>
                 <div style={{
                     justifyContent: 'center',
@@ -293,7 +564,6 @@ const AdminProductList = ({main_data,  setDataDop, update}) => {
     }
     if (status === 10) {
         bodyElement = (<div className={'plup-loader'} style={{
-            border: '2px solid #8cdb8b',
             marginTop: String(window.innerHeight / 2 - 60) + 'px',
             marginLeft: String(window.innerWidth / 2 - 40) + 'px'
         }}></div>)
@@ -302,10 +572,7 @@ const AdminProductList = ({main_data,  setDataDop, update}) => {
     if (status === 1 || status === 10) {
         return (
             <div className={'list'} style={{display: 'flex', flexDirection: 'column'}}>
-                {/*<Filter height={200} elementKeys={elementKeys}*/}
-                {/*              onRequestFilter={onRequestFilter}/>*/}
                 {bodyElement}
-
             </div>
         );
     } else if (status === 0) {

@@ -17,6 +17,7 @@ import History from "./components/UI/History";
 import Order from "./components/UI/Order";
 import Cassa from "./components/UI/Cassa";
 import Favorites from "./components/UI/Favorites";
+import Roulette from "./components/UI/Roulette";
 
 let basketDataGlob = null
 
@@ -49,11 +50,12 @@ function App() {
             body: JSON.stringify(dataRequestDatabase)
         }).then(r => {
             let Promise = r.json()
+            console.log(Promise)
             Promise.then(async prom => {
                 const promise = prom
                 let inputDataCards = promise.cards;
-                setDataCards(inputDataCards)
                 let resultData = promise.structure;
+                await setMainData(resultData)
                 let count = 0
                 resultData[0].body[1].map(el => {
                     resultData[0].body[1][count].body = []
@@ -106,8 +108,9 @@ function App() {
                     })
 
                 })
-                await setMainData(resultData)
-                await setStatus(2)
+                setMainData(resultData)
+                setDataCards(inputDataCards)
+                setStatus(2)
                 console.log(resultData)
 
             })
@@ -294,7 +297,7 @@ function App() {
                     <Route path={'admin'} element={<AdminPanel/>}/>
                     <Route path={'info'} element={<Info/>}/>
                     <Route path={'history'} element={<History historyData={historyData}/>}/>
-                    <Route path={'cassa'} element={<Cassa/>}/>
+                    <Route path={'roulette'} element={<Roulette/>}/>
                     {historyData.map(order=>(
                         <Route path={'history/'+String(order.id)} key={order.id} element={<Order data={order}/>}/>
                     ))}

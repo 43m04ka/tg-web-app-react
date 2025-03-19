@@ -14,6 +14,7 @@ const SheetJSFT = [
 }).join(",");
 
 let userData = {}
+let lenArray = 0
 const AdminPanel = () => {
     const [inputOne, setInputOne] = useState('');
     const [inputTwo, setInputTwo] = useState('');
@@ -22,6 +23,7 @@ const AdminPanel = () => {
     const [inputCategory2, setInputCategory2] = useState(0)
     const [inputCategory3, setInputCategory3] = useState('')
     const [inputCategory4, setInputCategory4] = useState('')
+    const [inputCategory5, setInputCategory5] = useState(['00', '00', '0000', '12', '00', '00'])
 
     const [pageSelected, setPageSelected] = useState(0);
 
@@ -33,6 +35,9 @@ const AdminPanel = () => {
 
     const [page, setPage] = useState(0);
     const [selectedId, setSelectedId] = useState(-1);
+    const [selectedPath, setSelectedPath] = useState(-1);
+    const [selectedViewCatalog, setSelectedViewCatalog] = useState(0);
+    const [selectedViewCatalog1, setSelectedViewCatalog1] = useState(0);
 
     const searchInput = useRef();
 
@@ -70,7 +75,7 @@ const AdminPanel = () => {
                 } else {
                     alert('Возникла ошибка при отправке сообщения!')
                 }
-            } else if(method === 'set'){
+            } else if (method === 'set') {
                 setDataStructure(dataRequestAdmin.data.body)
             }
         })
@@ -92,7 +97,6 @@ const AdminPanel = () => {
             newCard.tab = inputCategory2
             newCard.tabCategoryPath = inputCategory3
             newCard.type = inputCategory1
-            arrayRequest = [...arrayRequest, ...[newCard]]
             let lang = false
             let voice = false
 
@@ -111,8 +115,9 @@ const AdminPanel = () => {
                     newCard.languageSelector = 'Без перевода'
                 }
             }
-        })
 
+            arrayRequest = [...arrayRequest, ...[newCard]]
+        })
 
         let array = arrayRequest; //массив, можно использовать массив объектов
         let size = 20; //размер подмассива
@@ -121,10 +126,18 @@ const AdminPanel = () => {
             subarray[i] = array.slice((i * size), (i * size) + size);
         }
         setStatus(10)
+
+        lenArray = subarray.length
+
+        if(inputCategory4 === 1){
+            dataRequestDatabase.addToAll = true
+        }else{
+            dataRequestDatabase.addToAll = false
+        }
+
         for (let i = 0; i < subarray.length; i++) {
             await sendRequestOnDatabase(subarray[i], 'add')
         }
-        setStatus(1)
     }
 
 
@@ -168,15 +181,24 @@ const AdminPanel = () => {
                     setStatus(2)
                 } else if (method === 'getOrderHistory') {
                     setDataOrderHistory(prom.allOrders)
+                } else if(method === 'add'){
+                    if(prom.answer){
+                        lenArray = lenArray - 1
+                        console.log(lenArray)
+                    }
+                    if(lenArray===0){
+                        await onReload()
+                        setStatus(2)
+                    }
                 }
             })
         })
     }, [dataRequestDatabase])
 
-    const sendRequestOnDatabase = (inputData, operation) => {
+    const sendRequestOnDatabase = async (inputData, operation) => {
         dataRequestDatabase.method = operation
         dataRequestDatabase.data = inputData
-        sendRequestDatabase()
+        await sendRequestDatabase()
     }
 
     let dataRequestPromo = {
@@ -210,15 +232,14 @@ const AdminPanel = () => {
         })
     }, [dataRequestPromo])
 
-    const sendRequestOnPromo = (inputData, operation) => {
+    const sendRequestOnPromo = async (inputData, operation) => {
         dataRequestPromo.method = operation
         dataRequestPromo.data = inputData
-        sendRequestPromo()
+        await sendRequestPromo()
     }
 
     const addCategory = (type, tab) => {
         let structure = dataStructure;
-        console.log(structure, dataStructure, 'вход addStructure')
         let id = 0
         structure[tab].body[type].map(el => {
             if (el.id > id) {
@@ -233,6 +254,13 @@ const AdminPanel = () => {
             color = 'none'
         }
 
+        let deleteData
+        if (inputCategory5[2] !== '0000') {
+            deleteData = Date.parse(inputCategory5[0] + ' ' + inputCategory5[1] + ' ' + inputCategory5[2] + ' ' + inputCategory5[3] + ':' + inputCategory5[4] + ':' + inputCategory5[5])
+        } else {
+            deleteData = 'none'
+        }
+
         if (type === 0) {
             structure[tab].body[type].splice(parseInt(inputCategory1), 0, {
                 id: id + 1,
@@ -242,13 +270,26 @@ const AdminPanel = () => {
             });
         }
         if (type === 1) {
-            structure[tab].body[type].splice(parseInt(inputCategory1), 0, {
-                id: id + 1,
-                name: inputCategory2,
-                path: inputCategory3,
-                backgroundColor: color,
-                body: []
-            });
+            if (selectedViewCatalog === 12) {
+                structure[tab].body[type].splice(parseInt(inputCategory1), 0, {
+                    id: id + 1,
+                    type: 1,
+                    url: inputCategory2,
+                    path: inputCategory3,
+                    backgroundColor: color,
+                });
+            } else {
+                structure[tab].body[type].splice(parseInt(inputCategory1), 0, {
+                    id: id + 1,
+                    name: inputCategory2,
+                    path: inputCategory3,
+                    type: 0,
+                    backgroundColor: color,
+                    deleteData: deleteData,
+                    body: []
+                });
+            }
+
         }
 
         console.log(structure, dataStructure, 'выход addStructure')
@@ -336,14 +377,8 @@ const AdminPanel = () => {
                     borderRadius: '10px',
                     background: '#232323'
                 }}>
-                    <div className={'text-element'} style={{
-                        fontSize: '15px',
-                        margin: '5px'
-                    }}>Загрузить карты на сервер
-                    </div>
-                    <div className={'text-element'} style={{margin: '5px'}}>Выберете страницу</div>
                     <div className={'text-element'}
-                         style={{display: 'flex', flexDirection: 'column'}}>
+                         style={{display: 'flex', flexDirection: 'row', marginLeft: '0px'}}>
                         {dataStructure.map(tab => {
                             if (tab.id === inputCategory2) {
                                 return (<button onClick={() => {
@@ -369,14 +404,55 @@ const AdminPanel = () => {
                             }
                         })}
                     </div>
-                    <div className={'text-element'}
-                         style={{display: 'flex', flexDirection: 'column', marginTop: '15px'}}>
-                        Введите уникальный путь до категории:
-                        <input onChange={(event) => {
-                            setInputCategory3(event.target.value)
-                        }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>
-                    </div>
+                    <input className={'text-element'} onChange={(event) => {
+                        setInputCategory3(event.target.value)
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px', color:'black'}}
+                           placeholder={'уникальный_путь_до_категории'}/>
 
+                    <div style={{
+                        margin: '5px',
+                        borderRadius: '100px',
+                        paddingLeft: '5px',
+                        border: '0px',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        background: 'white',
+                        color: 'black',
+                        alignItems: 'center',
+                        justifyContent: 'space-between'
+                    }}
+                         className={'text-element'}>
+                        Добавить в общий каталог игр? -
+                        {[0].map(tab => {
+                            if (1 === inputCategory4) {
+                                return (<div style={{
+                                    borderRadius: '100px',
+                                    padding: '5px',
+                                    border: '0px',
+                                    background: '#1eae6d',
+                                    color: 'white',
+                                    margin: '0',
+                                    width: '200px',
+                                    textAlign: 'center'
+                                }} onClick={async ()=>{
+                                    await setInputCategory4(0)
+                                }}>Да</div>)
+                            } else {
+                                return (<div style={{
+                                    borderRadius: '100px',
+                                    padding: '5px',
+                                    border: '0px',
+                                    background: '#ef7474',
+                                    color: 'white',
+                                    margin: '0',
+                                    width: '200px',
+                                    textAlign: 'center'
+                                }} onClick={async ()=>{
+                                    await setInputCategory4(1)
+                                }}>Нет</div>)
+                            }
+                        })}
+                    </div>
                     <div style={{marginTop: '15px'}} className={'text-element'}>Таблица с данными категории</div>
                     <div style={{marginLeft: '5px'}}>
                         <ExcelReader setButtonTable={setButtonTableClassic}/>
@@ -463,14 +539,40 @@ const AdminPanel = () => {
                                     color: 'white'
                                 }
                             }
+
+                            let text1
+                            let styleButton1
+                            let cardList = (<></>)
+
+                            if (category.path === selectedPath) {
+                                text1 = 'Скрыть список карт'
+                                styleButton1 = {
+                                    margin: '5px',
+                                    borderRadius: '100px',
+                                    padding: '5px',
+                                    border: '0px',
+                                    background: '#ef7474',
+                                    color: 'white'
+                                }
+                                cardList = (<AdminProductList path={category.path}/>)
+                            } else {
+                                text1 = 'Раскрыть список карт'
+                                styleButton1 = {
+                                    margin: '5px',
+                                    borderRadius: '100px',
+                                    padding: '5px',
+                                    border: '0px',
+                                }
+                            }
+
                             return (
                                 <div>
                                     <div style={{
                                         display: 'grid',
-                                        gridTemplateColumns: '2fr 3fr 3fr',
+                                        gridTemplateColumns: '600px 200px 200px 100px',
                                         borderBottom: '1px solid gray',
                                         alignItems: 'center',
-                                        justifyContent: 'center'
+                                        justifyContent: 'left'
                                     }}>
                                         <div className={'title'}>{category.path}</div>
                                         <button onClick={async () => {
@@ -481,6 +583,16 @@ const AdminPanel = () => {
                                             await sendRequestDatabase()
                                         }} style={styleButton}>{text}
                                         </button>
+
+                                        <button onClick={async () => {
+                                            if (category.path === selectedPath) {
+                                                setSelectedPath(-1)
+                                            } else {
+                                                setSelectedPath(category.path)
+                                            }
+                                        }} style={styleButton1}>{text1}
+                                        </button>
+
                                         <button onClick={async () => {
                                             await setStatus(10);
                                             dataRequestDatabase.method = 'delete'
@@ -495,6 +607,7 @@ const AdminPanel = () => {
                                         }}>Удалить
                                         </button>
                                     </div>
+                                    {cardList}
                                 </div>
                             )
                         })}
@@ -630,70 +743,67 @@ const AdminPanel = () => {
                                         textButton = 'Скрыть поле поле'
                                         buttonBackground = '#ef7474'
                                         buttonColor = 'white'
-                                        if (typeof card.body.endDate !== 'undefined') {
-                                            height += 30
-                                        }
                                     }
                                     let newPriceArr = card.price
 
-                                    let oldPriceEditElement = (<></>)
                                     let oldPriceValue = null
 
                                     if (typeof card.body.endDate !== 'undefined') {
                                         oldPriceValue = card.body.oldPrice
-                                        oldPriceEditElement = (<div style={{height: '25px'}}>
+                                    }
+
+                                    let oldPriceEditElement = (<div style={{height: '25px'}}>
+                                            <div style={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                height: '25px',
+                                                marginTop: '5px',
+                                                width: 'max-content'
+                                            }}>
+                                                <div className={'text-element'} style={{
+                                                    marginLeft: '0px',
+                                                    background: '#131313',
+                                                    lineHeight: '15px',
+                                                    padding: '5px',
+                                                    borderRadius: '100px',
+                                                }}>
                                                     <div style={{
-                                                        display: 'flex',
-                                                        flexDirection: 'row',
-                                                        height: '25px',
-                                                        marginTop: '5px',
-                                                        width: 'max-content'
+                                                        marginLeft: '5px',
+                                                        marginRight: '5px',
+                                                        height: '15px',
+                                                        overflow: 'hidden'
                                                     }}>
-                                                        <div className={'text-element'} style={{
-                                                            marginLeft: '0px',
-                                                            background: '#131313',
-                                                            lineHeight: '15px',
-                                                            padding: '5px',
-                                                            borderRadius: '100px',
-                                                        }}>
-                                                            <div style={{
-                                                                marginLeft: '5px',
-                                                                marginRight: '5px',
-                                                                height: '15px',
-                                                                overflow: 'hidden'
-                                                            }}>
-                                                                {card.category.length + 1 + ' - Старая цена'}
-                                                            </div>
-                                                        </div>
-                                                        <div className={'text-element'} style={{
-                                                            marginLeft: '0px',
-                                                            background: '#131313',
-                                                            lineHeight: '15px',
-                                                            borderRadius: '100px',
-                                                        }}>
-                                                            <div style={{
-                                                                marginLeft: '5px',
-                                                                height: '25px',
-                                                                overflow: 'hidden',
-                                                                display: 'flex',
-                                                            }}>
-                                                                <div style={{marginRight: '3px', marginTop: '5px',}}>
-                                                                    Цена:
-                                                                </div>
-                                                                <input defaultValue={oldPriceValue}
-                                                                       onChange={(event) => {
-                                                                           oldPriceValue = parseInt(event.target.value)
-                                                                       }} style={{
-                                                                    borderRadius: '100px',
-                                                                    border: '0px',
-                                                                    paddingLeft: '5px'
-                                                                }}/>
-                                                            </div>
-                                                        </div>
+                                                        {card.category.length + 1 + ' - Старая цена'}
                                                     </div>
                                                 </div>
-                                            )
-                                    }
+                                                <div className={'text-element'} style={{
+                                                    marginLeft: '0px',
+                                                    background: '#131313',
+                                                    lineHeight: '15px',
+                                                    borderRadius: '100px',
+                                                }}>
+                                                    <div style={{
+                                                        marginLeft: '5px',
+                                                        height: '25px',
+                                                        overflow: 'hidden',
+                                                        display: 'flex',
+                                                    }}>
+                                                        <div style={{marginRight: '3px', marginTop: '5px',}}>
+                                                            Цена:
+                                                        </div>
+                                                        <input defaultValue={oldPriceValue}
+                                                               onChange={(event) => {
+                                                                   oldPriceValue = parseInt(event.target.value)
+                                                               }} style={{
+                                                            borderRadius: '100px',
+                                                            border: '0px',
+                                                            paddingLeft: '5px'
+                                                        }}/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
 
                                     return (
                                         <div style={{
@@ -973,7 +1083,7 @@ const AdminPanel = () => {
                                                             id: card.id,
                                                             priceArray: newPriceArr
                                                         }
-                                                        if(oldPriceValue !== null){
+                                                        if (oldPriceValue !== null && oldPriceValue !== '') {
                                                             json.oldPrice = oldPriceValue
                                                         }
                                                         await sendRequestOnDatabase(json, 'editPriceCard')
@@ -1091,15 +1201,67 @@ const AdminPanel = () => {
                             flexDirection: 'column'
                         }}>
                             <div className={'text-element'} style={{margin: "5px"}}>Добавить категорию слайдера</div>
+                            <div>
+                                {[{id: 0, name: 'Некликабельный'}, {id: 1, name: 'На карту'}, {
+                                    id: 2,
+                                    name: 'На каталог'
+                                }, {id: 3, name: 'Ссылочный'}].map(view => {
+                                    if (selectedViewCatalog === view.id) {
+                                        return (<button onClick={() => {
+                                            setSelectedViewCatalog(view.id)
+                                        }} style={{
+                                            margin: '5px',
+                                            borderRadius: '100px',
+                                            padding: '5px',
+                                            border: '0px',
+                                            background: '#ef7474'
+                                        }}>{view.name}
+                                        </button>)
+                                    } else {
+                                        return (<button onClick={() => {
+                                            setSelectedViewCatalog(view.id)
+                                        }} style={{
+                                            margin: '5px',
+                                            borderRadius: '100px',
+                                            padding: '5px',
+                                            border: '0px',
+                                        }}>{view.name}
+                                        </button>)
+                                    }
+                                })}
+                            </div>
                             <input placeholder={'Порядковый_номер'} onChange={(event) => {
                                 setInputCategory1(event.target.value)
                             }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>
                             <input placeholder={'url_изображения'} onChange={(event) => {
                                 setInputCategory2(event.target.value)
                             }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>
-                            <input placeholder={'Путь_до_категории'} onChange={(event) => {
-                                setInputCategory3(event.target.value)
-                            }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>
+                            {[{id: 0, name: 'Некликабельный'}, {id: 1, name: 'На карту'}, {
+                                id: 2,
+                                name: 'На каталог'
+                            }, {id: 3, name: 'Ссылочный'}].map(view => {
+                                if (selectedViewCatalog === 0 && selectedViewCatalog === view.id) {
+                                    if (inputCategory3 !== '') {
+                                        setInputCategory3('')
+                                    }
+                                }
+                                if (selectedViewCatalog === 1 && selectedViewCatalog === view.id) {
+                                    return (<input placeholder={'id-карты'} onChange={(event) => {
+                                        setInputCategory3('/card/' + event.target.value)
+                                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>)
+                                }
+                                if (selectedViewCatalog === 2 && selectedViewCatalog === view.id) {
+                                    return (<input placeholder={'Путь до каталога'} onChange={(event) => {
+                                        setInputCategory3('/home/' + event.target.value)
+                                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>)
+                                }
+                                if (selectedViewCatalog === 3 && selectedViewCatalog === view.id) {
+                                    return (<input placeholder={'Ссылка'} onChange={(event) => {
+                                        setInputCategory3(event.target.value)
+                                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>)
+                                }
+                            })}
+
                             <button onClick={async () => {
                                 await addCategory(0, dataStructure[page].id);
                             }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Добавить
@@ -1111,24 +1273,64 @@ const AdminPanel = () => {
                         <div className={'title'}
                              style={{color: 'white', marginLeft: '10px'}}>Тело
                         </div>
-                        {dataStructure[dataStructure[page].id].body[1].map(category => (
-                            <div style={{
-                                borderRadius: '10px',
-                                background: '#232323',
-                                marginTop: '7px',
-                                marginLeft: '5px',
-                                marginRight: '5px',
-                                padding: '5px'
-                            }} key={category.id}>
-                                <div className={'text-element'} style={{margin: '3px'}}>Путь: {category.path}</div>
-                                <div className={'text-element'} style={{margin: '3px'}}>Имя: {category.name}</div>
-                                <button style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}
-                                        onClick={() => {
-                                            deleteCategory(1, dataStructure[page].id, category.id)
-                                        }}>Удалить категорию
-                                </button>
-                            </div>
-                        ))}
+                        {dataStructure[dataStructure[page].id].body[1].map(category => {
+                            if (category.type === 1) {
+                                return (
+                                    <div style={{
+                                        borderRadius: '10px',
+                                        background: '#232323',
+                                        marginTop: '7px',
+                                        marginLeft: '5px',
+                                        marginRight: '5px',
+                                        padding: '5px'
+                                    }} key={category.id}>
+                                        <div className={'text-element'}
+                                             style={{margin: '3px', color: '#25d585'}}>Баннер
+                                        </div>
+                                        <div className={'text-element'}
+                                             style={{margin: '3px'}}>Путь: {category.path}</div>
+                                        <div className={'text-element'}
+                                             style={{margin: '3px'}}>Изображение: {category.url}</div>
+                                        <button style={{
+                                            margin: '5px',
+                                            borderRadius: '100px',
+                                            padding: '5px',
+                                            border: '0px',
+                                        }}
+                                                onClick={() => {
+                                                    deleteCategory(1, dataStructure[page].id, category.id)
+                                                }}>Удалить категорию
+                                        </button>
+                                    </div>
+                                )
+                            } else {
+                                return (
+                                    <div style={{
+                                        borderRadius: '10px',
+                                        background: '#232323',
+                                        marginTop: '7px',
+                                        marginLeft: '5px',
+                                        marginRight: '5px',
+                                        padding: '5px'
+                                    }} key={category.id}>
+                                        <div className={'text-element'}
+                                             style={{margin: '3px'}}>Путь: {category.path}</div>
+                                        <div className={'text-element'}
+                                             style={{margin: '3px'}}>Имя: {category.name}</div>
+                                        <button style={{
+                                            margin: '5px',
+                                            borderRadius: '100px',
+                                            padding: '5px',
+                                            border: '0px',
+                                        }}
+                                                onClick={() => {
+                                                    deleteCategory(1, dataStructure[page].id, category.id)
+                                                }}>Удалить категорию
+                                        </button>
+                                    </div>
+                                )
+                            }
+                        })}
                         <div style={{
                             padding: "5px",
                             borderRadius: '10px',
@@ -1140,18 +1342,227 @@ const AdminPanel = () => {
                             flexDirection: 'column'
                         }}>
                             <div className={'text-element'} style={{margin: "5px"}}>Добавить категорию тела</div>
+                            <div>
+                                {[{id: 10, name: 'Обычный'}, {id: 11, name: 'Скидочный'}, {
+                                    id: 12,
+                                    name: 'Баннер'
+                                }].map(view => {
+                                    if (selectedViewCatalog === view.id) {
+                                        return (<button onClick={() => {
+                                            setSelectedViewCatalog(view.id)
+                                        }} style={{
+                                            margin: '5px',
+                                            borderRadius: '100px',
+                                            padding: '5px',
+                                            border: '0px',
+                                            background: '#ef7474'
+                                        }}>{view.name}
+                                        </button>)
+                                    } else {
+                                        return (<button onClick={() => {
+                                            setSelectedViewCatalog(view.id)
+                                        }} style={{
+                                            margin: '5px',
+                                            borderRadius: '100px',
+                                            padding: '5px',
+                                            border: '0px',
+                                        }}>{view.name}
+                                        </button>)
+                                    }
+                                })}
+                            </div>
                             <input placeholder={'Порядковый_номер'} onChange={(event) => {
                                 setInputCategory1(event.target.value)
                             }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>
-                            <input placeholder={'Имя_категории'} onChange={(event) => {
-                                setInputCategory2(event.target.value)
-                            }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>
-                            <input placeholder={'Путь_до_категории'} onChange={(event) => {
-                                setInputCategory3(event.target.value)
-                            }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>
+
                             <input placeholder={'Выделение_цветом'} onChange={(event) => {
                                 setInputCategory4(event.target.value)
-                            }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>
+                            }} style={{
+                                margin: '5px',
+                                borderRadius: '100px',
+                                padding: '5px',
+                                border: '0px',
+                            }}/>
+
+                            {[0].map(a => {
+                                if (selectedViewCatalog !== 12) {
+                                    return (<>
+                                            <input placeholder={'Имя_категории'} onChange={(event) => {
+                                                setInputCategory2(event.target.value)
+                                            }} style={{
+                                                margin: '5px',
+                                                borderRadius: '100px',
+                                                padding: '5px',
+                                                border: '0px',
+                                            }}/>
+                                            <input placeholder={'Путь_до_категории'} onChange={(event) => {
+                                                setInputCategory3(event.target.value)
+                                            }} style={{
+                                                margin: '5px',
+                                                borderRadius: '100px',
+                                                padding: '5px',
+                                                border: '0px',
+                                            }}/>
+                                        </>
+                                    )
+                                }
+                                if (selectedViewCatalog === 12) {
+                                    return (
+                                        <>
+                                            <input placeholder={'url_изображения'} onChange={(event) => {
+                                                setInputCategory2(event.target.value)
+                                            }} style={{
+                                                margin: '5px',
+                                                borderRadius: '100px',
+                                                padding: '5px',
+                                                border: '0px',
+                                            }}/>
+                                            <div>
+                                                {[{id: 0, name: 'Некликабельный'}, {id: 1, name: 'На карту'}, {
+                                                    id: 2,
+                                                    name: 'На каталог'
+                                                }, {id: 3, name: 'Ссылочный'}].map(view => {
+                                                    if (selectedViewCatalog1 === view.id) {
+                                                        return (<button onClick={() => {
+                                                            setSelectedViewCatalog1(view.id)
+                                                        }} style={{
+                                                            margin: '5px',
+                                                            borderRadius: '100px',
+                                                            padding: '5px',
+                                                            border: '0px',
+                                                            background: '#ef7474'
+                                                        }}>{view.name}
+                                                        </button>)
+                                                    } else {
+                                                        return (<button onClick={() => {
+                                                            setSelectedViewCatalog1(view.id)
+                                                        }} style={{
+                                                            margin: '5px',
+                                                            borderRadius: '100px',
+                                                            padding: '5px',
+                                                            border: '0px',
+                                                        }}>{view.name}
+                                                        </button>)
+                                                    }
+                                                })}
+                                            </div>
+                                        </>
+                                    )
+                                }
+                            })}
+                            {[{id: 0, name: 'Некликабельный'}, {id: 1, name: 'На карту'}, {
+                                id: 2,
+                                name: 'На каталог'
+                            }, {id: 3, name: 'Ссылочный'}].map(view => {
+                                if (selectedViewCatalog === 12) {
+                                    if (selectedViewCatalog1 === 0 && selectedViewCatalog1 === view.id) {
+                                        if (inputCategory3 !== '') {
+                                            setInputCategory3('')
+                                        }
+                                    }
+                                    if (selectedViewCatalog1 === 1 && selectedViewCatalog1 === view.id) {
+                                        return (<input placeholder={'id-карты'} onChange={(event) => {
+                                            setInputCategory3('/card/' + event.target.value)
+                                        }} style={{
+                                            margin: '5px',
+                                            borderRadius: '100px',
+                                            padding: '5px',
+                                            border: '0px',
+                                        }}/>)
+                                    }
+                                    if (selectedViewCatalog1 === 2 && selectedViewCatalog1 === view.id) {
+                                        return (<input placeholder={'Путь до каталога'} onChange={(event) => {
+                                            setInputCategory3('/home/' + event.target.value)
+                                        }} style={{
+                                            margin: '5px',
+                                            borderRadius: '100px',
+                                            padding: '5px',
+                                            border: '0px',
+                                        }}/>)
+                                    }
+                                    if (selectedViewCatalog1 === 3 && selectedViewCatalog1 === view.id) {
+                                        return (<input placeholder={'Ссылка'} onChange={(event) => {
+                                            setInputCategory3(event.target.value)
+                                        }} style={{
+                                            margin: '5px',
+                                            borderRadius: '100px',
+                                            padding: '5px',
+                                            border: '0px',
+                                        }}/>)
+                                    }
+                                }
+                            })}
+
+                            {[{id: 10, name: 'Обычный'}, {id: 11, name: 'Скидочный'}, {
+                                id: 12,
+                                name: 'Баннер'
+                            }].map(view => {
+                                if (selectedViewCatalog === 11 && selectedViewCatalog === view.id) {
+                                    return (
+                                        <div>
+                                            <input placeholder={'Месяц {03}*'} onChange={(event) => {
+                                                let newArray = inputCategory5
+                                                newArray[0] = event.target.value
+                                                setInputCategory5(newArray)
+                                            }} style={{
+                                                margin: '5px',
+                                                borderRadius: '100px',
+                                                padding: '5px',
+                                                border: '0px',
+                                            }}/>
+                                            <input placeholder={'День {23}*'} onChange={(event) => {
+                                                let newArray = inputCategory5
+                                                newArray[1] = event.target.value
+                                                setInputCategory5(newArray)
+                                            }} style={{
+                                                margin: '5px',
+                                                borderRadius: '100px',
+                                                padding: '5px',
+                                                border: '0px',
+                                            }}/>
+                                            <input placeholder={'Год {2025}*'} onChange={(event) => {
+                                                let newArray = inputCategory5
+                                                newArray[2] = event.target.value
+                                                setInputCategory5(newArray)
+                                            }} style={{
+                                                margin: '5px',
+                                                borderRadius: '100px',
+                                                padding: '5px',
+                                                border: '0px',
+                                            }}/>
+                                            <input placeholder={'Час {12}'} onChange={(event) => {
+                                                let newArray = inputCategory5
+                                                newArray[3] = event.target.value
+                                                setInputCategory5(newArray)
+                                            }} style={{
+                                                margin: '5px',
+                                                borderRadius: '100px',
+                                                padding: '5px',
+                                                border: '0px',
+                                            }}/>
+                                            <input placeholder={'Минута {00}'} onChange={(event) => {
+                                                let newArray = inputCategory5
+                                                newArray[4] = event.target.value
+                                                setInputCategory5(newArray)
+                                            }} style={{
+                                                margin: '5px',
+                                                borderRadius: '100px',
+                                                padding: '5px',
+                                                border: '0px',
+                                            }}/>
+                                            <input placeholder={'Секунда {00}'} onChange={(event) => {
+                                                let newArray = inputCategory5
+                                                newArray[5] = event.target.value
+                                                setInputCategory5(newArray)
+                                            }} style={{
+                                                margin: '5px',
+                                                borderRadius: '100px',
+                                                padding: '5px',
+                                                border: '0px',
+                                            }}/>
+                                        </div>)
+                                }
+                            })}
                             <button onClick={() => {
                                 addCategory(1, dataStructure[page].id)
                             }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Добавить

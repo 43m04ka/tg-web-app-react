@@ -1,7 +1,10 @@
-import React, {createRef, useCallback, useEffect, useState} from 'react';
+import React, {createRef, Suspense, useCallback, useEffect, useState} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import ProductItem from "./ProductItem";
+import Img from "./Img";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import PlaceholderImage from "../icons/ideaInfo.png";
 
 let heightText = null
 let textElementHeight = null
@@ -42,8 +45,10 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData, favo
     const [textHidden, setTextHidden] = React.useState(null);
     const [dataCards, setDataCards] = React.useState([]);
     const [isFavorite, setIsFavorite] = React.useState(null);
+    const [isLoad, setIsLoad] =  useState(0);
 
     if (mainData.id !== newMainData.id) {
+        setIsLoad(0)
         setNewMainData(mainData)
         setTextHidden(null)
         setIsBuy(false);
@@ -370,7 +375,7 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData, favo
         }
     }
     let seeLove = (<div/>)
-    if (dataCards.length !== 0) {
+    if (dataCards.length !== 0 && isLoad >= 1) {
         seeLove = (<div>
             <div className={"title"}>Рекомендуем:</div>
             <div className={'list-grid'}>
@@ -380,6 +385,46 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData, favo
             </div>
         </div>)
     }
+    let imgElement = (<div style={{
+        height: String(window.innerWidth - 20 - ((window.innerWidth - 20) / 2 - 50)) + 'px'}}>
+        <div className={'plup-loader'} style={{
+            opacity: 0.3,
+            marginTop: String((window.innerWidth - 20) / 2 - 50) + 'px',
+            marginLeft: String((window.innerWidth - 20) / 2 - 50) + 'px',
+            position:'unset'
+    }}></div></div>)
+    let imgLoadElem = (<></>)
+    if (isLoad === 1) {
+        imgElement = (<div className={'img'} style={{
+            height: String(window.innerWidth - 20) + 'px',
+            borderRadius: '15px', backgroundImage: "url('" + newMainData.body.img + "')",
+            backgroundSize: 'cover', display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'end',
+            justifyContent: 'space-between',
+        }}></div>)
+        imgLoadElem = (<img className={'img'} style={{
+            height: String(0) + 'px',
+            borderRadius: '15px', //backgroundImage: "url('" + newMainData.body.img + "0')",
+            backgroundSize: 'cover', display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'end',
+            justifyContent: 'space-between',
+        }} src={newMainData.body.img.slice(0, newMainData.body.img.indexOf('?w=') + 1) + 'w=1024'}
+                            onLoad={() => setIsLoad(2)}></img>)
+    }
+    if (isLoad === 2) {
+        imgElement = (<div className={'img'} style={{
+            height: String(window.innerWidth - 20) + 'px',
+            borderRadius: '15px', backgroundImage: "url('" + newMainData.body.img.slice(0, newMainData.body.img.indexOf('?w=')+1) + "w=1024')",
+            backgroundSize: 'cover', display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'end',
+            justifyContent: 'space-between',
+        }}></div>)
+    }
+
+
     return (
         <div className={'card-product'}>
             <div style={{
@@ -388,14 +433,17 @@ const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData, favo
                 width: String(window.innerWidth - 20) + 'px',
                 marginTop: '10px',
             }}>
-                <div className={'img'} style={{
-                    height: String(window.innerWidth - 20) + 'px',
-                    borderRadius: '15px', backgroundImage: "url('" + newMainData.body.img + "0')",
+                <img className={'img'} style={{
+                    height: String(0) + 'px',
+                    borderRadius: '15px', //backgroundImage: "url('" + newMainData.body.img + "0')",
                     backgroundSize: 'cover', display: 'flex',
                     flexDirection: 'row',
                     alignItems: 'end',
                     justifyContent: 'space-between',
-                }}/>
+                }} src={newMainData.body.img}
+                     onLoad={() => setIsLoad(1)}></img>
+                {imgLoadElem}
+                {imgElement}
                 <div style={{
                     color: 'white',
                     background: '#2b2e31',

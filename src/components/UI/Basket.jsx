@@ -100,14 +100,15 @@ const Basket = ({height, number, updateOrders}) => {
             if (typeof user.username !== 'undefined') {
                 sendDataProduct.user.username = '@' + sendDataProduct.user.username
             }
-        } catch (e) {}
+        } catch (e) {
+        }
 
-        if(sendDataProduct.user.username !== '' && typeof sendDataProduct.user.username !== 'undefined') {
+        if (sendDataProduct.user.username !== '' && typeof sendDataProduct.user.username !== 'undefined') {
 
             setButtonText('Оформляем заказ...');
             if (typeof user.username === 'undefined') {
                 sendDataProduct.user.username = userRef.current.value
-                if(contactStatus === 1){
+                if (contactStatus === 1) {
                     sendDataProduct.user.username = '@' + sendDataProduct.user.username
                 }
             }
@@ -136,9 +137,14 @@ const Basket = ({height, number, updateOrders}) => {
                     }
                 })
             })
-        }else{
-            if(typeof sendDataProduct.user.username === 'undefined'){
-                setAlertElement(<div className={'text-element'} style={{color:'#ef7474', textAlign:'center', marginLeft:'10px', paddingTop:'3px'}}>Выберете мессенджер и оставьте ваш контакт для дальнейшего оформления заказа</div>)
+        } else {
+            if (typeof sendDataProduct.user.username === 'undefined') {
+                setAlertElement(<div className={'text-element'} style={{
+                    color: '#ef7474',
+                    textAlign: 'center',
+                    marginLeft: '10px',
+                    paddingTop: '3px'
+                }}>Выберете мессенджер и оставьте ваш контакт для дальнейшего оформления заказа</div>)
             }
         }
     }, [sendDataProduct])
@@ -243,7 +249,7 @@ const Basket = ({height, number, updateOrders}) => {
         height: '34px',
         color: 'white',
         textAlign: 'center',
-        marginRight:'0px',
+        marginRight: '0px',
         marginLeft: '0px',
     }
 
@@ -562,7 +568,7 @@ const Basket = ({height, number, updateOrders}) => {
     let usernameInput1 = (<></>)
 
     if (typeof user.username === 'undefined') {
-        if(contactStatus === 0){
+        if (contactStatus === 0) {
             usernameInput1 = (<div style={{
                 width: String(window.innerWidth - 40) + 'px',
                 display: 'flex',
@@ -579,7 +585,9 @@ const Basket = ({height, number, updateOrders}) => {
                     marginRight: '0px',
                     marginLeft: '0px',
                     width: String((window.innerWidth - 65) / 3) + 'px',
-                }} onClick={()=>{setContactStatus(1)}}>Telegram
+                }} onClick={() => {
+                    setContactStatus(1)
+                }}>Telegram
                 </button>
                 <button className={'text-element'} style={{
                     background: rgb([81, 164, 86]),
@@ -591,7 +599,9 @@ const Basket = ({height, number, updateOrders}) => {
                     marginRight: '0px',
                     marginLeft: '0px',
                     width: String((window.innerWidth - 65) / 3) + 'px',
-                }} onClick={()=>{setContactStatus(2)}}>WhatsApp
+                }} onClick={() => {
+                    setContactStatus(2)
+                }}>WhatsApp
                 </button>
                 <button className={'text-element'} style={{
                     background: rgb([47, 47, 47]),
@@ -603,17 +613,20 @@ const Basket = ({height, number, updateOrders}) => {
                     marginRight: '0px',
                     marginLeft: '0px',
                     width: String((window.innerWidth - 65) / 3) + 'px',
-                }} onClick={()=>{setContactStatus(3)}}>E-Mail
+                }} onClick={() => {
+                    setContactStatus(3)
+                }}>E-Mail
                 </button>
             </div>)
-        }if(contactStatus===1){
-            usernameInput1= (<div style={{
+        }
+        if (contactStatus === 1) {
+            usernameInput1 = (<div style={{
                 display: 'grid',
                 gridTemplateColumns: '7fr 3fr',
                 width: String(window.innerWidth - 40) + 'px',
                 background: 'white',
                 borderRadius: '17px',
-                border:'2px solid #29a5e5'
+                border: '2px solid #29a5e5'
             }}>
                 <input placeholder={"Ваш никнейм Telegram @name"}
                        className={'text-element'}
@@ -626,7 +639,9 @@ const Basket = ({height, number, updateOrders}) => {
                            border: '0',
                            textAlign: 'center',
                            color: "black"
-                       }} ref={userRef} onChange={()=>{setAlertElement(<div></div>)}}/>
+                       }} ref={userRef} onChange={() => {
+                    setAlertElement(<div></div>)
+                }}/>
                 <button className={'text-element'} style={{
                     background: rgb([174, 174, 174]),
                     border: '0px white',
@@ -634,7 +649,7 @@ const Basket = ({height, number, updateOrders}) => {
                     height: '30px',
                     color: 'white',
                     textAlign: 'center',
-                    marginRight:'0px',
+                    marginRight: '0px',
                     marginLeft: '0px',
                 }}
                         onClick={() => {
@@ -643,14 +658,15 @@ const Basket = ({height, number, updateOrders}) => {
                         }}>НАЗАД
                 </button>
             </div>)
-        }if(contactStatus===2){
-            usernameInput1= (<div style={{
+        }
+        if (contactStatus === 2) {
+            usernameInput1 = (<div style={{
                 display: 'grid',
                 gridTemplateColumns: '7fr 3fr',
                 width: String(window.innerWidth - 40) + 'px',
                 background: 'white',
                 borderRadius: '17px',
-                border:'2px solid #51a456'
+                border: '2px solid #51a456'
             }}>
                 <input placeholder={"Ваш контакт WhatsApp"}
                        className={'text-element'}
@@ -663,7 +679,9 @@ const Basket = ({height, number, updateOrders}) => {
                            border: '0',
                            textAlign: 'center',
                            color: "black"
-                       }} ref={userRef} onChange={()=>{setAlertElement(<div></div>)}}/>
+                       }} ref={userRef} onChange={() => {
+                    setAlertElement(<div></div>)
+                }}/>
                 <button className={'text-element'} style={{
                     background: rgb([174, 174, 174]),
                     border: '0px white',
@@ -671,7 +689,7 @@ const Basket = ({height, number, updateOrders}) => {
                     height: '30px',
                     color: 'white',
                     textAlign: 'center',
-                    marginRight:'0px',
+                    marginRight: '0px',
                     marginLeft: '0px',
                 }}
                         onClick={() => {
@@ -680,14 +698,15 @@ const Basket = ({height, number, updateOrders}) => {
                         }}>НАЗАД
                 </button>
             </div>)
-        }if(contactStatus===3){
-            usernameInput1= (<div style={{
+        }
+        if (contactStatus === 3) {
+            usernameInput1 = (<div style={{
                 display: 'grid',
                 gridTemplateColumns: '7fr 3fr',
                 width: String(window.innerWidth - 40) + 'px',
                 background: 'white',
                 borderRadius: '17px',
-                border:'2px solid #171717'
+                border: '2px solid #171717'
             }}>
                 <input placeholder={"Ваша почта E-Mail"}
                        className={'text-element'}
@@ -700,7 +719,9 @@ const Basket = ({height, number, updateOrders}) => {
                            border: '0',
                            textAlign: 'center',
                            color: "black"
-                       }} ref={userRef} onChange={()=>{setAlertElement(<div></div>)}}/>
+                       }} ref={userRef} onChange={() => {
+                    setAlertElement(<div></div>)
+                }}/>
                 <button className={'text-element'} style={{
                     background: rgb([174, 174, 174]),
                     border: '0px white',
@@ -708,7 +729,7 @@ const Basket = ({height, number, updateOrders}) => {
                     height: '30px',
                     color: 'white',
                     textAlign: 'center',
-                    marginRight:'0px',
+                    marginRight: '0px',
                     marginLeft: '0px',
                 }}
                         onClick={() => {
@@ -722,13 +743,13 @@ const Basket = ({height, number, updateOrders}) => {
             background: '#454545',
             borderRadius: '17px', marginBottom: '10px',
             marginTop: '10px',
-            paddingTop:'7px',
-            paddingBottom:'5px',
+            paddingTop: '7px',
+            paddingBottom: '5px',
         }}>
             <div className={'text-element'}
                  style={{fontSize: '16px', textAlign: 'center', marginBottom: '6px'}}>Контакты для связи:
             </div>
-            <div style={{marginLeft:'10px', marginBottom:'5px'}}>
+            <div style={{marginLeft: '10px', marginBottom: '5px'}}>
                 {usernameInput1}
                 {alertElement}
             </div>
@@ -774,20 +795,29 @@ const Basket = ({height, number, updateOrders}) => {
                 <div style={{display: 'grid'}}>
                     <div style={{
                         height: String(height - 110 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
-                        overflow: 'scroll'
+                        overflow: 'scroll',
                     }}>
                         <div className={'title'} style={{
                             width: String(window.innerWidth) + 'px', textAlign: 'center',
                             marginRight: 'auto',
                             marginTop: '10px',
                             marginLeft: '0',
+
                         }}>{titleText}
                         </div>
                         {basket.map(el => (
                             <ProductItemBasket key={el.id} setBasketF={setBasket} product={el} number={number}/>
                         ))}
+                        <div>
+                            <div style={{height: '10px'}}/>
+                        </div>
                     </div>
-                    <div style={{background:'#232323', borderTopLeftRadius:'18px', borderTopRightRadius:'18px', borderTop:'2px solid #353535'}}>
+                    <div style={{
+                        background: '#232323',
+                        borderTopLeftRadius: '18px',
+                        borderTopRightRadius: '18px',
+                        borderTop: '2px solid #353535',
+                    }}>
                         <div style={{marginLeft: '15px'}}>
                             <div style={{width: String(window.innerWidth - 30) + 'px'}}>
                                 <div style={{
@@ -812,9 +842,9 @@ const Basket = ({height, number, updateOrders}) => {
                                 width: String(window.innerWidth - 30) + 'px',
                                 background: '#52a557',
                                 marginLeft: '0px',
-                                height:'38px',
-                                borderRadius:'19px',
-                                marginBottom:'15px'
+                                height: '38px',
+                                borderRadius: '19px',
+                                marginBottom: '15px'
                             }}
                                     onClick={() => {
                                         setStatus(2)
@@ -834,22 +864,22 @@ const Basket = ({height, number, updateOrders}) => {
                     marginTop: '5px',
                     background: '#454545',
                     borderRadius: '17px',
-                    padding:'7px 0px 7px 0px',
+                    padding: '7px 0px 7px 0px',
                     height: '48px',
                 }}>
                     <div style={{
                         display: 'grid',
                         gridTemplateColumns: '7fr 5fr',
-                        width:String(window.innerWidth - 40) + 'px',
-                        background:'white',
+                        width: String(window.innerWidth - 40) + 'px',
+                        background: 'white',
                         borderRadius: '17px',
-                        marginLeft:'10px'
+                        marginLeft: '10px'
                     }}>
                         <input placeholder={"Промокод"} value={promoInput}
                                className={'text-element'}
                                style={{
                                    height: '34px',
-                                   marginLeft:'0px',
+                                   marginLeft: '0px',
                                    marginTop: '0px',
                                    borderTopLeftRadius: '17px',
                                    borderBottomLeftRadius: '17px',
@@ -884,13 +914,14 @@ const Basket = ({height, number, updateOrders}) => {
                 marginTop: '5px',
                 width: String(window.innerWidth - 30) + 'px',
                 background: '#52a557',
-                height:'38px',
-                borderRadius:'19px',
-                marginBottom:'2px'
+                height: '38px',
+                borderRadius: '19px',
+                marginBottom: '2px'
             }}
                     onClick={onClickButton}>{buttonText}
             </button>
-            <div className={'text-element'} style={{fontSize: '9px', textAlign: 'center', marginLeft:'30px', marginRight:'30px'}}>
+            <div className={'text-element'}
+                 style={{fontSize: '9px', textAlign: 'center', marginLeft: '30px', marginRight: '30px'}}>
                 Нажимая на кнопку, Вы соглашаетесь с <a href={'https://t.me/gwstore_faq/12'} style={{color: '#559fff'}}
                                                         className={'link-element'}>Условиями
                 обработки персональных данных</a>, а также с <a href={'https://t.me/gwstore_faq/11'}

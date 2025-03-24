@@ -29,9 +29,7 @@ const Favorites = ({height}) => {
             Promise.then(r => {
                 let newArray = []
                 r.body.map(el => {
-                    if (el.body.isSale) {
-                        newArray = [...newArray, el]
-                    }
+                    newArray = [...newArray, el]
                 })
                 setFavorites(newArray);
                 setStatus(1)

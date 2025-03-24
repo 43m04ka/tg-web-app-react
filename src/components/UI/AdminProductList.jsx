@@ -45,7 +45,7 @@ const AdminProductList = ({path}) => {
         }).then(r => {
             let Promise = r.json()
             Promise.then(async prom => {
-                console.log(prom.cards + '----------------')
+                console.log(prom)
                 if (dataRequestDatabase.method === 'getList') {
                     await setStatus(1)
                     await setProducts(prom.cards || [])

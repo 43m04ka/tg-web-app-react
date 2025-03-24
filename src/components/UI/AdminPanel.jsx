@@ -97,6 +97,11 @@ const AdminPanel = () => {
             newCard.tab = inputCategory2
             newCard.tabCategoryPath = inputCategory3
             newCard.type = inputCategory1
+            if(inputCategory5 === 1){
+                newCard.globalView = 'game'
+            }else{
+                newCard.globalView = 'other'
+            }
             let lang = false
             let voice = false
 
@@ -406,7 +411,7 @@ const AdminPanel = () => {
                     </div>
                     <input className={'text-element'} onChange={(event) => {
                         setInputCategory3(event.target.value)
-                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px', color:'black'}}
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px', color: 'black'}}
                            placeholder={'уникальный_путь_до_категории'}/>
 
                     <div style={{
@@ -432,9 +437,9 @@ const AdminPanel = () => {
                                     background: '#1eae6d',
                                     color: 'white',
                                     margin: '0',
-                                    width: '200px',
+                                    width: '400px',
                                     textAlign: 'center'
-                                }} onClick={async ()=>{
+                                }} onClick={async () => {
                                     await setInputCategory4(0)
                                 }}>Да</div>)
                             } else {
@@ -445,10 +450,54 @@ const AdminPanel = () => {
                                     background: '#ef7474',
                                     color: 'white',
                                     margin: '0',
-                                    width: '200px',
+                                    width: '400px',
                                     textAlign: 'center'
-                                }} onClick={async ()=>{
+                                }} onClick={async () => {
                                     await setInputCategory4(1)
+                                }}>Нет</div>)
+                            }
+                        })}
+                    </div>
+                    <div style={{
+                        margin: '5px',
+                        borderRadius: '100px',
+                        paddingLeft: '5px',
+                        border: '0px',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        background: 'white',
+                        color: 'black',
+                        alignItems: 'center',
+                        justifyContent: 'space-between'
+                    }}
+                         className={'text-element'}>
+                        Загружаемые карты принадлежат у типу игр? -
+                        {[0].map(tab => {
+                            if (1 === inputCategory5) {
+                                return (<div style={{
+                                    borderRadius: '100px',
+                                    padding: '5px',
+                                    border: '0px',
+                                    background: '#1eae6d',
+                                    color: 'white',
+                                    margin: '0',
+                                    width: '400px',
+                                    textAlign: 'center'
+                                }} onClick={async () => {
+                                    await setInputCategory5(0)
+                                }}>Да</div>)
+                            } else {
+                                return (<div style={{
+                                    borderRadius: '100px',
+                                    padding: '5px',
+                                    border: '0px',
+                                    background: '#ef7474',
+                                    color: 'white',
+                                    margin: '0',
+                                    width: '400px',
+                                    textAlign: 'center'
+                                }} onClick={async () => {
+                                    await setInputCategory5(1)
                                 }}>Нет</div>)
                             }
                         })}

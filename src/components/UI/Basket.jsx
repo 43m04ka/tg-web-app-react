@@ -787,7 +787,7 @@ const Basket = ({height, number, updateOrders}) => {
                             <ProductItemBasket key={el.id} setBasketF={setBasket} product={el} number={number}/>
                         ))}
                     </div>
-                    <div style={{borderTop: '2px solid gray'}}>
+                    <div style={{background:'#232323', borderTopLeftRadius:'18px', borderTopRightRadius:'18px', borderTop:'2px solid #353535'}}>
                         <div style={{marginLeft: '15px'}}>
                             <div style={{width: String(window.innerWidth - 30) + 'px'}}>
                                 <div style={{
@@ -814,6 +814,7 @@ const Basket = ({height, number, updateOrders}) => {
                                 marginLeft: '0px',
                                 height:'38px',
                                 borderRadius:'19px',
+                                marginBottom:'15px'
                             }}
                                     onClick={() => {
                                         setStatus(2)

@@ -80,7 +80,7 @@ const ProductItem = ({product}) => {
             <Link to={'/card/' + product.id} className={'link-element'}>
                 <div className={'box-home-block-element'}>
                     <div style={{
-                        backgroundImage: 'url("' + product.body.img + '+")',
+                        backgroundImage: 'url("' + product.body.img + '")',
                         backgroundRepeat: 'no-repeat',
                         backgroundSize: 'cover',
                         display: 'flex',

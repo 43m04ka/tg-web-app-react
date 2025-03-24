@@ -372,26 +372,8 @@ body {
     left: 50%;
     top: 50%;
     margin: -50px 0 0 -50px;
-}
-
-.plup-loader {
     animation: plup1 0.4s ease-in-out infinite;
 }
-
-.plup-loader-in {
-    width: 100px;
-    height: 100px;
-    background: url("https://i.postimg.cc/DZcrwWCX/image.png");
-    background-size: cover;
-    left: 50%;
-    top: 50%;
-    margin: -50px 0 0 -50px;
-}
-
-.plup-loader-in {
-    animation: plup2 0.4s ease-in-out;
-}
-
 @keyframes plup1 {
     0% {
         transform: scale(80%);
@@ -401,21 +383,6 @@ body {
     }
     100% {
         transform: scale(80%);
-    }
-}
-
-@keyframes plup2 {
-    0% {
-        transform: scale(80%);
-    }
-    60% {
-        transform: scale(120%);
-    }
-    80% {
-        transform: scale(80%);
-    }
-    100% {
-        transform: scale(100%);
     }
 }
 

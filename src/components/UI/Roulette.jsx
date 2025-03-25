@@ -53,21 +53,57 @@ const Roulette = () => {
 
     let textElement = (<div className={'text-element'} style={{
         marginTop: '-55px',
-        marginLeft: String(window.innerWidth/2-90)+'px',
+        marginLeft: String(window.innerWidth / 2 - 90) + 'px',
         marginRight: '15px',
         height: '36px',
         fontSize: '30px',
         lineHeight: '35px',
         fontVariant: 'small-caps',
         paddingTop: '8px',
-        position:'fixed',
+        position: 'fixed',
     }}>
         кубик рулетка
     </div>)
 
+    if (status === 2) {
+        textElement = (<div className={'text-element'} style={{
+            marginTop: '-100px',
+            width: String(window.innerWidth) + 'px',
+            marginRight: '15px',
+            height: '100px',
+            fontSize: '33px',
+            lineHeight: '36px',
+            textAlign: 'center',
+            fontVariant: 'small-caps',
+            paddingTop: '8px',
+            position: 'fixed',
+        }}>
+            <div style={{
+                height: '45px',
+                fontSize: '33px',
+                lineHeight: '36px',
+                textAlign: 'center',
+                fontVariant: 'small-caps',
+            }}>
+                вы выйграли
+            </div>
+            <div className={'text-element'} style={{
+                marginTop: '-10px',
+                height: '36px',
+                fontSize: '20px',
+                lineHeight: '28px',
+                fontVariant: 'small-caps',
+                paddingTop: '8px',
+                textAlign: 'center',
+            }}>
+                "ПЕФ лыоaskjhkasdhвылвоа"
+            </div>
+        </div>)
+    }
+
     let buttonElement = (<div className={'text-element'} style={{
         background: '#759d44',
-        marginTop: '15px',
+        marginTop: '10px',
         marginLeft: '15px',
         marginRight: '15px',
         borderRadius: '50px',
@@ -90,7 +126,7 @@ const Roulette = () => {
     if (status === 2) {
         buttonElement = (<div className={'text-element'} style={{
             background: '#759d44',
-            marginTop: '15px',
+            marginTop: '10px',
             marginLeft: '15px',
             marginRight: '15px',
             borderRadius: '50px',
@@ -145,30 +181,30 @@ const Roulette = () => {
                 <div style={{
                     width: '0',
                     height: '0',
-                    borderLeft: '14px solid transparent',
-                    borderRight: '14px solid transparent',
-                    borderTop: '30px solid #c1c3cc',
+                    borderLeft: '10px solid transparent',
+                    borderRight: '10px solid transparent',
+                    borderTop: '20px solid #c1c3cc',
                     transitionDuration: '0.3s',
                     transitionProperty: 'margin-top',
                     position: 'absolute',
                     zIndex: 200,
                     marginLeft: String((window.innerWidth - 30) / 2 - 14) + 'px',
-                    marginTop: String(-sizeValue / 2 + 50 - 15) + 'px',
+                    marginTop: String(-sizeValue / 2 + 50 - 10) + 'px',
                 }}/>
 
                 <div style={{
                     width: '0',
                     height: '0',
                     rotate: '180deg',
-                    borderLeft: '14px solid transparent',
-                    borderRight: '14px solid transparent',
-                    borderTop: '30px solid #c1c3cc',
+                    borderLeft: '10px solid transparent',
+                    borderRight: '10px solid transparent',
+                    borderTop: '20px solid #c1c3cc',
                     transitionDuration: '0.3s',
                     transitionProperty: 'margin-top',
                     position: 'absolute',
                     zIndex: 200,
                     marginLeft: String((window.innerWidth - 30) / 2 - 14) + 'px',
-                    marginTop: String(100 + (sizeValue - 100) / 2 - 15) + 'px',
+                    marginTop: String(100 + (sizeValue - 100) / 2 - 10) + 'px',
                 }}/>
                 <div style={{overflow: 'hidden', width: String(window.innerWidth - 30) + 'px'}}>
                     <div ref={ref} style={{

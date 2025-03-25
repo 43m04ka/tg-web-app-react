@@ -169,11 +169,12 @@ const Roulette = () => {
                 marginLeft: '15px',
                 marginRight: '15px',
                 borderRadius: '50px',
-                height: '35px',
-                fontSize: '15px',
+                height: '36px',
+                fontSize: '16px',
                 textAlign: 'center',
-                lineHeight: '15px',
-                paddingTop: '7.5px'
+                lineHeight: '16px',
+                fontVariant:'small-caps',
+                paddingTop: '8px'
             }} onClick={() => {
                 setScrollValue(1150 + 110 * 150)
                 setStatus(1)
@@ -181,7 +182,7 @@ const Roulette = () => {
                     setStatus(2)
                     setSizeValue(150)
                 }, 7000)
-            }}>КРУТИТЬ
+            }}>крутить
             </div>
         </div>
     )

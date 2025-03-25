@@ -1,5 +1,6 @@
-import React, {useRef, useState} from 'react';
+import {useRef, useState} from 'react';
 import '../styles/cube.css';
+import {useNavigate} from "react-router-dom";
 
 let gameArray = []
 let gameVin = -1
@@ -11,6 +12,8 @@ const Roulette = () => {
     const [sizeValue, setSizeValue] = useState(100);
 
     const ref = useRef();
+
+    const navigate = useNavigate()
 
     let b = ['https://image.api.playstation.com/vulcan/ap/rnd/202404/1913/1cf37c0ac3bae6b582f64e7c4c3f28d0ace851383de64552.png?w=230',
         'https://image.api.playstation.com/vulcan/img/rnd/202112/0804/2UTMvRFqn4SdaoxhtQnxchcn.png?w=230',
@@ -48,9 +51,64 @@ const Roulette = () => {
         gameArray = a
     }
 
+    let textElement = (<div className={'text-element'} style={{
+        marginTop: '-55px',
+        marginLeft: String(window.innerWidth/2-90)+'px',
+        marginRight: '15px',
+        height: '36px',
+        fontSize: '30px',
+        lineHeight: '35px',
+        fontVariant: 'small-caps',
+        paddingTop: '8px',
+        position:'fixed',
+    }}>
+        кубик рулетка
+    </div>)
+
+    let buttonElement = (<div className={'text-element'} style={{
+        background: '#759d44',
+        marginTop: '15px',
+        marginLeft: '15px',
+        marginRight: '15px',
+        borderRadius: '50px',
+        height: '36px',
+        fontSize: '16px',
+        textAlign: 'center',
+        lineHeight: '16px',
+        fontVariant: 'small-caps',
+        paddingTop: '8px',
+    }} onClick={() => {
+        setScrollValue(1150 + 110 * 150)
+        setStatus(1)
+        setTimeout(() => {
+            setStatus(2)
+            setSizeValue(150)
+        }, 11000)
+    }}>крутить
+    </div>)
+
+    if (status === 2) {
+        buttonElement = (<div className={'text-element'} style={{
+            background: '#759d44',
+            marginTop: '15px',
+            marginLeft: '15px',
+            marginRight: '15px',
+            borderRadius: '50px',
+            height: '36px',
+            fontSize: '14px',
+            textAlign: 'center',
+            lineHeight: '18px',
+            paddingTop: '8px'
+        }} onClick={() => {
+            navigate('/basket0')
+        }}>Оформить заказ
+        </div>)
+    }
 
     return (
         <div>
+            {textElement}
+
             <div style={{
                 height: String(sizeValue) + 'px',
                 width: String(sizeValue) + 'px',
@@ -66,7 +124,7 @@ const Roulette = () => {
                 position: 'absolute'
             }}></div>
             <div style={{
-                background: 'linear-gradient(to right, rgba(69, 69, 69, 0.8) 0%, rgba(0, 0, 0, 0.1) 10%), linear-gradient(to left, rgba(69, 69, 69, 0.8) 0%, rgba(0, 0, 0, 0.1) 10%)',
+                background: 'linear-gradient(to right, rgba(0, 0, 0, 0.6) 0%, rgba(69, 69, 69, 0) 20%), linear-gradient(to left, rgba(0, 0, 0, 0.6) 0%, rgba(69, 69, 69, 0) 20%)',
                 borderRadius: '17.5px',
                 marginLeft: '15px',
                 zIndex: 25,
@@ -82,7 +140,7 @@ const Roulette = () => {
                 paddingTop: '30px',
                 paddingBottom: '30px',
                 zIndex: 0,
-                marginTop: String(window.innerHeight/2 - 125)+'px'
+                marginTop: String(window.innerHeight / 2 - 125) + 'px'
             }}>
                 <div style={{
                     width: '0',
@@ -115,7 +173,7 @@ const Roulette = () => {
                 <div style={{overflow: 'hidden', width: String(window.innerWidth - 30) + 'px'}}>
                     <div ref={ref} style={{
                         display: "flex",
-                        transition: 'transform 7s ease-out',
+                        transition: 'transform 10s ease-out',
                         flexDirection: 'row',
                         width: '200000px',
                         transform: 'translateX(' + String((window.innerWidth - 30) / 2 - scrollValue - 110) + 'px)',
@@ -127,7 +185,7 @@ const Roulette = () => {
                                     height: String(sizeValue) + 'px',
                                     width: String(sizeValue) + 'px',
                                     transitionProperty: 'height, width',
-                                    transitionDuration: '0.3s',
+                                    transitionDuration: '0.4s',
                                     background: 'url("' + b[element] + '")',
                                     backgroundSize: 'cover',
                                     marginRight: '10px',
@@ -163,30 +221,9 @@ const Roulette = () => {
                     </div>
                 </div>
             </div>
-            <div className={'text-element'} style={{
-                background: '#759d44',
-                marginTop: '10px',
-                marginLeft: '15px',
-                marginRight: '15px',
-                borderRadius: '50px',
-                height: '36px',
-                fontSize: '16px',
-                textAlign: 'center',
-                lineHeight: '16px',
-                fontVariant:'small-caps',
-                paddingTop: '8px'
-            }} onClick={() => {
-                setScrollValue(1150 + 110 * 150)
-                setStatus(1)
-                setTimeout(() => {
-                    setStatus(2)
-                    setSizeValue(150)
-                }, 7000)
-            }}>крутить
-            </div>
+            {buttonElement}
         </div>
-    )
-        ;
+    );
 };
 
 export default Roulette;

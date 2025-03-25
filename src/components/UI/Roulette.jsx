@@ -1,6 +1,7 @@
-import {useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import '../styles/cube.css';
 import {useNavigate} from "react-router-dom";
+import {useTelegram} from "../../hooks/useTelegram";
 
 let gameArray = []
 let gameVin = -1
@@ -12,6 +13,7 @@ const Roulette = () => {
     const [sizeValue, setSizeValue] = useState(100);
 
     const ref = useRef();
+    const {tg} = useTelegram();
 
     const navigate = useNavigate()
 
@@ -26,6 +28,17 @@ const Roulette = () => {
     function getRandomInt(max) {
         return Math.floor(Math.random() * max);
     }
+
+    let onBack = useCallback(async () => {
+        navigate('/basket0');
+    }, [])
+
+    useEffect(() => {
+        tg.onEvent('backButtonClicked', onBack)
+        return () => {
+            tg.offEvent('backButtonClicked', onBack)
+        }
+    }, [onBack])
 
 
     if (gameArray.length === 0) {
@@ -188,7 +201,7 @@ const Roulette = () => {
                     transitionProperty: 'margin-top',
                     position: 'absolute',
                     zIndex: 200,
-                    marginLeft: String((window.innerWidth - 30) / 2 - 14) + 'px',
+                    marginLeft: String((window.innerWidth - 30) / 2 - 5) + 'px',
                     marginTop: String(-sizeValue / 2 + 50 - 10) + 'px',
                 }}/>
 
@@ -203,7 +216,7 @@ const Roulette = () => {
                     transitionProperty: 'margin-top',
                     position: 'absolute',
                     zIndex: 200,
-                    marginLeft: String((window.innerWidth - 30) / 2 - 14) + 'px',
+                    marginLeft: String((window.innerWidth - 30) / 2 - 5) + 'px',
                     marginTop: String(100 + (sizeValue - 100) / 2 - 10) + 'px',
                 }}/>
                 <div style={{overflow: 'hidden', width: String(window.innerWidth - 30) + 'px'}}>

@@ -183,7 +183,7 @@ const Basket = ({height, number, updateOrders}) => {
     }, [])
 
     let onBack = useCallback(async () => {
-        navigate(-1);
+        navigate('/home'+number);
     }, [])
 
     useEffect(() => {
@@ -843,7 +843,7 @@ const Basket = ({height, number, updateOrders}) => {
     if (status === 0) {
         onGetData()
         return (<div className={'plup-loader'} style={{
-            marginTop: String(window.innerHeight / 2 - 50) + 'px',
+            marginTop: String(height / 2 - 50) + 'px',
             marginLeft: String(window.innerWidth / 2 - 50) + 'px'
         }}></div>);
     } else if (status === 1) {

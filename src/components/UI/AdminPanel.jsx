@@ -97,9 +97,9 @@ const AdminPanel = () => {
             newCard.tab = inputCategory2
             newCard.tabCategoryPath = inputCategory3
             newCard.type = inputCategory1
-            if(inputCategory5 === 1){
+            if (inputCategory5 === 1) {
                 newCard.globalView = 'game'
-            }else{
+            } else {
                 newCard.globalView = 'other'
             }
             let lang = false
@@ -134,9 +134,9 @@ const AdminPanel = () => {
 
         lenArray = subarray.length
 
-        if(inputCategory4 === 1){
+        if (inputCategory4 === 1) {
             dataRequestDatabase.addToAll = true
-        }else{
+        } else {
             dataRequestDatabase.addToAll = false
         }
 
@@ -186,12 +186,12 @@ const AdminPanel = () => {
                     setStatus(2)
                 } else if (method === 'getOrderHistory') {
                     setDataOrderHistory(prom.allOrders)
-                } else if(method === 'add'){
-                    if(prom.answer){
+                } else if (method === 'add') {
+                    if (prom.answer) {
                         lenArray = lenArray - 1
                         console.log(lenArray)
                     }
-                    if(lenArray===0){
+                    if (lenArray === 0) {
                         await onReload()
                         setStatus(2)
                     }
@@ -369,6 +369,10 @@ const AdminPanel = () => {
                         setPageSelected(5)
                     }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>История заказов
                     </button>
+                    <button onClick={() => {
+                        setPageSelected(6)
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Кубик
+                    </button>
                     <button onClick={async () => {
                         await onReload()
                     }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Обновить
@@ -543,6 +547,10 @@ const AdminPanel = () => {
                         }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>История
                             заказов
                         </button>
+                        <button onClick={() => {
+                            setPageSelected(6)
+                        }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Кубик
+                        </button>
                         <button onClick={async () => {
                             await onReload()
                         }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Обновить
@@ -697,6 +705,10 @@ const AdminPanel = () => {
                             setPageSelected(5)
                         }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>История
                             заказов
+                        </button>
+                        <button onClick={() => {
+                            setPageSelected(6)
+                        }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Кубик
                         </button>
                         <button onClick={async () => {
                             await onReload()
@@ -1183,6 +1195,10 @@ const AdminPanel = () => {
                         setPageSelected(5)
                     }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>История заказов
                     </button>
+                    <button onClick={() => {
+                        setPageSelected(6)
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Кубик
+                    </button>
                     <button onClick={async () => {
                         await onReload()
                     }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Обновить
@@ -1655,6 +1671,10 @@ const AdminPanel = () => {
                         setPageSelected(5)
                     }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>История заказов
                     </button>
+                    <button onClick={() => {
+                        setPageSelected(6)
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Кубик
+                    </button>
                     <button onClick={async () => {
                         await onReload()
                     }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Обновить
@@ -1753,6 +1773,10 @@ const AdminPanel = () => {
                         border: '0px',
                         background: '#ef7474'
                     }}>История заказов
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(6)
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Кубик
                     </button>
                     <button onClick={async () => {
                         await onReload()
@@ -1905,6 +1929,53 @@ const AdminPanel = () => {
                     )
                 })}
             </div>)
+
+        }
+        if (pageSelected === 6) {
+            return (<div>
+                <div style={{borderBottom: '2px', color: 'white'}}>
+                    <button onClick={() => {
+                        setPageSelected(0)
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Загрузить новые
+                        данные
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(1)
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Редактировать
+                        данные
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(3)
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Редактировать
+                        структуру
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(4)
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Промокоды
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(5)
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>История заказов
+                    </button>
+                    <button onClick={() => {
+                        setPageSelected(6)
+                    }} style={{
+                        margin: '5px',
+                        borderRadius: '100px',
+                        padding: '5px',
+                        border: '0px',
+                        background: '#ef7474'
+                    }}>Кубик
+                    </button>
+                    <button onClick={async () => {
+                        await onReload()
+                    }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}>Обновить
+                    </button>
+                </div>
+                <div>
+
+                </div>
+            </div>)
         }
     } else if (status === 1) {
         sendRequestOnDatabase([], 'getDataAdmin')
@@ -1980,6 +2051,7 @@ class ExcelReader extends Component {
         const files = e.target.files;
         if (files && files[0]) this.setState({file: files[0]});
     };
+
 
     handleFile() {
         /* Boilerplate to set up FileReader */

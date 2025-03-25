@@ -71,6 +71,11 @@ const ProductItemBasket = ({setBasketF, product, number}) => {
     } else {
         endDate = 'Скидка ' + parcent + ' ' + item.body.endDate
     }
+
+    if (typeof item.body.releaseDate !== 'undefined') {
+        endDate = 'Релиз ' + item.body.releaseDate.replace('#', '')
+    }
+
     let parcentEl = (<div></div>)
     if(parcent !== ''){
         parcentEl = (<div style={{
@@ -96,11 +101,9 @@ const ProductItemBasket = ({setBasketF, product, number}) => {
     let type = 0
     if (typeof item.body.oldPrice === 'undefined') {
         if (typeof item.body.releaseDate === 'undefined') {
-            parcent = ''
             type = 0
         } else {
             parcent = item.body.releaseDate.replace('#', '')
-            parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
             type = 2
         }
     } else {

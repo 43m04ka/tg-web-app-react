@@ -297,7 +297,7 @@ function App() {
                     <Route path={'admin'} element={<AdminPanel/>}/>
                     <Route path={'info'} element={<Info/>}/>
                     <Route path={'history'} element={<History historyData={historyData}/>}/>
-                    <Route path={'roulette'} element={<Roulette/>}/>
+                    <Route path={'freegame'} element={<Roulette/>}/>
                     {historyData.map(order=>(
                         <Route path={'history/'+String(order.id)} key={order.id} element={<Order data={order}/>}/>
                     ))}

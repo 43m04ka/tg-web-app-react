@@ -287,7 +287,7 @@ const Info = () => {
                     </div>
                 </a>
                 <a style={{textDecoration: 'none'}}
-                   href={'https://vk.com/gameworld.playstation'}>
+                   href={'https://vk.com/gwstore.playstation'}>
                     <div style={{
                         marginLeft: '3px',
                         marginRight: '3px',
@@ -320,7 +320,7 @@ const Info = () => {
                     </div>
                 </a>
                 <a style={{textDecoration: 'none'}}
-                   href={'https://vk.com/gameworld.xbox'}>
+                   href={'https://vk.com/gwstore.xbox'}>
 
                     <div style={{
                         marginLeft: '3px',

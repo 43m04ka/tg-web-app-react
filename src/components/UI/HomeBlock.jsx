@@ -9,14 +9,14 @@ const HomeBlock = ({data}) => {
         if (data.backgroundColor !== 'none' && typeof data.backgroundColor !== 'undefined') {
             styleBlock = {background: data.backgroundColor, paddingTop: '10px', paddingLeft:'7px', paddingRight:'7px', paddingBottom:'10px'}
         } else {
-            styleBlock = {paddingTop: '0px', paddingLeft:'7px', paddingRight:'7px', paddingBottom:'10px', marginTop:'10px'}
+            styleBlock = {paddingTop: '5px', paddingLeft:'7px', paddingRight:'7px', paddingBottom:'10px', marginTop:'10px'}
         }
     }
     else {
         if (data.backgroundColor !== 'none') {
-            styleBlock = {background: data.backgroundColor, paddingBottom: '10px', paddingTop: '0px', marginTop:'0px', marginBottom:'10px'}
+            styleBlock = {background: data.backgroundColor, paddingBottom: '10px', paddingTop: '0px', marginTop:'0px', marginBottom:'20px'}
         } else {
-            styleBlock = {paddingBottom: '10px', paddingTop: '3px', marginTop:'0px'}
+            styleBlock = {paddingBottom: '0px', paddingTop: '3px', marginTop:'0px', marginBottom:'20px'};
         }
     }
     console.log(data);

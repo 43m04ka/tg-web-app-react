@@ -35,7 +35,7 @@ const Slider = ({data}) => {
         loop = true
     }
     return (
-        <div style={{width: String(window.innerWidth) + 'px', overflowX: 'hidden'}}>
+        <div style={{width: String(window.innerWidth) + 'px', overflowX: 'hidden', marginBottom:'20px'}}>
             <Swiper slidesPerView={3} className="swiper"
                     style={{width: String(window.innerWidth * 0.5 * 3 + 14) + 'px', marginLeft: '-'+String((window.innerWidth * 0.5 * 3 + 14 - window.innerWidth)/2)+'px'}}
                     spaceBetween={7}

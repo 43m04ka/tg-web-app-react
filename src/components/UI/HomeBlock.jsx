@@ -14,9 +14,9 @@ const HomeBlock = ({data}) => {
     }
     else {
         if (data.backgroundColor !== 'none') {
-            styleBlock = {background: data.backgroundColor, paddingBottom: '10px', paddingTop: '0px', marginTop:'0px', marginBottom:'20px'}
+            styleBlock = {background: data.backgroundColor, paddingBottom: '10px', paddingTop: '0px', marginTop:'0px', marginBottom:'30px'}
         } else {
-            styleBlock = {paddingBottom: '0px', paddingTop: '3px', marginTop:'0px', marginBottom:'20px'};
+            styleBlock = {paddingBottom: '0px', paddingTop: '3px', marginTop:'0px', marginBottom:'30px'};
         }
     }
     console.log(data);

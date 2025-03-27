@@ -259,7 +259,7 @@ const Basket = ({height, number, updateOrders}) => {
 
     let freeGameElement = (<></>)
 
-    if(freeGameStatus === 1){
+    if(freeGameStatus === 1 && false){
         freeGameElement= (
             <div style={{
             display: 'flex',

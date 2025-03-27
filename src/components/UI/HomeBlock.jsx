@@ -9,12 +9,12 @@ const HomeBlock = ({data}) => {
         if (data.backgroundColor !== 'none' && typeof data.backgroundColor !== 'undefined') {
             styleBlock = {background: data.backgroundColor, paddingTop: '10px', paddingLeft:'7px', paddingRight:'7px', paddingBottom:'10px'}
         } else {
-            styleBlock = {paddingTop: '0px', paddingLeft:'7px', paddingRight:'7px', paddingBottom:'10px'}
+            styleBlock = {paddingTop: '0px', paddingLeft:'7px', paddingRight:'7px', paddingBottom:'10px', marginTop:'10px'}
         }
     }
     else {
         if (data.backgroundColor !== 'none') {
-            styleBlock = {background: data.backgroundColor, paddingBottom: '10px', paddingTop: '15px', marginTop:'0px'}
+            styleBlock = {background: data.backgroundColor, paddingBottom: '10px', paddingTop: '0px', marginTop:'0px', marginBottom:'10px'}
         } else {
             styleBlock = {paddingBottom: '10px', paddingTop: '3px', marginTop:'0px'}
         }
@@ -22,9 +22,8 @@ const HomeBlock = ({data}) => {
     console.log(data);
     if (data.type !== 1) {
         return (
-            <div className={"homeBlock"}
-                 style={styleBlock}>
-                <div className={"title"} style={{marginBottom:'0px'}}>{data.name}</div>
+            <div style={styleBlock}>
+                <div className={"title"} style={{marginBottom:'0px', marginTop:'0px'}}>{data.name}</div>
                 <div className={"scroll-container"} style={{alignItems: 'center'}}>
                     <div style={{width: '10px'}}>
                         <div style={{width: '10px'}}/>

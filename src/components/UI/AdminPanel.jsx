@@ -32,6 +32,7 @@ const AdminPanel = () => {
     const [dataCategory, setDataCategory] = useState([]);
     const [dataPromo, setDataPromo] = useState([]);
     const [dataOrderHistory, setDataOrderHistory] = useState([]);
+    const [dataFreeGame, setDataFreeGame] = useState([]);
 
     const [page, setPage] = useState(0);
     const [selectedId, setSelectedId] = useState(-1);
@@ -134,11 +135,7 @@ const AdminPanel = () => {
 
         lenArray = subarray.length
 
-        if (inputCategory4 === 1) {
-            dataRequestDatabase.addToAll = true
-        } else {
-            dataRequestDatabase.addToAll = false
-        }
+        dataRequestDatabase.addToAll = inputCategory4 === 1;
 
         for (let i = 0; i < subarray.length; i++) {
             await sendRequestOnDatabase(subarray[i], 'add')
@@ -204,6 +201,44 @@ const AdminPanel = () => {
         dataRequestDatabase.method = operation
         dataRequestDatabase.data = inputData
         await sendRequestDatabase()
+    }
+
+    let dataRequestFreeGame = {
+        method: '',
+        userData: userData,
+        data: []
+    }
+
+    const sendRequestFreeGame = useCallback(async () => {
+        let method = dataRequestDatabase.method
+        await fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/freegame', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                method: '',
+                userData: userData,
+                data: []
+            })
+        }).then(r => {
+            let Promise = r.json()
+            Promise.then(async prom => {
+                console.log(prom, 'возвратил get')
+                if (method === 'set') {
+                    await sendRequestOnFreeGame({}, 'get')
+                }
+                if (method === 'get') {
+                    setDataFreeGame(prom.body)
+                }
+            })
+        })
+    }, [dataRequestFreeGame])
+
+    const sendRequestOnFreeGame = async (inputData, operation) => {
+        dataRequestFreeGame.method = operation
+        dataRequestFreeGame.data = inputData
+        await sendRequestFreeGame()
     }
 
     let dataRequestPromo = {
@@ -325,14 +360,18 @@ const AdminPanel = () => {
         await sendRequestOnDatabase([], 'getOrderHistory');
     }
 
-    const addPromo = () => {
-        sendRequestOnPromo({str: inputCategory1, count: inputCategory2, parcent: inputCategory3}, 'add')
+    const addPromo = async () => {
+        await sendRequestOnPromo({str: inputCategory1, count: inputCategory2, parcent: inputCategory3}, 'add')
     }
 
     const setButtonTablePromo = async (table) => {
         table.map(async promoData => {
             await sendRequestOnPromo({str: promoData.text, count: promoData.count, parcent: promoData.parcent}, 'add')
         })
+    }
+
+    const setButtonTableFreeGame = async (table) => {
+        await sendRequestOnFreeGame({data:table}, 'set')
     }
 
 
@@ -1973,7 +2012,9 @@ const AdminPanel = () => {
                     </button>
                 </div>
                 <div>
-
+                    <div style={{marginLeft: '5px'}}>
+                        <ExcelReader setButtonTable={setButtonTableFreeGame}/>
+                    </div>
                 </div>
             </div>)
         }
@@ -1981,6 +2022,7 @@ const AdminPanel = () => {
         sendRequestOnDatabase([], 'getDataAdmin')
         sendRequestOnPromo([], 'get')
         sendRequestOnDatabase([], 'getOrderHistory')
+        sendRequestOnFreeGame([], 'get')
         setStatus(10)
     } else if (status === 10) {
         return (

@@ -71,6 +71,9 @@ const Search = ({height, page, setData}) => {
             top: lastScroll,
             behavior: "instant",
         });
+        if (lastListRes.length === 0){
+            textRef.current.focus()
+        }
     }, [textRef, scrollRef])
 
     useEffect(() => {

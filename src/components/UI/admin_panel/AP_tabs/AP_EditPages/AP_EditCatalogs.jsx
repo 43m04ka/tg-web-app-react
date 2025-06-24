@@ -114,8 +114,6 @@ const ApEditCatalogs = ({page}) => {
                         propertyElement.push({argument: 'Изображение: ', value: category.url})
                         propertyElement.push({argument: 'Номер: ', value: category.serialNumber})
 
-
-
                         return (
                             <div style={{
                                 borderRadius: '10px',

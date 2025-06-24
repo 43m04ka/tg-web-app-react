@@ -10,14 +10,14 @@ import ErrorPage from "./components/UI/ErrorPage";
 import Search from "./components/UI/Search";
 import CardProduct from "./components/UI/CardProduct";
 import Basket from "./components/UI/Basket";
-import AdminPanel from "./components/UI/AdminPanel";
+import AdminPanel from "./components/UI/admin_panel/AdminPanel";
 import Info from "./components/UI/Info";
 import ProductListSelector from "./components/UI/ProductListSelector";
 import History from "./components/UI/History";
 import Order from "./components/UI/Order";
-import Cassa from "./components/UI/Cassa";
 import Favorites from "./components/UI/Favorites";
 import Roulette from "./components/UI/Roulette";
+import AP_Authentication from "./components/UI/admin_panel/AP_Authentication";
 
 let basketDataGlob = null
 
@@ -294,7 +294,8 @@ function App() {
                                element={<Search height={size} setData={setDataCardsDop} setStatusApp={setStatus}
                                                 page={platform.id}/>}/>
                     ))}
-                    <Route path={'admin'} element={<AdminPanel/>}/>
+                    <Route path={'admin-panel'} element={<AdminPanel/>}/>
+                    <Route path={'admin'} element={<AP_Authentication/>}/>
                     <Route path={'info'} element={<Info/>}/>
                     <Route path={'history'} element={<History historyData={historyData}/>}/>
                     <Route path={'freegame'} element={<Roulette/>}/>

@@ -1,10 +1,10 @@
 import React, {useRef, useState} from 'react';
-import '../styles/style.css';
-import ProductItem from "./ProductItem";
-import {useTelegram} from "../../hooks/useTelegram";
+import '../../../../styles/style.css';
+import ProductItem from "../../../ProductItem";
+import {useTelegram} from "../../../../../hooks/useTelegram";
 import {useCallback, useEffect} from "react";
 import {Link, useNavigate} from "react-router-dom";
-import Filter from "./Filter";
+import Filter from "../../../Filter";
 
 
 const getTotalPrice = (items = []) => {
@@ -16,7 +16,7 @@ const getTotalPrice = (items = []) => {
 let list = 1
 let lastPath = ''
 
-const AdminProductList = ({path}) => {
+const AP_CardList = ({path}) => {
     if(lastPath !== path){
         list = 1
         lastPath = path
@@ -578,7 +578,6 @@ const AdminProductList = ({path}) => {
     } else if (status === 0) {
         sendRequestOnDatabase({path: path, number: list}, 'getList')
         return (<div className={'plup-loader'} style={{
-            border: '2px solid #8cdb8b',
             marginTop: String(window.innerHeight / 2 - 120) + 'px',
             marginLeft: String(window.innerWidth / 2 - 40) + 'px'
         }}></div>)
@@ -586,4 +585,4 @@ const AdminProductList = ({path}) => {
 
 };
 
-export default AdminProductList;
+export default AP_CardList;

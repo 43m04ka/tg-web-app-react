@@ -11,6 +11,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^6.28.0",
     "react-scripts": "^5.0.1",
+    "react-slick": "^0.30.3",
     "redux": "^5.0.1",
     "redux-observable": "^3.0.0-rc.2",
     "reselect": "^5.1.1",

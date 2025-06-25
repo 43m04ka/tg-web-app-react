@@ -1,30 +1,38 @@
 import React, {useEffect, useState} from 'react';
 import {Link, useNavigate} from "react-router-dom";
-import basket from "../icons/basket.png";
-import {Swiper, SwiperSlide} from "swiper/react";
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 
-
-import {Autoplay, Pagination, Controller, EffectCoverflow} from 'swiper/modules';
-
+import Slider from "react-slick";
 
 let isScroll = false
 let realIndex = 0
 let isPage = false
 
-const HeadSelector = ({hidden, basketData, page}) => {
+const HeadSelector = ({hidden, page}) => {
+    let basketData = []
+
     const navigate = useNavigate();
 
     const [basketLen, setBasketLen] = useState(0);
     const [colorSlider, setColorSlider] = useState('linear-gradient(90deg, rgba(198,65,56,1) 0%, rgba(64,74,223,1) 40%, rgba(64,74,223,1) 60%, rgba(69,217,110,1) 100%)');
     const [swiperRef, setSwiperRef] = useState(null);
 
-
+    let settings = {
+        style:{height:'40px'},
+        swipeToSlide: true,
+        infinite: true,
+        speed: 300,
+        slidesToShow: 3,
+        slidesToScroll: 0,
+        centerMode: true,
+        button:false
+    };
 
     let newArray = []
+
     basketData.map(el => {
         if (Number(el.body.tab) === page && el.body.isSale === true) {
             newArray = [...newArray, el]
@@ -54,7 +62,7 @@ const HeadSelector = ({hidden, basketData, page}) => {
             marginTop: '22px'
         }}>{basketLen}</div>)
     }
-    useEffect(()=>{
+    useEffect(() => {
         onIndexChange(page)
     }, [page])
 
@@ -125,203 +133,18 @@ const HeadSelector = ({hidden, basketData, page}) => {
                 marginTop: '5px',
                 justifyItems: 'center',
                 background: colorSlider,
-                marginBottom:'2px'
+                marginBottom: '2px'
             }}>
-                <Swiper watchSlidesProgress={true} slidesPerView={3} className="swiper"
-                        style={{
-                            width: String(window.innerWidth - 14) + 'px',
-                            alignContent: 'center'
-                        }}
-                        initialSlide={page}
-                        centeredSlides={true}
-                        onActiveIndexChange={(ev) => {
-                            realIndex = ev.realIndex;
-                            if (!isScroll) {
-                                onIndexChange(ev.realIndex)
-                            }
-                        }}
-                        onTouchEnd={() => {
-                            onIndexChange(realIndex);
-                            isScroll = false
-                        }}
-                        onTouchStart={() => {
-                            isScroll = true
-                        }}
-                        effect={'coverflow'}
-                        onSwiper={setSwiperRef}
-                        coverflowEffect={{
-                            rotate: 0,
-                            stretch: 0,
-                            depth: 0,
-                            modifier: 1,
-                            slideShadows: false,
-                            scale: 0.7
-                        }}
-                        loop={true}
-                        modules={[Autoplay, Pagination, Controller, EffectCoverflow]}
-                        onClick={(ev) => {
-                            if (ev.touches.currentX > (window.innerWidth - 14) / 3 * 2) {
-                                let nI = realIndex + 1
-
-                                if (nI === 6) {
-                                    swiperRef.slideToLoop(0, 300, false);
-                                    realIndex = 0
-                                } else {
-                                    swiperRef.slideToLoop(realIndex + 1, 300, false);
-                                    realIndex += 1
-                                }
-                            }
-                            if (ev.touches.currentX < (window.innerWidth - 14) / 3) {
-                                let nI = realIndex - 1
-                                if (nI === -1) {
-                                    swiperRef.slideToLoop(5, 300, false);
-                                    realIndex = 5
-                                } else {
-                                    swiperRef.slideToLoop(realIndex - 1, 300, false);
-                                    realIndex -= 1
-                                }
-                            }
-                        }}
-                >
-                    <SwiperSlide virtualIndex={0} style={{
-                        background: 'none',
-                        width: String((window.innerWidth - 14) / 3) + 'px',
-                        padding: '0',
-                        alignContent: 'center',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        justifyItems: 'center',
-                        display: 'flex',
-                        flexDirection: 'row',
-                    }}>
-                            <div className={'background-psSel'} style={{height: '20px', width: '20px'}}/>
-                            <div style={{
-                                textDecoration: 'none',
-                                fontFamily: "'Montserrat', sans-serif",
-                                fontWeight: '700',
-                                color: 'white',
-                                fontSize: '12px',
-                                marginTop: '0',
-                                marginLeft:'5px'
-                            }}>PLAYSTATION
+                <div style={{border:'2px solid red', height: '40px', width: String(window.innerWidth-14) + 'px'}}>
+                    <Slider {...settings}>
+                        <div className={'selector-text'}>PLAYSTATION
                         </div>
-                    </SwiperSlide>
-                    <SwiperSlide virtualIndex={1} style={{
-                        background: 'none',
-                        width: String((window.innerWidth - 14) / 3) + 'px',
-                        padding: '0',
-                        alignContent: 'center',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        justifyItems: 'center',
-                        display: 'flex',
-                        flexDirection: 'row',
-                    }}>
-                        <div className={'background-xbSel'} style={{height: '20px', width: '20px'}}/>
-                        <div style={{
-                            textDecoration: 'none',
-                            fontFamily: "'Montserrat', sans-serif",
-                            fontWeight: '700',
-                            color: 'white',
-                            fontSize: '12px',
-                            marginTop: '0',
-                            marginLeft:'5px'
-                        }}>XBOX
+                        <div className={'selector-text'}>XBOX
                         </div>
-                    </SwiperSlide>
-                    <SwiperSlide virtualIndex={2} style={{
-                        background: 'none',
-                        width: String((window.innerWidth - 14) / 3) + 'px',
-                        padding: '0',
-                        alignContent: 'center',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        justifyItems: 'center',
-                        display: 'flex',
-                        flexDirection: 'row',
-                    }}>
-                        <div className={'background-serSel'} style={{height: '20px', width: '20px'}}/>
-                        <div style={{
-                            textDecoration: 'none',
-                            fontFamily: "'Montserrat', sans-serif",
-                            fontWeight: '700',
-                            color: 'white',
-                            fontSize: '12px',
-                            marginTop: '0',
-                            marginLeft:'5px'
-                        }}>СЕРВИСЫ
+                        <div className={'selector-text'}>СЕРВИСЫ
                         </div>
-                    </SwiperSlide>
-                    <SwiperSlide virtualIndex={3} style={{
-                        background: 'none',
-                        width: String((window.innerWidth - 14) / 3) + 'px',
-                        padding: '0',
-                        alignContent: 'center',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        justifyItems: 'center',
-                        display: 'flex',
-                        flexDirection: 'row',
-                    }}>
-                        <div className={'background-psSel'} style={{height: '20px', width: '20px'}}/>
-                        <div style={{
-                            textDecoration: 'none',
-                            fontFamily: "'Montserrat', sans-serif",
-                            fontWeight: '700',
-                            color: 'white',
-                            fontSize: '12px',
-                            marginTop: '0',
-                            marginLeft:'5px'
-                        }}>PLAYSTATION
-                        </div>
-                    </SwiperSlide>
-                    <SwiperSlide virtualIndex={4} style={{
-                        background: 'none',
-                        width: String((window.innerWidth - 14) / 3) + 'px',
-                        padding: '0',
-                        alignContent: 'center',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        justifyItems: 'center',
-                        display: 'flex',
-                        flexDirection: 'row',
-                    }}>
-                        <div className={'background-xbSel'} style={{height: '20px', width: '20px'}}/>
-                        <div style={{
-                            textDecoration: 'none',
-                            fontFamily: "'Montserrat', sans-serif",
-                            fontWeight: '700',
-                            color: 'white',
-                            fontSize: '12px',
-                            marginTop: '0',
-                            marginLeft:'5px'
-                        }}>XBOX
-                        </div>
-                    </SwiperSlide>
-                    <SwiperSlide virtualIndex={5} style={{
-                        background: 'none',
-                        width: String((window.innerWidth - 14) / 3) + 'px',
-                        padding: '0',
-                        alignContent: 'center',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        justifyItems: 'center',
-                        display: 'flex',
-                        flexDirection: 'row',
-                    }}>
-                        <div className={'background-serSel'} style={{height: '20px', width: '20px'}}/>
-                        <div style={{
-                            textDecoration: 'none',
-                            fontFamily: "'Montserrat', sans-serif",
-                            fontWeight: '700',
-                            color: 'white',
-                            fontSize: '12px',
-                            marginTop: '0',
-                            marginLeft:'5px'
-                        }}>СЕРВИСЫ
-                        </div>
-                    </SwiperSlide>
-                </Swiper>
+                    </Slider>
+                </div>
             </div>
         </div>
     );
@@ -345,3 +168,25 @@ export default HeadSelector;
 //         }}>playstation</div>
 //     </div>
 // </SwiperSlide>
+
+// if (ev.touches.currentX > (window.innerWidth - 14) / 3 * 2) {
+//     let nI = realIndex + 1
+//
+//     if (nI === 6) {
+//         swiperRef.slideToLoop(0, 300, false);
+//         realIndex = 0
+//     } else {
+//         swiperRef.slideToLoop(realIndex + 1, 300, false);
+//         realIndex += 1
+//     }
+// }
+// if (ev.touches.currentX < (window.innerWidth - 14) / 3) {
+//     let nI = realIndex - 1
+//     if (nI === -1) {
+//         swiperRef.slideToLoop(5, 300, false);
+//         realIndex = 5
+//     } else {
+//         swiperRef.slideToLoop(realIndex - 1, 300, false);
+//         realIndex -= 1
+//     }
+// }

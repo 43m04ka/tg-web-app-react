@@ -13,8 +13,8 @@ import {Autoplay, Pagination, Controller, EffectCoverflow} from 'swiper/modules'
 import {Link, useNavigate} from "react-router-dom";
 
 let realIndex = 0
-const Slider = ({data}) => {
-
+const Slider = ({}) => {
+    let data = []
     const [number, setNumber] = useState(0);
     const navigate = useNavigate();
 

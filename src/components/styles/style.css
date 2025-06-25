@@ -83,6 +83,18 @@ body {
     word-break: break-word;
 }
 
+.selector-text{
+    text-decoration: none;
+    text-align: center;
+    height:40px;
+    font-family: 'Montserrat', sans-serif;
+    font-variant: normal;
+    font-weight: 700;
+    color: white;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
 .price-element {
     margin-top: 5px;
     font-weight: bold;

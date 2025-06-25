@@ -78,7 +78,7 @@ const HeadSelector = ({hidden, pageList}) => {
             navigate('/' + [...pageList, ...pageList][index]["link"])
         }
 
-        setColorSlider('linear-gradient(90deg, '+pageList[(index+2)%pageList.length].color+' 0%, '+pageList[(index+3)%pageList.length].color+' 50%, '+pageList[(index+4)%pageList.length].color+' 100%)');
+        setColorSlider('linear-gradient(90deg, '+pageList[(index+pageList.length-1)%pageList.length].color+' 0%, '+pageList[(index+pageList.length)%pageList.length].color+' 50%, '+pageList[(index+pageList.length+1)%pageList.length].color+' 100%)');
     }
 
     return (

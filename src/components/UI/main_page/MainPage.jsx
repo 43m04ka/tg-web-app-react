@@ -78,7 +78,7 @@ const MainPage = ({pageList}) => {
                     <SliderPic pageId = {pageId}/>
                 </div>
                 <div style={{marginBottom: '15px'}}>
-                    <MP_Catalogs/>
+                    <MP_Catalogs pageId = {pageId}/>
                 </div>
             </div>
         </div>

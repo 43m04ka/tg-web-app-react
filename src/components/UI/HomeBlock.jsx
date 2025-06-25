@@ -19,8 +19,8 @@ const HomeBlock = ({data}) => {
             styleBlock = {paddingBottom: '0px', paddingTop: '3px', marginTop:'0px', marginBottom:'30px'};
         }
     }
-    console.log(data);
-    if (data.type !== 1) {
+
+    if (!data.type.includes('banner')) {
         return (
             <div style={styleBlock}>
                 <div className={"title"} style={{marginBottom:'0px', marginTop:'0px'}}>{data.name}</div>
@@ -55,7 +55,7 @@ const HomeBlock = ({data}) => {
                 </Link>
             </div>
         );
-    } else if (data.type === 1) {
+    } else if (data.type.includes('banner')) {
         return(
             <div className={"homeBlock"}
                  style={styleBlock}>

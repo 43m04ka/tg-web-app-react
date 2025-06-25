@@ -1,16 +1,14 @@
-import React, {useEffect, useRef, useState} from 'react';
-// Import Swiper React components
+import React, {useEffect, useState} from 'react';
+
 import {Swiper, SwiperSlide} from 'swiper/react';
 
-// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 
-// import required modules
 import {Autoplay, Pagination, Controller, EffectCoverflow} from 'swiper/modules';
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useServer} from "../../hooks/useServer";
 
 let realIndex = 0

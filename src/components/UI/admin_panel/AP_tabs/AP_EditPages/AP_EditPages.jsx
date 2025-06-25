@@ -5,11 +5,14 @@ import AP_EditCatalogs from "./AP_EditCatalogs";
 const ApEditStructure = () => {
 
     const [pageList, setPageList] = useState(0)
+    console.log(pageList)
     const [pageId, setPageId] = useState(0)
 
     const inputNameCreatePage = useRef()
     const inputLinkCreatePage = useRef()
     const inputNumberCreatePage = useRef()
+    const inputUrlCreatePage = useRef()
+    const inputColorCreatePage = useRef()
 
     const {getPages, deletePage, createPage} = useServer()
 
@@ -22,60 +25,70 @@ const ApEditStructure = () => {
     } else {
         return (
             <div>
-                <div style={{display:'flex', flexDirection:'row'}}>
-                    {pageList.map((page) => {
-                        let elementStyle = {
-                            margin: '5px',
-                            borderRadius: '100px',
-                            padding: '5px',
-                            border: '0px',
-                        }
-
-                        if (page.id === pageId) {
-                            elementStyle.background = '#ef7474'
-                        }
-
-                        return (<div style={{
-                            borderRadius: '10px',
-                            background: '#232323',
-                            marginTop: '7px',
-                            marginLeft: '5px',
-                            marginRight: '5px',
-                            padding: '5px',
-                            width: 'max-content'
-                        }}>
-                            <div className={'text-element'} style={{height:'37px', alignContent:'center', fontSize:'14px'}}>
-                                Имя: {page.name}
-                            </div>
-                            <div className={'text-element'} style={{height:'37px', alignContent:'center', fontSize:'14px'}}>
-                                Ссылка: {page.link}
-                            </div>
-                            <div className={'text-element'} style={{height:'37px', alignContent:'center', fontSize:'14px'}}>
-                                Номер: {page.serialNumber}
-                            </div>
-
-                            <button onClick={async () => {
-                                await setPageId(page.id)
-                            }} style={elementStyle}>Редактировать
-                            </button>
-
-                            <button onClick={async () => {
-                                const result = confirm("Точно хотите удалить?");
-                                console.log(name)
-                                if (result === true) {
-                                    await deletePage(page.id)
-                                    await getPages(setPageList)
-                                }
-                            }} style={{
+                <div>
+                    <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr'}}>
+                        {pageList.map((page) => {
+                            let elementStyle = {
                                 margin: '5px',
                                 borderRadius: '100px',
                                 padding: '5px',
                                 border: '0px',
-                            }}>Удалить
-                            </button>
-                        </div>)
+                            }
 
-                    })}
+                            if (page.id === pageId) {
+                                elementStyle.background = '#ef7474'
+                            }
+
+                            return (<div style={{
+                                borderRadius: '10px',
+                                background: '#232323',
+                                margin: '5px',
+                                width: '99%',
+                            }}>
+                                <div className={'text-element'}
+                                     style={{height: '37px', alignContent: 'center', fontSize: '14px'}}>
+                                    Имя: {page.name}
+                                </div>
+                                <div className={'text-element'}
+                                     style={{height: '37px', alignContent: 'center', fontSize: '14px'}}>
+                                    Ссылка: {page.link}
+                                </div>
+                                <div className={'text-element'}
+                                     style={{height: '37px', alignContent: 'center', fontSize: '14px'}}>
+                                    Цвет: {page.color}
+                                </div>
+                                <div className={'text-element'}
+                                     style={{height: '37px', alignContent: 'center', fontSize: '14px'}}>
+                                    Изображение: {page.url}
+                                </div>
+                                <div className={'text-element'}
+                                     style={{height: '37px', alignContent: 'center', fontSize: '14px'}}>
+                                    Номер: {page.serialNumber}
+                                </div>
+
+                                <button onClick={async () => {
+                                    await setPageId(page.id)
+                                }} style={elementStyle}>Редактировать каталоги
+                                </button>
+
+                                <button onClick={async () => {
+                                    const result = confirm("Точно хотите удалить?");
+                                    console.log(name)
+                                    if (result === true) {
+                                        await deletePage(page.id)
+                                        await getPages(setPageList)
+                                    }
+                                }} style={{
+                                    margin: '5px',
+                                    borderRadius: '100px',
+                                    padding: '5px',
+                                    border: '0px',
+                                }}>Удалить
+                                </button>
+                            </div>)
+
+                        })}
+                    </div>
                     <div style={{
                         borderRadius: '10px',
                         background: '#232323',
@@ -83,7 +96,7 @@ const ApEditStructure = () => {
                         marginLeft: '5px',
                         marginRight: '5px',
                         padding: '5px',
-                        width: 'max-content',
+                        width: String(window.innerWidth - 10) + 'px',
                         display: 'flex',
                         flexDirection: 'column',
                     }}>
@@ -92,19 +105,32 @@ const ApEditStructure = () => {
                         <input style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}
                                ref={inputLinkCreatePage} placeholder={'Ссылка'}/>
                         <input style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}
+                               ref={inputColorCreatePage} placeholder={'Цвет'}/>
+                        <input style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}
+                               ref={inputUrlCreatePage} placeholder={'Изображение'}/>
+                        <input style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}
                                ref={inputNumberCreatePage} placeholder={'Номер'}/>
 
                         <button onClick={async () => {
-                            await createPage(inputNameCreatePage.current.value, inputLinkCreatePage.current.value, Number(inputNumberCreatePage.current.value))
+                            await createPage({
+                                name: inputNameCreatePage.current.value,
+                                link: inputLinkCreatePage.current.value,
+                                serialNumber: Number(inputNumberCreatePage.current.value),
+                                color: inputColorCreatePage.current.value,
+                                url: inputUrlCreatePage.current.value
+                            })
                             inputNameCreatePage.current.value = ''
                             inputLinkCreatePage.current.value = ''
                             inputNumberCreatePage.current.value = ''
+                            inputUrlCreatePage.current.value = ''
+                            inputColorCreatePage.current.value = ''
                             await getPages(setPageList)
                         }} style={{
                             margin: '5px',
                             borderRadius: '100px',
                             padding: '5px',
                             border: '0px',
+                            width: 'max-content'
                         }}>Создать
                         </button>
                     </div>

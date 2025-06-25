@@ -146,13 +146,13 @@ export function useServer() {
         })
     }
 
-    const createPage = async (name, link, serialNumber) => {
+    const createPage = async (data) => {
         await fetch(URL + '/createPage', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({name: name, link: link, serialNumber: serialNumber})
+            body: JSON.stringify(data)
         })
     };
 

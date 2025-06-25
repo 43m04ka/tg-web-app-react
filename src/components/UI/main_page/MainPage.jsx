@@ -10,11 +10,18 @@ let scrollCtrl = 0;
 let lastScroll = 0;
 
 const MainPage = ({pageList}) => {
+
     const {tg, user} = useTelegram();
     const [size, setSize] = React.useState(window.innerHeight);
     const [hiddenSelector, setHiddenSelector] = useState(false);
     const scrollContainer = useRef();
 
+    let pageId = -1
+    pageList.map((item, index) => {
+        if('/'+item.link===window.location.pathname){
+            pageId = pageList[index].id
+        }
+    })
 
     const resizeHandler = () => {
         setSize(window.innerHeight);
@@ -68,7 +75,7 @@ const MainPage = ({pageList}) => {
                     <div style={{height: '300px', overflow: 'hidden'}}></div>
                 </div>
                 <div style={{width: String(window.innerWidth) + 'px'}}>
-                    <SliderPic/>
+                    <SliderPic pageId = {pageId}/>
                 </div>
                 <div style={{marginBottom: '15px'}}>
                     <MP_Catalogs/>

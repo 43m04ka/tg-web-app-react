@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 // Import Swiper React components
 import {Swiper, SwiperSlide} from 'swiper/react';
 
@@ -11,10 +11,13 @@ import 'swiper/css/autoplay';
 // import required modules
 import {Autoplay, Pagination, Controller, EffectCoverflow} from 'swiper/modules';
 import {Link, useNavigate} from "react-router-dom";
+import {useServer} from "../../hooks/useServer";
 
 let realIndex = 0
-const Slider = ({}) => {
-    let data = []
+const Slider = ({pageId}) => {
+    const {getCatalogs} = useServer()
+    const [data, setData] = useState([]);
+    console.log(data)
     const [number, setNumber] = useState(0);
     const navigate = useNavigate();
 
@@ -34,6 +37,12 @@ const Slider = ({}) => {
     if (data.length > 3) {
         loop = true
     }
+
+    useEffect(() => {
+        getCatalogs(pageId, 'head', setData)
+    }, []);
+
+    if(data.length > 0){
     return (
         <div style={{width: String(window.innerWidth) + 'px', overflowX: 'hidden', marginBottom:'20px'}}>
             <Swiper slidesPerView={3} className="swiper"
@@ -99,7 +108,16 @@ const Slider = ({}) => {
                 })}
             </Swiper>
         </div>
-    );
+    );}
+    else{
+        return(
+            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                <div style={{width:String(window.innerWidth/4-10) + 'px', height:String(window.innerWidth*2/3-50) + 'px', background:'#373737', borderRadius:'0 10px 10px 0'}}/>
+                <div style={{width:String(window.innerWidth/2-10) + 'px', height:String(window.innerWidth*2/3) + 'px', background:'#373737', borderRadius:'10px'}}/>
+                <div style={{width:String(window.innerWidth/4-10) + 'px', height:String(window.innerWidth*2/3-50) + 'px', background:'#373737', borderRadius:'10px 0 0 10px'}}/>
+            </div>
+        )
+    }
 };
 
 export default Slider;

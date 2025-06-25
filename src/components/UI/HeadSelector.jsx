@@ -21,14 +21,15 @@ const HeadSelector = ({hidden, page}) => {
     const [swiperRef, setSwiperRef] = useState(null);
 
     let settings = {
-        style:{height:'40px'},
+        style:{height:'40px', padding:'0px -50px'},
         swipeToSlide: true,
         infinite: true,
         speed: 300,
         slidesToShow: 3,
         slidesToScroll: 0,
         centerMode: true,
-        button:false
+        button:false,
+        arrows:false
     };
 
     let newArray = []

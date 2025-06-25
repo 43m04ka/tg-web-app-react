@@ -27,7 +27,7 @@ const HeadSelector = ({hidden, pageList}) => {
     const navigate = useNavigate();
 
     const [basketLen, setBasketLen] = useState(0);
-    const [colorSlider, setColorSlider] = useState('linear-gradient(90deg, rgba(198,65,56,1) 0%, #404ADF 50%,  rgba(69,217,110,1) 100%)');
+    const [colorSlider, setColorSlider] = useState('');
     const [swiperRef, setSwiperRef] = useState(null);
 
 
@@ -68,7 +68,7 @@ const HeadSelector = ({hidden, pageList}) => {
     const onIndexChange = (index) => {
         let flag = false
 
-        pageList.map((item, index) => {
+        pageList.map((item) => {
             if('/'+item.link===window.location.pathname){
                 flag = true
             }
@@ -78,7 +78,7 @@ const HeadSelector = ({hidden, pageList}) => {
             navigate('/' + [...pageList, ...pageList][index]["link"])
         }
 
-        setColorSlider('linear-gradient(90deg, '+pageList[(index+pageList.length-1)%pageList.length].color+' 0%, '+pageList[(index+pageList.length)%pageList.length].color+' 50%, '+pageList[(index+pageList.length+1)%pageList.length].color+' 100%)');
+        setColorSlider('linear-gradient(90deg, '+pageList[(index+pageList.length-1)%pageList.length].color+' 10%, '+pageList[(index+pageList.length)%pageList.length].color+' 50%, '+pageList[(index+pageList.length+1)%pageList.length].color+' 90%)');
     }
 
     return (
@@ -169,7 +169,7 @@ const HeadSelector = ({hidden, pageList}) => {
                             if (ev.touches.currentX > (window.innerWidth - 14) / 3 * 2) {
                                 let nI = realIndex + 1
 
-                                if (nI === 6) {
+                                if (nI === pageList.length*2) {
                                     swiperRef.slideToLoop(0, 300, false);
                                     realIndex = 0
                                 } else {
@@ -180,8 +180,8 @@ const HeadSelector = ({hidden, pageList}) => {
                             if (ev.touches.currentX < (window.innerWidth - 14) / 3) {
                                 let nI = realIndex - 1
                                 if (nI === -1) {
-                                    swiperRef.slideToLoop(5, 300, false);
-                                    realIndex = 5
+                                    swiperRef.slideToLoop(pageList.length*2-1, 300, false);
+                                    realIndex = pageList.length*2-1
                                 } else {
                                     swiperRef.slideToLoop(realIndex - 1, 300, false);
                                     realIndex -= 1

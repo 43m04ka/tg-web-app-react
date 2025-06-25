@@ -14,10 +14,16 @@ import {Link, useNavigate} from "react-router-dom";
 import {useServer} from "../../hooks/useServer";
 
 let realIndex = 0
+let lastPageID = -1
 const Slider = ({pageId}) => {
     const {getCatalogs} = useServer()
     const [data, setData] = useState([]);
-    console.log(data)
+
+    if(lastPageID !== pageId){
+        lastPageID = pageId;
+        getCatalogs(pageId, 'head', setData).then()
+    }
+
     const [number, setNumber] = useState(0);
     const navigate = useNavigate();
 
@@ -112,9 +118,9 @@ const Slider = ({pageId}) => {
     else{
         return(
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-                <div style={{width:String(window.innerWidth/4-10) + 'px', height:String(window.innerWidth*2/3-50) + 'px', background:'#373737', borderRadius:'0 10px 10px 0'}}/>
-                <div style={{width:String(window.innerWidth/2-10) + 'px', height:String(window.innerWidth*2/3) + 'px', background:'#373737', borderRadius:'10px'}}/>
-                <div style={{width:String(window.innerWidth/4-10) + 'px', height:String(window.innerWidth*2/3-50) + 'px', background:'#373737', borderRadius:'10px 0 0 10px'}}/>
+                <div style={{width:String(window.innerWidth/4-10) + 'px', height:String(window.innerWidth*2/3) + 'px', background:'#373737', borderRadius:'0 10px 10px 0'}}/>
+                <div style={{width:String(window.innerWidth/2-10) + 'px', height:String(window.innerWidth*2/3+65) + 'px', background:'#373737', borderRadius:'10px'}}/>
+                <div style={{width:String(window.innerWidth/4-10) + 'px', height:String(window.innerWidth*2/3) + 'px', background:'#373737', borderRadius:'10px 0 0 10px'}}/>
             </div>
         )
     }

@@ -7,24 +7,25 @@ const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
 
 let lastPageID = -1
 const MpCatalogs = ({pageId}) => {
+    console.log(lastPageID)
     const {getCatalogs} = useServer()
     const [data, setData] = useState([]);
     const [cardList, setCardList] = useState([]);
 
     useEffect(() => {
-        getCatalogs(pageId, 'body', setData)
-        fetch(URL + '/getPreviewCards', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({})
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setCardList(data.result)
+            getCatalogs(pageId, 'body', setData)
+            fetch(URL + '/getPreviewCards', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({})
+            }).then(async response => {
+                let answer = response.json()
+                answer.then((data) => {
+                    setCardList(data.result)
+                })
             })
-        })
     }, [])
 
     if (lastPageID !== pageId) {

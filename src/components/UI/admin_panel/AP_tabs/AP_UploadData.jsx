@@ -1,4 +1,4 @@
-import React, {Component, useState} from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import * as XLSX from "xlsx";
 import {useServer} from "../../../../hooks/useServer";
 
@@ -21,10 +21,13 @@ const ApUploadData = () => {
     const [addToAll, setAddToAll] = useState(0)
     const [onLoad, setOnLoad] = useState(false)
     const [left, setLeft] = useState(0)
+    const [pageList, setPageList] = useState([])
 
+    const {uploadCards, getPages} = useServer();
 
-
-    const {uploadCards} = useServer();
+    useEffect(() => {
+        getPages(setPageList).then()
+    }, [])
 
     const setButtonTableClassic = async (table) => {
 
@@ -90,27 +93,27 @@ const ApUploadData = () => {
             }}>
                 <div className={'text-element'}
                      style={{display: 'flex', flexDirection: 'row', marginLeft: '0px'}}>
-                    {[{id: 0, page: 'playstation'}, {id: 1, page: 'xbox'}, {id: 2, page: 'сервисы'}].map(tab => {
-                        if (tab.id === tabId) {
+                    {pageList.map((tab, index) => {
+                        if (index === tabId) {
                             return (<button onClick={() => {
-                                setTabId(tab.id)
+                                setTabId(index)
                             }} style={{
                                 margin: '5px',
                                 borderRadius: '100px',
                                 padding: '5px',
                                 border: '0px',
                                 background: '#ef7474'
-                            }}>{tab.page}
+                            }}>{tab.name}
                             </button>)
                         } else {
                             return (<button onClick={() => {
-                                setTabId(tab.id)
+                                setTabId(index)
                             }} style={{
                                 margin: '5px',
                                 borderRadius: '100px',
                                 padding: '5px',
                                 border: '0px',
-                            }}>{tab.page}
+                            }}>{tab.name}
                             </button>)
                         }
                     })}

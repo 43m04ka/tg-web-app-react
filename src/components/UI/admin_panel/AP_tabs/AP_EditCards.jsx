@@ -1,42 +1,47 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useServer} from "../../../../hooks/useServer";
 
 const ApEditCards = () => {
 
-    const {getSearch, deleteCards, changeStatusCards, editCardPrice} = useServer()
+    const {getSearch, deleteCards, changeStatusCards, editCardPrice, getPages} = useServer()
 
     const [tabId, setTabId] = useState(0)
     const [cardList, setCardList] = useState([])
     const [selectCardId, setSelectCardId] = useState(-1)
+    const [pageList, setPageList] = useState([])
 
     const searchInput = useRef();
+
+    useEffect(() => {
+        getPages(setPageList).then()
+    }, [])
 
 
     return (
         <div>
             <div>
                    <div style={{display: 'flex', flexDirection: 'row', padding: '10px'}}>
-                       {[{id: 0, page: 'playstation'}, {id: 1, page: 'xbox'}, {id: 2, page: 'сервисы'}].map(tab => {
-                            if (tab.id === tabId) {
+                       {pageList.map((tab, index) => {
+                            if (index === tabId) {
                                 return (<button onClick={() => {
-                                    setTabId(tab.id)
+                                    setTabId(index)
                                 }} style={{
                                     margin: '5px',
                                     borderRadius: '100px',
                                     padding: '5px',
                                     border: '0px',
                                     background: '#ef7474'
-                                }}>{tab.page}
+                                }}>{tab.name}
                                 </button>)
                             } else {
                                 return (<button onClick={() => {
-                                    setTabId(tab.id)
+                                    setTabId(index)
                                 }} style={{
                                     margin: '5px',
                                     borderRadius: '100px',
                                     padding: '5px',
                                     border: '0px',
-                                }}>{tab.page}
+                                }}>{tab.name}
                                 </button>)
                             }
                         })}

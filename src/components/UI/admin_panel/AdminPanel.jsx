@@ -2,7 +2,7 @@ import React, {Component, useCallback, useRef, useState} from 'react';
 import * as XLSX from "xlsx";
 import AP_NavigationPanel from "./AP_NavigationPanel";
 import AP_UploadData from "./AP_tabs/AP_UploadData";
-import AP_EditDirectories from "./AP_tabs/Ap_Catalogs/AP_Catalogs";
+import AP_EditDirectories from "./AP_tabs/AP_Catalogs/AP_Catalogs";
 import AP_EditCards from "./AP_tabs/AP_EditCards";
 import AP_EditPages from "./AP_tabs/AP_EditPages/AP_EditPages";
 

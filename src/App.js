@@ -20,9 +20,11 @@ import Roulette from "./components/UI/Roulette";
 import AP_Authentication from "./components/UI/admin_panel/AP_Authentication";
 import {useServer} from "./hooks/useServer";
 
+const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
+
 function App() {
     const {tg, user} = useTelegram();
-    const {getPages, getCatalogs} = useServer();
+    const {getPages} = useServer();
     const navigate = useNavigate();
 
     const [size, setSize] = React.useState(window.innerHeight);
@@ -222,6 +224,18 @@ function App() {
         onGetDataF()
         getPages(setPageList).then()
         onSendDataOrders()
+        fetch(URL + '/getPreviewCards', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({})
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setDataCards(data.result)
+            })
+        })
         return (<div className={'plup-loader'} style={{
             marginTop: String(size / 2 - 50) + 'px',
             marginLeft: String(window.innerWidth / 2 - 50) + 'px'

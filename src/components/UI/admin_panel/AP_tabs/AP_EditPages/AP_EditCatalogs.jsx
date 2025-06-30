@@ -29,7 +29,7 @@ const ApEditCatalogs = ({page}) => {
             {
                 name: 'На каталог', select: [
                     {argument: 'type', value: 'slider-clickable'},
-                    {argument: 'path', placeholder: 'Путь до категории'}]
+                    {argument: 'path', placeholder: 'Путь до категории',tag: '/home/'}]
             },
             {
                 name: 'Ссылочный', select: [
@@ -75,7 +75,7 @@ const ApEditCatalogs = ({page}) => {
                         {
                             name: 'На каталог', select: [
                                 {argument: 'type', value: 'banner-clickable'},
-                                {argument: 'path', placeholder: 'Путь до категории'}]
+                                {argument: 'path', placeholder: 'Путь до категории', tag: '/home/'}]
                         },
                         {
                             name: 'Ссылочный', select: [

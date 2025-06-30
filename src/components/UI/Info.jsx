@@ -221,7 +221,7 @@ const Info = () => {
 
             <div style={{background: '#454545', borderRadius: '7px', margin: '15px'}}>
                 <a style={{textDecoration: 'none'}}
-                   href={'https://t.me/gameworld_ps'}>
+                   href={'https://t.me/gwstore_playstation'}>
                     <div style={{
                         marginLeft: '3px',
                         marginRight: '3px',
@@ -254,7 +254,7 @@ const Info = () => {
                     </div>
                 </a>
                 <a style={{textDecoration: 'none'}}
-                   href={'https://t.me/gameworld_xbox'}>
+                   href={'https://t.me/gwstore_xbox'}>
                     <div style={{
                         marginLeft: '3px',
                         marginRight: '3px',

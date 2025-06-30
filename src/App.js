@@ -3,7 +3,7 @@ import './App.css';
 
 import React, {useCallback, useEffect, useState} from "react";
 import {useTelegram} from "./hooks/useTelegram";
-import {Route, Routes, useNavigate} from "react-router-dom";
+import {Outlet, Route, Routes, useNavigate} from "react-router-dom";
 import ProductList from "./components/UI/ProductList";
 import MainPage from "./components/UI/main_page/MainPage";
 import ErrorPage from "./components/UI/ErrorPage";
@@ -24,7 +24,7 @@ const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
 
 function App() {
     const {tg, user} = useTelegram();
-    const {getPages} = useServer();
+    const {getPages, getPreviewCards, getCatalogs} = useServer();
     const navigate = useNavigate();
 
     const [size, setSize] = React.useState(window.innerHeight);
@@ -42,11 +42,22 @@ function App() {
     const [favoriteData, setFavoriteData] = useState([])
     const [historyData, setHistoryData] = React.useState([]);
 
+    const resizeHandler = () => {
+        setSize(window.innerHeight);
+    };
 
     const sendData = {
         method: 'get',
         user: user,
     }
+
+    useEffect(() => {
+        window.addEventListener("resize", resizeHandler);
+        resizeHandler();
+        return () => {
+            window.removeEventListener("resize", resizeHandler);
+        };
+    }, [])
 
     const onGetData = useCallback(() => {
         try {
@@ -146,7 +157,7 @@ function App() {
                 <div style={{height: String(tg?.contentSafeAreaInset.top) + 'px'}}></div>
                 <div style={{height: String(tg?.safeAreaInset.top) + 'px'}}></div>
                 <Routes>
-                    {pageList.map((page) => (<Route path={page['link']} key={page['id']} element={<MainPage pageList = {pageList} />} />))}
+                    {pageList.map((page) => (<Route path={page['link']} key={page['id']} element={<MainPage pageList = {pageList} cardList={dataCards} setDataCardsDop={setDataCardsDop}/>} />))}
 
                     {dataCards.map(item =>
                         (<Route path={'card/' + item.id} key={item.id}
@@ -180,26 +191,12 @@ function App() {
                                                       onGetData={onGetData} onGetDataF={onGetDataF}/>}/>)
                     )
                     }
-                    {mainData.map(platform => (
-                        platform.body[1].map(category => (
-                            <Route path={'home/' + category.path} key={category.id}
-                                   element={<ProductList main_data={category} page={platform.id} height={size}
-                                                         path={category.path} setDataDop={setDataCardsDop}/>}/>
-                        ))
-                    ))}
 
-                    {mainData.map(platform => (
-                        platform.body[0].map(category => (
-                            <Route path={category.path} key={category.id}
-                                   element={<ProductListSelector main_data={category} page={platform.id} height={size}
-                                                                 basketData={basketData}/>}/>
-                        ))
-                    ))}
-                    <Route path={'basket0'} element={<Basket height={size} number={0} updateOrders={onSendDataOrders}/>}/>
-                    <Route path={'basket1'} element={<Basket height={size} number={1} updateOrders={onSendDataOrders}/>}/>
-                    <Route path={'basket2'} element={<Basket height={size} number={2} updateOrders={onSendDataOrders}/>}/>
+                    {pageList.map((page, index)=>(<Route path={'basket'+index} element={<Basket height={size} number={index} updateOrders={onSendDataOrders}/>}/>))}
 
                     <Route path={'favorites'} element={<Favorites height={size}/>}/>
+                    <Route path={'/home/*'} element={<ProductList setDataDop={setDataCardsDop}/>}/>
+                    <Route path={'/choice-catalog/*'} element={<ProductListSelector setDataDop={setDataCardsDop}/>}/>
 
                     {mainData.map(platform => (
                         <Route path={'search' + String(platform.id)} key={platform.id}
@@ -224,18 +221,7 @@ function App() {
         onGetDataF()
         getPages(setPageList).then()
         onSendDataOrders()
-        fetch(URL + '/getPreviewCards', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({})
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setDataCards(data.result)
-            })
-        })
+        getPreviewCards(setDataCards)
         return (<div className={'plup-loader'} style={{
             marginTop: String(size / 2 - 50) + 'px',
             marginLeft: String(window.innerWidth / 2 - 50) + 'px'

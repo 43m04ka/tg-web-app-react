@@ -47,54 +47,6 @@ const AdminPanel = () => {
     const [status, setStatus] = useState(0)
 
 
-    const dataRequestAdmin = {
-        method: 'login',
-        data: {},
-        userData: {login: inputOne, password: inputTwo}
-    }
-
-    const sendRequestAdmin = useCallback(async () => {
-        console.log(dataRequestAdmin, 'inputAdmin')
-        let method = dataRequestAdmin.method
-        await fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/admin', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dataRequestAdmin)
-        }).then(async r => {
-            console.log(r, 'выход setAdmin')
-            if (method === 'login') {
-                if (r.status === 200) {
-                    userData = dataRequestAdmin.userData
-                    await onReload()
-                    setStatus(1)
-                } else {
-                    alert('Неверный логин или пароль')
-                }
-            } else if (method === 'sendMessage') {
-                if (r.status === 201) {
-                    alert('Сообщение отправлено!')
-                } else {
-                    alert('Возникла ошибка при отправке сообщения!')
-                }
-            } else if (method === 'set') {
-                setDataStructure(dataRequestAdmin.data.body)
-            }
-        })
-    }, [dataRequestAdmin])
-
-
-    const sendRequestOnAdmin = async (inputData, operation) => {
-        dataRequestAdmin.method = operation
-        dataRequestAdmin.data = inputData
-        await sendRequestAdmin()
-    }
-
-
-
-
-
     let dataRequestDatabase = {
         method: '',
         userData: userData,
@@ -193,137 +145,12 @@ const AdminPanel = () => {
         await sendRequestFreeGame()
     }
 
-    let dataRequestPromo = {
-        method: '',
-        userData: userData,
-        data: []
-    }
 
-    const sendRequestPromo = useCallback(async () => {
-        console.log(dataRequestPromo, 'inputRequestDb')
-        await fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/promo', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dataRequestPromo)
-        }).then(r => {
-            let Promise = r.json()
-            Promise.then(prom => {
-                console.log(prom, 'возвратил get')
-                if (dataRequestPromo.method === 'get') {
-                    setDataPromo(prom.promo)
-                }
-                if (dataRequestPromo.method === 'add') {
-                    setStatus(1)
-                }
-                if (dataRequestPromo.method === 'del') {
-                    setStatus(1)
-                }
-            })
-        })
-    }, [dataRequestPromo])
-
-    const sendRequestOnPromo = async (inputData, operation) => {
-        dataRequestPromo.method = operation
-        dataRequestPromo.data = inputData
-        await sendRequestPromo()
-    }
-
-    const addCategory = (type, tab) => {
-        let structure = dataStructure;
-        let id = 0
-        structure[tab].body[type].map(el => {
-            if (el.id > id) {
-                id = el.id
-            }
-        })
-
-        let color
-        if (inputCategory4 !== '') {
-            color = inputCategory4
-        } else {
-            color = 'none'
-        }
-
-        let deleteData
-        if (inputCategory5[2] !== '0000') {
-            deleteData = Date.parse(inputCategory5[0] + ' ' + inputCategory5[1] + ' ' + inputCategory5[2] + ' ' + inputCategory5[3] + ':' + inputCategory5[4] + ':' + inputCategory5[5])
-        } else {
-            deleteData = 'none'
-        }
-
-        if (type === 0) {
-            structure[tab].body[type].splice(parseInt(inputCategory1), 0, {
-                id: id + 1,
-                url: inputCategory2,
-                path: inputCategory3,
-                body: []
-            });
-        }
-        if (type === 1) {
-            if (selectedViewCatalog === 12) {
-                structure[tab].body[type].splice(parseInt(inputCategory1), 0, {
-                    id: id + 1,
-                    type: 1,
-                    url: inputCategory2,
-                    path: inputCategory3,
-                    backgroundColor: color,
-                });
-            } else {
-                structure[tab].body[type].splice(parseInt(inputCategory1), 0, {
-                    id: id + 1,
-                    name: inputCategory2,
-                    path: inputCategory3,
-                    type: 0,
-                    backgroundColor: color,
-                    deleteData: deleteData,
-                    body: []
-                });
-            }
-
-        }
-
-        console.log(structure, dataStructure, 'выход addStructure')
-        sendRequestOnAdmin({body: structure}, 'set')
-    }
-
-    const deleteCategory = (type, tab, categoryId) => {
-
-        let structure = dataStructure;
-
-        let newArray = []
-
-        structure[tab].body[type].map(el => {
-            if (el.id !== categoryId) {
-                newArray = [...newArray, ...[el]]
-            }
-        })
-
-        structure[tab].body[type] = newArray
-
-        sendRequestOnAdmin({body: structure}, 'set')
-
-    }
 
 
     const onReload = async () => {
         await sendRequestOnDatabase([], 'getDataAdmin');
         await sendRequestOnDatabase([], 'getOrderHistory');
-    }
-
-    const addPromo = async () => {
-        await sendRequestOnPromo({str: inputCategory1, count: inputCategory2, parcent: inputCategory3}, 'add')
-    }
-
-    const setButtonTablePromo = async (table) => {
-        table.map(async promoData => {
-            await sendRequestOnPromo({str: promoData.text, count: promoData.count, parcent: promoData.parcent}, 'add')
-        })
-    }
-
-    const setButtonTableFreeGame = async (table) => {
-        await sendRequestOnFreeGame({data:table}, 'set')
     }
 
     let screenElement = ([(<AP_UploadData/>), (<AP_EditDirectories/>), (<AP_EditCards/>), (<AP_EditPages/>)])[page]

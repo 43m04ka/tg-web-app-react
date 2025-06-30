@@ -9,6 +9,10 @@ const ApEditDirectories = () => {
     const [selectedPath, setSelectedPath] = useState(-1);
 
 
+    const onReload = () =>{
+        getCategories(setDataCategory).then()
+    }
+
     if (dataCategory.length === 0) {
         return (<div>
             Нет загруженных каталогов
@@ -59,7 +63,7 @@ const ApEditDirectories = () => {
                             background: '#ef7474',
                             color: 'white'
                         }
-                        cardList = (<AP_CardList path={category.path}/>)
+                        cardList = (<AP_CardList path={category.path} onReload={onReload}/>)
                     } else {
                         text1 = 'Раскрыть список карт'
                         styleButton1 = {
@@ -83,6 +87,7 @@ const ApEditDirectories = () => {
                                 <button onClick={async () => {
                                     await changeStatusCards(category.path, 'all')
                                     await getCategories(setDataCategory)
+                                    await setSelectedPath(-1)
                                 }} style={styleButton}>{text}
                                 </button>
 

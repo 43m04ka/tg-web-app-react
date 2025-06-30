@@ -16,7 +16,7 @@ const getTotalPrice = (items = []) => {
 let list = 1
 let lastPath = ''
 
-const AP_CardList = ({path}) => {
+const AP_CardList = ({path, onReload}) => {
     if(lastPath !== path){
         list = 1
         lastPath = path
@@ -52,6 +52,7 @@ const AP_CardList = ({path}) => {
                     await setLen(prom.len)
                 } else {
                     await setStatus(1)
+                    sendRequestOnDatabase({path: path, number: list}, 'getList')
                 }
             })
         })
@@ -368,6 +369,7 @@ const AP_CardList = ({path}) => {
                                                         dataRequestDatabase.data = card.category[0]
                                                         dataRequestDatabase.idList = [card.id]
                                                         await sendRequestDatabase()
+                                                        await onReload()
                                                     }}>
                                                         {textButtonStatus}
                                                     </div>
@@ -415,6 +417,7 @@ const AP_CardList = ({path}) => {
                                                             dataRequestDatabase.data = name
                                                             dataRequestDatabase.idList = [card.id]
                                                             await sendRequestDatabase()
+
                                                         } else {
                                                             const result = confirm("Точно хотите удалить?");
                                                             console.log(name)

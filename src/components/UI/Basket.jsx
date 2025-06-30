@@ -77,7 +77,7 @@ const Basket = ({height, number, updateOrders}) => {
     }
 
     const onRegDataAcc = () => {
-        if (number === 0) {
+        if (number === 0 || number === 3) {
             if (myAcc === 1) {
                 sendDataProduct.accData = 'Нет своего аккаунта PSN.'
             } else {
@@ -183,7 +183,7 @@ const Basket = ({height, number, updateOrders}) => {
     }, [])
 
     let onBack = useCallback(async () => {
-        navigate('/home'+number);
+        navigate(-1);
     }, [])
 
     useEffect(() => {
@@ -383,7 +383,7 @@ const Basket = ({height, number, updateOrders}) => {
     }
 
     let menuDesigns = null
-    if (number === 0 && myAcc === 1) {
+    if ((number === 0 || number === 3) && myAcc === 1) {
         menuDesigns = (<div className={'text-element'}
                             style={{
                                 textAlign: 'center',
@@ -395,7 +395,7 @@ const Basket = ({height, number, updateOrders}) => {
                                 paddingRight: '10px'
                             }}>Мы оформим заказ на новый аккаунт PSN и передадим Вам его в полном доступе. Это
             бесплатно.< /div>)
-    } else if (number === 0 && myAcc === 0) {
+    } else if ((number === 0 || number === 3) && myAcc === 0) {
         menuDesigns = (<div style={{
             display: 'flex',
             flexDirection: 'column',
@@ -636,7 +636,7 @@ const Basket = ({height, number, updateOrders}) => {
         </div>
     )
 
-    if (number === 0) {
+    if ((number === 0 || number === 3)) {
         titleText = 'Ваша корзина Playstation'
     }
     if (number === 1) {
@@ -862,7 +862,7 @@ const Basket = ({height, number, updateOrders}) => {
                         <div className={'background-basketSaid'} style={{width: '65px', height: '83px'}}/>
                         <div className={'text-element'}>В корзине ничего нет...</div>
                     </div>
-                    <Link to={'/home0'} className={'link-element'}>
+                    <Link to={'/'} className={'link-element'}>
                         <button className={'all-see-button'} style={{marginTop: '10px', width: String(300) + 'px'}}>На
                             главную
                         </button>
@@ -1044,7 +1044,7 @@ const Basket = ({height, number, updateOrders}) => {
                             onClick={onClickButton}>Написать менеджеру
                     </button>
                 </a>
-                <Link to={'/home0'} className={"link-element"}>
+                <Link to={'/'} className={"link-element"}>
                     <button className={'all-see-button'} style={{
                         marginTop: '10px',
                         marginLeft: '25px',

@@ -2,24 +2,50 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import '../../styles/style.css';
 import {useTelegram} from "../../../hooks/useTelegram";
 import HeadSelector from "../HeadSelector";
-import Slider from "../SliderPic";
 import MP_Catalogs from "./MP_Catalogs";
 import SliderPic from "../SliderPic";
+import {useServer} from "../../../hooks/useServer";
 
 let scrollCtrl = 0;
 let lastScroll = 0;
 
-const MainPage = ({pageList}) => {
+let lastCatalogs = [];
+let lastPageId  =0
+
+const MainPage = ({pageList, cardList, setDataCardsDop}) => {
+
+    const {getCatalogs, getPreviewCards} = useServer()
 
     const {tg, user} = useTelegram();
     const [size, setSize] = React.useState(window.innerHeight);
     const [hiddenSelector, setHiddenSelector] = useState(false);
     const scrollContainer = useRef();
+    const [pageId, setPageId] = React.useState(lastPageId);
 
-    let pageId = -1
+    const [catalogList,setCatalogList] = useState(lastCatalogs);
+
+    if(lastCatalogs !== catalogList){
+        lastCatalogs = catalogList;
+    }
+
+    useEffect(() => {
+        getCatalogs(pageId, 'body', setCatalogList)
+    }, [])
+
     pageList.map((item, index) => {
         if('/'+item.link===window.location.pathname){
-            pageId = pageList[index].id
+            if(pageList[index].id !== pageId) {
+                lastPageId = pageList[index].id
+                setPageId(pageList[index].id)
+                getCatalogs(pageList[index].id, 'body', setCatalogList)
+                try {
+                    scrollContainer.current.scrollTo({
+                        top: 0,
+                        behavior: "instant",
+                    });
+                }catch(e){}
+
+            }
         }
     })
 
@@ -36,7 +62,6 @@ const MainPage = ({pageList}) => {
             top: lastScroll,
             behavior: "instant",
         });
-
         window.addEventListener("resize", resizeHandler);
         resizeHandler();
         return () => {
@@ -47,7 +72,6 @@ const MainPage = ({pageList}) => {
 
     return (
         <div>
-
             <HeadSelector pageList={pageList} hidden={hiddenSelector}/>
 
             <div className={'scroll-container-y'} onScroll={(event) => {
@@ -78,7 +102,7 @@ const MainPage = ({pageList}) => {
                     <SliderPic pageId = {pageId}/>
                 </div>
                 <div style={{marginBottom: '15px'}}>
-                    <MP_Catalogs pageId = {pageId}/>
+                    <MP_Catalogs pageId = {pageId} cardList={cardList} catalogList={catalogList}/>
                 </div>
             </div>
         </div>

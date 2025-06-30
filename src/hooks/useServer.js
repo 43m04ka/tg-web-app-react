@@ -125,6 +125,21 @@ export function useServer() {
         })
     }
 
+    const getPreviewCards = async (setResult) => {
+        await fetch(URL + '/getPreviewCards', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({})
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
 
     const deletePage = async (id) => {
         await fetch(URL + '/deletePage', {
@@ -153,6 +168,20 @@ export function useServer() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data)
+        })
+    };
+
+    const findCardsByCatalog = async (catalog, setResult) => {
+        await fetch(URL + '/findCardsByCatalog?catalog='+catalog+'', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
         })
     };
 
@@ -191,6 +220,8 @@ export function useServer() {
         createPage,
         getCatalogs,
         createCatalog,
+        getPreviewCards,
+        findCardsByCatalog
     }
 }
 

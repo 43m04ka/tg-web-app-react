@@ -22,7 +22,8 @@ let lastScroll = 0
 let lastList = []
 let lastLen = 1
 
-const ProductList = ({main_data, page, height, setDataDop}) => {
+let lastPath = ''
+const ProductList = ({page, height, setDataDop}) => {
 
     let stStatus = 0
     if (lastList.length !== 0) {
@@ -31,7 +32,18 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
 
     const [products, setProducts] = useState(lastList)
     const [status, setStatus] = useState(stStatus);
-    const path = main_data.path
+    const path = (window.location.pathname).replace('/home/', '')
+    if(lastPath !== path){
+        lastPath = path
+        scrollCtrl = 0;
+        list = 1
+        bool = true
+         elementKeys = []
+
+        lastScroll = 0
+        lastList = []
+        lastLen = 1
+    }
     const {tg, user} = useTelegram();
     const [len, setLen] = useState(lastLen);
     const navigate = useNavigate();
@@ -51,7 +63,7 @@ const ProductList = ({main_data, page, height, setDataDop}) => {
 
     let newArray = []
     basketData.map(el => {
-        if (Number(el.body.tab) === page && el.body.isSale === true) {
+        if (Number(el.body.tab) === -1 && el.body.isSale === true) {
             newArray = [...newArray, el]
         }
     })

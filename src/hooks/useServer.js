@@ -172,7 +172,7 @@ export function useServer() {
     };
 
     const findCardsByCatalog = async (catalog, setResult) => {
-        await fetch(URL + '/findCardsByCatalog?catalog='+catalog+'', {
+        await fetch(URL + '/findCardsByCatalog?catalog='+catalog+'&time='+Date.now(), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

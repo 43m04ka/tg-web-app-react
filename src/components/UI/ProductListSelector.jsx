@@ -225,7 +225,7 @@ const ProductListSelector = ({}) => {
                                     <div style={{
                                         fontSize: '22px',
                                         fontFamily: "'Montserrat', sans-serif"
-                                    }}>{el.body.price + ' ₽'}</div>
+                                    }}>{Math.min(...el.price) + ' ₽'}</div>
                                 </div>
                             </div>
                         </div>
@@ -298,7 +298,7 @@ const ProductListSelector = ({}) => {
                                         <div style={{
                                             fontSize: '22px',
                                             fontFamily: "'Montserrat', sans-serif"
-                                        }}>{el.body.price + ' ₽'}</div>
+                                        }}>{Math.min(...el.price) + ' ₽'}</div>
                                     </div>
                                 </div>
                             </div>

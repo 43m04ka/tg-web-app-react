@@ -24,7 +24,7 @@ const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
 
 function App() {
     const {tg, user} = useTelegram();
-    const {getPages, getPreviewCards, getCatalogs} = useServer();
+    const {getPages, getPreviewCards} = useServer();
     const navigate = useNavigate();
 
     const [size, setSize] = React.useState(window.innerHeight);

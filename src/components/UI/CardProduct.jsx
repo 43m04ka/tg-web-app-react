@@ -2,6 +2,8 @@ import React, {createRef, Suspense, useCallback, useEffect, useState} from 'reac
 import {useTelegram} from "../../hooks/useTelegram";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import ProductItem from "./ProductItem";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+
 
 let heightText = null
 let textElementHeight = null

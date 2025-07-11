@@ -9,12 +9,15 @@ import 'swiper/css/autoplay';
 
 
 import {Autoplay, Pagination, Controller, EffectCoverflow} from 'swiper/modules';
+import useGlobalData from "../../hooks/useGlobalData";
 
 
 let isScroll = false
 let realIndex = 0
 
-const HeadSelector = ({hidden, pageList}) => {
+const HeadSelector = ({hidden}) => {
+
+    const {pageList, setPageId} = useGlobalData()
 
     let page
     pageList.map((item, index) => {
@@ -76,6 +79,7 @@ const HeadSelector = ({hidden, pageList}) => {
 
         if(flag){
             navigate('/' + [...pageList, ...pageList][index]["link"])
+            setPageId([...pageList, ...pageList][index]["id"])
         }
 
         setColorSlider('linear-gradient(90deg, '+pageList[(index+pageList.length-1)%pageList.length].color+' 10%, '+pageList[(index+pageList.length)%pageList.length].color+' 50%, '+pageList[(index+pageList.length+1)%pageList.length].color+' 90%)');

@@ -3,24 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.21.1",
-    "pg": "^8.13.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-lazy-load-image-component": "^1.6.3",
-    "react-redux": "^9.2.0",
     "react-router-dom": "^6.28.0",
     "react-scripts": "^5.0.1",
-    "react-slick": "^0.30.3",
-    "redux": "^5.0.1",
-    "redux-observable": "^3.0.0-rc.2",
     "reselect": "^5.1.1",
     "rxjs": "^7.8.2",
-    "sequelize": "^6.37.5",
     "swiper": "^11.1.15",
     "web-vitals": "^2.1.4",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "zustand": "^5.0.6"
   },
   "scripts": {
     "start": "react-scripts start",

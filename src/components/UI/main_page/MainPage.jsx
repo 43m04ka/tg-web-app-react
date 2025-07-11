@@ -2,8 +2,8 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import '../../styles/style.css';
 import {useTelegram} from "../../../hooks/useTelegram";
 import HeadSelector from "../HeadSelector";
-import MP_Catalogs from "./MP_Catalogs";
-import SliderPic from "../SliderPic";
+import MP_Catalogs from "./MP_CatalogListBody";
+import SliderPic from "./MP_CatalogListHead";
 import {useServer} from "../../../hooks/useServer";
 
 let scrollCtrl = 0;
@@ -12,11 +12,8 @@ let lastScroll = 0;
 let lastCatalogs = [];
 let lastPageId  =0
 
-const MainPage = ({pageList, cardList, setDataCardsDop}) => {
-
-    const {getCatalogs, getPreviewCards} = useServer()
-
-    const {tg, user} = useTelegram();
+const MainPage = ({pageList, cardList}) => {
+    const {tg} = useTelegram();
     const [size, setSize] = React.useState(window.innerHeight);
     const [hiddenSelector, setHiddenSelector] = useState(false);
     const scrollContainer = useRef();
@@ -29,7 +26,7 @@ const MainPage = ({pageList, cardList, setDataCardsDop}) => {
     }
 
     useEffect(() => {
-        getCatalogs(pageId, 'body', setCatalogList)
+        //getCatalogs(pageId, 'body', setCatalogList)
     }, [])
 
     pageList.map((item, index) => {
@@ -37,7 +34,7 @@ const MainPage = ({pageList, cardList, setDataCardsDop}) => {
             if(pageList[index].id !== pageId) {
                 lastPageId = pageList[index].id
                 setPageId(pageList[index].id)
-                getCatalogs(pageList[index].id, 'body', setCatalogList)
+                //getCatalogs(pageList[index].id, 'body', setCatalogList)
                 try {
                     scrollContainer.current.scrollTo({
                         top: 0,

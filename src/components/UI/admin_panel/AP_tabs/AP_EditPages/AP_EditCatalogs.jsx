@@ -32,6 +32,11 @@ const ApEditCatalogs = ({page}) => {
                     {argument: 'path', placeholder: 'Путь до категории',tag: '/home/'}]
             },
             {
+                name: 'На каталог-выбор', select: [
+                    {argument: 'type', value: 'slider-clickable'},
+                    {argument: 'path', placeholder: 'Путь до категории',tag: '/choice-catalog/'}]
+            },
+            {
                 name: 'Ссылочный', select: [
                     {argument: 'type', value: 'slider-clickable'},
                     {argument: 'path', placeholder: 'Ссылка'}]
@@ -48,6 +53,12 @@ const ApEditCatalogs = ({page}) => {
             {
                 name: 'Обычный', select: [
                     {argument: 'type', value: 'ordinary'},
+                    {argument: 'name', placeholder: 'Имя каталога'},
+                    {argument: "path", placeholder: 'Путь до категории'}]
+            },
+            {
+                name: 'Каталог-выбор', select: [
+                    {argument: 'type', value: 'ordinary-choice'},
                     {argument: 'name', placeholder: 'Имя каталога'},
                     {argument: "path", placeholder: 'Путь до категории'}]
             },
@@ -76,6 +87,11 @@ const ApEditCatalogs = ({page}) => {
                             name: 'На каталог', select: [
                                 {argument: 'type', value: 'banner-clickable'},
                                 {argument: 'path', placeholder: 'Путь до категории', tag: '/home/'}]
+                        },
+                        {
+                            name: 'На каталог-выбор', select: [
+                                {argument: 'type', value: 'banner-clickable'},
+                                {argument: 'path', placeholder: 'Путь до категории', tag: '/choice-catalog/'}]
                         },
                         {
                             name: 'Ссылочный', select: [
@@ -161,6 +177,10 @@ const ApEditCatalogs = ({page}) => {
                             propertyElement.push({argument: 'Дата удаления: ', value: category.deleteDate})
                         } else if (category.type === 'ordinary') {
                             propertyElement.push({argument: 'Обычный', style: {margin: '3px'}, value: ''})
+                            propertyElement.push({argument: 'Имя: ', value: category.name})
+                        }
+                        else if (category.type === 'ordinary-choice') {
+                            propertyElement.push({argument: 'Каталог-выбор', style: {margin: '3px'}, value: ''})
                             propertyElement.push({argument: 'Имя: ', value: category.name})
                         }
                         if (category.type !== 'banner-non-clickable') {

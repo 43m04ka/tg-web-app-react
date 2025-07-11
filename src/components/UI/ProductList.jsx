@@ -23,7 +23,7 @@ let lastList = []
 let lastLen = 1
 
 let lastPath = ''
-const ProductList = ({page, height, setDataDop}) => {
+const ProductList = ({height, setDataDop}) => {
 
     let stStatus = 0
     if (lastList.length !== 0) {
@@ -31,6 +31,10 @@ const ProductList = ({page, height, setDataDop}) => {
     }
 
     const [products, setProducts] = useState(lastList)
+    let page = 0
+    if(typeof products[0]?.body !== "undefined") {
+        page = products[0].body.tab
+    }
     const [status, setStatus] = useState(stStatus);
     const path = (window.location.pathname).replace('/home/', '')
     if(lastPath !== path){

@@ -5,7 +5,7 @@ import ProductItem from "./ProductItem";
 const HomeBlock = ({data}) => {
 
     let styleBlock = {}
-    if(data.type === 1){
+    if(!data.type.includes('banner')){
         if (data.backgroundColor !== 'none' && typeof data.backgroundColor !== 'undefined') {
             styleBlock = {background: data.backgroundColor, paddingTop: '10px', paddingLeft:'7px', paddingRight:'7px', paddingBottom:'10px'}
         } else {
@@ -18,6 +18,11 @@ const HomeBlock = ({data}) => {
         } else {
             styleBlock = {paddingBottom: '0px', paddingTop: '3px', marginTop:'0px', marginBottom:'30px'};
         }
+    }
+
+    let link = '/home/'
+    if(data.type === 'ordinary-choice'){
+        link = '/choice-catalog/'
     }
 
     if (!data.type.includes('banner')) {
@@ -39,7 +44,7 @@ const HomeBlock = ({data}) => {
                             marginLeft: '2px', marginRight: '7px', border: '0px solid #454545',
                             borderRadius: '7px', padding: '5px'
                         }}>
-                            <Link to={'/home/' + data.path} className={'link-element'}>
+                            <Link to={link + data.path} className={'link-element'}>
                                 <div className={'background-arrow'} style={{
                                     height: '25px',
                                     width: '25px',
@@ -50,7 +55,7 @@ const HomeBlock = ({data}) => {
                         </div>
                     </div>
                 </div>
-                <Link to={'/home/' + data.path} className={'link-element'}>
+                <Link to={link + data.path} className={'link-element'}>
                     <button className={'all-see-button'}>Открыть каталог</button>
                 </Link>
             </div>

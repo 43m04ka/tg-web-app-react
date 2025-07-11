@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 import {useServer} from "../../hooks/useServer";
 import mainPage from "./main_page/MainPage";
 
-const ProductListSelector = ({}) => {
+const ProductListSelector = ({basketData}) => {
     const [selectCategory, setSelectCategory] = React.useState(0);
     const [selectView, setSelectView] = React.useState(0);
     const [isImgHidden, setIsImgHidden] = React.useState(true);
@@ -16,12 +16,8 @@ const ProductListSelector = ({}) => {
     const navigate = useNavigate();
     const {findCardsByCatalog} = useServer()
 
-    const print = (r)=>{
-        setCardList(r);
-        console.log(r)}
-
     useEffect(() => {
-        findCardsByCatalog(window.location.pathname.replace('/choice-catalog/', ''), print).then()
+        findCardsByCatalog(window.location.pathname.replace('/choice-catalog/', ''), setCardList).then()
     }, [])
 
     const onBack = useCallback(async () => {
@@ -29,7 +25,8 @@ const ProductListSelector = ({}) => {
     }, [])
 
     const onBasket = useCallback(async () => {
-        navigate('/basket'+page);
+        navigate('/basket'+cardList[0]?.body.tab);
+
     }, [])
 
     useEffect(() => {
@@ -43,8 +40,8 @@ const ProductListSelector = ({}) => {
         tg.BackButton.show();
     }, [])
 
-    const onSendData = async ({user, method, mainData}) => {
-        await ('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
+    const onSendData = async (user, method, mainData) => {
+        await fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -107,7 +104,6 @@ const ProductListSelector = ({}) => {
 
         })
         data = [...data, ...vsArray]
-        console.log(data)
 
         let count = 0
         data.map(el => {
@@ -149,6 +145,27 @@ const ProductListSelector = ({}) => {
 
         let thisElement = data[selectCategory].body[selectView]
 
+        let flag = false
+        basketData.map(pos=>{
+            if(pos.id === thisElement.id) {
+                flag = true
+            }
+        })
+
+        if(isBuy !== flag && thisElement?.body.isSale){
+            setIsBuy(flag);
+            if(flag){
+                setButtonText('Перейти в корзину');
+            }else{
+                setButtonText('Добавить в корзину')
+            }
+        }
+
+        if(!thisElement?.body.isSale && isBuy !== null){
+            setIsBuy(null)
+            setButtonText('Нет в продаже')
+        }
+
         let heightImg = window.innerWidth - 20
         if (isImgHidden) {
             heightImg = heightImg * 0.75
@@ -164,13 +181,19 @@ const ProductListSelector = ({}) => {
 
         let buttonColor = '#51a456'
         let buttonLink = () => {
-            onSendData();
+            onSendData(user, 'add', thisElement.id);
             setButtonText('Ожидайте...');
         }
         if (isBuy) {
             buttonColor = '#414BE0FF'
             buttonLink = () => {
                 onBasket()
+            }
+        }
+
+        if(!thisElement?.body.isSale){
+            buttonColor = '#8e8f9e'
+            buttonLink = () => {
             }
         }
 
@@ -377,7 +400,6 @@ const ProductListSelector = ({}) => {
                                     height: '50px',
                                     overflow: 'hidden',
                                 }} onClick={() => {
-                                    console.log(el)
                                     setSelectCategory(el.id)
                                     setSelectView(0)
                                 }}>

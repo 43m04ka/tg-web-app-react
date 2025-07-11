@@ -8,7 +8,6 @@ import ProductList from "./components/UI/ProductList";
 import MainPage from "./components/UI/main_page/MainPage";
 import ErrorPage from "./components/UI/ErrorPage";
 import Search from "./components/UI/Search";
-import CardProduct from "./components/UI/CardProduct";
 import Basket from "./components/UI/Basket";
 import AdminPanel from "./components/UI/admin_panel/AdminPanel";
 import Info from "./components/UI/Info";
@@ -18,17 +17,18 @@ import Order from "./components/UI/Order";
 import Favorites from "./components/UI/Favorites";
 import Roulette from "./components/UI/Roulette";
 import AP_Authentication from "./components/UI/admin_panel/AP_Authentication";
-import {useServer} from "./hooks/useServer";
+import useGlobalData from "./hooks/useGlobalData";
 
 const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
 
 function App() {
     const {tg, user} = useTelegram();
-    const {getPages, getPreviewCards} = useServer();
     const navigate = useNavigate();
 
+    const {pageList, updatePageList, updateCatalogList, updateMainPageCards} = useGlobalData();
+
     const [size, setSize] = React.useState(window.innerHeight);
-    const [pageList, setPageList] = React.useState(null);
+
     const [mainData, setMainData] = useState([
         {id: 0, page: 'playstation', body: [[], []]}, {
             id: 1,
@@ -147,6 +147,12 @@ function App() {
         }
     }, [sendDataOrders])
 
+    useEffect(()=>{
+        updatePageList()
+        updateCatalogList()
+        updateMainPageCards()
+    }, [])
+
 
     if (pageList !== null)  {
         if(window.location.pathname === '/'){
@@ -159,44 +165,11 @@ function App() {
                 <Routes>
                     {pageList.map((page) => (<Route path={page['link']} key={page['id']} element={<MainPage pageList = {pageList} cardList={dataCards} setDataCardsDop={setDataCardsDop}/>} />))}
 
-                    {dataCards.map(item =>
-                        (<Route path={'card/' + item.id} key={item.id}
-                                element={<CardProduct mainData={item} basketData={basketData}
-                                                      favoriteData = {favoriteData}
-                                                      setDataDop={setDataCardsDop} onGetData={onGetData}
-                                                      onGetDataF={onGetDataF}/>}/>)
-                    )
-                    }
-                    {dataCardsDop.map(item =>
-                        (<Route path={'card/' + item.id} key={item.id}
-                                element={<CardProduct mainData={item} basketData={basketData}
-                                                      favoriteData = {favoriteData}
-                                                      setDataDop={setDataCardsDop} dataDop={dataCardsDop}
-                                                      onGetData={onGetData} onGetDataF={onGetDataF}/>}/>)
-                    )
-                    }
-                    {basketData.map(item =>
-                        (<Route path={'card/' + item.id} key={item.id}
-                                element={<CardProduct mainData={item} basketData={basketData}
-                                                      favoriteData = {favoriteData}
-                                                      setDataDop={setDataCardsDop} dataDop={dataCardsDop}
-                                                      onGetData={onGetData} onGetDataF={onGetDataF}/>}/>)
-                    )
-                    }
-                    {favoriteData.map(item =>
-                        (<Route path={'card/' + item.id} key={item.id}
-                                element={<CardProduct mainData={item} basketData={basketData}
-                                                      favoriteData = {favoriteData}
-                                                      setDataDop={setDataCardsDop} dataDop={dataCardsDop}
-                                                      onGetData={onGetData} onGetDataF={onGetDataF}/>}/>)
-                    )
-                    }
-
                     {pageList.map((page, index)=>(<Route path={'basket'+index} element={<Basket height={size} number={index} updateOrders={onSendDataOrders}/>}/>))}
 
                     <Route path={'favorites'} element={<Favorites height={size}/>}/>
                     <Route path={'/home/*'} element={<ProductList setDataDop={setDataCardsDop}/>}/>
-                    <Route path={'/choice-catalog/*'} element={<ProductListSelector setDataDop={setDataCardsDop}/>}/>
+                    <Route path={'/choice-catalog/*'} element={<ProductListSelector basketData={basketData}/>}/>
 
                     {mainData.map(platform => (
                         <Route path={'search' + String(platform.id)} key={platform.id}
@@ -217,11 +190,6 @@ function App() {
             </div>
         );
     } else{
-        onGetData()
-        onGetDataF()
-        getPages(setPageList).then()
-        onSendDataOrders()
-        getPreviewCards(setDataCards)
         return (<div className={'plup-loader'} style={{
             marginTop: String(size / 2 - 50) + 'px',
             marginLeft: String(window.innerWidth / 2 - 50) + 'px'

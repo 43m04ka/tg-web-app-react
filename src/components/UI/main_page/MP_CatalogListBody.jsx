@@ -27,6 +27,7 @@ const MpCatalogs = ({}) => {
                         })
                         if (flag) {
                             cardArray.push(card)
+
                         }
                     })
                     let newDataCat = cat

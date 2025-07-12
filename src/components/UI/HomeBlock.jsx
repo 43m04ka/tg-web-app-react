@@ -45,16 +45,32 @@ const HomeBlock = ({data}) => {
     if (!data.type.includes('banner')) {
         return (
             <div style={styleBlock}>
-                <div style={{display: 'flex', justifyContent: 'space-between', alignItems:'center'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                     <div style={{
                         fontSize: '18px',
                         fontFamily: "'Montserrat', sans-serif",
                         color: 'white',
-                        marginLeft: '5px'
+                        marginLeft: '5px',
+                        width: String(window.innerWidth - 150) + 'px',
+                        overflow: 'hidden',
                     }}>{data.name}</div>
-                    <Link to={link + data.path} className={'link-element'} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                        <div className={'text-element'} style={{fontSize: '16px', marginRight:'3px', fontVariant:'small-caps', marginTop:'0', lineHeight:'16px'}}>cмотреть все</div>
-                        <div className={'background-arrow'} style={{width:'10px', height:'10px'}}/>
+                    <Link to={link + data.path} className={'link-element'} style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        background: '#373737',
+                        height: '22px',
+                        borderRadius: '5px'
+                    }} to={link + data.path}>
+                        <div className={'text-element'} style={{
+                            fontSize: '11px',
+                            marginRight: '3px',
+                            marginTop: '0',
+                            lineHeight: '16px'
+                        }}>СМОТРЕТЬ ВСЕ
+                        </div>
+                        <div className={'background-arrow'}
+                             style={{width: '10px', height: '10px', marginRight: '3px'}}/>
                     </Link>
                 </div>
                 <div className={"scroll-container"} style={{alignItems: 'center'}}>
@@ -69,7 +85,10 @@ const HomeBlock = ({data}) => {
                             marginLeft: '2px', marginRight: '7px', border: '0px solid #454545',
                             borderRadius: '7px', padding: '5px'
                         }}>
-                            <Link to={link + data.path} className={'link-element'}>
+                            <Link to={link + data.path} className={'link-element'} style={{width:'170px', display: 'flex', alignItems: 'center'}}>
+                                <div className={'text-element'} style={{fontSize:'18px', width:'170px'}}>
+                                    Смотреть ещё
+                                </div>
                                 <div className={'background-arrow'} style={{
                                     height: '25px',
                                     width: '25px',

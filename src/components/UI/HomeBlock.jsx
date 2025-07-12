@@ -5,34 +5,59 @@ import ProductItem from "./ProductItem";
 const HomeBlock = ({data}) => {
 
     let styleBlock = {}
-    if(!data.type.includes('banner')){
+    if (!data.type.includes('banner')) {
         if (data.backgroundColor !== 'none' && typeof data.backgroundColor !== 'undefined') {
-            styleBlock = {background: data.backgroundColor, paddingTop: '10px', paddingLeft:'7px', paddingRight:'7px', paddingBottom:'10px'}
+            styleBlock = {
+                background: data.backgroundColor,
+                paddingTop: '10px',
+                paddingLeft: '7px',
+                paddingRight: '7px',
+                paddingBottom: '10px'
+            }
         } else {
-            styleBlock = {paddingTop: '5px', paddingLeft:'7px', paddingRight:'7px', paddingBottom:'10px', marginTop:'10px'}
+            styleBlock = {
+                paddingTop: '5px',
+                paddingLeft: '7px',
+                paddingRight: '7px',
+                paddingBottom: '10px',
+                marginTop: '10px'
+            }
         }
-    }
-    else {
+    } else {
         if (data.backgroundColor !== 'none') {
-            styleBlock = {background: data.backgroundColor, paddingBottom: '10px', paddingTop: '0px', marginTop:'0px', marginBottom:'30px'}
+            styleBlock = {
+                background: data.backgroundColor,
+                paddingBottom: '10px',
+                paddingTop: '0px',
+                marginTop: '0px',
+                marginBottom: '30px'
+            }
         } else {
-            styleBlock = {paddingBottom: '0px', paddingTop: '3px', marginTop:'0px', marginBottom:'30px'};
+            styleBlock = {paddingBottom: '0px', paddingTop: '3px', marginTop: '0px', marginBottom: '30px'};
         }
     }
 
     let link = '/home/'
-    if(data.type === 'ordinary-choice'){
+    if (data.type === 'ordinary-choice') {
         link = '/choice-catalog/'
     }
 
     if (!data.type.includes('banner')) {
         return (
             <div style={styleBlock}>
-                <div className={"title"} style={{marginBottom:'0px', marginTop:'0px'}}>{data.name}</div>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems:'center'}}>
+                    <div style={{
+                        fontSize: '18px',
+                        fontFamily: "'Montserrat', sans-serif",
+                        color: 'white',
+                        marginLeft: '5px'
+                    }}>{data.name}</div>
+                    <Link to={link + data.path} className={'link-element'} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                        <div className={'text-element'} style={{fontSize: '16px', marginRight:'3px', fontVariant:'small-caps', marginTop:'0', lineHeight:'16px'}}>cмотреть все</div>
+                        <div className={'background-arrow'} style={{width:'10px', height:'10px'}}/>
+                    </Link>
+                </div>
                 <div className={"scroll-container"} style={{alignItems: 'center'}}>
-                    <div style={{width: '10px'}}>
-                        <div style={{width: '10px'}}/>
-                    </div>
                     {data.body.slice(0, 6).map(item => (
                             <div style={{marginRight: '5px'}}>
                                 <ProductItem key={item.id} product={item}/>
@@ -55,18 +80,15 @@ const HomeBlock = ({data}) => {
                         </div>
                     </div>
                 </div>
-                <Link to={link + data.path} className={'link-element'}>
-                    <button className={'all-see-button'}>Открыть каталог</button>
-                </Link>
             </div>
         );
     } else if (data.type.includes('banner')) {
-        return(
+        return (
             <div className={"homeBlock"}
                  style={styleBlock}>
                 <Link to={data.path} className={'link-element'}>
                     <div className={'img'} style={{
-                        height: String((window.innerWidth)/5*2) + 'px',
+                        height: String((window.innerWidth) / 5 * 2) + 'px',
                         borderRadius: '15px',
                         backgroundImage: "url('" + data.url + "')",
                         backgroundSize: 'cover',

@@ -5,21 +5,21 @@ import ProductItem from "./ProductItem";
 const HomeBlock = ({data}) => {
 
     let styleBlock = {}
-    if (!data.type.includes('banner')) {
+    if (data.type.includes('banner')) {
         if (data.backgroundColor !== 'none' && typeof data.backgroundColor !== 'undefined') {
             styleBlock = {
                 background: data.backgroundColor,
                 paddingTop: '10px',
                 paddingLeft: '7px',
                 paddingRight: '7px',
-                paddingBottom: '10px'
+                paddingBottom: '15px'
             }
         } else {
             styleBlock = {
                 paddingTop: '5px',
                 paddingLeft: '7px',
                 paddingRight: '7px',
-                paddingBottom: '10px',
+                paddingBottom: '15px',
                 marginTop: '10px'
             }
         }
@@ -30,10 +30,17 @@ const HomeBlock = ({data}) => {
                 paddingBottom: '10px',
                 paddingTop: '0px',
                 marginTop: '0px',
-                marginBottom: '30px'
+                paddingLeft: '7px',
+                marginBottom: '20px'
             }
         } else {
-            styleBlock = {paddingBottom: '0px', paddingTop: '3px', marginTop: '0px', marginBottom: '30px'};
+            styleBlock = {
+                paddingBottom: '0px',
+                paddingTop: '3px',
+                paddingLeft: '7px',
+                marginTop: '0px',
+                marginBottom: '20px'
+            };
         }
     }
 
@@ -60,7 +67,8 @@ const HomeBlock = ({data}) => {
                         alignItems: 'center',
                         background: '#373737',
                         height: '22px',
-                        borderRadius: '5px'
+                        borderRadius: '5px',
+                        marginRight: '7px',
                     }} to={link + data.path}>
                         <div className={'text-element'} style={{
                             fontSize: '11px',
@@ -85,8 +93,9 @@ const HomeBlock = ({data}) => {
                             marginLeft: '2px', marginRight: '7px', border: '0px solid #454545',
                             borderRadius: '7px', padding: '5px'
                         }}>
-                            <Link to={link + data.path} className={'link-element'} style={{width:'170px', display: 'flex', alignItems: 'center'}}>
-                                <div className={'text-element'} style={{fontSize:'18px', width:'170px'}}>
+                            <Link to={link + data.path} className={'link-element'}
+                                  style={{width: '170px', display: 'flex', alignItems: 'center'}}>
+                                <div className={'text-element'} style={{fontSize: '18px', width: '170px'}}>
                                     Смотреть ещё
                                 </div>
                                 <div className={'background-arrow'} style={{

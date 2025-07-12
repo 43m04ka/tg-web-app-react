@@ -59,7 +59,8 @@ const HomeBlock = ({data}) => {
                         color: 'white',
                         marginLeft: '5px',
                         overflow: 'hidden',
-                        width:'auto'
+                        width:'auto',
+                        fontVariant:'small-caps'
                     }}>{data.name}</div>
                     <Link to={link + data.path} className={'link-element'} style={{
                         display: 'flex',

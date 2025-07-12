@@ -90,11 +90,11 @@ const HomeBlock = ({data}) => {
                     )}
                     <div className={'box-home-block-element home-block-element'} >
                         <div style={{
-                            width: '177px',
+                            width: 'max-content',
                         }}>
                             <Link to={link + data.path} className={'link-element'}
-                                  style={{width: '170px', display: 'flex', alignItems: 'center', borderRadius: '10px', border: '1px solid white', height:'33px', marginRight: '7px'}}>
-                                <div className={'text-element'} style={{fontSize: '18px', width: '170px'}}>
+                                  style={{display: 'flex', alignItems: 'center', borderRadius: '10px', border: '1px solid white', height:'33px', marginRight: '7px'}}>
+                                <div className={'text-element'} style={{fontSize: '18px'}}>
                                     Смотреть ещё
                                 </div>
                                 <div className={'background-arrow'} style={{

@@ -78,7 +78,7 @@ const HomeBlock = ({data}) => {
                         }}>СМОТРЕТЬ ВСЕ
                         </div>
                         <div className={'background-arrow'}
-                             style={{width: '10px', height: '10px', marginRight: '3px'}}/>
+                             style={{width: '10px', height: '10px', marginRight: '5px'}}/>
                     </Link>
                 </div>
                 <div className={"scroll-container"} style={{alignItems: 'center'}}>
@@ -88,21 +88,21 @@ const HomeBlock = ({data}) => {
                             </div>
                         )
                     )}
-                    <div className={'box-home-block-element home-block-element'}>
+                    <div className={'box-home-block-element home-block-element'} >
                         <div style={{
-                            marginLeft: '2px', marginRight: '7px', border: '0px solid #454545',
-                            borderRadius: '7px', padding: '5px'
+                            width: '177px',
                         }}>
                             <Link to={link + data.path} className={'link-element'}
-                                  style={{width: '170px', display: 'flex', alignItems: 'center'}}>
+                                  style={{width: '170px', display: 'flex', alignItems: 'center', borderRadius: '10px', border: '1px solid white', height:'33px', marginRight: '7px'}}>
                                 <div className={'text-element'} style={{fontSize: '18px', width: '170px'}}>
                                     Смотреть ещё
                                 </div>
                                 <div className={'background-arrow'} style={{
-                                    height: '25px',
-                                    width: '25px',
+                                    height: '18px',
+                                    width: '18px',
                                     marginTop: '0',
                                     fontSize: '12.5px',
+                                    marginRight:'7px'
                                 }}/>
                             </Link>
                         </div>

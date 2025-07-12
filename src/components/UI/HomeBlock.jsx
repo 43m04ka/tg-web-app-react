@@ -58,8 +58,8 @@ const HomeBlock = ({data}) => {
                         fontFamily: "'Montserrat', sans-serif",
                         color: 'white',
                         marginLeft: '5px',
-                        width: String(window.innerWidth - 150) + 'px',
                         overflow: 'hidden',
+                        width:'auto'
                     }}>{data.name}</div>
                     <Link to={link + data.path} className={'link-element'} style={{
                         display: 'flex',
@@ -69,12 +69,14 @@ const HomeBlock = ({data}) => {
                         height: '22px',
                         borderRadius: '5px',
                         marginRight: '7px',
+                        width:'max-content'
                     }} to={link + data.path}>
                         <div className={'text-element'} style={{
                             fontSize: '11px',
                             marginRight: '3px',
                             marginTop: '0',
-                            lineHeight: '16px'
+                            lineHeight: '16px',
+                            width: 'max-content',
                         }}>СМОТРЕТЬ ВСЕ
                         </div>
                         <div className={'background-arrow'}

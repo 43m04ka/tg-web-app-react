@@ -50,7 +50,7 @@ const Slider = () => {
 
     if (data.length > 0) {
         return (
-            <div style={{width: String(window.innerWidth) + 'px', overflowX: 'hidden', marginBottom: '20px'}}>
+            <div style={{width: '100%', overflowX: 'hidden', marginBottom: '20px'}}>
                 <Swiper slidesPerView={3} className="swiper"
                         style={{
                             width: String(window.innerWidth * 0.5 * 3 + 14) + 'px',

@@ -95,7 +95,7 @@ const MainPage = ({pageList, cardList}) => {
                 }}>
                     <div style={{height: '300px', overflow: 'hidden'}}></div>
                 </div>
-                <div style={{width: String(window.innerWidth) + 'px'}}>
+                <div style={{width: '100%'}}>
                     <SliderPic pageId = {pageId}/>
                 </div>
                 <div style={{marginBottom: '15px'}}>

@@ -1,4 +1,4 @@
-import React, {createRef, Suspense, useCallback, useEffect, useState} from 'react';
+    import React, {createRef, Suspense, useCallback, useEffect, useState} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import ProductItem from "./ProductItem";
@@ -7,133 +7,33 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 
 let heightText = null
 let textElementHeight = null
-const CardProduct = ({mainData, basketData, setDataDop, dataDop, onGetData, favoriteData, onGetDataF}) => {
-    let dataRequestDatabase = {
-        method: 'getRandom',
-        data: mainData.body.tab
-    }
+const CardProduct = () => {
 
-    const sendRequestDatabase = useCallback(() => {
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/database', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dataRequestDatabase)
-        }).then(r => {
-            let Promise = r.json()
-            Promise.then(prom => {
-                setDataCards(prom.cards)
-                try {
-                    setDataDop([...prom.cards, ...dataDop])
-                } catch (e) {
-                    setDataDop(prom.cards)
-                }
-                onGetData()
-                onGetDataF()
-            })
-        })
-    }, [dataRequestDatabase])
+    let basketData = []
+    let favoriteData = []
 
     const {tg, user} = useTelegram();
     const refText = createRef();
     const navigate = useNavigate();
 
-    const [newMainData, setNewMainData] = useState(mainData)
     const [isBuy, setIsBuy] = React.useState(null);
     const [textHidden, setTextHidden] = React.useState(null);
     const [dataCards, setDataCards] = React.useState([]);
     const [isFavorite, setIsFavorite] = React.useState(null);
     const [isLoad, setIsLoad] =  useState(0);
 
-    if (mainData.id !== newMainData.id) {
-        setIsLoad(0)
-        setNewMainData(mainData)
-        setTextHidden(null)
-        setIsBuy(false);
-        setIsFavorite(null)
-        sendRequestDatabase();
-        heightText = null
-        textElementHeight = null
-        window.scroll(0, 0)
-    }
 
     useEffect(() => {
-        sendRequestDatabase()
-    }, []);
-
-    const onBack = useCallback(async () => {
-        navigate(-1);
-    }, [])
-
-    useEffect(() => {
-        tg.onEvent('backButtonClicked', onBack)
+        tg.BackButton.show();
+        tg.onEvent('backButtonClicked', () => navigate(-1))
         return () => {
-            tg.offEvent('backButtonClicked', onBack)
+            tg.offEvent('backButtonClicked', () => navigate(-1))
         }
-    }, [onBack])
+    }, [])
 
     const onBasket = useCallback(async () => {
         navigate('/basket' + newMainData.body.tab);
     }, [])
-
-    useEffect(() => {
-        tg.BackButton.show();
-    }, [])
-
-    const sendData = {
-        method: 'add',
-        mainData: newMainData.id,
-        user: user,
-    }
-
-    const onSendData = useCallback(() => {
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(sendData)
-        }).then(r => {
-            let Promise = r.json()
-            Promise.then(prom => {
-                const result = prom.body
-                if (result) {
-                    setIsBuy(true)
-                }
-            })
-        })
-    }, [sendData])
-
-    const sendDataF = {
-        method: 'add',
-        mainData: newMainData.id,
-        user: user,
-    }
-
-    const onSendDataF = useCallback(() => {
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/favorites', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(sendDataF)
-        }).then(r => {
-            let Promise = r.json()
-            Promise.then(prom => {
-                const result = prom.body
-                if (result) {
-                    if (isFavorite) {
-                        setIsFavorite(false)
-                    } else {
-                        setIsFavorite(true)
-                    }
-
-                }
-            })
-        })
-    }, [sendData])
-
 
     let buttonColor
     let buttonText

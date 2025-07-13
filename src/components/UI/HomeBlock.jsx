@@ -60,7 +60,6 @@ const HomeBlock = ({data}) => {
                         marginLeft: '5px',
                         overflow: 'hidden',
                         width:'auto',
-                        fontVariant:'small-caps'
                     }}>{data.name}</div>
                     <Link to={link + data.path} className={'link-element'} style={{
                         display: 'flex',
@@ -96,13 +95,13 @@ const HomeBlock = ({data}) => {
                             width: 'max-content',
                         }}>
                             <Link to={link + data.path} className={'link-element'}
-                                  style={{display: 'flex', alignItems: 'center', borderRadius: '10px', border: '1px solid white', height:'33px', marginRight: '7px'}}>
-                                <div className={'text-element'} style={{fontSize: '18px'}}>
+                                  style={{display: 'flex', alignItems: 'center', borderRadius: '7px', border: '1px solid white', height:'25px', marginRight: '7px'}}>
+                                <div className={'text-element'} style={{fontSize: '15px'}}>
                                     Смотреть ещё
                                 </div>
                                 <div className={'background-arrow'} style={{
-                                    height: '18px',
-                                    width: '18px',
+                                    height: 'px15',
+                                    width: '15px',
                                     marginTop: '0',
                                     fontSize: '12.5px',
                                     marginRight:'7px'

@@ -1,11 +1,9 @@
-import {useCallback} from "react";
-
 const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
 
 export function useServer() {
 
 
-    const authentication = async (data, navigate) => {
+    const authentication = async (data, setResult) => {
         await fetch(URL + '/authentication', {
             method: 'POST',
             headers: {
@@ -13,20 +11,7 @@ export function useServer() {
             },
             body: JSON.stringify(data)
         }).then(async response => {
-            if (response.status === 200) {
-                navigate('/admin-panel?login=' + data.login + '&password=' + data.password)
-            }
-        })
-    }
-
-
-    const uploadCards = async (data) => {
-        await fetch(URL + '/uploadCards', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
+            setResult(response.status === 200);
         })
     }
 
@@ -110,6 +95,21 @@ export function useServer() {
         })
     }
 
+    const getCatalogs = async (pageId, group, setResult) => {
+        await fetch(URL + '/getCatalogs', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({pageId:pageId, group:group})
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
 
     const deletePage = async (id) => {
         await fetch(URL + '/deletePage', {
@@ -130,16 +130,6 @@ export function useServer() {
             body: JSON.stringify({id: id})
         })
     }
-
-    const createPage = async (data) => {
-        await fetch(URL + '/createPage', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        })
-    };
 
     const findCardsByCatalog = async (catalog, setResult) => {
         await fetch(URL + '/findCardsByCatalog?catalog='+catalog+'&time='+Date.now(), {
@@ -178,7 +168,6 @@ export function useServer() {
 
     return {
         authentication,
-        uploadCards,
         deleteCards,
         changeStatusCards,
         getCategories,
@@ -186,10 +175,10 @@ export function useServer() {
         editCardPrice,
         deletePage,
         deleteCatalog,
-        createPage,
         createCatalog,
         getPreviewCards,
-        findCardsByCatalog
+        findCardsByCatalog,
+        getCatalogs
     }
 }
 

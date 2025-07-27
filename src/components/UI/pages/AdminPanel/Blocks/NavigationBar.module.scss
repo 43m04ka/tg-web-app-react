@@ -1,0 +1,36 @@
+.label {
+  margin: 5px;
+  border-radius: 100px;
+  padding: 5px;
+  border: 0;
+  color:white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.active {
+  color: #a7c6f8;
+  margin-right: 0;
+}
+
+.main-division{
+  width: max-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+  height: 100vh;
+  border-right: 2px solid white;
+}
+
+.separator {
+  width: 100%;
+  height: 2px;
+  background-color: #fff;
+}
+
+.block{
+  border: 2px solid white;
+  border-radius: 10px;
+  margin-top: 5px;
+  width: 300px;
+}

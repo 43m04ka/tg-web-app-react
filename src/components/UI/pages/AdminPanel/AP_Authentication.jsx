@@ -1,13 +1,22 @@
 import React, {useState} from 'react';
-import {useServer} from "../../../hooks/useServer";
+import {useServer} from "../../../../hooks/useServer";
 import {useNavigate} from "react-router-dom";
+import useData from "./useData";
 
 const ApAuthentication = () => {
     const {authentication} = useServer();
     const navigate = useNavigate();
+    const {setAuthenticationData} = useData()
 
     const [login, setLogin] = useState('')
     const [password, setPassword] = useState('')
+
+    const isAuth = (result) => {
+        if(result) {
+            navigate('/admin-panel');
+            setAuthenticationData({login:login, password:password})
+        }
+    }
 
     return (
         <div style={{
@@ -40,7 +49,7 @@ const ApAuthentication = () => {
                            textAlign: 'center'
                        }} placeholder={'Введите пароль'}/>
             </div>
-            <button onClick={async ()=>{await authentication({login:login, password:password}, navigate)}} style={{
+            <button onClick={async ()=>{await authentication({login:login, password:password}, isAuth)}} style={{
                 margin: '5px',
                 borderRadius: '100px',
                 padding: '5px',

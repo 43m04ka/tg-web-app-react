@@ -5,18 +5,18 @@ import React, {useCallback, useEffect, useState} from "react";
 import {useTelegram} from "./hooks/useTelegram";
 import {Outlet, Route, Routes, useNavigate} from "react-router-dom";
 import ProductList from "./components/UI/ProductList";
-import MainPage from "./components/UI/main_page/MainPage";
+import MainPage from "./components/UI/pages/Main/MainPage";
 import ErrorPage from "./components/UI/ErrorPage";
 import Search from "./components/UI/Search";
 import Basket from "./components/UI/Basket";
-import AdminPanel from "./components/UI/admin_panel/AdminPanel";
+import AdminPanel from "./components/UI/pages/AdminPanel/AdminPanel";
 import Info from "./components/UI/Info";
 import ProductListSelector from "./components/UI/ProductListSelector";
 import History from "./components/UI/History";
 import Order from "./components/UI/Order";
 import Favorites from "./components/UI/Favorites";
 import Roulette from "./components/UI/Roulette";
-import AP_Authentication from "./components/UI/admin_panel/AP_Authentication";
+import AP_Authentication from "./components/UI/pages/AdminPanel/AP_Authentication";
 import useGlobalData from "./hooks/useGlobalData";
 
 const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
@@ -176,7 +176,7 @@ function App() {
                                element={<Search height={size} setData={setDataCardsDop} setStatusApp={setStatus}
                                                 page={platform.id}/>}/>
                     ))}
-                    <Route path={'admin-panel'} element={<AdminPanel/>}/>
+                    <Route path={'admin-panel/*'} element={<AdminPanel/>}/>
                     <Route path={'admin'} element={<AP_Authentication/>}/>
                     <Route path={'info'} element={<Info/>}/>
                     <Route path={'history'} element={<History historyData={historyData}/>}/>

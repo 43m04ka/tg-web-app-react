@@ -100,7 +100,7 @@ const HomeBlock = ({data}) => {
                                     Смотреть ещё
                                 </div>
                                 <div className={'background-arrow'} style={{
-                                    height: 'px15',
+                                    height: '15px',
                                     width: '15px',
                                     marginTop: '0',
                                     fontSize: '12.5px',

@@ -1,10 +1,10 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import '../../styles/style.css';
-import {useTelegram} from "../../../hooks/useTelegram";
-import HeadSelector from "../HeadSelector";
+import '../../../styles/style.css';
+import {useTelegram} from "../../../../hooks/useTelegram";
+import HeadSelector from "../../HeadSelector";
 import MP_Catalogs from "./MP_CatalogListBody";
 import SliderPic from "./MP_CatalogListHead";
-import {useServer} from "../../../hooks/useServer";
+import {useServer} from "../../../../hooks/useServer";
 
 let scrollCtrl = 0;
 let lastScroll = 0;

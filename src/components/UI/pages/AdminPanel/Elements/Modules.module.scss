@@ -1,0 +1,132 @@
+.input-box {
+  position: relative;
+  margin-top: 10px;
+}
+
+.block-main {
+  position: relative;
+  margin: 15px 10px 10px 10px;
+  width: max-content;
+}
+
+.separator-main {
+  position: relative;
+  margin-top: 25px;
+}
+
+.block-border {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2px;
+  width: max-content;
+}
+
+.block-body {
+  padding: 15px 10px 10px 10px;
+  background: #373737;
+  border-radius: 10px;
+  width: max-content;
+}
+
+.separator-body {
+  background: #373737;
+  border-top: 2px solid white;
+  padding-top: 5px;
+}
+
+.button {
+  background: #373737;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  width: 300px;
+  border: none;
+  cursor: pointer;
+}
+
+.border-true {
+  background: #1ead6d;
+  padding: 2px;
+  border-radius: 12px;
+  width: 304px;
+  border: 2px;
+}
+
+.border-false {
+  background: #ed7373;
+  padding: 2px;
+  border-radius: 12px;
+  width: 304px;
+  border: 2px;
+}
+
+.label {
+  position: absolute;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  top: -8px;
+  left: 13px;
+  background: #373737;
+  padding: 0 3px;
+  color: #fff
+}
+
+.input {
+  background: #373737;
+  color: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  width: 300px;
+  border: none;
+}
+
+.div {
+  background: #fff;
+  padding: 2px;
+  border-radius: 12px;
+  width: 304px;
+  border: 2px;
+}
+
+.label-reload {
+  position: absolute;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  top: -8px;
+  right: 13px;
+  justify-items: left;
+  background: #373737;
+  padding: 0 3px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.background-arrow {
+  position: absolute;
+  background-image: url("../../../../icons/arrow.png");
+  background-size: cover;
+  transition-property: rotate;
+  transition-duration: 0.2s;
+  width: 15px;
+  height: 15px;
+
+  &-active {
+    rotate: 90deg;
+  }
+}
+
+.drop-element {
+position: absolute;
+  width: 100%;
+  background: #444444;
+  border-radius: 10px;
+  border: 2px solid white;
+  margin-top: 10px;
+  z-index: 10;
+  left: 0;
+}

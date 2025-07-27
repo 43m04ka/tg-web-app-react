@@ -1,16 +1,19 @@
 import {create} from 'zustand'
 import {devtools} from "zustand/middleware";
 import {useServerUser} from "./useServerUser";
+import {useState} from "react";
 
-const {getPageList, getCatalogList, getPreviewCardList} = useServerUser()
+const {getPageList, getStructureCatalogList, getPreviewCardList} = useServerUser()
 
 const useGlobalData = create(devtools(set => ({
     pageList: null,
-    updatePageList: () => getPageList((result) => set(() => ({pageList: result}))),
+    updatePageList: () => getPageList((result) => {
+        set((state) => ({pageList: result, pageId: state.pageId === null? result[0].id : state.pageId}));
+    }),
 
     catalogList: [],
     mainPageCards: [],
-    updateCatalogList: () => getCatalogList((result) => set(() => ({catalogList: result}))),
+    updateCatalogList: () => getStructureCatalogList((result) => set(() => ({catalogList: result}))),
     updateMainPageCards: () => getPreviewCardList((result) => set(() => ({mainPageCards: result}))),
 
     pageId: null,

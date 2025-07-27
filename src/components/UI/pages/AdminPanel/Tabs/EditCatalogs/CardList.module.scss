@@ -1,0 +1,64 @@
+.card-choice-block{
+  display: grid;
+  grid-template-columns: 300px 75px 75px 150px 170px;
+  margin: 5px 0;
+}
+
+.card-choice-label{
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  color: #fff;
+  margin-right: 10px;
+  line-height: 15px;
+  height: 15px;
+  overflow: hidden;
+}
+
+.card-choice-status{
+  &-true{
+    color: #fff;
+    text-align: center;
+  }
+  &-false{
+    color: #ed7373;
+    text-align: center;
+  }
+}
+
+.card-choice-btn{
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  color: #fff;
+  text-align: center;
+;}
+
+.card-choice-active *{
+  color: #a7c6f8;
+}
+
+.page-navigation{
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}
+.page-navigation *{
+  margin: 5px;
+  padding: 0 5px;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+  border: 1px solid white;
+  border-radius: 5px;
+}
+.active-page{
+  background-color: #a7c6f8;
+  color:black;
+}
+
+.card-choice-empty{
+  margin: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+}

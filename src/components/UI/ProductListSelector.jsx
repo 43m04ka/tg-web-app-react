@@ -2,7 +2,7 @@ import React, {useCallback, useEffect} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
 import {useNavigate} from "react-router-dom";
 import {useServer} from "../../hooks/useServer";
-import mainPage from "./main_page/MainPage";
+import mainPage from "./pages/Main/MainPage";
 
 const ProductListSelector = ({basketData}) => {
     const [selectCategory, setSelectCategory] = React.useState(0);

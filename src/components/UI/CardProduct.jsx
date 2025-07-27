@@ -12,15 +12,15 @@ const CardProduct = () => {
     let basketData = []
     let favoriteData = []
 
-    const {tg, user} = useTelegram();
+    const {tg} = useTelegram();
     const refText = createRef();
     const navigate = useNavigate();
 
     const [isBuy, setIsBuy] = React.useState(null);
-    const [textHidden, setTextHidden] = React.useState(null);
+    const [textHidden, setTextHidden] = React.useState(true);
     const [dataCards, setDataCards] = React.useState([]);
-    const [isFavorite, setIsFavorite] = React.useState(null);
-    const [isLoad, setIsLoad] =  useState(0);
+    const [isFavorite, setIsFavorite] = React.useState(false);
+    const [pictureIsLoad, setPictureIsLoad] =  useState(0);
 
 
     useEffect(() => {
@@ -29,6 +29,7 @@ const CardProduct = () => {
         return () => {
             tg.offEvent('backButtonClicked', () => navigate(-1))
         }
+
     }, [])
 
     const onBasket = useCallback(async () => {
@@ -274,7 +275,7 @@ const CardProduct = () => {
         }
     }
     let seeLove = (<div/>)
-    if (dataCards.length !== 0 && isLoad >= 1) {
+    if (dataCards.length !== 0 && pictureIsLoad >= 1) {
         seeLove = (<div>
             <div className={"title"}>Рекомендуем:</div>
             <div className={'list-grid'}>
@@ -293,7 +294,7 @@ const CardProduct = () => {
             position:'unset'
     }}></div></div>)
     let imgLoadElem = (<></>)
-    if (isLoad === 1) {
+    if (pictureIsLoad === 1) {
         imgElement = (<div className={'img'} style={{
             height: String(window.innerWidth - 20) + 'px',
             borderRadius: '15px', backgroundImage: "url('" + newMainData.body.img + "')",
@@ -310,9 +311,9 @@ const CardProduct = () => {
             alignItems: 'end',
             justifyContent: 'space-between',
         }} src={newMainData.body.img.slice(0, newMainData.body.img.indexOf('?w=') + 1) + 'w=1024'}
-                            onLoad={() => setIsLoad(2)}></img>)
+                            onLoad={() => setPictureIsLoad(2)}></img>)
     }
-    if (isLoad === 2) {
+    if (pictureIsLoad === 2) {
         imgElement = (<div className={'img'} style={{
             height: String(window.innerWidth - 20) + 'px',
             borderRadius: '15px', backgroundImage: "url('" + newMainData.body.img.slice(0, newMainData.body.img.indexOf('?w=')+1) + "w=1024')",
@@ -340,7 +341,7 @@ const CardProduct = () => {
                     alignItems: 'end',
                     justifyContent: 'space-between',
                 }} src={newMainData.body.img}
-                     onLoad={() => setIsLoad(1)}></img>
+                     onLoad={() => setPictureIsLoad(1)}></img>
                 {imgLoadElem}
                 {imgElement}
                 <div style={{

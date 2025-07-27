@@ -17,8 +17,8 @@ export function useServerUser() {
         })
     }
 
-    const getCatalogList = async (setResult) => {
-        await fetch(URL + '/getCatalogList?time='+Date.now(), {
+    const getStructureCatalogList = async (setResult) => {
+        await fetch(URL + '/getStructureCatalogList?time='+Date.now(), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ export function useServerUser() {
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
-                setResult(data.result.sort((a, b) => a.serialNumber - b.serialNumber))
+                setResult(data.result)
             })
         })
     }
@@ -45,5 +45,5 @@ export function useServerUser() {
         })
     }
 
-    return {getPageList, getCatalogList, getPreviewCardList}
+    return {getPageList, getStructureCatalogList, getPreviewCardList}
 }

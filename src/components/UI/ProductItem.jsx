@@ -6,16 +6,16 @@ const ProductItem = ({product}) => {
 
     let oldPrice = ''
     let parcent = ''
-    if (typeof product.body.oldPrice === 'undefined') {
-        if (typeof product.body.releaseDate === 'undefined') {
+    if (typeof product.oldPrice === null) {
+        if (typeof product.releaseDate === null) {
             parcent = ''
         } else {
-            parcent = product.body.releaseDate.replace('#', '')
+            parcent = product.releaseDate.replace('#', '')
             parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
         }
-    } else if (product.body.oldPrice > product.body.price) {
-        oldPrice = product.body.oldPrice.toLocaleString() + ' ₽'
-        parcent = '−' + String(Math.ceil((1 - product.body.price / product.body.oldPrice) * 100)) + '%'
+    } else if (product.oldPrice > product.price) {
+        oldPrice = product.oldPrice.toLocaleString() + ' ₽'
+        parcent = '−' + String(Math.ceil((1 - product.price / product.oldPrice) * 100)) + '%'
     }
     let parcentEl = (<div></div>)
     if (parcent !== '') {
@@ -39,15 +39,15 @@ const ProductItem = ({product}) => {
     }
 
     let view = ''
-    if (typeof product.body.view === 'undefined') {
+    if (typeof product.view === null) {
         view = ''
     } else {
-        view = ' ' + product.body.view
+        view = ' ' + product.view
     }
 
 
     let platform = (<div></div>)
-    if (typeof product.body.platform !== 'undefined' && product.body.platform !== 'NA') {
+    if (typeof product.platform !== null && product.platform !== 'NA') {
         platform = (<div style={{
             lineHeight: '20px',
             background: '#191919',
@@ -64,12 +64,12 @@ const ProductItem = ({product}) => {
             overflow: 'hidden',
             color: 'white',
             width: 'max-content'
-        }}>{product.body.platform}</div>)
+        }}>{product.platform}</div>)
     }
 
     let price = ''
     try{
-        price = product.body.price.toLocaleString() + ' ₽'
+        price = product.price.toLocaleString() + ' ₽'
     }catch (e) {
         
     }
@@ -80,7 +80,7 @@ const ProductItem = ({product}) => {
             <Link to={'/card/' + product.id} className={'link-element'}>
                 <div className={'box-home-block-element'}>
                     <div style={{
-                        backgroundImage: 'url("' + product.body.img + '")',
+                        backgroundImage: 'url("' + product.image + '")',
                         backgroundRepeat: 'no-repeat',
                         backgroundSize: 'cover',
                         display: 'flex',
@@ -92,7 +92,7 @@ const ProductItem = ({product}) => {
                         {parcentEl}
                     </div>
                     <div style={{height: '39px', overflow: 'hidden', lineHeight: '20px'}}>
-                        <div className={'text-element name-element'}>{product.body.title + view}</div>
+                        <div className={'text-element name-element'}>{product.name + view}</div>
                     </div>
                     <div style={{display: 'flex', justifyContent: 'left'}}>
                         <div className={'text-element price-element'}>{price}</div>

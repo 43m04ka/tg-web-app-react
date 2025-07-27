@@ -1,0 +1,141 @@
+const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
+
+export function useServer() {
+
+    const getCardList = async (setResult, catalogId, listNumber) => {
+        fetch(`${URL}/getCardList?time=${Date.now()}&catalogId=${catalogId}&listNumber=${listNumber}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data)
+            })
+        })
+    }
+
+    const getCard = async (setResult, id) => {
+        fetch(`${URL}/getCard?time=${Date.now()}&id=${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
+    const getCatalogList = async (setResult) => {
+        await fetch(`${URL}/getCatalogList?time=${Date.now()}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
+    const createCatalog = async (setResult, authenticationData, path, pageId) => {
+        await fetch(`${URL}/createCatalog`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({authenticationData:authenticationData, path:path, structurePageId:pageId})
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
+    const changeSaleStatusCatalog = async (setResult, authenticationData, catalogId, changeTo) => {
+        await fetch(`${URL}/changeSaleStatusCatalog`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({authenticationData:authenticationData, catalogId:catalogId, changeTo:changeTo})
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
+    const updateCardData = async (setResult, authenticationData, cardId, updateData) => {
+        await fetch(`${URL}/updateCardData`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({authenticationData:authenticationData, cardId:cardId, updateData:updateData})
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
+    const updatePageData = async (setResult, authenticationData, pageId, updateData) => {
+        await fetch(`${URL}/updatePageData`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({authenticationData:authenticationData, pageId:pageId, updateData:updateData})
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
+    const searchForName = async (setResult, searchString) => {
+        await fetch(`${URL}/searchForName?searchString=${searchString}&time=${Date.now()}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
+    const createPage = async (setResult, authenticationData, pageData) => {
+        await fetch(URL + '/createPage', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({authenticationData:authenticationData, pageData:pageData})
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    };
+
+    return {
+        getCardList, getCard, getCatalogList,
+        createCatalog, createPage,
+        changeSaleStatusCatalog, updateCardData, updatePageData,
+        searchForName}
+}

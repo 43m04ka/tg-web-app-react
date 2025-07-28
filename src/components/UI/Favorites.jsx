@@ -1,66 +1,38 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
 import {Link, useNavigate} from "react-router-dom";
-import ProductItemBasket from "./ProductItemBasket";
+import {useServerUser} from "../../hooks/useServerUser";
 
-const Favorites = ({height}) => {
+const Favorites = () => {
 
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
-    const [status, setStatus] = useState(0);
-    const [favorites, setFavorites] = useState([])
+    const [cardList, setCardList] = useState(null)
+    const {getFavoriteList} = useServerUser()
 
-
-    const sendData = {
-        method: 'get',
-        mainData: '',
-        user: user,
+    if(cardList === null){
+        console.log(cardList)
+        getFavoriteList(setCardList, user.id).then()
     }
 
-    const onGetData = useCallback(() => {
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/favorites', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(sendData)
-        }).then(r => {
-            let Promise = r.json()
-            Promise.then(r => {
-                let newArray = []
-                r.body.map(el => {
-                    newArray = [...newArray, el]
-                })
-                setFavorites(newArray);
-                setStatus(1)
-            })
-        })
-    }, [sendData])
-
-    let onBack = useCallback(async () => {
-        navigate(-1);
+    useEffect(() => {
+        tg.onEvent('backButtonClicked', () => navigate(-1))
+        return () => {
+            tg.offEvent('backButtonClicked', () => navigate(-1))
+        }
     }, [])
 
-    useEffect(() => {
-        tg.onEvent('backButtonClicked', onBack)
-        return () => {
-            tg.offEvent('backButtonClicked', onBack)
-        }
-    }, [onBack])
-
-    if (status === 0) {
-        sendData.mainData = 'get'
-        onGetData()
+    if (cardList === null) {
         return (<div className={'plup-loader'} style={{
-            marginTop: String(height / 2 - 50) + 'px',
+            marginTop: String(window.innerHeight / 2 - 50) + 'px',
             marginLeft: String(window.innerWidth / 2 - 50) + 'px'
         }}></div>);
-    } else if (status === 1) {
-        if (favorites.length === 0) {
+    } else {
+        if (cardList.length === 0) {
             return (
                 <div style={{display: 'grid'}}>
                     <div style={{
-                        height: String(height - 60 - 15 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
+                        height: String(window.innerHeight - 60 - 15 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
                         marginTop: '15px', textAlign: 'center',
                         color: 'gray', fontSize: '16px',
                         display: 'flex',
@@ -71,7 +43,7 @@ const Favorites = ({height}) => {
                         <div className={'background-basketSaid'} style={{width: '65px', height: '83px'}}/>
                         <div className={'text-element'}>В избранном ничего нет...</div>
                     </div>
-                    <Link to={'/home0'} className={'link-element'}>
+                    <Link to={'/'} className={'link-element'}>
                         <button className={'all-see-button'} style={{marginTop: '10px', width: String(300) + 'px'}}>На
                             главную
                         </button>
@@ -88,46 +60,44 @@ const Favorites = ({height}) => {
                             marginBottom:'0px'
                         }}>Избранное
                         </div>
-                        {favorites.map(item => {
-
-
+                        {cardList.map(item => {
                             let platform = ''
-                            if (typeof item.body.platform !== 'undefined') {
-                                if (typeof item.body.view === 'undefined') {
-                                    platform = item.body.platform
+                            if (typeof item.platform !== 'undefined') {
+                                if (typeof item.view === 'undefined') {
+                                    platform = item.platform
                                 } else {
-                                    platform = item.body.view
+                                    platform = item.view
                                 }
                             } else {
                                 platform = ''
                             }
 
                             let price = ''
-                            if (item.body.isSale) {
-                                price = item.body.price + ' ₽'
+                            if (item.isSale) {
+                                price = item.price + ' ₽'
                             } else {
                                 price = 'Нет в продаже!'
                             }
 
                             let oldPrice = ''
                             let parcent = ''
-                            if (typeof item.body.oldPrice === 'undefined') {
-                                if (typeof item.body.releaseDate === 'undefined') {
+                            if (typeof item.oldPrice === 'undefined') {
+                                if (typeof item.releaseDate === 'undefined') {
                                     parcent = ''
                                 } else {
-                                    parcent = item.body.releaseDate.replace('#', '')
+                                    parcent = item.releaseDate.replace('#', '')
                                     parcent = parcent.slice(0, 6)+ parcent.slice(8, 10)
                                 }
                             } else {
-                                oldPrice = String(item.body.oldPrice) + ' ₽'
-                                parcent = '−'+String(Math.ceil((1-item.body.price/item.body.oldPrice)*100))+'%'
+                                oldPrice = String(item.oldPrice) + ' ₽'
+                                parcent = '−'+String(Math.ceil((1-item.price/item.oldPrice)*100))+'%'
                             }
 
-                            let endDate = ''
-                            if (typeof item.body.endDate === 'undefined') {
-                                endDate = ''
+                            let endDatePromotion = ''
+                            if (typeof item.endDatePromotion === 'undefined') {
+                                endDatePromotion = ''
                             } else {
-                                endDate = 'Скидка ' + parcent + ' ' + item.body.endDate
+                                endDatePromotion = 'Скидка ' + parcent + ' ' + item.endDatePromotion
                             }
                             let parcentEl = (<div></div>)
                             if(parcent !== ''){
@@ -152,12 +122,12 @@ const Favorites = ({height}) => {
                             }
 
                             let type = 0
-                            if (typeof item.body.oldPrice === 'undefined') {
-                                if (typeof item.body.releaseDate === 'undefined') {
+                            if (typeof item.oldPrice === 'undefined') {
+                                if (typeof item.releaseDate === 'undefined') {
                                     parcent = ''
                                     type = 0
                                 } else {
-                                    parcent = item.body.releaseDate.replace('#', '')
+                                    parcent = item.releaseDate
                                     parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
                                     type = 2
                                 }
@@ -169,7 +139,7 @@ const Favorites = ({height}) => {
                                 marginTop: '0',
                                 height: '15px',
                                 fontSize: '15px',
-                            }}>{item.body.price+' ₽'}</div>)
+                            }}>{item.price+' ₽'}</div>)
 
                             let oldPriceEl = (<div></div>)
 
@@ -181,7 +151,7 @@ const Favorites = ({height}) => {
                                     fontSize: '15px',
                                     color: '#ff5d5d',
                                     marginRight:'0px'
-                                }}>{item.body.price+' ₽'}</div>)
+                                }}>{item.price+' ₽'}</div>)
                                 oldPriceEl = (<div className={'text-element text-basket'} style={{
                                     lineHeight: '15px',
                                     marginTop: '0',
@@ -189,7 +159,7 @@ const Favorites = ({height}) => {
                                     fontSize: '15px',
                                     color:'gray',
                                     textDecoration:'line-through'
-                                }}>{item.body.oldPrice+' ₽'}</div>)
+                                }}>{item.oldPrice+' ₽'}</div>)
                             }
                             if(type === 2){
                                 oldPriceEl = (<div className={'text-element text-basket'} style={{
@@ -209,7 +179,7 @@ const Favorites = ({height}) => {
                                             height:'80px',
                                             width:'80px',
                                             borderRadius: '7px',
-                                            backgroundImage: "url('" + item.body.img + "')",
+                                            backgroundImage: "url('" + item.image + "')",
                                             backgroundSize: 'cover',
                                             display: 'flex',
                                             flexDirection: 'row',
@@ -229,7 +199,7 @@ const Favorites = ({height}) => {
                                                 fontSize: '13px',
                                                 overflow: 'hidden',
                                                 display: 'flex',
-                                            }}>{platform + ' • ' + item.body.title}</div>
+                                            }}>{platform + ' • ' + item.name}</div>
                                             <div style={{
                                                 marginTop:'0px',
                                                 display: 'flex',
@@ -248,14 +218,12 @@ const Favorites = ({height}) => {
                                                 height: '15px',
                                                 marginTop:'5px'
                                             }}>
-                                                {endDate}
+                                                {endDatePromotion}
                                             </div>
                                         </div>
                                     </Link>
                                     <div onClick={() => {
-                                        sendData.mainData = item.id;
-                                        sendData.method = 'del'
-                                        onGetData()
+
                                     }} style = {{justifyContent:'center', alignContent:"center", marginRight:'20px'}}>
                                         <div className={'background-trash'}
                                              style={{padding: '10px', height: '20px', width: '20px'}}>

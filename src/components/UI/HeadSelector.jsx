@@ -10,6 +10,8 @@ import 'swiper/css/autoplay';
 
 import {Autoplay, Pagination, Controller, EffectCoverflow} from 'swiper/modules';
 import useGlobalData from "../../hooks/useGlobalData";
+import {useServerUser} from "../../hooks/useServerUser";
+import {useTelegram} from "../../hooks/useTelegram";
 
 
 let isScroll = false
@@ -17,32 +19,21 @@ let realIndex = 0
 
 const HeadSelector = ({hidden}) => {
 
-    const {pageList, setPageId} = useGlobalData()
-
-    let page
-    pageList.map((item, index) => {
-        if('/'+item.link===window.location.pathname){
-            page = index
-        }
-    })
-
-    let basketData = []
+    const {pageList, setPageId, pageId, catalogList} = useGlobalData()
+    const {user} = useTelegram()
+    const {getBasketList} = useServerUser()
     const navigate = useNavigate();
 
     const [basketLen, setBasketLen] = useState(0);
     const [colorSlider, setColorSlider] = useState('');
     const [swiperRef, setSwiperRef] = useState(null);
 
-
-    let newArray = []
-    basketData.map(el => {
-        if (Number(el.body.tab) === page && el.body.isSale === true) {
-            newArray = [...newArray, el]
+    let page
+    pageList.map((item, index) => {
+        if ('/' + item.link === window.location.pathname) {
+            page = index
         }
     })
-    if (newArray.length !== basketLen) {
-        setBasketLen(newArray.length)
-    }
 
     let buttonMenuHeight = 40
     if (hidden) {
@@ -66,23 +57,38 @@ const HeadSelector = ({hidden}) => {
     }
     useEffect(() => {
         onIndexChange(page)
+        getBasketList((result) => {
+            let catalogIdList = []
+            catalogList.forEach(catalog=>{
+                if(catalog.structurePageId === pageId){
+                    catalogIdList.push(catalog.id)
+                }
+            })
+            let cardList = []
+            result.forEach(card=>{
+                if(catalogIdList.includes(card.catalogId)){
+                    cardList.push(card)
+                }
+            })
+            setBasketLen(cardList.length)
+        }, user.id).then()
     }, [page])
 
     const onIndexChange = (index) => {
         let flag = false
 
         pageList.map((item) => {
-            if('/'+item.link===window.location.pathname){
+            if ('/' + item.link === window.location.pathname) {
                 flag = true
             }
         })
 
-        if(flag){
+        if (flag) {
             navigate('/' + [...pageList, ...pageList][index]["link"])
             setPageId([...pageList, ...pageList][index]["id"])
         }
 
-        setColorSlider('linear-gradient(90deg, '+pageList[(index+pageList.length-1)%pageList.length].color+' 10%, '+pageList[(index+pageList.length)%pageList.length].color+' 50%, '+pageList[(index+pageList.length+1)%pageList.length].color+' 90%)');
+        setColorSlider('linear-gradient(90deg, ' + pageList[(index + pageList.length - 1) % pageList.length].color + ' 10%, ' + pageList[(index + pageList.length) % pageList.length].color + ' 50%, ' + pageList[(index + pageList.length + 1) % pageList.length].color + ' 90%)');
     }
 
     return (
@@ -97,7 +103,7 @@ const HeadSelector = ({hidden}) => {
                 transitionProperty: 'margin',
                 transitionDuration: '0.3s',
             }}>
-                <Link to={'/search' + String(page)} className={'link-element'}>
+                <Link to={'/search-' + String(pageId)} className={'link-element'}>
                     <div className={'search'} style={{padding: '7px', display: 'flex', flexDirection: 'row'}}>
                         <div className={'background-search'} style={{width: '21px', height: '21px'}}></div>
                         <div style={{
@@ -112,7 +118,7 @@ const HeadSelector = ({hidden}) => {
                         </div>
                     </div>
                 </Link>
-                <Link to={'/basket' + page} className={'link-element'}>
+                <Link to={'/basket-' + pageId} className={'link-element'}>
                     <div className={'div-button-panel'} style={{padding: '3px'}}>
                         <div className={'background-basket'} style={{width: '100%', height: '100%'}}>
                             {basketKolElement}
@@ -173,7 +179,7 @@ const HeadSelector = ({hidden}) => {
                             if (ev.touches.currentX > (window.innerWidth - 14) / 3 * 2) {
                                 let nI = realIndex + 1
 
-                                if (nI === pageList.length*2) {
+                                if (nI === pageList.length * 2) {
                                     swiperRef.slideToLoop(0, 300, false);
                                     realIndex = 0
                                 } else {
@@ -184,8 +190,8 @@ const HeadSelector = ({hidden}) => {
                             if (ev.touches.currentX < (window.innerWidth - 14) / 3) {
                                 let nI = realIndex - 1
                                 if (nI === -1) {
-                                    swiperRef.slideToLoop(pageList.length*2-1, 300, false);
-                                    realIndex = pageList.length*2-1
+                                    swiperRef.slideToLoop(pageList.length * 2 - 1, 300, false);
+                                    realIndex = pageList.length * 2 - 1
                                 } else {
                                     swiperRef.slideToLoop(realIndex - 1, 300, false);
                                     realIndex -= 1
@@ -204,7 +210,12 @@ const HeadSelector = ({hidden}) => {
                             display: 'flex',
                             flexDirection: 'row',
                         }}>
-                            <div style={{height: '20px', width: '20px', backgroundImage: "url('" + page.url + "')", backgroundSize:'cover'}}/>
+                            <div style={{
+                                height: '20px',
+                                width: '20px',
+                                backgroundImage: "url('" + page.url + "')",
+                                backgroundSize: 'cover'
+                            }}/>
                             <div style={{
                                 textDecoration: 'none',
                                 fontFamily: "'Montserrat', sans-serif",

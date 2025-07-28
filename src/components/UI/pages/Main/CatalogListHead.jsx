@@ -14,10 +14,10 @@ import useGlobalData from "../../../../hooks/useGlobalData";
 
 let realIndex = 0
 let lastPageID = -1
-const Slider = () => {
-    const {catalogList, pageId} = useGlobalData()
+const CatalogListHead = () => {
+    const {catalogStructureList, pageId} = useGlobalData()
 
-    const data = catalogList.filter(item => item.structurePageId === pageId && item.group === 'head')
+    const data = catalogStructureList.filter(item => item.structurePageId === pageId && item.group === 'head')
 
     if (lastPageID !== pageId) {
         lastPageID = pageId;
@@ -43,10 +43,6 @@ const Slider = () => {
     if (data.length > 3) {
         loop = true
     }
-
-    useEffect(() => {
-        //getCatalogs(pageId, 'head', setData)
-    }, []);
 
     if (data.length > 0) {
         return (
@@ -162,4 +158,4 @@ const Slider = () => {
     }
 };
 
-export default Slider;
+export default CatalogListHead;

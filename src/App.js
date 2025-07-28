@@ -1,9 +1,8 @@
-//import logo from './logo.svg';
 import './App.css';
 
 import React, {useCallback, useEffect, useState} from "react";
 import {useTelegram} from "./hooks/useTelegram";
-import {Outlet, Route, Routes, useNavigate} from "react-router-dom";
+import {Route, Routes, useNavigate} from "react-router-dom";
 import ProductList from "./components/UI/ProductList";
 import MainPage from "./components/UI/pages/Main/MainPage";
 import ErrorPage from "./components/UI/ErrorPage";
@@ -18,14 +17,14 @@ import Favorites from "./components/UI/Favorites";
 import Roulette from "./components/UI/Roulette";
 import AP_Authentication from "./components/UI/pages/AdminPanel/AP_Authentication";
 import useGlobalData from "./hooks/useGlobalData";
+import CardProduct from "./components/UI/CardProduct";
 
-const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
 
 function App() {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
 
-    const {pageList, updatePageList, updateCatalogList, updateMainPageCards} = useGlobalData();
+    const {pageList, updatePageList, updateCatalogList, updateMainPageCards, updateCatalogStructureList, updatePreviewFavoriteData, updatePreviewBasketData} = useGlobalData();
 
     const [size, setSize] = React.useState(window.innerHeight);
 
@@ -39,17 +38,11 @@ function App() {
     const [dataCards, setDataCards] = useState([])
     const [dataCardsDop, setDataCardsDop] = useState([])
     const [basketData, setBasketData] = useState([]);
-    const [favoriteData, setFavoriteData] = useState([])
     const [historyData, setHistoryData] = React.useState([]);
 
     const resizeHandler = () => {
         setSize(window.innerHeight);
     };
-
-    const sendData = {
-        method: 'get',
-        user: user,
-    }
 
     useEffect(() => {
         window.addEventListener("resize", resizeHandler);
@@ -59,98 +52,21 @@ function App() {
         };
     }, [])
 
-    const onGetData = useCallback(() => {
-        try {
-            fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(sendData)
-            }).then(r => {
-                let Promise = r.json()
-                Promise.then(r => {
-                    if(typeof r.body !== 'undefined') {
-                        setBasketData(r.body);
-                    }
-                })
-            })
-        }catch (e) {
-            
-        }
-    }, [sendData])
-
-    const onGetDataF = useCallback(() => {
-        try {
-            fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/favorites', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(sendData)
-            }).then(r => {
-                let Promise = r.json()
-                Promise.then(r => {
-                    if(typeof r.body !== 'undefined') {
-                        setFavoriteData(r.body);
-                    }
-                })
-            })
-        }catch (e) {
-
-        }
-    }, [sendData])
-
-
-
     useEffect(() => {
         try {
             tg.disableVerticalSwipes();
             tg.lockOrientation();
-        }catch (e)
-        {console.log(e)}
-
-        try {
-            if (tg.platform !== 'tdesktop' && tg.platform !== 'macos') {
-                tg.requestFullscreen()
-            }
-            tg.expand()
-        } catch (err) {
-            console.log(err)
-        }
+        }catch (e) {console.log(e)}
         tg.ready();
     }, [])
 
-    const sendDataOrders = {
-        method: 'get',
-        user: user,
-    }
-
-    const onSendDataOrders = useCallback(() => {
-        try {
-            fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/history', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(sendDataOrders)
-            }).then(r => {
-                let Promise = r.json()
-                Promise.then(prom => {
-                    if(typeof prom.body !== 'undefined') {
-                        setHistoryData(prom.body)
-                    }
-                })
-            })
-        }catch (e) {
-            
-        }
-    }, [sendDataOrders])
-
     useEffect(()=>{
         updatePageList()
-        updateCatalogList()
+        updateCatalogStructureList()
         updateMainPageCards()
+        updateCatalogList()
+        updatePreviewFavoriteData(user.id)
+        updatePreviewBasketData(user.id)
     }, [])
 
 
@@ -165,10 +81,11 @@ function App() {
                 <Routes>
                     {pageList.map((page) => (<Route path={page['link']} key={page['id']} element={<MainPage pageList = {pageList} cardList={dataCards} setDataCardsDop={setDataCardsDop}/>} />))}
 
-                    {pageList.map((page, index)=>(<Route path={'basket'+index} element={<Basket height={size} number={index} updateOrders={onSendDataOrders}/>}/>))}
+                    {pageList.map((page, index)=>(<Route path={'basket-'+page.id} element={<Basket height={size} number={index}/>}/>))}
 
-                    <Route path={'favorites'} element={<Favorites height={size}/>}/>
-                    <Route path={'/home/*'} element={<ProductList setDataDop={setDataCardsDop}/>}/>
+                    <Route path={'favorites'} element={<Favorites/>}/>
+                    <Route path={'/catalog/*'} element={<ProductList setDataDop={setDataCardsDop}/>}/>
+                    <Route path={'/card/*'} element={<CardProduct/>}/>
                     <Route path={'/choice-catalog/*'} element={<ProductListSelector basketData={basketData}/>}/>
 
                     {mainData.map(platform => (
@@ -179,7 +96,7 @@ function App() {
                     <Route path={'admin-panel/*'} element={<AdminPanel/>}/>
                     <Route path={'admin'} element={<AP_Authentication/>}/>
                     <Route path={'info'} element={<Info/>}/>
-                    <Route path={'history'} element={<History historyData={historyData}/>}/>
+                    <Route path={'history'} element={<History/>}/>
                     <Route path={'freegame'} element={<Roulette/>}/>
                     {historyData.map(order=>(
                         <Route path={'history/'+String(order.id)} key={order.id} element={<Order data={order}/>}/>

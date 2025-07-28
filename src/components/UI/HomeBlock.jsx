@@ -44,7 +44,7 @@ const HomeBlock = ({data}) => {
         }
     }
 
-    let link = '/home/'
+    let link = '/catalog/'
     if (data.type === 'ordinary-choice') {
         link = '/choice-catalog/'
     }

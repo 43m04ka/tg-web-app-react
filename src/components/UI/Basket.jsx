@@ -3,13 +3,19 @@ import {Link, useNavigate} from "react-router-dom";
 import ProductItem from "./ProductItem";
 import ProductItemBasket from "./ProductItemBasket";
 import {useTelegram} from "../../hooks/useTelegram";
+import {useServerUser} from "../../hooks/useServerUser";
+import useGlobalData from "../../hooks/useGlobalData";
+import {concatAll} from "rxjs";
 
 let inputData = [null, null, null, null, null]
 let promo = ''
 let orderId = 0
-const Basket = ({height, number, updateOrders}) => {
+const Basket = ({height, number}) => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
+    const {pageId, catalogList} = useGlobalData()
+    const {getBasketList} = useServerUser()
+
     const [basket, setBasket] = useState([])
     const [myAcc, setMyAcc] = useState(1);
     const [colorYes, setColorYes] = useState([174, 174, 174]);
@@ -125,7 +131,6 @@ const Basket = ({height, number, updateOrders}) => {
                 Promise.then(r => {
                     if (r.body === true) {
                         setStatus(3);
-                        updateOrders()
                         orderId = r.number
                         promo = ''
                         setPromoIsUse(false)
@@ -150,37 +155,6 @@ const Basket = ({height, number, updateOrders}) => {
         }
     }, [sendDataProduct])
 
-    const onGetData = useCallback(() => {
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                method: 'get',
-                user: user,
-            })
-        }).then(r => {
-            let Promise = r.json()
-            Promise.then(r => {
-                let newArray = []
-                r.body.map(el => {
-                    if (Number(el.body.tab) === number && el.body.isSale) {
-                        newArray = [...newArray, el]
-                    }
-                })
-                setBasket(newArray);
-                console.log(newArray)
-                console.log(r.body)
-                setStatus(1)
-
-                if(r.freeGame === 'none'){
-                    setFreeGameStatus(1)
-                }
-
-            })
-        })
-    }, [])
 
     let onBack = useCallback(async () => {
         navigate(-1);
@@ -201,8 +175,8 @@ const Basket = ({height, number, updateOrders}) => {
     let sumPrice = 0
 
     basket.map(el => {
-        if (el.body.isSale) {
-            sumPrice += el.body.price
+        if (el.onSale) {
+            sumPrice += el.price
         }
     })
 
@@ -841,7 +815,22 @@ const Basket = ({height, number, updateOrders}) => {
 
 
     if (status === 0) {
-        onGetData()
+        getBasketList((result)=>{
+            let catalogIdList = []
+            catalogList.forEach(catalog=>{
+                if(catalog.structurePageId === pageId){
+                    catalogIdList.push(catalog.id)
+                }
+            })
+            let cardList = []
+            result.forEach(card=>{
+                if(catalogIdList.includes(card.catalogId)){
+                    cardList.push(card)
+                }
+            })
+            setBasket(cardList)
+            setStatus(1)
+        }, user.id)
         return (<div className={'plup-loader'} style={{
             marginTop: String(height / 2 - 50) + 'px',
             marginLeft: String(window.innerWidth / 2 - 50) + 'px'

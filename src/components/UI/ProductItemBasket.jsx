@@ -23,8 +23,8 @@ const ProductItemBasket = ({setBasketF, product, number}) => {
             let Promise = r.json()
             Promise.then(r => {
                 let newArray = []
-                r.body.map(el => {
-                    if (Number(el.body.tab) === number && el.body.isSale) {
+                r.map(el => {
+                    if (Number(el.tab) === number && el.isSale) {
                         newArray = [...newArray, el]
                     }
                 })
@@ -34,46 +34,42 @@ const ProductItemBasket = ({setBasketF, product, number}) => {
     }, [sendData])
 
     let platform = ''
-    if (typeof item.body.platform !== 'undefined') {
-        if (typeof item.body.view === 'undefined') {
-            platform = item.body.platform
+    if (typeof item.platform !== 'undefined') {
+        if (typeof item.view === 'undefined') {
+            platform = item.platform
         } else {
-            platform = item.body.view
+            platform = item.view
         }
     } else {
         platform = ''
     }
 
     let price = ''
-    if (item.body.isSale) {
-        price = item.body.price + ' ₽'
+    if (item.isSale) {
+        price = item.price + ' ₽'
     } else {
         price = 'Нет в продаже!'
     }
 
     let oldPrice = ''
     let parcent = ''
-    if (typeof item.body.oldPrice === 'undefined') {
-        if (typeof item.body.releaseDate === 'undefined') {
+    if (typeof item.oldPrice === 'undefined') {
+        if (typeof item.releaseDate === 'undefined') {
             parcent = ''
         } else {
-            parcent = item.body.releaseDate.replace('#', '')
+            parcent = item.releaseDate
             parcent = parcent.slice(0, 6)+ parcent.slice(8, 10)
         }
     } else {
-        oldPrice = String(item.body.oldPrice) + ' ₽'
-        parcent = '−'+String(Math.ceil((1-item.body.price/item.body.oldPrice)*100))+'%'
+        oldPrice = String(item.oldPrice) + ' ₽'
+        parcent = '−'+String(Math.ceil((1-item.price/item.oldPrice)*100))+'%'
     }
 
     let endDate = ''
-    if (typeof item.body.endDate === 'undefined') {
+    if (typeof item.endDatePromotion === 'undefined') {
         endDate = ''
     } else {
-        endDate = 'Скидка ' + parcent + ' ' + item.body.endDate
-    }
-
-    if (typeof item.body.releaseDate !== 'undefined') {
-        endDate = 'Релиз ' + item.body.releaseDate.replace('#', '')
+        endDate = 'Скидка ' + parcent + ' ' + item.endDatePromotion
     }
 
     let parcentEl = (<div></div>)
@@ -99,11 +95,11 @@ const ProductItemBasket = ({setBasketF, product, number}) => {
     }
 
     let type = 0
-    if (typeof item.body.oldPrice === 'undefined') {
-        if (typeof item.body.releaseDate === 'undefined') {
+    if (typeof item.oldPrice === 'undefined') {
+        if (typeof item.releaseDate === 'undefined') {
             type = 0
         } else {
-            parcent = item.body.releaseDate.replace('#', '')
+            parcent = item.releaseDate.replace('#', '')
             type = 2
         }
     } else {
@@ -114,7 +110,7 @@ const ProductItemBasket = ({setBasketF, product, number}) => {
         marginTop: '0',
         height: '15px',
         fontSize: '15px',
-    }}>{item.body.price+' ₽'}</div>)
+    }}>{item.price+' ₽'}</div>)
 
     let oldPriceEl = (<div></div>)
 
@@ -126,7 +122,7 @@ const ProductItemBasket = ({setBasketF, product, number}) => {
             fontSize: '15px',
             color: '#ff5d5d',
             marginRight:'0px'
-        }}>{item.body.price+' ₽'}</div>)
+        }}>{item.price+' ₽'}</div>)
         oldPriceEl = (<div className={'text-element text-basket'} style={{
             lineHeight: '15px',
             marginTop: '0',
@@ -134,7 +130,7 @@ const ProductItemBasket = ({setBasketF, product, number}) => {
             fontSize: '15px',
             color:'gray',
             textDecoration:'line-through'
-        }}>{item.body.oldPrice+' ₽'}</div>)
+        }}>{item.oldPrice+' ₽'}</div>)
     }
     if(type === 2){
         oldPriceEl = (<div className={'text-element text-basket'} style={{
@@ -163,7 +159,7 @@ const ProductItemBasket = ({setBasketF, product, number}) => {
                     height: '80px',
                     width: '80px',
                     borderRadius: '7px',
-                    backgroundImage: "url('" + item.body.img + "')",
+                    backgroundImage: "url('" + item.image + "')",
                     backgroundSize: 'cover',
                     display: 'flex',
                     flexDirection: 'row',
@@ -183,7 +179,7 @@ const ProductItemBasket = ({setBasketF, product, number}) => {
                         fontSize: '13px',
                         overflow: 'hidden',
                         display: 'flex',
-                    }}>{platform + ' • ' + item.body.title}</div>
+                    }}>{platform + ' • ' + item.name}</div>
                     <div style={{
                         marginTop: '0px',
                         display: 'flex',

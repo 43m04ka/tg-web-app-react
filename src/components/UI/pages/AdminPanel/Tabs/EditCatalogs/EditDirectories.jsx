@@ -26,6 +26,7 @@ const EditDirectories = () => {
     }
 
     if (catalogList === null) {
+        console.log(catalogList)
         getCatalogList(setCatalogList).then()
         return (<div className={'plup-loader'} style={{
             marginTop: '25px', marginLeft: '25px'
@@ -49,11 +50,11 @@ const EditDirectories = () => {
                             <div className={styles['catalog-choice-label']}>
                                 {catalog.path}</div>
                             <div
-                                className={`${styles['catalog-choice-label']} ${styles['catalog-choice-status-' + String(catalog.isSale)]}`}>
+                                className={`${styles['catalog-choice-label']} ${styles['catalog-choice-status-' + String(catalog.onSale)]}`}>
                                 {catalog.onSale}</div>
                             <div
                                 className={styles['catalog-choice-btn']}>
-                                {selectedCatalogId === catalog.path ? '> Выбран ˂' : '» Выбрать «'}</div>
+                                {selectedCatalogId === catalog.id ? '> Выбран ˂' : '» Выбрать «'}</div>
                         </div>))}
                     </BlockLabel>
                     {selectedCatalogId !== -1 ? (<BlockLabel label={'Действие'}>

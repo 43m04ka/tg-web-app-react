@@ -38,8 +38,8 @@ export function useServer() {
             }
         }).then(async response => {
             let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
+            answer.then(async (data) => {
+                await setResult(data.result)
             })
         })
     }

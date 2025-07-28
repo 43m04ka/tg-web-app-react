@@ -7,8 +7,8 @@ const useData = create(devtools(set => ({
     setAuthenticationData: (authenticationData) => set(() => ({authenticationData: authenticationData})),
 
 
-    catalogStructureList:null,
-    setCatalogList: (catalogList) => set(() => ({catalogStructureList: catalogList})),
+    catalogList:null,
+    setCatalogList: (catalogList) => set(() => ({catalogList: catalogList})),
 })))
 
 export default useData

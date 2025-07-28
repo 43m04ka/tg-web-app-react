@@ -1,33 +1,24 @@
 import React, {useCallback, useEffect, useRef} from 'react';
 import {Link, useNavigate} from "react-router-dom";
 import {useTelegram} from "../../hooks/useTelegram";
+import useGlobalData from "../../hooks/useGlobalData";
 
 let lastListRes = []
 let lastText = ''
 let lastScroll = 0
-const Search = ({height, page, setData}) => {
+const Search = ({height}) => {
     const [listRes, setListRes] = React.useState(lastListRes);
     const [status, setStatus] = React.useState(1);
     const [textInput, setTextInput] = React.useState('');
     const textRef = useRef();
     const scrollRef = useRef();
     const {tg} = useTelegram();
+    const {pageId} = useGlobalData()
     const navigate = useNavigate();
-
-    const onChangeEmpty = (event) => {
-        let allCard = []
-        let result = null
-        allCard.map(card => {
-            if (card.title.toLowerCase().includes(valueInput.toLowerCase())) {
-                result = [...result, card]
-            }
-        })
-
-    }
 
     let dataRequestDatabase = {
         method: 'getSearch',
-        data: {str: textInput, page: page}
+        data: {str: textInput, pageId: pageId}
     }
 
     const sendRequestDatabase = useCallback(() => {
@@ -45,8 +36,6 @@ const Search = ({height, page, setData}) => {
                 if (dataRequestDatabase.method === 'getSearch') {
                     setListRes(prom.cards)
                     lastListRes = prom.cards
-                    setData(prom.cards)
-                    console.log(prom.cards)
                     if (prom.cards.length === 0) {
                         setStatus(3)
                     } else {
@@ -99,11 +88,11 @@ const Search = ({height, page, setData}) => {
     let bodyElement = (<div>
         {listRes.map((item) => {
             let platform = ''
-            if (typeof item.body.platform !== 'undefined') {
-                if (typeof item.body.view === 'undefined') {
-                    platform = item.body.platform
+            if (typeof item.platform !== 'undefined') {
+                if (typeof item.view === 'undefined') {
+                    platform = item.platform
                 } else {
-                    platform = item.body.view
+                    platform = item.view
                 }
             } else {
                 platform = ''
@@ -111,12 +100,12 @@ const Search = ({height, page, setData}) => {
 
             let parcent
             let type = 0
-            if (typeof item.body.oldPrice === 'undefined') {
-                if (typeof item.body.releaseDate === 'undefined') {
+            if (typeof item.oldPrice === 'undefined') {
+                if (typeof item.releaseDate === 'undefined') {
                     parcent = ''
                     type = 0
                 } else {
-                    parcent = item.body.releaseDate.replace('#', '')
+                    parcent = item.releaseDate.replace('#', '')
                     parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
                     type = 2
                 }
@@ -128,7 +117,7 @@ const Search = ({height, page, setData}) => {
                 marginTop: '0',
                 height: '15px',
                 fontSize: '15px',
-            }}>{item.body.price+' ₽'}</div>)
+            }}>{item.price+' ₽'}</div>)
 
             let oldPriceEl = (<div></div>)
 
@@ -139,7 +128,7 @@ const Search = ({height, page, setData}) => {
                     height: '15px',
                     fontSize: '15px',
                     color: '#ff5d5d',
-                }}>{item.body.price+' ₽'}</div>)
+                }}>{item.price+' ₽'}</div>)
                 oldPriceEl = (<div className={'text-element text-basket'} style={{
                     lineHeight: '15px',
                     marginTop: '0',
@@ -147,7 +136,7 @@ const Search = ({height, page, setData}) => {
                     fontSize: '15px',
                     color:'gray',
                     textDecoration:'line-through'
-                }}>{item.body.oldPrice+' ₽'}</div>)
+                }}>{item.oldPrice+' ₽'}</div>)
             }
             if(type === 2){
                 oldPriceEl = (<div className={'text-element text-basket'} style={{
@@ -169,7 +158,7 @@ const Search = ({height, page, setData}) => {
                             width: '75px',
                         }}>
                             <div style={{
-                                backgroundImage: 'url("' + item.body.img + '+")',
+                                backgroundImage: 'url("' + item.image + '+")',
                                 backgroundRepeat: 'no-repeat',
                                 backgroundSize: 'cover',
                                 display: 'flex',
@@ -189,7 +178,7 @@ const Search = ({height, page, setData}) => {
                                 height: '30px',
                                 fontSize: '13px',
                                 overflow: 'hidden'
-                            }}>{item.body.title}</div>
+                            }}>{item.name}</div>
                             <div className={'text-element text-basket'} style={{
                                 marginTop: '3px',
                                 lineHeight: '14px',

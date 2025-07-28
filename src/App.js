@@ -82,17 +82,12 @@ function App() {
                     {pageList.map((page) => (<Route path={page['link']} key={page['id']} element={<MainPage pageList = {pageList} cardList={dataCards} setDataCardsDop={setDataCardsDop}/>} />))}
 
                     {pageList.map((page, index)=>(<Route path={'basket-'+page.id} element={<Basket height={size} number={index}/>}/>))}
+                    {pageList.map((page, index)=>(<Route path={'search-'+page.id} element={<Search height={size}/>}/>))}
 
                     <Route path={'favorites'} element={<Favorites/>}/>
                     <Route path={'/catalog/*'} element={<ProductList setDataDop={setDataCardsDop}/>}/>
                     <Route path={'/card/*'} element={<CardProduct/>}/>
                     <Route path={'/choice-catalog/*'} element={<ProductListSelector basketData={basketData}/>}/>
-
-                    {mainData.map(platform => (
-                        <Route path={'search' + String(platform.id)} key={platform.id}
-                               element={<Search height={size} setData={setDataCardsDop} setStatusApp={setStatus}
-                                                page={platform.id}/>}/>
-                    ))}
                     <Route path={'admin-panel/*'} element={<AdminPanel/>}/>
                     <Route path={'admin'} element={<AP_Authentication/>}/>
                     <Route path={'info'} element={<Info/>}/>

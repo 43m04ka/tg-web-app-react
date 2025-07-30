@@ -12,7 +12,7 @@ import useGlobalData from "../../../../../../hooks/useGlobalData";
 import useData from "../../useData";
 
 const EditDirectories = () => {
-    const {getCatalogList, createCatalog, changeSaleStatusCatalog, deleteStructureCatalog} = useServer();
+    const {getCatalogList, createCatalog, changeSaleStatusCatalog, deleteCatalog} = useServer();
     const {pageList} = useGlobalData();
     const {catalogList, setCatalogList, authenticationData} = useData()
 
@@ -69,7 +69,7 @@ const EditDirectories = () => {
                                          authenticationData, selectedCatalogId, false)}/>
                         <SeparatorLabel/>
                         <ButtonLabel label={'Удалить'} onClick={()=>{
-                            deleteStructureCatalog(setCatalogList, authenticationData, selectedCatalogId).then()
+                            deleteCatalog(setCatalogList, authenticationData, selectedCatalogId).then()
                             setSelectedCatalogId(-1)
                             setOpenListCards(false)
                         }}/>

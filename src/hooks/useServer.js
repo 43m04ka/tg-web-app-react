@@ -121,16 +121,6 @@ export function useServer() {
         })
     }
 
-    const deleteCatalog = async (id) => {
-        await fetch(URL + '/deleteCatalog', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({id: id})
-        })
-    }
-
     const findCardsByCatalog = async (catalog, setResult) => {
         await fetch(URL + '/findCardsByCatalog?catalog='+catalog+'&time='+Date.now(), {
             method: 'GET',
@@ -155,10 +145,8 @@ export function useServer() {
         getSearch,
         editCardPrice,
         deletePage,
-        deleteCatalog,
         getPreviewCards,
         findCardsByCatalog,
-        getCatalogs
     }
 }
 

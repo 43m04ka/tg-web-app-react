@@ -1,9 +1,10 @@
 import React, {useRef, useState} from 'react';
 import AP_CreateNewCatalog from "./AP_CreateNewCatalog/AP_CreateNewCatalog";
-import {useServer} from "../../../../../../hooks/useServer";
+import {useServer} from "../../useServer";
 import DropLabel from "../../Elements/DropLabel";
 import useGlobalData from "../../../../../../hooks/useGlobalData";
 import BlockLabel from "../../Elements/BlockLabel";
+import useData from "../../useData";
 
 
 let currentPage = 0
@@ -13,8 +14,9 @@ const EditStructure = () => {
     const [catalogBodyList, setCatalogBodyList] = useState([])
     const [page, setPage] = useState(-1)
 
-    const {getCatalogs, deleteCatalog} = useServer()
+    const {getStructureCatalogList, deleteStructureCatalog} = useServer()
     const {pageList} = useGlobalData()
+    const {authenticationData} = useData()
 
 
     const newSlider = [
@@ -112,8 +114,8 @@ const EditStructure = () => {
 
     const reload = async () => {
         currentPage = page
-        await getCatalogs(page, 'head', setCatalogHeadList).then()
-        await getCatalogs(page, 'body', setCatalogBodyList).then()
+        await getStructureCatalogList(page, 'head', setCatalogHeadList).then()
+        await getStructureCatalogList(page, 'body', setCatalogBodyList).then()
     }
 
 
@@ -163,9 +165,9 @@ const EditStructure = () => {
                                         border: '0px',
                                     }}
                                             onClick={async () => {
-                                                await deleteCatalog(category.id)
-                                                await getCatalogs(page, 'head', setCatalogHeadList)
-                                            }}>Удалить каталог
+                                                await deleteStructureCatalog(authenticationData, category.id)
+                                                await getStructureCatalogList(page, 'head', setCatalogHeadList)
+                                            }}>Удалить баннер
                                     </button>
                                 </div>
                             )
@@ -233,9 +235,9 @@ const EditStructure = () => {
                                         border: '0px',
                                     }}
                                             onClick={async () => {
-                                                await deleteCatalog(category.id)
-                                                await getCatalogs(page, 'body', setCatalogBodyList)
-                                            }}>Удалить категорию
+                                                await deleteStructureCatalog(authenticationData, category.id)
+                                                await getStructureCatalogList(page, 'body', setCatalogBodyList)
+                                            }}>Удалить елемент
                                     </button>
                                 </div>
                             )

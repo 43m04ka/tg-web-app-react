@@ -183,10 +183,35 @@ export function useServer() {
         }).then()
     };
 
+    const getStructureCatalogList = async (pageId, group, setResult) => {
+        await fetch(URL + '/getStructureCatalogList', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({pageId:pageId, group:group})
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result.sort((a, b) => a.serialNumber - b.serialNumber))
+            })
+        })
+    }
+
+    const deleteStructureCatalog = async (authenticationData, catalogId) => {
+        await fetch(URL + '/deleteStructureCatalog', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({authenticationData:authenticationData, id: catalogId})
+        })
+    }
+
     return {
-        getCardList, getCard, getCatalogList,
+        getCardList, getCard, getCatalogList, getStructureCatalogList,
         createCatalog, createPage, createStructureCatalog,
         changeSaleStatusCatalog, updateCardData, updatePageData, updateAssociations,
-        deleteCatalog, deleteCard,
+        deleteStructureCatalog, deleteCatalog, deleteCard,
         searchForName}
 }

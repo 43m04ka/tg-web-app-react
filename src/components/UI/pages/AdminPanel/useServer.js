@@ -59,6 +59,46 @@ export function useServer() {
         })
     }
 
+    const createStructureCatalog = async (authenticationData, catalogData) => {
+        await fetch(URL + '/createStructureCatalog', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({authenticationData:authenticationData, catalogData:catalogData})
+        })
+    };
+
+    const deleteCatalog = async (setResult, authenticationData, catalogId) => {
+        await fetch(`${URL}/deleteCatalog`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({authenticationData:authenticationData, id:catalogId})
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
+    const deleteCard = async (setResult, authenticationData, cardId) => {
+        await fetch(`${URL}/deleteCard`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({authenticationData:authenticationData, id:cardId})
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
     const changeSaleStatusCatalog = async (setResult, authenticationData, catalogId, changeTo) => {
         await fetch(`${URL}/changeSaleStatusCatalog`, {
             method: 'POST',
@@ -133,9 +173,20 @@ export function useServer() {
         })
     };
 
+    const updateAssociations = async (authenticationData) => {
+        await fetch(URL + '/updateAssociations', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({authenticationData:authenticationData})
+        }).then()
+    };
+
     return {
         getCardList, getCard, getCatalogList,
-        createCatalog, createPage,
-        changeSaleStatusCatalog, updateCardData, updatePageData,
+        createCatalog, createPage, createStructureCatalog,
+        changeSaleStatusCatalog, updateCardData, updatePageData, updateAssociations,
+        deleteCatalog, deleteCard,
         searchForName}
 }

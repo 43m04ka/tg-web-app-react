@@ -105,7 +105,7 @@ export function useServer() {
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
-                setResult(data.result)
+                setResult(data.result.sort((a, b) => a.serialNumber - b.serialNumber))
             })
         })
     }
@@ -145,25 +145,6 @@ export function useServer() {
         })
     };
 
-    const createCatalog = async ({pageId, group, type, name, serialNumber, path, url, backgroundColor, deleteDate}) => {
-        await fetch(URL + '/createCatalog', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                pageId: pageId,
-                group: group,
-                type: type,
-                name: name || null,
-                serialNumber: serialNumber,
-                path: path || null,
-                url: url || null,
-                backgroundColor: backgroundColor || null,
-                deleteDate: deleteDate || null
-            })
-        })
-    };
 
 
     return {
@@ -175,7 +156,6 @@ export function useServer() {
         editCardPrice,
         deletePage,
         deleteCatalog,
-        createCatalog,
         getPreviewCards,
         findCardsByCatalog,
         getCatalogs

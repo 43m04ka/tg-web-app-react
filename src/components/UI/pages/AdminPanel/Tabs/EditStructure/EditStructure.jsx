@@ -48,7 +48,7 @@ const EditStructure = () => {
             }
         ],
         {argument: "group", value: 'head'},
-        {argument: "pageId", value: page}
+        {argument: "structurePageId", value: page}
     ]
 
     const newCatalog = [
@@ -107,7 +107,7 @@ const EditStructure = () => {
             },
         ],
         {argument: "group", value: 'body'},
-        {argument: "pageId", value: page}
+        {argument: "structurePageId", value: page}
     ]
 
     const reload = async () => {

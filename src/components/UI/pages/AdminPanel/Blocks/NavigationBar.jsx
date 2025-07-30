@@ -2,9 +2,13 @@ import React from 'react';
 import styles from './NavigationBar.module.scss';
 import {useNavigate} from "react-router-dom";
 import ButtonLabel from "../Elements/ButtonLabel";
+import {useServer} from "../useServer";
+import useData from "../useData";
 
 const NavigationBar = ({routeData}) => {
     const navigator = useNavigate();
+    const {updateAssociations} = useServer()
+    const {authenticationData} = useData()
 
     return (
         <div className={styles['main-division']}>
@@ -19,7 +23,7 @@ const NavigationBar = ({routeData}) => {
                 </div>
             ))}
             </div>
-            <ButtonLabel label={'Обновить асоциации'} onClick={()=>{}}/>
+            <ButtonLabel label={'Обновить асоциации'} onClick={()=>{updateAssociations(authenticationData).then()}}/>
         </div>
     );
 };

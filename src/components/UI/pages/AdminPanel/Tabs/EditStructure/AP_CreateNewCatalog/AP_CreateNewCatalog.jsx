@@ -1,10 +1,12 @@
 import React, {useEffect} from 'react';
 import AP_SelectInputLabel from "./AP_SelectInputLabel";
-import {useServer} from "../../../../../../../hooks/useServer";
+import {useServer} from "../../../useServer";
+import useData from "../../../useData";
 
 const ApCreateNewCatalog = ({data, reload}) => {
 
-    const {createCatalog} = useServer()
+    const {createStructureCatalog} = useServer()
+    const {authenticationData} = useData()
 
     const [resultJson, setResultJson] = React.useState({})
 
@@ -49,43 +51,8 @@ const ApCreateNewCatalog = ({data, reload}) => {
                         }} style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>)
                     }
                 })}
-
-                {/*<div>*/}
-                {/*    {[{id: 0, name: 'Некликабельный'}, {id: 1, name: 'На карту'}, {*/}
-                {/*        id: 2,*/}
-                {/*        name: 'На каталог'*/}
-                {/*    }, {id: 3, name: 'Ссылочный'}].map(view => {*/}
-                {/*        if (typeNewHeadCatalog === view.id) {*/}
-                {/*            return (<button onClick={() => {*/}
-                {/*                setTypeNewHeadCatalog(view.id)*/}
-                {/*            }} style={{*/}
-                {/*                margin: '5px',*/}
-                {/*                borderRadius: '100px',*/}
-                {/*                padding: '5px',*/}
-                {/*                border: '0px',*/}
-                {/*                background: '#ef7474'*/}
-                {/*            }}>{view.name}*/}
-                {/*            </button>)*/}
-                {/*        } else {*/}
-                {/*            return (<button onClick={() => {*/}
-                {/*                setTypeNewHeadCatalog(view.id)*/}
-                {/*            }} style={{*/}
-                {/*                margin: '5px',*/}
-                {/*                borderRadius: '100px',*/}
-                {/*                padding: '5px',*/}
-                {/*                border: '0px',*/}
-                {/*            }}>{view.name}*/}
-                {/*            </button>)*/}
-                {/*        }*/}
-                {/*    })}*/}
-                {/*</div>*/}
-                {/*<input placeholder={'Порядковый_номер'} ref={inputHead_1}*/}
-                {/*       style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>*/}
-                {/*<input placeholder={'url_изображения'} ref={inputHead_2}*/}
-                {/*       style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}}/>*/}
-                {/*{linkInputElement}*/}
                 <button onClick={async () => {
-                    await createCatalog(resultJson)
+                    await createStructureCatalog(authenticationData, resultJson)
                     await reload()
                 }} style={{margin: '5px', marginTop:'15px', borderRadius: '100px', padding: '5px', border: '0px', width:'max-content'}}>Добавить
                     категорию

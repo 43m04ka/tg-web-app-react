@@ -25,6 +25,7 @@ const CatalogListBody = ({}) => {
                                 catalogId = catalog.id;
                             }
                         });
+                        console.log(catalogId)
                         let cardArray = []
                         mainPageCards.map(card => {
                             if (card.catalogId === catalogId) {
@@ -46,7 +47,7 @@ const CatalogListBody = ({}) => {
                     width: '250px',
                     height: '18px',
                     borderRadius: '7px'
-                }}></div>
+                }}/>
                 <div className={"scroll-container"} style={{alignItems: 'center', overflow: "hidden"}}>
                     {[1, 2, 3].map(item => (
                             <div style={{marginRight: '5px'}}>

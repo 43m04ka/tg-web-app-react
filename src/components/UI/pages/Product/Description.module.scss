@@ -1,0 +1,30 @@
+.background-arrow{
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  background-image: url("../../../icons/arrow.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  transition-property: rotate;
+  transition-duration: 0.3s;
+  rotate: 90deg;
+  &-true{
+    rotate: -90deg;
+  }
+}
+
+.text{
+  line-height: 19px;
+  font-size: 16px;
+  overflow: hidden;
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  transition-property: height;
+  transition-duration: 0.3s;
+  &-true{
+    height: 0;
+  }
+  &-false{
+    height: max-content;
+  }
+}

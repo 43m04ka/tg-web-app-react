@@ -1,17 +1,17 @@
-import React, {createRef, useCallback, useEffect, useState} from 'react';
-import {useTelegram} from "../../hooks/useTelegram";
+import React, {createRef, useEffect, useState} from 'react';
+import {useTelegram} from "../../../../hooks/useTelegram";
 import {useNavigate} from "react-router-dom";
-import ProductItem from "./ProductItem";
-import {useServerUser} from "../../hooks/useServerUser";
-import useGlobalData from "../../hooks/useGlobalData";
+import ProductItem from "../../ProductItem";
+import {useServerUser} from "../../../../hooks/useServerUser";
+import useGlobalData from "../../../../hooks/useGlobalData";
+import Description from "./Description";
 
 
 let heightText = null
 let textElementHeight = null
-const CardProduct = () => {
+const Product = () => {
 
-        const {tg, user} = useTelegram();
-    const refText = createRef();
+    const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const {getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket} = useServerUser()
     const {updatePreviewFavoriteData, previewFavoriteData, updatePreviewBasketData, previewBasketData, pageId} = useGlobalData()
@@ -20,7 +20,6 @@ const CardProduct = () => {
 
     const [isBuy, setIsBuy] = React.useState(null);
     const [productData, setProductData] = React.useState(null);
-    const [textHidden, setTextHidden] = React.useState(null);
     const [dataCards, setDataCards] = React.useState([]);
     const [isFavorite, setIsFavorite] = React.useState(false);
     const [pictureIsLoad, setPictureIsLoad] =  useState(0);
@@ -40,17 +39,6 @@ const CardProduct = () => {
         let buttonColor
         let buttonText
         let buttonLink
-
-        try {
-            if (textHidden === null) {
-                heightText = refText.current.getBoundingClientRect().height;
-                if (heightText > 17.3 * 4) {
-                    setTextHidden(false)
-                } else {
-                    setTextHidden(0)
-                }
-            }
-        }catch(err) {}
 
         if(isFavorite !== previewFavoriteData.includes(cardId)) {
             setIsFavorite(previewFavoriteData.includes(cardId))
@@ -222,35 +210,7 @@ const CardProduct = () => {
         }
 
 
-        let signElement = (<div></div>)
 
-        if (textHidden !== 0 && textHidden !== null) {
-            if (textHidden) {
-                signElement = (
-                    <div className={'background-arrow'}
-                         style={{
-                             width: '20px',
-                             height: '20px',
-                             rotate: '-90deg',
-                             transitionProperty: 'rotate',
-                             transitionDuration: '0.3s'
-                         }}/>
-                )
-                textElementHeight = heightText
-            } else {
-                signElement = (
-                    <div className={'background-arrow'}
-                         style={{
-                             width: '20px',
-                             height: '20px',
-                             rotate: '90deg',
-                             transitionProperty: 'rotate',
-                             transitionDuration: '0.3s'
-                         }}/>
-                )
-                textElementHeight = 0
-            }
-        }
         let seeLove = (<div/>)
         if (dataCards.length !== 0 && pictureIsLoad >= 1) {
             seeLove = (<div>
@@ -431,55 +391,7 @@ const CardProduct = () => {
                             {genre}
                         </div>
                     </div>
-                    <div style={{
-                        color: 'white',
-                        background: '#2b2e31',
-                        borderRadius: '15px',
-                        paddingRight: '15px',
-                        paddingTop: '10px',
-                        paddingBottom: '10px',
-                        textAlign: 'left',
-                        fontFamily: "'Montserrat', sans-serif",
-                        marginTop: '5px',
-                        marginBottom: '7px',
-                    }} onClick={() => {
-                        if (textHidden === true) {
-                            setTextHidden(false)
-                        } else if (textHidden === false) {
-                            setTextHidden(true)
-                        }
-
-                    }}>
-                        <div style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            marginLeft: '15px',
-                            height: '20px',
-                            alignItems: 'center'
-                        }}>
-                            <div style={{fontWeight: '600', marginLeft: '0px', fontSize: '14px', lineHeight: '17px'}}
-                                 className={'text-element'}>
-                                Описание игры
-                            </div>
-                            <div>{signElement}</div>
-                        </div>
-                        <div>
-                            <div style={{
-                                marginLeft: '15px',
-                                lineHeight: '19px',
-                                height: String(textElementHeight) + 'px',
-                                fontSize: '16px',
-                                overflow: 'hidden',
-                                color: 'white',
-                                fontFamily: "'Montserrat', sans-serif",
-                                transitionProperty: 'height',
-                                transitionDuration: '0.3s',
-                            }}>
-                                <div ref={refText}>{descriptionText}</div>
-                            </div>
-                        </div>
-                    </div>
+                    <Description>{productData.description}</Description>
                 </div>
                 {seeLove}
             </div>
@@ -489,4 +401,4 @@ const CardProduct = () => {
     }
 };
 
-export default CardProduct;
+export default Product;

@@ -12,12 +12,11 @@ import AdminPanel from "./components/UI/pages/AdminPanel/AdminPanel";
 import Info from "./components/UI/Info";
 import ProductListSelector from "./components/UI/ProductListSelector";
 import History from "./components/UI/History";
-import Order from "./components/UI/Order";
 import Favorites from "./components/UI/Favorites";
 import Roulette from "./components/UI/Roulette";
 import AP_Authentication from "./components/UI/pages/AdminPanel/AP_Authentication";
 import useGlobalData from "./hooks/useGlobalData";
-import CardProduct from "./components/UI/CardProduct";
+import Product from "./components/UI/pages/Product/Product";
 
 
 function App() {
@@ -27,18 +26,6 @@ function App() {
     const {pageList, updatePageList, updateCatalogList, updateMainPageCards, updateCatalogStructureList, updatePreviewFavoriteData, updatePreviewBasketData} = useGlobalData();
 
     const [size, setSize] = React.useState(window.innerHeight);
-
-    const [mainData, setMainData] = useState([
-        {id: 0, page: 'playstation', body: [[], []]}, {
-            id: 1,
-            page: 'xbox',
-            body: [[], []]
-        }, {id: 2, page: 'service', body: [[], []]}]);
-    const [status, setStatus] = useState(0);
-    const [dataCards, setDataCards] = useState([])
-    const [dataCardsDop, setDataCardsDop] = useState([])
-    const [basketData, setBasketData] = useState([]);
-    const [historyData, setHistoryData] = React.useState([]);
 
     const resizeHandler = () => {
         setSize(window.innerHeight);
@@ -79,23 +66,20 @@ function App() {
                 <div style={{height: String(tg?.contentSafeAreaInset.top) + 'px'}}></div>
                 <div style={{height: String(tg?.safeAreaInset.top) + 'px'}}></div>
                 <Routes>
-                    {pageList.map((page) => (<Route path={page['link']} key={page['id']} element={<MainPage pageList = {pageList} cardList={dataCards} setDataCardsDop={setDataCardsDop}/>} />))}
+                    {pageList.map((page) => (<Route path={page['link']} key={page['id']} element={<MainPage pageList = {pageList}/>} />))}
 
                     {pageList.map((page, index)=>(<Route path={'basket-'+page.id} element={<Basket height={size} number={index}/>}/>))}
                     {pageList.map((page, index)=>(<Route path={'search-'+page.id} element={<Search height={size}/>}/>))}
 
                     <Route path={'favorites'} element={<Favorites/>}/>
-                    <Route path={'/catalog/*'} element={<ProductList setDataDop={setDataCardsDop}/>}/>
-                    <Route path={'/card/*'} element={<CardProduct/>}/>
-                    <Route path={'/choice-catalog/*'} element={<ProductListSelector basketData={basketData}/>}/>
+                    <Route path={'/catalog/*'} element={<ProductList/>}/>
+                    <Route path={'/card/*'} element={<Product/>}/>
+                    <Route path={'/choice-catalog/*'} element={<ProductListSelector/>}/>
                     <Route path={'admin-panel/*'} element={<AdminPanel/>}/>
                     <Route path={'admin'} element={<AP_Authentication/>}/>
                     <Route path={'info'} element={<Info/>}/>
                     <Route path={'history'} element={<History/>}/>
                     <Route path={'freegame'} element={<Roulette/>}/>
-                    {historyData.map(order=>(
-                        <Route path={'history/'+String(order.id)} key={order.id} element={<Order data={order}/>}/>
-                    ))}
                     <Route path="*" element={<ErrorPage/>}/>
                 </Routes>
 

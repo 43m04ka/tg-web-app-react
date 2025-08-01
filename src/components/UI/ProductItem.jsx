@@ -38,16 +38,10 @@ const ProductItem = ({product}) => {
         }}>{parcent}</div>)
     }
 
-    let view = ''
-    if (typeof product.view === null) {
-        view = ''
-    } else {
-        view = ' ' + product.view
-    }
-
+    let view = product.choiceRow === null ? '' : ' ' + product.choiceRow
 
     let platform = (<div></div>)
-    if (typeof product.platform !== null && product.platform !== 'NA') {
+    if (typeof product.platform !== null && product.platform !== null) {
         platform = (<div style={{
             lineHeight: '20px',
             background: '#191919',

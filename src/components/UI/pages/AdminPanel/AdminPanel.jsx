@@ -5,16 +5,24 @@ import EditDirectories from "./Tabs/EditCatalogs/EditDirectories";
 import AP_EditCards from "./Tabs/EditCards/EditCards";
 
 import styles from "./AdminPanel.module.scss";
-import {Outlet, Route, Routes} from "react-router-dom";
+import {Outlet, Route, Routes, useNavigate} from "react-router-dom";
 import EditPages from "./Tabs/AP_EditPages/EditPages";
 import EditStructure from "./Tabs/EditStructure/EditStructure";
+import useData from "./useData";
 
 const AdminPanel = () => {
+
+    const {authenticationData} = useData()
+    const navigate = useNavigate();
+
+    if(authenticationData === null){
+        navigate('/admin')
+    }
 
     const routeData = [{name: 'Загрузить новые данные', path: 'upload-data', element: <UploadData/>},
         {name: 'Редактировать каталоги', path: 'edit-directories', element: <EditDirectories/>},
         {name: 'Редактировать карты', path: 'edit-cards', element: <AP_EditCards/>},
-        {name: 'Редактировать каталоги', path: 'edit-structure', element: <EditStructure/>},
+        {name: 'Редактировать структуру', path: 'edit-structure', element: <EditStructure/>},
         {name: 'Редактировать страницы', path: 'edit-pages', element: <EditPages/>}]
     const routeData1 = [{name: 'Промокоды', path: 'promo', element: <Outlet/>},
         {name: 'История заказов', path: 'history-orders', element: <Outlet/>},

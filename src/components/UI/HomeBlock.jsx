@@ -28,7 +28,7 @@ const HomeBlock = ({data}) => {
             styleBlock = {
                 background: data.backgroundColor,
                 paddingBottom: '10px',
-                paddingTop: '0px',
+                paddingTop: '10px',
                 marginTop: '0px',
                 paddingLeft: '7px',
                 marginBottom: '20px'

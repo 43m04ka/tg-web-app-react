@@ -34,7 +34,7 @@ const Description = ({children}) => {
             }}>
                 <div style={{fontWeight: '600', marginLeft: '0px', fontSize: '14px', lineHeight: '17px'}}
                      className={'text-element'}>
-                    Описание игры
+                    Описание
                 </div>
                 <div className={`${styles['background-arrow']} ${styles['background-arrow-' + textHidden]}`}/>
             </div>

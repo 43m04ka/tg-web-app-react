@@ -7,7 +7,7 @@ import ProductList from "./components/UI/ProductList";
 import MainPage from "./components/UI/pages/Main/MainPage";
 import ErrorPage from "./components/UI/ErrorPage";
 import Search from "./components/UI/Search";
-import Basket from "./components/UI/Basket";
+import Basket from "./components/UI/pages/Basket/Basket";
 import AdminPanel from "./components/UI/pages/AdminPanel/AdminPanel";
 import Info from "./components/UI/Info";
 import ProductListSelector from "./components/UI/ProductListSelector";

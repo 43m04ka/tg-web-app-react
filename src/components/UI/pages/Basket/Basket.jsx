@@ -1,10 +1,10 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Link, useNavigate} from "react-router-dom";
-import ProductItem from "./ProductItem";
+import ProductItem from "../../ProductItem";
 import ProductItemBasket from "./ProductItemBasket";
-import {useTelegram} from "../../hooks/useTelegram";
-import {useServerUser} from "../../hooks/useServerUser";
-import useGlobalData from "../../hooks/useGlobalData";
+import {useTelegram} from "../../../../hooks/useTelegram";
+import {useServerUser} from "../../../../hooks/useServerUser";
+import useGlobalData from "../../../../hooks/useGlobalData";
 import {concatAll} from "rxjs";
 
 let inputData = [null, null, null, null, null]
@@ -31,6 +31,25 @@ const Basket = ({height, number}) => {
     const userRef = useRef();
     const [alertElement, setAlertElement] = useState(<div></div>);
     const [freeGameStatus, setFreeGameStatus] = useState(0)
+
+    const onReload = () =>{
+        getBasketList((result)=>{
+            let catalogIdList = []
+            catalogList.forEach(catalog=>{
+                if(catalog.structurePageId === pageId){
+                    catalogIdList.push(catalog.id)
+                }
+            })
+            let cardList = []
+            result.forEach(card=>{
+                if(catalogIdList.includes(card.catalogId)){
+                    cardList.push(card)
+                }
+            })
+            setBasket(cardList)
+            setStatus(1)
+        }, user.id).then()
+    }
 
 
     let dataRequestPromo = {
@@ -79,7 +98,7 @@ const Basket = ({height, number}) => {
         user: user,
         accData: '',
         promo: promo,
-        page: number,
+        page: pageId,
     }
 
     const onRegDataAcc = () => {
@@ -104,14 +123,14 @@ const Basket = ({height, number}) => {
 
     const onClickButton = useCallback(() => {
         try {
-            if (typeof user.username !== 'undefined') {
-                sendDataProduct.user.username = '@' + sendDataProduct.user.username
+            if (typeof user.username === 'undefined') {
+                sendDataProduct.user.username = '@' + userRef.current.value
             }
         } catch (e) {
         }
 
-        if (sendDataProduct.user.username !== '' && typeof sendDataProduct.user.username !== 'undefined') {
 
+        if (typeof sendDataProduct.user.username !== 'undefined' && sendDataProduct.user.username !== '') {
             setButtonText('Оформляем заказ...');
             if (typeof user.username === 'undefined') {
                 sendDataProduct.user.username = userRef.current.value
@@ -815,22 +834,7 @@ const Basket = ({height, number}) => {
 
 
     if (status === 0) {
-        getBasketList((result)=>{
-            let catalogIdList = []
-            catalogList.forEach(catalog=>{
-                if(catalog.structurePageId === pageId){
-                    catalogIdList.push(catalog.id)
-                }
-            })
-            let cardList = []
-            result.forEach(card=>{
-                if(catalogIdList.includes(card.catalogId)){
-                    cardList.push(card)
-                }
-            })
-            setBasket(cardList)
-            setStatus(1)
-        }, user.id)
+        onReload()
         return (<div className={'plup-loader'} style={{
             marginTop: String(height / 2 - 50) + 'px',
             marginLeft: String(window.innerWidth / 2 - 50) + 'px'
@@ -878,7 +882,7 @@ const Basket = ({height, number}) => {
                         }}>{titleText}
                         </div>
                         {basket.map(el => (
-                            <ProductItemBasket key={el.id} setBasketF={setBasket} product={el} number={number}/>
+                            <ProductItemBasket key={el.id} product={el} onReload={onReload}/>
                         ))}
                         {freeGameElement}
                         <div>

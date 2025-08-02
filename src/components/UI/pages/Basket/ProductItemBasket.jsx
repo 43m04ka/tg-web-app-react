@@ -1,60 +1,28 @@
 import React, {useCallback} from 'react';
-import {useTelegram} from "../../hooks/useTelegram";
+import {useTelegram} from "../../../../hooks/useTelegram";
 import {Link} from "react-router-dom";
+import {useBasket} from "./useBasket";
 
-const ProductItemBasket = ({setBasketF, product, number}) => {
+const ProductItemBasket = ({product, onReload}) => {
     const item = product;
     const {user} = useTelegram();
-
-    const sendData = {
-        method: 'del',
-        mainData: item.id,
-        user: user,
-    }
-
-    const onSendData = useCallback(() => {
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(sendData)
-        }).then(r => {
-            let Promise = r.json()
-            Promise.then(r => {
-                let newArray = []
-                r.map(el => {
-                    if (Number(el.tab) === number && el.isSale) {
-                        newArray = [...newArray, el]
-                    }
-                })
-                return setBasketF(newArray);
-            })
-        })
-    }, [sendData])
+    const {deleteCardToBasket} = useBasket()
 
     let platform = ''
-    if (typeof item.platform !== 'undefined') {
-        if (typeof item.view === 'undefined') {
+    if (item.platform !== null) {
+        if (item.choiceColumn === null) {
             platform = item.platform
         } else {
-            platform = item.view
+            platform = item.choiceColumn + ' ' +item.choiceRow
         }
     } else {
         platform = ''
     }
 
-    let price = ''
-    if (item.isSale) {
-        price = item.price + ' ₽'
-    } else {
-        price = 'Нет в продаже!'
-    }
-
     let oldPrice = ''
     let parcent = ''
-    if (typeof item.oldPrice === 'undefined') {
-        if (typeof item.releaseDate === 'undefined') {
+    if ( item.oldPrice === null) {
+        if ( item.releaseDate === null) {
             parcent = ''
         } else {
             parcent = item.releaseDate
@@ -66,7 +34,7 @@ const ProductItemBasket = ({setBasketF, product, number}) => {
     }
 
     let endDate = ''
-    if (typeof item.endDatePromotion === 'undefined') {
+    if ( item.endDatePromotion === null) {
         endDate = ''
     } else {
         endDate = 'Скидка ' + parcent + ' ' + item.endDatePromotion
@@ -95,8 +63,8 @@ const ProductItemBasket = ({setBasketF, product, number}) => {
     }
 
     let type = 0
-    if (typeof item.oldPrice === 'undefined') {
-        if (typeof item.releaseDate === 'undefined') {
+    if ( item.oldPrice === null) {
+        if ( item.releaseDate === null) {
             type = 0
         } else {
             parcent = item.releaseDate.replace('#', '')
@@ -203,7 +171,7 @@ const ProductItemBasket = ({setBasketF, product, number}) => {
                 </div>
             </Link>
             <div onClick={() => {
-                onSendData()
+                deleteCardToBasket(()=>{onReload()}, user.id, product.id).then()
             }} style={{justifyContent: 'center', alignContent: "center", marginRight: '20px'}}>
                 <div className={'background-trash'}
                      style={{padding: '10px', height: '20px', width: '20px'}}>

@@ -43,6 +43,7 @@ function App() {
         try {
             tg.disableVerticalSwipes();
             tg.lockOrientation();
+            tg.requestFullscreen();
         }catch (e) {console.log(e)}
         tg.ready();
     }, [])

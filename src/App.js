@@ -66,13 +66,13 @@ function App() {
                 <div style={{height: String(tg?.contentSafeAreaInset.top) + 'px'}}></div>
                 <div style={{height: String(tg?.safeAreaInset.top) + 'px'}}></div>
                 <Routes>
-                    {pageList.map((page) => (<Route path={page['link']} key={page['id']} element={<MainPage pageList = {pageList}/>} />))}
+                    {pageList.map((page) => (<Route path={page['link']} key={page['id']} element={<MainPage pageList = {pageList} height={size}/>} />))}
 
                     {pageList.map((page, index)=>(<Route path={'basket-'+page.id} element={<Basket height={size} number={index}/>}/>))}
-                    {pageList.map((page, index)=>(<Route path={'search-'+page.id} element={<Search height={size}/>}/>))}
+                    {pageList.map((page)=>(<Route path={'search-'+page.id} element={<Search height={size}/>}/>))}
 
                     <Route path={'favorites'} element={<Favorites/>}/>
-                    <Route path={'/catalog/*'} element={<ProductList/>}/>
+                    <Route path={'/catalog/*'} element={<ProductList height={size}/>}/>
                     <Route path={'/card/*'} element={<Product/>}/>
                     <Route path={'/choice-catalog/*'} element={<ProductListSelector/>}/>
                     <Route path={'admin-panel/*'} element={<AdminPanel/>}/>

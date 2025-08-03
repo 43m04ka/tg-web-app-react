@@ -14,7 +14,7 @@ let lastCardList = null
 let len = 1
 let onLoad = false
 
-const ProductList = () => {
+const ProductList = ({height}) => {
 
     const navigate = useNavigate();
     const {tg} = useTelegram()
@@ -139,7 +139,7 @@ const ProductList = () => {
                              }
                          }}
                          style={{
-                             height: String(window.innerHeight - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
+                             height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
                          }}>
                         <div style={{
                             height: String(45) + 'px'
@@ -175,36 +175,3 @@ const ProductList = () => {
 };
 
 export default ProductList;
-
-
-// if(status === 11){
-//     plupLoaderElem = (<div className={'plup-loader'} style={{
-//         marginTop: '10px',
-//         marginLeft: String(window.innerWidth / 2 - 50) + 'px'
-//     }}></div>)
-// }
-//
-// if (products.length !== 0) {
-//     bodyElement = (<div>
-//             <div className={'list-grid'}>
-//                 {products.map(item => {
-//                     return (
-//                         <div style={{marginLeft: String((window.innerWidth - 150 - 150) / 3) + 'px'}}><ProductItem key={item.id} product={item} path={path}/></div>)
-//                 })}
-//             </div>
-//             {plupLoaderElem}
-//             <div
-//                 style={{height: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 10) + 'px'}}></div>
-//         </div>
-//     )
-// } else {
-//     bodyElement = (<div>
-//         <div className={'text-element'} style={{textAlign: 'center', marginTop: '30px', fontSize: '18px'}}>Ничего не
-//             найдено
-//         </div>
-//     </div>)
-// }
-
-
-// sendRequestOnDatabase({path: path, number: list}, 'getList')
-// onGetData()

@@ -10,9 +10,8 @@ let lastScroll = 0;
 
 let lastPageId = 0
 
-const MainPage = ({pageList}) => {
+const MainPage = ({pageList, height}) => {
     const {tg} = useTelegram();
-    const [size, setSize] = React.useState(window.innerHeight);
     const [hiddenSelector, setHiddenSelector] = useState(false);
     const scrollContainer = useRef();
     const [pageId, setPageId] = React.useState(lastPageId);
@@ -33,10 +32,6 @@ const MainPage = ({pageList}) => {
         }
     })
 
-    const resizeHandler = () => {
-        setSize(window.innerHeight);
-    };
-
     useEffect(() => {
         tg.BackButton.hide();
         console.log(scrollContainer)
@@ -44,11 +39,6 @@ const MainPage = ({pageList}) => {
             top: lastScroll,
             behavior: "instant",
         });
-        window.addEventListener("resize", resizeHandler);
-        resizeHandler();
-        return () => {
-            window.removeEventListener("resize", resizeHandler);
-        };
     }, [])
 
 
@@ -73,7 +63,7 @@ const MainPage = ({pageList}) => {
                 lastScroll = scroll
             }} ref={scrollContainer}
                  style={{
-                     height: String(size - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 50) + 'px'
+                     height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 50) + 'px'
                  }}>
                 <div style={{
                     height: '55px'

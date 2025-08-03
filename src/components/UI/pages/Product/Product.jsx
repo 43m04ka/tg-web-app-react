@@ -14,7 +14,7 @@ const Product = () => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const {getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket} = useServerUser()
-    const {updatePreviewFavoriteData, previewFavoriteData, updatePreviewBasketData, previewBasketData, pageId} = useGlobalData()
+    const {updatePreviewFavoriteData, previewFavoriteData, updatePreviewBasketData, previewBasketData, pageId, catalogList, updateCounterBasket} = useGlobalData()
 
     const cardId = Number((window.location.pathname).replace('/card/', ''))
 
@@ -58,9 +58,9 @@ const Product = () => {
             } else if (isBuy === false) {
                 buttonColor = '#51a456'
                 buttonText = ('Добавить в корзину')
-                buttonLink = () => {
-                    setIsBuy(null)
-                    addCardToBasket(()=> updatePreviewBasketData(user.id), user.id, cardId).then()
+                buttonLink = async () => {
+                    await setIsBuy(null)
+                    await addCardToBasket(()=> {updatePreviewBasketData(user.id);updateCounterBasket(catalogList, pageId)}, user.id, cardId).then()
                 }
             }
         } else {

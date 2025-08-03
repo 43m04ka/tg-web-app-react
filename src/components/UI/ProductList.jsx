@@ -18,7 +18,7 @@ const ProductList = () => {
 
     const navigate = useNavigate();
     const {tg} = useTelegram()
-    const {catalogList} = useGlobalData()
+    const {catalogList, counterBasket} = useGlobalData()
     const {getCardList} = useServerUser()
 
     const [hiddenSelector, setHiddenSelector] = useState(false);
@@ -91,7 +91,18 @@ const ProductList = () => {
                         <Link to={'/basket-' + catalog.structurePageId} className={'link-element'}>
                             <div className={'div-button-panel'} style={{padding: '3px'}}>
                                 <div className={'background-basket'} style={{width: '100%', height: '100%'}}>
-                                    {}
+                                    {counterBasket > 0 ? <div className={'text-element'} style={{
+                                        background: '#f83d3d',
+                                        fontSize: '9px',
+                                        height: '16px',
+                                        width: '16px',
+                                        borderRadius: "50%",
+                                        textAlign: 'center',
+                                        lineHeight: '16px',
+                                        position: 'absolute',
+                                        marginLeft: '22px',
+                                        marginTop: '22px'
+                                    }}>{counterBasket}</div> : ''}
                                 </div>
                             </div>
                         </Link>

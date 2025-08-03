@@ -19,12 +19,9 @@ let realIndex = 0
 
 const HeadSelector = ({hidden}) => {
 
-    const {pageList, setPageId, pageId, catalogList} = useGlobalData()
-    const {user} = useTelegram()
-    const {getBasketList} = useServerUser()
+    const {pageList, setPageId, pageId, catalogList, counterBasket} = useGlobalData()
     const navigate = useNavigate();
 
-    const [basketLen, setBasketLen] = useState(0);
     const [colorSlider, setColorSlider] = useState('');
     const [swiperRef, setSwiperRef] = useState(null);
 
@@ -41,7 +38,7 @@ const HeadSelector = ({hidden}) => {
     }
 
     let basketKolElement = (<></>)
-    if (basketLen !== null && basketLen !== 0) {
+    if (counterBasket !== 0) {
         basketKolElement = (<div className={'text-element'} style={{
             background: '#f83d3d',
             fontSize: '9px',
@@ -53,25 +50,10 @@ const HeadSelector = ({hidden}) => {
             position: 'absolute',
             marginLeft: '22px',
             marginTop: '22px'
-        }}>{basketLen}</div>)
+        }}>{counterBasket}</div>)
     }
     useEffect(() => {
         onIndexChange(page)
-        getBasketList((result) => {
-            let catalogIdList = []
-            catalogList.forEach(catalog=>{
-                if(catalog.structurePageId === pageId){
-                    catalogIdList.push(catalog.id)
-                }
-            })
-            let cardList = []
-            result.forEach(card=>{
-                if(catalogIdList.includes(card.catalogId)){
-                    cardList.push(card)
-                }
-            })
-            setBasketLen(cardList.length)
-        }, user.id).then()
     }, [page])
 
     const onIndexChange = (index) => {

@@ -2,6 +2,7 @@ import React, {useCallback} from 'react';
 import {useTelegram} from "../../../../hooks/useTelegram";
 import {Link} from "react-router-dom";
 import {useBasket} from "./useBasket";
+import useGlobalData from "../../../../hooks/useGlobalData";
 
 const ProductItemBasket = ({product, onReload}) => {
     const item = product;
@@ -170,8 +171,8 @@ const ProductItemBasket = ({product, onReload}) => {
                     </div>
                 </div>
             </Link>
-            <div onClick={() => {
-                deleteCardToBasket(()=>{onReload()}, user.id, product.id).then()
+            <div onClick={async () => {
+                await deleteCardToBasket(async ()=>{onReload()}, user.id, product.id).then()
             }} style={{justifyContent: 'center', alignContent: "center", marginRight: '20px'}}>
                 <div className={'background-trash'}
                      style={{padding: '10px', height: '20px', width: '20px'}}>

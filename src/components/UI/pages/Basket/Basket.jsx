@@ -13,7 +13,7 @@ let orderId = 0
 const Basket = ({height, number}) => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
-    const {pageId, catalogList} = useGlobalData()
+    const {pageId, catalogList, updateCounterBasket} = useGlobalData()
     const {getBasketList} = useServerUser()
 
     const [basket, setBasket] = useState([])
@@ -48,6 +48,7 @@ const Basket = ({height, number}) => {
             })
             setBasket(cardList)
             setStatus(1)
+            updateCounterBasket(catalogList, pageId)
         }, user.id).then()
     }
 

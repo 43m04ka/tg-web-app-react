@@ -10,7 +10,11 @@ const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
 
 let lastPageID = -1
 const CatalogListBody = ({}) => {
-    const {catalogStructureList, pageId, mainPageCards, catalogList} = useGlobalData()
+    const {catalogStructureList, pageId, mainPageCards, catalogList, updateCounterBasket} = useGlobalData()
+
+    useEffect(() => {
+        updateCounterBasket(catalogList, pageId)
+    }, [catalogList, pageId])
 
     if (catalogStructureList.length > 0 && mainPageCards.length > 0) {
         return (<div>

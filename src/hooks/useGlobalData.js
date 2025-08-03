@@ -1,8 +1,13 @@
 import {create} from 'zustand'
 import {devtools} from "zustand/middleware";
 import {useServerUser} from "./useServerUser";
+import {useTelegram} from "./useTelegram";
+import * as catalogList from "rxjs";
 
 const {getPageList, getStructureCatalogList, getPreviewCardList, getCatalogList, getPreviewFavoriteList, getPreviewBasketList} = useServerUser()
+const {getBasketList} = useServerUser()
+const {user} = useTelegram()
+
 
 const useGlobalData = create(devtools(set => ({
     pageList: null,
@@ -10,6 +15,24 @@ const useGlobalData = create(devtools(set => ({
         set((state) => ({pageList: result, pageId: state.pageId === null ? result[0].id : state.pageId}));
     }),
 
+    counterBasket: 0,
+    updateCounterBasket: (catalogList, pageId) =>
+        getBasketList((result)=> {
+            let catalogIdList = []
+            catalogList.map(catalog=>{
+                if(catalog.structurePageId === pageId){
+                    catalogIdList.push(catalog.id)
+                }
+            })
+
+            let cardList = []
+            result.map(card=>{
+                if(catalogIdList.includes(card.catalogId)){
+                    cardList.push(card)
+                }
+            })
+            set(() => ({counterBasket: cardList.length}))
+        }, user.id),
 
     catalogList: [],
     catalogStructureList: [],

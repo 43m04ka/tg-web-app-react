@@ -79,7 +79,7 @@ function App() {
                     <Route path={'admin-panel/*'} element={<AdminPanel/>}/>
                     <Route path={'admin'} element={<AP_Authentication/>}/>
                     <Route path={'info'} element={<Info/>}/>
-                    <Route path={'/history/*'} element={<History/>}/>
+                    <Route path={'/history'} element={<History/>}/>
                     <Route path={'freegame'} element={<Roulette/>}/>
                     <Route path="*" element={<ErrorPage/>}/>
                 </Routes>

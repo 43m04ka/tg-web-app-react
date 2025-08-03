@@ -62,11 +62,11 @@ const Favorites = () => {
                         </div>
                         {cardList.map(item => {
                             let platform = ''
-                            if (typeof item.platform !== 'undefined') {
-                                if (typeof item.view === 'undefined') {
+                            if (item.platform !== null) {
+                                if (item.choiceColumn === null) {
                                     platform = item.platform
                                 } else {
-                                    platform = item.view
+                                    platform = item.choiceColumn + ' ' + item.choiceRow
                                 }
                             } else {
                                 platform = ''
@@ -81,8 +81,8 @@ const Favorites = () => {
 
                             let oldPrice = ''
                             let parcent = ''
-                            if (typeof item.oldPrice === 'undefined') {
-                                if (typeof item.releaseDate === 'undefined') {
+                            if (item.oldPrice === null) {
+                                if (item.releaseDate === null) {
                                     parcent = ''
                                 } else {
                                     parcent = item.releaseDate.replace('#', '')
@@ -94,7 +94,7 @@ const Favorites = () => {
                             }
 
                             let endDatePromotion = ''
-                            if (typeof item.endDatePromotion === 'undefined') {
+                            if (item.endDatePromotion === null) {
                                 endDatePromotion = ''
                             } else {
                                 endDatePromotion = 'Скидка ' + parcent + ' ' + item.endDatePromotion
@@ -122,8 +122,8 @@ const Favorites = () => {
                             }
 
                             let type = 0
-                            if (typeof item.oldPrice === 'undefined') {
-                                if (typeof item.releaseDate === 'undefined') {
+                            if (item.oldPrice === null) {
+                                if (item.releaseDate === null) {
                                     parcent = ''
                                     type = 0
                                 } else {

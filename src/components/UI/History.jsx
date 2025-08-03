@@ -1,16 +1,22 @@
-import React, {useCallback, useEffect} from 'react';
-import {Link, useNavigate} from "react-router-dom";
+import React, {useCallback, useEffect, useState} from 'react';
+import {Link, Route, Routes, useNavigate} from "react-router-dom";
 import {useTelegram} from "../../hooks/useTelegram";
+import {useServerUser} from "../../hooks/useServerUser";
+import Order from "./Order";
 
-const History = ({historyData}) => {
+const History = () => {
     const navigate = useNavigate();
-    const {tg} = useTelegram();
+    const {tg, user} = useTelegram();
+    const {getHistoryList} = useServerUser()
+
+    const [historyData, setHistoryData] = useState(null);
 
     const onBack = useCallback(async () => {
         navigate(-1);
     }, [])
 
     useEffect(() => {
+        getHistoryList(setHistoryData, user.id).then()
         tg.onEvent('backButtonClicked', onBack)
         return () => {
             tg.offEvent('backButtonClicked', onBack)
@@ -18,7 +24,7 @@ const History = ({historyData}) => {
     }, [onBack])
 
 
-    if(historyData.length !==0) {
+    if (historyData !== null && historyData.length !== 0) {
         return (
             <div>
                 <div className={'title'}
@@ -26,36 +32,36 @@ const History = ({historyData}) => {
                     заказов
                 </div>
                 {historyData.map(order => (
-                    <Link to={'/history/' + String(order.id)} className={'link-element'}>
+                    <Link to={'/order/' + String(order.id)} className={'link-element'}>
                         <div style={{
                             background: '#131313',
                             padding: '5px',
                             borderRadius: '7px',
                             margin: '5px',
-                            display: 'grid',
-                            gridTemplateColumns: '1fr 20px',
                             alignItems: 'center',
                             marginTop: '7px'
                         }}>
-                            <div>
-                                <div style={{display: 'flex', justifyContent: 'left', alignItems: 'center'}}>
-                                    <div className={'text-element'}>{'Заказ №' + String(order.id)}</div>
-                                    <div className={'text-element'} style={{marginLeft: '30px'}}>
-                                        {'от ' + String(order.date).replaceAll('/', '.')}
+                            <div style={{display: 'grid',
+                                gridTemplateColumns: '1fr 20px',}}>
+                                <div>
+                                    <div style={{display: 'flex', justifyContent: 'left', alignItems: 'center'}}>
+                                        <div className={'text-element'}>{'Заказ №' + String(order.id)}</div>
+                                        <div className={'text-element'} style={{marginLeft: '30px'}}>
+                                            {'от ' + String(order.date).replaceAll('/', '.')}
+                                        </div>
+                                    </div>
+                                    <div className={'text-element'} style={{marginTop: '5px'}}>
+                                        {'На сумму: ' + String(order.summa) + ' ₽'}
                                     </div>
                                 </div>
-                                <div className={'text-element'} style={{marginTop: '5px'}}>
-                                    {'На сумму: ' + String(order.summa) + ' ₽'}
-                                </div>
                             </div>
-                            <div className={'background-arrowGray'}
-                                 style={{width: '20px', height: '20px', marginRight: '5px'}}/>
+                            <Order data={order}/>
                         </div>
                     </Link>
                 ))}
             </div>
         );
-    }else{
+    } else if (historyData !== null) {
         return (
             <div style={{display: 'grid'}}>
                 <div style={{
@@ -76,6 +82,11 @@ const History = ({historyData}) => {
                     </button>
                 </Link>
             </div>)
+    } else {
+        return (<div className={'plup-loader'} style={{
+            marginTop: String(window.innerHeight / 2 - 50) + 'px',
+            marginLeft: String(window.innerWidth / 2 - 50) + 'px'
+        }}></div>);
     }
 };
 

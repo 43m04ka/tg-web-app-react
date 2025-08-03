@@ -200,9 +200,24 @@ export function useServerUser() {
         })
     }
 
+    const getHistoryList = async (setResult, chatId) => {
+        fetch(`${URL}/history?time=${Date.now()}&chatId=${chatId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
     return {
         getPageList, getStructureCatalogList, getPreviewCardList, getCatalogList, getCardList, getCard,
         getPreviewFavoriteList, addCardToFavorite, deleteCardToFavorite, getFavoriteList,
         getPreviewBasketList, addCardToBasket, deleteCardToBasket, getBasketList,
+        getHistoryList
     }
 }

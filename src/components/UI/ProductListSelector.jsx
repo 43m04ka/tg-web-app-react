@@ -4,6 +4,7 @@ import {useNavigate} from "react-router-dom";
 import {useServer} from "../../hooks/useServer";
 import mainPage from "./pages/Main/MainPage";
 import useGlobalData from "../../hooks/useGlobalData";
+import {useServerUser} from "../../hooks/useServerUser";
 
 const ProductListSelector = () => {
     const [selectChoiceColumn, setSelectChoiceColumn] = React.useState(0);
@@ -16,7 +17,8 @@ const ProductListSelector = () => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const {findCardsByCatalog} = useServer()
-    const {catalogList, pageId, previewBasketData: basketData} = useGlobalData()
+    const {addCardToBasket} = useServerUser()
+    const {catalogList, pageId, previewBasketData: basketData, updatePreviewBasketData} = useGlobalData()
 
     useEffect(() => {
         let catalogId = 0
@@ -45,28 +47,6 @@ const ProductListSelector = () => {
     useEffect(() => {
         tg.BackButton.show();
     }, [])
-
-    const onSendData = async (user, method, mainData) => {
-        await fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({user: user, method: method, mainData: mainData})
-        }).then(r => {
-            let Promise = r.json()
-            Promise.then(prom => {
-                const result = prom.body
-                if (result) {
-                    setIsBuy(true)
-                    setButtonText('Перейти в корзину')
-                } else {
-                    setButtonText('Добавить в корзину')
-                }
-            })
-        })
-    }
-
 
     if (cardList.length > 0) {
 
@@ -180,7 +160,7 @@ const ProductListSelector = () => {
 
         let buttonColor = '#51a456'
         let buttonLink = () => {
-            onSendData(user, 'add', thisElement.id);
+            addCardToBasket(()=>{updatePreviewBasketData(user.id)}, user.id, thisElement.id);
             setButtonText('Ожидайте...');
         }
         if (isBuy) {

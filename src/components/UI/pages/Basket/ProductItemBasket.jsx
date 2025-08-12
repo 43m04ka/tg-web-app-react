@@ -8,6 +8,7 @@ const ProductItemBasket = ({product, onReload}) => {
     const item = product;
     const {user} = useTelegram();
     const {deleteCardToBasket} = useBasket()
+    const {updatePreviewBasketData} = useGlobalData()
 
     let platform = ''
     if (item.platform !== null) {
@@ -172,7 +173,7 @@ const ProductItemBasket = ({product, onReload}) => {
                 </div>
             </Link>
             <div onClick={async () => {
-                await deleteCardToBasket(async ()=>{onReload()}, user.id, product.id).then()
+                await deleteCardToBasket(async ()=>{onReload();updatePreviewBasketData(user.id)}, user.id, product.id).then()
             }} style={{justifyContent: 'center', alignContent: "center", marginRight: '20px'}}>
                 <div className={'background-trash'}
                      style={{padding: '10px', height: '20px', width: '20px'}}>

@@ -149,7 +149,7 @@ const ProductItemBasket = ({product, onReload}) => {
                         fontSize: '13px',
                         overflow: 'hidden',
                         display: 'flex',
-                    }}>{platform + ' • ' + item.name}</div>
+                    }}>{platform + ' • ' + item.name  + (item.choiceRow !== null ? ' • ' + item.choiceRow : '')}</div>
                     <div style={{
                         marginTop: '0px',
                         display: 'flex',

@@ -10,17 +10,6 @@ const ProductItemBasket = ({product, onReload}) => {
     const {deleteCardToBasket} = useBasket()
     const {updatePreviewBasketData} = useGlobalData()
 
-    let platform = ''
-    if (item.platform !== null) {
-        if (item.choiceColumn === null) {
-            platform = item.platform
-        } else {
-            platform = item.choiceColumn + ' ' +item.choiceRow
-        }
-    } else {
-        platform = ''
-    }
-
     let oldPrice = ''
     let parcent = ''
     if ( item.oldPrice === null) {
@@ -149,7 +138,7 @@ const ProductItemBasket = ({product, onReload}) => {
                         fontSize: '13px',
                         overflow: 'hidden',
                         display: 'flex',
-                    }}>{platform + ' • ' + item.name  + (item.choiceRow !== null ? ' • ' + item.choiceRow : '')}</div>
+                    }}>{item.platform + ' • ' + item.name  + (item.choiceRow !== null ? ' • ' + item.choiceRow : '')}</div>
                     <div style={{
                         marginTop: '0px',
                         display: 'flex',

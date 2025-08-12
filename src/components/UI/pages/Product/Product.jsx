@@ -5,6 +5,7 @@ import ProductItem from "../../ProductItem";
 import {useServerUser} from "../../../../hooks/useServerUser";
 import useGlobalData from "../../../../hooks/useGlobalData";
 import Description from "./Description";
+import Recommendations from "./Recommendations";
 
 
 let heightText = null
@@ -16,14 +17,18 @@ const Product = () => {
     const {getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket} = useServerUser()
     const {updatePreviewFavoriteData, previewFavoriteData, updatePreviewBasketData, previewBasketData, pageId, catalogList, updateCounterBasket} = useGlobalData()
 
-    const cardId = Number((window.location.pathname).replace('/card/', ''))
+    let cardId = Number((window.location.pathname).replace('/card/', ''))
 
     const [isBuy, setIsBuy] = React.useState(null);
     const [productData, setProductData] = React.useState(null);
-    const [dataCards, setDataCards] = React.useState([]);
     const [isFavorite, setIsFavorite] = React.useState(false);
     const [pictureIsLoad, setPictureIsLoad] =  useState(0);
 
+    if(productData !== null && cardId !== productData.id){
+        setProductData(null)
+        pictureIsLoad(0)
+        isFavorite(0)
+    }
 
     useEffect(() => {
         tg.BackButton.show();
@@ -75,13 +80,6 @@ const Product = () => {
             backgroundColor = '#ff5d5d'
         }
 
-
-        let descriptionText = ''
-        if (typeof productData.description === 'undefined') {
-            descriptionText = ''
-        } else {
-            descriptionText = productData.description
-        }
 
         let genre = ''
         if (typeof productData.genre === 'undefined' || productData.genre === null) {
@@ -209,21 +207,6 @@ const Product = () => {
             </div>)
         }
 
-
-
-        let seeLove = (<div/>)
-        if (dataCards.length !== 0 && pictureIsLoad >= 1) {
-            seeLove = (<div>
-                <div className={"title"}>Рекомендуем:</div>
-                <div className={'list-grid'}>
-                    {dataCards.map(item => {
-                        return (
-                            <div style={{marginLeft: String((window.innerWidth - 150 - 150) / 3) + 'px'}}><ProductItem
-                                key={item.id} product={item}/></div>)
-                    })}
-                </div>
-            </div>)
-        }
         let imgElement = (<div style={{
             height: String(window.innerWidth - 20 - ((window.innerWidth - 20) / 2 - 50)) + 'px'
         }}>
@@ -393,7 +376,7 @@ const Product = () => {
                     </div>
                     <Description>{productData.description}</Description>
                 </div>
-                {seeLove}
+                <Recommendations/>
             </div>
         );
     }else{

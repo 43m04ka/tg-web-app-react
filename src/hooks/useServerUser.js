@@ -214,10 +214,24 @@ export function useServerUser() {
         })
     }
 
+    const getRecommendationsGames = async (setResult, pageId) => {
+        fetch(`${URL}/recommendationsGames?time=${Date.now()}&pageId=${pageId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result || null)
+            })
+        })
+    }
+
     return {
         getPageList, getStructureCatalogList, getPreviewCardList, getCatalogList, getCardList, getCard,
         getPreviewFavoriteList, addCardToFavorite, deleteCardToFavorite, getFavoriteList,
         getPreviewBasketList, addCardToBasket, deleteCardToBasket, getBasketList,
-        getHistoryList
+        getHistoryList, getRecommendationsGames
     }
 }

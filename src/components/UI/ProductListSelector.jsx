@@ -16,14 +16,14 @@ const ProductListSelector = () => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const {findCardsByCatalog} = useServer()
-    const {catalogList, pageId, previewBasketData:basketData} = useGlobalData()
+    const {catalogList, pageId, previewBasketData: basketData} = useGlobalData()
 
     useEffect(() => {
         let catalogId = 0
-        catalogList.map(el=>{
-            if(el.path === window.location.pathname.replace('/choice-catalog/', '')) catalogId = el.id
+        catalogList.map(el => {
+            if (el.path === window.location.pathname.replace('/choice-catalog/', '')) catalogId = el.id
         })
-        findCardsByCatalog(catalogId , setCardList).then()
+        findCardsByCatalog(catalogId, setCardList).then()
     }, [catalogList])
 
     const onBack = useCallback(async () => {
@@ -31,7 +31,7 @@ const ProductListSelector = () => {
     }, [])
 
     const onBasket = useCallback(async () => {
-        navigate('/basket-'+pageId);
+        navigate('/basket-' + pageId);
 
     }, [])
 
@@ -52,7 +52,7 @@ const ProductListSelector = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({user:user, method:method, mainData:mainData})
+            body: JSON.stringify({user: user, method: method, mainData: mainData})
         }).then(r => {
             let Promise = r.json()
             Promise.then(prom => {
@@ -68,18 +68,9 @@ const ProductListSelector = () => {
     }
 
 
-    if(cardList.length > 0) {
+    if (cardList.length > 0) {
 
         let dataOld = cardList.sort(function (a, b) {
-            try {
-                if (a.choiceRow > b.choiceRow) {
-                    return 1;
-                }
-                if (a.choiceRow < b.choiceRow) {
-                    return -1;
-                }
-            } catch (e) {
-            }
             try {
                 if (a.choiceColumn > b.choiceColumn) {
                     return 1;
@@ -89,27 +80,29 @@ const ProductListSelector = () => {
                 }
             } catch (e) {
             }
+            try {
+                if (a.choiceRow > b.choiceRow) {
+                    return 1;
+                }
+                if (a.choiceRow < b.choiceRow) {
+                    return -1;
+                }
+            } catch (e) {
+            }
         });
 
         let data = []
-        let lastName = ''
-        let vsArray = []
-        let lastId = 0
-        dataOld.map(el => {
-            if (lastName !== el.choiceColumn) {
-                data = [...data, ...vsArray]
-                lastName = el.choiceColumn
-                vsArray = [{}]
-                vsArray[0].id = lastId
-                vsArray[0].body = [el]
-                vsArray[0].name = el.choiceColumn
-                lastId += 1
-            } else {
-                vsArray[0].body = [...vsArray[0].body, ...[el]]
-            }
+        let index = 0
 
+        cardList.map(card => {
+            let group = data.filter(el => el.name === card.choiceColumn)
+            if (group.length > 0) {
+                data[group[0].id].body.push(card)
+            } else {
+                data.push({id:index, name:card.choiceColumn, body:[card]})
+                index += 1
+            }
         })
-        data = [...data, ...vsArray]
 
         let count = 0
         data.map(el => {
@@ -137,8 +130,8 @@ const ProductListSelector = () => {
         })
 
         count = 0
-        data.map(cat=>{
-            cat.body.map(el=>{
+        data.map(cat => {
+            cat.body.map(el => {
                 el.localId = count
                 count++
             })
@@ -152,22 +145,22 @@ const ProductListSelector = () => {
         let thisElement = data[selectChoiceColumn].body[selectChoiceRow]
 
         let flag = false
-        basketData.map(pos=>{
-            if(pos === thisElement.id) {
+        basketData.map(pos => {
+            if (pos === thisElement.id) {
                 flag = true
             }
         })
 
-        if(isBuy !== flag && thisElement?.onSale){
+        if (isBuy !== flag && thisElement?.onSale) {
             setIsBuy(flag);
-            if(flag){
+            if (flag) {
                 setButtonText('Перейти в корзину');
-            }else{
+            } else {
                 setButtonText('Добавить в корзину')
             }
         }
 
-        if(!thisElement?.onSale && isBuy !== null){
+        if (!thisElement?.onSale && isBuy !== null) {
             setIsBuy(null)
             setButtonText('Нет в продаже')
         }
@@ -197,7 +190,7 @@ const ProductListSelector = () => {
             }
         }
 
-        if(!thisElement?.onSale){
+        if (!thisElement?.onSale) {
             buttonColor = '#8e8f9e'
             buttonLink = () => {
             }
@@ -250,7 +243,10 @@ const ProductListSelector = () => {
                                     justifyItems: 'center',
                                     alignItems: 'center'
                                 }}>
-                                    <div style={{fontSize: '13px', fontFamily: "'Montserrat', sans-serif"}}>{el.choiceRow}</div>
+                                    <div style={{
+                                        fontSize: '13px',
+                                        fontFamily: "'Montserrat', sans-serif"
+                                    }}>{el.choiceRow}</div>
                                     <div style={{
                                         fontSize: '22px',
                                         fontFamily: "'Montserrat', sans-serif"
@@ -455,7 +451,7 @@ const ProductListSelector = () => {
                 </div>
             </div>
         );
-    }else{
+    } else {
         return (<div className={'plup-loader'} style={{
             marginTop: String(window.innerHeight / 2 - 50) + 'px',
             marginLeft: String(window.innerWidth / 2 - 50) + 'px'

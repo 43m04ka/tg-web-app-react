@@ -26,8 +26,7 @@ const Product = () => {
 
     if(productData !== null && cardId !== productData.id){
         setProductData(null)
-        pictureIsLoad(0)
-        isFavorite(0)
+        setPictureIsLoad(0)
     }
 
     useEffect(() => {
@@ -155,7 +154,11 @@ const Product = () => {
         if (typeof productData.releaseDate === 'undefined' || productData.releaseDate === null) {
             releaseDate = ''
         } else {
-            releaseDate = 'Дата релиза: ' + productData.releaseDate.replace('#', '')
+            let a = (new Date(productData.releaseDate))*24*60*60*1000
+            let currentDate = new Date('1899-12-30T00:00:00.000Z')
+            let newDate = new Date(a + currentDate.getTime());
+
+            releaseDate = 'Дата релиза: ' + newDate.toLocaleDateString('ru-RU')
             releaseDate = (<div style={{
                 marginTop: '12px',
                 fontSize: '14px',

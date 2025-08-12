@@ -6,11 +6,15 @@ const ProductItem = ({product}) => {
 
     let oldPrice = ''
     let parcent = ''
-    if (typeof product.oldPrice === null) {
-        if (typeof product.releaseDate === null) {
+    if (product.oldPrice === null) {
+        if (product.releaseDate === null) {
             parcent = ''
         } else {
-            parcent = product.releaseDate.replace('#', '')
+            let a = (new Date(product.releaseDate))*24*60*60*1000
+            let currentDate = new Date('1899-12-30T00:00:00.000Z')
+            let newDate = new Date(a + currentDate.getTime());
+
+            parcent = newDate.toLocaleDateString('ru-RU')
             parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
         }
     } else if (product.oldPrice > product.price) {

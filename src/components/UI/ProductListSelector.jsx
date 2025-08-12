@@ -3,10 +3,11 @@ import {useTelegram} from "../../hooks/useTelegram";
 import {useNavigate} from "react-router-dom";
 import {useServer} from "../../hooks/useServer";
 import mainPage from "./pages/Main/MainPage";
+import useGlobalData from "../../hooks/useGlobalData";
 
-const ProductListSelector = ({basketData}) => {
-    const [selectCategory, setSelectCategory] = React.useState(0);
-    const [selectView, setSelectView] = React.useState(0);
+const ProductListSelector = () => {
+    const [selectChoiceColumn, setSelectChoiceColumn] = React.useState(0);
+    const [selectChoiceRow, setSelectChoiceRow] = React.useState(0);
     const [isImgHidden, setIsImgHidden] = React.useState(true);
     const [isBuy, setIsBuy] = React.useState(false);
     const [buttonText, setButtonText] = React.useState('Добавить в корзину');
@@ -15,17 +16,22 @@ const ProductListSelector = ({basketData}) => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const {findCardsByCatalog} = useServer()
+    const {catalogList, pageId, previewBasketData:basketData} = useGlobalData()
 
     useEffect(() => {
-        findCardsByCatalog(window.location.pathname.replace('/choice-catalog/', ''), setCardList).then()
-    }, [])
+        let catalogId = 0
+        catalogList.map(el=>{
+            if(el.path === window.location.pathname.replace('/choice-catalog/', '')) catalogId = el.id
+        })
+        findCardsByCatalog(catalogId , setCardList).then()
+    }, [catalogList])
 
     const onBack = useCallback(async () => {
         navigate(-1);
     }, [])
 
     const onBasket = useCallback(async () => {
-        navigate('/basket'+cardList[0]?.body.tab);
+        navigate('/basket-'+pageId);
 
     }, [])
 
@@ -66,19 +72,19 @@ const ProductListSelector = ({basketData}) => {
 
         let dataOld = cardList.sort(function (a, b) {
             try {
-                if (a.body.position > b.body.position) {
+                if (a.choiceRow > b.choiceRow) {
                     return 1;
                 }
-                if (a.body.position < b.body.position) {
+                if (a.choiceRow < b.choiceRow) {
                     return -1;
                 }
             } catch (e) {
             }
             try {
-                if (a.body.category > b.body.category) {
+                if (a.choiceColumn > b.choiceColumn) {
                     return 1;
                 }
-                if (a.body.category < b.body.category) {
+                if (a.choiceColumn < b.choiceColumn) {
                     return -1;
                 }
             } catch (e) {
@@ -90,13 +96,13 @@ const ProductListSelector = ({basketData}) => {
         let vsArray = []
         let lastId = 0
         dataOld.map(el => {
-            if (lastName !== el.body.category) {
+            if (lastName !== el.choiceColumn) {
                 data = [...data, ...vsArray]
-                lastName = el.body.category
+                lastName = el.choiceColumn
                 vsArray = [{}]
                 vsArray[0].id = lastId
                 vsArray[0].body = [el]
-                vsArray[0].title = el.body.category
+                vsArray[0].name = el.choiceColumn
                 lastId += 1
             } else {
                 vsArray[0].body = [...vsArray[0].body, ...[el]]
@@ -109,19 +115,19 @@ const ProductListSelector = ({basketData}) => {
         data.map(el => {
             data[count].body = el.body.sort(function (a, b) {
                 try {
-                    if (Number(a.body.view.split(' ')[0]) > Number(b.body.view.split(' ')[0])) {
+                    if (Number(a.choiceRow.split(' ')[0]) > Number(b.choiceRow.split(' ')[0])) {
                         return 1;
                     }
-                    if (Number(a.body.view.split(' ')[0]) < Number(b.body.view.split(' ')[0])) {
+                    if (Number(a.choiceRow.split(' ')[0]) < Number(b.choiceRow.split(' ')[0])) {
                         return -1;
                     }
                 } catch (e) {
                 }
                 try {
-                    if (Number(a.body.view) > Number(b.body.view)) {
+                    if (Number(a.choiceRow) > Number(b.choiceRow)) {
                         return 1;
                     }
-                    if (Number(a.body.view) < Number(b.body.view)) {
+                    if (Number(a.choiceRow) < Number(b.choiceRow)) {
                         return -1;
                     }
                 } catch (e) {
@@ -133,26 +139,26 @@ const ProductListSelector = ({basketData}) => {
         count = 0
         data.map(cat=>{
             cat.body.map(el=>{
-                el.body.localId = count
+                el.localId = count
                 count++
             })
         })
 
-        let cordCategory = (window.innerWidth - 20 - 2 - 2) / data.length * selectCategory + 1.5
-        let cordView = (window.innerWidth - 20 - 2 - 2) / data[selectCategory].body.length * selectView + 1.5
+        let cordchoiceColumn = (window.innerWidth - 20 - 2 - 2) / data.length * selectChoiceColumn + 1.5
+        let cordchoiceRow = (window.innerWidth - 20 - 2 - 2) / data[selectChoiceColumn].body.length * selectChoiceRow + 1.5
 
-        let url = data[selectCategory].body[selectView].body.img
+        let url = data[selectChoiceColumn].body[selectChoiceRow].image
 
-        let thisElement = data[selectCategory].body[selectView]
+        let thisElement = data[selectChoiceColumn].body[selectChoiceRow]
 
         let flag = false
         basketData.map(pos=>{
-            if(pos.id === thisElement.id) {
+            if(pos === thisElement.id) {
                 flag = true
             }
         })
 
-        if(isBuy !== flag && thisElement?.body.isSale){
+        if(isBuy !== flag && thisElement?.onSale){
             setIsBuy(flag);
             if(flag){
                 setButtonText('Перейти в корзину');
@@ -161,7 +167,7 @@ const ProductListSelector = ({basketData}) => {
             }
         }
 
-        if(!thisElement?.body.isSale && isBuy !== null){
+        if(!thisElement?.onSale && isBuy !== null){
             setIsBuy(null)
             setButtonText('Нет в продаже')
         }
@@ -191,13 +197,13 @@ const ProductListSelector = ({basketData}) => {
             }
         }
 
-        if(!thisElement?.body.isSale){
+        if(!thisElement?.onSale){
             buttonColor = '#8e8f9e'
             buttonLink = () => {
             }
         }
 
-        let scrollerView = (<>
+        let scrollerchoiceRow = (<>
             <div style={{
                 display: 'grid',
                 alignItems: 'center',
@@ -207,23 +213,23 @@ const ProductListSelector = ({basketData}) => {
             }}>
                 <div style={{
                     background: '#414BE0FF',
-                    width: String(((window.innerWidth - 20 - 2 - 2) - (data[selectCategory].body.length - 1) * 2) / data[selectCategory].body.length) + 'px',
+                    width: String(((window.innerWidth - 20 - 2 - 2) - (data[selectChoiceColumn].body.length - 1) * 2) / data[selectChoiceColumn].body.length) + 'px',
                     height: '95px',
                     borderRadius: '7px',
                     marginTop: '2px',
                     marginBottom: '2px',
                     marginRight: '2px',
                     position: 'relative',
-                    marginLeft: String(cordView) + 'px',
+                    marginLeft: String(cordchoiceRow) + 'px',
                     transitionProperty: 'margin-left',
                     transitionDuration: '0.2s',
                 }}></div>
-                {data[selectCategory].body.map(el => {
+                {data[selectChoiceColumn].body.map(el => {
                     return (
                         <div key={el.localId} style={{
                             position: 'absolute',
-                            marginLeft: String(((el.body.localId) % data[selectCategory].body.length) * (window.innerWidth - 20) / data[selectCategory].body.length + 'px'),
-                            width: String((window.innerWidth - 30) / data[selectCategory].body.length) + 'px',
+                            marginLeft: String(((el.localId) % data[selectChoiceColumn].body.length) * (window.innerWidth - 20) / data[selectChoiceColumn].body.length + 'px'),
+                            width: String((window.innerWidth - 30) / data[selectChoiceColumn].body.length) + 'px',
                             height: '100px'
                         }}>
                             <div style={{
@@ -232,9 +238,9 @@ const ProductListSelector = ({basketData}) => {
                                 display: 'flex',
                                 height: '95px',
                                 overflow: 'hidden',
-                                width: String((window.innerWidth - 30) / data[selectCategory].body.length) + 'px',
+                                width: String((window.innerWidth - 30) / data[selectChoiceColumn].body.length) + 'px',
                             }} onClick={() => {
-                                setSelectView(((el.body.localId) % data[selectCategory].body.length))
+                                setSelectChoiceRow(((el.localId) % data[selectChoiceColumn].body.length))
                             }}>
                                 <div style={{
                                     color: 'white',
@@ -244,11 +250,11 @@ const ProductListSelector = ({basketData}) => {
                                     justifyItems: 'center',
                                     alignItems: 'center'
                                 }}>
-                                    <div style={{fontSize: '13px', fontFamily: "'Montserrat', sans-serif"}}>{el.body.view}</div>
+                                    <div style={{fontSize: '13px', fontFamily: "'Montserrat', sans-serif"}}>{el.choiceRow}</div>
                                     <div style={{
                                         fontSize: '22px',
                                         fontFamily: "'Montserrat', sans-serif"
-                                    }}>{Math.min(...el.price) + ' ₽'}</div>
+                                    }}>{el.price + ' ₽'}</div>
                                 </div>
                             </div>
                         </div>
@@ -259,9 +265,9 @@ const ProductListSelector = ({basketData}) => {
         </>)
 
         if (data[0].body.length > 3) {
-            let cordView = selectView * ((window.innerWidth - 20) / 3) - scrollLeft
+            let cordchoiceRow = selectChoiceRow * ((window.innerWidth - 20) / 3) - scrollLeft
             const windowWidth = window.innerWidth
-            scrollerView = (<div style={{overflowX: 'hidden'}}>
+            scrollerchoiceRow = (<div style={{overflowX: 'hidden'}}>
                 <div style={{
                     display: 'grid',
                     alignItems: 'center',
@@ -279,7 +285,7 @@ const ProductListSelector = ({basketData}) => {
                         marginBottom: '2px',
                         marginRight: '2px',
                         position: 'relative',
-                        marginLeft: String(cordView) + 'px',
+                        marginLeft: String(cordchoiceRow) + 'px',
                     }}></div>
                     <div style={{
                         width: String(window.innerWidth - 20) + 'px',
@@ -291,8 +297,8 @@ const ProductListSelector = ({basketData}) => {
                          onScroll={(event) => {
                              setScrollLeft(event.target.scrollLeft)
                          }}>
-                        {data[selectCategory].body.map(el => (
-                            <div key={data[selectCategory].body.indexOf(el)} style={{
+                        {data[selectChoiceColumn].body.map(el => (
+                            <div key={data[selectChoiceColumn].body.indexOf(el)} style={{
                                 width: String(((window.innerWidth - 20) / 3)) + 'px',
                                 height: '70px'
                             }}>
@@ -304,7 +310,7 @@ const ProductListSelector = ({basketData}) => {
                                     overflow: 'hidden',
                                     width: ((window.innerWidth - 20) / 3) + 'px',
                                 }} onClick={() => {
-                                    setSelectView((data[selectCategory].body.indexOf(el) % data[selectCategory].body.length))
+                                    setSelectChoiceRow((data[selectChoiceColumn].body.indexOf(el) % data[selectChoiceColumn].body.length))
                                 }}>
                                     <div style={{
                                         color: 'white',
@@ -317,11 +323,11 @@ const ProductListSelector = ({basketData}) => {
                                         <div style={{
                                             fontSize: '13px',
                                             fontFamily: "'Montserrat', sans-serif"
-                                        }}>{el.body.view}</div>
+                                        }}>{el.choiceRow}</div>
                                         <div style={{
                                             fontSize: '22px',
                                             fontFamily: "'Montserrat', sans-serif"
-                                        }}>{Math.min(...el.price) + ' ₽'}</div>
+                                        }}>{el.price + ' ₽'}</div>
                                     </div>
                                 </div>
                             </div>
@@ -332,10 +338,10 @@ const ProductListSelector = ({basketData}) => {
         }
 
         let platform = ''
-        if (typeof thisElement.body.platform === 'undefined') {
+        if (typeof thisElement.platform === 'undefined') {
             platform = ''
         } else {
-            platform = 'Консоли: ' + thisElement.body.platform
+            platform = 'Консоли: ' + thisElement.platform
         }
 
 
@@ -364,7 +370,7 @@ const ProductListSelector = ({basketData}) => {
                         fontFamily: "'Montserrat', sans-serif",
                         marginTop: '7px',
                         marginBottom: '7px'
-                    }}>{thisElement.body.title + ' ' + thisElement.body.view}</div>
+                    }}>{thisElement.name + ' ' + thisElement.choiceRow}</div>
                     <div style={{
                         display: 'grid',
                         alignItems: 'center',
@@ -381,7 +387,7 @@ const ProductListSelector = ({basketData}) => {
                             marginBottom: '2px',
                             borderRadius: '5px',
                             position: 'relative',
-                            marginLeft: String(cordCategory) + 'px',
+                            marginLeft: String(cordchoiceColumn) + 'px',
                             transitionProperty: 'margin-left',
                             transitionDuration: '0.2s',
                         }}></div>
@@ -400,18 +406,18 @@ const ProductListSelector = ({basketData}) => {
                                     height: '50px',
                                     overflow: 'hidden',
                                 }} onClick={() => {
-                                    setSelectCategory(el.id)
-                                    setSelectView(0)
+                                    setSelectChoiceColumn(el.id)
+                                    setSelectChoiceRow(0)
                                 }}>
                                     <div style={{color: 'white', fontFamily: "'Montserrat', sans-serif"}}>
-                                        {el.title}
+                                        {el.name}
                                     </div>
 
                                 </div>
                             </div>
                         ))}
                     </div>
-                    {scrollerView}
+                    {scrollerchoiceRow}
                     <div style={{marginLeft: '10px', width: String(window.innerWidth - 40) + 'px'}}>
                         <div style={{
                             marginTop: '7px',
@@ -427,7 +433,7 @@ const ProductListSelector = ({basketData}) => {
                             color: 'white',
                             textWrap: 'wrap',
                             fontFamily: "'Montserrat', sans-serif"
-                        }}>{thisElement.body.description}
+                        }}>{thisElement.description}
                         </div>
                         <div style={{
                             marginTop: '7px',

@@ -23,6 +23,7 @@ const CatalogListBody = ({}) => {
                 }).map((catalogStructure) => {
                     catalogStructure.body = []
                     if (typeof catalogStructure.path !== 'undefined' && catalogStructure.path !== null) {
+                        console.log(catalogStructure.path)
                         let catalogId = -1
                         catalogList.forEach(catalog => {
                             if (catalogStructure.path.includes(catalog.path)) {

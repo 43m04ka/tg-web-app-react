@@ -21,6 +21,7 @@ const ProductItem = ({product}) => {
         oldPrice = product.oldPrice.toLocaleString() + ' ₽'
         parcent = '−' + String(Math.ceil((1 - product.price / product.oldPrice) * 100)) + '%'
     }
+
     let parcentEl = (<div></div>)
     if (parcent !== '') {
         parcentEl = (<div style={{

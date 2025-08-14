@@ -75,21 +75,29 @@ const CatalogListHead = () => {
                         modules={[Autoplay, Pagination, Controller, EffectCoverflow]}
                         onClick={(ev) => {
                             setNumber(ev.touches.currentX)
+
+                            let path
+
                             if (ev.touches.currentX > window.innerWidth * 0.75) {
                                 if (realIndex !== data.length - 1) {
-                                    console.log(realIndex + 1)
-                                    navigate(data[realIndex + 1].path)
+                                    path = data[realIndex + 1].path
                                 } else {
-                                    navigate(data[0].path)
+                                    path = data[0].path
                                 }
                             } else if (ev.touches.currentX < window.innerWidth * 0.25) {
                                 if (realIndex !== 0) {
-                                    navigate(data[realIndex - 1].path)
+                                    path = (data[realIndex - 1].path)
                                 } else {
-                                    navigate(data[data.length - 1].path)
+                                    path = (data[data.length - 1].path)
                                 }
                             } else {
-                                navigate(data[realIndex].path)
+                                path = (data[realIndex].path)
+                            }
+
+                            if(path.includes('https')){
+                                window.open(path)
+                            }else{
+                                navigate(path)
                             }
                         }}
                 >

@@ -36,7 +36,7 @@ const EditStructure = () => {
             {
                 name: 'На каталог', select: [
                     {argument: 'type', value: 'slider-clickable'},
-                    {argument: 'path', placeholder: 'Путь до категории', tag: '/home/'}]
+                    {argument: 'path', placeholder: 'Путь до категории', tag: '/catalog/'}]
             },
             {
                 name: 'На каталог-выбор', select: [
@@ -93,7 +93,7 @@ const EditStructure = () => {
                         {
                             name: 'На каталог', select: [
                                 {argument: 'type', value: 'banner-clickable'},
-                                {argument: 'path', placeholder: 'Путь до категории', tag: '/home/'}]
+                                {argument: 'path', placeholder: 'Путь до категории', tag: '/catalog/'}]
                         },
                         {
                             name: 'На каталог-выбор', select: [

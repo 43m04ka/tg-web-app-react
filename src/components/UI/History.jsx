@@ -32,32 +32,32 @@ const History = () => {
                     заказов
                 </div>
                 {historyData.map(order => (
-                    <Link to={'/order/' + String(order.id)} className={'link-element'}>
+                    <div style={{
+                        background: '#131313',
+                        padding: '5px',
+                        borderRadius: '7px',
+                        margin: '5px',
+                        alignItems: 'center',
+                        marginTop: '7px'
+                    }}>
                         <div style={{
-                            background: '#131313',
-                            padding: '5px',
-                            borderRadius: '7px',
-                            margin: '5px',
-                            alignItems: 'center',
-                            marginTop: '7px'
+                            display: 'grid',
+                            gridTemplateColumns: '1fr 20px',
                         }}>
-                            <div style={{display: 'grid',
-                                gridTemplateColumns: '1fr 20px',}}>
-                                <div>
-                                    <div style={{display: 'flex', justifyContent: 'left', alignItems: 'center'}}>
-                                        <div className={'text-element'}>{'Заказ №' + String(order.id)}</div>
-                                        <div className={'text-element'} style={{marginLeft: '30px'}}>
-                                            {'от ' + String(order.date).replaceAll('/', '.')}
-                                        </div>
-                                    </div>
-                                    <div className={'text-element'} style={{marginTop: '5px'}}>
-                                        {'На сумму: ' + String(order.summa) + ' ₽'}
+                            <div>
+                                <div style={{display: 'flex', justifyContent: 'left', alignItems: 'center'}}>
+                                    <div className={'text-element'}>{'Заказ №' + String(order.id)}</div>
+                                    <div className={'text-element'} style={{marginLeft: '30px'}}>
+                                        {'от ' + String(order.date).replaceAll('/', '.')}
                                     </div>
                                 </div>
+                                <div className={'text-element'} style={{marginTop: '5px'}}>
+                                    {'На сумму: ' + String(order.summa) + ' ₽'}
+                                </div>
                             </div>
-                            <Order data={order}/>
                         </div>
-                    </Link>
+                        <Order data={order}/>
+                    </div>
                 ))}
             </div>
         );

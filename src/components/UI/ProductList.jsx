@@ -35,13 +35,18 @@ const ProductList = ({height}) => {
     }
 
 
-    const catalog = catalogList.map(catalog => {
+    let catalog = catalogList.map(catalog => {
         if (catalog.path === (window.location.pathname).replace('/catalog/', '')) {
             return catalog
         } else {
             return null
         }
     }).filter(item => item !== null)[0] || null
+
+    if (catalog.path !== (window.location.pathname).replace('/catalog/', '')) {
+        cardList(null)
+        lastCardList = null
+    }
 
     useEffect(() => {
         tg.BackButton.show();

@@ -34,8 +34,18 @@ const Search = ({height}) => {
             Promise.then(prom => {
                 console.log(prom, 'возвратил get')
                 if (dataRequestDatabase.method === 'getSearch') {
-                    setListRes(prom.cards)
-                    lastListRes = prom.cards
+                    let resultList = []
+                    prom.cards.map(card=>{
+                        let flag = true
+                        resultList.map(resCard=>{
+                            if(card.name === resCard.name && card.similarCard?.price === resCard.similarCard?.price){
+                                flag = true
+                            }
+                        })
+                        resultList.push(card)
+                    })
+                    setListRes(resultList)
+                    lastListRes = resultList
                     if (prom.cards.length === 0) {
                         setStatus(3)
                     } else {
@@ -98,26 +108,39 @@ const Search = ({height}) => {
                 platform = ''
             }
 
-            let parcent
+            let oldPrice = ''
+            let parcent = ''
+            let price = item.price.toLocaleString() + ' ₽'
             let type = 0
-            if (typeof item.oldPrice === 'undefined') {
-                if (typeof item.releaseDate === 'undefined') {
-                    parcent = ''
-                    type = 0
-                } else {
-                    parcent = item.releaseDate.replace('#', '')
-                    parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
-                    type = 2
-                }
-            } else {
+
+            if (item.oldPrice !== null) {
                 type = 1
+                oldPrice = item.oldPrice.toLocaleString() + ' ₽'
+                parcent = '−' + Math.ceil((1 - item.price / item.oldPrice) * 100) + '%'
+            } else if(item.similarCard !== null){
+                type = 1
+                price = item.similarCard?.price.toLocaleString() + ' ₽'
+                oldPrice = item.similarCard?.oldPrice.toLocaleString() + ' ₽'
+                parcent = '−' + Math.ceil((1 - item.similarCard?.price / item.similarCard?.oldPrice) * 100) + '%'
             }
+
+            if (item.releaseDate !== null) {
+                let a = (new Date(item.releaseDate))*24*60*60*1000
+                let currentDate = new Date('1899-12-30T00:00:00.000Z')
+                let newDate = new Date(a + currentDate.getTime());
+
+                parcent = newDate.toLocaleDateString('ru-RU')
+                parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
+
+                type = 2
+            }
+
             let priceEl = (<div className={'text-element text-basket'} style={{
                 lineHeight: '15px',
                 marginTop: '0',
                 height: '15px',
                 fontSize: '15px',
-            }}>{item.price+' ₽'}</div>)
+            }}>{price}</div>)
 
             let oldPriceEl = (<div></div>)
 
@@ -128,7 +151,7 @@ const Search = ({height}) => {
                     height: '15px',
                     fontSize: '15px',
                     color: '#ff5d5d',
-                }}>{item.price+' ₽'}</div>)
+                }}>{price}</div>)
                 oldPriceEl = (<div className={'text-element text-basket'} style={{
                     lineHeight: '15px',
                     marginTop: '0',
@@ -136,7 +159,7 @@ const Search = ({height}) => {
                     fontSize: '15px',
                     color:'gray',
                     textDecoration:'line-through'
-                }}>{item.oldPrice+' ₽'}</div>)
+                }}>{oldPrice}</div>)
             }
             if(type === 2){
                 oldPriceEl = (<div className={'text-element text-basket'} style={{
@@ -145,7 +168,7 @@ const Search = ({height}) => {
                     height: '15px',
                     fontSize: '15px',
                     color: '#4a9ed6',
-                }}>Предзаказ</div>)
+                }}>Предзаказ {parcent}</div>)
             }
 
             return (

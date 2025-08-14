@@ -97,18 +97,22 @@ const Product = () => {
 
         let oldPrice = ''
         let parcent = ''
-        if (typeof productData.oldPrice === 'undefined' || productData.oldPrice === null) {
-            oldPrice = ''
-        } else {
+        let price = productData.price.toLocaleString() + ' ₽'
+
+        if (productData.oldPrice !== null) {
             oldPrice = productData.oldPrice.toLocaleString() + ' ₽'
             parcent = '−' + Math.ceil((1 - productData.price / productData.oldPrice) * 100) + '%'
+        } else if(productData.similarCard !== null){
+            price = productData.similarCard?.price.toLocaleString() + ' ₽'
+            oldPrice = productData.similarCard?.oldPrice.toLocaleString() + ' ₽'
+            parcent = '−' + Math.ceil((1 - productData.similarCard?.price / productData.similarCard?.oldPrice) * 100) + '%'
         }
 
         let endDatePromotion = ''
-        if (typeof productData.endDatePromotion === 'undefined' || productData.endDatePromotion === null) {
-            endDatePromotion = ''
-        } else {
+        if (productData.endDatePromotion !== null) {
             endDatePromotion = 'Скидка ' + parcent + ' ' + productData.endDatePromotion
+        } else if(productData.similarCard !== null){
+            endDatePromotion = 'Скидка ' + parcent + ' ' + productData.similarCard.endDatePromotion
         }
 
         let language = ''
@@ -314,7 +318,7 @@ const Product = () => {
                                 fontSize: '26px',
                                 color: '#50a355',
                                 fontWeight: '800'
-                            }}>{productData.price.toLocaleString() + ' ₽'}</div>
+                            }}>{price}</div>
                             <div style={{
                                 textDecoration: 'line-through',
                                 color: '#969696',

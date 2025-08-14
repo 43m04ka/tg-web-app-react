@@ -6,20 +6,24 @@ const ProductItem = ({product}) => {
 
     let oldPrice = ''
     let parcent = ''
-    if (product.oldPrice === null) {
-        if (product.releaseDate === null) {
-            parcent = ''
-        } else {
-            let a = (new Date(product.releaseDate))*24*60*60*1000
-            let currentDate = new Date('1899-12-30T00:00:00.000Z')
-            let newDate = new Date(a + currentDate.getTime());
+    let price = product.price.toLocaleString() + ' ₽'
 
-            parcent = newDate.toLocaleDateString('ru-RU')
-            parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
-        }
-    } else if (product.oldPrice > product.price) {
+    if (product.oldPrice !== null) {
         oldPrice = product.oldPrice.toLocaleString() + ' ₽'
-        parcent = '−' + String(Math.ceil((1 - product.price / product.oldPrice) * 100)) + '%'
+        parcent = '−' + Math.ceil((1 - product.price / product.oldPrice) * 100) + '%'
+    } else if(product.similarCard !== null){
+        price = product.similarCard?.price.toLocaleString() + ' ₽'
+        oldPrice = product.similarCard?.oldPrice.toLocaleString() + ' ₽'
+        parcent = '−' + Math.ceil((1 - product.similarCard?.price / product.similarCard?.oldPrice) * 100) + '%'
+    }
+
+    if (product.releaseDate !== null) {
+        let a = (new Date(product.releaseDate))*24*60*60*1000
+        let currentDate = new Date('1899-12-30T00:00:00.000Z')
+        let newDate = new Date(a + currentDate.getTime());
+
+        parcent = newDate.toLocaleDateString('ru-RU')
+        parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
     }
 
     let parcentEl = (<div></div>)
@@ -64,13 +68,6 @@ const ProductItem = ({product}) => {
             color: 'white',
             width: 'max-content'
         }}>{product.platform}</div>)
-    }
-
-    let price = ''
-    try{
-        price = product.price.toLocaleString() + ' ₽'
-    }catch (e) {
-        
     }
 
 

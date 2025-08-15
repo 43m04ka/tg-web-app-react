@@ -11,6 +11,7 @@ let lastScroll = 0
 let scrollCtrl = 0
 let listNumber = 1
 let lastCardList = null
+let lastPath = ''
 let len = 1
 let onLoad = false
 
@@ -34,13 +35,14 @@ const ProductList = ({height}) => {
         onLoad = false;
     }
 
-    if (catalog.path !== (window.location.pathname).replace('/catalog/', '')) {
-        cardList(null)
-        lastCardList = null
-    }
-
     let catalog = catalogList.map(catalog => {
         if (catalog.path === (window.location.pathname).replace('/catalog/', '')) {
+            if(lastPath !== catalog.path) {
+                lastPath = catalog.path
+                setCardList(null)
+                lastScroll = 0
+                lastCardList = null
+            }
             return catalog
         } else {
             return null
@@ -57,21 +59,9 @@ const ProductList = ({height}) => {
         } catch (e) {
         }
 
-        tg.onEvent('backButtonClicked', () => {
-            navigate(-1)
-            cardList(null)
-            lastCardList = null
-            lastScroll = 0
-            listNumber = 1
-        })
+        tg.onEvent('backButtonClicked', () => navigate(-1))
         return () => {
-            tg.offEvent('backButtonClicked', () => {
-                navigate(-1)
-                cardList(null)
-                lastCardList = null
-                lastScroll = 0
-                listNumber = 1
-            })
+            tg.offEvent('backButtonClicked', () => navigate(-1))
         }
     }, [scrollRef])
 

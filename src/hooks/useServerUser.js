@@ -9,7 +9,6 @@ export function useServerUser() {
                 'Content-Type': 'application/json',
             }
         }).then(async response => {
-            console.log(response)
             let answer = response.json()
             answer.then((data) => {
                 setResult(data.result.sort((a, b) => a.serialNumber - b.serialNumber))

@@ -9,11 +9,11 @@ const ProductItem = ({product}) => {
     let price = product.price.toLocaleString() + ' ₽'
 
     if (product.oldPrice !== null) {
-        oldPrice = product.oldPrice.toLocaleString() + ' ₽'
+        oldPrice = String(product.oldPrice).toLocaleString() + ' ₽'
         parcent = '−' + Math.ceil((1 - product.price / product.oldPrice) * 100) + '%'
     } else if(product.similarCard !== null){
-        price = product.similarCard?.price.toLocaleString() + ' ₽'
-        oldPrice = product.similarCard?.oldPrice.toLocaleString() + ' ₽'
+        price = String(product.similarCard?.price).toLocaleString() + ' ₽'
+        oldPrice = String(product.similarCard?.oldPrice).toLocaleString() + ' ₽'
         parcent = '−' + Math.ceil((1 - product.similarCard?.price / product.similarCard?.oldPrice) * 100) + '%'
     }
 

@@ -34,7 +34,6 @@ const MainPage = ({pageList, height}) => {
 
     useEffect(() => {
         tg.BackButton.hide();
-        console.log(scrollContainer)
         scrollContainer.current.scrollTo({
             top: lastScroll,
             behavior: "instant",

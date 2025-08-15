@@ -25,7 +25,7 @@ const CatalogListBody = ({}) => {
                     if (typeof catalogStructure.path !== 'undefined' && catalogStructure.path !== null) {
                         let catalogId = -1
                         catalogList.forEach(catalog => {
-                            if (catalogStructure.path.includes(catalog.path)) {
+                            if ((catalogStructure.path.replace('/catalog/', '')).replace('/choice-catalog/', '') === catalog.path) {
                                 catalogId = catalog.id;
                             }
                         });

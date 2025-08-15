@@ -34,6 +34,10 @@ const ProductList = ({height}) => {
         onLoad = false;
     }
 
+    if (catalog.path !== (window.location.pathname).replace('/catalog/', '')) {
+        cardList(null)
+        lastCardList = null
+    }
 
     let catalog = catalogList.map(catalog => {
         if (catalog.path === (window.location.pathname).replace('/catalog/', '')) {
@@ -42,11 +46,6 @@ const ProductList = ({height}) => {
             return null
         }
     }).filter(item => item !== null)[0] || null
-
-    if (catalog.path !== (window.location.pathname).replace('/catalog/', '')) {
-        cardList(null)
-        lastCardList = null
-    }
 
     useEffect(() => {
         tg.BackButton.show();
@@ -58,9 +57,21 @@ const ProductList = ({height}) => {
         } catch (e) {
         }
 
-        tg.onEvent('backButtonClicked', () => navigate(-1))
+        tg.onEvent('backButtonClicked', () => {
+            navigate(-1)
+            cardList(null)
+            lastCardList = null
+            lastScroll = 0
+            listNumber = 1
+        })
         return () => {
-            tg.offEvent('backButtonClicked', () => navigate(-1))
+            tg.offEvent('backButtonClicked', () => {
+                navigate(-1)
+                cardList(null)
+                lastCardList = null
+                lastScroll = 0
+                listNumber = 1
+            })
         }
     }, [scrollRef])
 

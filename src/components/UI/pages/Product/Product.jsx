@@ -21,6 +21,7 @@ const Product = () => {
 
     const [isBuy, setIsBuy] = React.useState(null);
     const [productData, setProductData] = React.useState(null);
+    console.log(productData)
     const [isFavorite, setIsFavorite] = React.useState(false);
     const [pictureIsLoad, setPictureIsLoad] =  useState(0);
 
@@ -78,7 +79,6 @@ const Product = () => {
         if (isFavorite) {
             backgroundColor = '#ff5d5d'
         }
-
 
         let genre = ''
         if (typeof productData.genre === 'undefined' || productData.genre === null) {

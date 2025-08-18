@@ -26,27 +26,27 @@ const EditPages = () => {
     return (
         <div style={{display: 'flex', flexDirection: 'row'}}>
             <div>
-                <BlockLabel label={'Создать страницу'}>
-                    <InputLabel onChange={(e) => {
-                        setInputNameCreatePage(e.target.value)
-                    }} label={'Имя'} placeholder={'PLAYSTATION'}/>
-                    <InputLabel onChange={(e) => {
-                        setInputLinkCreatePage(e.target.value)
-                    }} label={'Ссылка'} placeholder={'playstation'}/>
-                    <InputLabel onChange={(e) => {
-                        setInputColorCreatePage(e.target.value)
-                    }} label={'Цвет'} placeholder={'#78FF12'}/>
-                    <InputLabel onChange={(e) => {
-                        setInputUrlCreatePage(e.target.value)
-                    }} label={'Изображение'} placeholder={'https://i.postimg.cc...'}/>
-                    <InputLabel onChange={(e) => {
-                        setInputNumberCreatePage(e.target.value)
-                    }} label={'Порядковый номер'} placeholder={'2'}/>
-                    <ButtonLabel label={'Создать страницу'} onClick={() => {
-                        //создание страницы
-                        updatePageList()
-                    }}/>
-                </BlockLabel>
+                {/*<BlockLabel label={'Создать страницу'}>*/}
+                {/*    <InputLabel onChange={(e) => {*/}
+                {/*        setInputNameCreatePage(e.target.value)*/}
+                {/*    }} label={'Имя'} placeholder={'PLAYSTATION'}/>*/}
+                {/*    <InputLabel onChange={(e) => {*/}
+                {/*        setInputLinkCreatePage(e.target.value)*/}
+                {/*    }} label={'Ссылка'} placeholder={'playstation'}/>*/}
+                {/*    <InputLabel onChange={(e) => {*/}
+                {/*        setInputColorCreatePage(e.target.value)*/}
+                {/*    }} label={'Цвет'} placeholder={'#78FF12'}/>*/}
+                {/*    <InputLabel onChange={(e) => {*/}
+                {/*        setInputUrlCreatePage(e.target.value)*/}
+                {/*    }} label={'Изображение'} placeholder={'https://i.postimg.cc...'}/>*/}
+                {/*    <InputLabel onChange={(e) => {*/}
+                {/*        setInputNumberCreatePage(e.target.value)*/}
+                {/*    }} label={'Порядковый номер'} placeholder={'2'}/>*/}
+                {/*    <ButtonLabel label={'Создать страницу'} onClick={() => {*/}
+                {/*        //создание страницы*/}
+                {/*        updatePageList()*/}
+                {/*    }}/>*/}
+                {/*</BlockLabel>*/}
                 <BlockLabel label={'Выбор страницы'} onReload={() => updatePageList()}>
                     {pageList.map((page, index) => (<div
                         className={`${styles['page-choice-block']} ${pageId === index ? styles['page-choice-active'] : ''}`}

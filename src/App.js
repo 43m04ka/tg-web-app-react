@@ -17,7 +17,6 @@ import Roulette from "./components/UI/Roulette";
 import AP_Authentication from "./components/UI/pages/AdminPanel/AP_Authentication";
 import useGlobalData from "./hooks/useGlobalData";
 import Product from "./components/UI/pages/Product/Product";
-import Test from "./components/test";
 
 
 function App() {
@@ -69,7 +68,6 @@ function App() {
                 <div style={{height: String(tg?.safeAreaInset.top) + 'px'}}></div>
                 <Routes>
                     {pageList.map((page) => (<Route path={page['link']} key={page['id']} element={<MainPage pageList = {pageList} height={size}/>} />))}
-
                     {pageList.map((page, index)=>(<Route path={'basket-'+page.id} element={<Basket height={size} number={index}/>}/>))}
                     {pageList.map((page)=>(<Route path={'search-'+page.id} element={<Search height={size}/>}/>))}
 
@@ -82,7 +80,6 @@ function App() {
                     <Route path={'info'} element={<Info/>}/>
                     <Route path={'/history'} element={<History/>}/>
                     <Route path={'freegame'} element={<Roulette/>}/>
-                    <Route path={'code'} element={<Test/>}/>
                     <Route path="*" element={<ErrorPage/>}/>
                 </Routes>
 

@@ -37,6 +37,10 @@ const UploadData = () => {
             card.serialNumber = lastSerialNumber + 1
             lastSerialNumber += 1
 
+            card.price = Math.round(card.price);
+            card.oldPrice = Math.round(card.oldPrice);
+            card.priceInOtherCurrency = Math.round(card.priceInOtherCurrency);
+
             card.catalogId = selectedCatalogId
             card.type = gameType === 1 ? 'game' : 'other'
 

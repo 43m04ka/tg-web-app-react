@@ -17,6 +17,7 @@ import Roulette from "./components/UI/Roulette";
 import AP_Authentication from "./components/UI/pages/AdminPanel/AP_Authentication";
 import useGlobalData from "./hooks/useGlobalData";
 import Product from "./components/UI/pages/Product/Product";
+import Test from "./components/test";
 
 
 function App() {
@@ -81,6 +82,7 @@ function App() {
                     <Route path={'info'} element={<Info/>}/>
                     <Route path={'/history'} element={<History/>}/>
                     <Route path={'freegame'} element={<Roulette/>}/>
+                    <Route path={'code'} element={<Test/>}/>
                     <Route path="*" element={<ErrorPage/>}/>
                 </Routes>
 

@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import {useBasket} from "./useBasket";
 import useGlobalData from "../../../../hooks/useGlobalData";
 
-const ProductItemBasket = ({product, onReload}) => {
+const ProductItemBasket = ({product, onReload, page}) => {
     const item = product;
     const {user} = useTelegram();
     const {deleteCardToBasket} = useBasket()
@@ -12,23 +12,36 @@ const ProductItemBasket = ({product, onReload}) => {
 
     let oldPrice = ''
     let parcent = ''
-    if ( item.oldPrice === null) {
-        if ( item.releaseDate === null) {
-            parcent = ''
-        } else {
-            parcent = item.releaseDate
-            parcent = parcent.slice(0, 6)+ parcent.slice(8, 10)
-        }
-    } else {
-        oldPrice = String(item.oldPrice) + ' ₽'
-        parcent = '−'+String(Math.ceil((1-item.price/item.oldPrice)*100))+'%'
+    let type = 0
+    let price = item.price.toLocaleString() + ' ₽'
+
+
+    if (item.oldPrice !== null) {
+        type = 1
+        oldPrice = item.oldPrice.toLocaleString() + ' ₽'
+        parcent = 'Скидка −' + Math.ceil((1 - item.price / item.oldPrice) * 100) + '%' + ' ' + item.endDatePromotion
+    } else if(item.similarCard !== null){
+        type = 1
+        price = item.similarCard?.price.toLocaleString() + ' ₽'
+        oldPrice = item.similarCard?.oldPrice.toLocaleString() + ' ₽'
+        parcent = 'Скидка −' + Math.ceil((1 - item.similarCard?.price / item.similarCard?.oldPrice) * 100) + '%' + ' ' + item.similarCard?.endDatePromotion
     }
 
-    let endDate = ''
-    if ( item.endDatePromotion === null) {
-        endDate = ''
-    } else {
-        endDate = 'Скидка ' + parcent + ' ' + item.endDatePromotion
+    if (item.releaseDate !== null) {
+        let a = (new Date(item.releaseDate))*24*60*60*1000
+        let currentDate = new Date('1899-12-30T00:00:00.000Z')
+        let newDate = new Date(a + currentDate.getTime());
+
+        parcent = newDate.toLocaleDateString('ru-RU')
+        parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
+
+        type = 2
+    }
+
+    if(item.priceInOtherCurrency !== null && page === 3){
+        price = item.priceInOtherCurrency.toLocaleString() + ' Rs'
+        type = 0
+        parcent = 'Цена в PS Store'
     }
 
     let parcentEl = (<div></div>)
@@ -53,23 +66,12 @@ const ProductItemBasket = ({product, onReload}) => {
         }}>{parcent}</div>)
     }
 
-    let type = 0
-    if ( item.oldPrice === null) {
-        if ( item.releaseDate === null) {
-            type = 0
-        } else {
-            parcent = item.releaseDate.replace('#', '')
-            type = 2
-        }
-    } else {
-        type = 1
-    }
     let priceEl = (<div className={'text-element text-basket'} style={{
         lineHeight: '15px',
         marginTop: '0',
         height: '15px',
         fontSize: '15px',
-    }}>{item.price+' ₽'}</div>)
+    }}>{price}</div>)
 
     let oldPriceEl = (<div></div>)
 
@@ -81,7 +83,7 @@ const ProductItemBasket = ({product, onReload}) => {
             fontSize: '15px',
             color: '#ff5d5d',
             marginRight:'0px'
-        }}>{item.price+' ₽'}</div>)
+        }}>{price}</div>)
         oldPriceEl = (<div className={'text-element text-basket'} style={{
             lineHeight: '15px',
             marginTop: '0',
@@ -89,7 +91,7 @@ const ProductItemBasket = ({product, onReload}) => {
             fontSize: '15px',
             color:'gray',
             textDecoration:'line-through'
-        }}>{item.oldPrice+' ₽'}</div>)
+        }}>{oldPrice}</div>)
     }
     if(type === 2){
         oldPriceEl = (<div className={'text-element text-basket'} style={{
@@ -157,7 +159,7 @@ const ProductItemBasket = ({product, onReload}) => {
                         height: '15px',
                         marginTop: '5px'
                     }}>
-                        {endDate}
+                        {parcent}
                     </div>
                 </div>
             </Link>

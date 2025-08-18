@@ -208,10 +208,20 @@ export function useServer() {
         })
     }
 
+    const setExchangeIndiaCatalog = async (authenticationData, catalogId) => {
+        await fetch(URL + '/setExchangeIndiaCatalog', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({authenticationData:authenticationData, id: catalogId})
+        })
+    }
+
     return {
         getCardList, getCard, getCatalogList, getStructureCatalogList,
         createCatalog, createPage, createStructureCatalog,
         changeSaleStatusCatalog, updateCardData, updatePageData, updateAssociations,
         deleteStructureCatalog, deleteCatalog, deleteCard,
-        searchForName}
+        searchForName, setExchangeIndiaCatalog}
 }

@@ -6,6 +6,7 @@ import {useTelegram} from "../../../../hooks/useTelegram";
 import {useServerUser} from "../../../../hooks/useServerUser";
 import useGlobalData from "../../../../hooks/useGlobalData";
 import {concatAll} from "rxjs";
+import IndiaCount from "./IndiaCount";
 
 let inputData = [null, null, null, null, null]
 let promo = ''
@@ -31,6 +32,8 @@ const Basket = ({height, number}) => {
     const userRef = useRef();
     const [alertElement, setAlertElement] = useState(<div></div>);
     const [freeGameStatus, setFreeGameStatus] = useState(0)
+
+    const [sumPrice, setSumPrice] = useState(0)
 
     const onReload = () =>{
         getBasketList((result)=>{
@@ -192,13 +195,17 @@ const Basket = ({height, number}) => {
         tg.BackButton.show();
     }, [])
 
-    let sumPrice = 0
-
-    basket.map(el => {
-        if (el.onSale) {
-            sumPrice += el.price
+    if(number !== 3) {
+        let summ = 0
+        basket.map(el => {
+            if (el.onSale) {
+                summ += el.similarCard?.price || el.price
+            }
+        })
+        if(sumPrice !== summ){
+            setSumPrice(summ)
         }
-    })
+    }
 
     const onclickYes = () => {
         setMyAcc(0);
@@ -210,8 +217,6 @@ const Basket = ({height, number}) => {
         setColorNo([81, 164, 86]);
         setColorYes([174, 174, 174]);
     }
-
-    console.log(status)
 
     const styleYes = {
         background: rgb(colorYes),
@@ -883,7 +888,7 @@ const Basket = ({height, number}) => {
                         }}>{titleText}
                         </div>
                         {basket.map(el => (
-                            <ProductItemBasket key={el.id} product={el} onReload={onReload}/>
+                            <ProductItemBasket key={el.id} product={el} onReload={onReload} page = {number}/>
                         ))}
                         {freeGameElement}
                         <div>
@@ -895,7 +900,11 @@ const Basket = ({height, number}) => {
                         borderTopLeftRadius: '18px',
                         borderTopRightRadius: '18px',
                         borderTop: '2px solid #353535',
+                        position:"absolute",
+                        bottom:0,
+                        width:'100%'
                     }}>
+                        {number === 3 ? <IndiaCount basketList = {basket} setSum={setSumPrice}/> : ''}
                         <div style={{marginLeft: '15px'}}>
                             <div style={{width: String(window.innerWidth - 30) + 'px'}}>
                                 <div style={{

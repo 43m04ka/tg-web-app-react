@@ -9,7 +9,6 @@ import {Outlet, Route, Routes, useNavigate} from "react-router-dom";
 import EditPages from "./Tabs/EditPages/EditPages";
 import EditStructure from "./Tabs/EditStructure/EditStructure";
 import useData from "./useData";
-import ExchangeIndia from "./Tabs/ExchangeIndia/ExchangeIndia";
 
 const AdminPanel = () => {
 
@@ -26,7 +25,6 @@ const AdminPanel = () => {
         {name: 'Редактировать структуру', path: 'edit-structure', element: <EditStructure/>},
         {name: 'Редактировать страницы', path: 'edit-pages', element: <EditPages/>}]
     const routeData1 = [{name: 'Промокоды', path: 'promo', element: <Outlet/>},
-        {name: 'Карты обмена индия', path: 'exchange_india', element: <ExchangeIndia/>},
         {name: 'История заказов', path: 'history-orders', element: <Outlet/>},
         {name: 'Кубик', path: 'cube', element: <Outlet/>}];
 

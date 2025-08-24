@@ -140,18 +140,14 @@ const Product = () => {
         }
 
         let region = ''
-        if (typeof productData.region === 'undefined' || productData.region === null) {
-            region = ''
-        } else {
-            region = 'Регион активации: ' + productData.region
+        if (productData.regionActivate !== null){
             region = (<div style={{
                 marginTop: '12px',
                 fontSize: '14px',
                 color: 'white',
                 fontFamily: "'Montserrat', sans-serif"
-            }}>{region}
+            }}>{'Регион активации: ' + productData.regionActivate}
             </div>)
-
         }
 
         let releaseDate = ''
@@ -201,16 +197,13 @@ const Product = () => {
         }
 
         let view = ''
-        if (typeof productData.view === 'undefined' || productData.view === null) {
-            view = ''
-        } else {
-            view = 'Срок подписки: ' + productData.view
+        if (productData.choiceRow !== null) {
             view = (<div style={{
                 marginTop: '12px',
                 fontSize: '14px',
                 color: 'white',
                 fontFamily: "'Montserrat', sans-serif"
-            }}>{view}
+            }}>{'Срок подписки: ' + productData.choiceRow}
             </div>)
         }
 
@@ -371,6 +364,7 @@ const Product = () => {
                                 <div className={'background-whiteHeart'} style={{height: '25px', width: '25px'}}></div>
                             </div>
                         </div>
+                        {productData.additionalParameter !== null && productData.additionalParameter.includes('Extra') ? <div className={'background-ps-plus-extra'} style={{display: 'flex', marginLeft:'7px', marginTop:'7px', flexDirection: 'row', justifyContent: 'space-between', borderRadius:'10px', width:String(window.innerWidth-34)+'px', height:String((window.innerWidth-34)*0.17142)+'px'}}/> : ''}
                         <div style={{marginLeft: '15px', fontWeight: '600'}}>
                             {releaseDate}
                             {platform}

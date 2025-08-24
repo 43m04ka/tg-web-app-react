@@ -876,11 +876,12 @@ const Basket = ({height, number}) => {
             return (
                 <div style={{display: 'grid'}}>
                     <div style={{
-                        height: String(height - 110 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
+                        height: number !== 3 ? String(height - 110 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px' : 'max-content',
                         overflow: 'scroll',
                     }}>
                         <div className={'title'} style={{
-                            width: String(window.innerWidth) + 'px', textAlign: 'center',
+                            width: String(window.innerWidth) + 'px',
+                            textAlign: 'center',
                             marginRight: 'auto',
                             marginTop: '10px',
                             marginLeft: '0',
@@ -897,11 +898,8 @@ const Basket = ({height, number}) => {
                     </div>
                     <div style={{
                         background: '#232323',
-                        borderTopLeftRadius: '18px',
-                        borderTopRightRadius: '18px',
+                        borderRadius: '18px',
                         borderTop: '2px solid #353535',
-                        position:"absolute",
-                        bottom:0,
                         width:'100%'
                     }}>
                         {number === 3 ? <IndiaCount basketList = {basket} setSum={setSumPrice}/> : ''}

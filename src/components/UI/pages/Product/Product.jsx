@@ -1,6 +1,6 @@
 import React, {createRef, useEffect, useState} from 'react';
 import {useTelegram} from "../../../../hooks/useTelegram";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import ProductItem from "../../ProductItem";
 import {useServerUser} from "../../../../hooks/useServerUser";
 import useGlobalData from "../../../../hooks/useGlobalData";
@@ -364,7 +364,9 @@ const Product = () => {
                                 <div className={'background-whiteHeart'} style={{height: '25px', width: '25px'}}></div>
                             </div>
                         </div>
-                        {productData.additionalParameter !== null && productData.additionalParameter.includes('Extra') ? <div className={'background-ps-plus-extra'} style={{display: 'flex', marginLeft:'7px', marginTop:'7px', flexDirection: 'row', justifyContent: 'space-between', borderRadius:'10px', width:String(window.innerWidth-34)+'px', height:String((window.innerWidth-34)*0.17142)+'px'}}/> : ''}
+                        {productData.additionalParameter !== null && productData.additionalParameter.includes('Extra') ? <Link to={'/catalog/ps_psplus'}><div className={'background-ps-plus-extra'} style={{display: 'flex', marginLeft:'7px', marginTop:'7px', flexDirection: 'row', justifyContent: 'space-between', borderRadius:'10px', width:String(window.innerWidth-34)+'px', height:String((window.innerWidth-34)*0.17142)+'px'}}/></Link> : ''}
+                        {productData.additionalParameter !== null && productData.additionalParameter.includes('Deluxe') ? <Link to={'/catalog/ps_psplus'}><div className={'background-ps-plus-deluxe'} style={{display: 'flex', marginLeft:'7px', marginTop:'7px', flexDirection: 'row', justifyContent: 'space-between', borderRadius:'10px', width:String(window.innerWidth-34)+'px', height:String((window.innerWidth-34)*0.17142)+'px'}}/></Link> : ''}
+                        {productData.additionalParameter !== null && productData.additionalParameter.includes('Included') ? <Link to={'/catalog/ps_eaplay'}><div className={'background-ea-play-free'} style={{display: 'flex', marginLeft:'7px', marginTop:'7px', flexDirection: 'row', justifyContent: 'space-between', borderRadius:'10px', width:String(window.innerWidth-34)+'px', height:String((window.innerWidth-34)*0.17142)+'px'}}/></Link> : ''}
                         <div style={{marginLeft: '15px', fontWeight: '600'}}>
                             {releaseDate}
                             {platform}

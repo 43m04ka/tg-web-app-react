@@ -369,6 +369,11 @@ body {
     background-size: cover;
 }
 
+.background-ps-plus-save {
+    background: url("../icons/ps-plus-save.png");
+    background-size: cover;
+}
+
 .background-ps-plus-deluxe {
     background-image: url("../icons/ps-plus-deluxe.png");
     background-size: cover;
@@ -383,6 +388,11 @@ body {
     background-image: url("../icons/10-ea-play.png");
     background-size: cover;
 }
+.background-game-pass-free {
+    background-image: url("../icons/game-pass-free.png");
+    background-size: cover;
+}
+
 
 
 .button-trash {

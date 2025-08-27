@@ -9,6 +9,7 @@ import {Outlet, Route, Routes, useNavigate} from "react-router-dom";
 import EditPages from "./Tabs/EditPages/EditPages";
 import EditStructure from "./Tabs/EditStructure/EditStructure";
 import useData from "./useData";
+import History from "./Tabs/HistoryOrders/History";
 
 const AdminPanel = () => {
 
@@ -25,7 +26,7 @@ const AdminPanel = () => {
         {name: 'Редактировать структуру', path: 'edit-structure', element: <EditStructure/>},
         {name: 'Редактировать страницы', path: 'edit-pages', element: <EditPages/>}]
     const routeData1 = [{name: 'Промокоды', path: 'promo', element: <Outlet/>},
-        {name: 'История заказов', path: 'history-orders', element: <Outlet/>},
+        {name: 'История заказов', path: 'history-orders', element: <History/>},
         {name: 'Кубик', path: 'cube', element: <Outlet/>}];
 
     return (

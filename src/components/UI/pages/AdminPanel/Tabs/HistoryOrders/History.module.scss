@@ -1,0 +1,51 @@
+.order-choice-block{
+  display: flex;
+  width: 290px;
+  justify-content: space-between;
+  margin: 5px 0;
+}
+
+.order-choice-main{
+  display: flex;
+  height: 200px;
+  overflow-y: scroll;
+  flex-direction: column;
+}
+
+.order-choice-label{
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  color: #fff;
+  margin-right: 10px;
+  width: 100px;
+  text-align: center;
+}
+
+.order-choice-status{
+  &-true{
+    color: #fff;
+    text-align: center;
+  }
+  &-false{
+    color: #ed7373;
+    text-align: center;
+  }
+}
+
+.order-choice-btn{
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  color: #fff;
+  width: 100px;
+  text-align: center;
+}
+
+.order-choice-active *{
+  color: #a7c6f8;
+}
+
+.order-choice-empty{
+  margin: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+}

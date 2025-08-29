@@ -885,12 +885,11 @@ const Basket = ({height, number}) => {
                             marginRight: 'auto',
                             marginTop: '10px',
                             marginLeft: '0',
-
                         }}>{titleText}
                         </div>
-                        {basket.map(el => (
-                            <ProductItemBasket key={el.id} product={el} onReload={onReload} page = {number}/>
-                        ))}
+                        {basket.map(el =>
+                            {return (pageId === 31 && el.priceInOtherCurrency !== null) || pageId !== 31 ? <ProductItemBasket key={el.id} product={el} onReload={onReload} page={number}/> : ''}
+                        )}
                         {freeGameElement}
                         <div>
                             <div style={{height: '10px'}}/>

@@ -166,7 +166,7 @@ const IndiaCountElement = ({product}) => {
                 display: 'flex',
                 width: 'max-content',
             }}>
-                {String(item.kol) + ' шт.'}
+                {item.kol > 0 ? String(item.kol) + ' шт.' : ''}
             </div>
         </div>
     );

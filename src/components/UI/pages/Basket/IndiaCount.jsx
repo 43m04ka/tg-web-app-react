@@ -40,6 +40,12 @@ const IndiaCount = ({basketList, setSum}) => {
         }
     })
 
+    {basketList.map((item, index) => {
+        if (item.priceInOtherCurrency === null) {
+            sumPrice += item.price
+        }
+    })}
+
     setSum(sumPrice)
 
     if (localList.length === 0) {
@@ -54,6 +60,12 @@ const IndiaCount = ({basketList, setSum}) => {
     } else {
         return (
             <div>
+                {basketList.map((item, index) => {
+                    if (item.priceInOtherCurrency === null) {
+                        item.kol = -1
+                        return <IndiaCountElement product={item} key={index}/>
+                    }
+                })}
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                     <div className={'title'} style={{textAlign: 'left', marginLeft: '15px', fontSize: '17px', color:'#a368ff', marginBottom:'5px'}}>Карты для
                         пополнения
@@ -63,7 +75,6 @@ const IndiaCount = ({basketList, setSum}) => {
                 </div>
                 {localList.map((item, index) => {
                     if (item.kol > 0) {
-                        console.log(localList)
                         return <IndiaCountElement product={item} key={index}/>
                     }
                 })}

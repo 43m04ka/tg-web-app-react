@@ -16,6 +16,32 @@ export function useServer() {
         })
     }
 
-    return {getHistoryList}
+    const getOrderData = async (setResult, orderId) => {
+        fetch(`${URL}/getOrderData?time=${Date.now()}&orderId=${orderId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
+    const sendMassageUndefinedName = async (orderId) => {
+        fetch(`${URL}/sendMassageUndefinedName?time=${Date.now()}&orderId=${orderId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(async response => {
+            let answer = response.json()
+            answer.then()
+        })
+    }
+
+    return {getHistoryList, getOrderData, sendMassageUndefinedName}
 
 }

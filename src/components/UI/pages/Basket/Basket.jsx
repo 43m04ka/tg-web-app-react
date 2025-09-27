@@ -15,7 +15,7 @@ const Basket = ({height, number}) => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const {pageId, catalogList, updateCounterBasket} = useGlobalData()
-    const {getBasketList} = useServerUser()
+    const {getBasketList, usePromo} = useServerUser()
 
     const [basket, setBasket] = useState([])
     const [myAcc, setMyAcc] = useState(1);
@@ -901,7 +901,7 @@ const Basket = ({height, number}) => {
                         borderTop: '2px solid #353535',
                         width:'100%'
                     }}>
-                        {number === 3 ? <IndiaCount basketList = {basket} setSum={setSumPrice}/> : ''}
+                        {number === 3 ? <IndiaCount basketList = {basket} setSum={setSumPrice} onReload={onReload}/> : ''}
                         <div style={{marginLeft: '15px'}}>
                             <div style={{width: String(window.innerWidth - 30) + 'px'}}>
                                 <div style={{
@@ -985,7 +985,25 @@ const Basket = ({height, number}) => {
                                }}/>
                         <button className={'text-element'} style={stylePromoButton}
                                 onClick={() => {
-                                    sendRequestPromo()
+                                    usePromo(promoInput, (result)=>{
+                                        if (result !== null) {
+                                            if (result.totalNumberUses !== 0) {
+                                                setPromoIsUse(true)
+                                                setParcent(result.percent)
+                                                promo = promoInput
+                                                setPromoButtonColor([82, 165, 87])
+                                                setPromoButtonText('Скидка активна')
+                                            } else {
+                                                setPromoIsUse(false)
+                                                setPromoButtonColor([164, 30, 30])
+                                                setPromoButtonText('Кол-во исчерпано')
+                                            }
+                                        } else {
+                                            setPromoIsUse(false)
+                                            setPromoButtonColor([164, 30, 30])
+                                            setPromoButtonText('Промокод не найден')
+                                        }
+                                    }).then()
                                 }}>{promoButtonText}
                         </button>
                     </div>

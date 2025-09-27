@@ -4,7 +4,7 @@ import {useServerUser} from "../../../../hooks/useServerUser";
 import ProductItemBasket from "./ProductItemBasket";
 import IndiaCountElement from "./IndiaCountElement";
 
-const IndiaCount = ({basketList, setSum}) => {
+const IndiaCount = ({basketList, setSum, onReload}) => {
 
     const {catalogList} = useGlobalData()
     const [cardList, setCardList] = React.useState([])
@@ -63,7 +63,7 @@ const IndiaCount = ({basketList, setSum}) => {
                 {basketList.map((item, index) => {
                     if (item.priceInOtherCurrency === null) {
                         item.kol = -1
-                        return <IndiaCountElement product={item} key={index}/>
+                        return <IndiaCountElement product={item} key={index} onReload={onReload}/>
                     }
                 })}
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -75,7 +75,7 @@ const IndiaCount = ({basketList, setSum}) => {
                 </div>
                 {localList.map((item, index) => {
                     if (item.kol > 0) {
-                        return <IndiaCountElement product={item} key={index}/>
+                        return <IndiaCountElement onReload={onReload} product={item} key={index}/>
                     }
                 })}
                 <div className={'text-element'} style={{

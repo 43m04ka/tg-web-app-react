@@ -1,11 +1,15 @@
-import React, {useCallback} from 'react';
-import {useTelegram} from "../../../../hooks/useTelegram";
+import React from 'react';
 import {Link} from "react-router-dom";
 import {useBasket} from "./useBasket";
+import {useTelegram} from "../../../../hooks/useTelegram";
 import useGlobalData from "../../../../hooks/useGlobalData";
 
-const IndiaCountElement = ({product}) => {
+const IndiaCountElement = ({product, onReload}) => {
     const item = product;
+
+    const {user} = useTelegram();
+    const {deleteCardToBasket} = useBasket()
+    const {updatePreviewBasketData} = useGlobalData()
 
     let oldPrice = ''
     let parcent = ''
@@ -161,12 +165,17 @@ const IndiaCountElement = ({product}) => {
             <div className={'text-element text-basket'} style={{
                 textAlign: 'center',
                 lineHeight: '25px',
-                height: '30px',
                 fontSize: '15px',
                 display: 'flex',
                 width: 'max-content',
             }}>
-                {item.kol > 0 ? String(item.kol) + ' шт.' : ''}
+                {item.kol > 0 ? String(item.kol) + ' шт.' : (<div onClick={async () => {
+                    await deleteCardToBasket(async ()=>{onReload();updatePreviewBasketData(user.id)}, user.id, product.id).then()
+                }} style={{justifyContent: 'center', alignContent: "center", marginRight: '3px', marginTop: '0px', height : '60px'}} >
+                    <div className={'background-trash'}
+                         style={{padding: '10px', height: '20px', width: '20px'}}>
+                    </div>
+                </div>)}
             </div>
         </div>
     );

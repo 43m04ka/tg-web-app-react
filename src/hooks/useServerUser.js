@@ -227,10 +227,25 @@ export function useServerUser() {
         })
     }
 
+    const usePromo = async (name, setResult) => {
+        await fetch(URL + '/usePromo?time=' + Date.now() + '&name=' + name, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
     return {
         getPageList, getStructureCatalogList, getPreviewCardList, getCatalogList, getCardList, getCard,
         getPreviewFavoriteList, addCardToFavorite, deleteCardToFavorite, getFavoriteList,
         getPreviewBasketList, addCardToBasket, deleteCardToBasket, getBasketList,
-        getHistoryList, getRecommendationsGames
+        getHistoryList, getRecommendationsGames,
+        usePromo
     }
 }

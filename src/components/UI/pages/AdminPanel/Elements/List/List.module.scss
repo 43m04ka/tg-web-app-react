@@ -1,0 +1,102 @@
+@import "src/components/UI/pages/AdminPanel/AdminPanel.module";
+
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+.listBody {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+
+  > div {
+    display: grid;
+    padding: 7px 0 7px 0;
+    @extend %text;
+
+    > div {
+      text-align: left;
+      margin-left: 10px;
+    }
+  }
+}
+
+.listScrollY {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid $secondary-color;
+  margin: 0px 30px 30px 30px;
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
+}
+
+.listScrollYCap {
+  border-bottom: 1px solid $secondary-color;
+  color: $secondary-color !important;
+  display: grid;
+  padding: 7px 0 7px 0;
+  @extend %text;
+
+  > div {
+    text-align: left;
+    margin-left: 10px;
+  }
+}
+
+.listScrollYElement {
+  &-0 {
+    background: #282828;
+  }
+
+  &-1 {
+    background: $bg-color;
+  }
+}
+
+.threePoint {
+  height: 15px;
+  width: 15px;
+  @extend .backgroundThreePoint;
+  cursor: pointer;
+}
+
+.threePointMenu {
+  padding: 10px;
+  width: 220px;
+  height: max-content;
+  margin-left: -180px;
+
+  > div {
+    width: 200px;
+    height: max-content;
+    background: $bg-color;
+    border: 1px solid $secondary-color;
+    border-radius: 7px;
+    justify-items: center;
+  }
+}
+
+.threePointPlace {
+  padding: 10px;
+}
+
+.threePointContainer {
+  position: absolute;
+}
+
+.buttonOption {
+  cursor: pointer;
+  @extend %text;
+  padding: 7px 0;
+  width: 200px;
+  text-align: center;
+}
+
+.buttonOptionSeparator {
+  cursor: default;
+  width: 175px;
+  border-bottom: 1px solid $secondary-color;
+}
+
+
+

@@ -2,7 +2,7 @@ import React, {useRef, useState} from 'react';
 import {useServer} from "../../useServer";
 import useGlobalData from "../../../../../../hooks/useGlobalData";
 import BlockLabel from "../../Elements/BlockLabel";
-import InputLabel from "../../Elements/InputLabel";
+import InputLabel from "../../Elements/Input/InputLabel";
 import ButtonLabel from "../../Elements/ButtonLabel";
 import useData from "../../useData";
 import styles from "./EditPage.module.scss";

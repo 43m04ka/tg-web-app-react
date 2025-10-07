@@ -1,0 +1,42 @@
+@import "src/components/UI/pages/AdminPanel/AdminPanel.module";
+
+.buttonLine {
+  margin-left: 15px;
+  display: flex;
+  flex-direction: row;
+  height: 33px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid $secondary-color;
+  border-radius: 7px;
+
+  > div {
+    display: flex;
+    flex-direction: row;
+    height: 33px;
+    align-items: center;
+
+    > div {
+      padding: 6px;
+      @extend %text;
+    }
+  }
+}
+
+.separator{
+  border: 1px solid $secondary-color;
+  width: 1px;
+  height: 23px;
+  padding: 0 !important;
+}
+
+.status {
+  &-true {
+    color: $text-color !important;
+    cursor: pointer;
+  }
+  &-false {
+    color: $secondary-color !important;
+    cursor: default;
+  }
+}

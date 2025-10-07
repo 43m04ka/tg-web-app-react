@@ -1,0 +1,37 @@
+@import "src/components/UI/pages/AdminPanel/AdminPanel.module";
+
+.main {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  backdrop-filter: blur(3px);
+}
+
+.container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: max-content;
+  width: 800px;
+  background-color: $bg-color;
+  border: 2px solid $secondary-color;
+  box-shadow: 3px 3px 3px #0c0707;
+  border-radius: 20px;
+  margin: auto;
+  display: grid;
+  padding: 10px;
+  grid-template-rows: 40px max-content;
+}
+
+.title{
+  @extend %text;
+  margin-top: 10px;
+  margin-left: 15px;
+  font-size: 20px !important;
+}
+

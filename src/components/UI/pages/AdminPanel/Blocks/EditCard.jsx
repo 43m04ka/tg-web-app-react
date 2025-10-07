@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {useServer} from "../useServer";
 import styles from "./EditCard.module.scss"
-import InputLabel from "../Elements/InputLabel";
+import InputLabel from "../Elements/Input/InputLabel";
 import ButtonLabel from "../Elements/ButtonLabel";
 import useData from "../useData";
 import SeparatorLabel from "../Elements/SeparatorLabel";

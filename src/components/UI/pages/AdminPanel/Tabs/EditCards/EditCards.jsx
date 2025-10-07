@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import BlockLabel from "../../Elements/BlockLabel";
-import InputLabel from "../../Elements/InputLabel";
+import InputLabel from "../../Elements/Input/InputLabel";
 import ButtonLabel from "../../Elements/ButtonLabel";
 import styles from "./EditCards.module.scss";
 import SeparatorLabel from "../../Elements/SeparatorLabel";

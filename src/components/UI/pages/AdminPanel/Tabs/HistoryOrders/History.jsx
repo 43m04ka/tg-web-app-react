@@ -1,5 +1,5 @@
 import React from 'react';
-import InputLabel from "../../Elements/InputLabel";
+import InputLabel from "../../Elements/Input/InputLabel";
 import BlockLabel from "../../Elements/BlockLabel";
 import ButtonLabel from "../../Elements/ButtonLabel";
 import {useServer} from "./useServer";

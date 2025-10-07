@@ -6,7 +6,7 @@ import ButtonLabel from "../../Elements/ButtonLabel";
 import SeparatorLabel from "../../Elements/SeparatorLabel";
 import SwitchLabel from "../../Elements/SwitchLabel";
 import CardList from "./CardList";
-import InputLabel from "../../Elements/InputLabel";
+import InputLabel from "../../Elements/Input/InputLabel";
 import DropLabel from "../../Elements/DropLabel";
 import useGlobalData from "../../../../../../hooks/useGlobalData";
 import useData from "../../useData";

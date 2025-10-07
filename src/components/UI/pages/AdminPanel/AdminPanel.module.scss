@@ -1,5 +1,125 @@
-.main-division{
+$bg-color: #1b1b1b;
+$theme-color: #5b78e3;
+$secondary-color: #4c4a4a;
+
+$text-color: #ffffff;
+$font-stack: Helvetica, sans-serif;
+$text-size: 14px;
+
+.main-division {
   display: flex;
   flex-direction: row;
-  background: #373737;
+  background: $bg-color;
 }
+
+.mainContainer {
+  width: 100%;
+  height: 100vp;
+  display: grid;
+  grid-template-rows: max-content 1fr;
+}
+
+%text {
+  color: $text-color;
+  font-family: $font-stack;
+  font-size: $text-size;
+}
+
+.header {
+  padding: 30px;
+}
+
+.headerTitle {
+  @extend %text;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.flexRow {
+  display: flex;
+  flex-direction: row;
+}
+
+.justifyContentCenter {
+  justify-content: center;
+}
+
+.alignItemsCenter {
+  align-items: center;
+}
+
+%button{
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 6px;
+    border-radius: 7px;
+    border: 1px solid $secondary-color;
+  > p {
+    margin: 0 4px 0 4px;
+    @extend %text;
+    line-height: $text-size;
+  }
+}
+
+.checkboxInput:active {
+  filter: brightness(90%);
+}
+
+.checkboxInput {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+
+.checkboxInput:hover:not(:disabled) {
+  border-color: $theme-color;
+}
+
+.checkboxInput {
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid $theme-color;
+  border-radius: 0.25rem;
+  background-color: #fff;
+  cursor: pointer;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  margin: 0 0 0 7px;
+}
+
+.checkboxInput:checked {
+  background-color: $theme-color;
+  border-color: $theme-color;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+}
+
+
+.checkboxInput:focus {
+  border-color: $theme-color;
+  outline: none;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+
+.checkboxInput:disabled {
+  filter: none;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.checkboxInput:disabled ~ .checkbox-label {
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.backgroundThreePoint {
+  background-size: cover;
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAtElEQVR4nO3WSwrCMBSF4Yx0D7rD+lhm1YGtW5E4/yVwFVKNTRHaOzgfFDLoOdCU3jQEERERERERcQRYA0fgDDzsSus9sPKYfQO2wI2yPt3jKTvcgV8lL91wR5bKZuz11dp5yGaAy4Sik4dsBogTiqKHbPij6O4hm7GRVav1kM0AhwlFjYds+DLO0rwdcy2MwtmzpQOlHynZeMp+SE9px3drH1i0dVPxO7BIVkRERERERMLMnoP772/pNsEXAAAAAElFTkSuQmCC');
+}
+
+
+
+
+

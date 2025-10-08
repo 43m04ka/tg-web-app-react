@@ -91,6 +91,12 @@ const EditPages = () => {
                                     newJson['color'] = e.target.value;
                                     setUpdatePageJson(newJson);
                                 }}/>
+                    <InputLabel label={'Скрыть(0-скрыто, 1-в доступе)'} placeholder={pageList[pageId].isHide}
+                                onChange={(e) => {
+                                    let newJson = updatePageJson
+                                    newJson['isHide'] = e.target.value;
+                                    setUpdatePageJson(newJson);
+                                }}/>
                     <ButtonLabel label={'Сохранить'}
                                  onClick={() =>
                                      updatePageData(() => updatePageList(), authenticationData, pageList[pageId].id, updatePageJson)}/>

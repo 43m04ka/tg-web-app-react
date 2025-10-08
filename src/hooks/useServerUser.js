@@ -2,7 +2,7 @@ const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
 
 export function useServerUser() {
 
-    const getPageList = async (setResult) => {
+    const getPageList = async (setResult, hide) => {
         await fetch(URL + '/getPageList?time=' + Date.now(), {
             method: 'GET',
             headers: {
@@ -11,7 +11,8 @@ export function useServerUser() {
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
-                setResult(data.result.sort((a, b) => a.serialNumber - b.serialNumber))
+                let result = data.result.sort((a, b) => a.serialNumber - b.serialNumber).filter(page => typeof hide !== 'undefined' || page.isHide === 1)
+                setResult(result)
             })
         })
     }

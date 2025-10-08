@@ -103,8 +103,10 @@ const Product = () => {
             parcent = '−' + Math.ceil((1 - productData.price / productData.oldPrice) * 100) + '%'
         } else if(productData.similarCard !== null){
             price = productData.similarCard?.price.toLocaleString() + ' ₽'
-            oldPrice = productData.similarCard?.oldPrice.toLocaleString() + ' ₽'
-            parcent = '−' + Math.ceil((1 - productData.similarCard?.price / productData.similarCard?.oldPrice) * 100) + '%'
+            if(typeof productData.similarCard.oldPrice !== 'undefined') {
+                oldPrice = productData.similarCard?.oldPrice.toLocaleString() + ' ₽'
+                parcent = '−' + Math.ceil((1 - productData.similarCard?.price / productData.similarCard?.oldPrice) * 100) + '%'
+            }
         }
 
         let endDatePromotion = ''

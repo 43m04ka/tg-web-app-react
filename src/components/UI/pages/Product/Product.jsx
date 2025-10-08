@@ -168,17 +168,15 @@ const Product = () => {
             </div>)
         }
 
-        let numPlayers = ''
-        if (typeof productData.numPlayers === 'undefined' || productData.numPlayers === null) {
-            numPlayers = ''
-        } else {
-            numPlayers = 'Количество игроков: ' + productData.numPlayers
-            numPlayers = (<div style={{
+        let numberPlayers = ''
+        if (productData.numberPlayers !== null) {
+            numberPlayers = 'Количество игроков: ' + productData.numberPlayers
+            numberPlayers = (<div style={{
                 marginTop: '12px',
                 fontSize: '14px',
                 color: 'white',
                 fontFamily: "'Montserrat', sans-serif"
-            }}>{numPlayers}
+            }}>{numberPlayers}
             </div>)
         }
 
@@ -372,7 +370,7 @@ const Product = () => {
                         <div style={{marginLeft: '15px', fontWeight: '600'}}>
                             {releaseDate}
                             {platform}
-                            {numPlayers}
+                            {numberPlayers}
                             {view}
                             {language}
                             {region}

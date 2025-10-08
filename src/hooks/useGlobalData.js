@@ -34,9 +34,9 @@ const useGlobalData = create(devtools(set => ({
             set(() => ({counterBasket: cardList.length}))
         }, user.id),
 
-    catalogList: [],
-    catalogStructureList: [],
-    mainPageCards: [],
+    catalogList: null,
+    catalogStructureList: null,
+    mainPageCards: null,
     updateCatalogList: () => getCatalogList((result) => set(() => ({catalogList: result}))),
     updateCatalogStructureList: () => getStructureCatalogList((result) => set(() => ({catalogStructureList: result}))),
     updateMainPageCards: () => getPreviewCardList((result) => set(() => ({mainPageCards: result}))),

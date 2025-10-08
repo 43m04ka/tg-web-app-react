@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {Link, useNavigate} from "react-router-dom";
-import basket from "../icons/basket.png";
 import {Swiper, SwiperSlide} from "swiper/react";
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -10,8 +9,6 @@ import 'swiper/css/autoplay';
 
 import {Autoplay, Pagination, Controller, EffectCoverflow} from 'swiper/modules';
 import useGlobalData from "../../hooks/useGlobalData";
-import {useServerUser} from "../../hooks/useServerUser";
-import {useTelegram} from "../../hooks/useTelegram";
 
 
 let isScroll = false
@@ -19,7 +16,7 @@ let realIndex = 0
 
 const HeadSelector = ({hidden}) => {
 
-    const {pageList, setPageId, pageId, catalogList, counterBasket} = useGlobalData()
+    const {pageList, setPageId, pageId, counterBasket} = useGlobalData()
     const navigate = useNavigate();
 
     const [colorSlider, setColorSlider] = useState('');

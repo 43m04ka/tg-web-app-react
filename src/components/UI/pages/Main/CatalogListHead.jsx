@@ -16,10 +16,12 @@ let realIndex = 0
 let lastPageID = -1
 const CatalogListHead = () => {
     const {catalogStructureList, pageId} = useGlobalData()
-
-    const data = catalogStructureList.filter(item => item.structurePageId === pageId && item.group === 'head').sort((a, b) => {
-        return a.serialNumber - b.serialNumber
-    })
+    let data = []
+    if(catalogStructureList !== null) {
+         data = catalogStructureList.filter(item => item.structurePageId === pageId && item.group === 'head').sort((a, b) => {
+            return a.serialNumber - b.serialNumber
+        })
+    }
 
     if (lastPageID !== pageId) {
         lastPageID = pageId;

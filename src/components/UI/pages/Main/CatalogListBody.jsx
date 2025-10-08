@@ -9,34 +9,46 @@ const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
 
 
 let lastPageID = -1
-const CatalogListBody = ({}) => {
+const CatalogListBody = () => {
     const {catalogStructureList, pageId, mainPageCards, catalogList, updateCounterBasket} = useGlobalData()
 
     useEffect(() => {
-        updateCounterBasket(catalogList, pageId)
+        if (catalogList !== null) {
+            updateCounterBasket(catalogList, pageId)
+        }
     }, [catalogList, pageId])
 
-    if (catalogStructureList.length > 0 && mainPageCards.length > 0) {
-        return (<div>
-                {catalogStructureList.filter(item => item.structurePageId === pageId && item.group === 'body').sort((a, b) => {
-                    return a.serialNumber - b.serialNumber
-                }).map((catalogStructure) => {
-                    catalogStructure.body = []
-                    if (typeof catalogStructure.path !== 'undefined' && catalogStructure.path !== null) {
-                        let catalogId = -1
-                        catalogList.forEach(catalog => {
-                            if ((catalogStructure.path.replace('/catalog/', '')).replace('/choice-catalog/', '') === catalog.path) {
-                                catalogId = catalog.id;
-                            }
-                        });
-                        let cardArray = []
-                        mainPageCards.map(card => {
-                            if (card.catalogId === catalogId) {
-                                cardArray.push(card)
-                            }
-                        })
-                        catalogStructure.body = cardArray
+    console.log((new Date).getSeconds(), (new Date).getMilliseconds(), '----------')
+
+
+    if (catalogStructureList !== null && mainPageCards !== null && catalogList !== null) {
+
+        const catalogStructureResultList = catalogStructureList.filter(item => item.structurePageId === pageId && item.group === 'body').sort((a, b) => {
+            return a.serialNumber - b.serialNumber
+        }).map((catalogStructure) => {
+            catalogStructure.body = []
+            if (typeof catalogStructure.path !== 'undefined' && catalogStructure.path !== null) {
+                let catalogId = -1
+                catalogList.forEach(catalog => {
+                    if ((catalogStructure.path.replace('/catalog/', '')).replace('/choice-catalog/', '') === catalog.path) {
+                        catalogId = catalog.id;
                     }
+                });
+                let cardArray = []
+                mainPageCards.map(card => {
+                    if (card.catalogId === catalogId) {
+                        cardArray.push(card)
+                    }
+                })
+                catalogStructure.body = cardArray
+            }
+            return catalogStructure
+        })
+
+        return (<div onLoad={() => {
+                console.log('load')
+            }}>
+                {catalogStructureResultList.map((catalogStructure) => {
                     return (<HomeBlock data={catalogStructure}/>)
                 })}
             </div>

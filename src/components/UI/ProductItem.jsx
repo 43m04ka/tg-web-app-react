@@ -97,6 +97,7 @@ const ProductItem = ({product}) => {
                     </div>
                 </div>
             </Link>
+            {console.log((new Date).getSeconds(), (new Date).getMilliseconds(), '==')}
         </div>
     )
         ;

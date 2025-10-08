@@ -4,6 +4,9 @@ import ProductItem from "./ProductItem";
 
 const HomeBlock = ({data}) => {
 
+    {
+        console.log((new Date).getSeconds(), (new Date).getMilliseconds(), '>>' + String(data.id))
+    }
     let styleBlock = {}
     if (data.type.includes('banner')) {
         if (data.backgroundColor !== 'none' && typeof data.backgroundColor !== 'undefined') {
@@ -59,7 +62,7 @@ const HomeBlock = ({data}) => {
                         color: 'white',
                         marginLeft: '5px',
                         overflow: 'hidden',
-                        width:'auto',
+                        width: 'auto',
                     }}>{data.name}</div>
                     <Link to={link + data.path} className={'link-element'} style={{
                         display: 'flex',
@@ -69,7 +72,7 @@ const HomeBlock = ({data}) => {
                         height: '22px',
                         borderRadius: '5px',
                         marginRight: '7px',
-                        width:'max-content'
+                        width: 'max-content'
                     }} to={link + data.path}>
                         <div className={'text-element'} style={{
                             fontSize: '11px',
@@ -90,12 +93,19 @@ const HomeBlock = ({data}) => {
                             </div>
                         )
                     )}
-                    <div className={'box-home-block-element home-block-element'} >
+                    <div className={'box-home-block-element home-block-element'}>
                         <div style={{
                             width: 'max-content',
                         }}>
                             <Link to={link + data.path} className={'link-element'}
-                                  style={{display: 'flex', alignItems: 'center', borderRadius: '7px', border: '1px solid white', height:'25px', marginRight: '7px'}}>
+                                  style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      borderRadius: '7px',
+                                      border: '1px solid white',
+                                      height: '25px',
+                                      marginRight: '7px'
+                                  }}>
                                 <div className={'text-element'} style={{fontSize: '15px'}}>
                                     Смотреть ещё
                                 </div>
@@ -104,12 +114,13 @@ const HomeBlock = ({data}) => {
                                     width: '15px',
                                     marginTop: '0',
                                     fontSize: '12.5px',
-                                    marginRight:'7px'
+                                    marginRight: '7px'
                                 }}/>
                             </Link>
                         </div>
                     </div>
                 </div>
+                {console.log((new Date).getSeconds(), (new Date).getMilliseconds(), '<<' + String(data.id))}
             </div>
         );
     } else if (data.type.includes('banner')) {
@@ -128,9 +139,12 @@ const HomeBlock = ({data}) => {
                         justifyContent: 'space-between',
                     }}></div>
                 </Link>
+                {console.log((new Date).getSeconds(), (new Date).getMilliseconds(), '<<' + String(data.id))}
             </div>
         )
     }
+
+
 };
 
 export default HomeBlock;

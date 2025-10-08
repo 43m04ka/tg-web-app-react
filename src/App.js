@@ -23,7 +23,18 @@ function App() {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
 
-    const {pageList, updatePageList, updateCatalogList, updateMainPageCards, updateCatalogStructureList, updatePreviewFavoriteData, updatePreviewBasketData} = useGlobalData();
+    const {
+        pageList,
+        updatePageList,
+        catalogList,
+        updateCatalogList,
+        mainPageCards,
+        updateMainPageCards,
+        catalogStructureList,
+        updateCatalogStructureList,
+        updatePreviewFavoriteData,
+        updatePreviewBasketData
+    } = useGlobalData();
 
     const [size, setSize] = React.useState(window.innerHeight);
 
@@ -44,22 +55,31 @@ function App() {
             tg.disableVerticalSwipes();
             tg.lockOrientation();
             tg.requestFullscreen();
-        }catch (e) {}
+        } catch (e) {
+        }
         tg.ready();
     }, [])
 
-    useEffect(()=>{
-        updatePageList()
-        updateCatalogStructureList()
-        updateMainPageCards()
-        updateCatalogList()
+    useEffect(() => {
+        if (pageList === null) {
+            updatePageList()
+        }
+        if (catalogStructureList === null) {
+            updateCatalogStructureList()
+        }
+        if (mainPageCards === null) {
+            updateMainPageCards()
+        }
+        if (catalogList === null) {
+            updateCatalogList()
+        }
         updatePreviewFavoriteData(user.id)
         updatePreviewBasketData(user.id)
     }, [])
 
 
-    if (pageList !== null)  {
-        if(window.location.pathname === '/'){
+    if (pageList !== null) {
+        if (window.location.pathname === '/') {
             navigate(pageList[0]['link'])
         }
         return (
@@ -67,9 +87,11 @@ function App() {
                 <div style={{height: String(tg?.contentSafeAreaInset.top) + 'px'}}></div>
                 <div style={{height: String(tg?.safeAreaInset.top) + 'px'}}></div>
                 <Routes>
-                    {pageList.map((page) => (<Route path={page['link']} key={page['id']} element={<MainPage pageList = {pageList} height={size}/>} />))}
-                    {pageList.map((page, index)=>(<Route path={'basket-'+page.id} element={<Basket height={size} number={index}/>}/>))}
-                    {pageList.map((page)=>(<Route path={'search-'+page.id} element={<Search height={size}/>}/>))}
+                    {pageList.map((page) => (<Route path={page['link']} key={page['id']}
+                                                    element={<MainPage pageList={pageList} height={size}/>}/>))}
+                    {pageList.map((page, index) => (
+                        <Route path={'basket-' + page.id} element={<Basket height={size} number={index}/>}/>))}
+                    {pageList.map((page) => (<Route path={'search-' + page.id} element={<Search height={size}/>}/>))}
 
                     <Route path={'favorites'} element={<Favorites/>}/>
                     <Route path={'/catalog/*'} element={<ProductList height={size}/>}/>
@@ -85,7 +107,7 @@ function App() {
 
             </div>
         );
-    } else{
+    } else {
         return (<div className={'plup-loader'} style={{
             marginTop: String(size / 2 - 50) + 'px',
             marginLeft: String(window.innerWidth / 2 - 50) + 'px'

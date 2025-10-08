@@ -35,10 +35,10 @@ const Search = ({height}) => {
                 console.log(prom, 'возвратил get')
                 if (dataRequestDatabase.method === 'getSearch') {
                     let resultList = []
-                    prom.cards.map(card=>{
+                    prom.cards.map(card => {
                         let flag = true
-                        resultList.map(resCard=>{
-                            if(card.name === resCard.name && card.similarCard?.price === resCard.similarCard?.price){
+                        resultList.map(resCard => {
+                            if (card.name === resCard.name && card.similarCard?.price === resCard.similarCard?.price) {
                                 flag = true
                             }
                         })
@@ -70,7 +70,7 @@ const Search = ({height}) => {
             top: lastScroll,
             behavior: "instant",
         });
-        if (lastListRes.length === 0){
+        if (lastListRes.length === 0) {
             textRef.current.focus()
         }
     }, [textRef, scrollRef])
@@ -117,15 +117,17 @@ const Search = ({height}) => {
                 type = 1
                 oldPrice = item.oldPrice.toLocaleString() + ' ₽'
                 parcent = '−' + Math.ceil((1 - item.price / item.oldPrice) * 100) + '%'
-            } else if(item.similarCard !== null){
+            } else if (item.similarCard !== null) {
                 type = 1
                 price = item.similarCard?.price.toLocaleString() + ' ₽'
-                oldPrice = item.similarCard?.oldPrice.toLocaleString() + ' ₽'
-                parcent = '−' + Math.ceil((1 - item.similarCard?.price / item.similarCard?.oldPrice) * 100) + '%'
+                if (typeof productData.similarCard.oldPrice !== 'undefined') {
+                    oldPrice = item.similarCard?.oldPrice.toLocaleString() + ' ₽'
+                    parcent = '−' + Math.ceil((1 - item.similarCard?.price / item.similarCard?.oldPrice) * 100) + '%'
+                }
             }
 
             if (item.releaseDate !== null) {
-                let a = (new Date(item.releaseDate))*24*60*60*1000
+                let a = (new Date(item.releaseDate)) * 24 * 60 * 60 * 1000
                 let currentDate = new Date('1899-12-30T00:00:00.000Z')
                 let newDate = new Date(a + currentDate.getTime());
 
@@ -157,11 +159,11 @@ const Search = ({height}) => {
                     marginTop: '0',
                     height: '15px',
                     fontSize: '15px',
-                    color:'gray',
-                    textDecoration:'line-through'
+                    color: 'gray',
+                    textDecoration: 'line-through'
                 }}>{oldPrice}</div>)
             }
-            if(type === 2){
+            if (type === 2) {
                 oldPriceEl = (<div className={'text-element text-basket'} style={{
                     lineHeight: '15px',
                     marginTop: '0',
@@ -210,7 +212,8 @@ const Search = ({height}) => {
                                 overflow: 'hidden',
                                 marginBottom: '0px'
                             }}>{platform}</div>
-                            <div style={{display: 'flex', justifyContent: 'left', alignItems:'center', height:'15px'}}>
+                            <div
+                                style={{display: 'flex', justifyContent: 'left', alignItems: 'center', height: '15px'}}>
                                 {priceEl}
                                 {oldPriceEl}
                             </div>

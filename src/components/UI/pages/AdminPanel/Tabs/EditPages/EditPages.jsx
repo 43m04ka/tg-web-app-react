@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useServer} from "../../useServer";
 import useGlobalData from "../../../../../../hooks/useGlobalData";
 import BlockLabel from "../../Elements/BlockLabel";
@@ -47,7 +47,7 @@ const EditPages = () => {
                 {/*        updatePageList()*/}
                 {/*    }}/>*/}
                 {/*</BlockLabel>*/}
-                <BlockLabel label={'Выбор страницы'} onReload={() => updatePageList()}>
+                <BlockLabel label={'Выбор страницы'} onReload={() => updatePageList(true)}>
                     {pageList.map((page, index) => (<div
                         className={`${styles['page-choice-block']} ${pageId === index ? styles['page-choice-active'] : ''}`}
                         key={page.id} onClick={() => setPageId(index)}>

@@ -13,7 +13,7 @@ const ProductItem = ({product}) => {
         parcent = '−' + Math.ceil((1 - product.price / product.oldPrice) * 100) + '%'
     } else if(product.similarCard !== null){
         price = String(product.similarCard?.price).toLocaleString() + ' ₽'
-        if(typeof productData.similarCard.oldPrice !== 'undefined') {
+        if(typeof product.similarCard.oldPrice !== 'undefined') {
             oldPrice = String(product.similarCard?.oldPrice).toLocaleString() + ' ₽'
             parcent = '−' + Math.ceil((1 - product.similarCard?.price / product.similarCard?.oldPrice) * 100) + '%'
         }

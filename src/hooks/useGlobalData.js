@@ -11,9 +11,9 @@ const {user} = useTelegram()
 
 const useGlobalData = create(devtools(set => ({
     pageList: null,
-    updatePageList: () => getPageList((result) => {
+    updatePageList: (bool) => getPageList((result) => {
         set((state) => ({pageList: result, pageId: state.pageId === null ? result[0].id : state.pageId}));
-    }),
+    }, bool),
 
     counterBasket: 0,
     updateCounterBasket: (catalogList, pageId) =>

@@ -120,7 +120,7 @@ const Search = ({height}) => {
             } else if (item.similarCard !== null) {
                 type = 1
                 price = item.similarCard?.price.toLocaleString() + ' ₽'
-                if (typeof productData.similarCard.oldPrice !== 'undefined') {
+                if (typeof item.similarCard.oldPrice !== 'undefined') {
                     oldPrice = item.similarCard?.oldPrice.toLocaleString() + ' ₽'
                     parcent = '−' + Math.ceil((1 - item.similarCard?.price / item.similarCard?.oldPrice) * 100) + '%'
                 }

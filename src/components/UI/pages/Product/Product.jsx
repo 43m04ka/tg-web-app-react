@@ -98,22 +98,23 @@ const Product = () => {
         let parcent = ''
         let price = productData.price.toLocaleString() + ' ₽'
 
+        let endDatePromotion = ''
+        if (productData.endDatePromotion !== null) {
+            endDatePromotion = 'Скидка ' + parcent + ' ' + productData.endDatePromotion
+        }
+
         if (productData.oldPrice !== null) {
             oldPrice = productData.oldPrice.toLocaleString() + ' ₽'
             parcent = '−' + Math.ceil((1 - productData.price / productData.oldPrice) * 100) + '%'
         } else if(productData.similarCard !== null){
             price = productData.similarCard?.price.toLocaleString() + ' ₽'
             if(typeof productData.similarCard.oldPrice !== 'undefined') {
-                oldPrice = productData.similarCard?.oldPrice.toLocaleString() + ' ₽'
                 parcent = '−' + Math.ceil((1 - productData.similarCard?.price / productData.similarCard?.oldPrice) * 100) + '%'
+                oldPrice = productData.similarCard?.oldPrice.toLocaleString() + ' ₽'
             }
-        }
-
-        let endDatePromotion = ''
-        if (productData.endDatePromotion !== null) {
-            endDatePromotion = 'Скидка ' + parcent + ' ' + productData.endDatePromotion
-        } else if(productData.similarCard !== null){
-            endDatePromotion = 'Скидка ' + parcent + ' ' + productData.similarCard.endDatePromotion
+            if(typeof productData.similarCard.endDatePromotion !== 'undefined') {
+                endDatePromotion = 'Скидка ' + parcent + ' ' + productData.similarCard.endDatePromotion
+            }
         }
 
         let language = ''

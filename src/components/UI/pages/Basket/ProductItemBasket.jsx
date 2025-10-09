@@ -21,10 +21,14 @@ const ProductItemBasket = ({product, onReload, page}) => {
         oldPrice = item.oldPrice.toLocaleString() + ' ₽'
         parcent = 'Скидка −' + Math.ceil((1 - item.price / item.oldPrice) * 100) + '%' + ' ' + item.endDatePromotion
     } else if(item.similarCard !== null){
-        type = 1
+        type = 0
         price = item.similarCard?.price.toLocaleString() + ' ₽'
-        oldPrice = item.similarCard?.oldPrice.toLocaleString() + ' ₽'
-        parcent = 'Скидка −' + Math.ceil((1 - item.similarCard?.price / item.similarCard?.oldPrice) * 100) + '%' + ' ' + item.similarCard?.endDatePromotion
+        if(typeof item.similarCard.oldPrice !== 'undefined' && typeof item.similarCard.oldPrice !== 'undefined') {
+            type = 1
+            parcent = 'Скидка −' + Math.ceil((1 - item.similarCard?.price / item.similarCard?.oldPrice) * 100) + '%' + ' ' + item.similarCard?.endDatePromotion
+            oldPrice = item.similarCard?.oldPrice.toLocaleString() + ' ₽'
+        }
+
     }
 
     if (item.releaseDate !== null) {

@@ -120,9 +120,11 @@ const Search = ({height}) => {
             } else if (item.similarCard !== null) {
                 type = 1
                 price = item.similarCard?.price.toLocaleString() + ' ₽'
-                if (typeof item.similarCard.oldPrice !== 'undefined') {
-                    oldPrice = item.similarCard?.oldPrice.toLocaleString() + ' ₽'
+                if(typeof item.similarCard.oldPrice !== 'undefined') {
                     parcent = '−' + Math.ceil((1 - item.similarCard?.price / item.similarCard?.oldPrice) * 100) + '%'
+                    oldPrice = item.similarCard?.oldPrice.toLocaleString() + ' ₽'
+                }
+                if(typeof item.similarCard.endDatePromotion !== 'undefined') {
                 }
             }
 

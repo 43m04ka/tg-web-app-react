@@ -90,12 +90,6 @@ const Promo = () => {
 
                 <ButtonLine listButtonData={listButtonData} returnOptions={returnOptionsButtonLine}/>
 
-                {/*<div className={style['buttonReload']} onClick={() => {*/}
-                {/*    getPromoList(authenticationData, setPromoList).then()*/}
-                {/*}}>*/}
-                {/*    <div/>*/}
-                {/*    <p>Обновить</p>*/}
-                {/*</div>*/}
             </div>
         </div>
 

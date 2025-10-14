@@ -21,9 +21,8 @@ const UploadData = ({onClose, onReload}) => {
 
     const [table, setTable] = useState(null)
 
-    const {catalogList, setCatalogList, authenticationData} = useData();
-    const {getCatalogList} = useServer();
-    const {pageList, pageId} = useGlobalData()
+    const {authenticationData} = useData();
+    const {pageList, pageId, catalogList} = useGlobalData()
 
     const uploadCards = async (authenticationData, cardList) => {
         await fetch(URL + '/uploadCards', {
@@ -114,6 +113,7 @@ const UploadData = ({onClose, onReload}) => {
                              onClick={() => {
                                  setButtonTableClassic(table).then();
                                  onReload();
+                                 onClose();
                              }}>
                             <div/>
                             <p>Загрузить</p>
@@ -129,11 +129,6 @@ const UploadData = ({onClose, onReload}) => {
                     </div>
                 </PopUpWindow>
             );
-        } else {
-            getCatalogList(setCatalogList).then()
-            return (<div className={'plup-loader'} style={{
-                marginTop: '25px', marginLeft: '25px'
-            }}></div>)
         }
     }
 };

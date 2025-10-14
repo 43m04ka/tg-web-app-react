@@ -1,3 +1,5 @@
+@import "src/components/UI/pages/AdminPanel/AdminPanel.module";
+
 .label {
   margin: 5px;
   border-radius: 100px;
@@ -5,6 +7,10 @@
   border: 0;
   color:white;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.title{
+  margin: 20px;
 }
 
 .active {
@@ -19,7 +25,7 @@
   justify-content: space-between;
   padding: 10px;
   height: 100vh;
-  border-right: 2px solid white;
+  border-right: 1px solid $secondary-color;
 }
 
 .separator {
@@ -28,9 +34,12 @@
   background-color: #fff;
 }
 
-.block{
-  border: 2px solid white;
-  border-radius: 10px;
-  margin-top: 5px;
-  width: 300px;
+.buttonUpdate{
+  @extend %text;
+  color: $text-color;
+  background: $bg-color;
+  width: 250px;
+  height: 50px;
+  border: 1px solid $secondary-color;
+  border-radius: 7px;
 }

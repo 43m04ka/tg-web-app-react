@@ -13,17 +13,24 @@ const NavigationBar = ({routeData}) => {
     return (
         <div className={styles['main-division']}>
             <div>
-                {routeData.map(routeList => (
-                <div className={styles['block']}>
-                    {routeList.map((label) =>
-                        (<div onClick={() => navigator(label.path)} key={label.path} className={`${styles['label']}
-                           ${styles[window.location.pathname.replace('/admin-panel/', '') === label.path ? 'active' : '']}`}>
-                            {(window.location.pathname.replace('/admin-panel/', '') === label.path ? '» ' : '') + label.name}</div>)
-                    )}
-                </div>
-            ))}
+            <div className={styles['headerTitle'] + ' ' + styles['title']}>
+                Панель
             </div>
-            <ButtonLabel label={'Обновить асоциации'} onClick={()=>{updateAssociations(authenticationData).then()}}/>
+            <div>
+                {routeData.map(routeList => (
+                    <div>
+                        {routeList.map((label) =>
+                            (<div onClick={() => navigator(label.path)} key={label.path} className={`${styles['label']}
+                           ${styles[window.location.pathname.replace('/admin-panel/', '') === label.path ? 'active' : '']}`}>
+                                {label.name}</div>)
+                        )}
+                    </div>
+                ))}
+            </div>
+            </div>
+            <button className={styles['buttonUpdate']} onClick={() => {
+                updateAssociations(authenticationData).then()
+            }}>Обновить асоциации</button>
         </div>
     );
 };

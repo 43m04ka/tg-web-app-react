@@ -96,7 +96,7 @@ const EditPages = ({page, setPage}) => {
         <div className={style['mainContainer']}>
             <div className={style['header']}>
                 <div className={style['flexRow'] + ' ' + style['alignItemsCenter']}>
-                    <div className={style['headerTitle']}>Страницы</div>
+                    <div className={style['headerTitle']}>Структура</div>
                 </div>
                 <div className={style['flexRow'] + ' ' + style['alignItemsCenter']}>
                     <ButtonLine listButtonData={listButtonData} returnOptions={returnOptionsButtonLine}/>

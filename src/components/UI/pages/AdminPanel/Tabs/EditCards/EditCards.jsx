@@ -14,7 +14,6 @@ const EditCards = () => {
     const {authenticationData} = useData()
 
     const [cardList, setCardList] = useState([])
-    const [selectCardId, setSelectCardId] = useState(-1)
     const [searchInputValue, setSearchInputValue] = useState('')
 
     const [uploadCard, setUploadCard] = useState(false);
@@ -94,8 +93,7 @@ const EditCards = () => {
 
     const onChangeStatus = async (listId, bool) => {
         for await (const id of listId) {
-            await updateCardData(() => {
-            }, authenticationData, id, {onSale: bool})
+            await updateCardData(() => {}, authenticationData, id, {onSale: bool})
         }
         await searchForName(setCardList, searchInputValue).then()
         await setSelectList([])
@@ -104,6 +102,9 @@ const EditCards = () => {
     return (
         <div className={style['mainContainer']}>
             <div className={style['header']}>
+                <div className={style['flexRow'] + ' ' + style['alignItemsCenter']}>
+                    <div className={style['headerTitle']}>Карты</div>
+                </div>
                 <div className={style['flexRow'] + ' ' + style['alignItemsCenter']}>
                     <input className={style['inputFind']} placeholder={'Поиск'}
                            onChange={async (event) => {

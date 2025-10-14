@@ -63,6 +63,9 @@ const History = () => {
         <div className={style['mainContainer']}>
             <div className={style['header']}>
                 <div className={style['flexRow'] + ' ' + style['alignItemsCenter']}>
+                    <div className={style['headerTitle']}>История заказов</div>
+                </div>
+                <div className={style['flexRow'] + ' ' + style['alignItemsCenter']}>
                     <input className={style['inputFind']} placeholder={'Поиск {32 или 2025.8.24}'}
                            onChange={async (event) => {
                               await getHistoryList(setHistoryList, event.target.value);

@@ -135,8 +135,12 @@ const Search = ({height}) => {
                 let currentDate = new Date('1899-12-30T00:00:00.000Z')
                 let newDate = new Date(a + currentDate.getTime());
 
-                parcent = newDate.toLocaleDateString('ru-RU')
-                parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
+                if(newDate > ((new Date()))){
+                    parcent = "Уже в продаже"
+                }else {
+                    parcent = newDate.toLocaleDateString('ru-RU')
+                    parcent = 'Предзаказ ' + parcent.slice(0, 6) + parcent.slice(8, 10)
+                }
 
                 type = 2
             }
@@ -174,7 +178,7 @@ const Search = ({height}) => {
                     height: '15px',
                     fontSize: '15px',
                     color: '#4a9ed6',
-                }}>Предзаказ {parcent}</div>)
+                }}>{parcent}</div>)
             }
 
             return (
@@ -225,6 +229,20 @@ const Search = ({height}) => {
                     </Link>
                 </div>)
         })}
+        <div className={'text-element'} style={{textAlign:'center', fontSize: '17px', marginTop:'10px'}}>
+            Не нашли то что искали?
+            <a className={'link-element text-element'} style={{width:'100%', justifyItems:'center'}}
+               href={'https://t.me/gwstore_admin'}>
+                <button className={'all-see-button'} style={{
+                    marginTop: '15px',
+                    height: '50px',
+                    width: '350px',
+                    background: '#52a557',
+                }}>Написать администратору
+                </button>
+            </a>
+        </div>
+
     </div>)
     if (listRes.length === 0) {
         bodyElement = (<div className={'background-searchFon'} style={{
@@ -245,6 +263,21 @@ const Search = ({height}) => {
                 width: '250px',
                 height: '250px',
             }}></div>
+
+            <div className={'text-element'} style={{textAlign:'center', fontSize: '17px', marginTop:'10px'}}>
+                Не можете что-то найти?
+                <a className={'link-element text-element'} style={{width:'100%', justifyItems:'center'}}
+                   href={'https://t.me/gwstore_admin'}>
+                    <button className={'all-see-button'} style={{
+                        marginTop: '15px',
+                        height: '50px',
+                        width: '350px',
+                        background: '#52a557',
+                    }}>Написать администратору
+                    </button>
+                </a>
+            </div>
+
         </div>)
     }
     if (status === 1 || status === 3) {

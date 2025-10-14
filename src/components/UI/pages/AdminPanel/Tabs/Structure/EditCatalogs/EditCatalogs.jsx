@@ -4,7 +4,6 @@ import Body from "./Body/Body";
 import Head from "./Head/Head";
 
 
-let currentPage = 0
 const EditCatalogs = ({page}) => {
 
     const [catalogHeadList, setCatalogHeadList] = useState([])
@@ -14,12 +13,9 @@ const EditCatalogs = ({page}) => {
 
 
     useEffect(() => {
-        if (currentPage !== page) {
-            currentPage = page
-            getStructureCatalogList(page, 'head', setCatalogHeadList).then()
-            getStructureCatalogList(page, 'body', setCatalogBodyList).then()
-        }
-    }, [getStructureCatalogList]);
+        getStructureCatalogList(page, 'head', setCatalogHeadList).then()
+        getStructureCatalogList(page, 'body', setCatalogBodyList).then()
+    }, [getStructureCatalogList, setCatalogHeadList, setCatalogBodyList]);
 
 
     return (<div style={{display: 'grid', gridTemplateColumns:'1fr 1fr'}}>

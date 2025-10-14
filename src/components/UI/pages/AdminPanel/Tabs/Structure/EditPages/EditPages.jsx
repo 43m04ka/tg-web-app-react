@@ -91,6 +91,7 @@ const EditPages = ({page, setPage}) => {
 
     useEffect(() => {
         updatePageList(true).then()
+        setPage(-1)
     }, [updatePageList]);
 
     return (

@@ -87,7 +87,7 @@ const Body = ({catalogBodyList, page, onReload}) => {
         {catalogBodyList !== null ? (
             <List listData={catalogBodyList} cap={cap} positionOptions={positionOptionsList}
                   returnOption={returnOptionList} setSelectList={setSelectList} selectList={selectList}
-                  checkBoxType={'any'}/>) : ''}
+                  checkBoxType={'simply'}/>) : ''}
         {createTabOpen ? <CreateBody onClose={() => {
             setCreateTabOpen(false);
         }} onReload = {onReload} page={page}/> : ''}

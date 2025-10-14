@@ -1,6 +1,6 @@
 import React from 'react';
 import NavigationBar from "./Blocks/NavigationBar";
-import UploadData from "./Tabs/UploadData/UploadData";
+import UploadData from "./Tabs/EditCards/UploadData/UploadData";
 import EditDirectories from "./Tabs/EditCatalogs/EditDirectories";
 import AP_EditCards from "./Tabs/EditCards/EditCards";
 
@@ -22,19 +22,17 @@ const AdminPanel = () => {
         navigate('/admin')
     }
 
-    const routeData = [{name: 'Загрузить новые данные', path: 'upload-data', element: <UploadData/>},
-        {name: 'Редактировать каталоги', path: 'edit-directories', element: <EditDirectories/>},
+    const routeData = [{name: 'Редактировать каталоги', path: 'edit-directories', element: <EditDirectories/>},
         {name: 'Редактировать карты', path: 'edit-cards', element: <AP_EditCards/>},
-        {name: 'Структура', path: 'structure', element: <Structure/>}]
-    const routeData1 = [{name: 'Промокоды', path: 'promo', element: <Promo/>},
-        {name: 'История заказов', path: 'history-orders', element: <History/>},
-        {name: 'Кубик', path: 'cube', element: <Outlet/>}];
+        {name: 'Структура', path: 'structure', element: <Structure/>},
+        {name: 'Промокоды', path: 'promo', element: <Promo/>},
+        {name: 'История заказов', path: 'history-orders', element: <History/>},];
 
     return (
         <div className={styles['main-division']}>
-            <NavigationBar routeData={[routeData, routeData1]}/>
+            <NavigationBar routeData={[routeData]}/>
             <Routes>
-                {[...routeData, ...routeData1].map((route, index) => (
+                {routeData.map((route, index) => (
                     <Route path={route.path} key={index} element={route.element}/>
                 ))}
             </Routes>

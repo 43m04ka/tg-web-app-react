@@ -26,6 +26,8 @@ const ExcelReader = ({setButtonTable}) => {
         const files = e.target.files;
         setText(e.target.value.replace('C:\\fakepath\\', ''));
         if (files && files[0]) setFile(files[0]);
+
+        handleFile()
     };
 
 
@@ -50,7 +52,7 @@ const ExcelReader = ({setButtonTable}) => {
     }
 
     return (
-        <SeparatorLabel label={'Таблица данных'}>
+        <div style={{marginLeft:'7px'}}>
                 <label className={styles["input-file"]}>
                     <input type="file" id="file" className={'text-element'}
                            style={{margin: '5px', borderRadius: '100px', padding: '5px', border: '0px',}} accept={SheetJSFT}
@@ -58,8 +60,7 @@ const ExcelReader = ({setButtonTable}) => {
                     <div className={styles["input-file-btn"]}>» Выберите файл «</div>
                     <div className={styles["input-file-text"]}>{text}</div>
                 </label>
-                <Button onClick={handleFile} label={'Загрузить'}/>
-        </SeparatorLabel>
+        </div>
 
     )
 }

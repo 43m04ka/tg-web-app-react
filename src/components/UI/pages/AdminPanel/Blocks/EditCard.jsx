@@ -1,72 +1,87 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useServer} from "../useServer";
 import styles from "./EditCard.module.scss"
 import InputLabel from "../Elements/Input/InputLabel";
 import ButtonLabel from "../Elements/ButtonLabel";
 import useData from "../useData";
 import SeparatorLabel from "../Elements/SeparatorLabel";
+import style from "../Tabs/HistoryOrders/History.module.scss";
+import PopUpWindow from "../Elements/PopUpWindow/PopUpWindow";
+import SwitchLabel from "../Elements/SwitchLabel/SwitchLabel";
 
-const EditCard = ({cardId, onReload}) => {
+const EditCard = ({cardId, onReload, onClose}) => {
 
-    const [cardData, setCardData] = useState(null);
+    const [cardData, setCardData] = useState({});
     const [updateCardData, setUpdateCardData] = useState({});
     const {authenticationData} = useData()
     const {getCard, updateCardData: updateCard, deleteCard} = useServer();
 
-    if (cardData === null || cardId !== cardData.id) {
+
+    useEffect(() => {
         getCard(setCardData, cardId).then();
-        onReload()
-    }
-    console.log(cardData);
+    }, [cardId]);
 
 
-    if (cardData !== null) {
-        return (
-            <div>
-                <div className={styles['main']}>
-                    <div className={styles['image']} style={{backgroundImage: 'url(' + cardData.image + ')'}}/>
-                    <div className={styles['body']}>
-                        <InputLabel label={'Имя'} placeholder={cardData.name} onChange={(e) => {
-                            let newJson = updateCardData
-                            newJson['name'] = e.target.value;
-                            setUpdateCardData(newJson);
-                        }}/>
-                        <InputLabel label={'Цена'} placeholder={cardData.price} onChange={(e) => {
-                            let newJson = updateCardData
-                            newJson['price'] = e.target.value;
-                            setUpdateCardData(newJson);
-                        }}/>
-                        <InputLabel label={'Старая цена'} placeholder={cardData.oldPrice} onChange={(e) => {
-                            let newJson = updateCardData
-                            newJson['oldPrice'] = e.target.value;
-                            setUpdateCardData(newJson);
-                        }}/>
-                        <InputLabel label={'Цена в другой валюте'} placeholder={cardData.priceInOtherCurrency}
-                                    onChange={(e) => {
-                                        let newJson = updateCardData
-                                        newJson['priceInOtherCurrency'] = e.target.value;
-                                        setUpdateCardData(newJson);
-                                    }}/>
+    return (
+        <PopUpWindow title={cardData.name || 'Загрузка'}>
+            {typeof cardData.name !== 'undefined' ?
+                <div>
+                    <div className={styles['main']}>
+                        <div className={styles['image']} style={{backgroundImage: 'url(' + cardData.image + ')'}}/>
+                        <div>
+                            <InputLabel label={'Имя'} defaultValue={cardData.name} onChange={(e) => {
+                                let newJson = updateCardData
+                                newJson['name'] = e.target.value;
+                                setUpdateCardData(newJson);
+                            }}/>
+                            <InputLabel label={'Цена'} defaultValue={cardData.price} onChange={(e) => {
+                                let newJson = updateCardData
+                                newJson['price'] = e.target.value;
+                                setUpdateCardData(newJson);
+                            }}/>
+                            <InputLabel label={'Старая цена'} defaultValue={cardData.oldPrice} onChange={(e) => {
+                                let newJson = updateCardData
+                                newJson['oldPrice'] = e.target.value;
+                                setUpdateCardData(newJson);
+                            }}/>
+                            <InputLabel label={'Цена в другой валюте'} defaultValue={cardData.priceInOtherCurrency}
+                                        onChange={(e) => {
+                                            let newJson = updateCardData
+                                            newJson['priceInOtherCurrency'] = e.target.value;
+                                            setUpdateCardData(newJson);
+                                        }}/>
+                        </div>
                     </div>
-                    <div className={styles['body']}>
-                        <ButtonLabel label={'Выставить в продажу'}
-                                     onClick={() => updateCard(() => setCardData(null), authenticationData, cardId, {onSale: true})}/>
-                        <ButtonLabel label={'Убрать с продажи'}
-                                     onClick={() => updateCard(() => setCardData(null), authenticationData, cardId, {onSale: false})}/>
-                        <ButtonLabel label={'Сохранить'}
-                                     onClick={() => updateCard(() => setCardData(null), authenticationData, cardId, updateCardData)}/>
-                        <ButtonLabel label={'Удалить'} onClick={()=>deleteCard(onReload, authenticationData, cardId)}/>
-                    </div>
+                    <SwitchLabel label={'Товар в продаже'} defaultValue={cardData.onSale}
+                                 onChange={(e) => updateCard(() => {onReload()}, authenticationData, cardId, {onSale: e.target.checked})}/>
+                    {cardData.similarCard !== null ? <div>
+                        <div
+                            className={style['infoLabel']}>{'Мин. цена с аналогичных карт: ' + cardData.similarCard.price}</div>
+                    </div> : <></>}
+
                 </div>
-                {cardData.similarCard !== null ? <div>
-                    <SeparatorLabel label={'Мин. цена с аналогичных карт: ' + cardData.similarCard.price}/></div> : <></>}
+                : ''}
+            <div className={style['buttonPlace']}>
+                <div className={style['buttonAccept']}
+                     onClick={() => updateCard(() => {onReload()}, authenticationData, cardId, updateCardData)}>
+                    <div/>
+                    <p>Сохранить</p>
+                </div>
 
-            </div>);
-    } else {
-        return (<div className={'plup-loader'}></div>)
-    }
+                <div className={style['buttonCancel']}
+                     onClick={() => onClose()}>
+                    <div/>
+                    <p>Отмена</p>
+                </div>
+            </div>
+        </PopUpWindow>)
+        ;
+
 }
 export default EditCard;
+
+
+//                                         onClick={() => updateCard(() => setCardData(null), authenticationData, cardId, {onSale: true})}/>
 
 
 // let colorButtonStatus, textColorButtonStatus, textButtonStatus

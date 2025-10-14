@@ -54,7 +54,6 @@ const CreateBody = ({onClose, page, onReload}) => {
 
         {<AP_CreateNewCatalog data={newCatalog} setResult={setJson}/>}
 
-        <div className={style['infoLabel']}>{infoLabel}</div>
         <div className={style['buttonPlace']}>
             <div className={style['buttonAccept']} onClick={async () => {
                 await createStructureCatalog(authenticationData, json)

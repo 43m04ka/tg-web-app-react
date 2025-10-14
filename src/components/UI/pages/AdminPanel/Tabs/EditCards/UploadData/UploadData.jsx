@@ -1,21 +1,25 @@
 import React, {useState} from 'react';
-import useGlobalData from "../../../../../../hooks/useGlobalData";
-import SwitchLabel from "../../Elements/SwitchLabel/SwitchLabel";
-import BlockLabel from "../../Elements/BlockLabel";
-import ExcelReader from "../../Blocks/ExcelReader";
-import DropBox from "../../Elements/DropBox/DropBox";
-import useData from "../../useData";
-import {useServer} from "../../useServer";
+import useGlobalData from "../../../../../../../hooks/useGlobalData";
+import SwitchLabel from "../../../Elements/SwitchLabel/SwitchLabel";
+import BlockLabel from "../../../Elements/BlockLabel";
+import ExcelReader from "../../../Blocks/ExcelReader";
+import DropBox from "../../../Elements/DropBox/DropBox";
+import useData from "../../../useData";
+import {useServer} from "../../../useServer";
+import PopUpWindow from "../../../Elements/PopUpWindow/PopUpWindow";
+import style from "../../HistoryOrders/History.module.scss";
 
 const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
 
-const UploadData = () => {
+const UploadData = ({onClose, onReload}) => {
 
     const [gameType, setGameType] = useState(0)
     const [selectedCatalogId, setSelectedCatalogId] = useState(null)
     const [addToAll, setAddToAll] = useState(0)
     const [onLoad, setOnLoad] = useState(false)
     const [left, setLeft] = useState(0)
+
+    const [table, setTable] = useState(null)
 
     const {catalogList, setCatalogList, authenticationData} = useData();
     const {getCatalogList} = useServer();
@@ -87,23 +91,43 @@ const UploadData = () => {
     } else {
         if (catalogList !== null) {
             return (
-                <BlockLabel
-                    label={`Загрузить новые карты ${pageList.map(page => {
+                <PopUpWindow
+                    title={`Загрузить новые карты ${pageList.map(page => {
                         return page.id === pageId ? page.name : null
                     }).filter(page => page !== null)[0].toLowerCase()}`}>
 
+                    <div>
                     <DropBox label={catalogList.map(catalog => {
-                        catalog.label = catalog.path;
+                        catalog.name = catalog.path;
                         return catalog
                     })}
                              onChange={(index) => setSelectedCatalogId(catalogList[index].id)}/>
-                    <SwitchLabel label={['Добавляем в общий каталог', 'Не добавляем в общий каталог']}
-                                 onChange={(value) => setAddToAll(value)}/>
-                    <SwitchLabel label={['Это карты игр', 'Это не карты игр']}
-                                 onChange={(value) => setGameType(value)}/>
+                    <SwitchLabel label={'Добавлять в общий каталог'}
+                                 onChange={(value) => setAddToAll(value.target.checked)}/>
+                    <SwitchLabel label={'Карты принадлежат типу игр'}
+                                 onChange={(value) => setGameType(value.target.checked)}/>
 
-                    <ExcelReader setButtonTable={setButtonTableClassic}/>
-                </BlockLabel>
+                    <ExcelReader setButtonTable={setTable}/>
+                    </div>
+                    <div className={style['buttonPlace']}>
+                        <div className={style['buttonAccept']}
+                             onClick={() => {
+                                 setButtonTableClassic(table).then();
+                                 onReload();
+                             }}>
+                            <div/>
+                            <p>Загрузить</p>
+                        </div>
+
+                        <div className={style['buttonCancel']}
+                             onClick={() => {
+                                 onClose()
+                             }}>
+                            <div/>
+                            <p>Отмена</p>
+                        </div>
+                    </div>
+                </PopUpWindow>
             );
         } else {
             getCatalogList(setCatalogList).then()

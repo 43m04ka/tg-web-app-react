@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useServer} from "../useServer";
 import useGlobalData from "../../../../../../../hooks/useGlobalData";
 import useData from "../../../useData";
@@ -65,7 +65,6 @@ const EditPages = ({page, setPage}) => {
             default:
                 break;
         }
-        setSelectList([])
     }
 
     const returnOptionList = (option, id) => {
@@ -86,7 +85,6 @@ const EditPages = ({page, setPage}) => {
             default:
                 break;
         }
-        setSelectList([])
     }
 
     useEffect(() => {

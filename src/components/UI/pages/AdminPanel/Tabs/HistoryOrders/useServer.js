@@ -11,7 +11,7 @@ export function useServer() {
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
-                setResult(data.result)
+                setResult(data.result || [])
             })
         })
     }
@@ -25,7 +25,7 @@ export function useServer() {
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
-                setResult(data.result)
+                setResult(data.result || [])
             })
         })
     }

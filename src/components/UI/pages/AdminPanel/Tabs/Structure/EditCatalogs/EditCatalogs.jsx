@@ -12,6 +12,12 @@ const EditCatalogs = ({page}) => {
     const {getStructureCatalogList} = useServer()
 
 
+    useEffect(() => {
+        getStructureCatalogList(page, 'head', setCatalogHeadList).then()
+        getStructureCatalogList(page, 'body', setCatalogBodyList).then()
+    }, [page]);
+
+
     return (<div style={{display: 'grid', gridTemplateColumns:'1fr 1fr'}}>
         <Head catalogHeadList={catalogHeadList} page={page} onReload={()=>{getStructureCatalogList(page, 'head', setCatalogHeadList).then()}}/>
         <Body catalogBodyList={catalogBodyList} page={page} onReload={()=>{getStructureCatalogList(page, 'body', setCatalogBodyList).then()}}/>

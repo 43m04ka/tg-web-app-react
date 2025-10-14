@@ -1,5 +1,7 @@
 import React from 'react';
 import AP_SelectInputLabel from './AP_SelectInputLabel';
+import InputLabel from "../../../../Elements/Input/InputLabel";
+import DropBox from "../../../../Elements/DropBox/DropBox";
 
 const ApSelectInputLabel = ({data, resultJson, setResultJson}) => {
 
@@ -17,28 +19,15 @@ const ApSelectInputLabel = ({data, resultJson, setResultJson}) => {
     let buttonElement
 
     if (typeof data[0].name !== 'undefined') {
-        buttonElement = (<div>{data.map((view, index) => {
-            let styleElement = {
-                margin: '5px',
-                borderRadius: '100px',
-                padding: '5px',
-                border: '0px',
-            }
-            if (selectButton === index) {
-                styleElement.background = '#ef7474'
-            }
-            return (<button onClick={() => {
-                setSelectButton(index)
-            }} style={styleElement}>{view.name}
-            </button>)
-        })}</div>)
+        buttonElement = (<DropBox label={data} onChange={(value) => {setSelectButton(value)}}/>)
+
     }else{
-        buttonElement = (<div style={{paddingRight:'10px'}}>
+        buttonElement = (<div>
             {data.map((item, index) => {
             if (Array.isArray(item)) {
                 return <AP_SelectInputLabel data={item} resultJson={resultJson} setResultJson={setResultJson}/>
             } else if (typeof item === 'object' && !Array.isArray(item) && item !== null && typeof item.value === 'undefined') {
-                return (<input placeholder={item.placeholder} onChange={(event) => {
+                return (<InputLabel label={item.placeholder} onChange={(event) => {
                     let newJson = resultJson
                     if (item.type === 'number') {
                         newJson[item.argument] = Number(event.target.value)
@@ -46,7 +35,7 @@ const ApSelectInputLabel = ({data, resultJson, setResultJson}) => {
                         newJson[item.argument] = (item.tag || '') + event.target.value
                     }
                     setResultJson(newJson)
-                }} style={{margin: '5px', marginRight:'5px', borderRadius: '100px', padding: '5px', border: '0px', width: '100%'}}/>)
+                }}/>)
             }else{
                 let newJson = resultJson
                 newJson[item.argument] = item.value

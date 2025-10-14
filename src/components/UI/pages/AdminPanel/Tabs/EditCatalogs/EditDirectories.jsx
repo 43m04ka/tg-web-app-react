@@ -4,10 +4,10 @@ import BlockLabel from "../../Elements/BlockLabel";
 import styles from './EditDirectories.module.scss'
 import ButtonLabel from "../../Elements/ButtonLabel";
 import SeparatorLabel from "../../Elements/SeparatorLabel";
-import SwitchLabel from "../../Elements/SwitchLabel";
+import SwitchLabel from "../../Elements/SwitchLabel/SwitchLabel";
 import CardList from "./CardList";
 import InputLabel from "../../Elements/Input/InputLabel";
-import DropLabel from "../../Elements/DropLabel";
+import DropBox from "../../Elements/DropBox/DropBox";
 import useGlobalData from "../../../../../../hooks/useGlobalData";
 import useData from "../../useData";
 
@@ -38,7 +38,7 @@ const EditDirectories = () => {
                     <BlockLabel label={'Создать каталог'}>
                         <InputLabel placeholder={'xbox_new'} label={'Путь до каталога'}
                                     onChange={(event) => setPathNewCatalog(event.target.value)}/>
-                        <DropLabel label={pageList.map(page => {page.label = page.name; return page})} onChange={(result) => setPageNewCatalog(pageList[result].id)}/>
+                        <DropBox label={pageList.map(page => {page.label = page.name; return page})} onChange={(result) => setPageNewCatalog(pageList[result].id)}/>
                         <ButtonLabel label={'Создать каталог'} onClick={createNewCatalog}/>
                     </BlockLabel>
                     {selectedCatalogId !== -1 ? (<BlockLabel label={'Действие'}>

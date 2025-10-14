@@ -1,4 +1,9 @@
-@import "src/components/UI/pages/AdminPanel/AdminPanel.module";
+@import "../../AdminPanel.module";
+
+.structureMainContainer {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+}
 
 .buttonPlace {
   display: flex;

@@ -14,13 +14,6 @@
   margin-top: 25px;
 }
 
-.block-border {
-  background: #fff;
-  border-radius: 12px;
-  padding: 2px;
-  width: max-content;
-}
-
 .block-body {
   padding: 15px 10px 10px 10px;
   background: #373737;
@@ -104,29 +97,4 @@
   padding: 0 3px;
   color: #fff;
   cursor: pointer;
-}
-
-.background-arrow {
-  position: absolute;
-  background-image: url("../../../../icons/arrow.png");
-  background-size: cover;
-  transition-property: rotate;
-  transition-duration: 0.2s;
-  width: 15px;
-  height: 15px;
-
-  &-active {
-    rotate: 90deg;
-  }
-}
-
-.drop-element {
-position: absolute;
-  width: 100%;
-  background: #444444;
-  border-radius: 10px;
-  border: 2px solid white;
-  margin-top: 10px;
-  z-index: 10;
-  left: 0;
 }

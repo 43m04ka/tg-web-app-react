@@ -6,11 +6,12 @@ import AP_EditCards from "./Tabs/EditCards/EditCards";
 
 import styles from "./AdminPanel.module.scss";
 import {Outlet, Route, Routes, useNavigate} from "react-router-dom";
-import EditPages from "./Tabs/EditPages/EditPages";
-import EditStructure from "./Tabs/EditStructure/EditStructure";
+import EditPages from "./Tabs/Structure/EditPages/EditPages";
+import EditCatalogs from "./Tabs/Structure/EditCatalogs/EditCatalogs";
 import useData from "./useData";
 import History from "./Tabs/HistoryOrders/History";
 import Promo from "./Tabs/Promo/Promo";
+import Structure from "./Tabs/Structure/Structure";
 
 const AdminPanel = () => {
 
@@ -24,8 +25,7 @@ const AdminPanel = () => {
     const routeData = [{name: 'Загрузить новые данные', path: 'upload-data', element: <UploadData/>},
         {name: 'Редактировать каталоги', path: 'edit-directories', element: <EditDirectories/>},
         {name: 'Редактировать карты', path: 'edit-cards', element: <AP_EditCards/>},
-        {name: 'Редактировать структуру', path: 'edit-structure', element: <EditStructure/>},
-        {name: 'Редактировать страницы', path: 'edit-pages', element: <EditPages/>}]
+        {name: 'Структура', path: 'structure', element: <Structure/>}]
     const routeData1 = [{name: 'Промокоды', path: 'promo', element: <Promo/>},
         {name: 'История заказов', path: 'history-orders', element: <History/>},
         {name: 'Кубик', path: 'cube', element: <Outlet/>}];

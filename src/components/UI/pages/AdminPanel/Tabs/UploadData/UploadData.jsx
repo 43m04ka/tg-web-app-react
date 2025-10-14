@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import useGlobalData from "../../../../../../hooks/useGlobalData";
-import SwitchLabel from "../../Elements/SwitchLabel";
+import SwitchLabel from "../../Elements/SwitchLabel/SwitchLabel";
 import BlockLabel from "../../Elements/BlockLabel";
 import ExcelReader from "../../Blocks/ExcelReader";
-import DropLabel from "../../Elements/DropLabel";
+import DropBox from "../../Elements/DropBox/DropBox";
 import useData from "../../useData";
 import {useServer} from "../../useServer";
 
@@ -92,11 +92,11 @@ const UploadData = () => {
                         return page.id === pageId ? page.name : null
                     }).filter(page => page !== null)[0].toLowerCase()}`}>
 
-                    <DropLabel label={catalogList.map(catalog => {
+                    <DropBox label={catalogList.map(catalog => {
                         catalog.label = catalog.path;
                         return catalog
                     })}
-                               onChange={(index) => setSelectedCatalogId(catalogList[index].id)}/>
+                             onChange={(index) => setSelectedCatalogId(catalogList[index].id)}/>
                     <SwitchLabel label={['Добавляем в общий каталог', 'Не добавляем в общий каталог']}
                                  onChange={(value) => setAddToAll(value)}/>
                     <SwitchLabel label={['Это карты игр', 'Это не карты игр']}

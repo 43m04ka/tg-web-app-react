@@ -59,16 +59,6 @@ export function useServer() {
         })
     }
 
-    const createStructureCatalog = async (authenticationData, catalogData) => {
-        await fetch(URL + '/createStructureCatalog', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({authenticationData:authenticationData, catalogData:catalogData})
-        })
-    };
-
     const deleteCatalog = async (setResult, authenticationData, catalogId) => {
         await fetch(`${URL}/deleteCatalog`, {
             method: 'POST',
@@ -129,20 +119,7 @@ export function useServer() {
         })
     }
 
-    const updatePageData = async (setResult, authenticationData, pageId, updateData) => {
-        await fetch(`${URL}/updatePageData`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({authenticationData:authenticationData, pageId:pageId, updateData:updateData})
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    }
+
 
     const searchForName = async (setResult, searchString) => {
         await fetch(`${URL}/searchForName?searchString=${searchString}&time=${Date.now()}`, {
@@ -158,20 +135,7 @@ export function useServer() {
         })
     }
 
-    const createPage = async (setResult, authenticationData, pageData) => {
-        await fetch(URL + '/createPage', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({authenticationData:authenticationData, pageData:pageData})
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    };
+
 
     const updateAssociations = async (authenticationData) => {
         await fetch(URL + '/updateAssociations', {
@@ -182,31 +146,6 @@ export function useServer() {
             body: JSON.stringify({authenticationData:authenticationData})
         }).then()
     };
-
-    const getStructureCatalogList = async (pageId, group, setResult) => {
-        await fetch(URL + '/getStructureCatalogList', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({pageId:pageId, group:group})
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result.sort((a, b) => a.serialNumber - b.serialNumber))
-            })
-        })
-    }
-
-    const deleteStructureCatalog = async (authenticationData, catalogId) => {
-        await fetch(URL + '/deleteStructureCatalog', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({authenticationData:authenticationData, id: catalogId})
-        })
-    }
 
     const setExchangeIndiaCatalog = async (authenticationData, catalogId) => {
         await fetch(URL + '/setExchangeIndiaCatalog', {
@@ -219,9 +158,9 @@ export function useServer() {
     }
 
     return {
-        getCardList, getCard, getCatalogList, getStructureCatalogList,
-        createCatalog, createPage, createStructureCatalog,
-        changeSaleStatusCatalog, updateCardData, updatePageData, updateAssociations,
-        deleteStructureCatalog, deleteCatalog, deleteCard,
+        getCardList, getCard, getCatalogList,
+        createCatalog,
+        changeSaleStatusCatalog, updateCardData, updateAssociations,
+        deleteCatalog, deleteCard,
         searchForName, setExchangeIndiaCatalog}
 }

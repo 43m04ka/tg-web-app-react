@@ -141,6 +141,8 @@ const Basket = ({height, number}) => {
                 if (contactStatus === 1) {
                     sendDataProduct.user.username = '@' + sendDataProduct.user.username
                 }
+            }else{
+                sendDataProduct.user.username = '@' + user.username
             }
             onRegDataAcc();
             fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/basket', {
@@ -710,7 +712,7 @@ const Basket = ({height, number}) => {
                 borderRadius: '17px',
                 border: '2px solid #29a5e5'
             }}>
-                <input placeholder={"Ваш никнейм Telegram @name"}
+                <input placeholder={"Ваш никнейм Telegram"}
                        className={'text-element'}
                        style={{
                            height: '30px',

@@ -25,7 +25,7 @@ const ProductItem = ({product}) => {
         let currentDate = new Date('1899-12-30T00:00:00.000Z')
         let newDate = new Date(a + currentDate.getTime());
 
-        if(newDate > ((new Date()))){
+        if(newDate < ((new Date()))){
             parcent = "Релиз"
         }else {
             parcent = newDate.toLocaleDateString('ru-RU')

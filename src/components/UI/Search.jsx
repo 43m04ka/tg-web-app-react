@@ -42,7 +42,7 @@ const Search = ({height}) => {
                                 flag = false
                             }
                         })
-                        if(flag) {
+                        if (flag) {
                             resultList.push(card)
                         }
                     })
@@ -122,11 +122,11 @@ const Search = ({height}) => {
             } else if (item.similarCard !== null) {
                 type = 1
                 price = item.similarCard?.price.toLocaleString() + ' ₽'
-                if(typeof item.similarCard.oldPrice !== 'undefined') {
+                if (typeof item.similarCard.oldPrice !== 'undefined') {
                     parcent = '−' + Math.ceil((1 - item.similarCard?.price / item.similarCard?.oldPrice) * 100) + '%'
                     oldPrice = item.similarCard?.oldPrice.toLocaleString() + ' ₽'
                 }
-                if(typeof item.similarCard.endDatePromotion !== 'undefined') {
+                if (typeof item.similarCard.endDatePromotion !== 'undefined') {
                 }
             }
 
@@ -135,9 +135,9 @@ const Search = ({height}) => {
                 let currentDate = new Date('1899-12-30T00:00:00.000Z')
                 let newDate = new Date(a + currentDate.getTime());
 
-                if(newDate > ((new Date()))){
+                if (newDate < ((new Date()))) {
                     parcent = "Уже в продаже"
-                }else {
+                } else {
                     parcent = newDate.toLocaleDateString('ru-RU')
                     parcent = 'Предзаказ ' + parcent.slice(0, 6) + parcent.slice(8, 10)
                 }
@@ -229,14 +229,17 @@ const Search = ({height}) => {
                     </Link>
                 </div>)
         })}
-        <div className={'text-element'} style={{textAlign:'center', fontSize: '17px', marginTop:'10px'}}>
-            Не нашли то что искали?
-            <a className={'link-element text-element'} style={{width:'100%', justifyItems:'center'}}
+        <div className={'text-element'} style={{justifyItems: 'center', fontSize: '14px', marginTop: '10px'}}>
+            <div>
+                Не нашли то что искали?
+            </div>
+            <a className={'link-element text-element'}
                href={'https://t.me/gwstore_admin'}>
                 <button className={'all-see-button'} style={{
-                    marginTop: '15px',
-                    height: '50px',
-                    width: '350px',
+                    marginTop: '0',
+                    height: '40px',
+                    width: '250px',
+                    fontSize: '14px',
                     background: '#52a557',
                 }}>Написать администратору
                 </button>
@@ -264,14 +267,17 @@ const Search = ({height}) => {
                 height: '250px',
             }}></div>
 
-            <div className={'text-element'} style={{textAlign:'center', fontSize: '17px', marginTop:'10px'}}>
-                Не можете что-то найти?
-                <a className={'link-element text-element'} style={{width:'100%', justifyItems:'center'}}
+            <div className={'text-element'} style={{justifyItems: 'center', fontSize: '14px', marginTop: '10px'}}>
+                <div>
+                    Не можете что-то найти?
+                </div>
+                <a className={'link-element text-element'} style={{width: '100%', justifyItems: 'center'}}
                    href={'https://t.me/gwstore_admin'}>
                     <button className={'all-see-button'} style={{
-                        marginTop: '15px',
-                        height: '50px',
-                        width: '350px',
+                        marginTop: '0px',
+                        height: '40px',
+                        width: '250px',
+                        fontSize: '14px',
                         background: '#52a557',
                     }}>Написать администратору
                     </button>

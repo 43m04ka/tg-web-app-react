@@ -6,7 +6,6 @@ const Info = () => {
     const {tg} = useTelegram();
     const navigate = useNavigate();
 
-
     const onBack = useCallback(() => {
         navigate(-1);
     }, [])
@@ -492,7 +491,67 @@ const Info = () => {
                 </a>
             </div>
 
-            <button onClick={()=>{window.Telegram.WebApp.HapticFeedback.impactOccurred('soft')}}>impactOccurred('medium')</button>
+            <div style={{color: 'white'}}>
+                указывает на столкновение между небольшими или легкими объектами пользовательского интерфейса
+                <button onClick={() => {
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('light')
+                }}>light</button>
+            </div>
+            <div style={{color: 'white'}}>
+                указывает на столкновение между объектами пользовательского интерфейса среднего размера или среднего
+                веса
+                <button onClick={() => {
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')
+                }}>medium</button>
+            </div>
+            <div style={{color: 'white'}}>
+                указывает на столкновение между большими или тяжелыми объектами пользовательского интерфейса
+                <button onClick={() => {
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('heavy')
+                }}>heavy</button>
+            </div>
+            <div style={{color: 'white'}}>
+                указывает на столкновение между жесткими или негибкими объектами пользовательского интерфейса
+                <button onClick={() => {
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('rigid')
+                }}>rigid</button>
+            </div>
+            <div style={{color: 'white'}}>
+                указывает на столкновение между мягкими или гибкими объектами пользовательского интерфейса
+                <button onClick={() => {
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('soft')
+                }}>soft</button>
+            </div>
+
+
+            <div style={{color: 'white'}}>
+                указывает на то, что задача или действие завершены успешно,
+                <button onClick={() => {
+                    window.Telegram.WebApp.HapticFeedback.notificationOccurred('success')
+                }}>success</button>
+            </div>
+            <div style={{color: 'white'}}>
+                указывает на то, что задача или действие не удалось,
+                <button onClick={() => {
+                    window.Telegram.WebApp.HapticFeedback.notificationOccurred('error')
+                }}>error</button>
+            </div>
+            <div style={{color: 'white'}}>
+                указывает на то, что задача или действие привели к предупреждению.
+                <button onClick={() => {
+                    window.Telegram.WebApp.HapticFeedback.notificationOccurred('warning')
+                }}>warning</button>
+            </div>
+
+            <p style={{color: 'white'}}>
+
+                Метод сообщает, что пользователь изменил выбор.
+                <button onClick={() => {
+                    window.Telegram.WebApp.HapticFeedback.selectionChanged();
+                }}>default</button>
+            </p>
+
+
         </div>
     );
 };

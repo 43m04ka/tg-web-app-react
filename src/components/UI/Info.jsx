@@ -491,7 +491,7 @@ const Info = () => {
                 </a>
             </div>
 
-
+            <button onClick={()=>{window.navigator.vibrate(100)}}>Вибро 100ms</button>
         </div>
     );
 };

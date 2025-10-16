@@ -126,15 +126,8 @@ const Basket = ({height, number}) => {
     }
 
     const onClickButton = useCallback(() => {
-        try {
-            if (typeof user.username === 'undefined') {
-                sendDataProduct.user.username = '@' + userRef.current.value
-            }
-        } catch (e) {
-        }
 
-
-        if (typeof sendDataProduct.user.username !== 'undefined' && sendDataProduct.user.username !== '') {
+        if (typeof sendDataProduct.user.username !== 'undefined' && sendDataProduct.user.username !== '' || userRef.current.value !== '') {
             setButtonText('Оформляем заказ...');
             if (typeof user.username === 'undefined') {
                 sendDataProduct.user.username = userRef.current.value

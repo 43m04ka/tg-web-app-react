@@ -55,10 +55,10 @@ const EditPageData = ({onClose, updatePageList, id}) => {
                                 newJson['color'] = e.target.value;
                                 setUpdatePageJson(newJson);
                             }}/>
-                <InputLabel label={'Заголовок в сообщении'} defaultValue={pageData.titleForMassage}
+                <InputLabel label={'Заголовок в сообщении'} defaultValue={pageData.titleForMessage}
                             onChange={(e) => {
                                 let newJson = updatePageJson
-                                newJson['titleForMassage'] = e.target.value;
+                                newJson['titleForMessage'] = e.target.value;
                                 setUpdatePageJson(newJson);
                             }}/>
                 <SwitchLabel label={'Отображение страницы в боте'} defaultValue={pageData.isHide}

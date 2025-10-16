@@ -1,10 +1,13 @@
 import React, {useCallback, useEffect} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
 import {Link, useNavigate} from "react-router-dom";
+import { initHapticFeedback } from '@telegram-apps/sdk';
 
 const Info = () => {
     const {tg} = useTelegram();
     const navigate = useNavigate();
+
+    const hapticFeedback = initHapticFeedback();
 
     const onBack = useCallback(() => {
         navigate(-1);
@@ -491,7 +494,7 @@ const Info = () => {
                 </a>
             </div>
 
-            <button onClick={()=>{window.navigator.vibrate(100)}}>Вибро 100ms</button>
+            <button onClick={()=>{hapticFeedback.impactOccurred('medium');}}>impactOccurred('medium')</button>
         </div>
     );
 };

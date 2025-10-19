@@ -45,7 +45,7 @@ const MainPage = ({pageList, height}) => {
 
 
     return (
-        <div style={{display: 'grid', gridTemplateRows: '92vh 8vh'}}>
+        <div style={{display: 'grid', gridTemplateRows: '92vh 8vh', height:'100vh'}}>
 
             <div className={'scroll-container-y'} onScroll={(event) => {
                 let scroll = event.target.scrollTop

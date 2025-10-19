@@ -85,7 +85,7 @@ function App() {
         return (
             <div className="App">
                 <Routes>
-                    {pageList.map((page) => (<Route path={page['link']} key={page['id']} element={<MainPage page={page}/>}/>))}
+                    {pageList.map((page) => (<Route path={page['link'] + '/*'} key={page['id']} element={<MainPage page={page}/>}/>))}
                     <Route path={'favorites'} element={<Favorites/>}/>
                     <Route path={'/catalog/*'} element={<ProductList height={size}/>}/>
                     <Route path={'/card/*'} element={<Product/>}/>

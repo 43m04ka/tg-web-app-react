@@ -4,9 +4,6 @@ import ProductItem from "./ProductItem";
 
 const HomeBlock = ({data}) => {
 
-    {
-        console.log((new Date).getSeconds(), (new Date).getMilliseconds(), '>>' + String(data.id))
-    }
     let styleBlock = {}
     if (data.type.includes('banner')) {
         if (data.backgroundColor !== 'none' && typeof data.backgroundColor !== 'undefined') {
@@ -120,7 +117,6 @@ const HomeBlock = ({data}) => {
                         </div>
                     </div>
                 </div>
-                {console.log((new Date).getSeconds(), (new Date).getMilliseconds(), '<<' + String(data.id))}
             </div>
         );
     } else if (data.type.includes('banner')) {
@@ -139,7 +135,6 @@ const HomeBlock = ({data}) => {
                         justifyContent: 'space-between',
                     }}></div>
                 </Link>
-                {console.log((new Date).getSeconds(), (new Date).getMilliseconds(), '<<' + String(data.id))}
             </div>
         )
     }

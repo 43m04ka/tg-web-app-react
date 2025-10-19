@@ -1,0 +1,56 @@
+@import "src/components/styles/mainStyle";
+
+.container {
+  display: flex;
+  background: $bg-color;
+  width: 100vw;
+  height: 23vw;
+
+  > div {
+    margin: 0 5vw;
+    width: 90vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    > div {
+      height: 100%;
+      width: 100%;
+      align-content: center;
+      justify-items: center;
+
+      > div {
+        width: 4vh;
+        height: 4vh;
+        background-size: cover;
+      }
+
+      > p {
+        font-size: 1.5vh;
+      }
+    }
+  }
+
+}
+
+.button- {
+  &main {
+    background-image: url("./icons/main.png");
+  }
+
+  &search {
+    background-image: url("./icons/main.png");
+  }
+
+  &basket {
+    background-image: url("./icons/basket.png");
+  }
+
+  &PS {
+    background-image: url("./icons/PS.png");
+  }
+
+  &more {
+    background-image: url("./icons/more.png");
+  }
+}

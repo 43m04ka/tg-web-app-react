@@ -16,9 +16,7 @@ const CatalogListBody = () => {
         if (catalogList !== null) {
             updateCounterBasket(catalogList, pageId)
         }
-    }, [catalogList, pageId])
-
-    console.log((new Date).getSeconds(), (new Date).getMilliseconds(), '----------')
+    }, [pageId])
 
 
     if (catalogStructureList !== null && mainPageCards !== null && catalogList !== null) {

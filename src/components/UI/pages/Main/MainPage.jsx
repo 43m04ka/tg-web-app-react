@@ -4,6 +4,8 @@ import {useTelegram} from "../../../../hooks/useTelegram";
 import HeadSelector from "../../HeadSelector";
 import CatalogListBody from "./CatalogListBody";
 import CatalogListHead from "./CatalogListHead";
+import {Navigate} from "react-router-dom";
+import NavigationBar from "../NavigationBar/NavigationBar";
 
 let scrollCtrl = 0;
 let lastScroll = 0;
@@ -62,7 +64,7 @@ const MainPage = ({pageList, height}) => {
                 lastScroll = scroll
             }} ref={scrollContainer}
                  style={{
-                     height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 50) + 'px'
+                     height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 50 - 100) + 'px'
                  }}>
                 <div style={{
                     height: '55px'
@@ -76,6 +78,7 @@ const MainPage = ({pageList, height}) => {
                     <CatalogListBody/>
                 </div>
             </div>
+            <NavigationBar/>
         </div>
     )
         ;

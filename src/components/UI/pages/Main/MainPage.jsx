@@ -45,8 +45,7 @@ const MainPage = ({pageList, height}) => {
 
 
     return (
-        <div style={{display: 'grid', gridTemplateRows: '92vh 8vh', height:'100vh'}}>
-
+        <div style={{display: 'grid', gridTemplateRows: '92vh 8vh', height: '100vh'}}>
             <div className={'scroll-container-y'} onScroll={(event) => {
                 let scroll = event.target.scrollTop
                 if (scroll > scrollCtrl + 200 && !hiddenSelector) {
@@ -62,13 +61,9 @@ const MainPage = ({pageList, height}) => {
                     scrollCtrl = scroll
                 }
                 lastScroll = scroll
-            }} ref={scrollContainer} style={{height:'92vh'}} >
-                <div style={{marginTop: '15px'}}>
-                    <CatalogListHead/>
-                </div>
-                <div>
-                    <CatalogListBody/>
-                </div>
+            }} ref={scrollContainer}>
+                <CatalogListHead/>
+                <CatalogListBody/>
             </div>
             <NavigationBar/>
         </div>

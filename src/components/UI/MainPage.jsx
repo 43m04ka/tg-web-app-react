@@ -4,6 +4,7 @@ import {useTelegram} from "../../hooks/useTelegram";
 import useGlobalData from "../../hooks/useGlobalData";
 import style from './MainPage.module.scss'
 import NavigationBar from "./pages/NavigationBar/NavigationBar";
+import CatalogListBody from "./pages/Main/CatalogListBody";
 
 const MainPage = ({page}) => {
     const {tg} = useTelegram();
@@ -17,7 +18,9 @@ const MainPage = ({page}) => {
 
 
     return (<div className={style['mainDivision']}>
-        <div style={{border:'1px solid red'}}></div>
+        <div>
+            <CatalogListBody/>
+        </div>
         <NavigationBar/>
     </div>);
 };

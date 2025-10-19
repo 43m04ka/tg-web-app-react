@@ -1,32 +1,5 @@
-* {
-  margin: 0px;
-  padding: 0px;
-  box-sizing: border-box;
-}
 body {
-  background: #171717;
-}
-
-#app-head{
-  display: grid;
-  grid-template-columns: 8fr 1fr 1fr 1fr;
-}
-
-.button-rect-50{
- height: 50px;
-}
-
-.button-rect-body{
-  height: 300px;
-  margin-right: 5px;
-  margin-left: 5px;
-  margin-top: 5px;
-}
-
-.right-margin{
-  margin: 5px;
-}
-#app-body {
-  overflow: auto;
+  background: #222222;
   margin: 0;
+  padding: 0;
 }

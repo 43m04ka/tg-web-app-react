@@ -20,7 +20,7 @@ const MainPage = ({page}) => {
 
     useEffect(() => {
         tg.BackButton.hide();
-        if(pageId === -1){
+        if (pageId === -1) {
             setPageId(page.id)
         }
     }, [])
@@ -28,10 +28,12 @@ const MainPage = ({page}) => {
 
     return (<div className={style['mainDivision']}>
         <div>
-            <CatalogListHead/>
-            <CatalogListBody/>
+            <div>
+                <CatalogListHead/>
+                <CatalogListBody/>
+            </div>
         </div>
-        <div>
+        <div style={{zIndex: (heightTab === 0 ? -10 : 2)}}>
             <div style={{height: heightTab}}>
                 <Routes>
                     <Route path="/search" element={<Search/>}/>

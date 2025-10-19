@@ -14,12 +14,16 @@
     margin-top: 10px;
     overflow-x: auto;
     scroll-behavior: smooth;
+    >div{
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
   }
   > div:nth-child(2) {
     position: absolute;
     width: 100vw;
     height: 92vh;
-    z-index: 2;
     align-content: end;
     >div{
       width: 100%;

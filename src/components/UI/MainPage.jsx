@@ -13,7 +13,7 @@ import Info from "./pages/other/Info";
 
 const MainPage = () => {
     const {tg} = useTelegram();
-    const [heightTab, setHeightTab] = useState('0');
+    const [heightTab, setHeightTab] = useState(0);
 
 
     useEffect(() => {

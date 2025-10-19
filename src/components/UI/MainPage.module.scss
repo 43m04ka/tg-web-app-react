@@ -19,7 +19,7 @@
     align-content: end;
     >div{
       width: 100%;
-      background: #ed7373;
+      background: $menu-color;
       overflow: hidden;
       transition-property: height;
       transition-duration: 0.3s ;

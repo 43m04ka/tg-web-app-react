@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import style from './NavigationBar.module.scss'
 import {useNavigate} from "react-router-dom";
 
-const NavigationBar = ({setHeightTab}) => {
+const NavigationBar = ({setHeightTab, heightTab}) => {
 
     const navigate = useNavigate()
 
@@ -23,8 +23,13 @@ const NavigationBar = ({setHeightTab}) => {
             {buttons.map((button, index) => (
                 <div className={style['activeTab-' + (activeTab === index)]} onClick={() => {
                     setActiveTab(index);
-                    navigate(button.path)
-                    setHeightTab(button.heightTab)
+                    if(button.heightTab !== 0){
+                        navigate(button.path)
+                        setHeightTab(button.heightTab)
+                    }else{
+                        setHeightTab(button.heightTab)
+                        setTimeout(()=> navigate(button.path),300)
+                    }
                 }}>
                     <div className={style['button-' + button.icon]}/>
                     <p>{button.label}</p>

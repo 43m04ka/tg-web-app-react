@@ -35,7 +35,7 @@ const MainPage = () => {
                 </Routes>
             </div>
         </div>
-        <NavigationBar setHeightTab={setHeightTab}/>
+        <NavigationBar setHeightTab={setHeightTab} heightTab={heightTab}/>
     </div>);
 };
 

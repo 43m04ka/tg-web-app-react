@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 
 import {Swiper, SwiperSlide} from 'swiper/react';
 
@@ -9,8 +9,7 @@ import 'swiper/css/autoplay';
 
 import {Autoplay, Pagination, Controller, EffectCoverflow} from 'swiper/modules';
 import {useNavigate} from "react-router-dom";
-import {useServer} from "../../../../hooks/useServer";
-import useGlobalData from "../../../../hooks/useGlobalData";
+import useGlobalData from "../../../../../hooks/useGlobalData";
 
 let realIndex = 0
 let lastPageID = -1

@@ -11,4 +11,19 @@
     height: 100%;
     overflow-y: scroll;
   }
+  > div:nth-child(2) {
+    position: absolute;
+    width: 100vw;
+    height: 92vh;
+    z-index: 2;
+    align-content: end;
+    >div{
+      width: 100%;
+      background: #ed7373;
+      overflow: hidden;
+      transition-property: height;
+      transition-duration: 0.3s ;
+      transition-timing-function: ease-in-out;
+    }
+  }
 }

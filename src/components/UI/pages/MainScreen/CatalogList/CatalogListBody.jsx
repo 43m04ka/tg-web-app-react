@@ -1,14 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import {useServer} from "../../../../hooks/useServer";
-import HomeBlock from "../other/HomeBlock";
-import useGlobalData from "../../../../hooks/useGlobalData";
-import ProductItem from "../other/ProductItem";
-import {Link} from "react-router-dom";
+import React, {useEffect} from 'react';
+import HomeBlock from "../../other/HomeBlock";
+import useGlobalData from "../../../../../hooks/useGlobalData";
 
-const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
-
-
-let lastPageID = -1
 const CatalogListBody = () => {
     const {catalogStructureList, pageId, mainPageCards, catalogList, updateCounterBasket} = useGlobalData()
 

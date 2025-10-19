@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import ProductItem from "../../ProductItem";
+import ProductItem from "../other/ProductItem";
 import {useServerUser} from "../../../../hooks/useServerUser";
 import useGlobalData from "../../../../hooks/useGlobalData";
 

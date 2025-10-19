@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect} from 'react';
-import {useTelegram} from "../../hooks/useTelegram";
+import {useTelegram} from "../../../../hooks/useTelegram";
 import {Link, useNavigate} from "react-router-dom";
 
 const Info = () => {

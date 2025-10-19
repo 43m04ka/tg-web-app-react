@@ -1,10 +1,10 @@
 import React, {useRef, useState} from 'react';
-import '../styles/style.css';
-import {useTelegram} from "../../hooks/useTelegram";
+import '../../../styles/style.css';
+import {useTelegram} from "../../../../hooks/useTelegram";
 import {useEffect} from "react";
 import {Link, useNavigate} from "react-router-dom";
-import useGlobalData from "../../hooks/useGlobalData";
-import {useServerUser} from "../../hooks/useServerUser";
+import useGlobalData from "../../../../hooks/useGlobalData";
+import {useServerUser} from "../../../../hooks/useServerUser";
 import ProductItem from "./ProductItem";
 
 let lastScroll = 0

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {useTelegram} from "../../hooks/useTelegram";
+import {useTelegram} from "../../../../hooks/useTelegram";
 import {Link, useNavigate} from "react-router-dom";
-import {useServerUser} from "../../hooks/useServerUser";
+import {useServerUser} from "../../../../hooks/useServerUser";
 
 const Favorites = () => {
 

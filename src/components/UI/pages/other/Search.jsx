@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef} from 'react';
 import {Link, useNavigate} from "react-router-dom";
-import {useTelegram} from "../../hooks/useTelegram";
-import useGlobalData from "../../hooks/useGlobalData";
+import {useTelegram} from "../../../../hooks/useTelegram";
+import useGlobalData from "../../../../hooks/useGlobalData";
 
 let lastListRes = []
 let lastText = ''

@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {useServer} from "../../../../hooks/useServer";
-import HomeBlock from "../../HomeBlock";
+import HomeBlock from "../other/HomeBlock";
 import useGlobalData from "../../../../hooks/useGlobalData";
-import ProductItem from "../../ProductItem";
+import ProductItem from "../other/ProductItem";
 import {Link} from "react-router-dom";
 
 const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'

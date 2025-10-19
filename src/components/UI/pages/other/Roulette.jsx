@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
-import '../styles/cube.css';
+import '../../../styles/cube.css';
 import {useNavigate} from "react-router-dom";
-import {useTelegram} from "../../hooks/useTelegram";
+import {useTelegram} from "../../../../hooks/useTelegram";
 
 let gameArray = []
 let gameVin = -1

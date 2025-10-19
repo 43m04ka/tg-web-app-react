@@ -1,10 +1,10 @@
 import React, {useCallback, useEffect} from 'react';
-import {useTelegram} from "../../hooks/useTelegram";
+import {useTelegram} from "../../../../hooks/useTelegram";
 import {useNavigate} from "react-router-dom";
-import {useServer} from "../../hooks/useServer";
-import mainPage from "./pages/Main/MainPage";
-import useGlobalData from "../../hooks/useGlobalData";
-import {useServerUser} from "../../hooks/useServerUser";
+import {useServer} from "../../../../hooks/useServer";
+import mainPage from "../../MainPage";
+import useGlobalData from "../../../../hooks/useGlobalData";
+import {useServerUser} from "../../../../hooks/useServerUser";
 
 const ProductListSelector = () => {
     const [selectChoiceColumn, setSelectChoiceColumn] = React.useState(0);

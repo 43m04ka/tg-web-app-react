@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {useTelegram} from "../../hooks/useTelegram";
+import {useTelegram} from "../../../../hooks/useTelegram";
 import FilterCheckBox from "./FilterCheckBox";
 
 const Filter = ({height, elementKeys, onRequestFilter}) => {

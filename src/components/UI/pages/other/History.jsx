@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Link, Route, Routes, useNavigate} from "react-router-dom";
-import {useTelegram} from "../../hooks/useTelegram";
-import {useServerUser} from "../../hooks/useServerUser";
+import {useTelegram} from "../../../../hooks/useTelegram";
+import {useServerUser} from "../../../../hooks/useServerUser";
 import Order from "./Order";
 
 const History = () => {

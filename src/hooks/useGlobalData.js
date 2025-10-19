@@ -47,7 +47,7 @@ const useGlobalData = create(devtools(set => ({
     updatePreviewFavoriteData: (id) => getPreviewFavoriteList((result) => set(() => ({previewFavoriteData: result})), id),
 
 
-    pageId: null,
+    pageId: -1,
     setPageId: (pageId) => set(() => ({pageId: pageId})),
 })))
 

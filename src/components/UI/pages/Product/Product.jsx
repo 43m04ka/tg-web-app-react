@@ -1,7 +1,7 @@
 import React, {createRef, useEffect, useState} from 'react';
 import {useTelegram} from "../../../../hooks/useTelegram";
 import {Link, useNavigate} from "react-router-dom";
-import ProductItem from "../../ProductItem";
+import ProductItem from "../other/ProductItem";
 import {useServerUser} from "../../../../hooks/useServerUser";
 import useGlobalData from "../../../../hooks/useGlobalData";
 import Description from "./Description";

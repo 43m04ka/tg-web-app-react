@@ -63,10 +63,10 @@ const MainPage = ({pageList, height}) => {
                 }
                 lastScroll = scroll
             }} ref={scrollContainer}>
-                <div style={{width: '100%'}}>
+                <div style={{marginTop: '15px'}}>
                     <CatalogListHead/>
                 </div>
-                <div style={{marginBottom: '15px'}}>
+                <div>
                     <CatalogListBody/>
                 </div>
             </div>

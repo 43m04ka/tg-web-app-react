@@ -18,6 +18,8 @@
       width: 100%;
       align-content: center;
       justify-items: center;
+      transition-property: opacity;
+      transition-duration: 0.2s;
 
       > div {
         width: 3vh;

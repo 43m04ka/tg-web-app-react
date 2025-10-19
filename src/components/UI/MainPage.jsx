@@ -10,14 +10,19 @@ import {Route, Routes} from "react-router-dom";
 import Search from "./pages/other/Search";
 import Basket from "./pages/Basket/Basket";
 import Info from "./pages/other/Info";
+import SelectPlatform from "./pages/MainScreen/SelectPlatform/SelectPlatform";
 
-const MainPage = () => {
+const MainPage = ({page}) => {
     const {tg} = useTelegram();
     const [heightTab, setHeightTab] = useState(0);
+    const {pageId, setPageId} = useGlobalData()
 
 
     useEffect(() => {
         tg.BackButton.hide();
+        if(pageId === -1){
+            setPageId(page.id)
+        }
     }, [])
 
 
@@ -31,6 +36,7 @@ const MainPage = () => {
                 <Routes>
                     <Route path="/search" element={<Search/>}/>
                     <Route path="/basket" element={<Basket/>}/>
+                    <Route path="/selectPlatform" element={<SelectPlatform/>}/>
                     <Route path="/more" element={<Info/>}/>
                 </Routes>
             </div>

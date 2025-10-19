@@ -36,9 +36,7 @@ const CatalogListBody = () => {
             return catalogStructure
         })
 
-        return (<div onLoad={() => {
-                console.log('load')
-            }}>
+        return (<div>
                 {catalogStructureResultList.map((catalogStructure) => {
                     return (<HomeBlock data={catalogStructure}/>)
                 })}

@@ -19,8 +19,8 @@ const MainPage = ({pageList, height}) => {
     const [pageId, setPageId] = React.useState(lastPageId);
 
     pageList.map((item, index) => {
-        if('/'+item.link===window.location.pathname){
-            if(pageList[index].id !== pageId) {
+        if ('/' + item.link === window.location.pathname) {
+            if (pageList[index].id !== pageId) {
                 lastPageId = pageList[index].id
                 setPageId(pageList[index].id)
                 try {
@@ -28,7 +28,8 @@ const MainPage = ({pageList, height}) => {
                         top: 0,
                         behavior: "instant",
                     });
-                }catch(e){}
+                } catch (e) {
+                }
 
             }
         }
@@ -44,7 +45,7 @@ const MainPage = ({pageList, height}) => {
 
 
     return (
-        <div>
+        <div style={{display: 'grid', gridTemplateRows: '5vh 87vh 8vh'}}>
             <HeadSelector pageList={pageList} hidden={hiddenSelector}/>
 
             <div className={'scroll-container-y'} onScroll={(event) => {
@@ -64,7 +65,7 @@ const MainPage = ({pageList, height}) => {
                 lastScroll = scroll
             }} ref={scrollContainer}
                  style={{
-                     height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 50 - 100) + 'px'
+                     height: String(height - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top - 50) + 'px'
                  }}>
                 <div style={{
                     height: '55px'

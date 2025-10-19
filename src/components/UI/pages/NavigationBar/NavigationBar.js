@@ -3,7 +3,7 @@ import style from './NavigationBar.module.scss'
 
 const NavigationBar = () => {
 
-    const buttons = [{label:'Главный', icon:'main'}, {label: 'Поиск', icon:'search'}, {label: 'Корзина', icon:'basket'}, {label: 'Платформа', icon:'PS'}, {label: 'Еще', icon:'more'}]
+    const buttons = [{label:'Главная', icon:'main'}, {label: 'Поиск', icon:'search'}, {label: 'Корзина', icon:'basket'}, {label: 'Платформа', icon:'PS'}, {label: 'Еще', icon:'more'}]
 
     return (
         <div className={style['container']}>

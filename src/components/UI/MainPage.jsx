@@ -15,6 +15,7 @@ import SelectPlatform from "./pages/MainScreen/SelectPlatform/SelectPlatform";
 const MainPage = ({page}) => {
     const {tg} = useTelegram();
     const [heightTab, setHeightTab] = useState(0);
+    const [zIndexTab, setZIndexTab] = useState(0);
     const {pageId, setPageId} = useGlobalData()
 
 
@@ -28,12 +29,10 @@ const MainPage = ({page}) => {
 
     return (<div className={style['mainDivision']}>
         <div>
-            <div>
-                <CatalogListHead/>
-                <CatalogListBody/>
-            </div>
+            <CatalogListHead/>
+            <CatalogListBody/>
         </div>
-        <div style={{zIndex: (heightTab === 0 ? -10 : 2)}}>
+        <div style={{zIndex: zIndexTab}}>
             <div style={{height: heightTab}}>
                 <Routes>
                     <Route path="/search" element={<Search/>}/>
@@ -43,7 +42,7 @@ const MainPage = ({page}) => {
                 </Routes>
             </div>
         </div>
-        <NavigationBar setHeightTab={setHeightTab} heightTab={heightTab}/>
+        <NavigationBar setZIndexTab={setZIndexTab} zIndexTab={zIndexTab} heightTab={heightTab} setHeightTab={setHeightTab}/>
     </div>);
 };
 

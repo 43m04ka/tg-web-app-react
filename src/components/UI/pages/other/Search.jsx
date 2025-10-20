@@ -73,7 +73,7 @@ const Search = ({height}) => {
             behavior: "instant",
         });
         if (lastListRes.length === 0) {
-            textRef.current.focus()
+            //textRef.current.focus()
         }
     }, [textRef, scrollRef])
 

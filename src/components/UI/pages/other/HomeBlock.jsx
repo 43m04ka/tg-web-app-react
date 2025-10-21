@@ -85,6 +85,8 @@ const HomeBlock = ({data}) => {
                             lineHeight: '15px',
                             justifyItems: 'center',
                             margin:'0 auto',
+                            marginTop:'10px',
+                            letterSpacing:'0.5px',
                         }}>
                         Открыть каталог
                     </div>

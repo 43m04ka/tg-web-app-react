@@ -95,7 +95,6 @@ function App() {
                     <Route path={'/history'} element={<History/>}/>
                     <Route path="*" element={<ErrorPage/>}/>
                 </Routes>
-
             </div>
         );
     } else {

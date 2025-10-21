@@ -28,7 +28,7 @@ const MainPage = ({page}) => {
 
 
     return (<div className={style['mainDivision']}>
-        <div>
+        <div style={{marginTop:String(tg.safeAreaInset.top + 10) + 'px'}}>
             <CatalogListHead/>
             <CatalogListBody/>
         </div>

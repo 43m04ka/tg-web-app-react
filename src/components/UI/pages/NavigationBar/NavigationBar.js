@@ -28,38 +28,21 @@ const NavigationBar = ({setHeightTab, heightTab, zIndexTab, setZIndexTab}) => {
             {buttons.map((button, index) => (
                 <div className={style['activeTab-' + (activeTab === index)]} onClick={() => {
                     setActiveTab(index);
-                    if (button.path === 'selectPlatform') {
-                        if (heightTab === 0) {
+                    if (button.heightTab !== 0 || heightTab === 0) {
+                        setTimeout(() => {
                             navigate(button.path)
                             setHeightTab(button.heightTab)
                             setZIndexTab(button.heightTab === 0 ? -10 : 10)
-                        } else {
-                            setHeightTab(0)
-                            setTimeout(() => {
-                                navigate(button.path);
-                                setHeightTab(button.heightTab)
-                                setZIndexTab(button.heightTab === 0 ? -10 : 10)
-                            }, 300)
-                        }
+                        }, 100)
                     } else {
-                        if (button.heightTab !== 0 || heightTab === 0) {
-                            if (heightTab === 'max-content') {
-                                setHeightTab(0)
-                            }
-                            setTimeout(() => {
-                                navigate(button.path)
-                                setHeightTab(button.heightTab)
-                                setZIndexTab(button.heightTab === 0 ? -10 : 10)
-                            }, 100)
-                        } else {
-                            setHeightTab(button.heightTab)
-                            setTimeout(() => {
-                                navigate(button.path);
-                                setZIndexTab(button.heightTab === 0 ? -10 : 10)
-                            }, 300)
+                        setHeightTab(button.heightTab)
+                        setTimeout(() => {
+                            navigate(button.path);
+                            setZIndexTab(button.heightTab === 0 ? -10 : 10)
+                        }, 300)
 
-                        }
                     }
+
                 }}>
                     <div className={style['button-' + button.icon]}/>
                     <p>{button.label}</p>

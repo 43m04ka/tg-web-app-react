@@ -60,6 +60,7 @@ const HomeBlock = ({data}) => {
                         marginLeft: '5px',
                         overflow: 'hidden',
                         width: 'auto',
+                        fontWeight: 'bold',
                     }}>{data.name}</div>
                     <Link to={link + data.path} className={'link-element'} style={{
                         display: 'flex',

@@ -27,7 +27,7 @@ const MainPage = ({page}) => {
     }, [])
 
 
-    return (<div className={style['mainDivision']} style={{paddingBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
+    return (<div className={style['mainDivision']} >
         <div>
             <CatalogListHead/>
             <CatalogListBody/>
@@ -43,6 +43,7 @@ const MainPage = ({page}) => {
             </div>
         </div>
         <NavigationBar setZIndexTab={setZIndexTab} zIndexTab={zIndexTab} heightTab={heightTab} setHeightTab={setHeightTab}/>
+        <div style={{height: String(100) + 'px', overflow:'hidden', background:'#222222', zIndex:'-100'}}><div style={{height: '100vh'}}/></div>
     </div>);
 };
 

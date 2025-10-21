@@ -4,6 +4,8 @@ import ProductItem from "./ProductItem";
 
 const HomeBlock = ({data}) => {
 
+    const navigate = useNavigate();
+
     let styleBlock = {}
     if (data.type.includes('banner')) {
         if (data.backgroundColor !== 'none' && typeof data.backgroundColor !== 'undefined') {
@@ -72,7 +74,7 @@ const HomeBlock = ({data}) => {
                     )}
                 </div>
                 <div style={{width: '100%'}}>
-                    <div //to={link + data.path}
+                    <div onClick={()=> navigate(link + data.path)}
                         style={{
                             fontFamily: "'Montserrat', sans-serif",
                             color: 'white',

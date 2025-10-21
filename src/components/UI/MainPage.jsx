@@ -15,7 +15,7 @@ import SelectPlatform from "./pages/MainScreen/SelectPlatform/SelectPlatform";
 const MainPage = ({page}) => {
     const {tg} = useTelegram();
     const [heightTab, setHeightTab] = useState(0);
-    const [zIndexTab, setZIndexTab] = useState(0);
+    const [zIndexTab, setZIndexTab] = useState(-10);
     const {pageId, setPageId} = useGlobalData()
 
 

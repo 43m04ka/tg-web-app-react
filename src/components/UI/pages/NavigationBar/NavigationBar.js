@@ -26,8 +26,8 @@ const NavigationBar = ({setHeightTab, heightTab, zIndexTab, setZIndexTab}) => {
         })
     }, [])
 
-    return (<div className={style['container']} style={{paddingBottom:String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
-        <div>
+    return (<div className={style['container']} >
+        <div style={{marginBottom:String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
             {buttons.map((button, index) => (
                 <div className={style['activeTab-' + (activeTab === index)]} onClick={() => {
                     setActiveTab(index);

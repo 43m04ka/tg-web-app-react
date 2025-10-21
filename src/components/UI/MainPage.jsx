@@ -28,7 +28,7 @@ const MainPage = ({page}) => {
 
 
     return (<div className={style['mainDivision']} style={{paddingBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
-        <div style={{marginTop:String(tg.contentSafeAreaInset.top + tg.safeAreaInset.top) + 'px'}}>
+        <div>
             <CatalogListHead/>
             <CatalogListBody/>
         </div>

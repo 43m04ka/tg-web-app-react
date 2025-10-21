@@ -10,11 +10,13 @@ import 'swiper/css/autoplay';
 import {Autoplay, Pagination, Controller, EffectCoverflow} from 'swiper/modules';
 import {useNavigate} from "react-router-dom";
 import useGlobalData from "../../../../../hooks/useGlobalData";
+import {useTelegram} from "../../../../../hooks/useTelegram";
 
 let realIndex = 0
 let lastPageID = -1
 const CatalogListHead = () => {
     const {catalogStructureList, pageId} = useGlobalData()
+    const {tg} = useTelegram();
     let data = []
     if(catalogStructureList !== null) {
          data = catalogStructureList.filter(item => item.structurePageId === pageId && item.group === 'head').sort((a, b) => {
@@ -49,7 +51,7 @@ const CatalogListHead = () => {
 
     if (data.length > 0) {
         return (
-            <div style={{width: '100%', overflowX: 'hidden', marginBottom: '20px'}}>
+            <div style={{width: '100%', overflowX: 'hidden', marginBottom: '20px', marginTop:String(tg.contentSafeAreaInset.top + tg.safeAreaInset.top) + 'px'}}>
                 <Swiper slidesPerView={3} className="swiper"
                         style={{
                             width: String(window.innerWidth * 0.5 * 3 + 14) + 'px',

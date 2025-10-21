@@ -3,7 +3,7 @@ import style from './NavigationBar.module.scss'
 import {useNavigate} from "react-router-dom";
 import {useTelegram} from "../../../../hooks/useTelegram";
 
-const NavigationBar = ({setHeightTab, heightTab, zIndexTab, setZIndexTab}) => {
+const NavigationBar = ({setHeightTab, heightTab, setZIndexTab}) => {
 
     const {tg} = useTelegram()
 

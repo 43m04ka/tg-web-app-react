@@ -2,7 +2,7 @@
 
 .mainDivision {
   display: grid;
-  grid-template-rows: 1fr 0 8vh;
+  grid-template-rows: 1fr 0 max-content;
   height: 100vh;
   border: 1px solid green;
 

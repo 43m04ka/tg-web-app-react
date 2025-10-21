@@ -4,6 +4,7 @@
   display: grid;
   grid-template-rows: 1fr 0 8vh;
   height: 100vh;
+  border: 1px solid green;
 
   > div:nth-child(1) {
     background: $bg-color;

@@ -1,8 +1,11 @@
 import React, {useEffect} from 'react';
 import style from './NavigationBar.module.scss'
 import {useNavigate} from "react-router-dom";
+import {useTelegram} from "../../../../hooks/useTelegram";
 
 const NavigationBar = ({setHeightTab, heightTab, zIndexTab, setZIndexTab}) => {
+
+    const {tg} = useTelegram()
 
     const navigate = useNavigate()
 
@@ -23,7 +26,7 @@ const NavigationBar = ({setHeightTab, heightTab, zIndexTab, setZIndexTab}) => {
         })
     }, [])
 
-    return (<div className={style['container']}>
+    return (<div className={style['container']} style={{marginBottom:String(tg.safeAreaInset.bottom) + 'px'}}>
         <div>
             {buttons.map((button, index) => (
                 <div className={style['activeTab-' + (activeTab === index)]} onClick={() => {

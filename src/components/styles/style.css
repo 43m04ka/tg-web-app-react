@@ -145,6 +145,8 @@ body {
 .list-element {
     margin-top: 15px;
     display: flex;
+    background: #222222;
+    border-radius: 10px;
 }
 
 .selector-container {

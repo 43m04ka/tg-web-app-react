@@ -57,32 +57,11 @@ const HomeBlock = ({data}) => {
                         fontSize: '18px',
                         fontFamily: "'Montserrat', sans-serif",
                         color: 'white',
-                        marginLeft: '5px',
+                        marginLeft: '15px',
                         overflow: 'hidden',
                         width: 'auto',
                         fontWeight: 'bold',
                     }}>{data.name}</div>
-                    <Link to={link + data.path} className={'link-element'} style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        background: '#373737',
-                        height: '22px',
-                        borderRadius: '5px',
-                        marginRight: '7px',
-                        width: 'max-content'
-                    }} to={link + data.path}>
-                        <div className={'text-element'} style={{
-                            fontSize: '11px',
-                            marginRight: '3px',
-                            marginTop: '0',
-                            lineHeight: '16px',
-                            width: 'max-content',
-                        }}>СМОТРЕТЬ ВСЕ
-                        </div>
-                        <div className={'background-arrow'}
-                             style={{width: '10px', height: '10px', marginRight: '5px'}}/>
-                    </Link>
                 </div>
                 <div className={"scroll-container"} style={{alignItems: 'center'}}>
                     {data.body.slice(0, 6).map(item => (
@@ -91,31 +70,23 @@ const HomeBlock = ({data}) => {
                             </div>
                         )
                     )}
-                    <div className={'box-home-block-element home-block-element'}>
-                        <div style={{
+                </div>
+                <div style={{width: '100%'}}>
+                    <div //to={link + data.path}
+                        style={{
+                            fontFamily: "'Montserrat', sans-serif",
+                            color: 'white',
+                            borderRadius: '50px',
+                            backgroundColor: '#222222',
+                            padding: '10px 12px',
                             width: 'max-content',
+                            fontWeight: '500',
+                            fontSize: '15px',
+                            lineHeight: '15px',
+                            justifyItems: 'center',
+                            margin:'0 auto',
                         }}>
-                            <Link to={link + data.path} className={'link-element'}
-                                  style={{
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      borderRadius: '7px',
-                                      border: '1px solid white',
-                                      height: '25px',
-                                      marginRight: '7px'
-                                  }}>
-                                <div className={'text-element'} style={{fontSize: '15px'}}>
-                                    Смотреть ещё
-                                </div>
-                                <div className={'background-arrow'} style={{
-                                    height: '15px',
-                                    width: '15px',
-                                    marginTop: '0',
-                                    fontSize: '12.5px',
-                                    marginRight: '7px'
-                                }}/>
-                            </Link>
-                        </div>
+                        Открыть каталог
                     </div>
                 </div>
             </div>

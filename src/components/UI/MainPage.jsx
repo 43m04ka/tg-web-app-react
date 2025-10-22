@@ -27,10 +27,13 @@ const MainPage = ({page}) => {
     }, [])
 
 
-    return (<div className={style['mainDivision']} >
+    return (<div className={style['mainDivision']} style={{height:String(window.innerHeight) + 'px'}}>
         <div>
-            <CatalogListHead/>
-            <CatalogListBody/>
+            <div>
+                <CatalogListHead/>
+                <CatalogListBody/>
+            </div>
+
         </div>
         <div style={{zIndex: zIndexTab}}>
             <div style={{height: heightTab}}>
@@ -42,8 +45,9 @@ const MainPage = ({page}) => {
                 </Routes>
             </div>
         </div>
-        <NavigationBar setZIndexTab={setZIndexTab} zIndexTab={zIndexTab} heightTab={heightTab} setHeightTab={setHeightTab}/>
-        <div style={{height: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px', overflow:'hidden', background:'#222222', zIndex:'-100'}}><div style={{height: '100vh'}}/></div>
+        <NavigationBar setZIndexTab={setZIndexTab} zIndexTab={zIndexTab} heightTab={heightTab}
+                       setHeightTab={setHeightTab}/>
+        {/*<div style={{height: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px', overflow:'hidden', background:'#222222', zIndex:'-100'}}><div style={{height: '100vh'}}/></div>*/}
     </div>);
 };
 

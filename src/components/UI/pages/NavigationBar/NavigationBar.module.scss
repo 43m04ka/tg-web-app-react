@@ -1,38 +1,42 @@
 @import "src/components/styles/mainStyle";
 
 .container {
+  position: absolute;
+  top: 92%;
   display: flex;
   background: $menu-color;
   width: 100vw;
-  min-height: 8vh;
-  height: 8vh;
+  height: 8%;
 
   > div {
-    margin: 0 5vw;
-    width: 90vw;
+    margin: 0 3vw;
+    width: 95vw;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 
     > div {
-      height: 100%;
+      height: max-content;
       width: 100%;
-      align-content: center;
-      justify-items: center;
+      margin: auto;
+      align-self: center;
       transition-property: opacity;
       transition-duration: 0.2s;
 
       > div {
-        width: 3vh;
-        height: 3vh;
+
+        width: 3.5vh;
+        height: 3.5vh;
+        margin: auto auto 0 auto;
         background-size: cover;
-        margin: 0.6vh 0;
       }
 
       > p {
-        font-size: 1vh;
+        font-size: 1.25vh;
+        margin: 0.4vh;
         color: white;
         @extend %font;
+        text-align: center;
       }
     }
   }

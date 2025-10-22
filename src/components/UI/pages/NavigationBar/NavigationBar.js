@@ -11,10 +11,10 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab}) => {
 
     const buttons = [
         {label: 'Главная', icon: 'main', path: '', heightTab: 0},
-        {label: 'Поиск', icon: 'search', path: 'search', heightTab: '82vh'},
-        {label: 'Корзина', icon: 'basket', path: 'basket', heightTab: '82vh'},
+        {label: 'Поиск', icon: 'search', path: 'search', heightTab: '100%'},
+        {label: 'Корзина', icon: 'basket', path: 'basket', heightTab: '100%'},
         {label: 'Платформа', icon: 'PS', path: 'selectPlatform', heightTab: 'max-content'},
-        {label: 'Еще', icon: 'more', path: 'more', heightTab: '82vh'}]
+        {label: 'Еще', icon: 'more', path: 'more', heightTab: '100%'}]
 
     const [activeTab, setActiveTab] = React.useState(0);
 

@@ -26,12 +26,11 @@
 
     position: absolute;
     width: 100vw;
-    height: 92%;
+    height: 100%;
     bottom: 0;
 
-
     > div {
-      margin: auto 0 0 0;
+      margin: auto 0 auto 0;
       width: 100%;
       background: $menu-color;
       overflow: hidden;

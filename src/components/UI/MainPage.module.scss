@@ -31,6 +31,8 @@
 
     > div {
       position: absolute;
+      border-top-right-radius: 20px;
+      border-top-left-radius: 20px;
       bottom: 0;
       width: 100%;
       background: $menu-color;

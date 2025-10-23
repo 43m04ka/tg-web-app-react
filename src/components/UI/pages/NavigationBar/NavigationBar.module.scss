@@ -43,6 +43,54 @@
   }
 }
 
+.island {
+  position: absolute;
+  display: flex;
+  bottom: 3%;
+  border-radius: 100vh;
+  backdrop-filter: blur(4px);
+  border: $menu-color solid 1px;
+  box-shadow: 0px 1px 5px black;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 90%;
+  margin-left: 5%;
+  z-index: 250;
+
+  > div {
+    height: 8%;
+    margin: 2% 3vw;
+    width: 95vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    > div {
+      height: max-content;
+      width: 100%;
+      margin: auto;
+      align-self: center;
+      transition-property: opacity;
+      transition-duration: 0.2s;
+
+      > div {
+
+        width: 3.5vh;
+        height: 3.5vh;
+        margin: auto auto 0 auto;
+        background-size: cover;
+      }
+
+      > p {
+        font-size: 1.25vh;
+        margin: 0.4vh;
+        color: white;
+        @extend %font;
+        text-align: center;
+      }
+    }
+  }
+}
+
 .activeTab{
   &-true{
     opacity: 1;

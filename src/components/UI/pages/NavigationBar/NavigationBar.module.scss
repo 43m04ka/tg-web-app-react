@@ -56,15 +56,37 @@
   margin-left: 5%;
   z-index: 250;
 
-  > div {
+  > div:nth-child(1) {
+    position: absolute;
+    height: 100%;
+    padding: 0.8% 1%;
+    width: 100%;
+
+    z-index: 275;
+    > div {
+      transition-property: margin-left;
+      transition-duration: 0.2s;
+      transition-timing-function: revert-layer;
+      background-color: rgba(147, 144, 144, 0.1);
+      border-radius: 100vh;
+      width: 22%;
+      height: 100%;
+      background-size: cover;
+    }
+
+  }
+  > div:nth-child(2) {
     height: 8%;
-    margin: 2% 3vw;
+    margin: 2% 2%;
     width: 95vw;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 
+
+
     > div {
+      z-index: 300;
       height: max-content;
       width: 100%;
       margin: auto;
@@ -81,7 +103,7 @@
       }
 
       > p {
-        font-size: 1.25vh;
+        font-size: 1vh;
         margin: 0.4vh;
         color: white;
         @extend %font;
@@ -91,11 +113,12 @@
   }
 }
 
-.activeTab{
-  &-true{
+.activeTab {
+  &-true {
     opacity: 1;
   }
-  &-false{
+
+  &-false {
     opacity: 0.3;
   }
 }

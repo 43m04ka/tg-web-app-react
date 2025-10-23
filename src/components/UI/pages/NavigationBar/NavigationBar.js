@@ -45,7 +45,11 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab}) => {
 
     return (<div className={style[typeBar ? 'container' : 'island']}
                  style={typeBar ? {paddingBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'} : {marginBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
+        {typeBar ? '' : <div>
+            <div style={{marginLeft:String(19.5*(activeTab))+'%'}}/>
+        </div>}
         <div>
+
             {buttons.map((button, index) => (
                 <div className={style['activeTab-' + (activeTab === index)]} onClick={() => {
 

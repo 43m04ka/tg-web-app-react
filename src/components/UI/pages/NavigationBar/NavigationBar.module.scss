@@ -48,11 +48,10 @@
   display: flex;
   bottom: 1.5%;
   border-radius: 100vh;
-  backdrop-filter: blur(4px) contrast(120%);
-  -webkit-backdrop-filter: blur(4px) contrast(120%);
-  border: $menu-color solid 1px;
-  box-shadow: 0px 1px 5px black;
-  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px) contrast(50%);
+  -webkit-backdrop-filter: blur(10px) contrast(50%);
+  border: 1px solid rgba(34, 34, 34, 0.3);
+  background-color: rgba(0, 0, 0, 0.7);
   width: 90%;
   margin-left: 5%;
   z-index: 250;

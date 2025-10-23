@@ -52,8 +52,8 @@
   -webkit-backdrop-filter: blur(10px) contrast(50%);
   border: 1px solid rgba(145, 142, 142, 0.3);
   background-color: rgba(0, 0, 0, 0.6);
-  width: 90%;
-  margin-left: 5%;
+  width: 95%;
+  margin-left: 2.5%;
   z-index: 250;
 
   > div:nth-child(1) {
@@ -103,7 +103,7 @@
       }
 
       > p {
-        font-size: 1vh;
+        font-size: 1.15vh;
         margin: 0.4vh;
         color: white;
         @extend %font;

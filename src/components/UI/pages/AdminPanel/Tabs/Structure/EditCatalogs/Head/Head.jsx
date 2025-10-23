@@ -28,7 +28,7 @@ const Head = ({catalogHeadList, page, onReload}) => {
 
     const cap = {
         name: ['Тип','Путь', 'Порядковый №'],
-        key: [((item)=>{return item['type'].includes('slider') ? 'Сайдер' : 'Иное'}), 'path', 'serialNumber'],
+        key: [((item)=>{return item['type'].includes('slider') ? 'Слайдер' : 'Иное'}), 'path', 'serialNumber'],
     }
 
     const positionOptionsList = {

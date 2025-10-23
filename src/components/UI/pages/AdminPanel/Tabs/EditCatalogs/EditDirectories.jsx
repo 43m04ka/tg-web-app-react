@@ -41,7 +41,7 @@ const EditDirectories = () => {
     const [openListCards, setOpenListCards] = React.useState(false);
     const [createTabOpen, setCreateTabOpen] = React.useState(false);
     const [pathNewCatalog, setPathNewCatalog] = useState('')
-    const [pageNewCatalog, setPageNewCatalog] = useState('')
+    const [pageNewCatalog, setPageNewCatalog] = useState(pageList[0].id)
 
     //---------------------
 

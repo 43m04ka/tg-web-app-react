@@ -13,16 +13,17 @@ const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
 
 const UploadData = ({onClose, onReload}) => {
 
+    const {authenticationData} = useData();
+    const {pageList, pageId, catalogList} = useGlobalData()
+
     const [gameType, setGameType] = useState(0)
-    const [selectedCatalogId, setSelectedCatalogId] = useState(null)
+    const [selectedCatalogId, setSelectedCatalogId] = useState(catalogList[0].id);
     const [addToAll, setAddToAll] = useState(0)
     const [onLoad, setOnLoad] = useState(false)
     const [left, setLeft] = useState(0)
 
     const [table, setTable] = useState(null)
-
-    const {authenticationData} = useData();
-    const {pageList, pageId, catalogList} = useGlobalData()
+    console.log(table)
 
     const uploadCards = async (authenticationData, cardList) => {
         await fetch(URL + '/uploadCards', {
@@ -91,9 +92,7 @@ const UploadData = ({onClose, onReload}) => {
         if (catalogList !== null) {
             return (
                 <PopUpWindow
-                    title={`Загрузить новые карты ${pageList.map(page => {
-                        return page.id === pageId ? page.name : null
-                    }).filter(page => page !== null)[0].toLowerCase()}`}>
+                    title={`Загрузить новые карты`}>
 
                     <div>
                     <DropBox label={catalogList.map(catalog => {

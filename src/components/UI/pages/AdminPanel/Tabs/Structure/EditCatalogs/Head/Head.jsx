@@ -5,6 +5,7 @@ import style from "../../Structure.module.scss";
 import ButtonLine from "../../../../Elements/ButtonLine/ButtonLine";
 import List from "../../../../Elements/List/List";
 import CreateBody from "../Body/CreateBody";
+import CreateHead from "./CreateHead";
 
 const Head = ({catalogHeadList, page, onReload}) => {
 
@@ -88,7 +89,7 @@ const Head = ({catalogHeadList, page, onReload}) => {
             <List listData={catalogHeadList} cap={cap} positionOptions={positionOptionsList}
                   returnOption={returnOptionList} setSelectList={setSelectList} selectList={selectList}
                   checkBoxType={'simply'}/>) : ''}
-        {createTabOpen ? <CreateBody onClose={() => {
+        {createTabOpen ? <CreateHead onClose={() => {
             setCreateTabOpen(false);
         }} onReload = {onReload} page={page}/> : ''}
     </div>);

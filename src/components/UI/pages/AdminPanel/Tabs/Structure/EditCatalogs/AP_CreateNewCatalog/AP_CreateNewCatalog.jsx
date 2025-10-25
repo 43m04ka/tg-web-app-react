@@ -11,9 +11,9 @@ const ApCreateNewCatalog = ({data, setResult}) => {
 
     useEffect(() => {
         for (let item of data) {
-            if (typeof item.argument !== 'undefined' && typeof item.value !== 'undefined') {
+            if ((typeof item.argument !== 'undefined' && typeof item.value !== 'undefined') || (typeof item.defaultValue !== 'undefined' && item.defaultValue !== '')) {
                 let newJson = resultJson
-                newJson[item.argument] = item.value
+                newJson[item.argument] = item.value || item.defaultValue
                 setResultJson(newJson)
             }
         }
@@ -25,7 +25,7 @@ const ApCreateNewCatalog = ({data, setResult}) => {
                 if (Array.isArray(item)) {
                     return <AP_SelectInputLabel data={item} resultJson={resultJson} setResultJson={(res)=>{setResultJson(res); setResult(res)}}/>
                 } else if (typeof item === 'object' && !Array.isArray(item) && item !== null && typeof item.value === 'undefined') {
-                    return (<InputLabel label={item.placeholder} onChange={(event) => {
+                    return (<InputLabel label={item.placeholder} defaultValue={item.defaultValue} onChange={(event) => {
                         let newJson = resultJson
                         if (item.type === 'number') {
                             newJson[item.argument] = Number(event.target.value)

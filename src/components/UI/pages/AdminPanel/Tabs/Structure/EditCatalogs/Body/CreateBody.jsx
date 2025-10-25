@@ -5,11 +5,11 @@ import PopUpWindow from "../../../../Elements/PopUpWindow/PopUpWindow";
 import AP_CreateNewCatalog from "../AP_CreateNewCatalog/AP_CreateNewCatalog";
 import useData from "../../../../useData";
 
-const CreateBody = ({onClose, page, onReload}) => {
+const CreateBody = ({onClose, page, onReload, copyData}) => {
 
     const newCatalog = [{
-        argument: "serialNumber", placeholder: 'Порядковый номер', type: 'number'
-    }, {argument: "backgroundColor", placeholder: 'Выделение цветом'}, [{
+        argument: "serialNumber", placeholder: 'Порядковый номер', type: 'number', defaultValue: copyData.serialNumber || '',
+    }, {argument: "backgroundColor", placeholder: 'Выделение цветом', defaultValue: copyData.backgroundColor || ''}, [{
         name: 'Обычный', select: [{argument: 'type', value: 'ordinary'}, {
             argument: 'name', placeholder: 'Имя каталога'
         }, {argument: "path", placeholder: 'Путь до категории'}]
@@ -49,6 +49,8 @@ const CreateBody = ({onClose, page, onReload}) => {
     const [json, setJson] = useState({})
     const {createStructureCatalog} = useServer()
     const {authenticationData} = useData()
+
+    console.log(json)
 
     return (<PopUpWindow title={'Создать элемент тела'}>
 

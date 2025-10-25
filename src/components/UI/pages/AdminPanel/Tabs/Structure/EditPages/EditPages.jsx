@@ -7,7 +7,7 @@ import style from "../../Promo/Promo.module.scss";
 import ButtonLine from "../../../Elements/ButtonLine/ButtonLine";
 import EditPageData from "./EditPageData";
 
-const EditPages = ({page, setPage}) => {
+const EditPages = ({}) => {
 
     const [listButtonData, setListButtonData] = useState([
         {name: 'Обновить', status: true, key: 'reload'},
@@ -22,10 +22,6 @@ const EditPages = ({page, setPage}) => {
     const [editTabOpen, setEditTabOpen] = useState(false);
 
     const [selectList, setSelectList] = useState([]);
-
-    if(page !== selectList[0]){
-        setPage(selectList[0]);
-    }
 
     if (listButtonData[1].status !== (selectList.length === 1)) {
         let newValue = listButtonData
@@ -89,7 +85,6 @@ const EditPages = ({page, setPage}) => {
 
     useEffect(() => {
         updatePageList(true).then()
-        setPage(-1)
     }, [updatePageList]);
 
     return (

@@ -10,16 +10,20 @@ const Body = ({catalogBodyList, page, onReload}) => {
 
     const [listButtonData, setListButtonData] = useState([
         {name: 'Обновить', status: true, key: 'reload'},
+        {name: 'Копировать', status: false, key: 'copy'},
         {name: 'Удалить', status: false, key: 'delete'}
     ])
 
+    const [copyData, setCopyData] = useState({})
+
     const [createTabOpen, setCreateTabOpen] = useState(false);
     const [selectList, setSelectList] = useState([]);
-    const {deleteStructureCatalog}= useServer()
+    const {deleteStructureCatalog} = useServer()
 
     if (listButtonData[1].status !== selectList.length > 0) {
         let newValue = listButtonData
         newValue[1].status = selectList.length > 0;
+        newValue[2].status = selectList.length > 0;
         setListButtonData(listButtonData);
     }
 
@@ -27,12 +31,16 @@ const Body = ({catalogBodyList, page, onReload}) => {
 
     const cap = {
         name: ['Тип', 'Имя', 'Путь', 'Порядковый №'],
-        key: [((item)=>{return item['type'].includes('banner') ? 'Баннер' : 'Каталог'}), 'name', 'path', 'serialNumber'],
+        key: [((item) => {
+            return item['type'].includes('banner') ? 'Баннер' : 'Каталог'
+        }), ((item) => {
+            return item['type'].includes('banner') ? item.url : item.name
+        }), 'path', 'serialNumber'],
     }
 
     const positionOptionsList = {
-        name: ['Удалить'],
-        key: ['delete'],
+        name: ['Копировать', 'Удалить'],
+        key: ['copy','delete'],
     }
 
     const returnOptionsButtonLine = (option) => {
@@ -42,6 +50,13 @@ const Body = ({catalogBodyList, page, onReload}) => {
                 break;
             case 'delete':
                 onDelete(selectList).then();
+                break;
+            case 'copy':
+                setCopyData(catalogBodyList.map(item=>{
+                    let id = selectList[0]
+                    return item.id === id ? item : null
+                }).filter(item => item !== null)[0])
+                setCreateTabOpen(true);
                 break;
             default:
                 break;
@@ -54,6 +69,11 @@ const Body = ({catalogBodyList, page, onReload}) => {
             case 'delete':
                 onDelete([id]).then();
                 break;
+            case 'copy':
+                setCopyData(catalogBodyList.map(item=>{
+                    return item.id === id ? item : null
+                }).filter(item => item !== null)[0])
+                setCreateTabOpen(true);
             default:
                 break;
         }
@@ -66,12 +86,12 @@ const Body = ({catalogBodyList, page, onReload}) => {
     }
 
     return (<div className={style['mainContainer']}>
-        <div className={style['header']}>
+        <div className={style['header']} style={{marginTop:'0px', marginBottom:'0px'}}>
+
             <div className={style['flexRow'] + ' ' + style['alignItemsCenter']}>
-                <div className={style['headerTitle']}>Тело</div>
-            </div>
-            <div className={style['flexRow'] + ' ' + style['alignItemsCenter']}>
+
                 <div className={style['buttonCreate']} onClick={() => {
+                    setCopyData({})
                     setCreateTabOpen(true);
                 }}>
                     <div/>
@@ -80,7 +100,7 @@ const Body = ({catalogBodyList, page, onReload}) => {
 
                 <ButtonLine listButtonData={listButtonData} returnOptions={returnOptionsButtonLine}/>
 
-
+                <div className={style['headerTitle']} style={{margin: '0 20px'}}>Тело</div>
             </div>
         </div>
 
@@ -90,7 +110,7 @@ const Body = ({catalogBodyList, page, onReload}) => {
                   checkBoxType={'simply'}/>) : ''}
         {createTabOpen ? <CreateBody onClose={() => {
             setCreateTabOpen(false);
-        }} onReload = {onReload} page={page}/> : ''}
+        }} onReload={onReload} page={page} copyData={copyData}/> : ''}
     </div>);
 };
 

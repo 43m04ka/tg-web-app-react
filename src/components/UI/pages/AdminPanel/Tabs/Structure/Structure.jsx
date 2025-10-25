@@ -9,7 +9,7 @@ const Structure = () => {
 
     return (
         <div className={[style['structureMainContainer']]}>
-            <EditPages page={page} setPage={setPage}/>
+            <EditPages/>
             {page > 0 ?  <EditCatalogs page={page}/> : ''}
         </div>
     );

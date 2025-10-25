@@ -38,7 +38,7 @@ const ApSelectInputLabel = ({data, resultJson, setResultJson}) => {
                 }}/>)
             }else{
                 let newJson = resultJson
-                newJson[item.argument] = item.value
+                newJson[item.argument] = item.value || item.defaultValue
                 setResultJson(newJson)
             }
         })}</div>)

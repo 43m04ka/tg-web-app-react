@@ -12,6 +12,7 @@ import useData from "./useData";
 import History from "./Tabs/HistoryOrders/History";
 import Promo from "./Tabs/Promo/Promo";
 import Structure from "./Tabs/Structure/Structure";
+import EditPageData from "./Tabs/Structure/EditPages/EditPageData";
 
 const AdminPanel = () => {
 
@@ -24,8 +25,9 @@ const AdminPanel = () => {
 
     const routeData = [{name: 'Редактировать каталоги', path: 'edit-directories', element: <EditDirectories/>},
         {name: 'Редактировать карты', path: 'edit-cards', element: <AP_EditCards/>},
-        {name: 'Структура', path: 'structure', element: <Structure/>},
+        {name: 'Структура', path: 'structure', element: <EditCatalogs/>},
         {name: 'Промокоды', path: 'promo', element: <Promo/>},
+        {name: 'Страницы', path: 'pages', element: <EditPages/>},
         {name: 'История заказов', path: 'history-orders', element: <History/>},];
 
     return (

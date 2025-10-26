@@ -4,7 +4,6 @@ import {useTelegram} from "../../../../hooks/useTelegram";
 
 const Search = () => {
     const {tg} = useTelegram()
-    console.log(window.vie)
 
     return (
         <div className={style['mainDivision']}>

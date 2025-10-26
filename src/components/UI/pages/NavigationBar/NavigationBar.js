@@ -17,20 +17,20 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab}) => {
             label: 'Поиск',
             icon: 'search',
             path: 'search',
-            heightTab: String(window.innerHeight - tg.contentSafeAreaInset.top - tg.safeAreaInset.top - 10) + 'px'
+            heightTab: String(window.innerHeight - tg.contentSafeAreaInset.top - tg.safeAreaInset.top - 10 - (window.screen.availHeight - window.innerHeight)) + 'px'
         },
         {
             label: 'Корзина',
             icon: 'basket',
             path: 'basket',
-            heightTab: String(window.innerHeight - tg.contentSafeAreaInset.top - tg.safeAreaInset.top - 10) + 'px'
+            heightTab: String(window.innerHeight - tg.contentSafeAreaInset.top - tg.safeAreaInset.top - 10- (window.screen.availHeight - window.innerHeight)) + 'px'
         },
         {label: 'Платформа', icon: 'PS', path: 'selectPlatform', heightTab: 'max-content'},
         {
             label: 'Еще',
             icon: 'more',
             path: 'more',
-            heightTab: String(window.innerHeight - tg.contentSafeAreaInset.top - tg.safeAreaInset.top - 10) + 'px'
+            heightTab: String(window.innerHeight - tg.contentSafeAreaInset.top - tg.safeAreaInset.top - 10- (window.screen.availHeight - window.innerHeight)) + 'px'
         }]
 
     const [activeTab, setActiveTab] = React.useState(0);
@@ -45,7 +45,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab}) => {
 
     return (<div className={style[typeBar ? 'container' : 'island']}
                  style={typeBar ? {paddingBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'} :
-                     {marginBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight)) + 'px'}}>
+                     {marginBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
         {typeBar ? '' : <div>
             <div style={{marginLeft: String(19.5 * (activeTab)) + '%'}}/>
         </div>}

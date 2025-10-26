@@ -42,7 +42,7 @@ const MainPage = ({page}) => {
 
         </div>
         <div style={{zIndex: zIndexTab}}>
-            <div style={{height: heightTab, bottom: String( height) + 'px'}}>
+            <div style={{height: heightTab, bottom: String(height) + 'px'}}>
                 <Routes>
                     <Route path="/search" element={<Search/>}/>
                     <Route path="/basket" element={<Basket/>}/>
@@ -52,7 +52,7 @@ const MainPage = ({page}) => {
             </div>
         </div>
         <NavigationBar setZIndexTab={setZIndexTab} zIndexTab={zIndexTab} heightTab={heightTab}
-                       setHeightTab={setHeightTab} setHeight={setHeight}/>
+                       setHeightTab={setHeightTab}/>
         {/*<div style={{height: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px', overflow:'hidden', background:'#222222', zIndex:'-100'}}><div style={{height: '100vh'}}/></div>*/}
     </div>);
 };

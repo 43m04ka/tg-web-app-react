@@ -2,6 +2,8 @@
 
 .mainDivision {
   width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 
 
   > div:nth-child(1) {

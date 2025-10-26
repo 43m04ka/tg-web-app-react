@@ -16,7 +16,6 @@ const Search = () => {
             </div>
             <div style={{textAlign:'right', margin:'auto 0 200px auto'}}>
                {tg.viewportHeight}{'---'}
-               {window.viewport.segments[0].height}{'---'}
                {window.outerHeight}{'---'}
                {window.screen.availHeight}{'---'}
                {window.visualViewport.height}

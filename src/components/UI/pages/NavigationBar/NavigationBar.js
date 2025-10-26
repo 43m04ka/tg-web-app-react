@@ -22,13 +22,13 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab}) => {
             label: 'Поиск',
             icon: 'search',
             path: 'search',
-            heightTab: 'maximum'
+            heightTab: String(window.innerHeight - tg.contentSafeAreaInset.top - tg.safeAreaInset.top - 10 ) + 'px'
         },
         {
             label: 'Корзина',
             icon: 'basket',
             path: 'basket',
-            heightTab: 'maximum'
+            heightTab: String(window.innerHeight - tg.contentSafeAreaInset.top - tg.safeAreaInset.top - 10 - (window.screen.availHeight - window.innerHeight)) + 'px'
         },
         {
             label: 'Платформа',
@@ -40,7 +40,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab}) => {
             label: 'Еще',
             icon: 'more',
             path: 'more',
-            heightTab: 'maximum'
+            heightTab: String(window.innerHeight - tg.contentSafeAreaInset.top - tg.safeAreaInset.top - 10 - (window.screen.availHeight - window.innerHeight)) + 'px'
         }]
 
     const [activeTab, setActiveTab] = React.useState(0);

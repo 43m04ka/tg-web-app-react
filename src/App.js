@@ -6,7 +6,7 @@ import {Route, Routes, useNavigate} from "react-router-dom";
 import ProductList from "./components/UI/pages/other/ProductList";
 import MainPage from "./components/UI/MainPage";
 import ErrorPage from "./components/UI/pages/other/ErrorPage";
-import Search from "./components/UI/pages/other/Search";
+import Search_old from "./components/UI/pages/Search/Search_old";
 import Basket from "./components/UI/pages/Basket/Basket";
 import AdminPanel from "./components/UI/pages/AdminPanel/AdminPanel";
 import Info from "./components/UI/pages/other/Info";

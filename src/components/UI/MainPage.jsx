@@ -7,7 +7,7 @@ import NavigationBar from "./pages/NavigationBar/NavigationBar";
 import CatalogListBody from "./pages/MainScreen/CatalogList/CatalogListBody";
 import CatalogListHead from "./pages/MainScreen/CatalogList/CatalogListHead";
 import {Route, Routes} from "react-router-dom";
-import Search from "./pages/other/Search";
+import Search from "./pages/Search/Search";
 import Basket from "./pages/Basket/Basket";
 import Info from "./pages/other/Info";
 import SelectPlatform from "./pages/MainScreen/SelectPlatform/SelectPlatform";

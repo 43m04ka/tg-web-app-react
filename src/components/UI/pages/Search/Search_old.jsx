@@ -6,7 +6,7 @@ import useGlobalData from "../../../../hooks/useGlobalData";
 let lastListRes = []
 let lastText = ''
 let lastScroll = 0
-const Search = ({height}) => {
+const Search_old = ({height}) => {
     const [listRes, setListRes] = React.useState(lastListRes);
     const [status, setStatus] = React.useState(1);
     const [textInput, setTextInput] = React.useState('');
@@ -383,4 +383,4 @@ const Search = ({height}) => {
 
 }
 
-export default Search;
+export default Search_old;

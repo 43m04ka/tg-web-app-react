@@ -27,7 +27,7 @@ const MainPage = ({page}) => {
     }, [])
 
 
-    return (<div className={style['mainDivision']} style={{height:String(window.innerHeight) + 'px'}}>
+    return (<div className={style['mainDivision']} style={{height:String(window.screen.availHeight) + 'px'}}>
         <div>
             <div>
                 <CatalogListHead/>

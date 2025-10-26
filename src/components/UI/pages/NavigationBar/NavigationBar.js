@@ -63,7 +63,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, setHeight}) => {
 
             {buttons.map((button, index) => (
                 <div className={style['activeTab-' + (activeTab === index)]} onClick={() => {
-                    setHeight(window.screen.availHeight)
+                    setHeight(window.innerHeight)
                     if (button.path === 'selectPlatform') {
                         setTypeBar(!typeBar)
                     } else {

@@ -16,6 +16,7 @@ const MainPage = ({page}) => {
     const {tg} = useTelegram();
     const [heightTab, setHeightTab] = useState(0);
     const [zIndexTab, setZIndexTab] = useState(-10);
+    const [height, setHeight] = useState(window.screen.availHeight);
     const {pageId, setPageId} = useGlobalData()
 
 
@@ -25,6 +26,10 @@ const MainPage = ({page}) => {
             setPageId(page.id)
         }
     }, [])
+
+    useEffect(()=>{
+        setHeight(window.screen.availHeight)
+    }, [window.screen.availHeight])
 
 
     return (<div className={style['mainDivision']} style={{height:String(window.innerHeight) + 'px'}}>
@@ -36,7 +41,7 @@ const MainPage = ({page}) => {
 
         </div>
         <div style={{zIndex: zIndexTab}}>
-            <div style={{height: heightTab, bottom: String(-(window.screen.availHeight - window.innerHeight)) + 'px'}}>
+            <div style={{height: heightTab, bottom: String( window.innerHeight - height) + 'px'}}>
                 <Routes>
                     <Route path="/search" element={<Search/>}/>
                     <Route path="/basket" element={<Basket/>}/>

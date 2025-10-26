@@ -28,8 +28,8 @@ const MainPage = ({page}) => {
     }, [])
 
     useEffect(()=>{
-        setHeight(window.screen.availHeight)
-    }, [window.screen.availHeight])
+        setHeight(window.innerHeight - window.screen.availHeight)
+    }, [window.screen.availHeight, window.innerHeight])
 
 
     return (<div className={style['mainDivision']} style={{height:String(window.innerHeight) + 'px'}}>
@@ -42,7 +42,7 @@ const MainPage = ({page}) => {
 
         </div>
         <div style={{zIndex: zIndexTab}}>
-            <div style={{height: heightTab, bottom: String( window.innerHeight - height) + 'px'}}>
+            <div style={{height: heightTab, bottom: String( height) + 'px'}}>
                 <Routes>
                     <Route path="/search" element={<Search/>}/>
                     <Route path="/basket" element={<Basket/>}/>

@@ -36,7 +36,7 @@ const MainPage = ({page}) => {
 
         </div>
         <div style={{zIndex: zIndexTab}}>
-            <div style={{height: heightTab}}>
+            <div style={{height: heightTab === 'maximum' ? String(window.innerHeight - tg.contentSafeAreaInset.top - tg.safeAreaInset.top - 10 - (window.screen.availHeight - window.innerHeight)) + 'px' : heightTab}}>
                 <Routes>
                     <Route path="/search" element={<Search/>}/>
                     <Route path="/basket" element={<Basket/>}/>

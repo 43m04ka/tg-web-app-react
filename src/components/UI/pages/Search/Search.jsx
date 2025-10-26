@@ -15,7 +15,7 @@ const Search = () => {
                 </div>
             </div>
             <div style={{textAlign:'right', margin:'auto 0 200px auto'}}>
-               {tg.viewportHeight}
+               {tg.viewportHeight}{'---'}
                {tg.viewportStableHeight}
             </div>
         </div>

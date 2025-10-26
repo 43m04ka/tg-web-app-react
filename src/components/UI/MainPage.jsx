@@ -52,7 +52,7 @@ const MainPage = ({page}) => {
             </div>
         </div>
         <NavigationBar setZIndexTab={setZIndexTab} zIndexTab={zIndexTab} heightTab={heightTab}
-                       setHeightTab={setHeightTab}/>
+                       setHeightTab={setHeightTab} setHeight={setHeight}/>
         {/*<div style={{height: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px', overflow:'hidden', background:'#222222', zIndex:'-100'}}><div style={{height: '100vh'}}/></div>*/}
     </div>);
 };

@@ -3,7 +3,7 @@ import style from './NavigationBar.module.scss'
 import {useNavigate} from "react-router-dom";
 import {useTelegram} from "../../../../hooks/useTelegram";
 
-const NavigationBar = ({setHeightTab, heightTab, setZIndexTab}) => {
+const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, setHeight}) => {
 
     const {tg} = useTelegram()
 
@@ -63,7 +63,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab}) => {
 
             {buttons.map((button, index) => (
                 <div className={style['activeTab-' + (activeTab === index)]} onClick={() => {
-
+                    setHeight(0)
                     if (button.path === 'selectPlatform') {
                         setTypeBar(!typeBar)
                     } else {

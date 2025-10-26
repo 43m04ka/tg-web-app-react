@@ -4,7 +4,7 @@ import {useTelegram} from "../../../../hooks/useTelegram";
 
 const Search = () => {
     const {tg} = useTelegram()
-    console.log(tg.viewportStableHeight)
+    console.log(window.vie)
 
     return (
         <div className={style['mainDivision']}>
@@ -16,7 +16,10 @@ const Search = () => {
             </div>
             <div style={{textAlign:'right', margin:'auto 0 200px auto'}}>
                {tg.viewportHeight}{'---'}
-               {tg.viewportStableHeight}
+               {window.viewport.segments[0].height}{'---'}
+               {window.outerHeight}{'---'}
+               {window.screen.availHeight}{'---'}
+               {window.visualViewport.height}
             </div>
         </div>
     );

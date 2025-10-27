@@ -8,6 +8,7 @@ const ButtonLine = ({listButtonData, returnOptions}) => {
             {listButtonData.map((item, index) => (
                 <div>
                     <div className={style['status-' + String(item.status)]}
+                         style={{color:item.color || 'white'}} key={index}
                          onClick={() => {
                             returnOptions(item.key)
                          }}>

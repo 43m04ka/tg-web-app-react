@@ -1,6 +1,5 @@
 import React from 'react';
 import NavigationBar from "./Blocks/NavigationBar";
-import UploadData from "./Tabs/EditCards/UploadData/UploadData";
 import EditDirectories from "./Tabs/EditCatalogs/EditDirectories";
 import AP_EditCards from "./Tabs/EditCards/EditCards";
 
@@ -11,8 +10,7 @@ import EditCatalogs from "./Tabs/Structure/EditCatalogs/EditCatalogs";
 import useData from "./useData";
 import History from "./Tabs/HistoryOrders/History";
 import Promo from "./Tabs/Promo/Promo";
-import Structure from "./Tabs/Structure/Structure";
-import EditPageData from "./Tabs/Structure/EditPages/EditPageData";
+import Search from "./Tabs/Search/Search";
 
 const AdminPanel = () => {
 
@@ -26,6 +24,7 @@ const AdminPanel = () => {
     const routeData = [{name: 'Редактировать каталоги', path: 'edit-directories', element: <EditDirectories/>},
         {name: 'Редактировать карты', path: 'edit-cards', element: <AP_EditCards/>},
         {name: 'Структура', path: 'structure', element: <EditCatalogs/>},
+        {name: 'Поиск', path: 'search', element: <Search/>},
         {name: 'Промокоды', path: 'promo', element: <Promo/>},
         {name: 'Страницы', path: 'pages', element: <EditPages/>},
         {name: 'История заказов', path: 'history-orders', element: <History/>},];

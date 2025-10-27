@@ -32,11 +32,11 @@
 
 .status {
   &-true {
-    color: $text-color !important;
+    opacity: 1;
     cursor: pointer;
   }
   &-false {
-    color: $secondary-color !important;
+    opacity: 0.5;
     cursor: default;
   }
 }

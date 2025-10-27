@@ -64,8 +64,8 @@
     color: white;
     font-size: 3vw;
     text-align: center;
-    -webkit-animation: animClue 2s forwards ;
-    animation: animClue 2s forwards;
+    -webkit-animation: animClue 1.5s forwards ;
+    animation: animClue 1.5s forwards;
     opacity: 0;
     -webkit-transform: scale(0);
     transform: scale(0);
@@ -74,6 +74,21 @@
 
 
 @keyframes animClue {
+  0%{
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+  20%,
+  80%,
+  100% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@-webkit-keyframes animClue {
   0%{
     opacity: 0;
     -webkit-transform: scale(0);

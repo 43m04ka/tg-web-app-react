@@ -52,6 +52,10 @@ const Search = () => {
         })
     }
 
+    useEffect(()=>{
+
+    }, [])
+
     useEffect(() => {
         window.clearTimeout(timerId);
         if (inputValue !== '') {

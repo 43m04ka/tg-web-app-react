@@ -9,7 +9,7 @@ const HomeScreen = ({setInputValue}) => {
     const [clueList, setClueList] = useState([])
 
     useEffect(() => {
-        getClueList(setClueList)
+        getClueList(setClueList).then()
     }, [])
 
     return (

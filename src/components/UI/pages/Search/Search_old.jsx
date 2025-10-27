@@ -16,10 +16,7 @@ const Search_old = ({height}) => {
     const {pageId} = useGlobalData()
     const navigate = useNavigate();
 
-    let dataRequestDatabase = {
-        method: 'getSearch',
-        data: {str: textInput, pageId: pageId}
-    }
+    let dataRequestDatabase = {}
 
     const sendRequestDatabase = useCallback(() => {
         console.log(dataRequestDatabase, 'inputRequestDb')
@@ -28,7 +25,10 @@ const Search_old = ({height}) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(dataRequestDatabase)
+            body: JSON.stringify({
+                method: 'getSearch',
+                data: {str: textInput, pageId: pageId}
+            })
         }).then(r => {
             let Promise = r.json()
             Promise.then(prom => {
@@ -56,7 +56,7 @@ const Search_old = ({height}) => {
                 }
             })
         })
-    }, [dataRequestDatabase])
+    }, [])
 
     const onBack = useCallback(() => {
         navigate(-1);

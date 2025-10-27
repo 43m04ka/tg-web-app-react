@@ -89,7 +89,13 @@ const Search = () => {
                         </div>
                     </div>) :
                     (<div className={style['emptyList']}>
-
+                        <div/>
+                        <div>Нет результатов</div>
+                        <div>по запросу "{inputValue}"</div>
+                        <div>ничего не найдено.</div>
+                        <div>попробуйте другй запрос</div>
+                        <div>или напишите в поддержку</div>
+                        <button onClick={() => window.open('https://t.me/gwstore_admin')}>написать в поддержку</button>
                     </div>)) :
                 (<div>
                     <HomeScreen setInputValue={setInputValue}/>

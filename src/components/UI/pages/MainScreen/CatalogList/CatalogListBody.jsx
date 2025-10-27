@@ -1,8 +1,10 @@
 import React, {useEffect} from 'react';
 import HomeBlock from "../../other/HomeBlock";
 import useGlobalData from "../../../../../hooks/useGlobalData";
+import {useTelegram} from "../../../../../hooks/useTelegram";
 
 const CatalogListBody = () => {
+    const {tg} = useTelegram()
     const {catalogStructureList, pageId, mainPageCards, catalogList, updateCounterBasket} = useGlobalData()
 
     useEffect(() => {
@@ -36,7 +38,7 @@ const CatalogListBody = () => {
             return catalogStructure
         })
 
-        return (<div style={{marginBottom:'20vw'}}>
+        return (<div style={{marginBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
                 {catalogStructureResultList.map((catalogStructure) => {
                     return (<HomeBlock data={catalogStructure}/>)
                 })}

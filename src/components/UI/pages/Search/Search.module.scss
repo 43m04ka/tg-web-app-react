@@ -133,21 +133,19 @@
   font-size: 4vw;
   >div:nth-child(1){
     @extend %font;
-
     color: white;
     text-align: center;
   }
   >div:nth-child(2){
     margin-top: 0.3%;
     @extend %font;
-
     color: white;
     text-align: center;
   }
   >button{
     width: max-content;
     display: flex;
-    margin: 1% auto 0 auto;
+    margin: 1.8% auto 0 auto;
     border-radius: 100vh;
     padding: 1% 2.8%;
     @extend %font;

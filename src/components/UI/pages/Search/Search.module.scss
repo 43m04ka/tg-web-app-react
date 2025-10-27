@@ -64,8 +64,8 @@
     color: white;
     font-size: 3vw;
     text-align: center;
-    -webkit-animation: animClue 1.5s forwards ;
-    animation: animClue 1.5s forwards;
+    -webkit-animation: animClue 1.5s forwards ease-in-out;
+    animation: animClue 1.5s forwards ease-in-out;
     opacity: 0;
     -webkit-transform: scale(0);
     transform: scale(0);

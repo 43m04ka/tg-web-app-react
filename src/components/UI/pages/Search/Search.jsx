@@ -43,7 +43,11 @@ const Search = () => {
                     }
                 }).filter(el => el !== null)
 
-                setCardList(resultList.splice(0, 20))
+                if(inputValue === ''){
+                    setCardList(null)
+                }else {
+                    setCardList(resultList.splice(0, 20))
+                }
             })
         })
     }
@@ -66,8 +70,11 @@ const Search = () => {
                     <div/>
                     <input placeholder={'Поиск'} value={inputValue} onChange={(event) => {
                         setInputValue(event.target.value)
+                        if(event.target.value === ''){
+                            setCardList(null)
+                        }
                     }}></input>
-                    <button onClick={()=>{setInputValue('')}}>
+                    <button onClick={()=>{setInputValue(''); setCardList(null)}}>
                         <div/>
                     </button>
                 </div>
@@ -78,7 +85,7 @@ const Search = () => {
                         <div className={style['helpPlace']}>
                             <div> не нашли то, что искали?</div>
                             <div> напишите нам, мы поможем</div>
-                            <button onClick={() => navigate('https://t.me/gwstore_admin')}>написать в поддержку</button>
+                            <button onClick={() => window.open('https://t.me/gwstore_admin')}>написать в поддержку</button>
                         </div>
                     </div>) :
                     (<div className={style['emptyList']}>

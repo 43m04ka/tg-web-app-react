@@ -6,16 +6,18 @@ import HomeScreen from "./Elements/homeScreen";
 const Search = () => {
     const {tg} = useTelegram()
 
+    const [inputValue, setInputValue] = React.useState('')
+
     return (
         <div className={style['mainDivision']}>
             <div>
                 <div>
                     <div/>
-                    <input placeholder={'Поиск'}></input>
+                    <input placeholder={'Поиск'} value={inputValue} onChange={(event)=>{setInputValue(event.target.value)}}></input>
                 </div>
             </div>
             <div>
-               <HomeScreen/>
+               <HomeScreen setInputValue={setInputValue}/>
             </div>
         </div>
     );

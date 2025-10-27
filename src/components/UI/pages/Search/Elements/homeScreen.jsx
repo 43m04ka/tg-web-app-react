@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useServer} from "../../AdminPanel/Tabs/Search/useServer";
 import style from '../Search.module.scss'
 
-const HomeScreen = () => {
+const HomeScreen = ({setInputValue}) => {
 
     const {getClueList} = useServer()
 
@@ -15,7 +15,7 @@ const HomeScreen = () => {
     return (
         <div className={style['homeScreen']}>
             {clueList.map((item, index) => (
-                <div>{item.name}</div>
+                <div onClick={()=>{setInputValue(item.name)}}>{item.name}</div>
             ))}
         </div>
     );

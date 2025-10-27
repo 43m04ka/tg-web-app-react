@@ -38,9 +38,31 @@
         caret-color: #AFAFAF;
         color: white;
       }
+
       > input::placeholder {
         color: #AFAFAF;
       }
     }
+  }
+}
+
+.homeScreen {
+  width: auto;
+  height: max-content;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 1vw 5vw;
+
+  > div {
+    width: max-content;
+    padding: 1.3vw 2.3vw;
+    background: #373737;
+    @extend %font;
+    border-radius: 3.5vw;
+    margin: 1vw 2vw 0 0;
+    color: white;
+    font-size: 2.5vw;
+    text-align: center;
   }
 }

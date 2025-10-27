@@ -1,6 +1,7 @@
 import React from 'react';
 import style from './Search.module.scss'
 import {useTelegram} from "../../../../hooks/useTelegram";
+import HomeScreen from "./Elements/homeScreen";
 
 const Search = () => {
     const {tg} = useTelegram()
@@ -13,11 +14,8 @@ const Search = () => {
                     <input placeholder={'Поиск'}></input>
                 </div>
             </div>
-            <div style={{textAlign:'right', margin:'auto 0 200px auto'}}>
-               {tg.viewportHeight}{'---'}
-               {window.outerHeight}{'---'}
-               {window.screen.availHeight}{'---'}
-               {window.visualViewport.height}
+            <div>
+               <HomeScreen/>
             </div>
         </div>
     );

@@ -38,7 +38,7 @@ const CatalogListBody = () => {
             return catalogStructure
         })
 
-        return (<div style={{marginBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
+        return (<div style={{marginBottom: String(window.innerWidth * 0.50) + 'px'}}>
                 {catalogStructureResultList.map((catalogStructure) => {
                     return (<HomeBlock data={catalogStructure}/>)
                 })}

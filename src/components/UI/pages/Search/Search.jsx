@@ -52,6 +52,8 @@ const Search = () => {
             timerId = window.setTimeout(() => {
                 getCardList().then()
             }, 250)
+        }else{
+            setCardList([])
         }
     }, [inputValue])
 
@@ -70,8 +72,7 @@ const Search = () => {
                     {cardList.map(card => (<SearchPosition data={card}/>))}
                 </div>) :
                 (<div>
-                    <HomeScreen setInputValue={setInputValue
-                    }/>
+                    <HomeScreen setInputValue={setInputValue}/>
                 </div>)}
 
         </div>

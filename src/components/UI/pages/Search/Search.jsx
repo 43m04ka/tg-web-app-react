@@ -5,12 +5,14 @@ import HomeScreen from "./Elements/homeScreen";
 import useGlobalData from "../../../../hooks/useGlobalData";
 import cardList from "../AdminPanel/Tabs/EditCatalogs/CardList";
 import SearchPosition from "./Elements/SearchPosition";
+import {useNavigate} from "react-router-dom";
 
 let timerId = -1
 
 const Search = () => {
     const {tg} = useTelegram()
     const {pageId} = useGlobalData()
+    const navigate = useNavigate()
 
     const [inputValue, setInputValue] = React.useState('')
     const [cardList, setCardList] = React.useState(null)
@@ -52,8 +54,8 @@ const Search = () => {
             timerId = window.setTimeout(() => {
                 getCardList().then()
             }, 250)
-        }else{
-            setCardList([])
+        } else {
+            setCardList(null)
         }
     }, [inputValue])
 
@@ -65,16 +67,26 @@ const Search = () => {
                     <input placeholder={'Поиск'} value={inputValue} onChange={(event) => {
                         setInputValue(event.target.value)
                     }}></input>
+                    <button onClick={()=>{setInputValue('')}}>
+                        <div/>
+                    </button>
                 </div>
             </div>
-            {cardList !== null && inputValue !== '' ?
-                (<div className={style['scrollList']}>
-                    {cardList.map(card => (<SearchPosition data={card}/>))}
-                </div>) :
+            {cardList !== null ? (cardList.length > 0 ?
+                    (<div className={style['scrollList']}>
+                        {cardList.map(card => (<SearchPosition data={card}/>))}
+                        <div className={style['helpPlace']}>
+                            <div> не нашли то, что искали?</div>
+                            <div> напишите нам, мы поможем</div>
+                            <button onClick={() => navigate('https://t.me/gwstore_admin')}>написать в поддержку</button>
+                        </div>
+                    </div>) :
+                    (<div className={style['emptyList']}>
+
+                    </div>)) :
                 (<div>
                     <HomeScreen setInputValue={setInputValue}/>
                 </div>)}
-
         </div>
     );
 };

@@ -241,7 +241,7 @@ const Search_old = ({height}) => {
                     width: '250px',
                     fontSize: '14px',
                     background: '#52a557',
-                }}>Написать администратору
+                }}>Написать администратор
                 </button>
             </a>
         </div>

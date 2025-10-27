@@ -38,8 +38,6 @@ const MainPage = ({page}) => {
                 <CatalogListHead/>
                 <CatalogListBody/>
             </div>
-
-
         </div>
         <div style={{zIndex: zIndexTab}}>
             <div style={{height: heightTab, bottom: String(height) + 'px'}}>

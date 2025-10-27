@@ -36,7 +36,7 @@ const CatalogListBody = () => {
             return catalogStructure
         })
 
-        return (<div>
+        return (<div style={{marginBottom:'19%'}}>
                 {catalogStructureResultList.map((catalogStructure) => {
                     return (<HomeBlock data={catalogStructure}/>)
                 })}

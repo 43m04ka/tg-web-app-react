@@ -16,7 +16,7 @@ const MainPage = ({page}) => {
     const {tg} = useTelegram();
     const [heightTab, setHeightTab] = useState(0);
     const [zIndexTab, setZIndexTab] = useState(-10);
-    const [height, setHeight] = useState(window.screen.availHeight);
+    const [height, setHeight] = useState(0);
     const {pageId, setPageId} = useGlobalData()
 
 
@@ -49,8 +49,11 @@ const MainPage = ({page}) => {
                 </Routes>
             </div>
         </div>
-        <NavigationBar setZIndexTab={setZIndexTab} zIndexTab={zIndexTab} heightTab={heightTab}
-                       setHeightTab={setHeightTab}/>
+        <div style={{bottom: String(height) + 'px'}}>
+            <NavigationBar setZIndexTab={setZIndexTab} zIndexTab={zIndexTab} heightTab={heightTab}
+                           setHeightTab={setHeightTab}/>
+        </div>
+
         {/*<div style={{height: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px', overflow:'hidden', background:'#222222', zIndex:'-100'}}><div style={{height: '100vh'}}/></div>*/}
     </div>);
 };

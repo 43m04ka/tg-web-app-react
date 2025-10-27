@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import style from './Search.module.scss'
 import {useTelegram} from "../../../../hooks/useTelegram";
 import HomeScreen from "./Elements/homeScreen";
@@ -13,6 +13,7 @@ const Search = () => {
     const {tg} = useTelegram()
     const {pageId} = useGlobalData()
     const navigate = useNavigate()
+    const inputRef = useRef()
 
     const [inputValue, setInputValue] = React.useState('')
     const [cardList, setCardList] = React.useState(null)
@@ -53,7 +54,7 @@ const Search = () => {
     }
 
     useEffect(()=>{
-
+        inputRef.current.focus()
     }, [])
 
     useEffect(() => {
@@ -77,7 +78,7 @@ const Search = () => {
                         if(event.target.value === ''){
                             setCardList(null)
                         }
-                    }}></input>
+                    }} ref={inputRef}></input>
                     <button onClick={()=>{setInputValue(''); setCardList(null)}}>
                         <div/>
                     </button>

@@ -87,7 +87,7 @@ const SearchPosition = ({data : item}) => {
 
     return (
         <div className={'list-element'}
-             style={{marginLeft: '20px', width: String(window.innerWidth - 40) + 'px'}}>
+             style={{marginLeft: '5%', width: String(window.innerWidth - 40) + 'px', marginTop:'0', marginBottom: '3%'}}>
             <Link to={'/card/' + item.id} className={'link-element'}
                   style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>
                 <div style={{

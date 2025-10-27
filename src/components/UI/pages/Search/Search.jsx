@@ -68,7 +68,7 @@ const Search = () => {
                 </div>
             </div>
             {cardList !== null && inputValue !== '' ?
-                (<div>
+                (<div className={style['scrollList']}>
                     {cardList.map(card => (<SearchPosition data={card}/>))}
                 </div>) :
                 (<div>

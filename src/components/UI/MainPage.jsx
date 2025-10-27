@@ -33,13 +33,13 @@ const MainPage = ({page}) => {
 
 
     return (<div className={style['mainDivision']} style={{height:String(window.screen.availHeight) + 'px'}}>
-        <div>
+        <div style={{zIndex: 0}}>
             <div>
                 <CatalogListHead/>
                 <CatalogListBody/>
             </div>
         </div>
-        <div>
+        <div style={{zIndex: zIndexTab}}>
             <div style={{height: heightTab, bottom: String(height) + 'px', zIndex: zIndexTab}}>
                 <Routes>
                     <Route path="/search" element={<Search/>}/>

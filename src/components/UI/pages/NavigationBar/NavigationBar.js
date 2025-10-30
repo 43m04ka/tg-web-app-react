@@ -9,7 +9,6 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab}) => {
     const {tg} = useTelegram()
 
     const [typeBar, setTypeBar] = useState(false)
-    const [selectPlatformIsOpen, setSelectPlatformIsOpen] = useState(false)
 
     const navigate = useNavigate()
 
@@ -54,6 +53,24 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab}) => {
         })
     }, [])
 
+    useEffect(() => {
+        let button = buttons[activeTab];
+        if (button.heightTab !== 0 || heightTab === 0) {
+            setTimeout(() => {
+                navigate(button.path)
+                setHeightTab(button.heightTab)
+                setZIndexTab(button.heightTab === 0 ? -100 : 100)
+            }, 100)
+        } else {
+            setHeightTab(button.heightTab)
+            setTimeout(() => {
+                navigate(button.path);
+                setZIndexTab(button.heightTab === 0 ? -100 : 100)
+            }, 300)
+
+        }
+    }, [activeTab])
+
     return (<div className={style[typeBar ? 'container' : 'island']}
                  style={typeBar ? {paddingBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'} :
                      {marginBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
@@ -63,25 +80,11 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab}) => {
         <div>
 
             {buttons.map((button, index) => (
-                <div className={style['activeTab-' + (activeTab === index)]} onClick={() => {
+                <div className={style['activeTab-' + (activeTab === index)]} onTouchStart={() => {
                     if (button.path === 'selectPlatform') {
                         setSelectPlatformIsOpen(!selectPlatformIsOpen);
                     } else {
                         setActiveTab(index);
-                        if (button.heightTab !== 0 || heightTab === 0) {
-                            setTimeout(() => {
-                                navigate(button.path)
-                                setHeightTab(button.heightTab)
-                                setZIndexTab(button.heightTab === 0 ? -100 : 100)
-                            }, 100)
-                        } else {
-                            setHeightTab(button.heightTab)
-                            setTimeout(() => {
-                                navigate(button.path);
-                                setZIndexTab(button.heightTab === 0 ? -100 : 100)
-                            }, 300)
-
-                        }
                     }
 
                 }}>
@@ -89,7 +92,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab}) => {
                     <p>{button.label}</p>
                 </div>))}
         </div>
-        {selectPlatformIsOpen ? (<SelectPlatform/>) : ''}
+        <SelectPlatform/>
     </div>);
 };
 

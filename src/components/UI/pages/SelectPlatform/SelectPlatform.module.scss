@@ -2,46 +2,58 @@
 
 .container {
   position: absolute;
-  bottom: 110%;
+  bottom: 0;
+  padding-bottom: 16%;
   transition-property: margin-top, height;
   transition-duration: 0.3s;
   transition-timing-function: ease-in-out;
-  border-radius: 3vw;
-  margin-left: (2.5% + ((95% / 5) * 4) - (95% / 10) - ((95% / 5) * 2.8 / 2));
-  width: (95% / 5) * 2.8;
-  background-color: #242424;
+  margin-left: (2.5% + ((95% / 5) * 4) - (95% / 10) - ((95% / 5) / 2));
+  width: (95% / 5);
   display: flex;
   flex-direction: column;
-  z-index: 250;
-  overflow: hidden;
+  z-index: 500;
 
-  div:nth-child(2n+1){
-    padding: 1.25vw 0;
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    align-items: center;
+  >div {
+    position: absolute;
+    overflow: hidden;
+    width: 280%;
+    margin-left: -90%;
+    bottom: 100%;
+    z-index: 600;
+    border-radius: 3vw;
+    background-color: #242424;
 
-    >div:nth-child(1){
-      @extend %font;
-      font-weight: 300;
-      margin: auto auto auto 7%;
-      color: white;
-      width: max-content;
-      font-size: 3.5vw;
+    div:nth-child(2n+1) {
+      z-index: 250;
+      padding: 1.25vw 0;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      > div:nth-child(1) {
+        @extend %font;
+        font-weight: 300;
+        margin: auto auto auto 7%;
+        color: white;
+        width: max-content;
+        font-size: 3.5vw;
+      }
+
+      > div:nth-child(2) {
+        background: none;
+        width: 4.5vw;
+        height: 4.5vw;
+        margin: auto 7% auto 0;
+        background-size: cover;
+      }
     }
-    >div:nth-child(2){
-      background: none;
-      width: 4.5vw;
-      height: 4.5vw;
-      margin: auto 7% auto 0;
-      background-size: cover;
+
+    div:nth-child(2n) {
+      z-index: 250;
+      width: 100%;
+      height: 1px;
+      background-color: #837e7e;
     }
-  }
-  div:nth-child(2n){
-    width: 100%;
-    height: 1px;
-    background-color: #837e7e;
   }
 }
 

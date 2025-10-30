@@ -4,9 +4,6 @@
   position: absolute;
   bottom: 0;
   padding-bottom: 16%;
-  transition-property: margin-top, height;
-  transition-duration: 0.3s;
-  transition-timing-function: ease-in-out;
   margin-left: (2.5% + ((95% / 5) * 4) - (95% / 10) - ((95% / 5) / 2));
   width: (95% / 5);
   display: flex;
@@ -18,6 +15,9 @@
   >div {
     position: absolute;
     overflow: hidden;
+    transition-property: scale, opacity;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-in-out;
     width: 280%;
     margin-left: -90%;
     bottom: 110%;
@@ -25,6 +25,7 @@
     border-radius: 30px;
     background-color: #242424;
     @extend %no-select;
+    padding-bottom: 10%;
 
 
     div {
@@ -68,7 +69,7 @@
   height: 7vw;
   width: max-content;
   font-size: 3.5vw;
-  margin: 1vw auto auto auto !important;
+  margin: 2vw auto auto auto !important;
   display: flex;
   @extend %no-select;
 }

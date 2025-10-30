@@ -34,7 +34,7 @@ const SelectPlatform = ({onClose}) => {
                 setTimeout(() => setIsOpen(false), 50)
             }
         }}>
-            <div style={!isOpen ? {height: '0'} : {height: String((7 * (pageList.length + 2.1))/100 * window.innerWidth) + 'px'}}>
+            <div style={!isOpen ? {scale: '0.9', opacity:'0'} : {height: 'max-content', opacity:'1', scale:'1'}}>
                 <div className={style['label']}>Выберите платформу</div>
                 {pageList.map((item, index) => (
                     <>

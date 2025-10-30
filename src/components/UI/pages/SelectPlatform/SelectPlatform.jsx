@@ -34,7 +34,7 @@ const SelectPlatform = ({onClose}) => {
                 setTimeout(() => setIsOpen(false), 50)
             }
         }}>
-            <div style={!isOpen ? {height: '0'} : {height: String(7.25 * (pageList.length + 1)) + 'vw'}}>
+            <div style={!isOpen ? {height: '0'} : {height: String((7 * (pageList.length + 1))/100 * window.innerWidth + pageList.length) + 'px'}}>
                 {pageList.map((item, index) => (
                     <>
                         <div className={style[mouseDownId === index ? 'selectedItem' : '']} id={index}>

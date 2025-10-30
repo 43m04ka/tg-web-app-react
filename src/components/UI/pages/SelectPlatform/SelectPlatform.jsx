@@ -35,6 +35,7 @@ const SelectPlatform = ({setActiveTab, activeTab}) => {
                  let id = document.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY).id || -1
                  if (id !== mouseDownId) {
                      window.Telegram.WebApp.HapticFeedback.impactOccurred('soft')
+                     window.navigator.vibrate(100)
                      setMouseDownId(Number(id))
                  }
              }} onTouchEnd={(e) => {

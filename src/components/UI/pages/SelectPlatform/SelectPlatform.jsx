@@ -35,6 +35,7 @@ const SelectPlatform = ({setActiveTab, activeTab}) => {
                  let id = document.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY).id || -1
                  if (id !== mouseDownId) {
                      setMouseDownId(Number(id))
+                     window.navigator.vibrate(10)
                  }
              }} onTouchEnd={(e) => {
             let id = Number(document.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY).id)

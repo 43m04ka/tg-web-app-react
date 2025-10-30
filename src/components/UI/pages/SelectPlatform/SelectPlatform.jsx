@@ -1,14 +1,20 @@
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import style from './SelectPlatform.module.scss'
 import useGlobalData from "../../../../hooks/useGlobalData";
 import {useNavigate} from "react-router-dom";
 
-const SelectPlatform = ({onClose}) => {
+const SelectPlatform = ({setActiveTab, activeTab}) => {
     const {pageList, setPageId} = useGlobalData()
     const [mouseDownId, setMouseDownId] = React.useState(-1);
     const [isOpen, setIsOpen] = React.useState(false)
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if(activeTab !== 3) {
+            setIsOpen(false)
+        }
+    }, [activeTab]);
 
     return (
         <div className={style['container']} id={-2}
@@ -19,8 +25,10 @@ const SelectPlatform = ({onClose}) => {
                  }
                  if (isOpen && id === -2) {
                      setIsOpen(false)
+                     setActiveTab(0)
                  }else{
                      setIsOpen(true)
+                     setActiveTab(3)
                  }
              }}
              onTouchMove={(e) => {
@@ -32,7 +40,7 @@ const SelectPlatform = ({onClose}) => {
             let id = Number(document.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY).id)
             if ((typeof id !== 'undefined') && id !== -1 && id !== -2) {
                 setPageId(pageList[id].id)
-                navigate('/' + pageList[id].link)
+                setActiveTab(0)
             }
             if (id !== -2 || (id === -2 && isOpen && (mouseDownId !== -2))) {
                 setIsOpen(false)

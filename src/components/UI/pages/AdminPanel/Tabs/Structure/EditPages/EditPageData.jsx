@@ -37,10 +37,16 @@ const EditPageData = ({onClose, updatePageList, id}) => {
                                 newJson['link'] = e.target.value;
                                 setUpdatePageJson(newJson);
                             }}/>
-                <InputLabel label={'Изображение'} defaultValue={pageData.url}
+                <InputLabel label={'Изображение в переключателе'} defaultValue={pageData.url}
                             onChange={(e) => {
                                 let newJson = updatePageJson
                                 newJson['url'] = e.target.value;
+                                setUpdatePageJson(newJson);
+                            }}/>
+                <InputLabel label={'Изображение в баре'} defaultValue={pageData.urlBar}
+                            onChange={(e) => {
+                                let newJson = updatePageJson
+                                newJson['urlBar'] = e.target.value;
                                 setUpdatePageJson(newJson);
                             }}/>
                 <InputLabel label={'Порядковый номер'} defaultValue={pageData.serialNumber}

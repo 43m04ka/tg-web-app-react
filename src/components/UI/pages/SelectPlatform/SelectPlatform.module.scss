@@ -22,49 +22,53 @@
     margin-left: -90%;
     bottom: 110%;
     z-index: 600;
-    border-radius: 3vw;
+    border-radius: 30px;
     background-color: #242424;
     @extend %no-select;
 
 
-    div:nth-child(2n+1) {
+    div {
       z-index: 250;
       padding: 1.25vw 0;
+      margin: 0 5%;
       display: flex;
       flex-direction: row;
       align-items: center;
       @extend %no-select;
 
-
       > div:nth-child(1) {
-        @extend %font;
-        font-weight: 300;
-        margin: auto auto auto 7%;
-        color: white;
-        width: max-content;
-        font-size: 3.5vw;
-        @extend %no-select;
-
-      }
-
-      > div:nth-child(2) {
         background: none;
         width: 4.5vw;
         height: 4.5vw;
-        margin: auto 7% auto 0;
+        margin: auto 7% auto 7%;
         background-size: cover;
       }
-    }
 
-    div:nth-child(2n) {
-      z-index: 250;
-      width: 100%;
-      height: 1px;
-      background-color: #464646;
+      > div:nth-child(2) {
+        @extend %font;
+        margin: auto auto auto 0;
+        color: white;
+        width: max-content;
+        font-size: 3vw;
+        @extend %no-select;
+
+      }
     }
   }
 }
 
 .selectedItem{
   background: #464646;
+  border-radius: 3vh;
+}
+
+.label{
+  @extend %font;
+  color: #8f8f8f;
+  height: 7vw;
+  width: max-content;
+  font-size: 3.5vw;
+  margin: 2% auto auto auto !important;
+  display: flex;
+  @extend %no-select;
 }

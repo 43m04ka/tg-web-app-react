@@ -34,14 +34,14 @@ const SelectPlatform = ({onClose}) => {
                 setTimeout(() => setIsOpen(false), 50)
             }
         }}>
-            <div style={!isOpen ? {height: '0'} : {height: String((7 * (pageList.length + 1))/100 * window.innerWidth + pageList.length) + 'px'}}>
+            <div style={!isOpen ? {height: '0'} : {height: String((7 * (pageList.length + 2.1))/100 * window.innerWidth) + 'px'}}>
+                <div className={style['label']}>Выберите платформу</div>
                 {pageList.map((item, index) => (
                     <>
                         <div className={style[mouseDownId === index ? 'selectedItem' : '']} id={index}>
-                            <div id={index}>{item.name}</div>
                             <div id={index} style={{backgroundImage: `url(${item.url})`}}/>
+                            <div id={index}>{item.name}</div>
                         </div>
-                        {index + 1 !== pageList.length ? <div/> : ''}
                     </>
                 ))}</div>
         </div>

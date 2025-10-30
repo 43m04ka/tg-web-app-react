@@ -7,9 +7,9 @@
   transition-duration: 0.3s;
   transition-timing-function: ease-in-out;
   border-radius: 3vw;
-  margin-left: (((95vw / 5) * 4) - (95vw / 10) - ((95vw / 5) * 2.8 / 2));
-  width: (95vw / 5) * 2.8;
-  background-color: rgb(46, 43, 43);
+  margin-left: (2.5% + ((95% / 5) * 4) - (95% / 10) - ((95% / 5) * 2.8 / 2));
+  width: (95% / 5) * 2.8;
+  background-color: #242424;
   display: flex;
   flex-direction: column;
   z-index: 250;
@@ -23,15 +23,16 @@
 
     >div:nth-child(1){
       @extend %font;
+      font-weight: 300;
       margin: auto auto auto 7%;
       color: white;
       width: max-content;
-      font-size: 3vw;
+      font-size: 3.5vw;
     }
     >div:nth-child(2){
       background: none;
-      width: 4vw;
-      height: 4vw;
+      width: 4.5vw;
+      height: 4.5vw;
       margin: auto 7% auto 0;
       background-size: cover;
     }

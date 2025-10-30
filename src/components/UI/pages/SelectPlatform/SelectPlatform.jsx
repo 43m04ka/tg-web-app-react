@@ -2,13 +2,13 @@
 import React, {useEffect} from 'react';
 import style from './SelectPlatform.module.scss'
 import useGlobalData from "../../../../hooks/useGlobalData";
-import {useNavigate} from "react-router-dom";
+
 
 const SelectPlatform = ({setActiveTab, activeTab}) => {
     const {pageList, setPageId} = useGlobalData()
     const [mouseDownId, setMouseDownId] = React.useState(-1);
     const [isOpen, setIsOpen] = React.useState(false)
-    const navigate = useNavigate();
+
 
     useEffect(() => {
         if(activeTab !== 3) {
@@ -19,7 +19,7 @@ const SelectPlatform = ({setActiveTab, activeTab}) => {
     return (
         <div className={style['container']} id={-2}
              onTouchStart={(e) => {
-                 let id = Number(document.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY).id || -1)
+                 let id = Number(document?.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY).id || -1)
                  if (id !== mouseDownId) {
                      setMouseDownId(Number(id))
                  }
@@ -34,8 +34,8 @@ const SelectPlatform = ({setActiveTab, activeTab}) => {
              onTouchMove={(e) => {
                  let id = document.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY).id || -1
                  if (id !== mouseDownId) {
+                     window.Telegram.WebApp.HapticFeedback.impactOccurred('soft')
                      setMouseDownId(Number(id))
-                     window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
                  }
              }} onTouchEnd={(e) => {
             let id = Number(document.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY).id)

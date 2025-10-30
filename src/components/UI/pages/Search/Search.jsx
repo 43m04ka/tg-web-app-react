@@ -73,7 +73,7 @@ const Search = () => {
             <div>
                 <div>
                     <div/>
-                    <input placeholder={'Поиск'} value={inputValue} onChange={(event) => {
+                    <input placeholder={'Поиск'} autoFocus value={inputValue} onChange={(event) => {
                         setInputValue(event.target.value)
                         if(event.target.value === ''){
                             setCardList(null)

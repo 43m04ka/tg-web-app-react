@@ -8,3 +8,10 @@ $menu-color: #222222;
   font-variant: normal;
   font-weight: 700;
 }
+
+%no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

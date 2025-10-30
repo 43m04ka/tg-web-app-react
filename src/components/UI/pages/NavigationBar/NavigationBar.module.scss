@@ -76,6 +76,7 @@
 
   }
   > div:nth-child(2) {
+    @extend %no-select;
     height: 8%;
     margin: 2% 2%;
     width: 95vw;
@@ -86,6 +87,7 @@
 
 
     > div {
+      @extend %no-select;
       z-index: 300;
       height: max-content;
       width: 100%;
@@ -95,7 +97,7 @@
       transition-duration: 0.2s;
 
       > div {
-
+        @extend %no-select;
         width: 7vw;
         height: 7vw;
         margin: auto auto 0 auto;
@@ -103,6 +105,7 @@
       }
 
       > p {
+        @extend %no-select;
         font-size: 2.5vw;
         margin: 0.8vw;
         color: white;

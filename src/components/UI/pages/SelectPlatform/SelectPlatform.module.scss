@@ -15,7 +15,7 @@
   >div {
     position: absolute;
     overflow: hidden;
-    transition-property: scale, opacity;
+    transition-property: scale, opacity, height;
     transition-duration: 0.1s;
     transition-timing-function: ease-in-out;
     width: 280%;

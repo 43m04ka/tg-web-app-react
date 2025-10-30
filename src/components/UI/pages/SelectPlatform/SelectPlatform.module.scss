@@ -1,0 +1,28 @@
+@import "../../../styles/mainStyle";
+
+.container {
+  position: absolute;
+  width: 100%;
+  bottom: 100%;
+  transition-property: margin-top, height;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in-out;
+  height: 100px;
+
+
+  > div {
+    height: 100%;
+    margin-left: (5vw + ((90vw / 5) * 4) - (90vw / 10) - ((90vw / 5) * 2.3 / 2));
+
+    > div {
+      width: (90vw / 5) * 2.3;
+      height: 100%;
+      backdrop-filter: blur(10px) contrast(50%);
+      -webkit-backdrop-filter: blur(10px) contrast(50%);
+      border: 1px solid rgba(145, 142, 142, 0.3);
+      background-color: rgba(0, 0, 0, 0.6);
+      display: flex;
+      z-index: 250;
+    }
+  }
+}

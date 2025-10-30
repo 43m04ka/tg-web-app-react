@@ -10,7 +10,7 @@ import {Route, Routes} from "react-router-dom";
 import Search from "./pages/Search/Search";
 import Basket from "./pages/Basket/Basket";
 import Info from "./pages/other/Info";
-import SelectPlatform from "./pages/MainScreen/SelectPlatform/SelectPlatform";
+import SelectPlatform from "./pages/SelectPlatform/SelectPlatform";
 
 const MainPage = ({page}) => {
     const {tg} = useTelegram();

@@ -2,12 +2,14 @@ import React, {useEffect, useState} from 'react';
 import style from './NavigationBar.module.scss'
 import {useNavigate} from "react-router-dom";
 import {useTelegram} from "../../../../hooks/useTelegram";
+import SelectPlatform from "../SelectPlatform/SelectPlatform";
 
 const NavigationBar = ({setHeightTab, heightTab, setZIndexTab}) => {
 
     const {tg} = useTelegram()
 
     const [typeBar, setTypeBar] = useState(false)
+    const [selectPlatformIsOpen, setSelectPlatformIsOpen] = useState(false)
 
     const navigate = useNavigate()
 
@@ -33,8 +35,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab}) => {
         {
             label: 'Платформа',
             icon: 'PS',
-            path: 'selectPlatform',
-            heightTab: 'max-content'
+            path: 'selectPlatform'
         },
         {
             label: 'Еще',
@@ -64,7 +65,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab}) => {
             {buttons.map((button, index) => (
                 <div className={style['activeTab-' + (activeTab === index)]} onClick={() => {
                     if (button.path === 'selectPlatform') {
-                        setTypeBar(!typeBar)
+                        setSelectPlatformIsOpen(!selectPlatformIsOpen);
                     } else {
                         setActiveTab(index);
                         if (button.heightTab !== 0 || heightTab === 0) {
@@ -88,6 +89,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab}) => {
                     <p>{button.label}</p>
                 </div>))}
         </div>
+        {selectPlatformIsOpen ? (<SelectPlatform/>) : ''}
     </div>);
 };
 

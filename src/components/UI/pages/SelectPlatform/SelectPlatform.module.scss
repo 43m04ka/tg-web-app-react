@@ -40,7 +40,7 @@
         background: none;
         width: 5vw;
         height: 5vw;
-        margin: auto 3% auto 6%;
+        margin: auto 1.5vw auto 3vw;
         background-size: cover;
       }
 
@@ -68,7 +68,7 @@
   height: 7vw;
   width: max-content;
   font-size: 3.5vw;
-  margin: 2% auto auto auto !important;
+  margin: 1vw auto auto auto !important;
   display: flex;
   @extend %no-select;
 }

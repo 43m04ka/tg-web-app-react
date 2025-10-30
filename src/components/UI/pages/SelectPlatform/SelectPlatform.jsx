@@ -8,13 +8,17 @@ const SelectPlatform = ({onClose}) => {
     const [isOpen, setIsOpen] = React.useState(false)
 
     return (
-        <div className={style['container']}
+        <div className={style['container']} id={-2}
              onTouchStart={(e) => {
-                 let id = document.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY).id || -1
+                 let id = Number(document.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY).id || -1)
                  if (id !== mouseDownId) {
                      setMouseDownId(Number(id))
                  }
-                 setIsOpen(true)
+                 if (isOpen && id === -2) {
+                     setIsOpen(false)
+                 }else{
+                     setIsOpen(true)
+                 }
              }}
              onTouchMove={(e) => {
                  let id = document.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY).id || -1
@@ -22,13 +26,15 @@ const SelectPlatform = ({onClose}) => {
                      setMouseDownId(Number(id))
                  }
              }} onTouchEnd={(e) => {
-            let id = document.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY).id || -1
-            if(typeof id !== 'undefined' && id !== -1) {
-                setTimeout(()=>setPageId(pageList[id].id), 50)
+            let id = Number(document.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY).id)
+            if ((typeof id !== 'undefined') && id !== -1 && id !== -2) {
+                setPageId(pageList[id].id)
             }
-            setTimeout(()=>setIsOpen(false), 50)
+            if (id !== -2 || (id === -2 && isOpen && (mouseDownId !== -2))) {
+                setTimeout(() => setIsOpen(false), 50)
+            }
         }}>
-            <div style={!isOpen ? {height: '0'} : {height: String(7.25*(pageList.length+1)) + 'vw'}} >
+            <div style={!isOpen ? {height: '0'} : {height: String(7.25 * (pageList.length + 1)) + 'vw'}}>
                 {pageList.map((item, index) => (
                     <>
                         <div className={style[mouseDownId === index ? 'selectedItem' : '']} id={index}>

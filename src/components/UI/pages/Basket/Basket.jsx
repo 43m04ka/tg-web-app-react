@@ -3,12 +3,13 @@ import style from './Basket.module.scss';
 import {useServer} from "./useServer";
 import {useTelegram} from "../../../../hooks/useTelegram";
 import useGlobalData from "../../../../hooks/useGlobalData";
-import ProductItemBasket from "./Bascet_old/ProductItemBasket";
+import ProductItemBasket from "./Elements/ProductItemBasket";
+import AccountData from "./Elements/AccountData";
 
 const Basket = () => {
 
     const {getBasketList} = useServer()
-    const {user} = useTelegram()
+    const {user, tg} = useTelegram()
     const {pageId, catalogList} = useGlobalData()
 
     const [positionList, setPositionList] = React.useState(null)
@@ -31,17 +32,19 @@ const Basket = () => {
 
     console.log(positionList)
 
-    if (positionList.length === 0) {
+    if(positionList !== null) {
+        if (positionList.length === 0) {
 
-    } else if (positionList.length > 0) {
+        } else if (positionList.length > 0) {
 
-        return (
-            <div className={style['mainContainer']}>
-                <div className={style['title']}>Ваша корзина</div>
-                {positionList.map(item => (<ProductItemBasket product={item} onReload={reload}/>))}
-            </div>
-        );
-
+            return (
+                <div className={style['mainContainer']} style={{paddingBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
+                    <div className={style['title']}>Ваша корзина</div>
+                    {positionList.map(item => (<ProductItemBasket product={item} onReload={reload}/>))}
+                    <AccountData/>
+                </div>
+            );
+        }
     }
 };
 

@@ -3,6 +3,7 @@
 .mainContainer {
   display: flex;
   flex-direction: column;
+  overflow-y: scroll;
   width: 100%;
   height: 100%;
 }

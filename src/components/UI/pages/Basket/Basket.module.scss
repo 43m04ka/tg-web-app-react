@@ -1,0 +1,14 @@
+@import "src/components/styles/mainStyle";
+
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+.title{
+  @extend %font;
+  margin: 4vw auto;
+  font-size: 5vw;
+  color: white;
+}

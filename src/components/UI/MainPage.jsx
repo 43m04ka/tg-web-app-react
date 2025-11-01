@@ -12,6 +12,7 @@ import Basket from "./pages/Basket/Basket";
 import Info from "./pages/other/Info";
 import SelectPlatform from "./pages/SelectPlatform/SelectPlatform";
 
+
 const MainPage = ({page}) => {
     const {tg} = useTelegram();
     const [heightTab, setHeightTab] = useState(0);

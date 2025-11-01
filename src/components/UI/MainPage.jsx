@@ -28,29 +28,31 @@ const MainPage = ({page}) => {
         }
     }, [])
 
-    useEffect(()=>{
-        setHeight(window.innerHeight - window.screen.availHeight)
-    }, [window.screen.availHeight, window.innerHeight])
+    useEffect(() => {
+        if(window.innerHeight > height) {
+            setHeight(window.innerHeight)
+        }
+    }, [window.innerHeight])
 
 
-    return (<div className={style['mainDivision']} style={{height:String(window.screen.availHeight) + 'px'}}>
+    return (<div className={style['mainDivision']} style={{height: String(height) + 'px'}}>
         <div style={{zIndex: 0}}>
             <div>
                 <CatalogListHead/>
                 <CatalogListBody/>
             </div>
         </div>
-        <div style={{zIndex: zIndexTab}}>
-            <div style={{height: heightTab, bottom: String(height) + 'px', zIndex: zIndexTab}}>
-                <Routes>
-                    <Route path="/search" element={<Search/>}/>
-                    <Route path="/basket" element={<Basket/>}/>
-                    <Route path="/selectPlatform" element={<SelectPlatform/>}/>
-                    <Route path="/more" element={<Info/>}/>
-                </Routes>
-            </div>
+        <div style={{zIndex: zIndexTab, height: String(height) + 'px'}}>
+                <div style={{height: heightTab, zIndex: zIndexTab}}>
+                    <Routes>
+                        <Route path="/search" element={<Search/>}/>
+                        <Route path="/basket" element={<Basket/>}/>
+                        <Route path="/selectPlatform" element={<SelectPlatform/>}/>
+                        <Route path="/more" element={<Info/>}/>
+                    </Routes>
+                </div>
         </div>
-        <div style={{bottom: String(height + window.screen.availWidth * 0.03) + 'px'}}>
+        <div style={{height: String(height) + 'px'}}>
             <NavigationBar setZIndexTab={setZIndexTab} zIndexTab={zIndexTab} heightTab={heightTab}
                            setHeightTab={setHeightTab}/>
         </div>

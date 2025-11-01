@@ -5,6 +5,7 @@ import {useTelegram} from "../../../../hooks/useTelegram";
 import useGlobalData from "../../../../hooks/useGlobalData";
 import ProductItemBasket from "./Elements/ProductItemBasket";
 import AccountData from "./Elements/AccountData";
+import PromoInput from "./Elements/PromoInput";
 
 const Basket = () => {
 
@@ -42,6 +43,7 @@ const Basket = () => {
                     <div className={style['title']}>Ваша корзина</div>
                     {positionList.map(item => (<ProductItemBasket product={item} onReload={reload}/>))}
                     <AccountData/>
+                    <PromoInput/>
                 </div>
             );
         }

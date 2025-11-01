@@ -23,11 +23,10 @@
   }
 
   > div:nth-child(2) {
-
     position: absolute;
     width: 100vw;
-    height: 100%;
-    bottom: 0;
+    top: 0;
+
 
     > div {
       position: absolute;
@@ -41,10 +40,12 @@
       transition-duration: 0.3s;
       transition-timing-function: ease-in-out;
     }
+
   }
 
   > div:nth-child(3) {
     position: absolute;
     width: 100vw;
+    top: 0;
   }
 }

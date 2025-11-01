@@ -104,7 +104,7 @@ const Search = () => {
                     </div>)) :
                 (<div>
                     <HomeScreen setInputValue={setInputValue}/>
-                    <div className={style['welcome']}/>>
+                    <div className={style['welcome']}/>
                 </div>)}
         </div>
     );

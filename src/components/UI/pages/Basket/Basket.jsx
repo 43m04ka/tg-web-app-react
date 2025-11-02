@@ -42,8 +42,8 @@ const Basket = () => {
                 <div className={style['mainContainer']} style={{paddingBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
                     <div className={style['title']}>Ваша корзина</div>
                     {positionList.map(item => (<ProductItemBasket product={item} onReload={reload}/>))}
-                    <AccountData/>
-                    <PromoInput/>
+                    {pageId !== 29 ? <AccountData/> : ''}
+                    {/*<PromoInput/>*/}
                 </div>
             );
         }

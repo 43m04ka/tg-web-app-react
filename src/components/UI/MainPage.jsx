@@ -36,7 +36,7 @@ const MainPage = ({page}) => {
 
 
     return (<div className={style['mainDivision']} style={{height: String(height) + 'px'}}>
-        <div style={{zIndex: 0}}>
+        <div style={{zIndex: 100, height: String(height) + 'px'}}>
             <div>
                 <CatalogListHead/>
                 <CatalogListBody/>
@@ -52,7 +52,7 @@ const MainPage = ({page}) => {
                     </Routes>
                 </div>
         </div>
-        <div style={{height: String(height) + 'px'}}>
+        <div style={{top: String(height-10) + 'px'}}>
             <NavigationBar setZIndexTab={setZIndexTab} zIndexTab={zIndexTab} heightTab={heightTab}
                            setHeightTab={setHeightTab} height={height}/>
         </div>

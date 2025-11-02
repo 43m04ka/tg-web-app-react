@@ -12,7 +12,7 @@
 .selectPlace {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  margin: 1vw 0vw;
+  margin: 1vw 0;
   background: #AEAEAE;
   border-radius: 15vw;
 
@@ -27,12 +27,33 @@
       transition-property: color;
       transition-duration: 0.2s;
       transition-timing-function: ease-in-out;
-      margin: 1.5vw auto;
+      margin: 2.25vw auto;
       @extend %font;
       font-weight: 500;
-      font-size: 3.5vw;
+      font-size: 3.75vw;
     }
   }
+}
+
+.input{
+  padding: 2.25vw 1vw;
+  border-radius: 15vw;
+  border: none;
+  background: white;
+  color: black;
+  @extend %font;
+  text-align: center;
+  font-size: 3.75vw;
+  margin: 1vw 0;
+  width: 100%;
+}
+
+.label{
+  @extend %font;
+  text-align: center;
+  font-size: 3.5vw;
+  color: white;
+  margin: 1vw 0;
 }
 
 .title {

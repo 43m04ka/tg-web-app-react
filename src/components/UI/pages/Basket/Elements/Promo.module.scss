@@ -1,0 +1,41 @@
+@import "src/components/styles/mainStyle";
+
+
+.mainContainer {
+  background: #454545;
+  padding: 2.5vw 3vw;
+  display: flex;
+  flex-direction: column;
+  border-radius: 6vw;
+  margin: 4vw 2vw 0 2vw;
+
+  > div {
+    background: white;
+    border-radius: 6vw;
+    display: flex;
+
+    > input {
+      @extend %font;
+      background: none;
+      text-align: center;
+      border: none;
+      outline: none;
+      padding: 2vw 3vw;
+      width: 50%;
+    }
+
+    > div {
+      background: red;
+      width: 50%;
+      height: 100%;
+      border-radius: 6vw;
+      >p{
+        @extend %font;
+        color: white;
+        font-size: 3.5vw;
+        margin: 2vw auto;
+        width: max-content;
+      }
+    }
+  }
+}

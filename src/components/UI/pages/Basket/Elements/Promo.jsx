@@ -1,0 +1,73 @@
+import React from 'react';
+import style from './Promo.module.scss'
+import {useServer} from "../useServer";
+
+const Promo = ({setPromoData}) => {
+
+    const [inputValue, setInputValue] = React.useState('');
+    const [color, setColor] = React.useState('#AEAEAE');
+    const [text, setText] = React.useState('ПРИМЕНИТЬ');
+    const {usePromo} = useServer()
+
+    const onReturnResult = (result) => {
+        if (result !== null) {
+            if (result.totalNumberUses > 0) {
+                setPromoData(result)
+                setColor('#77A246')
+                setText('Скидка активна')
+            } else {
+                setColor('#ED7373')
+                setText('Кол-во исчерпано')
+            }
+        } else {
+            setColor('#ED7373')
+            setText('Промокод не найден')
+        }
+    }
+
+    return (<div className={style['mainContainer']}>
+        <div>
+            <input
+                onClick={() => {
+                    if (text !== 'Скидка активна') {
+                        setInputValue('')
+                        setColor('#AEAEAE')
+                        setText('ПРИМЕНИТЬ')
+                    }
+                }}
+                placeholder={'Промокод'} value={inputValue}
+                onChange={(e) => {
+                    if (text !== 'Скидка активна') {
+                        setInputValue(e.target.value.toUpperCase())
+                    }
+                }}/>
+            <div onClick={() => {
+                usePromo(inputValue, onReturnResult).then()
+            }} style={{background: color}}>
+                <p>
+                    {text}
+                </p>
+            </div>
+        </div>
+    </div>);
+};
+
+export default Promo;
+
+//
+// if (result !== null) {
+//     if (result.totalNumberUses !== 0) {
+//         setPromoIsUse(true)
+//         setParcent(result.percent)
+//         setPromoButtonColor([82, 165, 87])
+//         setPromoButtonText('Скидка активна')
+//     } else {
+//         setPromoIsUse(false)
+//         setPromoButtonColor([164, 30, 30])
+//         setPromoButtonText('Кол-во исчерпано')
+//     }
+// } else {
+//     setPromoIsUse(false)
+//     setPromoButtonColor([164, 30, 30])
+//     setPromoButtonText('Промокод не найден')
+// }

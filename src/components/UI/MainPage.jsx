@@ -6,7 +6,7 @@ import style from './MainPage.module.scss'
 import NavigationBar from "./pages/NavigationBar/NavigationBar";
 import CatalogListBody from "./pages/MainScreen/CatalogList/CatalogListBody";
 import CatalogListHead from "./pages/MainScreen/CatalogList/CatalogListHead";
-import {Route, Routes} from "react-router-dom";
+import {Route, Routes, useNavigate} from "react-router-dom";
 import Search from "./pages/Search/Search";
 import Basket from "./pages/Basket/Basket";
 import Info from "./pages/other/Info";
@@ -19,6 +19,7 @@ const MainPage = ({page}) => {
     const [zIndexTab, setZIndexTab] = useState(-10);
     const [height, setHeight] = useState(0);
     const {pageId, setPageId} = useGlobalData()
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -29,7 +30,7 @@ const MainPage = ({page}) => {
     }, [])
 
     useEffect(() => {
-        if(window.innerHeight > height) {
+        if (window.innerHeight > height) {
             setHeight(window.innerHeight)
         }
     }, [window.innerHeight])
@@ -43,16 +44,21 @@ const MainPage = ({page}) => {
             </div>
         </div>
         <div style={{zIndex: zIndexTab, height: String(height) + 'px'}}>
-                <div style={{height: heightTab, zIndex: zIndexTab}}>
-                    <Routes>
-                        <Route path="/search" element={<Search/>}/>
-                        <Route path="/basket" element={<Basket/>}/>
-                        <Route path="/selectPlatform" element={<SelectPlatform/>}/>
-                        <Route path="/more" element={<Info/>}/>
-                    </Routes>
-                </div>
+            <div style={{height: heightTab, zIndex: zIndexTab}}>
+                <Routes>
+                    <Route path="/search" element={<Search/>}/>
+                    <Route path="/basket" element={<Basket onClose={() => {
+                        setHeightTab(0);
+                        setTimeout(()=>{
+                            navigate(window.location.pathname.replace('basket',''));
+                        }, 200)
+                    }}/>}/>
+                    <Route path="/selectPlatform" element={<SelectPlatform/>}/>
+                    <Route path="/more" element={<Info/>}/>
+                </Routes>
+            </div>
         </div>
-        <div style={{top: String(height-10) + 'px'}}>
+        <div style={{top: String(height - 10) + 'px'}}>
             <NavigationBar setZIndexTab={setZIndexTab} zIndexTab={zIndexTab} heightTab={heightTab}
                            setHeightTab={setHeightTab} height={height}/>
         </div>

@@ -49,18 +49,18 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
 
     const [activeTab, setActiveTab] = React.useState(0);
 
-    // useEffect(() => {
-    //     let flag = true
-    //     buttons.map((button, index) => {
-    //         if (window.location.pathname.includes(button.path) && button.path !== '') {
-    //             setActiveTab(index);
-    //             flag = false
-    //         }
-    //     })
-    //     if (flag) {
-    //         setActiveTab(0)
-    //     }
-    // }, [window.location.pathname])
+    useEffect(() => {
+        let flag = true
+        buttons.map((button, index) => {
+            if (window.location.pathname.includes(button.path) && button.path !== '') {
+                setActiveTab(index);
+                flag = false
+            }
+        })
+        if (flag) {
+            setActiveTab(0)
+        }
+    }, [window.location.pathname])
 
 
     useEffect(() => {
@@ -81,7 +81,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
                 }, 200)
             }
         }
-    }, [activeTab, window.location.pathname])
+    }, [activeTab])
 
     return (<div className={style[typeBar ? 'container' : 'island']}
                  style={typeBar ? {paddingBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'} :

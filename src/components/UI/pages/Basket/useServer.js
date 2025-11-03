@@ -59,12 +59,12 @@ export function useServer() {
         })
     }
 
-    const createOrder = async (accData, user, page) => {
+    const createOrder = async (accData, user, page, promo) => {
         fetch(`${URL}/createOrder`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            }, body: JSON.stringify({accData: accData, user: user, page: page}),
+            }, body: JSON.stringify({accData: accData, user: user, page: page, promo: promo}),
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
@@ -73,5 +73,19 @@ export function useServer() {
         })
     }
 
-    return {getPreviewBasketList, addCardToBasket, deleteCardToBasket, getBasketList, createOrder}
+    const usePromo = async (name, setResult) => {
+        await fetch(URL + '/usePromo?time=' + Date.now() + '&name=' + name, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
+    return {getPreviewBasketList, addCardToBasket, deleteCardToBasket, getBasketList, createOrder, usePromo}
 }

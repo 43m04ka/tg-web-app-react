@@ -9,7 +9,7 @@ import PromoInput from "./Elements/PromoInput";
 
 const Basket = () => {
 
-    const {getBasketList} = useServer()
+    const {getBasketList, createOrder} = useServer()
     const {user, tg} = useTelegram()
     const {pageId, catalogList} = useGlobalData()
     const [accountData, setAccountData] = useState('')
@@ -50,7 +50,9 @@ const Basket = () => {
                         <div>Итого к оплате:</div>
                         <div>{positionList.map(el=>{return el.similarCard !== null ? el.similarCard.price : el.price}).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}₽</div>
                     </div>
-                    <div>Оформить заказ</div>
+                    <div onClick={()=>{
+                        createOrder(accountData, user, pageId).then()
+                    }}>Оформить заказ</div>
                     <div>
                         Нажимая на кнопку, Вы соглашаетесь с
                         <a href={'https://t.me/gwstore_faq/12'}>

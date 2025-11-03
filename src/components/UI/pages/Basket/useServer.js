@@ -59,5 +59,19 @@ export function useServer() {
         })
     }
 
-    return {getPreviewBasketList, addCardToBasket, deleteCardToBasket, getBasketList}
+    const createOrder = async (accData, user, page) => {
+        fetch(`${URL}/createOrder`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }, body: JSON.stringify({accData: accData, user: user, page: page}),
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                console.log(data.result)
+            })
+        })
+    }
+
+    return {getPreviewBasketList, addCardToBasket, deleteCardToBasket, getBasketList, createOrder}
 }

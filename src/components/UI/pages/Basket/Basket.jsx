@@ -48,7 +48,7 @@ const Basket = () => {
                 <div className={style['total']}>
                     <div>
                         <div>Итого к оплате:</div>
-                        <div>{positionList.map(el=>{return el.price}).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}₽</div>
+                        <div>{positionList.map(el=>{return el.similarCard !== null ? el.similarCard.price : el.price}).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}₽</div>
                     </div>
                     <div>Оформить заказ</div>
                     <div>

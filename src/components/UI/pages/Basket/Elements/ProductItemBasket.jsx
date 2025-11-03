@@ -115,8 +115,7 @@ const ProductItemBasket = ({product, onReload, page}) => {
             padding: '5px',
             background: '#585858',
             borderRadius: '10px',
-            margin: '10px 0 0 10px',
-            width: String(window.innerWidth - 20) + 'px'
+            margin: '1vw 2vw',
         }}>
             <Link to={'/card/' + item.id} className={'link-element'}
                   style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>

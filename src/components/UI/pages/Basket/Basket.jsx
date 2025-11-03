@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import style from './Basket.module.scss';
 import {useServer} from "./useServer";
 import {useTelegram} from "../../../../hooks/useTelegram";
@@ -12,6 +12,7 @@ const Basket = () => {
     const {getBasketList} = useServer()
     const {user, tg} = useTelegram()
     const {pageId, catalogList} = useGlobalData()
+    const [accountData, setAccountData] = useState('')
 
     const [positionList, setPositionList] = React.useState(null)
 
@@ -33,19 +34,35 @@ const Basket = () => {
 
     console.log(positionList)
 
-    if(positionList !== null) {
+    if (positionList !== null) {
         if (positionList.length === 0) {
 
         } else if (positionList.length > 0) {
 
-            return (
-                <div className={style['mainContainer']} style={{paddingBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
-                    <div className={style['title']}>Ваша корзина</div>
-                    {positionList.map(item => (<ProductItemBasket product={item} onReload={reload}/>))}
-                    {pageId !== 29 ? <AccountData/> : ''}
-                    {/*<PromoInput/>*/}
+            return (<div className={style['mainContainer']}
+                         style={{paddingBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
+                <div className={style['title']}>Ваша корзина</div>
+                {positionList.map(item => (<ProductItemBasket product={item} onReload={reload}/>))}
+                {pageId !== 29 ? <AccountData returnAccountData={setAccountData}/> : ''}
+                {/*<PromoInput/>*/}
+                <div className={style['total']}>
+                    <div>
+                        <div>Итого к оплате:</div>
+                        <div>{positionList.map(el=>{return el.price}).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}₽</div>
+                    </div>
+                    <div>Оформить заказ</div>
+                    <div>
+                        Нажимая на кнопку, Вы соглашаетесь с
+                        <a href={'https://t.me/gwstore_faq/12'}>
+                            Условиями обработки персональных данных
+                        </a>
+                        , а также с
+                        <a href={'https://t.me/gwstore_faq/11'}>
+                            Пользовательским соглашением
+                        </a>
+                    </div>
                 </div>
-            );
+            </div>);
         }
     }
 };

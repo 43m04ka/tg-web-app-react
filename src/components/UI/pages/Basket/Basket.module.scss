@@ -13,3 +13,51 @@
   font-size: 5vw;
   color: white;
 }
+
+.total{
+  width: 100%;
+  height: max-content;
+  border-top: 2px solid #585858;
+  margin-top: 6vw;
+  >div:nth-child(1){
+    display: flex;
+    flex-direction: row;
+    margin: 3vw 4vw;
+    >div{
+      @extend %font;
+      color: white;
+      letter-spacing: 0.2vw;
+      font-size: 4.5vw;
+    }
+    >div:nth-child(1){
+        margin: 0 0;
+    }
+    >div:nth-child(2){
+        margin: 0 0 0 auto;
+    }
+  }
+  >div:nth-child(2){
+    display: flex;
+    margin: 2vw auto;
+    width: max-content;
+    letter-spacing: 0.2vw;
+    @extend %font;
+    font-size: 3.5vw;
+    border-radius: 10vw;
+    color: white;
+    padding: 2vw 2.5vw;
+    background: #77A246;
+  }
+  >div:nth-child(3){
+    @extend %font;
+    font-size: 2.5vw;
+    text-align: center;
+    color: white;
+    margin-bottom: 3vw;
+    >a{
+      text-decoration: none;
+      margin: 0 0.6vw;
+      color: #4F8AE7;
+    }
+  }
+}

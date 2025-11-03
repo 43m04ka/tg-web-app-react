@@ -47,12 +47,7 @@ const MainPage = ({page}) => {
             <div style={{height: heightTab, zIndex: zIndexTab}}>
                 <Routes>
                     <Route path="/search" element={<Search/>}/>
-                    <Route path="/basket" element={<Basket onClose={() => {
-                        setHeightTab(0);
-                        setTimeout(()=>{
-                            navigate(window.location.pathname.replace('basket',''));
-                        }, 200)
-                    }}/>}/>
+                    <Route path="/basket" element={<Basket/>}/>
                     <Route path="/selectPlatform" element={<SelectPlatform/>}/>
                     <Route path="/more" element={<Info/>}/>
                 </Routes>

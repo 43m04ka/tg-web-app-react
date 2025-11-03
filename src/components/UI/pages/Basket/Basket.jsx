@@ -8,11 +8,12 @@ import AccountData from "./Elements/AccountData";
 import Promo from "./Elements/Promo";
 import {useNavigate} from "react-router-dom";
 
-const Basket = ({onClose}) => {
+const Basket = () => {
 
     const {getBasketList, createOrder} = useServer()
     const {user, tg} = useTelegram()
     const {pageId, catalogList} = useGlobalData()
+    const navigate = useNavigate();
     const [accountData, setAccountData] = useState('')
     const [promoData, setPromoData] = useState({percent: 0, name: ''})
 
@@ -41,7 +42,7 @@ const Basket = ({onClose}) => {
             return (<div className={style['emptyBasket']}>
                 <div/>
                 <div>В корзине ничего нет</div>
-                <div onClick={onClose}>перейти к покупкам</div>
+                <div onClick={()=>{navigate(window.location.pathname.replace('basket',''));}}>перейти к покупкам</div>
             </div>)
         } else if (positionList.length > 0) {
 

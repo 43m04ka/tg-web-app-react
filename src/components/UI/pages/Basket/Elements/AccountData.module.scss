@@ -40,12 +40,16 @@
   border-radius: 15vw;
   border: none;
   background: white;
+  outline: none;
   color: black;
   @extend %font;
   text-align: center;
   font-size: 3.75vw;
   margin: 1vw 0;
   width: 100%;
+}
+.input:focus{
+  outline: #4F8AE7 solid 2px;
 }
 
 .label{

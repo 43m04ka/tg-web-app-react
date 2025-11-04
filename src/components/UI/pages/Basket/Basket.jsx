@@ -75,7 +75,7 @@ const Basket = () => {
                         setStatus(2)
                     })).then()
                 }
-            }} style={{background: '#77A246'}}>
+            }} style={{background: username !== '' ? '#77A246' : '#454545', transitionProperty: 'background', transitionDuration: '0.3s', transitionTimingFunction:'ease-in-out'}}>
                 Оформить заказ
             </button>
         </div>)

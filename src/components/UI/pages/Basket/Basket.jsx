@@ -48,7 +48,7 @@ const Basket = () => {
             </div>
             <a className={style['linkElement']}
                href={'https://t.me/gwstore_admin'}>
-                <button className={style['button']} style={{background: '#52a557'}}>
+                <button className={style['button']} style={{background: '#77A246'}}>
                     Написать менеджеру
                 </button>
             </a>
@@ -75,7 +75,7 @@ const Basket = () => {
                         setStatus(2)
                     })).then()
                 }
-            }} style={{background: '#52a557'}}>
+            }} style={{background: '#77A246'}}>
                 Оформить заказ
             </button>
         </div>)

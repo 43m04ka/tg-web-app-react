@@ -4,13 +4,16 @@ import {useNavigate} from "react-router-dom";
 import {useTelegram} from "../../../../hooks/useTelegram";
 import SelectPlatform from "../SelectPlatform/SelectPlatform";
 import useGlobalData from "../../../../hooks/useGlobalData";
+import {useServerUser} from "../../../../hooks/useServerUser";
 
 const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
 
-    const {tg} = useTelegram()
-    const {pageId, pageList} = useGlobalData()
+    const {tg, user} = useTelegram()
+    const {pageId, pageList, updateCounterBasket, counterBasket} = useGlobalData()
 
     const [typeBar, setTypeBar] = useState(false)
+
+
 
     const navigate = useNavigate()
 
@@ -60,6 +63,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
         if (flag) {
             setActiveTab(0)
         }
+        updateCounterBasket()
     }, [window.location.pathname])
 
 
@@ -81,6 +85,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
                 }, 200)
             }
         }
+        updateCounterBasket()
     }, [activeTab])
 
     return (<div className={style[typeBar ? 'container' : 'island']}
@@ -99,11 +104,13 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
                     <p>{button.label}</p>
                 </div>))}
         </div>
-        <div className={style['productCounter']}>
+        {counterBasket !== 0 ?  <div className={style['productCounter']}>
             <div>
-                1
+                {counterBasket}
             </div>
-        </div>
+        </div> : ''
+        }
+
         <SelectPlatform setActiveTab={setActiveTab} activeTab={activeTab}/>
     </div>);
 };

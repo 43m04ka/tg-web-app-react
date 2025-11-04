@@ -9,7 +9,7 @@ import {useServerUser} from "../../../../hooks/useServerUser";
 const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
 
     const {tg, user} = useTelegram()
-    const {pageId, pageList, updateCounterBasket, counterBasket} = useGlobalData()
+    const {pageId, pageList, updateCounterBasket, counterBasket, catalogList} = useGlobalData()
 
     const [typeBar, setTypeBar] = useState(false)
 
@@ -61,7 +61,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
         if (flag) {
             setActiveTab(0)
         }
-        updateCounterBasket()
+        updateCounterBasket(catalogList, pageId)
     }, [window.location.pathname])
 
 
@@ -83,7 +83,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
                 }, 200)
             }
         }
-        updateCounterBasket()
+        updateCounterBasket(catalogList, pageId)
     }, [activeTab])
 
     return (<div className={style[typeBar ? 'container' : 'island']}

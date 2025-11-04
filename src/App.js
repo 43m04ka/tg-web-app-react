@@ -33,8 +33,10 @@ function App() {
         catalogStructureList,
         updateCatalogStructureList,
         updatePreviewFavoriteData,
-        updatePreviewBasketData
+        updatePreviewBasketData,
+        updateCounterBasket
     } = useGlobalData();
+
 
     const [size, setSize] = React.useState(window.innerHeight);
 

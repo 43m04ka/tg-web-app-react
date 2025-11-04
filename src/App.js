@@ -78,8 +78,11 @@ function App() {
         }
         updatePreviewFavoriteData(user.id)
         updatePreviewBasketData(user.id)
-        updateCounterBasket(catalogList, pageId)
     }, [])
+
+    useEffect(()=>{
+        updateCounterBasket(catalogList, pageId)
+    }, [pageId])
 
 
     if (pageList !== null) {

@@ -116,6 +116,27 @@
   }
 }
 
+.productCounter{
+  position: absolute;
+  margin-left: 95% / 5 * 3 - 6%;
+  margin-top: 2.5%;
+  @extend %font;
+  font-size: 3vw;
+  line-height: 4vw;
+  z-index: 300;
+  border-radius: 100vh;
+  width: 4vw;
+  height: 4vw;
+  background-color: rgba(227, 28, 28, 0.6);
+  >div{
+    display: flex;
+    color: $menu-color;
+    margin: auto;
+    width: max-content;
+    height: max-content;
+  }
+}
+
 .activeTab {
   &-true {
     opacity: 1;

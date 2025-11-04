@@ -99,6 +99,11 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
                     <p>{button.label}</p>
                 </div>))}
         </div>
+        <div className={style['productCounter']}>
+            <div>
+                1
+            </div>
+        </div>
         <SelectPlatform setActiveTab={setActiveTab} activeTab={activeTab}/>
     </div>);
 };

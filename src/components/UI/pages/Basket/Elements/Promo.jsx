@@ -13,7 +13,7 @@ const Promo = ({setPromoData}) => {
         if (result !== null) {
             if (result.totalNumberUses > 0) {
                 setPromoData(result)
-                setColor('#77A246')
+                setColor('#50A355')
                 setText('Скидка активна')
             } else {
                 setColor('#ED7373')

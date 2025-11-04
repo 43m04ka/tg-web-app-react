@@ -23,6 +23,7 @@
   text-align: center;
   font-size: 4vw;
   color: white;
+  user-select: none;
 }
 
 .happyDuck {
@@ -95,7 +96,7 @@
     border-radius: 10vw;
     color: white;
     padding: 2vw 2.5vw;
-    background: #77A246;
+    background: #50A355;
   }
 
   > div:nth-child(3) {
@@ -130,16 +131,12 @@
     @extend %font;
     color: white;
     text-align: center;
+    user-select: none;
   }
 
   > div:nth-child(3) {
-    width: max-content;
-    display: flex;
-    margin: 1.8% auto 0 auto;
-    border-radius: 100vh;
-    padding: 1% 2.8%;
     @extend %font;
-    font-size: 4vw;
+    width: max-content;
     border: none;
     color: white;
     background: #5a5a5a;

@@ -48,7 +48,7 @@ const Basket = () => {
             </div>
             <a className={style['linkElement']}
                href={'https://t.me/gwstore_admin'}>
-                <button className={style['button']} style={{background: '#77A246'}}>
+                <button className={style['button']} style={{background: '#50A355'}}>
                     Написать менеджеру
                 </button>
             </a>
@@ -75,7 +75,7 @@ const Basket = () => {
                         setStatus(2)
                     })).then()
                 }
-            }} style={{background: username !== '' ? '#77A246' : '#454545', transitionProperty: 'background', transitionDuration: '0.3s', transitionTimingFunction:'ease-in-out'}}>
+            }} style={{background: username !== '' ? '#50A355' : '#454545', transitionProperty: 'background', transitionDuration: '0.3s', transitionTimingFunction:'ease-in-out'}}>
                 Оформить заказ
             </button>
         </div>)
@@ -85,7 +85,7 @@ const Basket = () => {
                 return (<div className={style['emptyBasket']}>
                     <div/>
                     <div>В корзине ничего нет</div>
-                    <div onClick={() => {
+                    <div className={style['button']} onClick={() => {
                         navigate(window.location.pathname.replace('basket', ''));
                     }}>перейти к покупкам
                     </div>

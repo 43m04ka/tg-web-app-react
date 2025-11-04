@@ -120,13 +120,13 @@ const AccountData = ({returnAccountData}) => {
 
             <div className={style['title']}>Куда оформить заказ?</div>
             <div className={style['selectPlace']}>
-                <div style={{background: !selectNewAccount ? '#77A246' : 'none'}}
+                <div style={{background: !selectNewAccount ? '#50A355' : 'none'}}
                      onClick={() => {
                          setSelectNewAccount(false)
                      }}>
                     <div style={{color: !selectNewAccount ? 'white' : '#575757'}}>На мой аккаунт</div>
                 </div>
-                <div style={{background: selectNewAccount ? '#77A246' : 'none'}}
+                <div style={{background: selectNewAccount ? '#50A355' : 'none'}}
                      onClick={() => {
                          setSelectNewAccount(true)
                      }}>

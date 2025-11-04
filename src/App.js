@@ -24,6 +24,7 @@ function App() {
     const navigate = useNavigate();
 
     const {
+        pageId,
         pageList,
         updatePageList,
         catalogList,
@@ -77,6 +78,7 @@ function App() {
         }
         updatePreviewFavoriteData(user.id)
         updatePreviewBasketData(user.id)
+        updateCounterBasket(catalogList, pageId)
     }, [])
 
 

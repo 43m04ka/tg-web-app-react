@@ -59,7 +59,7 @@ export function useServer() {
         })
     }
 
-    const createOrder = async (accData, user, page, promo) => {
+    const createOrder = async (accData, user, page, promo, setResult) => {
         fetch(`${URL}/createOrder`, {
             method: 'POST',
             headers: {
@@ -68,7 +68,7 @@ export function useServer() {
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
-                console.log(data.result)
+                setResult(data)
             })
         })
     }

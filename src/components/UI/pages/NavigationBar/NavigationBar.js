@@ -13,8 +13,6 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
 
     const [typeBar, setTypeBar] = useState(false)
 
-
-
     const navigate = useNavigate()
 
     let buttons = [

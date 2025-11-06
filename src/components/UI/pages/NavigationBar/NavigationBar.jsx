@@ -6,6 +6,8 @@ import SelectPlatform from "../SelectPlatform/SelectPlatform";
 import useGlobalData from "../../../../hooks/useGlobalData";
 import {useServerUser} from "../../../../hooks/useServerUser";
 
+let timeoutId = -1
+
 const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
 
     const {tg} = useTelegram()
@@ -62,21 +64,22 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
             setActiveTab(0)
         }
         updateBasket(catalogList, pageId)
-    }, [window.location.pathname, catalogList])
+    }, [window.location.pathname])
 
 
     useEffect(() => {
+        window.clearTimeout(timeoutId)
         let button = buttons[activeTab];
         if (button.path !== 'selectPlatform') {
             if (heightTab === 0) {
                 navigate(button.path)
-                setTimeout(() => {
+                timeoutId = setTimeout(() => {
                     setHeightTab(button.heightTab)
                     setZIndexTab(button.heightTab === 0 ? -100 : 100)
                 }, 100)
             } else {
                 setHeightTab(0)
-                setTimeout(() => {
+                timeoutId = setTimeout(() => {
                     navigate(button.path);
                     setHeightTab(button.heightTab)
                     setZIndexTab(button.heightTab === 0 ? -100 : 100)
@@ -84,7 +87,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
             }
         }
         updateBasket(catalogList, pageId)
-    }, [activeTab])
+    }, [activeTab, window.location.pathname])
 
     return (<div className={style['island']}
                  style={typeBar ? {paddingBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'} :

@@ -5,14 +5,7 @@ import {useTelegram} from "../../../../../hooks/useTelegram";
 
 const CatalogListBody = () => {
     const {tg} = useTelegram()
-    const {catalogStructureList, pageId, mainPageCards, catalogList, updateCounterBasket} = useGlobalData()
-
-    useEffect(() => {
-        if (catalogList !== null) {
-            updateCounterBasket(catalogList, pageId)
-        }
-    }, [pageId])
-
+    const {catalogStructureList, pageId, mainPageCards, catalogList, updateBasket} = useGlobalData()
 
     if (catalogStructureList !== null && mainPageCards !== null && catalogList !== null) {
 

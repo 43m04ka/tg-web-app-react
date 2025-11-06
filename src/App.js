@@ -35,7 +35,7 @@ function App() {
         updateCatalogStructureList,
         updatePreviewFavoriteData,
         updatePreviewBasketData,
-        updateCounterBasket
+        updateBasket
     } = useGlobalData();
 
 
@@ -64,26 +64,12 @@ function App() {
     }, [])
 
     useEffect(() => {
-        if (pageList === null) {
-            updatePageList()
-        }
-        if (catalogStructureList === null) {
-            updateCatalogStructureList()
-        }
-        if (mainPageCards === null) {
-            updateMainPageCards()
-        }
-        if (catalogList === null) {
-            updateCatalogList()
-        }
+        updatePageList()
+        updateCatalogStructureList()
+        updateMainPageCards()
+        updateCatalogList()
         updatePreviewFavoriteData(user.id)
-        updatePreviewBasketData(user.id)
     }, [])
-
-    useEffect(()=>{
-        updateCounterBasket(catalogList, pageId)
-    }, [pageId])
-
 
     if (pageList !== null) {
         if (window.location.pathname === '/') {
@@ -92,7 +78,8 @@ function App() {
         return (
             <div className="App">
                 <Routes>
-                    {pageList.map((page) => (<Route path={page['link'] + '/*'} key={page['id']} element={<MainPage page={page}/>}/>))}
+                    {pageList.map((page) => (
+                        <Route path={page['link'] + '/*'} key={page['id']} element={<MainPage page={page}/>}/>))}
                     <Route path={'favorites'} element={<Favorites/>}/>
                     <Route path={'/catalog/*'} element={<ProductList height={size}/>}/>
                     <Route path={'/card/*'} element={<Product/>}/>

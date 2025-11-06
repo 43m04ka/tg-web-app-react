@@ -19,9 +19,8 @@ const Product = () => {
 
     let cardId = Number((window.location.pathname).replace('/card/', ''))
 
-    const [isBuy, setIsBuy] = React.useState(null);
+    const [isBuy, setIsBuy] = React.useState(false);
     const [productData, setProductData] = React.useState(null);
-    console.log(productData)
     const [isFavorite, setIsFavorite] = React.useState(false);
     const [pictureIsLoad, setPictureIsLoad] =  useState(0);
 
@@ -49,9 +48,6 @@ const Product = () => {
             setIsFavorite(previewFavoriteData.includes(cardId))
         }
 
-        if(isBuy !== previewBasketData.includes(cardId) && productData.onSale) {
-            setIsBuy(previewBasketData.includes(cardId))
-        }
 
         if (productData.onSale === true) {
             if (isBuy === true) {
@@ -65,7 +61,7 @@ const Product = () => {
                 buttonText = ('Добавить в корзину')
                 buttonLink = async () => {
                     await setIsBuy(null)
-                    await addCardToBasket(()=> {updatePreviewBasketData(user.id);updateCounterBasket(catalogList, pageId)}, user.id, cardId).then()
+                    await addCardToBasket(()=> {}, user.id, cardId).then()
                 }
             }
         } else {

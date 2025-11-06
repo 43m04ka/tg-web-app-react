@@ -8,8 +8,8 @@ import {useServerUser} from "../../../../hooks/useServerUser";
 
 const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
 
-    const {tg, user} = useTelegram()
-    const {pageId, pageList, updateCounterBasket, counterBasket, catalogList} = useGlobalData()
+    const {tg} = useTelegram()
+    const {pageId, pageList, updateBasket, basket, catalogList} = useGlobalData()
 
     const [typeBar, setTypeBar] = useState(false)
 
@@ -61,8 +61,8 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
         if (flag) {
             setActiveTab(0)
         }
-        updateCounterBasket(catalogList, pageId)
-    }, [window.location.pathname])
+        updateBasket(catalogList, pageId)
+    }, [window.location.pathname, catalogList])
 
 
     useEffect(() => {
@@ -83,15 +83,15 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
                 }, 200)
             }
         }
-        updateCounterBasket(catalogList, pageId)
+        updateBasket(catalogList, pageId)
     }, [activeTab])
 
-    return (<div className={style[typeBar ? 'container' : 'island']}
+    return (<div className={style['island']}
                  style={typeBar ? {paddingBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'} :
                      {marginBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
-        {typeBar ? '' : <div>
+        <div>
             <div style={{marginLeft: String(19.5 * (activeTab)) + '%'}}/>
-        </div>}
+        </div>
         <div>
 
             {buttons.map((button, index) => (
@@ -102,9 +102,9 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
                     <p>{button.label}</p>
                 </div>))}
         </div>
-        {counterBasket !== 0 ?  <div className={style['productCounter']}>
+        {basket !== null && basket.length !== 0 ? <div className={style['productCounter']}>
             <div>
-                {counterBasket}
+                {basket.length}
             </div>
         </div> : ''
         }

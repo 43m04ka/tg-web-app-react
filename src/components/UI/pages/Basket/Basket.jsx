@@ -12,7 +12,7 @@ const Basket = () => {
 
     const {getBasketList, createOrder} = useServer()
     const {user, tg} = useTelegram()
-    const {pageId, catalogList} = useGlobalData()
+    const {pageId, catalogList, basket, updateBasket} = useGlobalData()
     const navigate = useNavigate();
     const [accountData, setAccountData] = useState('')
     const [promoData, setPromoData] = useState({percent: 0, name: ''})
@@ -20,24 +20,17 @@ const Basket = () => {
     const [status, setStatus] = useState(0)
     const [username, setUsername] = useState('')
 
-    const [positionList, setPositionList] = React.useState(null)
-
-    const reload = async () => {
-        await getBasketList((result) => {
-            let catalogIdList = catalogList.map(cat => {
-                return cat.structurePageId === pageId ? cat.id : null
-            }).filter(cat => cat !== null)
-
-            setPositionList(result.map(item => {
-                return catalogIdList.includes(item.catalogId) ? item : null
-            }).filter(item => item !== null))
-        }, user.id)
-    }
-
-    useEffect(() => {
-        reload().then()
-    }, []);
-
+    // const reload = async () => {
+    //     await getBasketList((result) => {
+    //         let catalogIdList = catalogList.map(cat => {
+    //             return cat.structurePageId === pageId ? cat.id : null
+    //         }).filter(cat => cat !== null)
+    //
+    //         setBasket(result.map(item => {
+    //             return catalogIdList.includes(item.catalogId) ? item : null
+    //         }).filter(item => item !== null))
+    //     }, user.id)
+    // }
 
     if (status === 2) {
         return (<div style={{flexDirection: 'column', display: 'flex'}}>
@@ -80,8 +73,8 @@ const Basket = () => {
             </button>
         </div>)
     } else {
-        if (positionList !== null) {
-            if (positionList.length === 0) {
+        if (basket !== null) {
+            if (basket.length === 0) {
                 return (<div className={style['emptyBasket']}>
                     <div/>
                     <div>В корзине ничего нет</div>
@@ -90,23 +83,23 @@ const Basket = () => {
                     }}>перейти к покупкам
                     </div>
                 </div>)
-            } else if (positionList.length > 0) {
+            } else if (basket.length > 0) {
 
                 return (<div className={style['mainContainer']}
                              style={{paddingBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
                     <div className={style['title']}>Ваша корзина</div>
-                    {positionList.map(item => (<ProductItemBasket product={item} onReload={reload}/>))}
+                    {basket.map(item => (<ProductItemBasket product={item} onReload={()=>{updateBasket(catalogList, pageId)}}/>))}
                     {pageId !== 29 ? <AccountData returnAccountData={setAccountData}/> : ''}
                     {<Promo setPromoData={setPromoData}/>}
                     <div className={style['total']}>
                         <div>
                             <div>Итого к оплате:</div>
-                            <div>{positionList.map(el => {
+                            <div>{basket.map(el => {
                                 return el.similarCard !== null ? el.similarCard.price : el.price
                             }).reduce((accumulator, currentValue) => accumulator + currentValue, 0) * (1 - promoData.percent / 100)}₽
                             </div>
                             {promoData.percent > 0 ? <div>
-                                {positionList.map(el => {
+                                {basket.map(el => {
                                     return el.similarCard !== null ? el.similarCard.price : el.price
                                 }).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}₽
                             </div> : ''}

@@ -86,7 +86,7 @@ const Basket = () => {
             } else if (basket.length > 0) {
 
                 return (<div className={style['mainContainer']}
-                             style={{paddingBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
+                             style={{paddingBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight) + 10) + 'px'}}>
                     <div className={style['title']}>Ваша корзина</div>
                     {basket.map(item => (<ProductItemBasket product={item} onReload={()=>{updateBasket(catalogList, pageId)}}/>))}
                     {pageId !== 29 ? <AccountData returnAccountData={setAccountData}/> : ''}

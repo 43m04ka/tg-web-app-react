@@ -25,7 +25,8 @@
     }
 
     > div {
-      background: red;
+      transition-property: background;
+      transition-duration: 0.2s;
       width: 50%;
       height: 100%;
       border-radius: 6vw;

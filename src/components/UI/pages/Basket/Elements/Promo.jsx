@@ -38,6 +38,11 @@ const Promo = ({setPromoData}) => {
                 placeholder={'Промокод'} value={inputValue}
                 onChange={(e) => {
                     if (text !== 'Скидка активна') {
+                        if(e.target.value === ''){
+                            setColor('#AEAEAE')
+                        }else{
+                            setColor('#50A355')
+                        }
                         setInputValue(e.target.value.toUpperCase())
                     }
                 }}/>

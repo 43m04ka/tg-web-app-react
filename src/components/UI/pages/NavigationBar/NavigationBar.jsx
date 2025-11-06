@@ -86,6 +86,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
                 }, 200)
             }
         }
+
         updateBasket(catalogList, pageId)
     }, [activeTab, window.location.pathname])
 

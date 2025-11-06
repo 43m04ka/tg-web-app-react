@@ -20,13 +20,10 @@ const Search = () => {
 
     const getCardList = async () => {
         fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/database', {
-            method: 'POST',
-            headers: {
+            method: 'POST', headers: {
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                method: 'getSearch',
-                data: {str: inputValue, pageId: pageId}
+            }, body: JSON.stringify({
+                method: 'getSearch', data: {str: inputValue, pageId: pageId}
             })
         }).then(r => {
             let Promise = r.json()
@@ -44,16 +41,16 @@ const Search = () => {
                     }
                 }).filter(el => el !== null)
 
-                if(inputValue === ''){
+                if (inputValue === '') {
                     setCardList(null)
-                }else {
+                } else {
                     setCardList(resultList.splice(0, 20))
                 }
             })
         })
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         inputRef.current.focus()
     }, [])
 
@@ -68,46 +65,49 @@ const Search = () => {
         }
     }, [inputValue])
 
-    return (
-        <div className={style['mainDivision']}>
+    return (<div className={style['mainDivision']}>
+        <div>
             <div>
-                <div>
+                <div/>
+                <input placeholder={'Поиск'} autoFocus value={inputValue} onChange={(event) => {
+                    setInputValue(event.target.value)
+                    setCardList(null)
+                }} ref={inputRef}></input>
+                <button onClick={() => {
+                    setInputValue('');
+                    setCardList(null)
+                }}>
                     <div/>
-                    <input placeholder={'Поиск'} autoFocus value={inputValue} onChange={(event) => {
-                        setInputValue(event.target.value)
-                        if(event.target.value === ''){
-                            setCardList(null)
-                        }
-                    }} ref={inputRef}></input>
-                    <button onClick={()=>{setInputValue(''); setCardList(null)}}>
-                        <div/>
-                    </button>
-                </div>
+                </button>
             </div>
-            {cardList !== null ? (cardList.length > 0 ?
-                    (<div className={style['scrollList']}>
-                        {cardList.map(card => (<SearchPosition data={card}/>))}
-                        <div className={style['helpPlace']}>
-                            <div> не нашли то, что искали?</div>
-                            <div> напишите нам, мы поможем</div>
-                            <button onClick={() => window.open('https://t.me/gwstore_admin')}>написать в поддержку</button>
-                        </div>
-                    </div>) :
-                    (<div className={style['emptyList']}>
-                        <div/>
-                        <div>Нет результатов</div>
-                        <div>по запросу "{inputValue}"</div>
-                        <div>ничего не найдено.</div>
-                        <div>попробуйте другй запрос</div>
-                        <div>или напишите в поддержку</div>
-                        <button onClick={() => window.open('https://t.me/gwstore_admin')}>написать в поддержку</button>
-                    </div>)) :
-                (<div>
-                    <HomeScreen setInputValue={setInputValue}/>
-                    <div className={style['welcome']}/>
-                </div>)}
         </div>
-    );
+        {inputValue !== '' ? (cardList !== null ? (cardList.length > 0 ? (<div className={style['scrollList']}>
+            {cardList.map(card => (<SearchPosition data={card}/>))}
+            <div className={style['helpPlace']}>
+                <div> не нашли то, что искали?</div>
+                <div> напишите нам, мы поможем</div>
+                <button onClick={() => window.open('https://t.me/gwstore_admin')}>написать в поддержку</button>
+            </div>
+        </div>) : (<div className={style['emptyList']}>
+            <div/>
+            <div>Нет результатов</div>
+            <div>по запросу "{inputValue}"</div>
+            <div>ничего не найдено.</div>
+            <div>попробуйте другй запрос</div>
+            <div>или напишите в поддержку</div>
+            <button onClick={() => window.open('https://t.me/gwstore_admin')}>написать в поддержку</button>
+        </div>)) : (<div className={style["wrapper"]}>
+            <div className={style["circle"]}></div>
+            <div className={style["circle"]}></div>
+            <div className={style["circle"]}></div>
+            <div className={style["shadow"]}></div>
+            <div className={style["shadow"]}></div>
+            <div className={style["shadow"]}></div>
+        </div>)) : (<div>
+            <HomeScreen setInputValue={setInputValue}/>
+            <div className={style['welcome']}/>
+        </div>)}
+    </div>);
 };
 
 export default Search;

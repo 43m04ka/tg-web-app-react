@@ -25,6 +25,10 @@
   > div:nth-child(2) {
     position: absolute;
     width: 100vw;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition-property: opacity;
+    transition-duration: 0.3s;
     top: 0;
 
 

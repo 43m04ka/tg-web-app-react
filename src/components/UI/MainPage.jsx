@@ -43,7 +43,7 @@ const MainPage = ({page}) => {
                 <CatalogListBody/>
             </div>
         </div>
-        <div style={{zIndex: zIndexTab, height: String(height) + 'px'}}>
+        <div style={{zIndex: zIndexTab, height: String(height) + 'px', opacity: heightTab === 0 ? 0 : 1}}>
             <div style={{height: heightTab, zIndex: zIndexTab}}>
                 <Routes>
                     <Route path="/search" element={<Search/>}/>

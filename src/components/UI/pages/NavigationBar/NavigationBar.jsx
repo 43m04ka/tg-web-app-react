@@ -78,7 +78,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
                     setZIndexTab(button.heightTab === 0 ? -100 : 100)
                 }, 100)
             } else {
-                setHeightTab(0)
+                setHeightTab(1)
                 timeoutId = setTimeout(() => {
                     navigate(button.path);
                     setHeightTab(button.heightTab)

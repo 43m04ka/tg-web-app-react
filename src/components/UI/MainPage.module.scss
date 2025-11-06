@@ -27,7 +27,7 @@
     width: 100vw;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    transition-property: opacity;
+    transition-property: opacity, z-index;
     transition-duration: 0.3s;
     top: 0;
 

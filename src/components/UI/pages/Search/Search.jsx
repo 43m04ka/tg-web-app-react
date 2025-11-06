@@ -82,7 +82,7 @@ const Search = () => {
             </div>
         </div>
         {inputValue !== '' ? (cardList !== null ? (cardList.length > 0 ? (<div className={style['scrollList']}
-            style={{marginBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight) + 10) + 'px'}}>
+                                                                               style={{paddingBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px'}}>
             {cardList.map(card => (<SearchPosition data={card}/>))}
             <div className={style['helpPlace']}>
                 <div> не нашли то, что искали?</div>

@@ -64,7 +64,7 @@ function App() {
     useEffect(() => {
         setTimeout(()=>{
             updatePageList()
-        }, 100)
+        }, 2000)
         updateCatalogStructureList()
         updateMainPageCards()
         updateCatalogList()
@@ -75,7 +75,7 @@ function App() {
         if (window.location.pathname === '/') {
             navigate(pageList[0]['link'])
         }
-        return (<div className="App">
+        return (<div className={style['App']}>
             <Routes>
                 {pageList.map((page) => (
                     <Route path={page['link'] + '/*'} key={page['id']} element={<MainPage page={page}/>}/>))}
@@ -103,8 +103,10 @@ function App() {
                 <div className={style['box']}></div>
             </div>
             <div className={style['fillContainer']}>
-                <div style={{scale: (catalogList !== null && pageList !== null && mainPageCards !== null ? '13' : '0')}}/>
-                {catalogList !== null && pageList !== null && mainPageCards !== null ? setTimeout(()=>setIsLoaded(false), 200) : ''}
+                <div style={{scale: (catalogList !== null && pageList !== null && mainPageCards !== null ? '12' : '0')}}/>
+                {catalogList !== null && pageList !== null && mainPageCards !== null ? setTimeout(()=> {
+                    setIsLoaded(false)
+                }, 150) : ''}
             </div>
         </div>);
     }

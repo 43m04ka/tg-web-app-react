@@ -62,7 +62,9 @@ function App() {
     }, [])
 
     useEffect(() => {
-        updatePageList()
+        setTimeout(()=>{
+            updatePageList()
+        }, 100)
         updateCatalogStructureList()
         updateMainPageCards()
         updateCatalogList()

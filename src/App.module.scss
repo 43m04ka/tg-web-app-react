@@ -6,7 +6,7 @@
 }
 
 .loader {
-  --size: 25vh;
+  --size: 35vh;
   --duration: 2s;
   --logo-color: grey;
   --background: linear-gradient(
@@ -17,7 +17,7 @@
   height: var(--size);
   aspect-ratio: 1;
   position: relative;
-  margin: 37.5vh auto;
+  margin: 32.5vh auto;
 }
 
 .loader .box {

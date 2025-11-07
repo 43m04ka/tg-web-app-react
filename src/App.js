@@ -71,6 +71,12 @@ function App() {
         updatePreviewFavoriteData(user.id)
     }, [])
 
+    if(catalogList !== null && pageList !== null && mainPageCards !== null){
+        setTimeout(()=> {
+            setIsLoaded(false)
+        }, 150)
+    }
+
     if (!isLoaded) {
         if (window.location.pathname === '/') {
             navigate(pageList[0]['link'])
@@ -104,9 +110,6 @@ function App() {
             </div>
             <div className={style['fillContainer']}>
                 <div style={{scale: (catalogList !== null && pageList !== null && mainPageCards !== null ? '12' : '0')}}/>
-                {catalogList !== null && pageList !== null && mainPageCards !== null ? setTimeout(()=> {
-                    setIsLoaded(false)
-                }, 150) : ''}
             </div>
         </div>);
     }

@@ -9,6 +9,7 @@ import {useNavigate} from "react-router-dom";
 
 let timerId = -1
 
+
 const Search = () => {
     const {tg} = useTelegram()
     const {pageId} = useGlobalData()

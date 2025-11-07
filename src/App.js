@@ -14,7 +14,43 @@ import AP_Authentication from "./components/UI/pages/AdminPanel/AP_Authenticatio
 import useGlobalData from "./hooks/useGlobalData";
 import Product from "./components/UI/pages/Product/Product";
 import style from './App.module.scss'
+import {repeat} from "rxjs";
 
+const getRandomInt = (max) => Math.floor(Math.random() * Math.floor(max));
+
+function repeatArray(arr, count) {
+    if (count < 0) {
+        throw new RangeError("repeat count must be non-negative");
+    }
+    if (count === 0) {
+        return [];
+    }
+    let result = [];
+    for (let i = 0; i < count; i++) {
+        let randList = [];
+
+        while (randList.length !== 10) {
+            let index = getRandomInt(arr.length);
+            randList.push(arr[index]);
+        }
+
+        result.push(randList);
+    }
+    return result;
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        // Генерируем случайный индекс от 0 до i
+        const j = Math.floor(Math.random() * (i + 1));
+
+        // Меняем местами элементы array[i] и array[j]
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+const tags = 'forza gta steam valorant lastofus battlefield psplus watchdogs minecraft psn ghost cyberpunk gamepass скидки horizon apex witcher halo diablo акции godofwar fortnite лицензия ключи resident callofduty dlc xbox tsushima uncharted reddead spiderman store assassin пополнение doom fallout игры mortal helldivers playstation rdr2 farcry playstation xbox steam psplus gamepass скидки акции ключи игры stalker alanwake starwars tekken streetfighter dragonage mass effect overwatch destiny control returnal deathstranding bloodborne daysgone detroit re8 forza gears avowed fable payday mafia bioshock borderlands titanfall sekiro eldenring nier tombraider ghostrunner store подписка пополнение minecraft baldur'
 
 function App() {
     const {tg, user} = useTelegram();
@@ -62,17 +98,17 @@ function App() {
     }, [])
 
     useEffect(() => {
-        setTimeout(()=>{
+        setTimeout(() => {
             updatePageList()
-        }, 2000)
+        }, 2500)
         updateCatalogStructureList()
         updateMainPageCards()
         updateCatalogList()
         updatePreviewFavoriteData(user.id)
     }, [])
 
-    if(catalogList !== null && pageList !== null && mainPageCards !== null){
-        setTimeout(()=> {
+    if (catalogList !== null && pageList !== null && mainPageCards !== null) {
+        setTimeout(() => {
             setIsLoaded(false)
         }, 150)
     }
@@ -97,21 +133,32 @@ function App() {
         </div>);
     } else {
         return (<div className={style["container"]}>
-            <div className={style['loader']}>
-                <div className={style['box']}>
-                    <div className={style['logo']}>
-                        <div/>
+                <div className={style['loader']}>
+                    <div className={style['box']}>
+                        <div className={style['logo']}>
+                            <div/>
+                        </div>
                     </div>
+                    <div className={style['box']}></div>
+                    <div className={style['box']}></div>
+                    <div className={style['box']}></div>
+                    <div className={style['box']}></div>
                 </div>
-                <div className={style['box']}></div>
-                <div className={style['box']}></div>
-                <div className={style['box']}></div>
-                <div className={style['box']}></div>
+                <div className={style['fillContainer']}>
+                    <div
+                        style={{scale: (catalogList !== null && pageList !== null && mainPageCards !== null ? '12' : '0')}}/>
+                </div>
+                <div className={style["ticker"]}>
+                    {repeatArray(tags.split(' '), 20).map((item, index) => (
+                        <div className={style["ticker__in"]} style={{zIndex:String(index) + 'px', animationDelay:String(-(Math.random()*20)) + 's'}}>
+                            {item.map((tag) => (
+                                <span className={style["ticker__item"]}>{tag}</span>
+                            ))}
+                        </div>))
+                    }
+                </div>
             </div>
-            <div className={style['fillContainer']}>
-                <div style={{scale: (catalogList !== null && pageList !== null && mainPageCards !== null ? '12' : '0')}}/>
-            </div>
-        </div>);
+        );
     }
 }
 

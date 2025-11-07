@@ -68,33 +68,34 @@
 
 .homeScreen {
   height: 33.5vw;
-  width : 100%;
- owerflow: hidden;
-  >div{
-  width: auto;
-  height: max-content;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin: 1vw 5vw;
+  width: 100%;
+  owerflow-y: hidden;
+  position: relative;
 
   > div {
-    width: max-content;
-    padding: 1.3vw 2.3vw;
-    background: #373737;
-    @extend %font;
-    border-radius: 3.5vw;
-    margin: 1.2vw 1.2vw 0 0;
-    height: 6.7vw;
-    color: white;
-    font-size: 3.2vw;
-    text-align: center;
-    -webkit-animation: animClue 1.5s forwards ease-in-out;
-    animation: animClue 1.5s forwards ease-in-out;
-    opacity: 0;
-    -webkit-transform: scale(0);
-    transform: scale(0);
-  }
+    width: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 1vw 5vw;
+    display: flex;
+
+    > div {
+      width: max-content;
+      padding: 1.3vw 2.3vw;
+      background: #373737;
+      @extend %font;
+      border-radius: 3.5vw;
+      margin: 1.2vw 1.2vw 0 0;
+      height: 6.7vw;
+      color: white;
+      font-size: 3.2vw;
+      text-align: center;
+      -webkit-animation: animClue 1.5s forwards ease-in-out;
+      animation: animClue 1.5s forwards ease-in-out;
+      opacity: 0;
+      -webkit-transform: scale(0);
+      transform: scale(0);
+    }
   }
 }
 
@@ -237,7 +238,7 @@
   }
 }
 
-.welcome{
+.welcome {
   width: 30vw;
   height: 30vw;
   @extend %gif2;
@@ -300,7 +301,7 @@
   width: 20px;
   height: 4px;
   border-radius: 50%;
-  background-color: rgba(0,0,0,0.9);
+  background-color: rgba(0, 0, 0, 0.9);
   position: absolute;
   top: 62px;
   transform-origin: 50%;

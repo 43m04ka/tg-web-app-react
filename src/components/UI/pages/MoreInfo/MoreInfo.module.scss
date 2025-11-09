@@ -60,5 +60,63 @@
 
   }
 
+  > div:nth-child(2) {
+    @extend %font;
+    font-size: 4vw;
+    margin: 0 0 3vw 2.5vw;
+    color: #d4d4d4;
+  }
+}
 
+.slide {
+  width: 50vw;
+  height: 40vw;
+  border-radius: 5vw;
+  padding: 3vw;
+  background-color: #d4d4d4;
+  text-align: left !important;
+  margin-left: 5vw;
+  margin-bottom: 5vw;
+
+  > div:nth-child(1) {
+    @extend %font;
+    color: #747474;
+    font-size: 5vw;
+  }
+
+  > div:nth-child(2) {
+    margin-top: 1vw;
+    @extend %font;
+    font-size: 5vw;
+    font-weight: normal;
+    color: #323030;
+  }
+}
+
+.homeScreen {
+  width: 90vw;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 1vw 5vw;
+  display: flex;
+  overflow: hidden;
+  max-height: 32.5vw;
+
+  > div {
+    width: max-content;
+    padding: 1.3vw 2.3vw;
+    background: #373737;
+    @extend %font;
+    border-radius: 3.5vw;
+    margin: 1.2vw 1.2vw 0 0;
+    height: 6.7vw;
+    color: white;
+    font-size: 3.2vw;
+    text-align: center;
+    -webkit-animation: animClue 1.5s forwards ease-in-out;
+    animation: animClue 1.5s forwards ease-in-out;
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
 }

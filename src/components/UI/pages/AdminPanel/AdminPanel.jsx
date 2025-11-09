@@ -11,6 +11,7 @@ import useData from "./useData";
 import History from "./Tabs/HistoryOrders/History";
 import Promo from "./Tabs/Promo/Promo";
 import Search from "./Tabs/Search/Search";
+import InfoBlock from "./Tabs/InfoBloks/InfoBlock";
 
 const AdminPanel = () => {
 
@@ -25,6 +26,7 @@ const AdminPanel = () => {
         {name: 'Редактировать карты', path: 'edit-cards', element: <AP_EditCards/>},
         {name: 'Структура', path: 'structure', element: <EditCatalogs/>},
         {name: 'Поиск', path: 'search', element: <Search/>},
+        {name: 'Акции в "ещё"', path: 'more', element: <InfoBlock/>},
         {name: 'Промокоды', path: 'promo', element: <Promo/>},
         {name: 'Страницы', path: 'pages', element: <EditPages/>},
         {name: 'История заказов', path: 'history-orders', element: <History/>},];

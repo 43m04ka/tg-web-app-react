@@ -1,0 +1,64 @@
+@import "src/components/styles/mainStyle";
+
+.container {
+  > div:first-child {
+    width: 80vw;
+    margin: 6vw 10vw;
+    display: flex;
+    flex-direction: column;
+
+    > div {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      margin-top: 4vw;
+
+      > div {
+        width: 38vw;
+        height: 26vw;
+        border-radius: 5vw;
+
+        > div {
+
+        }
+
+        > p {
+          @extend %font;
+          font-size: 4vw;
+          margin: auto 2vw 2vw auto;
+          width: max-content;
+          height: 3.4vw;
+          display: flex;
+        }
+      }
+    }
+
+    > div:nth-child(1) {
+      > div:nth-child(1) {
+        background-color: #d4d4d4;
+        color: #232121;
+      }
+
+      > div:nth-child(2) {
+        background-color: #d4d4d4;
+        color: #232121;
+      }
+    }
+
+    > div:nth-child(2) {
+      > div:nth-child(1) {
+        background-color: #282828;
+        color: #3a3a3a;
+      }
+
+      > div:nth-child(2) {
+        background-color: #489a4e;
+        color: white;
+
+      }
+    }
+
+  }
+
+
+}

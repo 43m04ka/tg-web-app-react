@@ -9,7 +9,7 @@ import CatalogListHead from "./pages/MainScreen/CatalogList/CatalogListHead";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import Search from "./pages/Search/Search";
 import Basket from "./pages/Basket/Basket";
-import Info from "./pages/other/Info";
+import MoreInfo from "./pages/MoreInfo/MoreInfo";
 import SelectPlatform from "./pages/SelectPlatform/SelectPlatform";
 
 
@@ -49,7 +49,7 @@ const MainPage = ({page}) => {
                     <Route path="/search" element={<Search/>}/>
                     <Route path="/basket" element={<Basket/>}/>
                     <Route path="/selectPlatform" element={<SelectPlatform/>}/>
-                    <Route path="/more" element={<Info/>}/>
+                    <Route path="/more" element={<MoreInfo/>}/>
                 </Routes>
             </div>
         </div>

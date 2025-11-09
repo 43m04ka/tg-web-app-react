@@ -12,7 +12,13 @@ import 'swiper/css/pagination';
 const clueList = [{name: 'пользовательское соглашение'},
     {name: 'политика конфиндециальности'},
     {name: 'группа вк со скидками для playstation'},
-    {name: 'tg канал со скидками для xbox'}]
+    {name: 'tg канал со скидками для xbox'},
+    {name: 'группа вк со скидками для xbox'},
+    {name: 'tg канал со скидками для playstation'},
+    {name: 'faq для playstation'},
+    {name: 'faq для xbox'},
+    {name: 'написать в поддержку'},
+]
 
 const MoreInfo = () => {
     const {tg} = useTelegram();
@@ -96,7 +102,8 @@ const MoreInfo = () => {
         <div className={style['homeScreen']}>
             {clueList.map((item, index) => {
                 return (<div className={style['animClue']} style={{
-                    webkitAnimationDelay: String(0.1 * index) + 's', animationDelay: String(0.1 * index + 0.2) + 's'
+                    webkitAnimationDelay: String(0.1 * index) + 's', animationDelay: String(0.1 * index + 0.2) + 's',
+                    background: (index  === clueList.length -1 ? '#489a4e' : '#373737')
                 }} onClick={() => {
                     setInputValue(item.name)
                 }}>{item.name}</div>)

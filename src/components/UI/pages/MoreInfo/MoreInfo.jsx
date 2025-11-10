@@ -56,7 +56,9 @@ const MoreInfo = () => {
         }
     }, [onBack])
 
-    return (<div className={style['container']}>
+    return (<div className={style['container']}
+                 style={{paddingBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px'}}>
+        >
         <div>
             <div>
                 <div>
@@ -85,7 +87,7 @@ const MoreInfo = () => {
         <div>Акции и спецпредложения</div>
 
         <div style={{width: '100vw', overflow: 'hidden'}}>
-            <Swiper slidesPerView={2} pagination={pagination} style={{width: '110vw', marginLeft: '-5vw'}}
+            <Swiper slidesPerView={2} pagination={pagination} style={{width: '105vw', marginLeft: '-2.5vw'}}
                     modules={[Pagination]} spaceBetween={0}>
                 {info.map((item, index) => (<SwiperSlide key={index}>
                     <div className={style['slide']}>
@@ -100,14 +102,17 @@ const MoreInfo = () => {
         </div>
 
         <div className={style['homeScreen']}>
-            {clueList.map((item, index) => {
-                return (<div className={style['animClue']} style={{
-                    webkitAnimationDelay: String(0.1 * index) + 's', animationDelay: String(0.1 * index + 0.2) + 's',
-                    background: (index  === clueList.length -1 ? '#489a4e' : '#373737')
-                }} onClick={() => {
-                    setInputValue(item.name)
-                }}>{item.name}</div>)
-            })}
+            <div>
+                {clueList.map((item, index) => {
+                    return (<div className={style['animClue']} style={{
+                        webkitAnimationDelay: String(0.1 * index) + 's',
+                        animationDelay: String(0.1 * index + 0.2) + 's',
+                        background: (index === clueList.length - 1 ? '#489a4e' : '#373737')
+                    }} onClick={() => {
+                        setInputValue(item.name)
+                    }}>{item.name}</div>)
+                })}
+            </div>
         </div>
     </div>);
 };

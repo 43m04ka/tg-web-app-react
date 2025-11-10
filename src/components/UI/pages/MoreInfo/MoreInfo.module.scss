@@ -95,7 +95,7 @@
   > div:nth-child(2) {
     @extend %font;
     font-size: 4vw;
-    margin: 0 0 3vw 2.5vw;
+    margin: 0 0 3vw 4.5vw;
     color: #d4d4d4;
   }
 }
@@ -126,29 +126,37 @@
 }
 
 .homeScreen {
-  width: 90vw;
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin: 1vw 5vw;
-  display: flex;
-  overflow: hidden;
+  height: 50vw;
+  margin: 1vw 0;
+  position: relative;
+  overflow-x: scroll;
+  z-index: 300;
 
   > div {
-    width: max-content;
-    padding: 1vw 2vw;
-    background: #373737;
-    @extend %font;
-    border-radius: 3.5vw;
-    margin: 1.2vw 1.2vw 0 0;
-    height: 5vw;
-    color: white;
-    font-size: 2.5vw;
-    text-align: center;
-    -webkit-animation: animClue 1.5s forwards ease-in-out;
-    animation: animClue 1.5s forwards ease-in-out;
-    opacity: 0;
-    -webkit-transform: scale(0);
-    transform: scale(0);
+    width: 160vw;
+    flex-direction: row;
+    flex-wrap: wrap;
+    display: flex;
+    position: absolute;
+    padding-left: 5vw;
+    z-index: 1000;
+
+    > div {
+      width: max-content;
+      padding: 1.3vw 2.3vw;
+      @extend %font;
+      border-radius: 3.5vw;
+      margin: 1.2vw 1.2vw 0 0;
+      height: 6.7vw;
+      color: white;
+      font-size: 3.2vw;
+      text-align: center;
+      -webkit-animation: animClue 1.5s forwards ease-in-out;
+      animation: animClue 1.5s forwards ease-in-out;
+      opacity: 0;
+      -webkit-transform: scale(0);
+      transform: scale(0);
+    }
   }
 }
 

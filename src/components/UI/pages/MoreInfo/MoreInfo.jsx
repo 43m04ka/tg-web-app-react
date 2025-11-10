@@ -86,11 +86,13 @@ const MoreInfo = () => {
 
         <div>Акции и спецпредложения</div>
 
-        <div style={{width: '100vw', overflow: 'hidden'}}>
+        <div style={{width: '100vw', overflow: 'hidden', height: '46vw'}}>
             <Swiper slidesPerView={2} pagination={pagination} style={{width: '105vw', marginLeft: '-2.5vw'}}
                     modules={[Pagination]} spaceBetween={0}>
                 {info.map((item, index) => (<SwiperSlide key={index}>
-                    <div className={style['slide']}>
+                    <div className={style['slide']} style={{
+                        webkitAnimationDelay: String(0.1 * index) + 's',
+                        animationDelay: String(0.1 * index + 0.2) + 's',}}>
                         <div>{item.name}</div>
                         <div>{item.body}</div>
                     </div>
@@ -105,8 +107,6 @@ const MoreInfo = () => {
             <div>
                 {clueList.map((item, index) => {
                     return (<div className={style['animClue']} style={{
-                        webkitAnimationDelay: String(0.1 * index) + 's',
-                        animationDelay: String(0.1 * index + 0.2) + 's',
                         background: (index === clueList.length - 1 ? '#489a4e' : '#373737')
                     }} onClick={() => {
                         setInputValue(item.name)

@@ -3,7 +3,7 @@ import './App.css';
 import React, {useCallback, useEffect, useState} from "react";
 import {useTelegram} from "./hooks/useTelegram";
 import {Route, Routes, useNavigate} from "react-router-dom";
-import ProductList from "./components/UI/pages/other/ProductList";
+import Catalog from "./components/UI/pages/Catalog/Catalog";
 import MainPage from "./components/UI/MainPage";
 import ErrorPage from "./components/UI/pages/other/ErrorPage";
 import AdminPanel from "./components/UI/pages/AdminPanel/AdminPanel";
@@ -113,7 +113,7 @@ function App() {
                 {pageList.map((page) => (
                     <Route path={page['link'] + '/*'} key={page['id']} element={<MainPage page={page}/>}/>))}
                 <Route path={'favorites'} element={<Favorites/>}/>
-                <Route path={'/catalog/*'} element={<ProductList height={size}/>}/>
+                <Route path={'/catalog/*'} element={<Catalog height={size}/>}/>
                 <Route path={'/card/*'} element={<Product/>}/>
                 <Route path={'/choice-catalog/*'} element={<ProductListSelector/>}/>
                 <Route path={'admin-panel/*'} element={<AdminPanel/>}/>

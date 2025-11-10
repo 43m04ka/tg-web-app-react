@@ -2,8 +2,15 @@ import {create} from 'zustand'
 import {devtools} from "zustand/middleware";
 import {useServerUser} from "./useServerUser";
 import {useTelegram} from "./useTelegram";
+import {useNavigate} from "react-router-dom";
 
-const {getPageList, getStructureCatalogList, getPreviewCardList, getCatalogList, getPreviewFavoriteList} = useServerUser()
+const {
+    getPageList,
+    getStructureCatalogList,
+    getPreviewCardList,
+    getCatalogList,
+    getPreviewFavoriteList
+} = useServerUser()
 const {getBasketList} = useServerUser()
 const {user} = useTelegram()
 
@@ -16,17 +23,17 @@ const useGlobalData = create(devtools(set => ({
 
     basket: null,
     updateBasket: (catalogList, pageId) =>
-        getBasketList((result)=> {
+        getBasketList((result) => {
             let catalogIdList = []
-            catalogList.map(catalog=>{
-                if(catalog.structurePageId === pageId){
+            catalogList.map(catalog => {
+                if (catalog.structurePageId === pageId) {
                     catalogIdList.push(catalog.id)
                 }
             })
 
             let cardList = []
-            result.map(card=>{
-                if(catalogIdList.includes(card.catalogId)){
+            result.map(card => {
+                if (catalogIdList.includes(card.catalogId)) {
                     cardList.push(card)
                 }
             })
@@ -46,6 +53,7 @@ const useGlobalData = create(devtools(set => ({
 
     pageId: -1,
     setPageId: (pageId) => set(() => ({pageId: pageId})),
+
 })))
 
 window.state = useGlobalData

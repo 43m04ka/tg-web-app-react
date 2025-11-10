@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react';
 import {Link, useNavigate} from "react-router-dom";
-import ProductItem from "./ProductItem";
+import CatalogItem from "../Catalog/CatalogItem";
 
 const HomeBlock = ({data}) => {
 
@@ -68,7 +68,7 @@ const HomeBlock = ({data}) => {
                 <div className={"scroll-container"} style={{alignItems: 'center'}}>
                     {data.body.slice(0, 6).map(item => (
                             <div style={{marginRight: '5px'}}>
-                                <ProductItem key={item.id} product={item}/>
+                                <CatalogItem key={item.id} product={item}/>
                             </div>
                         )
                     )}

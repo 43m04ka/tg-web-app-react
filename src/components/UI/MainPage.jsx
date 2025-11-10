@@ -18,8 +18,7 @@ const MainPage = ({page}) => {
     const [heightTab, setHeightTab] = useState(0);
     const [zIndexTab, setZIndexTab] = useState(-10);
     const [height, setHeight] = useState(0);
-    const {pageId, setPageId} = useGlobalData()
-    const navigate = useNavigate();
+    const {pageId, setPageId, navigate, opacityPage} = useGlobalData()
 
 
     useEffect(() => {
@@ -36,14 +35,20 @@ const MainPage = ({page}) => {
     }, [window.innerHeight])
 
 
-    return (<div className={style['mainDivision']} style={{height: String(height) + 'px'}}>
+    return (<div className={style['mainDivision']} style={{height: String(height) + 'px', opacity: opacityPage}}>
         <div style={{zIndex: 100, height: String(height) + 'px'}}>
             <div>
                 <CatalogListHead/>
                 <CatalogListBody/>
+                <Routes>
+                    <Route path="/search" element={<Search/>}/>
+                    <Route path="/basket" element={<Basket/>}/>
+                    <Route path="/selectPlatform" element={<SelectPlatform/>}/>
+                    <Route path="/more" element={<MoreInfo/>}/>
+                </Routes>
             </div>
         </div>
-        <div style={{zIndex: zIndexTab, height: String(height) + 'px', opacity: heightTab === 0 ? 0 : 1}}>
+        <div style={{zIndex: zIndexTab, height: String(height) + 'px'}}>
             <div style={{height: heightTab, zIndex: zIndexTab}}>
                 <Routes>
                     <Route path="/search" element={<Search/>}/>

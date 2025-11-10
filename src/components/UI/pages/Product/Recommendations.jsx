@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import ProductItem from "../other/ProductItem";
+import CatalogItem from "../Catalog/CatalogItem";
 import {useServerUser} from "../../../../hooks/useServerUser";
 import useGlobalData from "../../../../hooks/useGlobalData";
 
@@ -21,7 +21,7 @@ const Recommendations = () => {
                     {products.map(item => {
                         return (
                             <div style={{marginLeft: String((window.innerWidth - 150 - 150) / 3) + 'px'}}>
-                                <ProductItem key={item.id} product={item}/>
+                                <CatalogItem key={item.id} product={item}/>
                             </div>)
                     })}
                 </div>

@@ -1,11 +1,11 @@
-import React, {createRef, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useTelegram} from "../../../../hooks/useTelegram";
 import {Link, useNavigate} from "react-router-dom";
-import ProductItem from "../other/ProductItem";
 import {useServerUser} from "../../../../hooks/useServerUser";
 import useGlobalData from "../../../../hooks/useGlobalData";
 import Description from "./Description";
 import Recommendations from "./Recommendations";
+import style from './Product.module.scss'
 
 
 let heightText = null
@@ -19,9 +19,9 @@ const Product = () => {
 
     let cardId = Number((window.location.pathname).replace('/card/', ''))
 
-    const [isBuy, setIsBuy] = React.useState(false);
-    const [productData, setProductData] = React.useState(null);
-    const [isFavorite, setIsFavorite] = React.useState(false);
+    const [isBuy, setIsBuy] = useState(false);
+    const [productData, setProductData] = useState(null);
+    const [isFavorite, setIsFavorite] = useState(false);
     const [pictureIsLoad, setPictureIsLoad] =  useState(0);
 
     if(productData !== null && cardId !== productData.id){
@@ -249,7 +249,7 @@ const Product = () => {
 
 
         return (
-            <div className={'card-product'}>
+            <div className={style['mainDivision']}>
                 <div style={{
                     borderRadius: '10px', marginLeft: '10px',
                     marginRight: '10px',

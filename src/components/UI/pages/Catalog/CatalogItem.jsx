@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import '../../../styles/style.css';
 import {Link} from "react-router-dom";
+import style from './Catalog.module.scss'
 
-const ProductItem = ({product}) => {
+const CatalogItem = ({product}) => {
 
     let oldPrice = ''
     let parcent = ''
@@ -90,7 +91,7 @@ const ProductItem = ({product}) => {
                         flexDirection: 'row',
                         alignItems: 'end',
                         justifyContent: 'space-between',
-                    }} className={'img-home'}>
+                    }} className={style['productImage']}>
                         {platform}
                         {parcentEl}
                     </div>
@@ -109,4 +110,4 @@ const ProductItem = ({product}) => {
         ;
 };
 
-export default ProductItem;
+export default CatalogItem;

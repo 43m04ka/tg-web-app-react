@@ -82,7 +82,7 @@ export function useServerUser() {
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
-                setResult(data)
+                setResult(data, listNumber)
             })
         })
     }

@@ -18,10 +18,7 @@ const Product = () => {
     const {
         updatePreviewFavoriteData,
         previewFavoriteData,
-        updatePreviewBasketData,
-        previewBasketData,
         pageId,
-        catalogList,
         updateCounterBasket
     } = useGlobalData()
 
@@ -85,29 +82,14 @@ const Product = () => {
             backgroundColor = '#ff5d5d'
         }
 
-        let genre = ''
-        if (typeof productData.genre === 'undefined' || productData.genre === null) {
-            genre = ''
-        } else {
-            genre = 'Жанр: ' + productData.genre
-            genre = (<div style={{
-                marginTop: '12px',
-                fontSize: '14px',
-                color: 'white',
-                fontFamily: "'Montserrat', sans-serif"
-            }}>{genre}
-            </div>)
-        }
-
         let oldPrice = ''
         let parcent = ''
         let price = productData.price.toLocaleString() + ' ₽'
 
         let endDatePromotion = ''
         if (productData.endDatePromotion !== null) {
-            endDatePromotion = 'Скидка ' + parcent + ' ' + productData.endDatePromotion
+            endDatePromotion = `cкидка ${Math.ceil((1 - productData.price / productData.oldPrice) * 100)}% (${productData.oldPrice - productData.price}₽) действует ${productData.endDatePromotion}`
         }
-
         if (productData.oldPrice !== null) {
             oldPrice = productData.oldPrice.toLocaleString() + ' ₽'
             parcent = '−' + Math.ceil((1 - productData.price / productData.oldPrice) * 100) + '%'
@@ -118,142 +100,8 @@ const Product = () => {
                 oldPrice = productData.similarCard?.oldPrice.toLocaleString() + ' ₽'
             }
             if (typeof productData.similarCard.endDatePromotion !== 'undefined') {
-                endDatePromotion = 'Скидка ' + parcent + ' ' + productData.similarCard.endDatePromotion
+                endDatePromotion = `cкидка ${Math.ceil((1 - productData.similarCard?.price / productData.similarCard?.oldPrice) * 100)}% (${productData.similarCard?.oldPrice - productData.similarCard?.price}₽) действует ${productData.similarCard?.endDatePromotion}`
             }
-        }
-
-        let language = ''
-        if (typeof productData.language === 'undefined' || productData.language === null) {
-            language = ''
-        } else {
-            if (typeof productData.languageSelector !== 'undefined' || productData.languageSelector === null) {
-                language = 'Язык в игре: ' + productData.languageSelector
-                language = (<div style={{
-                    marginTop: '12px',
-                    fontSize: '14px',
-                    color: 'white',
-                    fontFamily: "'Montserrat', sans-serif"
-                }}>{language}
-                </div>)
-            } else {
-                language = 'Язык в игре: ' + productData.language
-                language = (<div style={{
-                    marginTop: '12px',
-                    fontSize: '14px',
-                    color: 'white',
-                    fontFamily: "'Montserrat', sans-serif"
-                }}>{language}
-                </div>)
-            }
-        }
-
-        let region = ''
-        if (productData.regionActivate !== null) {
-            region = (<div style={{
-                marginTop: '12px',
-                fontSize: '14px',
-                color: 'white',
-                fontFamily: "'Montserrat', sans-serif"
-            }}>{'Регион активации: ' + productData.regionActivate}
-            </div>)
-        }
-
-        let releaseDate = ''
-        if (typeof productData.releaseDate === 'undefined' || productData.releaseDate === null) {
-            releaseDate = ''
-        } else {
-            let a = (new Date(productData.releaseDate)) * 24 * 60 * 60 * 1000
-            let currentDate = new Date('1899-12-30T00:00:00.000Z')
-            let newDate = new Date(a + currentDate.getTime());
-
-            releaseDate = 'Дата релиза: ' + newDate.toLocaleDateString('ru-RU')
-            releaseDate = (<div style={{
-                marginTop: '12px',
-                fontSize: '14px',
-                color: 'white',
-                fontFamily: "'Montserrat', sans-serif"
-            }}>{releaseDate}
-            </div>)
-        }
-
-        let numberPlayers = ''
-        if (productData.numberPlayers !== null) {
-            numberPlayers = 'Количество игроков: ' + productData.numberPlayers
-            numberPlayers = (<div style={{
-                marginTop: '12px',
-                fontSize: '14px',
-                color: 'white',
-                fontFamily: "'Montserrat', sans-serif"
-            }}>{numberPlayers}
-            </div>)
-        }
-
-        let platform = ''
-        if (typeof productData.platform === 'undefined' || productData.platform === null) {
-            platform = ''
-        } else {
-            platform = 'Платформа: ' + productData.platform
-            platform = (<div style={{
-                marginTop: '12px',
-                fontSize: '14px',
-                color: 'white',
-                fontFamily: "'Montserrat', sans-serif"
-            }}>{platform}
-            </div>)
-        }
-
-        let view = ''
-        if (productData.choiceRow !== null) {
-            view = (<div style={{
-                marginTop: '12px',
-                fontSize: '14px',
-                color: 'white',
-                fontFamily: "'Montserrat', sans-serif"
-            }}>{'Срок подписки: ' + productData.choiceRow}
-            </div>)
-        }
-
-        let imgElement = (<div style={{
-            height: String(window.innerWidth - 20 - ((window.innerWidth - 20) / 2 - 50)) + 'px'
-        }}>
-            <div className={'plup-loader'} style={{
-                opacity: 0.3,
-                marginTop: String((window.innerWidth - 20) / 2 - 50) + 'px',
-                marginLeft: String((window.innerWidth - 20) / 2 - 50) + 'px',
-                position: 'unset'
-            }}></div>
-        </div>)
-        let imgLoadElem = (<></>)
-        if (pictureIsLoad === 1) {
-            imgElement = (<div className={'img'} style={{
-                height: String(window.innerWidth - 20) + 'px',
-                borderRadius: '15px', backgroundImage: "url('" + productData.image + "')",
-                backgroundSize: 'cover', display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'end',
-                justifyContent: 'space-between',
-            }}></div>)
-            imgLoadElem = (<img className={'img'} style={{
-                height: String(0) + 'px',
-                borderRadius: '15px', //backgroundImage: "url('" + productData.image + "0')",
-                backgroundSize: 'cover', display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'end',
-                justifyContent: 'space-between',
-            }} src={productData.image.slice(0, productData.image.indexOf('?w=') + 1) + 'w=1024'}
-                                onLoad={() => setPictureIsLoad(2)}></img>)
-        }
-        if (pictureIsLoad === 2) {
-            imgElement = (<div className={'img'} style={{
-                height: String(window.innerWidth - 20) + 'px',
-                borderRadius: '15px',
-                backgroundImage: "url('" + productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024')",
-                backgroundSize: 'cover',
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'end',
-                justifyContent: 'space-between',
-            }}></div>)
         }
 
 
@@ -261,8 +109,17 @@ const Product = () => {
             <div className={style['mainDivision']}>
 
                 <div>
-                    <img src={productData.image} onLoad={() => setPictureIsLoad(1)}></img>
+                    <div>
+                        <img src={productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024"}></img>
+                    </div>
                     <div>{productData.name}</div>
+                    <div>
+                        <div style={{color: oldPrice !== '' ? '#489a4e' : 'white'}}>Стоимость — {price}</div>
+                        <div>{oldPrice}</div>
+                    </div>
+                    <div>
+                        {endDatePromotion}
+                    </div>
                 </div>
 
                 <div style={{
@@ -271,31 +128,6 @@ const Product = () => {
                     width: String(window.innerWidth - 20) + 'px',
                     marginTop: '10px',
                 }}>
-                    <img className={'img'} style={{
-                        height: String(0) + 'px',
-                        borderRadius: '15px', //backgroundImage: "url('" + productData.image + "0')",
-                        backgroundSize: 'cover', display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'end',
-                        justifyContent: 'space-between',
-                    }} src={productData.image}
-                         onLoad={() => setPictureIsLoad(1)}></img>
-                    {imgLoadElem}
-                    {imgElement}
-                    <div style={{
-                        color: 'white',
-                        background: '#2b2e31',
-                        borderRadius: '15px',
-                        paddingLeft: '15px',
-                        paddingRight: '15px',
-                        paddingTop: '5px',
-                        paddingBottom: '5px',
-                        fontSize: '24px',
-                        textAlign: 'left',
-                        fontFamily: "'Montserrat', sans-serif",
-                        marginTop: '5px',
-                    }}>{productData.name}</div>
-
                     <div style={{
                         color: 'white',
                         background: '#2b2e31',
@@ -446,13 +278,6 @@ const Product = () => {
                                 }}/>
                             </Link> : ''}
                         <div style={{marginLeft: '15px', fontWeight: '600'}}>
-                            {releaseDate}
-                            {platform}
-                            {numberPlayers}
-                            {view}
-                            {language}
-                            {region}
-                            {genre}
                         </div>
                     </div>
                     <Description>{productData.description}</Description>
@@ -466,3 +291,152 @@ const Product = () => {
 };
 
 export default Product;
+
+//
+// let language = ''
+// if (typeof productData.language === 'undefined' || productData.language === null) {
+//     language = ''
+// } else {
+//     if (typeof productData.languageSelector !== 'undefined' || productData.languageSelector === null) {
+//         language = 'Язык в игре: ' + productData.languageSelector
+//         language = (<div style={{
+//             marginTop: '12px',
+//             fontSize: '14px',
+//             color: 'white',
+//             fontFamily: "'Montserrat', sans-serif"
+//         }}>{language}
+//         </div>)
+//     } else {
+//         language = 'Язык в игре: ' + productData.language
+//         language = (<div style={{
+//             marginTop: '12px',
+//             fontSize: '14px',
+//             color: 'white',
+//             fontFamily: "'Montserrat', sans-serif"
+//         }}>{language}
+//         </div>)
+//     }
+// }
+//
+// let region = ''
+// if (productData.regionActivate !== null) {
+//     region = (<div style={{
+//         marginTop: '12px',
+//         fontSize: '14px',
+//         color: 'white',
+//         fontFamily: "'Montserrat', sans-serif"
+//     }}>{'Регион активации: ' + productData.regionActivate}
+//     </div>)
+// }
+//
+// let releaseDate = ''
+// if (typeof productData.releaseDate === 'undefined' || productData.releaseDate === null) {
+//     releaseDate = ''
+// } else {
+//     let a = (new Date(productData.releaseDate)) * 24 * 60 * 60 * 1000
+//     let currentDate = new Date('1899-12-30T00:00:00.000Z')
+//     let newDate = new Date(a + currentDate.getTime());
+//
+//     releaseDate = 'Дата релиза: ' + newDate.toLocaleDateString('ru-RU')
+//     releaseDate = (<div style={{
+//         marginTop: '12px',
+//         fontSize: '14px',
+//         color: 'white',
+//         fontFamily: "'Montserrat', sans-serif"
+//     }}>{releaseDate}
+//     </div>)
+// }
+//
+// let numberPlayers = ''
+// if (productData.numberPlayers !== null) {
+//     numberPlayers = 'Количество игроков: ' + productData.numberPlayers
+//     numberPlayers = (<div style={{
+//         marginTop: '12px',
+//         fontSize: '14px',
+//         color: 'white',
+//         fontFamily: "'Montserrat', sans-serif"
+//     }}>{numberPlayers}
+//     </div>)
+// }
+//
+// let platform = ''
+// if (typeof productData.platform === 'undefined' || productData.platform === null) {
+//     platform = ''
+// } else {
+//     platform = 'Платформа: ' + productData.platform
+//     platform = (<div style={{
+//         marginTop: '12px',
+//         fontSize: '14px',
+//         color: 'white',
+//         fontFamily: "'Montserrat', sans-serif"
+//     }}>{platform}
+//     </div>)
+// }
+//
+// let view = ''
+// if (productData.choiceRow !== null) {
+//     view = (<div style={{
+//         marginTop: '12px',
+//         fontSize: '14px',
+//         color: 'white',
+//         fontFamily: "'Montserrat', sans-serif"
+//     }}>{'Срок подписки: ' + productData.choiceRow}
+//     </div>)
+// }
+//
+// let imgElement = (<div style={{
+//     height: String(window.innerWidth - 20 - ((window.innerWidth - 20) / 2 - 50)) + 'px'
+// }}>
+//     <div className={'plup-loader'} style={{
+//         opacity: 0.3,
+//         marginTop: String((window.innerWidth - 20) / 2 - 50) + 'px',
+//         marginLeft: String((window.innerWidth - 20) / 2 - 50) + 'px',
+//         position: 'unset'
+//     }}></div>
+// </div>)
+// let imgLoadElem = (<></>)
+// if (pictureIsLoad === 1) {
+//     imgElement = (<div className={'img'} style={{
+//         height: String(window.innerWidth - 20) + 'px',
+//         borderRadius: '15px', backgroundImage: "url('" + productData.image + "')",
+//         backgroundSize: 'cover', display: 'flex',
+//         flexDirection: 'row',
+//         alignItems: 'end',
+//         justifyContent: 'space-between',
+//     }}></div>)
+//     imgLoadElem = (<img className={'img'} style={{
+//         height: String(0) + 'px',
+//         borderRadius: '15px', //backgroundImage: "url('" + productData.image + "0')",
+//         backgroundSize: 'cover', display: 'flex',
+//         flexDirection: 'row',
+//         alignItems: 'end',
+//         justifyContent: 'space-between',
+//     }} src={productData.image.slice(0, productData.image.indexOf('?w=') + 1) + 'w=1024'}
+//                         onLoad={() => setPictureIsLoad(2)}></img>)
+// }
+// if (pictureIsLoad === 2) {
+//     imgElement = (<div className={'img'} style={{
+//         height: String(window.innerWidth - 20) + 'px',
+//         borderRadius: '15px',
+//         backgroundImage: "url('" + productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024')",
+//         backgroundSize: 'cover',
+//         display: 'flex',
+//         flexDirection: 'row',
+//         alignItems: 'end',
+//         justifyContent: 'space-between',
+//     }}></div>)
+// }
+
+// let genre = ''
+// if (typeof productData.genre === 'undefined' || productData.genre === null) {
+//     genre = ''
+// } else {
+//     genre = 'Жанр: ' + productData.genre
+//     genre = (<div style={{
+//         marginTop: '12px',
+//         fontSize: '14px',
+//         color: 'white',
+//         fontFamily: "'Montserrat', sans-serif"
+//     }}>{genre}
+//     </div>)
+// }

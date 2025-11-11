@@ -15,16 +15,24 @@ const Product = () => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const {getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket} = useServerUser()
-    const {updatePreviewFavoriteData, previewFavoriteData, updatePreviewBasketData, previewBasketData, pageId, catalogList, updateCounterBasket} = useGlobalData()
+    const {
+        updatePreviewFavoriteData,
+        previewFavoriteData,
+        updatePreviewBasketData,
+        previewBasketData,
+        pageId,
+        catalogList,
+        updateCounterBasket
+    } = useGlobalData()
 
     let cardId = Number((window.location.pathname).replace('/card/', ''))
 
     const [isBuy, setIsBuy] = useState(false);
     const [productData, setProductData] = useState(null);
     const [isFavorite, setIsFavorite] = useState(false);
-    const [pictureIsLoad, setPictureIsLoad] =  useState(0);
+    const [pictureIsLoad, setPictureIsLoad] = useState(0);
 
-    if(productData !== null && cardId !== productData.id){
+    if (productData !== null && cardId !== productData.id) {
         setProductData(null)
         setPictureIsLoad(0)
     }
@@ -39,12 +47,12 @@ const Product = () => {
     }, [])
 
 
-    if(productData !== null) {
+    if (productData !== null) {
         let buttonColor
         let buttonText
         let buttonLink
 
-        if(isFavorite !== previewFavoriteData.includes(cardId)) {
+        if (isFavorite !== previewFavoriteData.includes(cardId)) {
             setIsFavorite(previewFavoriteData.includes(cardId))
         }
 
@@ -61,7 +69,8 @@ const Product = () => {
                 buttonText = ('Добавить в корзину')
                 buttonLink = async () => {
                     await setIsBuy(null)
-                    await addCardToBasket(()=> {}, user.id, cardId).then()
+                    await addCardToBasket(() => {
+                    }, user.id, cardId).then()
                 }
             }
         } else {
@@ -102,13 +111,13 @@ const Product = () => {
         if (productData.oldPrice !== null) {
             oldPrice = productData.oldPrice.toLocaleString() + ' ₽'
             parcent = '−' + Math.ceil((1 - productData.price / productData.oldPrice) * 100) + '%'
-        } else if(productData.similarCard !== null){
+        } else if (productData.similarCard !== null) {
             price = productData.similarCard?.price.toLocaleString() + ' ₽'
-            if(typeof productData.similarCard.oldPrice !== 'undefined') {
+            if (typeof productData.similarCard.oldPrice !== 'undefined') {
                 parcent = '−' + Math.ceil((1 - productData.similarCard?.price / productData.similarCard?.oldPrice) * 100) + '%'
                 oldPrice = productData.similarCard?.oldPrice.toLocaleString() + ' ₽'
             }
-            if(typeof productData.similarCard.endDatePromotion !== 'undefined') {
+            if (typeof productData.similarCard.endDatePromotion !== 'undefined') {
                 endDatePromotion = 'Скидка ' + parcent + ' ' + productData.similarCard.endDatePromotion
             }
         }
@@ -139,7 +148,7 @@ const Product = () => {
         }
 
         let region = ''
-        if (productData.regionActivate !== null){
+        if (productData.regionActivate !== null) {
             region = (<div style={{
                 marginTop: '12px',
                 fontSize: '14px',
@@ -153,7 +162,7 @@ const Product = () => {
         if (typeof productData.releaseDate === 'undefined' || productData.releaseDate === null) {
             releaseDate = ''
         } else {
-            let a = (new Date(productData.releaseDate))*24*60*60*1000
+            let a = (new Date(productData.releaseDate)) * 24 * 60 * 60 * 1000
             let currentDate = new Date('1899-12-30T00:00:00.000Z')
             let newDate = new Date(a + currentDate.getTime());
 
@@ -250,6 +259,12 @@ const Product = () => {
 
         return (
             <div className={style['mainDivision']}>
+
+                <div>
+                    <img src={productData.image} onLoad={() => setPictureIsLoad(1)}></img>
+                    <div>{productData.name}</div>
+                </div>
+
                 <div style={{
                     borderRadius: '10px', marginLeft: '10px',
                     marginRight: '10px',
@@ -353,19 +368,83 @@ const Product = () => {
                                 transitionDuration: '0.2s',
                             }} onClick={() => {
                                 if (isFavorite) {
-                                    deleteCardToFavorite(()=>{updatePreviewFavoriteData(user.id)}, user.id, cardId).then()
+                                    deleteCardToFavorite(() => {
+                                        updatePreviewFavoriteData(user.id)
+                                    }, user.id, cardId).then()
                                 } else {
-                                    addCardToFavorite(()=>{updatePreviewFavoriteData(user.id)}, user.id, cardId).then()
+                                    addCardToFavorite(() => {
+                                        updatePreviewFavoriteData(user.id)
+                                    }, user.id, cardId).then()
                                 }
                             }}>
                                 <div className={'background-whiteHeart'} style={{height: '25px', width: '25px'}}></div>
                             </div>
                         </div>
-                        {productData.additionalParameter !== null && productData.additionalParameter.includes('Save') && productData.additionalParameter.includes('ps-plus') ? <Link to={'/catalog/ps_psplus'}><div className={'background-ps-plus-save'} style={{display: 'flex', marginLeft:'7px', marginTop:'7px', flexDirection: 'row', justifyContent: 'space-between', borderRadius:'10px', width:String(window.innerWidth-34)+'px', height:String((window.innerWidth-34)*0.17142)+'px'}}/></Link> : ''}
-                        {productData.additionalParameter !== null && productData.additionalParameter.includes('Extra') ? <Link to={'/catalog/ps_psplus'}><div className={'background-ps-plus-extra'} style={{display: 'flex', marginLeft:'7px', marginTop:'7px', flexDirection: 'row', justifyContent: 'space-between', borderRadius:'10px', width:String(window.innerWidth-34)+'px', height:String((window.innerWidth-34)*0.17142)+'px'}}/></Link> : ''}
-                        {productData.additionalParameter !== null && productData.additionalParameter.includes('Deluxe') ? <Link to={'/catalog/ps_psplus'}><div className={'background-ps-plus-deluxe'} style={{display: 'flex', marginLeft:'7px', marginTop:'7px', flexDirection: 'row', justifyContent: 'space-between', borderRadius:'10px', width:String(window.innerWidth-34)+'px', height:String((window.innerWidth-34)*0.17142)+'px'}}/></Link> : ''}
-                        {productData.additionalParameter !== null && productData.additionalParameter.includes('Included') ? <Link to={'/catalog/ps_eaplay'}><div className={'background-ea-play-free'} style={{display: 'flex', marginLeft:'7px', marginTop:'7px', flexDirection: 'row', justifyContent: 'space-between', borderRadius:'10px', width:String(window.innerWidth-34)+'px', height:String((window.innerWidth-34)*0.17142)+'px'}}/></Link> : ''}
-                        {productData.additionalParameter !== null && productData.additionalParameter.includes('GamePass') ? <Link to={'/catalog/xbox_sub'}><div className={'background-game-pass-free'} style={{display: 'flex', marginLeft:'7px', marginTop:'7px', flexDirection: 'row', justifyContent: 'space-between', borderRadius:'10px', width:String(window.innerWidth-34)+'px', height:String((window.innerWidth-34)*0.17142)+'px'}}/></Link> : ''}
+                        {productData.additionalParameter !== null && productData.additionalParameter.includes('Save') && productData.additionalParameter.includes('ps-plus') ?
+                            <Link to={'/catalog/ps_psplus'}>
+                                <div className={'background-ps-plus-save'} style={{
+                                    display: 'flex',
+                                    marginLeft: '7px',
+                                    marginTop: '7px',
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    borderRadius: '10px',
+                                    width: String(window.innerWidth - 34) + 'px',
+                                    height: String((window.innerWidth - 34) * 0.17142) + 'px'
+                                }}/>
+                            </Link> : ''}
+                        {productData.additionalParameter !== null && productData.additionalParameter.includes('Extra') ?
+                            <Link to={'/catalog/ps_psplus'}>
+                                <div className={'background-ps-plus-extra'} style={{
+                                    display: 'flex',
+                                    marginLeft: '7px',
+                                    marginTop: '7px',
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    borderRadius: '10px',
+                                    width: String(window.innerWidth - 34) + 'px',
+                                    height: String((window.innerWidth - 34) * 0.17142) + 'px'
+                                }}/>
+                            </Link> : ''}
+                        {productData.additionalParameter !== null && productData.additionalParameter.includes('Deluxe') ?
+                            <Link to={'/catalog/ps_psplus'}>
+                                <div className={'background-ps-plus-deluxe'} style={{
+                                    display: 'flex',
+                                    marginLeft: '7px',
+                                    marginTop: '7px',
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    borderRadius: '10px',
+                                    width: String(window.innerWidth - 34) + 'px',
+                                    height: String((window.innerWidth - 34) * 0.17142) + 'px'
+                                }}/>
+                            </Link> : ''}
+                        {productData.additionalParameter !== null && productData.additionalParameter.includes('Included') ?
+                            <Link to={'/catalog/ps_eaplay'}>
+                                <div className={'background-ea-play-free'} style={{
+                                    display: 'flex',
+                                    marginLeft: '7px',
+                                    marginTop: '7px',
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    borderRadius: '10px',
+                                    width: String(window.innerWidth - 34) + 'px',
+                                    height: String((window.innerWidth - 34) * 0.17142) + 'px'
+                                }}/>
+                            </Link> : ''}
+                        {productData.additionalParameter !== null && productData.additionalParameter.includes('GamePass') ?
+                            <Link to={'/catalog/xbox_sub'}>
+                                <div className={'background-game-pass-free'} style={{
+                                    display: 'flex',
+                                    marginLeft: '7px',
+                                    marginTop: '7px',
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    borderRadius: '10px',
+                                    width: String(window.innerWidth - 34) + 'px',
+                                    height: String((window.innerWidth - 34) * 0.17142) + 'px'
+                                }}/>
+                            </Link> : ''}
                         <div style={{marginLeft: '15px', fontWeight: '600'}}>
                             {releaseDate}
                             {platform}
@@ -381,7 +460,7 @@ const Product = () => {
                 <Recommendations/>
             </div>
         );
-    }else{
+    } else {
         getCard(setProductData, cardId)
     }
 };

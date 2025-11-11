@@ -9,7 +9,16 @@ import style from './MoreInfo.module.scss'
 import {Swiper, SwiperSlide} from "swiper/react";
 import 'swiper/css/pagination';
 
-const clueList = [{name: 'пользовательское соглашение'}, {name: 'политика конфиндециальности'}, {name: 'группа вк со скидками для playstation'}, {name: 'tg канал со скидками для xbox'}, {name: 'группа вк со скидками для xbox'}, {name: 'tg канал со скидками для playstation'}, {name: 'faq для playstation'}, {name: 'faq для xbox'}, {name: 'написать в поддержку'},]
+const clueList =
+    [{name: 'пользовательское соглашение', path: 'https://t.me/gwstore_faq/11'},
+        {name: 'политика конфиндециальности', path: 'https://t.me/gwstore_faq/12'},
+        {name: 'группа вк со скидками для playstation', path: 'https://vk.com/gwstore.playstation'},
+        {name: 'tg канал со скидками для xbox', path: 'https://t.me/gwstore_xbox'},
+        {name: 'группа вк со скидками для xbox', path: 'https://vk.com/gwstore.xbox'},
+        {name: 'tg канал со скидками для playstation', path: 'https://t.me/gwstore_playstation'},
+        {name: 'faq для playstation', path: 'https://t.me/gwstore_faq/10'},
+        {name: 'faq для xbox', path: 'https://t.me/gwstore_faq/9'},
+        {name: 'написать в поддержку', path: 'https://t.me/gwstore_admin'},]
 
 const MoreInfo = () => {
     const {tg} = useTelegram();
@@ -49,26 +58,34 @@ const MoreInfo = () => {
 
     return (<div className={style['container']}>
 
-        <div style={{paddingBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px'}}>
+        <div
+            style={{paddingBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px'}}>
             <div>
                 <div>
-                    <div>
+                    <div onClick={() => {
+                        navigate('/history')
+                    }}>
                         <div/>
                         <p>Мои</p>
                         <p>покупки</p>
                     </div>
-                    <div>
+                    <div onClick={() => {
+                        navigate('/favorites')
+                    }}>
                         <div/>
                         <p>Избранное</p>
                     </div>
                 </div>
                 <div>
-                    <div>
+                    <div onClick={() => {
+                    }}>
                         <div/>
                         <p>Мой</p>
                         <p>кэшбек</p>
                     </div>
-                    <div>
+                    <div onClick={() => {
+                        window.open('https://t.me/gwstore_admin')
+                    }}>
                         <div/>
                         <p>Поддержка</p>
                     </div>
@@ -84,6 +101,8 @@ const MoreInfo = () => {
                         <div className={style['slide']} style={{
                             webkitAnimationDelay: String(0.1 * index) + 's',
                             animationDelay: String(0.1 * index + 0.2) + 's',
+                        }} onClick={() => {
+                            window.open(item.path)
                         }}>
                             <div>{item.name}</div>
                             <div>{item.body}</div>
@@ -101,7 +120,7 @@ const MoreInfo = () => {
                         return (<div className={style['animClue']} style={{
                             background: (index === clueList.length - 1 ? '#489a4e' : '#373737')
                         }} onClick={() => {
-                            setInputValue(item.name)
+                            window.open(item.path)
                         }}>{item.name}</div>)
                     })}
                 </div>

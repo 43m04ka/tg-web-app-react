@@ -93,7 +93,7 @@ const Product = () => {
                             setCardInBasket(true)
                         }, user.id, cardId)
                     }}
-                         style={{background: productData.onSale ? cardInBasket ? '#618ae4' : '#489a4e' : '#585c59'}}>
+                         style={{background: productData.onSale ? cardInBasket ? '#0d3ad0' : '#489a4e' : '#585c59'}}>
                         {productData.onSale ? cardInBasket ? 'Перейти в корзину' : 'В корзину' : 'Нет в продаже'}
                     </div>
                     <div></div>

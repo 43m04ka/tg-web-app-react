@@ -60,20 +60,19 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
                     setActiveTab(index)
                     setHeightTab(button.heightTab)
                     setZIndexTab(button.heightTab === 0 ? -100 : 100)
-                }, 100)
+                }, 50)
             }
         })
     }
 
     useEffect(() => {
-
         updateBasket(catalogList, pageId)
     }, [window.location.pathname])
 
 
     useEffect(() => {
         let button = buttons[activeTab];
-        if (button.path !== 'selectPlatform') {
+        if (activeTab !== null && button.path !== 'selectPlatform') {
             if (heightTab === 0) {
                 navigate(button.path)
                 timeoutId = setTimeout(() => {

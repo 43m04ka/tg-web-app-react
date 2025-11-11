@@ -73,7 +73,7 @@
   margin: 1vw 5vw;
   display: flex;
   overflow: hidden;
-  position: absolute;
+  position: relative;
   max-height: 32.5vw;
 
   > div {
@@ -240,7 +240,7 @@
   @extend %gif2;
   background-size: cover;
   display: flex;
-  margin: 55vw auto 0 auto;
+  margin: 20vw auto 0 auto;
 }
 
 .wrapper {

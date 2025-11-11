@@ -18,7 +18,7 @@ const MainPage = ({page}) => {
     const [heightTab, setHeightTab] = useState(0);
     const [zIndexTab, setZIndexTab] = useState(-10);
     const [height, setHeight] = useState(0);
-    const {pageId, setPageId, navigate, opacityPage} = useGlobalData()
+    const {pageId, setPageId} = useGlobalData()
 
 
     useEffect(() => {
@@ -35,7 +35,7 @@ const MainPage = ({page}) => {
     }, [window.innerHeight])
 
 
-    return (<div className={style['mainDivision']} style={{height: String(height) + 'px', opacity: opacityPage}}>
+    return (<div className={style['mainDivision']} style={{height: String(height) + 'px'}}>
         <div style={{zIndex: 100, height: String(height) + 'px'}}>
             <div>
                 <CatalogListHead/>

@@ -63,8 +63,7 @@
     > div:nth-child(2) {
       @extend %font;
       color: white;
-      line-height: 4.5vw;
-      font-size: 5vw;
+      font-size: 4.6vw;
       margin: 2vw 3vw 4vw 3vw;
     }
     >div:nth-child(3) {
@@ -86,6 +85,19 @@
       margin-bottom: 3vw;
       margin-left: 3vw;
       color: #717171;
+    }
+    >div:nth-child(5) {
+      display: flex;
+      flex-direction: row;
+      >div:nth-child(1) {
+        margin: 1vw 3vw 3vw 3vw;
+        border-radius: 100vw;
+        width: 100%;
+        padding: 2vw 3vw;
+        @extend %font;
+        color: white;
+        text-align: center;
+      }
     }
   }
 }

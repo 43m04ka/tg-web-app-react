@@ -1,37 +1,42 @@
 import React, {useEffect, useState} from 'react';
 import {useTelegram} from "../../../../hooks/useTelegram";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useServerUser} from "../../../../hooks/useServerUser";
 import useGlobalData from "../../../../hooks/useGlobalData";
-import Description from "./Description";
 import Recommendations from "./Recommendations";
 import style from './Product.module.scss'
 
-
-let heightText = null
-let textElementHeight = null
 const Product = () => {
 
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const {getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket} = useServerUser()
     const {
-        updatePreviewFavoriteData,
-        previewFavoriteData,
-        pageId,
-        updateCounterBasket
+        updatePreviewFavoriteData, previewFavoriteData, pageId, pageList, basket, updateCounterBasket
     } = useGlobalData()
 
     let cardId = Number((window.location.pathname).replace('/card/', ''))
 
-    const [isBuy, setIsBuy] = useState(false);
     const [productData, setProductData] = useState(null);
-    const [isFavorite, setIsFavorite] = useState(false);
-    const [pictureIsLoad, setPictureIsLoad] = useState(0);
+    let flag = false
+    basket.map(pos => {
+        if (pos.id === cardId) {
+            flag = true;
+        }
+    })
+    const [cardInBasket, setCardInBasket] = useState(flag)
+    const [cardInFavorite, setCardInFavorite] = useState(previewFavoriteData.includes(cardId))
 
     if (productData !== null && cardId !== productData.id) {
         setProductData(null)
-        setPictureIsLoad(0)
+        let flag = false
+        basket.map(pos => {
+            if (pos.id === cardId) {
+                flag = true;
+            }
+        })
+        setCardInBasket(flag)
+        setCardInFavorite(previewFavoriteData.includes(cardId))
     }
 
     useEffect(() => {
@@ -45,45 +50,8 @@ const Product = () => {
 
 
     if (productData !== null) {
-        let buttonColor
-        let buttonText
-        let buttonLink
-
-        if (isFavorite !== previewFavoriteData.includes(cardId)) {
-            setIsFavorite(previewFavoriteData.includes(cardId))
-        }
-
-
-        if (productData.onSale === true) {
-            if (isBuy === true) {
-                buttonColor = '#414BE0FF'
-                buttonText = 'Перейти в корзину'
-                buttonLink = () => {
-                    navigate('/basket-' + pageId);
-                }
-            } else if (isBuy === false) {
-                buttonColor = '#51a456'
-                buttonText = ('Добавить в корзину')
-                buttonLink = async () => {
-                    await setIsBuy(null)
-                    await addCardToBasket(() => {
-                    }, user.id, cardId).then()
-                }
-            }
-        } else {
-            buttonColor = 'gray'
-            buttonText = 'Нет в продаже'
-            buttonLink = () => {
-            }
-        }
-
-        let backgroundColor = '#696969'
-        if (isFavorite) {
-            backgroundColor = '#ff5d5d'
-        }
 
         let oldPrice = ''
-        let parcent = ''
         let price = productData.price.toLocaleString() + ' ₽'
 
         let endDatePromotion = ''
@@ -92,11 +60,9 @@ const Product = () => {
         }
         if (productData.oldPrice !== null) {
             oldPrice = productData.oldPrice.toLocaleString() + ' ₽'
-            parcent = '−' + Math.ceil((1 - productData.price / productData.oldPrice) * 100) + '%'
         } else if (productData.similarCard !== null) {
             price = productData.similarCard?.price.toLocaleString() + ' ₽'
             if (typeof productData.similarCard.oldPrice !== 'undefined') {
-                parcent = '−' + Math.ceil((1 - productData.similarCard?.price / productData.similarCard?.oldPrice) * 100) + '%'
                 oldPrice = productData.similarCard?.oldPrice.toLocaleString() + ' ₽'
             }
             if (typeof productData.similarCard.endDatePromotion !== 'undefined') {
@@ -105,25 +71,36 @@ const Product = () => {
         }
 
 
-        return (
-            <div className={style['mainDivision']}>
+        return (<div className={style['mainDivision']}>
 
+            <div>
                 <div>
-                    <div>
-                        <img src={productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024"}></img>
-                    </div>
-                    <div>{productData.name}</div>
-                    <div>
-                        <div style={{color: oldPrice !== '' ? '#489a4e' : 'white'}}>Стоимость — {price}</div>
-                        <div>{oldPrice}</div>
-                    </div>
-                    <div>
-                        {endDatePromotion}
-                    </div>
+                    <img src={productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024"}></img>
                 </div>
-                <Recommendations/>
+                <div>{productData.name}</div>
+                <div>
+                    <div style={{color: oldPrice !== '' ? '#489a4e' : 'white'}}>Стоимость — {price}</div>
+                    <div>{oldPrice}</div>
+                </div>
+                <div>
+                    {endDatePromotion}
+                </div>
+                <div>
+                    <div onClick={() => {
+                        cardInBasket ? navigate('/' + pageList.map(page => {
+                            return pageId === page.id ? page.link : null
+                        }).filter(page => page !== null)[0] + '/basket') : addCardToBasket(() => {
+                            setCardInBasket(true)
+                        }, user.id, cardId)
+                    }}
+                         style={{background: productData.onSale ? cardInBasket ? '#618ae4' : '#489a4e' : '#585c59'}}>
+                        {productData.onSale ? cardInBasket ? 'Перейти в корзину' : 'В корзину' : 'Нет в продаже'}
+                    </div>
+                    <div></div>
+                </div>
             </div>
-        );
+            <Recommendations/>
+        </div>);
     } else {
         getCard(setProductData, cardId)
     }

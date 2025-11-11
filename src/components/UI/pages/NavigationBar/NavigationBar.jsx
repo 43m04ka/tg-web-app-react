@@ -50,25 +50,28 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
             heightTab: String(height - tg.contentSafeAreaInset.top - tg.safeAreaInset.top - 10) + 'px'
         }]
 
-    const [activeTab, setActiveTab] = React.useState(0);
 
-    useEffect(() => {
-        let flag = true
+    const [activeTab, setActiveTab] = React.useState(null);
+
+    if (activeTab === null) {
         buttons.map((button, index) => {
             if (window.location.pathname.includes(button.path) && button.path !== '') {
-                setActiveTab(index);
-                flag = false
+                setTimeout(() => {
+                    setActiveTab(index)
+                    setHeightTab(button.heightTab)
+                    setZIndexTab(button.heightTab === 0 ? -100 : 100)
+                }, 100)
             }
         })
-        if (flag) {
-            setActiveTab(0)
-        }
+    }
+
+    useEffect(() => {
+
         updateBasket(catalogList, pageId)
     }, [window.location.pathname])
 
 
     useEffect(() => {
-        window.clearTimeout(timeoutId)
         let button = buttons[activeTab];
         if (button.path !== 'selectPlatform') {
             if (heightTab === 0) {

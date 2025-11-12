@@ -12,7 +12,7 @@ const Product = () => {
     const navigate = useNavigate();
     const {getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket} = useServerUser()
     const {
-        updatePreviewFavoriteData, previewFavoriteData, pageId, pageList, basket, updateCounterBasket
+        updatePreviewFavoriteData, previewFavoriteData, pageId, pageList, basket
     } = useGlobalData()
 
     let cardId = Number((window.location.pathname).replace('/card/', ''))
@@ -96,9 +96,17 @@ const Product = () => {
                          style={{background: productData.onSale ? cardInBasket ? '#0d3ad0' : '#489a4e' : '#585c59'}}>
                         {productData.onSale ? cardInBasket ? 'Перейти в корзину' : 'В корзину' : 'Нет в продаже'}
                     </div>
-                    <div>
+                    <div onClick={async ()=>{
+                        if(cardInFavorite){
+                            setCardInFavorite(false)
+                            await deleteCardToFavorite(()=>{updatePreviewFavoriteData()}, user.id, cardId)
+                        }else{
+                            setCardInFavorite(true)
+                            await addCardToFavorite(()=>{updatePreviewFavoriteData()}, user.id, cardId)
+                        }
+                    }}>
                         <div>
-                            <div/>
+                            <div style={{scale: (cardInFavorite ? '0' : '1')}}/>
                         </div>
                     </div>
                 </div>
@@ -106,7 +114,7 @@ const Product = () => {
             <Recommendations/>
         </div>);
     } else {
-        getCard(setProductData, cardId)
+        getCard(setProductData, cardId).then()
     }
 };
 

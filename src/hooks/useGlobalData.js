@@ -21,7 +21,7 @@ const useGlobalData = create(devtools(set => ({
         set((state) => ({pageList: result, pageId: state.pageId === null ? result[0].id : state.pageId}));
     }, bool),
 
-    basket: null,
+    basket: [],
     updateBasket: (catalogList, pageId) =>
         getBasketList((result) => {
             let catalogIdList = []

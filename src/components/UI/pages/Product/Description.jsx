@@ -15,7 +15,7 @@ const Description = ({children}) => {
             setTextHidden(!textHidden)
         }}>
             <div>
-                <div>Описание: </div>
+                <div>Описание игры: </div>
                 <div className={`${styles['background-arrow']} ${styles['background-arrow-' + textHidden]}`}/>
             </div>
             <div ref={refText} className={`${styles['text']} ${styles['text-' + textHidden]}`}>

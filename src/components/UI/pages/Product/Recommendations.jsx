@@ -16,7 +16,7 @@ const Recommendations = () => {
     if(products !== null) {
         return (
             <div>
-                <div className={"title"}>Рекомендуем:</div>
+                <div className={"title"}>Подобрали для Вас:</div>
                 <div className={'list-grid'}>
                     {products.map(item => {
                         return (

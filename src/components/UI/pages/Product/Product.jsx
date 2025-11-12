@@ -5,6 +5,14 @@ import {useServerUser} from "../../../../hooks/useServerUser";
 import useGlobalData from "../../../../hooks/useGlobalData";
 import Recommendations from "./Recommendations";
 import style from './Product.module.scss'
+import Description from "./Description";
+
+const parameters = [
+    {label:'Платформа', key:'platform'},
+    {label:'Регион активации', key:'regionActivate'},
+    {label:'Язык в игре', key:'language'},
+    {label:'Количество игроков', key:'numberPlayers'},
+   ]
 
 const Product = () => {
 
@@ -70,7 +78,6 @@ const Product = () => {
             }
         }
 
-
         return (<div className={style['mainDivision']}>
 
             <div>
@@ -110,6 +117,19 @@ const Product = () => {
                         </div>
                     </div>
                 </div>
+            </div>
+            <div>
+                {parameters.map((parameter, index) => {
+                    if(productData[parameter.key] !== null && productData[parameter.key] !== ''){
+                        return (
+                            <div key={index}>
+                                <div>{parameter.label}:</div>
+                                <div>{productData[parameter.key]}</div>
+                            </div>
+                        )
+                    }
+                })}
+                <Description>{productData.description}</Description>
             </div>
             <Recommendations/>
         </div>);

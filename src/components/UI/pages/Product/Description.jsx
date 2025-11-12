@@ -11,31 +11,11 @@ const Description = ({children}) => {
     }, []);
 
     return (
-        <div style={{
-            color: 'white',
-            background: '#2b2e31',
-            borderRadius: '15px',
-            padding: '10px',
-            paddingBottom: '10px',
-            textAlign: 'left',
-            fontFamily: "'Montserrat', sans-serif",
-            marginTop: '5px',
-            marginBottom: '7px',
-        }} onClick={() => {
+        <div className={styles['description']} onClick={() => {
             setTextHidden(!textHidden)
         }}>
-            <div style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginLeft: '5px',
-                height: '20px',
-                alignItems: 'center'
-            }}>
-                <div style={{fontWeight: '600', marginLeft: '0px', fontSize: '14px', lineHeight: '17px'}}
-                     className={'text-element'}>
-                    Описание
-                </div>
+            <div>
+                <div>Описание: </div>
                 <div className={`${styles['background-arrow']} ${styles['background-arrow-' + textHidden]}`}/>
             </div>
             <div ref={refText} className={`${styles['text']} ${styles['text-' + textHidden]}`}>

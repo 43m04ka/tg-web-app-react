@@ -78,7 +78,11 @@ const Product = () => {
             }
         }
 
-        return (<div className={style['mainDivision']}>
+        return (<div className={style['mainDivision']} style={{
+            paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
+            paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 20) + 'px',
+            height: '100vh',
+        }}>
 
             <div>
                 <div>

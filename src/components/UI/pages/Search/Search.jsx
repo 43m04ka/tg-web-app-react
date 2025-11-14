@@ -6,6 +6,7 @@ import useGlobalData from "../../../../hooks/useGlobalData";
 import cardList from "../AdminPanel/Tabs/EditCatalogs/CardList";
 import SearchPosition from "./Elements/SearchPosition";
 import {useNavigate} from "react-router-dom";
+import CatalogItem from "../Catalog/CatalogItem";
 
 let timerId = -1
 
@@ -84,7 +85,14 @@ const Search = () => {
         </div>
         {inputValue !== '' ? (cardList !== null ? (cardList.length > 0 ? (<div className={style['scrollList']}
                                                                                style={{paddingBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px'}}>
-            {cardList.map(card => (<SearchPosition data={card}/>))}
+            <div className={'list-grid'}>
+                {cardList.map(item => {
+                    return (
+                        <div style={{marginLeft: '6vw'}}>
+                            <CatalogItem key={item.id} product={item}/>
+                        </div>)
+                })}
+            </div>
             <div className={style['helpPlace']}>
                 <div> не нашли то, что искали?</div>
                 <div> напишите нам, мы поможем</div>

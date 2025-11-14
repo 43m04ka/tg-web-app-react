@@ -56,7 +56,7 @@ const HomeBlock = ({data}) => {
             <div style={styleBlock}>
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                     <div style={{
-                        fontSize: '18px',
+                        fontSize: '5vw',
                         fontFamily: "'Montserrat', sans-serif",
                         color: 'white',
                         marginLeft: '15px',

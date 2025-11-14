@@ -97,7 +97,7 @@ const Catalog = () => {
                     </div>
                     <div className={'list-grid'}>
                         {cardList.map(item => (
-                            <div style={{marginLeft: String((window.innerWidth - 150 - 150) / 3) + 'px'}}>
+                            <div style={{marginLeft: '6vw'}}>
                                 <CatalogItem key={item.id} product={item}/></div>))}
                     </div>
                 </div>

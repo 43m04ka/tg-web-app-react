@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState, useEffect} from 'react';
 import '../../../styles/style.css';
 import {Link} from "react-router-dom";
 import style from './Catalog.module.scss'
@@ -78,12 +78,22 @@ const CatalogItem = ({product}) => {
         }}>{product.platform}</div>)
     }
 
+    const [imageLoaded, setImageLoaded] = useState(false);
+
+    useEffect(() => {
+        const img = new Image();
+        img.src = product.image;
+        img.onload = () => {
+            setImageLoaded(true);
+        };
+    }, [product.url]);
+
 
     return (
         <div className={'list-element'}>
             <Link to={'/card/' + product.id} className={'link-element'}>
                 <div className={'box-home-block-element'}>
-                    <div style={{
+                    {imageLoaded ? (<div style={{
                         backgroundImage: 'url("' + product.image + '")',
                         backgroundRepeat: 'no-repeat',
                         backgroundSize: 'cover',
@@ -94,9 +104,17 @@ const CatalogItem = ({product}) => {
                     }} className={style['productImage']}>
                         {platform}
                         {parcentEl}
-                    </div>
+                    </div>) : (<div className={style['preloadProductImage']}>
+                        <svg>
+                            <path/>
+                        </svg>
+                        <svg>
+                            <path/>
+                        </svg>
+                    </div>)}
+
                     <div style={{height: '39px', overflow: 'hidden', lineHeight: '20px'}}>
-                        <div className={'text-element name-element'}>{product.name + view}</div>
+                    <div className={'text-element name-element'}>{product.name + view}</div>
                     </div>
                     <div style={{display: 'flex', justifyContent: 'left'}}>
                         <div className={'text-element price-element'}>{price}</div>

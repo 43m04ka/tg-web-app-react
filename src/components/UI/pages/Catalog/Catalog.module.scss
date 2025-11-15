@@ -33,10 +33,48 @@
   border-radius: 3vw;
 }
 
-.title{
+.title {
   @extend %font;
   font-size: 5vw;
   text-align: left;
   margin: 3vw 0 1vw 6vw;
   color: white;
+}
+
+.preloadProductImage {
+  width: 41vw;
+  min-height: 41vw;
+  border-radius: 3vw;
+  display: flex;
+  position: relative;
+  background: #3a3a3a;
+  background-image: linear-gradient(to right, #3a3a3a 0%, #3f3f3f 10%, #4a4a4a 20%, #3f3f3f 30%, #3a3a3a 50%, #3a3a3a 100%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  -webkit-animation-duration: 3s;
+  -webkit-animation-fill-mode: forwards;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-name: shimmer;
+  -webkit-animation-timing-function: ease-in-out;
+
+  @-webkit-keyframes shimmer {
+    0% {
+      background-position: -20vw 0;
+    }
+
+    100% {
+      background-position: 60vw 0;
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -20vw 0;
+    }
+
+    100% {
+      background-position: 60vw 0;
+    }
+  }
+
 }

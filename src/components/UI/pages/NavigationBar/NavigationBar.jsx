@@ -13,7 +13,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
     const {tg} = useTelegram()
     const {pageId, pageList, updateBasket, basket, catalogList} = useGlobalData()
 
-    const [typeBar, setTypeBar] = useState(false)
+    const [typeBar, setTypeBar] = useState(true)
 
     const navigate = useNavigate()
 
@@ -92,12 +92,12 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
         updateBasket(catalogList, pageId)
     }, [activeTab, window.location.pathname])
 
-    return (<div className={style['island']}
+    return (<div className={style['container']}
                  style={typeBar ? {paddingBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'} :
                      {marginBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
-        <div>
+        {!typeBar ? <div>
             <div style={{marginLeft: String(19.5 * (activeTab)) + '%'}}/>
-        </div>
+        </div> : ''}
         <div>
 
             {buttons.map((button, index) => (

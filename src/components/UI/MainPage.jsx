@@ -58,7 +58,7 @@ const MainPage = ({page}) => {
                 </Routes>
             </div>
         </div>
-        <div style={{top: String(height - 10) + 'px'}}>
+        <div style={{top: String(height) + 'px'}}>
             <NavigationBar setZIndexTab={setZIndexTab} zIndexTab={zIndexTab} heightTab={heightTab}
                            setHeightTab={setHeightTab} height={height}/>
         </div>

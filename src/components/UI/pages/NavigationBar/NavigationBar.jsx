@@ -4,9 +4,11 @@ import {useNavigate} from "react-router-dom";
 import {useTelegram} from "../../../../hooks/useTelegram";
 import SelectPlatform from "../SelectPlatform/SelectPlatform";
 import useGlobalData from "../../../../hooks/useGlobalData";
-import {useServerUser} from "../../../../hooks/useServerUser";
 
-let timeoutId = -1
+function countOccurrences(str, sub) {
+    const matches = str.match(new RegExp(sub, 'g'));
+    return matches ? matches.length : 0;
+}
 
 const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
 
@@ -51,46 +53,51 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
         }]
 
 
-    const [activeTab, setActiveTab] = React.useState(null);
+    const [activeTab, setActiveTab] = React.useState(0);
 
-    if (activeTab === null) {
-        buttons.map((button, index) => {
-            if (window.location.pathname.includes(button.path) && button.path !== '') {
-                setTimeout(() => {
+    useEffect(() => {
+        if(countOccurrences(window.location.pathname, '/') === 2) {
+            console.log(window.location.pathname);
+            buttons.map((button, index) => {
+                if (window.location.pathname.includes(button.path) && button.path !== '') {
+                    if (button.path !== 'selectPlatform') {
+                        setHeightTab(button.heightTab)
+                        setZIndexTab(button.heightTab === 0 ? -100 : 100)
+                    }
                     setActiveTab(index)
-                    setHeightTab(button.heightTab)
-                    setZIndexTab(button.heightTab === 0 ? -100 : 100)
-                }, 50)
-            }
-        })
-    }
-
-    useEffect(() => {
-        updateBasket(catalogList, pageId)
-    }, [window.location.pathname])
-
-
-    useEffect(() => {
-        let button = buttons[activeTab];
-        if (activeTab !== null && button.path !== 'selectPlatform') {
-            if (heightTab === 0) {
-                navigate(button.path)
-                timeoutId = setTimeout(() => {
-                    setHeightTab(button.heightTab)
-                    setZIndexTab(button.heightTab === 0 ? -100 : 100)
-                }, 100)
-            } else {
-                setHeightTab(1)
-                timeoutId = setTimeout(() => {
-                    navigate(button.path);
-                    setHeightTab(button.heightTab)
-                    setZIndexTab(button.heightTab === 0 ? -100 : 100)
-                }, 200)
-            }
+                    updateBasket(catalogList, pageId)
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
+                }
+            })
+        }else{
+            setActiveTab(0)
+            setZIndexTab(-100)
         }
+    }, [window.location.pathname, height])
 
-        updateBasket(catalogList, pageId)
-    }, [activeTab, window.location.pathname])
+
+
+    // useEffect(() => {
+    //     let button = buttons[activeTab];
+    //     if (activeTab !== null && button.path !== 'selectPlatform') {
+    //         if (heightTab === 0) {
+    //             navigate(button.path)
+    //             timeoutId = setTimeout(() => {
+    //                 setHeightTab(button.heightTab)
+    //                 setZIndexTab(button.heightTab === 0 ? -100 : 100)
+    //             }, 100)
+    //         } else {
+    //             setHeightTab(1)
+    //             timeoutId = setTimeout(() => {
+    //                 navigate(button.path);
+    //                 setHeightTab(button.heightTab)
+    //                 setZIndexTab(button.heightTab === 0 ? -100 : 100)
+    //             }, 200)
+    //         }
+    //     }
+    //
+    //     updateBasket(catalogList, pageId)
+    // }, [activeTab, window.location.pathname])
 
     return (<div className={style['container']}
                  style={typeBar ? {paddingBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'} :
@@ -101,8 +108,13 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
         <div>
 
             {buttons.map((button, index) => (
-                <div className={style['activeTab-' + (activeTab === index)]} onTouchStart={() => {
-                    setActiveTab(index);
+                <div className={style['activeTab-' + (activeTab === index)]} onClick={() => {
+                    if(activeTab !== index && button.path !== 'selectPlatform') {
+                        setHeightTab(1)
+                        setTimeout(() => {
+                            navigate(button.path)
+                        }, 200)
+                    }
                 }}>
                     <div style={{backgroundImage: `url(${button.icon})`}} className={style['button-' + button.icon]}/>
                     <p>{button.label}</p>
@@ -115,7 +127,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
         </div> : ''
         }
 
-        <SelectPlatform setActiveTab={setActiveTab} activeTab={activeTab}/>
+        <SelectPlatform setActiveTab={setActiveTab} activeTab={activeTab} setHeightTab={setHeightTab}/>
     </div>);
 };
 

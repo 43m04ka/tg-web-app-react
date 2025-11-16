@@ -2,12 +2,14 @@
 import React, {useEffect} from 'react';
 import style from './SelectPlatform.module.scss'
 import useGlobalData from "../../../../hooks/useGlobalData";
+import {useNavigate} from "react-router-dom";
 
 
-const SelectPlatform = ({setActiveTab, activeTab}) => {
+const SelectPlatform = ({setActiveTab, activeTab, setHeightTab}) => {
     const {pageList, setPageId} = useGlobalData()
     const [mouseDownId, setMouseDownId] = React.useState(-1);
     const [isOpen, setIsOpen] = React.useState(false)
+    const navigate = useNavigate();
 
     useEffect(() => {
         window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
@@ -30,6 +32,9 @@ const SelectPlatform = ({setActiveTab, activeTab}) => {
                  if (isOpen && id === -2) {
                      setIsOpen(false)
                      setActiveTab(0)
+                     setHeightTab(0)
+                     setTimeout(() => {navigate('')}, 200)
+
                  }else{
                      setIsOpen(true)
                      setActiveTab(3)
@@ -45,6 +50,8 @@ const SelectPlatform = ({setActiveTab, activeTab}) => {
             if ((typeof id !== 'undefined') && id !== -1 && id !== -2) {
                 setPageId(pageList[id].id)
                 setActiveTab(0)
+                setHeightTab(0)
+                setTimeout(() => {navigate('')}, 200)
             }
             if (id !== -2 || (id === -2 && isOpen && (mouseDownId !== -2))) {
                 setIsOpen(false)

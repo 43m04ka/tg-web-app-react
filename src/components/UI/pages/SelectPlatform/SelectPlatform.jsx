@@ -1,4 +1,3 @@
-
 import React, {useEffect} from 'react';
 import style from './SelectPlatform.module.scss'
 import useGlobalData from "../../../../hooks/useGlobalData";
@@ -12,12 +11,14 @@ const SelectPlatform = ({setActiveTab, activeTab, setHeightTab}) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+        if (mouseDownId > -1) {
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+        }
     }, [mouseDownId])
 
 
     useEffect(() => {
-        if(activeTab !== 3) {
+        if (activeTab !== 3) {
             setIsOpen(false)
         }
     }, [activeTab]);
@@ -33,9 +34,11 @@ const SelectPlatform = ({setActiveTab, activeTab, setHeightTab}) => {
                      setIsOpen(false)
                      setActiveTab(0)
                      setHeightTab(0)
-                     setTimeout(() => {navigate('')}, 200)
+                     setTimeout(() => {
+                         navigate('')
+                     }, 200)
 
-                 }else{
+                 } else {
                      setIsOpen(true)
                      setActiveTab(3)
                  }
@@ -51,13 +54,23 @@ const SelectPlatform = ({setActiveTab, activeTab, setHeightTab}) => {
                 setPageId(pageList[id].id)
                 setActiveTab(0)
                 setHeightTab(0)
-                setTimeout(() => {navigate('')}, 200)
+                setTimeout(() => {
+                    navigate('')
+                }, 200)
             }
             if (id !== -2 || (id === -2 && isOpen && (mouseDownId !== -2))) {
                 setIsOpen(false)
             }
         }}>
-            <div style={!isOpen ? {scale: '0', opacity:'0', height:'0'} : {height: String((7 * (pageList.length + 2) + 4)/100 * window.innerWidth) + 'px', opacity:'1', scale:'1'}}>
+            <div style={!isOpen ? {
+                scale: '0',
+                opacity: '0',
+                height: '0'
+            } : {
+                height: String((7 * (pageList.length + 2) + 4) / 100 * window.innerWidth) + 'px',
+                opacity: '1',
+                scale: '1'
+            }}>
                 <div className={style['label']}>Выберите платформу</div>
                 {pageList.map((item, index) => (
                     <>

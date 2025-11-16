@@ -57,7 +57,6 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
 
     useEffect(() => {
         if(countOccurrences(window.location.pathname, '/') === 2) {
-            console.log(window.location.pathname);
             buttons.map((button, index) => {
                 if (window.location.pathname.includes(button.path) && button.path !== '') {
                     if (button.path !== 'selectPlatform') {

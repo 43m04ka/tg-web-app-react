@@ -14,8 +14,7 @@ let timerId = -1
 const Search = () => {
     const {tg} = useTelegram()
     const {pageId} = useGlobalData()
-    const navigate = useNavigate()
-    const inputRef = useRef()
+    const inputRef = useRef(null)
 
     const [inputValue, setInputValue] = React.useState('')
     const [cardList, setCardList] = React.useState(null)
@@ -53,6 +52,9 @@ const Search = () => {
     }
 
     useEffect(() => {
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
     }, [])
 
     useEffect(() => {

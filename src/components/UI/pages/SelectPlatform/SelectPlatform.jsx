@@ -9,6 +9,10 @@ const SelectPlatform = ({setActiveTab, activeTab}) => {
     const [mouseDownId, setMouseDownId] = React.useState(-1);
     const [isOpen, setIsOpen] = React.useState(false)
 
+    useEffect(() => {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+    }, [mouseDownId])
+
 
     useEffect(() => {
         if(activeTab !== 3) {
@@ -34,7 +38,6 @@ const SelectPlatform = ({setActiveTab, activeTab}) => {
              onTouchMove={(e) => {
                  let id = document.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY).id || -1
                  if (id !== mouseDownId) {
-                     window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
                      setMouseDownId(Number(id))
                  }
              }} onTouchEnd={(e) => {

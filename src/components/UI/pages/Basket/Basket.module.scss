@@ -10,7 +10,7 @@
 }
 
 .title {
-  @extend %font;
+  @extend %font-medium;
   margin: 4vw auto;
   font-size: 5vw;
   color: white;
@@ -18,7 +18,7 @@
 
 
 .label {
-  @extend %font;
+  @extend %font-medium;
   margin: 0 10vw;
   text-align: center;
   font-size: 4vw;
@@ -36,7 +36,7 @@
 }
 
 .button {
-  @extend %font;
+  @extend %font-medium;
   margin: 1vw auto;
   border: none;
   font-size: 3.7vw;
@@ -47,7 +47,7 @@
 }
 
 .linkElement {
-  @extend %font;
+  @extend %font-medium;
   text-decoration: none;
   width: 100%;
 }
@@ -64,7 +64,7 @@
     margin: 3vw 4vw 4vw 4vw;
 
     > div {
-      @extend %font;
+      @extend %font-medium;
       color: white;
       letter-spacing: 0.2vw;
       font-size: 4.5vw;
@@ -91,7 +91,7 @@
     margin: 3vw auto;
     width: max-content;
     letter-spacing: 0.2vw;
-    @extend %font;
+    @extend %font-medium;
     font-size: 3.8vw;
     font-weight: 900;
     border-radius: 10vw;
@@ -101,7 +101,7 @@
   }
 
   > div:nth-child(3) {
-    @extend %font;
+    @extend %font-medium;
     font-size: 2.5vw;
     text-align: center;
     color: white;
@@ -129,14 +129,14 @@
 
   > div:nth-child(2) {
     margin-top: 0.3%;
-    @extend %font;
+    @extend %font-medium;
     color: white;
     text-align: center;
     user-select: none;
   }
 
   > div:nth-child(3) {
-    @extend %font;
+    @extend %font-medium;
     width: max-content;
     border: none;
     color: white;
@@ -163,7 +163,7 @@
   margin: 0 8vw 1vw 8vw;
 
   > input {
-    @extend %font;
+    @extend %font-medium;
     background: white;
     text-align: center;
     border: none;

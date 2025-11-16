@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
-import HomeBlock from "../../other/HomeBlock";
-import useGlobalData from "../../../../../hooks/useGlobalData";
-import {useTelegram} from "../../../../../hooks/useTelegram";
+import HomeBlock from "../other/HomeBlock";
+import useGlobalData from "../../../../hooks/useGlobalData";
+import {useTelegram} from "../../../../hooks/useTelegram";
 
 const CatalogListBody = () => {
     const {tg} = useTelegram()

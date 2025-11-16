@@ -2,11 +2,41 @@ $bg-color: #171717;
 $menu-color: #222222;
 
 
-%font {
+@font-face {
+  font-family: 'font-medium';
+  src: url('./fonts/Jano Sans Pro Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'font-bold';
+  src: url('./fonts/Jano Sans Pro Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'font-extrabold';
+  src: url('./fonts/Jano Sans Pro Extrabold.ttf') format('truetype');
+}
+
+
+%font-medium {
   text-decoration: none;
-  font-family: 'Montserrat', sans-serif;
   font-variant: normal;
-  font-weight: 700;
+  font-family: 'font-medium';
+  font-weight: normal;
+}
+
+%font-bold {
+  text-decoration: none;
+  font-variant: normal;
+  font-family: 'font-bold';
+  font-weight: normal;
+}
+
+%font-extrabold {
+  text-decoration: none;
+  font-variant: normal;
+  font-family: 'font-extrabold';
+  font-weight: normal;
 }
 
 %no-select {

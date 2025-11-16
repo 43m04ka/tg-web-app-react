@@ -28,7 +28,7 @@
       transition-duration: 0.2s;
       transition-timing-function: ease-in-out;
       margin: 2.25vw auto;
-      @extend %font;
+      @extend %font-medium;
       font-weight: 500;
       font-size: 3.75vw;
     }
@@ -42,7 +42,7 @@
   background: white;
   outline: none;
   color: black;
-  @extend %font;
+  @extend %font-medium;
   text-align: center;
   font-size: 3.75vw;
   margin: 1vw 0;
@@ -53,7 +53,7 @@
 }
 
 .label{
-  @extend %font;
+  @extend %font-medium;
   text-align: center;
   font-size: 3.5vw;
   color: white;
@@ -61,7 +61,7 @@
 }
 
 .title {
-  @extend %font;
+  @extend %font-medium;
   color: white;
   display: flex;
   margin: 2vw auto;

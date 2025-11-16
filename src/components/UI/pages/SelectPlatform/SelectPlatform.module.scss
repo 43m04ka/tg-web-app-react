@@ -45,7 +45,7 @@
       }
 
       > div:nth-child(2) {
-        @extend %font;
+        @extend %font-medium;
         margin: auto auto auto 0;
         color: white;
         width: max-content;
@@ -63,7 +63,7 @@
 }
 
 .label{
-  @extend %font;
+  @extend %font-medium;
   color: #8f8f8f;
   height: 7vw;
   width: max-content;

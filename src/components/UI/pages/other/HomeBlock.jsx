@@ -56,13 +56,13 @@ const HomeBlock = ({data}) => {
             <div style={styleBlock}>
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                     <div style={{
-                        fontSize: '5vw',
-                        fontFamily: "'Montserrat', sans-serif",
+                        fontSize: '6vw',
+                        fontFamily: "font-medium",
                         color: 'white',
                         marginLeft: '15px',
                         overflow: 'hidden',
                         width: 'auto',
-                        fontWeight: 'bold',
+                        letterSpacing: '0.1vw',
                     }}>{data.name}</div>
                 </div>
                 <div className={"scroll-container"} style={{alignItems: 'center'}}>
@@ -76,19 +76,17 @@ const HomeBlock = ({data}) => {
                 <div style={{width: '100%'}}>
                     <div onClick={()=> navigate(link + data.path)}
                         style={{
-                            fontFamily: "'Montserrat', sans-serif",
+                            fontFamily: "font-medium",
                             color: 'white',
                             borderRadius: '50px',
                             backgroundColor: '#222222',
                             padding: '10px 12px',
                             width: 'max-content',
-                            fontWeight: '500',
                             fontSize: '15px',
                             lineHeight: '15px',
                             justifyItems: 'center',
                             margin:'0 auto',
                             marginTop:'10px',
-                            letterSpacing:'0.5px',
                         }}>
                         Открыть каталог
                     </div>

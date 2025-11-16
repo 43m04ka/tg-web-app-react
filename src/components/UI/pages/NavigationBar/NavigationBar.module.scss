@@ -36,7 +36,7 @@
         font-size: 3vw;
         margin: 0.8vw;
         color: white;
-        @extend %font;
+        @extend %font-medium;
         text-align: center;
       }
     }
@@ -109,7 +109,7 @@
         font-size: 2.5vw;
         margin: 0.8vw;
         color: white;
-        @extend %font;
+        @extend %font-medium;
         text-align: center;
       }
     }
@@ -120,7 +120,7 @@
   position: absolute;
   margin-left: 95% / 5 * 3 - 6%;
   margin-top: 2.5%;
-  @extend %font;
+  @extend %font-medium;
   font-size: 3vw;
   line-height: 4vw;
   z-index: 300;

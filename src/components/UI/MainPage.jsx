@@ -4,8 +4,8 @@ import {useTelegram} from "../../hooks/useTelegram";
 import useGlobalData from "../../hooks/useGlobalData";
 import style from './MainPage.module.scss'
 import NavigationBar from "./pages/NavigationBar/NavigationBar";
-import CatalogListBody from "./pages/MainScreen/CatalogList/CatalogListBody";
-import CatalogListHead from "./pages/MainScreen/CatalogList/CatalogListHead";
+import CatalogListBody from "./pages/MainScreen/CatalogListBody";
+import CatalogListHead from "./pages/MainScreen/CatalogListHead";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import Search from "./pages/Search/Search";
 import Basket from "./pages/Basket/Basket";

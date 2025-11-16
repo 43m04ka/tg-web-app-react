@@ -9,8 +9,8 @@ import 'swiper/css/autoplay';
 
 import {Autoplay, Pagination, Controller, EffectCoverflow} from 'swiper/modules';
 import {useNavigate} from "react-router-dom";
-import useGlobalData from "../../../../../hooks/useGlobalData";
-import {useTelegram} from "../../../../../hooks/useTelegram";
+import useGlobalData from "../../../../hooks/useGlobalData";
+import {useTelegram} from "../../../../hooks/useTelegram";
 
 let realIndex = 0
 let lastPageID = -1

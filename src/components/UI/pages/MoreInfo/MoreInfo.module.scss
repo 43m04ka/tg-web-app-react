@@ -29,7 +29,7 @@
           padding: 2vw;
 
           > p {
-            @extend %font;
+            @extend %font-medium;
             font-size: 4vw;
             margin: auto 1vw 1vw auto;
             width: max-content;
@@ -102,7 +102,7 @@
     }
 
     > div:nth-child(2) {
-      @extend %font;
+      @extend %font-medium;
       font-size: 4vw;
       margin: 0 0 3vw 4.5vw;
       color: #d4d4d4;
@@ -127,14 +127,14 @@
   transform: scale(0);
 
   > div:nth-child(1) {
-    @extend %font;
+    @extend %font-medium;
     color: #747474;
     font-size: 5vw;
   }
 
   > div:nth-child(2) {
     margin-top: 1vw;
-    @extend %font;
+    @extend %font-medium;
     font-size: 5vw;
     font-weight: normal;
     color: #323030;
@@ -160,7 +160,7 @@
     > div {
       width: max-content;
       padding: 1.3vw 2.3vw;
-      @extend %font;
+      @extend %font-medium;
       border-radius: 3.5vw;
       margin: 1.2vw 1.2vw 0 0;
       height: 6.7vw;

@@ -52,9 +52,7 @@ const Search = () => {
     }
 
     useEffect(() => {
-        if (inputRef.current) {
-            inputRef.current.focus();
-        }
+
     }, [])
 
     useEffect(() => {

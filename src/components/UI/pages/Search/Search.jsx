@@ -53,7 +53,6 @@ const Search = () => {
     }
 
     useEffect(() => {
-        inputRef.current.focus()
     }, [])
 
     useEffect(() => {

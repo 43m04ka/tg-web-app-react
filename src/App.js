@@ -96,14 +96,13 @@ function App() {
             updatePageList()
         }, 25000)
         setTimeout(() => {
+            window.clearInterval(interval)
             interval = setInterval(() => {
-                console.log('vibro1')
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
-                for (let i = 0; i < 4; i++) {
+                for (let i = 0; i < 3; i++) {
                     timeouts[i] = setTimeout(() => {
-                        console.log('vibro' + String(i))
                         window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
-                    }, 200)
+                    }, 300)
                 }
             }, 1800)
         }, 900)
@@ -115,6 +114,9 @@ function App() {
 
     if (catalogList !== null && pageList !== null && mainPageCards !== null) {
         setTimeout(() => {
+            window.clearInterval(interval)
+            timeouts.map(id=>{window.clearTimeout(id)})
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
             setIsLoaded(false)
         }, 150)
     }
@@ -122,9 +124,6 @@ function App() {
     if (!isLoaded) {
         if (window.location.pathname === '/') {
             navigate(pageList[0]['link'])
-            window.clearInterval(interval)
-            timeouts.map(id=>{window.clearTimeout(id)})
-            window.Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
         }
         return (<div className={style['App']}>
             <Routes>

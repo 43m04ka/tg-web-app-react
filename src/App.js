@@ -104,16 +104,15 @@ function App() {
                     }, 200 * i)
                 }
             }, 1800)
-        }, 900)
+        }, -900)
         updateCatalogStructureList()
         updateMainPageCards()
         updateCatalogList()
         updatePreviewFavoriteData(user.id)
     }, [])
 
-    if (catalogList !== null && pageList !== null && mainPageCards !== null) {
+    if (catalogList !== null && pageList !== null && mainPageCards !== null && isLoaded) {
         setTimeout(() => {
-
             window.clearInterval(interval)
             timeouts.map(id => {
                 window.clearTimeout(id)

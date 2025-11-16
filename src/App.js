@@ -39,6 +39,9 @@ function repeatArray(arr, count) {
     return result;
 }
 
+let interval = -1
+let timeouts = [-1, -1, -1, -1]
+
 const tags = 'forza gta steam valorant lastofus battlefield psplus watchdogs minecraft psn ghost cyberpunk gamepass скидки horizon apex witcher halo diablo акции godofwar fortnite лицензия ключи resident callofduty dlc xbox tsushima uncharted reddead spiderman store assassin пополнение doom fallout игры mortal helldivers playstation rdr2 farcry playstation xbox steam psplus gamepass скидки акции ключи игры stalker alanwake starwars tekken streetfighter dragonage mass effect overwatch destiny control returnal deathstranding bloodborne daysgone detroit re8 forza gears avowed fable payday mafia bioshock borderlands titanfall sekiro eldenring nier tombraider ghostrunner store подписка пополнение minecraft baldur'
 
 const tickets = repeatArray(tags.split(' '), 30)
@@ -91,7 +94,19 @@ function App() {
     useEffect(() => {
         setTimeout(() => {
             updatePageList()
-        }, 2500)
+        }, 25000)
+        setTimeout(() => {
+            interval = setInterval(() => {
+                console.log('vibro1')
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
+                for (let i = 0; i < 4; i++) {
+                    timeouts[i] = setTimeout(() => {
+                        console.log('vibro' + String(i))
+                        window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
+                    }, 200)
+                }
+            }, 1800)
+        }, 900)
         updateCatalogStructureList()
         updateMainPageCards()
         updateCatalogList()
@@ -107,6 +122,9 @@ function App() {
     if (!isLoaded) {
         if (window.location.pathname === '/') {
             navigate(pageList[0]['link'])
+            window.clearInterval(interval)
+            timeouts.map(id=>{window.clearTimeout(id)})
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
         }
         return (<div className={style['App']}>
             <Routes>

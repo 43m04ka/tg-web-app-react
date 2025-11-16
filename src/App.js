@@ -116,7 +116,6 @@ function App() {
         setTimeout(() => {
             window.clearInterval(interval)
             timeouts.map(id=>{window.clearTimeout(id)})
-            window.Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
             setIsLoaded(false)
         }, 150)
     }

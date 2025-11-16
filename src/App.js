@@ -113,11 +113,13 @@ function App() {
 
     if (catalogList !== null && pageList !== null && mainPageCards !== null) {
         setTimeout(() => {
+
             window.clearInterval(interval)
             timeouts.map(id => {
                 window.clearTimeout(id)
             })
             setIsLoaded(false)
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('rigid');
         }, 150)
     }
 

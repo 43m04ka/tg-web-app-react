@@ -98,11 +98,10 @@ function App() {
         setTimeout(() => {
             window.clearInterval(interval)
             interval = setInterval(() => {
-                window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
-                for (let i = 0; i < 3; i++) {
+                for (let i = 0; i < 4; i++) {
                     timeouts[i] = setTimeout(() => {
                         window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
-                    }, 300)
+                    }, 230 * i)
                 }
             }, 1800)
         }, 900)
@@ -115,7 +114,9 @@ function App() {
     if (catalogList !== null && pageList !== null && mainPageCards !== null) {
         setTimeout(() => {
             window.clearInterval(interval)
-            timeouts.map(id=>{window.clearTimeout(id)})
+            timeouts.map(id => {
+                window.clearTimeout(id)
+            })
             setIsLoaded(false)
         }, 150)
     }

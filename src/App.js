@@ -40,7 +40,7 @@ function repeatArray(arr, count) {
 }
 
 let interval = -1
-let timeouts = [-1, -1, -1, -1, -1]
+let timeouts = [-1, -1, -1, -1]
 
 const tags = 'forza gta steam valorant lastofus battlefield psplus watchdogs minecraft psn ghost cyberpunk gamepass скидки horizon apex witcher halo diablo акции godofwar fortnite лицензия ключи resident callofduty dlc xbox tsushima uncharted reddead spiderman store assassin пополнение doom fallout игры mortal helldivers playstation rdr2 farcry playstation xbox steam psplus gamepass скидки акции ключи игры stalker alanwake starwars tekken streetfighter dragonage mass effect overwatch destiny control returnal deathstranding bloodborne daysgone detroit re8 forza gears avowed fable payday mafia bioshock borderlands titanfall sekiro eldenring nier tombraider ghostrunner store подписка пополнение minecraft baldur'
 
@@ -98,10 +98,10 @@ function App() {
         setTimeout(() => {
             window.clearInterval(interval)
             interval = setInterval(() => {
-                for (let i = -1; i < 4; i++) {
-                    timeouts[i+1] = setTimeout(() => {
+                for (let i = 0; i < 4; i++) {
+                    timeouts[i] = setTimeout(() => {
                         window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
-                    }, 200 * i)
+                    }, 200 * i + 1)
                 }
             }, 1800)
         }, -900)

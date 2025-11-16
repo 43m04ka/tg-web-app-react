@@ -40,12 +40,6 @@ const MainPage = ({page}) => {
             <div>
                 <CatalogListHead/>
                 <CatalogListBody/>
-                <Routes>
-                    <Route path="/search" element={<Search/>}/>
-                    <Route path="/basket" element={<Basket/>}/>
-                    <Route path="/selectPlatform" element={<SelectPlatform/>}/>
-                    <Route path="/more" element={<MoreInfo/>}/>
-                </Routes>
             </div>
         </div>
         <div style={{zIndex: zIndexTab, height: String(height) + 'px'}}>

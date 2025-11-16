@@ -79,7 +79,7 @@ const Basket = () => {
                     <div/>
                     <div>В корзине ничего нет</div>
                     <div className={style['button']} onClick={() => {
-                        navigate(window.location.pathname.replace('basket', ''));
+                        navigate(window.location.pathname.replace('/basket', ''));
                     }}>перейти к покупкам
                     </div>
                 </div>)

@@ -66,12 +66,13 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
                     }
                     setActiveTab(index)
                     updateBasket(catalogList, pageId)
-                    window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
                 }
             })
         }else{
             setActiveTab(0)
             setZIndexTab(-100)
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         }
     }, [window.location.pathname, height])
 

@@ -127,7 +127,6 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
             </div>
         </div> : ''
         }
-
         <SelectPlatform setActiveTab={setActiveTab} activeTab={activeTab} setHeightTab={setHeightTab}/>
     </div>);
 };

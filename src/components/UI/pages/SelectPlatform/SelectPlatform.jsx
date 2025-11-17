@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import style from './SelectPlatform.module.scss'
 import useGlobalData from "../../../../hooks/useGlobalData";
 import {useNavigate} from "react-router-dom";
+import {useTelegram} from "../../../../hooks/useTelegram";
 
 
 const SelectPlatform = ({setActiveTab, activeTab, setHeightTab}) => {
@@ -9,6 +10,7 @@ const SelectPlatform = ({setActiveTab, activeTab, setHeightTab}) => {
     const [mouseDownId, setMouseDownId] = React.useState(-1);
     const [isOpen, setIsOpen] = React.useState(false)
     const navigate = useNavigate();
+    const {tg} = useTelegram()
 
     useEffect(() => {
         if (mouseDownId > -1) {
@@ -25,6 +27,7 @@ const SelectPlatform = ({setActiveTab, activeTab, setHeightTab}) => {
 
     return (
         <div className={style['container']} id={-2}
+             style={{paddingBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + 0.16  * window.innerWidth) + 'px'}}
              onTouchStart={(e) => {
                  let id = Number(document?.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY).id || -1)
                  if (id !== mouseDownId) {

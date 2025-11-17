@@ -112,7 +112,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
                         setActiveTab(index)
                         setTimeout(() => {
                             navigate(button.path)
-                        }, 200)
+                        }, heightTab === 0 ? 1 : 200)
                     }
                 }}>
                     <div style={{backgroundImage: `url(${button.icon})`}} className={style['button-' + button.icon]}/>

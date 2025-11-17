@@ -56,7 +56,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
     const [activeTab, setActiveTab] = React.useState(0);
 
     useEffect(() => {
-        if(countOccurrences(window.location.pathname, '/') === 2) {
+        if (countOccurrences(window.location.pathname, '/') === 2) {
             buttons.map((button, index) => {
                 if (window.location.pathname.includes(button.path) && button.path !== '') {
                     if (button.path !== 'selectPlatform') {
@@ -68,13 +68,12 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
                     //window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
                 }
             })
-        }else{
+        } else {
             setActiveTab(0)
             setZIndexTab(-100)
             //window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         }
     }, [window.location.pathname, height])
-
 
 
     // useEffect(() => {
@@ -109,13 +108,15 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
 
             {buttons.map((button, index) => (
                 <div className={style['activeTab-' + (activeTab === index)]} onTouchStart={() => {
-                    setActiveTab(index)
-                    if(activeTab !== index && button.path !== 'selectPlatform') {
-                        setHeightTab(1)
+                    if (activeTab !== index && button.path !== 'selectPlatform') {
+                        if (!window.location.pathname.includes(button.path) && button.path !== '') {
+                            setHeightTab(1)
+                        }
                         setTimeout(() => {
                             navigate(button.path)
                         }, heightTab === 0 ? 1 : 200)
                     }
+                    setActiveTab(index)
                 }}>
                     <div style={{backgroundImage: `url(${button.icon})`}} className={style['button-' + button.icon]}/>
                     <p>{button.label}</p>

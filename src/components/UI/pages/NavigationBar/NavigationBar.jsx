@@ -108,10 +108,10 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
         <div>
 
             {buttons.map((button, index) => (
-                <div className={style['activeTab-' + (activeTab === index)]} onClick={() => {
+                <div className={style['activeTab-' + (activeTab === index)]} onTouchStart={() => {
+                    setActiveTab(index)
                     if(activeTab !== index && button.path !== 'selectPlatform') {
                         setHeightTab(1)
-                        setActiveTab(index)
                         setTimeout(() => {
                             navigate(button.path)
                         }, heightTab === 0 ? 1 : 200)

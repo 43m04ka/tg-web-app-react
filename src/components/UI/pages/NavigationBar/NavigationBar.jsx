@@ -63,13 +63,11 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
                         setHeightTab(button.heightTab)
                         setZIndexTab(button.heightTab === 0 ? -100 : 100)
                     }
-                    setActiveTab(index)
                     updateBasket(catalogList, pageId)
                     window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
                 }
             })
         }else{
-            setActiveTab(0)
             setZIndexTab(-100)
             window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         }
@@ -111,6 +109,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
                 <div className={style['activeTab-' + (activeTab === index)]} onClick={() => {
                     if(activeTab !== index && button.path !== 'selectPlatform') {
                         setHeightTab(1)
+                        setActiveTab(index)
                         setTimeout(() => {
                             navigate(button.path)
                         }, 200)

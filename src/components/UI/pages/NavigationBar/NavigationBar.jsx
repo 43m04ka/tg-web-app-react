@@ -63,11 +63,13 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
                         setHeightTab(button.heightTab)
                         setZIndexTab(button.heightTab === 0 ? -100 : 100)
                     }
+                    setActiveTab(index)
                     updateBasket(catalogList, pageId)
                     window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
                 }
             })
         }else{
+            setActiveTab(0)
             setZIndexTab(-100)
             window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         }

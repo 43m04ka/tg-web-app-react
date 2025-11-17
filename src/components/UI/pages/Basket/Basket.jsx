@@ -63,12 +63,20 @@ const Basket = () => {
             </div>
             <button className={style['button']} onClick={() => {
                 if (username !== '') {
-                    createOrder(accountData, {id: user.id, username: '@'+ username}, pageId, promoData.name, ((res) => {
+                    createOrder(accountData, {
+                        id: user.id,
+                        username: '@' + username
+                    }, pageId, promoData.name, ((res) => {
                         setOrderId(res.number)
                         setStatus(2)
                     })).then()
                 }
-            }} style={{background: username !== '' ? '#50A355' : '#454545', transitionProperty: 'background', transitionDuration: '0.3s', transitionTimingFunction:'ease-in-out'}}>
+            }} style={{
+                background: username !== '' ? '#50A355' : '#454545',
+                transitionProperty: 'background',
+                transitionDuration: '0.3s',
+                transitionTimingFunction: 'ease-in-out'
+            }}>
                 Оформить заказ
             </button>
         </div>)
@@ -88,7 +96,9 @@ const Basket = () => {
                 return (<div className={style['mainContainer']}
                              style={{paddingBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px'}}>
                     <div className={style['title']}>Ваша корзина</div>
-                    {basket.map(item => (<ProductItemBasket product={item} onReload={()=>{updateBasket(catalogList, pageId)}}/>))}
+                    {basket.map(item => (<ProductItemBasket product={item} onReload={() => {
+                        updateBasket(catalogList, pageId)
+                    }}/>))}
                     {pageId !== 29 ? <AccountData returnAccountData={setAccountData}/> : ''}
                     {<Promo setPromoData={setPromoData}/>}
                     <div className={style['total']}>
@@ -114,7 +124,8 @@ const Basket = () => {
                             } else {
                                 setStatus(1)
                             }
-                        }}>Оформить заказ
+                        }}>
+                            <div>Оформить заказ</div>
                         </div>
                         <div>
                             Нажимая на кнопку, Вы соглашаетесь с

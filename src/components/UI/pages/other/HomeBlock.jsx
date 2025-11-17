@@ -78,7 +78,7 @@ const HomeBlock = ({data}) => {
                         style={{
                             fontFamily: "font-medium",
                             color: 'white',
-                            borderRadius: '50px',
+                            borderRadius: '1.5vw',
                             backgroundColor: '#222222',
                             padding: '10px 12px',
                             width: 'max-content',

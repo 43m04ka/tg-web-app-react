@@ -93,9 +93,9 @@
       flex-direction: row;
       >div:nth-child(1) {
         margin: 1vw 3vw 3vw 3vw;
-        border-radius: 100vw;
+        border-radius: $button-border-radius;
         width: 100%;
-        padding: 2vw 3vw;
+        padding: 3vw 3vw;
         @extend %font-medium;
         font-size: 4vw;
         line-height: 5vw;

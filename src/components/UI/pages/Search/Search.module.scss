@@ -155,7 +155,7 @@
     width: max-content;
     display: flex;
     margin: 1.8% auto 0 auto;
-    border-radius: 100vh;
+    border-radius: $button-border-radius;
     padding: 1% 2.8%;
     @extend %font-medium;
     font-size: 4vw;
@@ -224,7 +224,7 @@
     width: max-content;
     display: flex;
     margin: 4% auto 0 auto;
-    border-radius: 100vh;
+    border-radius: $button-border-radius;
     padding: 2% 2.8%;
     @extend %font-medium;
     font-size: 3.5vw;

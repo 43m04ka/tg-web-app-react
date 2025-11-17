@@ -42,7 +42,7 @@
   font-size: 3.7vw;
   color: white;
   padding: 2vw 2.5vw;
-  border-radius: 6vw;
+  border-radius: $button-border-radius;
   display: flex;
 }
 
@@ -88,16 +88,21 @@
 
   > div:nth-child(2) {
     display: flex;
-    margin: 3vw auto;
-    width: max-content;
+    margin: 3vw 3vw;
+    width: 94vw;
     letter-spacing: 0.2vw;
     @extend %font-medium;
     font-size: 3.8vw;
     font-weight: 900;
-    border-radius: 10vw;
+    border-radius: $button-border-radius;
     color: white;
-    padding: 2vw 2.5vw;
+    padding: 3vw;
     background: #50A355;
+    >div {
+      margin: 0 auto;
+      display: flex;
+      width: max-content;
+    }
   }
 
   > div:nth-child(3) {
@@ -139,6 +144,7 @@
     @extend %font-medium;
     width: max-content;
     border: none;
+    border-radius: $button-border-radius;
     color: white;
     background: #5a5a5a;
   }
@@ -159,7 +165,7 @@
   padding: 2.5vw 3vw;
   display: flex;
   flex-direction: column;
-  border-radius: 6vw;
+  border-radius: 4vw;
   margin: 0 8vw 1vw 8vw;
 
   > input {
@@ -170,6 +176,6 @@
     outline: none;
     padding: 2vw 3vw;
     width: 100%;
-    border-radius: 6vw;
+    border-radius: $button-border-radius;
   }
 }

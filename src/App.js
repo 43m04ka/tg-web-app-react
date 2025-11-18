@@ -40,7 +40,7 @@ function repeatArray(arr, count) {
 }
 
 let interval = -1
-let timeouts = [-1, -1, -1, -1, -1, -1]
+let timeouts = repeatArray([-1], 50)
 
 const tags = 'forza gta steam valorant lastofus battlefield psplus watchdogs minecraft psn ghost cyberpunk gamepass скидки horizon apex witcher halo diablo акции godofwar fortnite лицензия ключи resident callofduty dlc xbox tsushima uncharted reddead spiderman store assassin пополнение doom fallout игры mortal helldivers playstation rdr2 farcry playstation xbox steam psplus gamepass скидки акции ключи игры stalker alanwake starwars tekken streetfighter dragonage mass effect overwatch destiny control returnal deathstranding bloodborne daysgone detroit re8 forza gears avowed fable payday mafia bioshock borderlands titanfall sekiro eldenring nier tombraider ghostrunner store подписка пополнение minecraft baldur'
 
@@ -97,29 +97,29 @@ function App() {
         }, 25000)
         window.clearInterval(interval)
 
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 20; i++) {
             timeouts[i] = setTimeout(() => {
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-            }, 150 * i + 450)
+            }, 20 * i + 450)
         }
 
-        for (let i = 3; i < 6; i++) {
+        for (let i = 20; i < 40; i++) {
             timeouts[i] = setTimeout(() => {
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-            }, 150 * i + 1100)
+            }, 20 * i + 1100)
         }
 
         interval = setInterval(() => {
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < 20; i++) {
                 timeouts[i] = setTimeout(() => {
                     window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-                }, 150 * i + 450)
+                }, 20 * i + 450)
             }
 
-            for (let i = 3; i < 6; i++) {
+            for (let i = 20; i < 40; i++) {
                 timeouts[i] = setTimeout(() => {
                     window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-                }, 150 * i + 1100)
+                }, 20 * i + 1100)
             }
         }, 2000)
         updateCatalogStructureList()

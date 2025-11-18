@@ -100,26 +100,26 @@ function App() {
         for (let i = 0; i < 20; i++) {
             timeouts[i] = setTimeout(() => {
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-            }, 20 * i + 450)
+            }, 30 * i + 450)
         }
 
         for (let i = 20; i < 40; i++) {
             timeouts[i] = setTimeout(() => {
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-            }, 20 * i + 1100)
+            }, 30 * i + 1100)
         }
 
         interval = setInterval(() => {
             for (let i = 0; i < 20; i++) {
                 timeouts[i] = setTimeout(() => {
                     window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-                }, 20 * i + 450)
+                }, 30 * i + 450)
             }
 
             for (let i = 20; i < 40; i++) {
                 timeouts[i] = setTimeout(() => {
                     window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-                }, 20 * i + 1100)
+                }, 30 * i + 1100)
             }
         }, 2000)
         updateCatalogStructureList()

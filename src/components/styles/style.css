@@ -75,8 +75,8 @@ body {
 .text-element {
     text-decoration: none;
     text-align: left;
-    margin-left: 7px;
-    margin-right: 7px;
+    margin-left: 1.5vw;
+    margin-right: 1.5vw;
     font-family: 'font-medium';
     font-variant: normal;
     font-weight: normal;
@@ -101,8 +101,8 @@ body {
 .price-element {
     margin-top: 5px;
     font-weight: normal;
-    line-height: 20px;
-    height: 25px;
+    line-height: 3.5vw;
+    height: 4.5vw;
 }
 
 .name-element {

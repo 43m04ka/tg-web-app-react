@@ -105,7 +105,7 @@ function App() {
 
         for (let i = 8; i < 16; i++) {
             timeouts[i] = setTimeout(() => {
-                window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
             }, 80 * i + 1100)
         }
 
@@ -118,7 +118,7 @@ function App() {
 
             for (let i = 8; i < 16; i++) {
                 timeouts[i] = setTimeout(() => {
-                    window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
                 }, 80 * i + 1100)
             }
         }, 2000)

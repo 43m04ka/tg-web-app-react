@@ -46,13 +46,13 @@ const Promo = ({setPromoData}) => {
                         setInputValue(e.target.value.toUpperCase())
                     }
                 }}/>
-            <div onClick={() => {
+            <button onClick={() => {
                 usePromo(inputValue, onReturnResult).then()
             }} style={{background: color}}>
                 <p>
                     {text}
                 </p>
-            </div>
+            </button>
         </div>
     </div>);
 };

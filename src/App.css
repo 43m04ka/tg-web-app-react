@@ -16,3 +16,18 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+button:active{
+  transform: translateY(4%);
+  transition-property: transform;
+  transition-duration: 0.2s;
+}
+
+button{
+  scale: 1;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

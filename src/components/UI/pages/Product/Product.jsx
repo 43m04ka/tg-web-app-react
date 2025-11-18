@@ -8,11 +8,11 @@ import style from './Product.module.scss'
 import Description from "./Description";
 
 const parameters = [
-    {label:'Платформа', key:'platform'},
-    {label:'Регион активации', key:'regionActivate'},
-    {label:'Язык в игре', key:'language'},
-    {label:'Количество игроков', key:'numberPlayers'},
-   ]
+    {label: 'Платформа', key: 'platform'},
+    {label: 'Регион активации', key: 'regionActivate'},
+    {label: 'Язык в игре', key: 'language'},
+    {label: 'Количество игроков', key: 'numberPlayers'},
+]
 
 const Product = () => {
 
@@ -88,43 +88,49 @@ const Product = () => {
                 <div>
                     <img src={productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024"}></img>
                 </div>
-                <div>{productData.name}</div>
                 <div>
-                    <div style={{color: oldPrice !== '' ? '#489a4e' : 'white'}}>Стоимость — {price}</div>
-                    <div>{oldPrice}</div>
-                </div>
-                <div>
-                    {endDatePromotion}
-                </div>
-                <div>
-                    <div onClick={() => {
-                        cardInBasket ? navigate('/' + pageList.map(page => {
-                            return pageId === page.id ? page.link : null
-                        }).filter(page => page !== null)[0] + '/basket') : addCardToBasket(() => {
-                            setCardInBasket(true)
-                        }, user.id, cardId)
-                    }}
-                         style={{background: productData.onSale ? cardInBasket ? '#0d3ad0' : '#489a4e' : '#585c59'}}>
-                        {productData.onSale ? cardInBasket ? 'Перейти в корзину' : 'В корзину' : 'Нет в продаже'}
+                    <div>{productData.name}</div>
+                    <div>
+                        <div style={{color: oldPrice !== '' ? '#489a4e' : 'white'}}>Стоимость — {price}</div>
+                        <div>{oldPrice}</div>
                     </div>
-                    <div onClick={async ()=>{
-                        if(cardInFavorite){
-                            setCardInFavorite(false)
-                            await deleteCardToFavorite(()=>{updatePreviewFavoriteData()}, user.id, cardId)
-                        }else{
-                            setCardInFavorite(true)
-                            await addCardToFavorite(()=>{updatePreviewFavoriteData()}, user.id, cardId)
-                        }
-                    }}>
-                        <div>
-                            <div style={{scale: (cardInFavorite ? '0' : '1')}}/>
-                        </div>
+                    <div>
+                        {endDatePromotion}
+                    </div>
+                    <div>
+                        <button onClick={() => {
+                            cardInBasket ? navigate('/' + pageList.map(page => {
+                                return pageId === page.id ? page.link : null
+                            }).filter(page => page !== null)[0] + '/basket') : addCardToBasket(() => {
+                                setCardInBasket(true)
+                            }, user.id, cardId)
+                        }}
+                             style={{background: productData.onSale ? cardInBasket ? '#0d3ad0' : '#489a4e' : '#585c59'}}>
+                            {productData.onSale ? cardInBasket ? 'Перейти в корзину' : 'В корзину' : 'Нет в продаже'}
+                        </button>
+                        <button onClick={async () => {
+                            if (cardInFavorite) {
+                                setCardInFavorite(false)
+                                await deleteCardToFavorite(() => {
+                                    updatePreviewFavoriteData()
+                                }, user.id, cardId)
+                            } else {
+                                setCardInFavorite(true)
+                                await addCardToFavorite(() => {
+                                    updatePreviewFavoriteData()
+                                }, user.id, cardId)
+                            }
+                        }}>
+                            <div/>
+                            <div style={{scale: (cardInFavorite ? '1' : '0.5'), opacity: (cardInFavorite ? '1' : '0')}}/>
+                        </button>
+
                     </div>
                 </div>
             </div>
             <div>
                 {parameters.map((parameter, index) => {
-                    if(productData[parameter.key] !== null && productData[parameter.key] !== ''){
+                    if (productData[parameter.key] !== null && productData[parameter.key] !== '') {
                         return (
                             <div key={index}>
                                 <div>{parameter.label}:</div>

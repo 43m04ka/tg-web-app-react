@@ -25,8 +25,8 @@
       width: 50%;
     }
 
-    > div {
-      transition-property: background;
+    > button {
+      transition-property: background, transform;
       transition-duration: 0.2s;
       width: 50%;
       height: 100%;

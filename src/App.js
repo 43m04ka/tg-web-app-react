@@ -89,6 +89,7 @@ function App() {
         } catch (e) {
         }
         tg.ready();
+
     }, [])
 
     useEffect(() => {

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import style from './Basket.module.scss';
 import {useServer} from "./useServer";
 import {useTelegram} from "../../../../hooks/useTelegram";
@@ -19,18 +19,6 @@ const Basket = () => {
     const [orderId, setOrderId] = useState(null)
     const [status, setStatus] = useState(0)
     const [username, setUsername] = useState('')
-
-    // const reload = async () => {
-    //     await getBasketList((result) => {
-    //         let catalogIdList = catalogList.map(cat => {
-    //             return cat.structurePageId === pageId ? cat.id : null
-    //         }).filter(cat => cat !== null)
-    //
-    //         setBasket(result.map(item => {
-    //             return catalogIdList.includes(item.catalogId) ? item : null
-    //         }).filter(item => item !== null))
-    //     }, user.id)
-    // }
 
     if (status === 2) {
         return (<div style={{flexDirection: 'column', display: 'flex'}}>
@@ -114,7 +102,7 @@ const Basket = () => {
                                 }).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}₽
                             </div> : ''}
                         </div>
-                        <div onClick={() => {
+                        <button onClick={() => {
                             if (typeof user.username !== 'undefined') {
                                 createOrder(accountData, user, pageId, promoData.name, ((res) => {
                                     setOrderId(res.number)
@@ -126,7 +114,7 @@ const Basket = () => {
                             }
                         }}>
                             <div>Оформить заказ</div>
-                        </div>
+                        </button>
                         <div>
                             Нажимая на кнопку, Вы соглашаетесь с
                             <a href={'https://t.me/gwstore_faq/12'}>

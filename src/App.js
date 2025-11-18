@@ -124,7 +124,7 @@ function App() {
                 window.clearTimeout(id)
             })
             setIsLoaded(false)
-            window.Telegram.WebApp.HapticFeedback.impactOccurred('rigid');
+            window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
         }, 150)
     }
 

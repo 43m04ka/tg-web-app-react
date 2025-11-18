@@ -114,6 +114,11 @@
           transition-duration: 0.3s;
         }
 
+        button:nth-child(1):active{
+          transform: scaleX(101%) scaleY(107%);
+          outline: none;
+        }
+
         > button:nth-child(2) {
           width: 9vw;
           margin-left: 3vw;
@@ -140,6 +145,11 @@
             transition-property: opacity, scale;
             transition-duration: 0.2s;
           }
+        }
+
+        button:nth-child(2):active{
+          transform: scale(107%);
+          outline: none;
         }
       }
     }

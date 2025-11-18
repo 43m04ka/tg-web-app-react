@@ -17,12 +17,6 @@ body {
   scrollbar-width: none;
 }
 
-button:active{
-  transform: translateY(5%) rotateX(-15deg);
-  outline: none;
-}
-
-
 button{
   outline: none;
   scale: 1;

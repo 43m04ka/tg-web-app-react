@@ -94,7 +94,7 @@ function App() {
     useEffect(() => {
         setTimeout(() => {
             updatePageList()
-        }, 2500)
+        }, 25000)
         window.clearInterval(interval)
 
         for (let i = 0; i < 3; i++) {

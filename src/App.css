@@ -19,10 +19,12 @@ body {
 
 button:active{
   transform: translateY(5%) rotateX(-15deg);
+  outline: none;
 }
 
 
 button{
+  outline: none;
   scale: 1;
   cursor: pointer;
   border: none;
@@ -30,4 +32,5 @@ button{
   justify-content: center;
   align-items: center;
   transition: transform 200ms cubic-bezier(.68,-0.55,0.27,2.5);
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }

@@ -31,7 +31,7 @@ const HomeScreen = ({setInputValue}) => {
                         <div className={style['animClue']} style={{
                             webkitAnimationDelay: String(0.1 * index) + 's',
                             animationDelay: String(0.1 * index + 0.2) + 's'
-                        }} onClick={() => {
+                        }} onTouchStart={() => {
                             setInputValue(item.name)
                         }}>{item.name}</div>)
                 }

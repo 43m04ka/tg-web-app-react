@@ -139,7 +139,7 @@ function App() {
                 window.clearTimeout(id)
             })
             setIsLoaded(false)
-            window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
         }, 150)
     }
 

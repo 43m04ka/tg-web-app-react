@@ -97,29 +97,29 @@ function App() {
         }, 25000)
         window.clearInterval(interval)
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 8; i++) {
             timeouts[i] = setTimeout(() => {
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-            }, 60 * i + 550)
+            }, 80 * i + 550)
         }
 
-        for (let i = 10; i < 20; i++) {
+        for (let i = 8; i < 16; i++) {
             timeouts[i] = setTimeout(() => {
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-            }, 60 * i + 1100)
+            }, 80 * i + 1100)
         }
 
         interval = setInterval(() => {
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 8; i++) {
                 timeouts[i] = setTimeout(() => {
                     window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-                }, 60 * i + 550)
+                }, 80 * i + 550)
             }
 
-            for (let i = 10; i < 20; i++) {
+            for (let i = 8; i < 16; i++) {
                 timeouts[i] = setTimeout(() => {
                     window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-                }, 60 * i + 1100)
+                }, 80 * i + 1100)
             }
         }, 2000)
         updateCatalogStructureList()

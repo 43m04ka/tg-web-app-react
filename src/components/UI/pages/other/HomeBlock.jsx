@@ -33,7 +33,7 @@ const HomeBlock = ({data}) => {
                 paddingTop: '10px',
                 marginTop: '0px',
                 paddingLeft: '7px',
-                marginBottom: '20px'
+                marginBottom: '10px'
             }
         } else {
             styleBlock = {
@@ -41,7 +41,7 @@ const HomeBlock = ({data}) => {
                 paddingTop: '3px',
                 paddingLeft: '7px',
                 marginTop: '0px',
-                marginBottom: '20px'
+                marginBottom: '10px'
             };
         }
     }
@@ -56,7 +56,7 @@ const HomeBlock = ({data}) => {
             <div style={styleBlock}>
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                     <div style={{
-                        fontSize: '4.1vw',
+                        fontSize: '6vw',
                         fontFamily: "font-medium",
                         color: 'white',
                         marginLeft: '15px',

@@ -12,23 +12,23 @@ const CatalogItem = ({product}) => {
     if (product.oldPrice !== null) {
         oldPrice = String(product.oldPrice).toLocaleString() + ' ₽'
         parcent = '−' + Math.ceil((1 - product.price / product.oldPrice) * 100) + '%'
-    } else if(product.similarCard !== null){
+    } else if (product.similarCard !== null) {
         price = String(product.similarCard?.price).toLocaleString() + ' ₽'
 
-        if(typeof product.similarCard.oldPrice !== 'undefined') {
+        if (typeof product.similarCard.oldPrice !== 'undefined') {
             parcent = '−' + Math.ceil((1 - product.similarCard?.price / product.similarCard?.oldPrice) * 100) + '%'
             oldPrice = product.similarCard?.oldPrice.toLocaleString() + ' ₽'
         }
     }
 
     if (product.releaseDate !== null) {
-        let a = (new Date(product.releaseDate))*24*60*60*1000
+        let a = (new Date(product.releaseDate)) * 24 * 60 * 60 * 1000
         let currentDate = new Date('1899-12-30T00:00:00.000Z')
         let newDate = new Date(a + currentDate.getTime());
 
-        if(newDate < ((new Date()))){
+        if (newDate < ((new Date()))) {
             parcent = "Релиз"
-        }else {
+        } else {
             parcent = newDate.toLocaleDateString('ru-RU')
             parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
         }
@@ -87,43 +87,40 @@ const CatalogItem = ({product}) => {
     }, [product.url]);
 
 
-    return (
-        <div className={'list-element'}>
-            <Link to={'/card/' + product.id} className={'link-element'}>
-                <div className={'box-home-block-element'}>
-                    {imageLoaded ? (<div style={{
-                        backgroundImage: 'url("' + product.image + '")',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundSize: 'cover',
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'end',
-                        justifyContent: 'space-between',
-                    }} className={style['productImage']}>
-                        {platform}
-                        {parcentEl}
-                    </div>) : (<div className={style['preloadProductImage']}>
-                        <svg>
-                            <path/>
-                        </svg>
-                        <svg>
-                            <path/>
-                        </svg>
-                    </div>)}
+    return (<div className={'list-element'}>
+        <Link to={'/card/' + product.id} className={'link-element'}>
+            <div className={'box-home-block-element'}>
+                {imageLoaded ? (<div style={{
+                    backgroundImage: 'url("' + product.image + '")',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'cover',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'end',
+                    justifyContent: 'space-between',
+                }} className={style['productImage']}>
+                    {platform}
+                    {parcentEl}
+                </div>) : (<div className={style['preloadProductImage']}>
+                    <svg>
+                        <path/>
+                    </svg>
+                    <svg>
+                        <path/>
+                    </svg>
+                </div>)}
 
-                    <div style={{height: '39px', overflow: 'hidden', lineHeight: '20px'}}>
+                <div style={{height: '9vw', overflow: 'hidden'}}>
                     <div className={'text-element name-element'}>{product.name + view}</div>
-                    </div>
-                    <div style={{display: 'flex', justifyContent: 'left'}}>
-                        <div className={'text-element price-element'}>{price}</div>
-                        <div className={'text-element price-element'}
-                             style={{textDecoration: 'line-through', color: 'gray'}}>{oldPrice}</div>
-                    </div>
                 </div>
-            </Link>
-        </div>
-    )
-        ;
+                <div style={{display: 'flex', justifyContent: 'left'}}>
+                    <div className={'text-element price-element'}>{price}</div>
+                    <div className={'text-element price-element'}
+                         style={{textDecoration: 'line-through', color: 'gray'}}>{oldPrice}</div>
+                </div>
+            </div>
+        </Link>
+    </div>);
 };
 
 export default CatalogItem;

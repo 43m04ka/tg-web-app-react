@@ -56,7 +56,7 @@ const HomeBlock = ({data}) => {
             <div style={styleBlock}>
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                     <div style={{
-                        fontSize: '6vw',
+                        fontSize: '4.1vw',
                         fontFamily: "font-medium",
                         color: 'white',
                         marginLeft: '15px',
@@ -67,7 +67,7 @@ const HomeBlock = ({data}) => {
                 </div>
                 <div className={"scroll-container"} style={{alignItems: 'center'}}>
                     {data.body.slice(0, 6).map(item => (
-                            <div style={{marginRight: '5px'}}>
+                            <div style={{marginRight: '5px', marginTop:'1vw'}}>
                                 <CatalogItem key={item.id} product={item}/>
                             </div>
                         )
@@ -82,7 +82,7 @@ const HomeBlock = ({data}) => {
                             backgroundColor: '#222222',
                             padding: '10px 12px',
                             width: 'max-content',
-                            fontSize: '2vw',
+                            fontSize: '3.6vw',
                             justifyItems: 'center',
                             margin:'0 auto',
                             marginTop:'10px',

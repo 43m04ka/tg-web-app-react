@@ -14,7 +14,7 @@ const SelectPlatform = ({setActiveTab, activeTab, setHeightTab}) => {
 
     useEffect(() => {
         if (mouseDownId > -1) {
-            window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         }
     }, [mouseDownId])
 

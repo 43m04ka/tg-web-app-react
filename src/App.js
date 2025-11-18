@@ -101,14 +101,14 @@ function App() {
             timeouts[i] = setTimeout(() => {
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
                 console.log(i)
-            }, 150 * i + 1)
+            }, 150 * i + 250)
         }
 
         for (let i = 3; i < 6; i++) {
             timeouts[i] = setTimeout(() => {
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
                 console.log(i)
-            }, 150 * i + 1000)
+            }, 150 * i + 1250)
         }
 
         interval = setInterval(() => {

@@ -105,9 +105,8 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
             <div style={{marginLeft: String(19.5 * (activeTab)) + '%'}}/>
         </div> : ''}
         <div>
-
             {buttons.map((button, index) => (
-                <div className={style['activeTab-' + (activeTab === index)]} onTouchStart={() => {
+                <button className={style['activeTab-' + (activeTab === index)]} onTouchStart={() => {
                     if (activeTab !== index && button.path !== 'selectPlatform') {
                         if (!window.location.pathname.includes(button.path) && button.path !== '') {
                             setHeightTab(1)
@@ -120,7 +119,7 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
                 }}>
                     <div style={{backgroundImage: `url(${button.icon})`}} className={style['button-' + button.icon]}/>
                     <p>{button.label}</p>
-                </div>))}
+                </button>))}
         </div>
         {basket !== null && basket.length !== 0 ? <div className={style['productCounter']}>
             <div>

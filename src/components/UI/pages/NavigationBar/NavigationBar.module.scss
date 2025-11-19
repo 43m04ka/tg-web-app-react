@@ -16,8 +16,20 @@
     flex-direction: row;
     justify-content: space-between;
 
-    > div {
+    >button:active{
+      outline: none;
+      background: $menu-color;
+    }
+
+    > button {
       height: max-content;
+      display: flex;
+      flex-direction: column;
+      background: $menu-color;
+      z-index: 260;
+      border: none;
+      background: none;
+      outline: none;
       width: 100%;
       margin: auto;
       align-self: center;

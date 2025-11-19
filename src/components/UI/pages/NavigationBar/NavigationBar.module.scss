@@ -16,7 +16,7 @@
     flex-direction: row;
     justify-content: space-between;
 
-    >button:active{
+    > button:active {
       outline: none;
       background: $menu-color;
     }
@@ -27,15 +27,12 @@
       flex-direction: column;
       background: $menu-color;
       z-index: 260;
-      opacity: 0.3;
       border: none;
       background: none;
       outline: none;
       width: 100%;
       margin: auto;
       align-self: center;
-      transition-property: opacity;
-      transition-duration: 0.2s;
 
       > div {
 
@@ -76,6 +73,7 @@
     width: 100%;
 
     z-index: 275;
+
     > div {
       transition-property: margin-left;
       transition-duration: 0.2s;
@@ -88,6 +86,7 @@
     }
 
   }
+
   > div:nth-child(2) {
     @extend %no-select;
     height: 8%;
@@ -96,7 +95,6 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-
 
 
     > div {
@@ -129,7 +127,7 @@
   }
 }
 
-.productCounter{
+.productCounter {
   position: absolute;
   margin-left: 95% / 5 * 3 - 6%;
   margin-top: 2.5%;
@@ -141,7 +139,8 @@
   width: 4vw;
   height: 4vw;
   background-color: rgba(227, 28, 28, 1);
-  >div{
+
+  > div {
     display: flex;
     color: $menu-color;
     margin: auto;
@@ -152,10 +151,28 @@
 
 .activeTab {
   &-true {
-    opacity: 1 !important;
+    >div {
+      opacity: 1 !important;
+      transition-property: opacity;
+      transition-duration: 0.2s;
+    }
+    >p {
+      opacity: 1 !important;
+      transition-property: opacity;
+      transition-duration: 0.2s;
+    }
   }
 
   &-false {
-    opacity: 0.3 !important;
+    >div {
+      opacity: 0.3 !important;
+      transition-property: opacity;
+      transition-duration: 0.2s;
+    }
+    >p {
+      opacity: 0.3 !important;
+      transition-property: opacity;
+      transition-duration: 0.2s;
+    }
   }
 }

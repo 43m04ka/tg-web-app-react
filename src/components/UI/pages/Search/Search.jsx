@@ -51,7 +51,9 @@ const Search = () => {
 
     useEffect(() => {
         if (inputRef.current) {
-            inputRef.current.focus();
+            setTimeout(() => {
+                inputRef.current.focus();
+            }, 300)
         }
     }, []);
 
@@ -129,6 +131,12 @@ const Search = () => {
         </div>)) : (<div>
             <HomeScreen setInputValue={setInputValue}/>
             <div className={style['welcome']}/>
+            <button onClick={() => {
+                setTimeout(() => {
+                    inputRef.current.focus();
+                }, 2000)
+            }}>фокус
+            </button>
         </div>)}
     </div>);
 };

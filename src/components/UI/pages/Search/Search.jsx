@@ -12,6 +12,7 @@ const Search = () => {
     const {tg} = useTelegram()
     const {pageId} = useGlobalData()
     const inputRef = useRef(null)
+    const buttonRef = useRef(null)
 
     const [inputValue, setInputValue] = useState('')
     const [cardList, setCardList] = useState(null)
@@ -52,7 +53,7 @@ const Search = () => {
     useEffect(() => {
         if (inputRef.current) {
             setTimeout(() => {
-                inputRef.current.click();
+                buttonRef.current.click();
             }, 300)
         }
     }, []);
@@ -86,6 +87,7 @@ const Search = () => {
                        onFocus={handleFocus}
                        onBlur={handleBlur}
                        value={inputValue}
+                       ref={inputRef}
                        onChange={(event) => {
                            setInputValue(event.target.value)
                            setCardList(null)
@@ -130,7 +132,7 @@ const Search = () => {
         </div>)) : (<div>
             <HomeScreen setInputValue={setInputValue}/>
             <div className={style['welcome']}/>
-            <button ref={inputRef} onClick={() => {
+            <button ref={buttonRef} onClick={() => {
                 inputRef.current.focus();
             }}>фокус
             </button>

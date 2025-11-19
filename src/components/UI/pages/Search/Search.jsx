@@ -39,7 +39,6 @@ const Search = () => {
                         resultList.push(card)
                     }
                 }).filter(el => el !== null)
-
                 if (inputValue === '') {
                     setCardList(null)
                 } else {
@@ -87,6 +86,8 @@ const Search = () => {
                        onBlur={handleBlur}
                        value={inputValue}
                        ref={inputRef}
+                       returnKeyType="Найти"
+                       placeholderTextColor="#DCDCDC"
                        onChange={(event) => {
                            setInputValue(event.target.value)
                            setCardList(null)

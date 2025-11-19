@@ -12,7 +12,6 @@ const Search = () => {
     const {tg} = useTelegram()
     const {pageId} = useGlobalData()
     const inputRef = useRef(null)
-    const buttonRef = useRef(null)
 
     const [inputValue, setInputValue] = useState('')
     const [cardList, setCardList] = useState(null)
@@ -53,7 +52,7 @@ const Search = () => {
     useEffect(() => {
         if (inputRef.current) {
             setTimeout(() => {
-                buttonRef.current.click();
+                inputRef.current.click();
             }, 300)
         }
     }, []);
@@ -132,10 +131,6 @@ const Search = () => {
         </div>)) : (<div>
             <HomeScreen setInputValue={setInputValue}/>
             <div className={style['welcome']}/>
-            <button ref={buttonRef} onClick={() => {
-                inputRef.current.focus();
-            }}>фокус
-            </button>
         </div>)}
     </div>);
 };

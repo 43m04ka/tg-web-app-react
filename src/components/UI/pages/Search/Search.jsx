@@ -52,7 +52,7 @@ const Search = () => {
     useEffect(() => {
         if (inputRef.current) {
             setTimeout(() => {
-                inputRef.current.focus();
+                inputRef.current.click();
             }, 300)
         }
     }, []);
@@ -89,8 +89,7 @@ const Search = () => {
                        onChange={(event) => {
                            setInputValue(event.target.value)
                            setCardList(null)
-                       }}
-                       ref={inputRef}></input>
+                       }}></input>
                 <button onClick={() => {
                     setInputValue('');
                     setCardList(null)
@@ -131,10 +130,8 @@ const Search = () => {
         </div>)) : (<div>
             <HomeScreen setInputValue={setInputValue}/>
             <div className={style['welcome']}/>
-            <button onClick={() => {
-                setTimeout(() => {
-                    inputRef.current.focus();
-                }, 2000)
+            <button ref={inputRef} onClick={() => {
+                inputRef.current.focus();
             }}>фокус
             </button>
         </div>)}

@@ -86,7 +86,7 @@ const Search = () => {
                        onBlur={handleBlur}
                        value={inputValue}
                        ref={inputRef}
-                       returnKeyType="search"
+                       enterkeyhint="search"
                        onChange={(event) => {
                            setInputValue(event.target.value)
                            setCardList(null)

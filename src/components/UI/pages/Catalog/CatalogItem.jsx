@@ -110,7 +110,7 @@ const CatalogItem = ({product}) => {
                     </svg>
                 </div>)}
 
-                <div style={{height: '9vw', overflow: 'hidden'}}>
+                <div style={{height: '8.5vw', overflow: 'hidden'}}>
                     <div className={'text-element name-element'}>{product.name + view}</div>
                 </div>
                 <div style={{display: 'flex', justifyContent: 'left'}}>

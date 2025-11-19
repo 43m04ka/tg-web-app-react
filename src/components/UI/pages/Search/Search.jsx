@@ -1,11 +1,8 @@
-import React, {useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import style from './Search.module.scss'
 import {useTelegram} from "../../../../hooks/useTelegram";
 import HomeScreen from "./Elements/homeScreen";
 import useGlobalData from "../../../../hooks/useGlobalData";
-import cardList from "../AdminPanel/Tabs/EditCatalogs/CardList";
-import SearchPosition from "./Elements/SearchPosition";
-import {useNavigate} from "react-router-dom";
 import CatalogItem from "../Catalog/CatalogItem";
 
 let timerId = -1
@@ -16,8 +13,9 @@ const Search = () => {
     const {pageId} = useGlobalData()
     const inputRef = useRef(null)
 
-    const [inputValue, setInputValue] = React.useState('')
-    const [cardList, setCardList] = React.useState(null)
+    const [inputValue, setInputValue] = useState('')
+    const [cardList, setCardList] = useState(null)
+    const [isInputFocused, setIsInputFocused] = useState(false);
 
     const getCardList = async () => {
         fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/database', {
@@ -52,8 +50,20 @@ const Search = () => {
     }
 
     useEffect(() => {
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, []);
 
-    }, [])
+    const handleFocus = () => {
+        setIsInputFocused(true);
+    };
+
+    const handleBlur = () => {
+        setTimeout(() => {
+            setIsInputFocused(false);
+        }, 100)
+    };
 
     useEffect(() => {
         window.clearTimeout(timerId);
@@ -70,10 +80,16 @@ const Search = () => {
         <div>
             <div>
                 <div/>
-                <input placeholder={'Поиск'} autoFocus value={inputValue} onChange={(event) => {
-                    setInputValue(event.target.value)
-                    setCardList(null)
-                }} ref={inputRef}></input>
+                <input placeholder={'Поиск'}
+                       autoFocus
+                       onFocus={handleFocus}
+                       onBlur={handleBlur}
+                       value={inputValue}
+                       onChange={(event) => {
+                           setInputValue(event.target.value)
+                           setCardList(null)
+                       }}
+                       ref={inputRef}></input>
                 <button onClick={() => {
                     setInputValue('');
                     setCardList(null)
@@ -86,10 +102,9 @@ const Search = () => {
                                                                                style={{paddingBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px'}}>
             <div className={'list-grid'}>
                 {cardList.map(item => {
-                    return (
-                        <div style={{marginLeft: '6vw'}}>
-                            <CatalogItem key={item.id} product={item}/>
-                        </div>)
+                    return (<div style={{marginLeft: '6vw'}}>
+                        <CatalogItem key={item.id} product={item} isClicked={!isInputFocused}/>
+                    </div>)
                 })}
             </div>
             <div className={style['helpPlace']}>

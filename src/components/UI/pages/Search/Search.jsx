@@ -1,21 +1,34 @@
-import {useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import style from './Search.module.scss'
 import {useTelegram} from "../../../../hooks/useTelegram";
 import HomeScreen from "./Elements/homeScreen";
 import useGlobalData from "../../../../hooks/useGlobalData";
 import CatalogItem from "../Catalog/CatalogItem";
+import {useNavigate} from "react-router-dom";
 
 let timerId = -1
 
+
+let lastListRes = []
+let lastText = ''
+let lastScroll = 0
 
 const Search = () => {
     const {tg} = useTelegram()
     const {pageId} = useGlobalData()
     const inputRef = useRef(null)
+    const scrollRef = useRef(null);
+    const navigate = useNavigate();
 
-    const [inputValue, setInputValue] = useState('')
-    const [cardList, setCardList] = useState(null)
+
+    const [inputValue, setInputValue] = useState(lastText)
+    const [cardList, setCardList] = useState(lastListRes)
     const [isInputFocused, setIsInputFocused] = useState(false);
+
+    useEffect(() => {
+        lastListRes = cardList
+        lastText = inputValue
+    }, [cardList, inputValue]);
 
     const getCardList = async () => {
         fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/database', {
@@ -54,7 +67,23 @@ const Search = () => {
                 inputRef.current.click();
             }, 300)
         }
+        if (scrollRef.current) {
+            scrollRef.current.scrollTo({
+                top: lastScroll, behavior: "instant",
+            });
+        }
+        tg.onEvent('backButtonClicked', onBack)
+        return () => {
+            tg.offEvent('backButtonClicked', onBack)
+        }
     }, []);
+
+    const onBack = useCallback(() => {
+        navigate(-1);
+        lastScroll = 0
+        lastText = ''
+        lastListRes = []
+    }, [])
 
     const handleFocus = () => {
         setIsInputFocused(true);
@@ -87,6 +116,7 @@ const Search = () => {
                        value={inputValue}
                        ref={inputRef}
                        enterkeyhint="search"
+                       defaultValue={lastText}
                        onChange={(event) => {
                            setInputValue(event.target.value)
                            setCardList(null)
@@ -100,6 +130,10 @@ const Search = () => {
             </div>
         </div>
         {inputValue !== '' ? (cardList !== null ? (cardList.length > 0 ? (<div className={style['scrollList']}
+                                                                               onScroll={(event) => {
+                                                                                   lastScroll = (event.target.scrollTop);
+                                                                               }}
+                                                                               ref={scrollRef}
                                                                                style={{paddingBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px'}}>
             <div className={'list-grid'}>
                 {cardList.map(item => {

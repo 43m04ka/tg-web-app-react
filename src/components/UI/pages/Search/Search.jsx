@@ -86,8 +86,7 @@ const Search = () => {
                        onBlur={handleBlur}
                        value={inputValue}
                        ref={inputRef}
-                       returnKeyType="Найти"
-                       placeholderTextColor="#DCDCDC"
+                       returnKeyType="search"
                        onChange={(event) => {
                            setInputValue(event.target.value)
                            setCardList(null)

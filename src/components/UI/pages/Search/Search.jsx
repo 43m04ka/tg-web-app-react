@@ -51,9 +51,7 @@ const Search = () => {
 
     useEffect(() => {
         if (inputRef.current) {
-            setTimeout(() => {
-                inputRef.current.focus();
-            }, 300)
+            inputRef.current.focus();
         }
     }, []);
 

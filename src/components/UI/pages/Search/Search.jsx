@@ -131,6 +131,7 @@ const Search = () => {
         </div>)) : (<div>
             <HomeScreen setInputValue={setInputValue}/>
             <div className={style['welcome']}/>
+            <button onClick={()=>{inputRef.current.focus()}}>фокус</button>
         </div>)}
     </div>);
 };

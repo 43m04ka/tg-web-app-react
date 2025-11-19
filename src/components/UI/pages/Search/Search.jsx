@@ -53,7 +53,7 @@ const Search = () => {
         if (inputRef.current) {
             setTimeout(() => {
                 inputRef.current.focus();
-            }, 150)
+            }, 300)
         }
     }, []);
 
@@ -83,7 +83,6 @@ const Search = () => {
             <div>
                 <div/>
                 <input placeholder={'Поиск'}
-                       autoFocus
                        onFocus={handleFocus}
                        onBlur={handleBlur}
                        value={inputValue}

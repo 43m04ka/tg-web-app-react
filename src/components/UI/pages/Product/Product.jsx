@@ -79,7 +79,7 @@ const Product = () => {
 
         return (<div className={style['container']} style={{
             paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
-            paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 20) + 'px',
+            paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.17 * window.innerWidth) + 'px',
             height: '100vh',
         }}>
             <div className={style['productImage']}
@@ -127,7 +127,7 @@ const Product = () => {
 
             <Recommendations/>
 
-            <div className={style['basketButton']} style={{paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 20) + 'px'}}>
+            <div className={style['basketButton']} style={{paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px'}}>
                 <button onClick={() => {
                     cardInBasket ? navigate('/' + pageList.map(page => {
                         return pageId === page.id ? page.link : null

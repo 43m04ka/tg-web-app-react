@@ -7,12 +7,10 @@ import Recommendations from "./Recommendations";
 import style from './Product.module.scss'
 import Description from "./Description";
 
-const parameters = [
-    {label: 'Платформа', key: 'platform'},
-    {label: 'Регион активации', key: 'regionActivate'},
-    {label: 'Язык в игре', key: 'language'},
-    {label: 'Количество игроков', key: 'numberPlayers'},
-]
+const parameters = [{label: 'Платформа', key: 'platform'}, {
+    label: 'Регион активации',
+    key: 'regionActivate'
+}, {label: 'Язык в игре', key: 'language'}, {label: 'Количество игроков', key: 'numberPlayers'},]
 
 const Product = () => {
 
@@ -86,6 +84,23 @@ const Product = () => {
         }}>
             <div className={style['productImage']}
                  style={{backgroundImage: 'url(' + productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024" + ')'}}>
+                <button className={style['favorite']} onClick={async () => {
+                    if (cardInFavorite) {
+                        setCardInFavorite(false)
+                        await deleteCardToFavorite(() => {
+                            updatePreviewFavoriteData()
+                        }, user.id, cardId)
+                    } else {
+                        setCardInFavorite(true)
+                        await addCardToFavorite(() => {
+                            updatePreviewFavoriteData()
+                        }, user.id, cardId)
+                    }
+                }}>
+                    <div/>
+                    <div
+                        style={{scale: (cardInFavorite ? '1' : '0.5'), opacity: (cardInFavorite ? '1' : '0')}}/>
+                </button>
             </div>
 
             <div className={style['priceNameBlock']}>
@@ -93,19 +108,16 @@ const Product = () => {
                 <div className={style['price']}>
                     <div style={{borderColor: oldPrice !== '' ? '#D86147' : '#171717'}}>{price}</div>
                 </div>
-                {endDatePromotion !== '' ?
-                    (<div className={style['endDatePromotion']}>
-                        {endDatePromotion}
-                    </div>) : ''}
+                {endDatePromotion !== '' ? (<div className={style['endDatePromotion']}>
+                    {endDatePromotion}
+                </div>) : ''}
                 <div className={style['parameters']}>
                     {parameters.map((parameter, index) => {
                         if (productData[parameter.key] !== null && productData[parameter.key] !== '') {
-                            return (
-                                <div key={index}>
+                            return (<div key={index}>
                                     <div>{parameter.label}:</div>
                                     <div>{productData[parameter.key]}</div>
-                                </div>
-                            )
+                                </div>)
                         }
                     })}
                 </div>
@@ -115,41 +127,18 @@ const Product = () => {
 
             <Recommendations/>
 
-            <div>
-                <div>
-                    <div>
-                        <button onClick={() => {
-                            cardInBasket ? navigate('/' + pageList.map(page => {
-                                return pageId === page.id ? page.link : null
-                            }).filter(page => page !== null)[0] + '/basket') : addCardToBasket(() => {
-                                setCardInBasket(true)
-                            }, user.id, cardId)
-                        }}
-                                style={{background: productData.onSale ? cardInBasket ? '#0d3ad0' : '#489a4e' : '#585c59'}}>
-                            {productData.onSale ? cardInBasket ? 'Перейти в корзину' : 'В корзину' : 'Нет в продаже'}
-                        </button>
-                        <button onClick={async () => {
-                            if (cardInFavorite) {
-                                setCardInFavorite(false)
-                                await deleteCardToFavorite(() => {
-                                    updatePreviewFavoriteData()
-                                }, user.id, cardId)
-                            } else {
-                                setCardInFavorite(true)
-                                await addCardToFavorite(() => {
-                                    updatePreviewFavoriteData()
-                                }, user.id, cardId)
-                            }
-                        }}>
-                            <div/>
-                            <div
-                                style={{scale: (cardInFavorite ? '1' : '0.5'), opacity: (cardInFavorite ? '1' : '0')}}/>
-                        </button>
-
-                    </div>
-                </div>
+            <div className={style['basketButton']} style={{paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 20) + 'px'}}>
+                <button onClick={() => {
+                    cardInBasket ? navigate('/' + pageList.map(page => {
+                        return pageId === page.id ? page.link : null
+                    }).filter(page => page !== null)[0] + '/basket') : addCardToBasket(() => {
+                        setCardInBasket(true)
+                    }, user.id, cardId)
+                }}
+                        style={{background: productData.onSale ? cardInBasket ? '#50A355' : '#404ADE' : '#585c59'}}>
+                    {productData.onSale ? cardInBasket ? 'В корзине / перейти в корзину' : 'Добавить в корзину' : 'Нет в продаже'}
+                </button>
             </div>
-
         </div>);
     } else {
         getCard(setProductData, cardId).then()

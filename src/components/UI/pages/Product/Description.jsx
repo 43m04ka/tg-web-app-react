@@ -3,26 +3,32 @@ import styles from './Product.module.scss';
 
 const Description = ({children}) => {
 
-    const [textHidden, setTextHidden] = useState(null);
+    const [textHidden, setTextHidden] = useState(false);
+    const [height, setHeight] = useState('max-content');
     const refText = createRef();
 
     useEffect(() => {
-        setTextHidden(refText.current.getBoundingClientRect().height > 76 ? true : 0)
+        if (refText.current) {
+            setHeight(String(refText.current.getBoundingClientRect().height) + 'px')
+            setTextHidden(true);
+        }
     }, []);
 
-    return (
-        <div className={styles['description']} onClick={() => {
-            setTextHidden(!textHidden)
-        }}>
-            <div>
-                <div>Описание игры: </div>
-                <div className={`${styles['background-arrow']} ${styles['background-arrow-' + textHidden]}`}/>
-            </div>
-            <div ref={refText} className={`${styles['text']} ${styles['text-' + textHidden]}`}>
-                {children}
-            </div>
+    console.log(height)
+
+    return (<div className={styles['description']} onClick={() => {
+        setTextHidden(!textHidden)
+    }}>
+        <div ref={refText} style={{height: (textHidden ? String(window.innerWidth * 5.35 / 100) + 'px' : height)}}>
+                <span>
+                    Описание игры:
+                </span>
+            {children}
         </div>
-    );
+        <div>
+            {textHidden ? 'нажать, чтобы прочитать полностью' : 'нажать, чтобы скрыть'}
+        </div>
+    </div>);
 };
 
 export default Description;

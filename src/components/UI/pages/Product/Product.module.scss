@@ -65,7 +65,7 @@ $block-border-radius: 5.35vw;
   flex-direction: column;
   border-radius: $block-border-radius;
 
-  > p:nth-child(1) {
+  .title {
     @extend %font-medium;
     font-size: 5.35vw;
     line-height: 8.55vw;
@@ -74,9 +74,9 @@ $block-border-radius: 5.35vw;
     color: white;
   }
 
-  > div:nth-child(2) {
+  .price {
     display: flex;
-    margin: 0 4.28vw 2.4vw 4.28vw;
+    margin: 0 4.28vw 2.1vw 4.28vw;
     flex-direction: row;
     justify-content: space-between;
 
@@ -92,7 +92,15 @@ $block-border-radius: 5.35vw;
     }
   }
 
-  > div:nth-child(3) {
+  .endDatePromotion{
+    @extend %font-bold;
+    color: #D86147;
+    font-size: 3.5vw;
+    line-height: 5.35vw;
+    margin: 0 5.38vw 0vw 5.38vw;
+  }
+
+  .parameters {
     margin: 0 5.38vw 4.28vw 5.38vw;
 
     > div {

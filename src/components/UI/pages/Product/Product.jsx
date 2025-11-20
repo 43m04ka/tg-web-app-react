@@ -62,10 +62,10 @@ const Product = () => {
 
         let oldPrice = ''
         let price = productData.price.toLocaleString() + ' ₽'
-
         let endDatePromotion = ''
+
         if (productData.endDatePromotion !== null) {
-            endDatePromotion = `cкидка ${Math.ceil((1 - productData.price / productData.oldPrice) * 100)}% (${productData.oldPrice - productData.price}₽) действует ${productData.endDatePromotion}`
+            endDatePromotion = `*cкидка действует ${productData.endDatePromotion}`
         }
         if (productData.oldPrice !== null) {
             oldPrice = productData.oldPrice.toLocaleString() + ' ₽'
@@ -75,7 +75,7 @@ const Product = () => {
                 oldPrice = productData.similarCard?.oldPrice.toLocaleString() + ' ₽'
             }
             if (typeof productData.similarCard.endDatePromotion !== 'undefined') {
-                endDatePromotion = `cкидка ${Math.ceil((1 - productData.similarCard?.price / productData.similarCard?.oldPrice) * 100)}% (${productData.similarCard?.oldPrice - productData.similarCard?.price}₽) действует ${productData.similarCard?.endDatePromotion}`
+                endDatePromotion = `*cкидка действует ${productData.similarCard?.endDatePromotion}`
             }
         }
 
@@ -89,11 +89,15 @@ const Product = () => {
             </div>
 
             <div className={style['priceNameBlock']}>
-                <p>{productData.name}</p>
-                <div>
+                <p className={style['title']}>{productData.name}</p>
+                <div className={style['price']}>
                     <div style={{borderColor: oldPrice !== '' ? '#D86147' : '#171717'}}>{price}</div>
                 </div>
-                <div>
+                {endDatePromotion !== '' ?
+                    (<div className={style['endDatePromotion']}>
+                        {endDatePromotion}
+                    </div>) : ''}
+                <div className={style['parameters']}>
                     {parameters.map((parameter, index) => {
                         if (productData[parameter.key] !== null && productData[parameter.key] !== '') {
                             return (

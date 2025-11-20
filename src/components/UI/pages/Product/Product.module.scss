@@ -134,13 +134,6 @@ $block-border-radius: 5.35vw;
     margin: 0 0 0 auto;
     display: flex;
     color: white;
-    transition: transform 200ms cubic-bezier(.68,-0.55,0.27,2.5);
-  }
-}
-
-.description:active{
-  >div:nth-child(2) {
-    transform: translateY(1vw);
   }
 }
 

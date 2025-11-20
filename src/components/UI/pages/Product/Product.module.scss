@@ -1,5 +1,7 @@
 @import "src/components/styles/mainStyle";
 
+$block-border-radius: 5.35vw;
+
 .background-arrow {
   width: 20px;
   height: 20px;
@@ -34,8 +36,89 @@
   }
 }
 
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  overflow-y: scroll;
+  flex-direction: column;
+  opacity: 0.3;
+  -webkit-opacity: 0.3;
+  animation: animOpacity 0.5s ease-in-out forwards;
+  -webkit-animation: animOpacity 0.5s ease-in-out forwards;
+}
+
+.productImage {
+  margin: 1.6vw 3.2vw 0 3.2vw;
+  min-width: 93.6vw;
+  min-height: 93.6vw;
+  background-size: cover;
+  display: flex;
+  border-top-right-radius: $block-border-radius;
+  border-top-left-radius: $block-border-radius;
+}
+
+.priceNameBlock {
+  margin: -4vw 3.2vw 0 3.2vw;
+  background-color: #222222;
+  display: flex;
+  flex-direction: column;
+  border-radius: $block-border-radius;
+
+  > p:nth-child(1) {
+    @extend %font-medium;
+    font-size: 5.35vw;
+    line-height: 8.55vw;
+    text-align: center;
+    margin: 2.4vw 4.28vw 1.4vw 4.28vw;
+    color: white;
+  }
+
+  > div:nth-child(2) {
+    display: flex;
+    margin: 0 4.28vw 2.4vw 4.28vw;
+    flex-direction: row;
+    justify-content: space-between;
+
+    > div {
+      font-size: 7vw;
+      line-height: 8.55vw;
+      padding: 1.6vw 2.1vw;
+      border-radius: $block-border-radius / 3 * 2;
+      border-width: 1.1vw;
+      border-style: solid;
+      @extend %font-medium;
+      color: white;
+    }
+  }
+
+  > div:nth-child(3) {
+    margin: 0 5.38vw 4.28vw 5.38vw;
+
+    > div {
+      display: flex;
+      flex-direction: row;
+      @extend %font-bold;
+      font-size: 3.5vw;
+      line-height: 5.35vw;
+      color: white;
+
+      > div:nth-child(1) {
+        opacity: 0.5;
+        margin: 0;
+      }
+
+      > div:nth-child(2) {
+        margin-left: 1vw;
+        opacity: 1;
+      }
+    }
+  }
+}
+
 .mainDivision {
   width: 100vw;
+  height: 100vh;
   display: flex;
   overflow-y: scroll;
   flex-direction: column;
@@ -44,6 +127,20 @@
   animation: animOpacity 0.5s ease-in-out forwards;
   -webkit-animation: animOpacity 0.5s ease-in-out forwards;
 
+
+  > div:nth-child(1) {
+    height: 94vw;
+
+    > img {
+      width: 100%;
+      border-radius: 4vw;
+      top: 0;
+      margin-top: 0;
+      background-size: cover;
+      margin-bottom: 0;
+    }
+  }
+
   > div:first-child {
     width: 94vw;
     margin: 3vw 3vw 4px 3vw;
@@ -51,18 +148,6 @@
     border-top-left-radius: 4vw;
     background: #1f1f1f;
 
-    > div:nth-child(1) {
-      height: 94vw;
-
-      > img {
-        width: 100%;
-        border-radius: 4vw;
-        top: 0;
-        margin-top: 0;
-        background-size: cover;
-        margin-bottom: 0;
-      }
-    }
 
     > div:nth-child(2) {
 
@@ -114,7 +199,7 @@
           transition-duration: 0.3s;
         }
 
-        button:nth-child(1):active{
+        button:nth-child(1):active {
           transform: scaleX(101%) scaleY(107%);
           outline: none;
         }
@@ -147,7 +232,7 @@
           }
         }
 
-        button:nth-child(2):active{
+        button:nth-child(2):active {
           transform: scale(107%);
           outline: none;
         }

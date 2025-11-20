@@ -32,6 +32,7 @@ const Product = () => {
             flag = true;
         }
     })
+
     const [cardInBasket, setCardInBasket] = useState(flag)
     const [cardInFavorite, setCardInFavorite] = useState(previewFavoriteData.includes(cardId))
 
@@ -78,16 +79,36 @@ const Product = () => {
             }
         }
 
-        return (<div className={style['mainDivision']} style={{
+        return (<div className={style['container']} style={{
             paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
             paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 20) + 'px',
             height: '100vh',
         }}>
+            <div className={style['productImage']}
+                 style={{backgroundImage: 'url(' + productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024" + ')'}}>
+            </div>
+
+            <div className={style['priceNameBlock']}>
+                <p>{productData.name}</p>
+                <div>
+                    <div style={{borderColor: oldPrice !== '' ? '#D86147' : '#171717'}}>{price}</div>
+                </div>
+                <div>
+                    {parameters.map((parameter, index) => {
+                        if (productData[parameter.key] !== null && productData[parameter.key] !== '') {
+                            return (
+                                <div key={index}>
+                                    <div>{parameter.label}:</div>
+                                    <div>{productData[parameter.key]}</div>
+                                </div>
+                            )
+                        }
+                    })}
+                </div>
+            </div>
+
 
             <div>
-                <div>
-                    <img src={productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024"}></img>
-                </div>
                 <div>
                     <div>{productData.name}</div>
                     <div>
@@ -105,7 +126,7 @@ const Product = () => {
                                 setCardInBasket(true)
                             }, user.id, cardId)
                         }}
-                             style={{background: productData.onSale ? cardInBasket ? '#0d3ad0' : '#489a4e' : '#585c59'}}>
+                                style={{background: productData.onSale ? cardInBasket ? '#0d3ad0' : '#489a4e' : '#585c59'}}>
                             {productData.onSale ? cardInBasket ? 'Перейти в корзину' : 'В корзину' : 'Нет в продаже'}
                         </button>
                         <button onClick={async () => {
@@ -122,7 +143,8 @@ const Product = () => {
                             }
                         }}>
                             <div/>
-                            <div style={{scale: (cardInFavorite ? '1' : '0.5'), opacity: (cardInFavorite ? '1' : '0')}}/>
+                            <div
+                                style={{scale: (cardInFavorite ? '1' : '0.5'), opacity: (cardInFavorite ? '1' : '0')}}/>
                         </button>
 
                     </div>
@@ -149,152 +171,3 @@ const Product = () => {
 };
 
 export default Product;
-
-//
-// let language = ''
-// if (typeof productData.language === 'undefined' || productData.language === null) {
-//     language = ''
-// } else {
-//     if (typeof productData.languageSelector !== 'undefined' || productData.languageSelector === null) {
-//         language = 'Язык в игре: ' + productData.languageSelector
-//         language = (<div style={{
-//             marginTop: '12px',
-//             fontSize: '14px',
-//             color: 'white',
-//             fontFamily: "'Montserrat', sans-serif"
-//         }}>{language}
-//         </div>)
-//     } else {
-//         language = 'Язык в игре: ' + productData.language
-//         language = (<div style={{
-//             marginTop: '12px',
-//             fontSize: '14px',
-//             color: 'white',
-//             fontFamily: "'Montserrat', sans-serif"
-//         }}>{language}
-//         </div>)
-//     }
-// }
-//
-// let region = ''
-// if (productData.regionActivate !== null) {
-//     region = (<div style={{
-//         marginTop: '12px',
-//         fontSize: '14px',
-//         color: 'white',
-//         fontFamily: "'Montserrat', sans-serif"
-//     }}>{'Регион активации: ' + productData.regionActivate}
-//     </div>)
-// }
-//
-// let releaseDate = ''
-// if (typeof productData.releaseDate === 'undefined' || productData.releaseDate === null) {
-//     releaseDate = ''
-// } else {
-//     let a = (new Date(productData.releaseDate)) * 24 * 60 * 60 * 1000
-//     let currentDate = new Date('1899-12-30T00:00:00.000Z')
-//     let newDate = new Date(a + currentDate.getTime());
-//
-//     releaseDate = 'Дата релиза: ' + newDate.toLocaleDateString('ru-RU')
-//     releaseDate = (<div style={{
-//         marginTop: '12px',
-//         fontSize: '14px',
-//         color: 'white',
-//         fontFamily: "'Montserrat', sans-serif"
-//     }}>{releaseDate}
-//     </div>)
-// }
-//
-// let numberPlayers = ''
-// if (productData.numberPlayers !== null) {
-//     numberPlayers = 'Количество игроков: ' + productData.numberPlayers
-//     numberPlayers = (<div style={{
-//         marginTop: '12px',
-//         fontSize: '14px',
-//         color: 'white',
-//         fontFamily: "'Montserrat', sans-serif"
-//     }}>{numberPlayers}
-//     </div>)
-// }
-//
-// let platform = ''
-// if (typeof productData.platform === 'undefined' || productData.platform === null) {
-//     platform = ''
-// } else {
-//     platform = 'Платформа: ' + productData.platform
-//     platform = (<div style={{
-//         marginTop: '12px',
-//         fontSize: '14px',
-//         color: 'white',
-//         fontFamily: "'Montserrat', sans-serif"
-//     }}>{platform}
-//     </div>)
-// }
-//
-// let view = ''
-// if (productData.choiceRow !== null) {
-//     view = (<div style={{
-//         marginTop: '12px',
-//         fontSize: '14px',
-//         color: 'white',
-//         fontFamily: "'Montserrat', sans-serif"
-//     }}>{'Срок подписки: ' + productData.choiceRow}
-//     </div>)
-// }
-//
-// let imgElement = (<div style={{
-//     height: String(window.innerWidth - 20 - ((window.innerWidth - 20) / 2 - 50)) + 'px'
-// }}>
-//     <div className={'plup-loader'} style={{
-//         opacity: 0.3,
-//         marginTop: String((window.innerWidth - 20) / 2 - 50) + 'px',
-//         marginLeft: String((window.innerWidth - 20) / 2 - 50) + 'px',
-//         position: 'unset'
-//     }}></div>
-// </div>)
-// let imgLoadElem = (<></>)
-// if (pictureIsLoad === 1) {
-//     imgElement = (<div className={'img'} style={{
-//         height: String(window.innerWidth - 20) + 'px',
-//         borderRadius: '15px', backgroundImage: "url('" + productData.image + "')",
-//         backgroundSize: 'cover', display: 'flex',
-//         flexDirection: 'row',
-//         alignItems: 'end',
-//         justifyContent: 'space-between',
-//     }}></div>)
-//     imgLoadElem = (<img className={'img'} style={{
-//         height: String(0) + 'px',
-//         borderRadius: '15px', //backgroundImage: "url('" + productData.image + "0')",
-//         backgroundSize: 'cover', display: 'flex',
-//         flexDirection: 'row',
-//         alignItems: 'end',
-//         justifyContent: 'space-between',
-//     }} src={productData.image.slice(0, productData.image.indexOf('?w=') + 1) + 'w=1024'}
-//                         onLoad={() => setPictureIsLoad(2)}></img>)
-// }
-// if (pictureIsLoad === 2) {
-//     imgElement = (<div className={'img'} style={{
-//         height: String(window.innerWidth - 20) + 'px',
-//         borderRadius: '15px',
-//         backgroundImage: "url('" + productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024')",
-//         backgroundSize: 'cover',
-//         display: 'flex',
-//         flexDirection: 'row',
-//         alignItems: 'end',
-//         justifyContent: 'space-between',
-//     }}></div>)
-// }
-
-// let genre = ''
-// if (typeof productData.genre === 'undefined' || productData.genre === null) {
-//     genre = ''
-// } else {
-//     genre = 'Жанр: ' + productData.genre
-//     genre = (<div style={{
-//         marginTop: '12px',
-//         fontSize: '14px',
-//         color: 'white',
-//         fontFamily: "'Montserrat', sans-serif"
-//     }}>{genre}
-//     </div>)
-// }

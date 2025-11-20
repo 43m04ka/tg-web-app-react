@@ -13,12 +13,13 @@ let lastListRes = []
 let lastText = ''
 let lastScroll = 0
 
+
 const Search = () => {
     const {tg} = useTelegram()
     const {pageId} = useGlobalData()
     const inputRef = useRef(null)
     const scrollRef = useRef(null);
-    const navigate = useNavigate();
+    const navigate = useNavigate ();
 
 
     const [inputValue, setInputValue] = useState(lastText)

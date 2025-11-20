@@ -66,7 +66,7 @@ $block-border-radius: 5.35vw;
   border-radius: $block-border-radius;
 
   .title {
-    @extend %font-medium;
+    @extend %font-bold;
     font-size: 5.35vw;
     line-height: 8.55vw;
     text-align: center;

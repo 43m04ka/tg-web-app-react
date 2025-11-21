@@ -8,8 +8,7 @@ import style from './Product.module.scss'
 import Description from "./Description";
 
 const parameters = [{label: 'Платформа', key: 'platform'}, {
-    label: 'Регион активации',
-    key: 'regionActivate'
+    label: 'Регион активации', key: 'regionActivate'
 }, {label: 'Язык в игре', key: 'language'}, {label: 'Количество игроков', key: 'numberPlayers'},]
 
 const Product = () => {
@@ -61,16 +60,19 @@ const Product = () => {
         let oldPrice = ''
         let price = productData.price.toLocaleString() + ' ₽'
         let endDatePromotion = ''
+        let percent = ''
 
         if (productData.endDatePromotion !== null) {
             endDatePromotion = `*cкидка действует ${productData.endDatePromotion}`
         }
         if (productData.oldPrice !== null) {
             oldPrice = productData.oldPrice.toLocaleString() + ' ₽'
+            percent = '-' + Math.ceil((1 - productData.price / productData.oldPrice) * 100) + '%'
         } else if (productData.similarCard !== null) {
             price = productData.similarCard?.price.toLocaleString() + ' ₽'
             if (typeof productData.similarCard.oldPrice !== 'undefined') {
                 oldPrice = productData.similarCard?.oldPrice.toLocaleString() + ' ₽'
+                percent = '-' + Math.ceil((1 - productData.similarCard?.price / productData.similarCard?.oldPrice) * 100) + '%'
             }
             if (typeof productData.similarCard.endDatePromotion !== 'undefined') {
                 endDatePromotion = `*cкидка действует ${productData.similarCard?.endDatePromotion}`
@@ -84,19 +86,21 @@ const Product = () => {
         }}>
             <div className={style['productImage']}
                  style={{backgroundImage: 'url(' + productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024" + ')'}}>
-                <button className={style['favorite']} onClick={async () => {
-                    if (cardInFavorite) {
-                        setCardInFavorite(false)
-                        await deleteCardToFavorite(() => {
-                            updatePreviewFavoriteData()
-                        }, user.id, cardId)
-                    } else {
-                        setCardInFavorite(true)
-                        await addCardToFavorite(() => {
-                            updatePreviewFavoriteData()
-                        }, user.id, cardId)
-                    }
-                }}>
+                {percent !== '' ? (<div className={style['percent']}>{percent}</div>) : ''}
+                <button className={style['favorite']} style={{marginLeft: (percent !== '' ? '0' : 'auto !important')}}
+                        onClick={async () => {
+                            if (cardInFavorite) {
+                                setCardInFavorite(false)
+                                await deleteCardToFavorite(() => {
+                                    updatePreviewFavoriteData()
+                                }, user.id, cardId)
+                            } else {
+                                setCardInFavorite(true)
+                                await addCardToFavorite(() => {
+                                    updatePreviewFavoriteData()
+                                }, user.id, cardId)
+                            }
+                        }}>
                     <div/>
                     <div
                         style={{scale: (cardInFavorite ? '1' : '0.5'), opacity: (cardInFavorite ? '1' : '0')}}/>
@@ -115,9 +119,9 @@ const Product = () => {
                     {parameters.map((parameter, index) => {
                         if (productData[parameter.key] !== null && productData[parameter.key] !== '') {
                             return (<div key={index}>
-                                    <div>{parameter.label}:</div>
-                                    <div>{productData[parameter.key]}</div>
-                                </div>)
+                                <div>{parameter.label}:</div>
+                                <div>{productData[parameter.key]}</div>
+                            </div>)
                         }
                     })}
                 </div>
@@ -127,7 +131,8 @@ const Product = () => {
 
             <Recommendations/>
 
-            <div className={style['basketButton']} style={{paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px'}}>
+            <div className={style['basketButton']}
+                 style={{paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px'}}>
                 <button onClick={() => {
                     cardInBasket ? navigate('/' + pageList.map(page => {
                         return pageId === page.id ? page.link : null

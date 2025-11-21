@@ -90,12 +90,28 @@ $block-border-radius: 5.35vw;
   }
 }
 
+.percent {
+  width: max-content;
+  height: 9.35vw;
+  position: relative;
+  display: flex;
+  margin: auto 2.14vw 6.14vw auto;
+  border-radius: $button-border-radius;
+  background: #D86147;
+  @extend %font-bold;
+  color: white;
+  text-align: center;
+  padding: 0.53vw 1.6vw;
+  line-height: 8.29vw;
+  font-size: 5vw;
+}
+
 .favorite {
   width: 9.35vw;
   height: 9.35vw;
   position: relative;
   display: flex;
-  margin: auto 4.28vw 6.14vw auto;
+  margin: auto 4.28vw 6.14vw 0;
   border-radius: $button-border-radius;
   background: #222222;
 

@@ -43,7 +43,9 @@ const Product = () => {
         if (isNaN(cardId)) {
             cardId = selectCardList[selectGroup].body[selectPosition].id
         }else{
-            setSelectGroup(null)
+            setSelectCardList(null)
+            setSelectGroup(0)
+            setSelectPosition(0)
         }
         console.log(cardId, basket)
         let flag = false
@@ -54,6 +56,11 @@ const Product = () => {
         })
         setCardInBasket(flag)
         setCardInFavorite(previewFavoriteData.includes(cardId))
+    }
+    if(productData !== null && isNaN(cardId) && selectCardList === null) {
+        setProductData(null)
+        setSelectGroup(0)
+        setSelectPosition(0)
     }
 
     useEffect(() => {
@@ -126,7 +133,7 @@ const Product = () => {
                         setSelectPosition(0)
                     }}/>) : ''}
                 {selectCardList !== null ? (
-                    <ChoiceElement list={selectCardList[selectGroup].body} parameter={'choiceRow'}
+                    <ChoiceElement list={selectCardList[selectGroup]?.body} parameter={'choiceRow'}
                                    index={selectPosition} set={setSelectPosition}/>) : ''}
 
                 <div className={style['price']}>

@@ -238,6 +238,8 @@ $block-border-radius: 5.35vw;
   margin: 0 3.2vw 0vw 3.2vw;
   width: 87.2vw;
   >div{
+    transition-property: background-color;
+    transition-duration: 0.2s;
     @extend %font-bold;
     margin: 0 1.23vw 1.23vw 0;
     line-height: 5.35vw;

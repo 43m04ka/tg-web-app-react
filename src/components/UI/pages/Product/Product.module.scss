@@ -208,7 +208,7 @@ $block-border-radius: 5.35vw;
   background-color: #222222;
 
   > button {
-    border-radius: $block-border-radius / 3 * 2;
+    border-radius: $block-border-radius / 7 * 3;
     border: 0.5vw solid #FFFFFF3F;
     width: 100%;
     padding: 2vw 1vw;
@@ -225,6 +225,26 @@ $block-border-radius: 5.35vw;
   > button:active {
     transform: scaleX(101%) scaleY(107%);
     outline: none;
+  }
+}
+
+
+.choiceBlock{
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 0 3.2vw 0vw 3.2vw;
+  width: 87.2vw;
+  >div{
+    @extend %font-bold;
+    margin: 0 1.23vw 1.23vw 0;
+    line-height: 5.35vw;
+    font-size: 3.5vw;
+    color: white;
+    padding: 1.6vw 2.67vw;
+    border-radius: $block-border-radius / 3 * 2;
   }
 }
 

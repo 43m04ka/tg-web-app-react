@@ -6,6 +6,7 @@ import useGlobalData from "../../../../hooks/useGlobalData";
 import Recommendations from "./Recommendations";
 import style from './Product.module.scss'
 import Description from "./Description";
+import ChoiceElement from "./ChoiceElement";
 
 const parameters = [{label: 'Платформа', key: 'platform'}, {
     label: 'Регион активации', key: 'regionActivate'
@@ -17,13 +18,15 @@ const Product = () => {
     const navigate = useNavigate();
     const {getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket, findCardsByCatalog} = useServer()
     const {
-        updatePreviewFavoriteData, previewFavoriteData, pageId, pageList, basket, catalogList
+        updatePreviewFavoriteData, previewFavoriteData, pageId, pageList, basket, catalogList, updateBasket
     } = useGlobalData()
 
     let cardId = Number((window.location.pathname).replace('/card/', ''))
 
     const [productData, setProductData] = useState(null);
     const [selectCardList, setSelectCardList] = React.useState(null);
+    const [selectGroup, setSelectGroup] = React.useState(0);
+    const [selectPosition, setSelectPosition] = React.useState(0);
 
     let flag = false
     basket.map(pos => {
@@ -35,19 +38,23 @@ const Product = () => {
     const [cardInBasket, setCardInBasket] = useState(flag)
     const [cardInFavorite, setCardInFavorite] = useState(previewFavoriteData.includes(cardId))
 
-    if (productData !== null && !isNaN(cardId) && cardId !== productData.id) {
+    if ((productData !== null && !isNaN(cardId) && cardId !== productData.id) || (productData !== null && selectCardList !== null && productData.id !== selectCardList[selectGroup]?.body[selectPosition]?.id)) {
         setProductData(null)
+        if (isNaN(cardId)) {
+            cardId = selectCardList[selectGroup].body[selectPosition].id
+        }else{
+            setSelectGroup(null)
+        }
+        console.log(cardId, basket)
         let flag = false
         basket.map(pos => {
             if (pos.id === cardId) {
-                flag = true;
+                flag = true
             }
         })
         setCardInBasket(flag)
         setCardInFavorite(previewFavoriteData.includes(cardId))
     }
-
-    console.log(selectCardList)
 
     useEffect(() => {
         tg.BackButton.show();
@@ -97,22 +104,31 @@ const Product = () => {
                                 setCardInFavorite(false)
                                 await deleteCardToFavorite(() => {
                                     updatePreviewFavoriteData()
-                                }, user.id, cardId)
+                                }, user.id, productData.id)
                             } else {
                                 setCardInFavorite(true)
                                 await addCardToFavorite(() => {
                                     updatePreviewFavoriteData()
-                                }, user.id, cardId)
+                                }, user.id, productData.id)
                             }
                         }}>
                     <div/>
-                    <div
-                        style={{scale: (cardInFavorite ? '1' : '0.5'), opacity: (cardInFavorite ? '1' : '0')}}/>
+                    <div style={{scale: (cardInFavorite ? '1' : '0.5'), opacity: (cardInFavorite ? '1' : '0')}}/>
                 </button>
             </div>
 
             <div className={style['priceNameBlock']}>
                 <p className={style['title']}>{productData.name}</p>
+
+                {selectCardList !== null && selectCardList.length > 1 ? (
+                    <ChoiceElement list={selectCardList} parameter={'name'} index={selectGroup} set={(index) => {
+                        setSelectGroup(index);
+                        setSelectPosition(0)
+                    }}/>) : ''}
+                {selectCardList !== null ? (
+                    <ChoiceElement list={selectCardList[selectGroup].body} parameter={'choiceRow'}
+                                   index={selectPosition} set={setSelectPosition}/>) : ''}
+
                 <div className={style['price']}>
                     <div style={{borderColor: oldPrice !== '' ? '#D86147' : '#171717'}}>{price}</div>
                 </div>
@@ -142,7 +158,10 @@ const Product = () => {
                         return pageId === page.id ? page.link : null
                     }).filter(page => page !== null)[0] + '/basket') : addCardToBasket(() => {
                         setCardInBasket(true)
-                    }, user.id, cardId)
+                    }, user.id, productData.id)
+                    setTimeout(() => {
+                        updateBasket(catalogList, pageId)
+                    }, 250)
                 }}
                         style={{background: productData.onSale ? cardInBasket ? '#50A355' : '#404ADE' : '#585c59'}}>
                     {productData.onSale ? cardInBasket ? 'В корзине / перейти в корзину' : 'Добавить в корзину' : 'Нет в продаже'}
@@ -157,26 +176,25 @@ const Product = () => {
             catalogList.map(el => {
                 if (el.path === window.location.pathname.replace('/choice-catalog/', '')) catalogId = el.id
             })
-            findCardsByCatalog(catalogId, (result) => {selectCardList === null ? setSelectCardList(result) : ''}).then()
+            findCardsByCatalog(catalogId, (result) => {
+                let data = []
+
+                result.sort((a, b) => {
+                    return b.serialNumber > a.serialNumber ? -1 : 1
+                }).map((card) => {
+                    let group = data.filter(el => el.name === card.choiceColumn)
+                    if (group.length > 0) {
+                        data[group[0].id].body.push(card)
+                    } else {
+                        data.push({id: data.length, name: card.choiceColumn, body: [card]})
+                    }
+                })
+
+                setSelectCardList(data)
+                setProductData(data[selectGroup].body[selectPosition])
+            }).then()
         } else {
-            let data = []
-
-            selectCardList.sort((a, b) => {
-                return b.serialNumber > a.serialNumber ? -1 : 1
-            }).map((card) => {
-                let group = data.filter(el => el.name === card.choiceColumn)
-                console.log(group)
-                if (group.length > 0) {
-                    data[group[0].id].body.push(card)
-                } else {
-                    data.push({id: data.length, name: card.choiceColumn, body: [card]})
-                }
-            })
-
-            console.log(data)
-
-            setSelectCardList(data)
-            setProductData(selectCardList[0])
+            setProductData(selectCardList[selectGroup].body[selectPosition])
         }
     }
 };

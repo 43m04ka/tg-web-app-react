@@ -51,18 +51,14 @@ function App() {
     const navigate = useNavigate();
 
     const {
-        pageId,
-        pageList,
+                pageList,
         updatePageList,
         catalogList,
         updateCatalogList,
         mainPageCards,
         updateMainPageCards,
-        catalogStructureList,
         updateCatalogStructureList,
         updatePreviewFavoriteData,
-        updatePreviewBasketData,
-        updateBasket
     } = useGlobalData();
 
 
@@ -151,7 +147,7 @@ function App() {
                 <Route path={'favorites'} element={<Favorites/>}/>
                 <Route path={'/catalog/*'} element={<Catalog height={size}/>}/>
                 <Route path={'/card/*'} element={<Product/>}/>
-                <Route path={'/choice-catalog/*'} element={<ProductListSelector/>}/>
+                <Route path={'/choice-catalog/*'} element={<Product/>}/>
                 <Route path={'admin-panel/*'} element={<AdminPanel/>}/>
                 <Route path={'admin'} element={<AP_Authentication/>}/>
                 <Route path={'/history'} element={<History/>}/>

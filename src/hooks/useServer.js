@@ -121,21 +121,6 @@ export function useServer() {
         })
     }
 
-    const findCardsByCatalog = async (catalogId, setResult) => {
-        await fetch(URL + '/findCardsByCatalog?catalogId='+catalogId+'&time='+Date.now(), {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    };
-
-
 
     return {
         authentication,
@@ -146,7 +131,6 @@ export function useServer() {
         editCardPrice,
         deletePage,
         getPreviewCards,
-        findCardsByCatalog,
     }
 }
 

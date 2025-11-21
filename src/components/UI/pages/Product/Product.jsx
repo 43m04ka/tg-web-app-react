@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useTelegram} from "../../../../hooks/useTelegram";
 import {useNavigate} from "react-router-dom";
-import {useServerUser} from "../../../../hooks/useServerUser";
+import {useServer} from "./useServer";
 import useGlobalData from "../../../../hooks/useGlobalData";
 import Recommendations from "./Recommendations";
 import style from './Product.module.scss'
@@ -15,14 +15,16 @@ const Product = () => {
 
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
-    const {getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket} = useServerUser()
+    const {getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket, findCardsByCatalog} = useServer()
     const {
-        updatePreviewFavoriteData, previewFavoriteData, pageId, pageList, basket
+        updatePreviewFavoriteData, previewFavoriteData, pageId, pageList, basket, catalogList
     } = useGlobalData()
 
     let cardId = Number((window.location.pathname).replace('/card/', ''))
 
     const [productData, setProductData] = useState(null);
+    const [selectCardList, setSelectCardList] = React.useState(null);
+
     let flag = false
     basket.map(pos => {
         if (pos.id === cardId) {
@@ -33,7 +35,7 @@ const Product = () => {
     const [cardInBasket, setCardInBasket] = useState(flag)
     const [cardInFavorite, setCardInFavorite] = useState(previewFavoriteData.includes(cardId))
 
-    if (productData !== null && cardId !== productData.id) {
+    if (productData !== null && !isNaN(cardId) && cardId !== productData.id) {
         setProductData(null)
         let flag = false
         basket.map(pos => {
@@ -44,6 +46,8 @@ const Product = () => {
         setCardInBasket(flag)
         setCardInFavorite(previewFavoriteData.includes(cardId))
     }
+
+    console.log(selectCardList)
 
     useEffect(() => {
         tg.BackButton.show();
@@ -85,7 +89,7 @@ const Product = () => {
             height: '100vh',
         }}>
             <div className={style['productImage']}
-                 style={{backgroundImage: 'url(' + productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024" + ')'}}>
+                 style={{backgroundImage: 'url(' + (selectCardList !== null ? productData.image : productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024") + ')'}}>
                 {percent !== '' ? (<div className={style['percent']}>{percent}</div>) : ''}
                 <button className={style['favorite']} style={{marginLeft: (percent !== '' ? '0' : 'auto !important')}}
                         onClick={async () => {
@@ -146,7 +150,34 @@ const Product = () => {
             </div>
         </div>);
     } else {
-        getCard(setProductData, cardId).then()
+        if (!isNaN(cardId)) {
+            getCard(setProductData, cardId).then()
+        } else if (selectCardList === null) {
+            let catalogId = 0
+            catalogList.map(el => {
+                if (el.path === window.location.pathname.replace('/choice-catalog/', '')) catalogId = el.id
+            })
+            findCardsByCatalog(catalogId, (result) => {selectCardList === null ? setSelectCardList(result) : ''}).then()
+        } else {
+            let data = []
+
+            selectCardList.sort((a, b) => {
+                return b.serialNumber > a.serialNumber ? -1 : 1
+            }).map((card) => {
+                let group = data.filter(el => el.name === card.choiceColumn)
+                console.log(group)
+                if (group.length > 0) {
+                    data[group[0].id].body.push(card)
+                } else {
+                    data.push({id: data.length, name: card.choiceColumn, body: [card]})
+                }
+            })
+
+            console.log(data)
+
+            setSelectCardList(data)
+            setProductData(selectCardList[0])
+        }
     }
 };
 

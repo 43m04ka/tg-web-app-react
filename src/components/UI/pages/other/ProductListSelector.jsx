@@ -50,26 +50,7 @@ const ProductListSelector = () => {
 
     if (cardList.length > 0) {
 
-        let dataOld = cardList.sort(function (a, b) {
-            try {
-                if (a.choiceColumn > b.choiceColumn) {
-                    return 1;
-                }
-                if (a.choiceColumn < b.choiceColumn) {
-                    return -1;
-                }
-            } catch (e) {
-            }
-            try {
-                if (a.choiceRow > b.choiceRow) {
-                    return 1;
-                }
-                if (a.choiceRow < b.choiceRow) {
-                    return -1;
-                }
-            } catch (e) {
-            }
-        });
+        let dataOld = cardList.sort((a, b) => b.serialNumber - a.serialNumber);
 
         let data = []
         let index = 0

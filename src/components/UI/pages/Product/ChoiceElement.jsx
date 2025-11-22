@@ -2,7 +2,7 @@ import React from 'react';
 import style from './Product.module.scss';
 
 
-const ChoiceElement = ({set, list, index: selectedIndex, parameter}) => {
+const ChoiceElement = ({set, list, index: selectedIndex, parentIndex, parameter}) => {
     if (list.length === 3) {
         return (
             <div className={style['subSlider']}>
@@ -12,7 +12,9 @@ const ChoiceElement = ({set, list, index: selectedIndex, parameter}) => {
                             set(index)
                         }}>{item[parameter]}</div>))}
                 </div>
-                <div className={style['v' + String(selectedIndex+1)]}/>
+                <div
+                    className={style['v' + String(selectedIndex + 1)] + ' ' +
+                        style['d' + String(typeof parentIndex !== "undefined" ? parentIndex + 1 : selectedIndex + 1)]}/>
             </div>
         );
     } else {

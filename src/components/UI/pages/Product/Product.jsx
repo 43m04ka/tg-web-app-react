@@ -133,7 +133,7 @@ const Product = () => {
                         setSelectPosition(0)
                     }}/>) : ''}
                 {selectCardList !== null ? (
-                    <ChoiceElement list={selectCardList[selectGroup]?.body} parameter={'choiceRow'}
+                    <ChoiceElement list={selectCardList[selectGroup]?.body} parentIndex={selectGroup} parameter={'choiceRow'}
                                    index={selectPosition} set={setSelectPosition}/>) : ''}
 
                 <div className={style['price']}>

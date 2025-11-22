@@ -51,7 +51,8 @@ function App() {
     const navigate = useNavigate();
 
     const {
-                pageList,
+        pageList,
+        pageId,
         updatePageList,
         catalogList,
         updateCatalogList,
@@ -59,6 +60,7 @@ function App() {
         updateMainPageCards,
         updateCatalogStructureList,
         updatePreviewFavoriteData,
+        updateBasket
     } = useGlobalData();
 
 
@@ -125,6 +127,12 @@ function App() {
         updatePreviewFavoriteData(user.id)
     }, [])
 
+    useEffect(() => {
+        if (catalogList !== null) {
+            updateBasket(catalogList, pageId)
+        }
+    }, [pageId])
+
     if (catalogList !== null && pageList !== null && mainPageCards !== null && isLoaded) {
         setTimeout(() => {
             window.clearInterval(interval)
@@ -172,16 +180,11 @@ function App() {
                         style={{scale: (catalogList !== null && pageList !== null && mainPageCards !== null ? '12' : '0')}}/>
                 </div>
                 <div className={style["ticker"]}>
-                    {tickets.map((item, index) => (
-                        <div className={style["ticker__in"]}>
-                            {item.map((tag) => (
-                                <span className={style["ticker__item"]}>{tag}</span>
-                            ))}
-                        </div>))
-                    }
+                    {tickets.map((item, index) => (<div className={style["ticker__in"]}>
+                        {item.map((tag) => (<span className={style["ticker__item"]}>{tag}</span>))}
+                    </div>))}
                 </div>
-            </div>
-        );
+            </div>);
     }
 }
 

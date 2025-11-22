@@ -9,8 +9,10 @@ import Description from "./Description";
 import ChoiceElement from "./ChoiceElement";
 
 const parameters = [{label: 'Платформа', key: 'platform'}, {
-    label: 'Регион активации', key: 'regionActivate'
-}, {label: 'Язык в игре', key: 'language'}, {label: 'Количество игроков', key: 'numberPlayers'},]
+    label: 'Регион активации',
+    key: 'regionActivate'
+}, {label: 'Язык в игре', key: 'language'}, //   {label: 'Дата релиза', key: 'releaseDate'},
+    {label: 'Количество игроков', key: 'numberPlayers'},]
 
 const Product = () => {
 
@@ -42,7 +44,7 @@ const Product = () => {
         setProductData(null)
         if (isNaN(cardId)) {
             cardId = selectCardList[selectGroup].body[selectPosition].id
-        }else{
+        } else {
             setSelectCardList(null)
             setSelectGroup(0)
             setSelectPosition(0)
@@ -57,7 +59,7 @@ const Product = () => {
         setCardInBasket(flag)
         setCardInFavorite(previewFavoriteData.includes(cardId))
     }
-    if(productData !== null && isNaN(cardId) && selectCardList === null) {
+    if (productData !== null && isNaN(cardId) && selectCardList === null) {
         setProductData(null)
         setSelectGroup(0)
         setSelectPosition(0)
@@ -105,7 +107,7 @@ const Product = () => {
             <div className={style['productImage']}
                  style={{backgroundImage: 'url(' + (selectCardList !== null ? productData.image : productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024") + ')'}}>
                 {percent !== '' ? (<div className={style['percent']}>{percent}</div>) : ''}
-                <button className={style['favorite']} style={{marginLeft: (percent !== '' ? '0' : 'auto !important')}}
+                <button className={style['favorite']} style={{marginLeft: (percent !== '' ? '0' : '78.91vw')}}
                         onClick={async () => {
                             if (cardInFavorite) {
                                 setCardInFavorite(false)
@@ -133,7 +135,8 @@ const Product = () => {
                         setSelectPosition(0)
                     }}/>) : ''}
                 {selectCardList !== null ? (
-                    <ChoiceElement list={selectCardList[selectGroup]?.body} parentIndex={selectGroup} parameter={'choiceRow'}
+                    <ChoiceElement list={selectCardList[selectGroup]?.body} parentIndex={selectGroup}
+                                   parameter={'choiceRow'}
                                    index={selectPosition} set={setSelectPosition}/>) : ''}
 
                 <div className={style['price']}>

@@ -99,7 +99,8 @@ body {
 }
 
 .price-element {
-    margin-top: 2.5vw;
+    margin-top: 1.25vw;
+    margin-bottom: 1.25vw;
     font-weight: normal;
     line-height: 3.5vw;
     height: 4.5vw;

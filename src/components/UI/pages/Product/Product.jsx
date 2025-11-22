@@ -185,7 +185,7 @@ const Product = () => {
             <div className={style['basketButton']}
                  style={{
                      paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px',
-                     height: (buttonHidden ? '0' : String(14.4 * window.innerWidth + tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px'),
+                     height: (buttonHidden ? '0' : String((0.144 * window.innerWidth) + tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px'),
                  }}>
                 <button onClick={() => {
                     if (productData.onSale) {

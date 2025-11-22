@@ -291,7 +291,7 @@ $block-border-radius: 5.35vw;
     height: 12vw;
     width: calc(87.2vw / 3);
     border-radius: 1rem;
-    transition: transform 0.5s cubic-bezier(0.37, 1.95, 0.66, 0.56), background 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+    transition: transform 0.5s ease-in-out, background 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
   }
 
   .v1 {

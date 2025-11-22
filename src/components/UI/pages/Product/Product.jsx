@@ -61,7 +61,7 @@ const Product = () => {
             setSelectGroup(0)
             setSelectPosition(0)
         }
-        console.log(cardId, basket)
+
         let flag = false
         basket.map(pos => {
             if (pos.id === cardId) {

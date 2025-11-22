@@ -14,7 +14,6 @@ const Description = ({children}) => {
         }
     }, []);
 
-    console.log(height)
 
     return (<div className={styles['description']} onClick={() => {
         setTextHidden(!textHidden)

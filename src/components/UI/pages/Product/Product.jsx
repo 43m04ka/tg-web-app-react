@@ -8,10 +8,23 @@ import style from './Product.module.scss'
 import Description from "./Description";
 import ChoiceElement from "./ChoiceElement";
 
-const parameters = [{label: 'Платформа', key: 'platform'}, {
-    label: 'Регион активации',
-    key: 'regionActivate'
-}, {label: 'Язык в игре', key: 'language'}, //   {label: 'Дата релиза', key: 'releaseDate'},
+const parameters = [{label: 'Платформа', key: 'platform'},
+    {label: 'Регион активации', key: 'regionActivate'},
+    {label: 'Язык в игре', key: 'language'},
+    {
+        label: 'Дата релиза',
+        key: (item) => {
+            let a = (new Date(item.releaseDate)) * 24 * 60 * 60 * 1000
+            let currentDate = new Date('1899-12-30T00:00:00.000Z')
+            let newDate = new Date(a + currentDate.getTime());
+
+            if (newDate < ((new Date()))) {
+                return "Уже в продаже"
+            } else {
+                return newDate.toLocaleDateString('ru-RU')
+            }
+        }
+    },
     {label: 'Количество игроков', key: 'numberPlayers'},]
 
 const Product = () => {
@@ -150,7 +163,7 @@ const Product = () => {
                         if (productData[parameter.key] !== null && productData[parameter.key] !== '') {
                             return (<div key={index}>
                                 <div>{parameter.label}:</div>
-                                <div>{productData[parameter.key]}</div>
+                                <div>{typeof parameter.key !== 'function' ? productData[parameter.key] : parameter.key(productData)}</div>
                             </div>)
                         }
                     })}

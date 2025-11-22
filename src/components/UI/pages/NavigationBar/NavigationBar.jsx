@@ -71,32 +71,11 @@ const NavigationBar = ({setHeightTab, heightTab, setZIndexTab, height}) => {
         } else {
             setActiveTab(0)
             setZIndexTab(-100)
+            tg.BackButton.hide();
             //window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         }
     }, [window.location.pathname, height])
 
-
-    // useEffect(() => {
-    //     let button = buttons[activeTab];
-    //     if (activeTab !== null && button.path !== 'selectPlatform') {
-    //         if (heightTab === 0) {
-    //             navigate(button.path)
-    //             timeoutId = setTimeout(() => {
-    //                 setHeightTab(button.heightTab)
-    //                 setZIndexTab(button.heightTab === 0 ? -100 : 100)
-    //             }, 100)
-    //         } else {
-    //             setHeightTab(1)
-    //             timeoutId = setTimeout(() => {
-    //                 navigate(button.path);
-    //                 setHeightTab(button.heightTab)
-    //                 setZIndexTab(button.heightTab === 0 ? -100 : 100)
-    //             }, 200)
-    //         }
-    //     }
-    //
-    //     updateBasket(catalogList, pageId)
-    // }, [activeTab, window.location.pathname])
 
     return (<div className={style['container']}
                  style={typeBar ? {paddingBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'} :

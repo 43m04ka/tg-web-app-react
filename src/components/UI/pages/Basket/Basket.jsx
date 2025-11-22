@@ -21,6 +21,7 @@ const Basket = () => {
     const [username, setUsername] = useState('')
 
     useEffect(() => {
+        tg.BackButton.show();
         tg.onEvent('backButtonClicked', ()=> navigate(-1))
         return () => {
             tg.offEvent('backButtonClicked', ()=> navigate(-1))

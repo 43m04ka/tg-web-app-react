@@ -32,7 +32,6 @@ const MoreInfo = () => {
     };
     
     useEffect(() => {
-        tg.BackButton.show();
         fetch(`${URL}/getInfoBlock?time${new Date()}`, {
             method: 'GET', headers: {
                 'Content-Type': 'application/json',
@@ -46,6 +45,7 @@ const MoreInfo = () => {
     }, [])
 
     useEffect(() => {
+        tg.BackButton.show();
         tg.onEvent('backButtonClicked', ()=> navigate(-1))
         return () => {
             tg.offEvent('backButtonClicked', ()=> navigate(-1))

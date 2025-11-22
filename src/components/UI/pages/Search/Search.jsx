@@ -73,6 +73,7 @@ const Search = () => {
                 top: lastScroll, behavior: "instant",
             });
         }
+        tg.BackButton.show();
         tg.onEvent('backButtonClicked', onBack)
         return () => {
             tg.offEvent('backButtonClicked', onBack)

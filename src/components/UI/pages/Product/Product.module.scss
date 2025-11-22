@@ -206,7 +206,7 @@ $block-border-radius: 5.35vw;
   width: 100vw;
   display: flex;
   background-color: #222222;
-  transition-property: height;
+  transition-property: height, padding-bottom;
   transition-duration: 0.2s;
 
   > button {

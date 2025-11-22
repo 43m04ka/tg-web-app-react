@@ -26,7 +26,9 @@ const History = () => {
 
     if (historyData !== null && historyData.length !== 0) {
         return (
-            <div>
+            <div style={{position: 'relative', overflowY: 'scroll', height:'100vh',   paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
+                paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.17 * window.innerWidth) + 'px',
+            }}>
                 <div className={'title'}
                      style={{marginTop: '5px', marginLeft: 'auto', textAlign: 'center'}}>История
                     заказов

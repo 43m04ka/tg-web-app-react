@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import style from './Basket.module.scss';
 import {useServer} from "./useServer";
 import {useTelegram} from "../../../../hooks/useTelegram";
@@ -19,6 +19,14 @@ const Basket = () => {
     const [orderId, setOrderId] = useState(null)
     const [status, setStatus] = useState(0)
     const [username, setUsername] = useState('')
+
+    useEffect(() => {
+        tg.onEvent('backButtonClicked', ()=> navigate(-1))
+        return () => {
+            tg.offEvent('backButtonClicked', ()=> navigate(-1))
+        }
+    }, [])
+
 
     if (status === 2) {
         return (<div style={{flexDirection: 'column', display: 'flex'}}>

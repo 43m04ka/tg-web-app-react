@@ -30,11 +30,7 @@ const MoreInfo = () => {
             return '<span class="' + className + '"></span>';
         },
     };
-
-    const onBack = useCallback(() => {
-        navigate(-1);
-    }, [])
-
+    
     useEffect(() => {
         tg.BackButton.show();
         fetch(`${URL}/getInfoBlock?time${new Date()}`, {
@@ -50,11 +46,11 @@ const MoreInfo = () => {
     }, [])
 
     useEffect(() => {
-        tg.onEvent('backButtonClicked', onBack)
+        tg.onEvent('backButtonClicked', ()=> navigate(-1))
         return () => {
-            tg.offEvent('backButtonClicked', onBack)
+            tg.offEvent('backButtonClicked', ()=> navigate(-1))
         }
-    }, [onBack])
+    }, [])
 
     return (<div className={style['container']}>
 

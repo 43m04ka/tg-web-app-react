@@ -86,7 +86,6 @@ const Product = () => {
 
     }, [])
 
-
     if (productData !== null) {
 
         let oldPrice = ''
@@ -129,7 +128,7 @@ const Product = () => {
             <div className={style['productImage']}
                  style={{backgroundImage: 'url(' + (selectCardList !== null ? productData.image : productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024") + ')'}}>
                 {percent !== '' ? (<div className={style['percent']}>{percent}</div>) : ''}
-                <button className={style['favorite']} style={{marginLeft: (percent !== '' ? '0' : '78.91vw')}}
+                <button className={style['favorite']} style={{marginLeft: (percent !== '' ? '0' : '78.91')}}
                         onClick={async () => {
                             if (cardInFavorite) {
                                 setCardInFavorite(false)
@@ -186,7 +185,7 @@ const Product = () => {
             <div className={style['basketButton']}
                  style={{
                      paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px',
-                     height: (buttonHidden ? '0' : '14.4vw')
+                     height: (buttonHidden ? '0' : String(14.4 * window.innerWidth + tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px'),
                  }}>
                 <button onClick={() => {
                     if (productData.onSale) {

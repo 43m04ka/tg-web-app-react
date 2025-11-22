@@ -205,8 +205,9 @@ $block-border-radius: 5.35vw;
   z-index: 500;
   width: 100vw;
   display: flex;
-  height: max-content;
   background-color: #222222;
+  transition-property: height;
+  transition-duration: 0.2s;
 
   > button {
     border-radius: $block-border-radius / 7 * 3;

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useTelegram} from "../../../../hooks/useTelegram";
 import {useNavigate} from "react-router-dom";
 import {useServer} from "./useServer";
@@ -8,33 +8,29 @@ import style from './Product.module.scss'
 import Description from "./Description";
 import ChoiceElement from "./ChoiceElement";
 
-const parameters = [{label: 'Платформа', key: 'platform'},
-    {label: 'Регион активации', key: 'regionActivate'},
-    {label: 'Язык в игре', key: 'language'},
-    {
-        label: 'Дата релиза',
-        key: (item) => {
-            let a = (new Date(item.releaseDate)) * 24 * 60 * 60 * 1000
-            let currentDate = new Date('1899-12-30T00:00:00.000Z')
-            let newDate = new Date(a + currentDate.getTime());
+const parameters = [{label: 'Платформа', key: 'platform'}, {
+    label: 'Регион активации',
+    key: 'regionActivate'
+}, {label: 'Язык в игре', key: 'language'}, {
+    label: 'Дата релиза', key: (item) => {
+        let a = (new Date(item.releaseDate)) * 24 * 60 * 60 * 1000
+        let currentDate = new Date('1899-12-30T00:00:00.000Z')
+        let newDate = new Date(a + currentDate.getTime());
 
-            if (newDate < ((new Date()))) {
-                return "Уже в продаже"
-            } else {
-                return newDate.toLocaleDateString('ru-RU')
-            }
+        if (newDate < ((new Date()))) {
+            return "Уже в продаже"
+        } else {
+            return newDate.toLocaleDateString('ru-RU')
         }
-    },
-    {label: 'Количество игроков', key: 'numberPlayers'},]
+    }
+}, {label: 'Количество игроков', key: 'numberPlayers'},]
 
 const Product = () => {
 
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const {getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket, findCardsByCatalog} = useServer()
-    const {
-        updatePreviewFavoriteData, previewFavoriteData, pageId, pageList, basket, catalogList, updateBasket
-    } = useGlobalData()
+    const {updatePreviewFavoriteData, previewFavoriteData, pageId, pageList, basket, catalogList, updateBasket} = useGlobalData()
 
     let cardId = Number((window.location.pathname).replace('/card/', ''))
 
@@ -42,6 +38,8 @@ const Product = () => {
     const [selectCardList, setSelectCardList] = React.useState(null);
     const [selectGroup, setSelectGroup] = React.useState(0);
     const [selectPosition, setSelectPosition] = React.useState(0);
+    const [buttonHidden, setButtonHidden] = React.useState(false);
+    const blockRef = useRef(null);
 
     let flag = false
     basket.map(pos => {
@@ -116,6 +114,16 @@ const Product = () => {
             paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
             paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.17 * window.innerWidth) + 'px',
             height: '100vh',
+        }} onScroll={(event) => {
+            let scroll = event.target.scrollTop
+            let height = blockRef.current.clientHeight + (window.innerWidth * 1.2)
+
+            if(scroll > height && !buttonHidden) {
+                setButtonHidden(true)
+            }else if(scroll < height && buttonHidden) {
+                setButtonHidden(false)
+            }
+
         }}>
             <div className={style['productImage']}
                  style={{backgroundImage: 'url(' + (selectCardList !== null ? productData.image : productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024") + ')'}}>
@@ -139,7 +147,7 @@ const Product = () => {
                 </button>
             </div>
 
-            <div className={style['priceNameBlock']}>
+            <div className={style['priceNameBlock']} ref={blockRef}>
                 <p className={style['title']}>{productData.name}</p>
 
                 {selectCardList !== null && selectCardList.length > 1 ? (
@@ -175,7 +183,7 @@ const Product = () => {
             <Recommendations/>
 
             <div className={style['basketButton']}
-                 style={{paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px'}}>
+                 style={{paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px' , height: (buttonHidden ? '0' : '14.4vw')}}>
                 <button onClick={() => {
                     cardInBasket ? navigate('/' + pageList.map(page => {
                         return pageId === page.id ? page.link : null

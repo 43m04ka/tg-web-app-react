@@ -9,8 +9,7 @@ import Description from "./Description";
 import ChoiceElement from "./ChoiceElement";
 
 const parameters = [{label: 'Платформа', key: 'platform'}, {
-    label: 'Регион активации',
-    key: 'regionActivate'
+    label: 'Регион активации', key: 'regionActivate'
 }, {label: 'Язык в игре', key: 'language'}, {
     label: 'Дата релиза', key: (item) => {
         let a = (new Date(item.releaseDate)) * 24 * 60 * 60 * 1000
@@ -30,7 +29,9 @@ const Product = () => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const {getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket, findCardsByCatalog} = useServer()
-    const {updatePreviewFavoriteData, previewFavoriteData, pageId, pageList, basket, catalogList, updateBasket} = useGlobalData()
+    const {
+        updatePreviewFavoriteData, previewFavoriteData, pageId, pageList, basket, catalogList, updateBasket
+    } = useGlobalData()
 
     let cardId = Number((window.location.pathname).replace('/card/', ''))
 
@@ -118,9 +119,9 @@ const Product = () => {
             let scroll = event.target.scrollTop
             let height = blockRef.current.clientHeight + (window.innerWidth * 1.2)
 
-            if(scroll > height && !buttonHidden) {
+            if (scroll > height && !buttonHidden) {
                 setButtonHidden(true)
-            }else if(scroll < height && buttonHidden) {
+            } else if (scroll < height && buttonHidden) {
                 setButtonHidden(false)
             }
 
@@ -183,16 +184,21 @@ const Product = () => {
             <Recommendations/>
 
             <div className={style['basketButton']}
-                 style={{paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px' , height: (buttonHidden ? '0' : '14.4vw')}}>
+                 style={{
+                     paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px',
+                     height: (buttonHidden ? '0' : '14.4vw')
+                 }}>
                 <button onClick={() => {
-                    cardInBasket ? navigate('/' + pageList.map(page => {
-                        return pageId === page.id ? page.link : null
-                    }).filter(page => page !== null)[0] + '/basket') : addCardToBasket(() => {
-                        setCardInBasket(true)
-                    }, user.id, productData.id)
-                    setTimeout(() => {
-                        updateBasket(catalogList, pageId)
-                    }, 250)
+                    if (productData.onSale) {
+                        cardInBasket ? navigate('/' + pageList.map(page => {
+                            return pageId === page.id ? page.link : null
+                        }).filter(page => page !== null)[0] + '/basket') : addCardToBasket(() => {
+                            setCardInBasket(true)
+                        }, user.id, productData.id)
+                        setTimeout(() => {
+                            updateBasket(catalogList, pageId)
+                        }, 250)
+                    }
                 }}
                         style={{background: productData.onSale ? cardInBasket ? '#50A355' : '#404ADE' : '#585c59'}}>
                     {productData.onSale ? cardInBasket ? 'В корзине / перейти в корзину' : 'Добавить в корзину' : 'Нет в продаже'}

@@ -72,21 +72,19 @@ $block-border-radius: 5.35vw;
     > div {
       display: flex;
       flex-direction: row;
-      @extend %font-bold;
       font-size: 3.5vw;
       line-height: 5.35vw;
-      color: white;
 
       > div:nth-child(1) {
-        opacity: 0.5;
         margin: 0;
-        font-weight: normal;
+        color: rgba(255, 255, 255, 0.5);
+        @extend %font-bold;
       }
 
       > div:nth-child(2) {
         margin-left: 1vw;
-        opacity: 1;
-        font-weight: normal;
+        color: white;
+        @extend %font-bold;
       }
     }
   }
@@ -217,7 +215,7 @@ $block-border-radius: 5.35vw;
     border: 0.5vw solid #FFFFFF3F;
     width: 100%;
     padding: 2vw 1vw;
-    
+
     @extend %font-medium;
     height: 10.7vw;
     font-size: 4vw;

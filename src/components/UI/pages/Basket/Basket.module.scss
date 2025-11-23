@@ -169,7 +169,8 @@
   margin: 0 8vw 1vw 8vw;
 
   > input {
-    @extend %font-medium;
+    @extend %font-bold;
+    font-size: 3.5vw;
     background: white;
     text-align: center;
     border: none;

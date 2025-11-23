@@ -62,7 +62,7 @@ const Basket = () => {
                 поле ниже
             </div>
             <div className={style['usernameInput']}>
-                <input ref={inputRef} placeholder={'Ваш никнейм Telegram'} onChange={e => setUsername(e.target.value)}/>
+                <input ref={inputRef} placeholder={'Ваш никнейм Telegram'} value={username} onChange={e => setUsername(e.target.value.replace(/[^a-zA-Z0-9]/g, ''))}/>
             </div>
             <button className={style['button']} onClick={() => {
                 if (username !== '') {

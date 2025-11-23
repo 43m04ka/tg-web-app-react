@@ -192,7 +192,7 @@ const Product = () => {
                     if (productData.onSale) {
                         cardInBasket ? navigate('/' + pageList.map(page => {
                             return pageId === page.id ? page.link : null
-                        }).filter(page => page !== null)[0] + '/basket') : addCardToBasket(() => {
+                        }).filter(page => page !== null)[0] + '/basket?from=product') : addCardToBasket(() => {
                             setCardInBasket(true)
                         }, user.id, productData.id)
                         setTimeout(() => {

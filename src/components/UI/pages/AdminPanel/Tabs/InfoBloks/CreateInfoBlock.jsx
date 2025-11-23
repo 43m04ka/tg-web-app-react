@@ -9,6 +9,7 @@ const CreateInfoBlock = ({onClose, setPromoList}) => {
 
     const [inputNameCreate, setInputNameCreate] = useState('')
     const [inputBodyCreate, setInputBodyCreate] = useState('')
+    const [inputPathCreate, setInputPathCreate] = useState('')
     const [infoLabel, setInfoLabel] = useState('*Поля обязательные для заполнения')
 
     const {authenticationData} = useData();
@@ -23,6 +24,9 @@ const CreateInfoBlock = ({onClose, setPromoList}) => {
                 <InputLabel onChange={(e) => {
                     setInputBodyCreate(e.target.value)
                 }} label={'*Тело блока'}/>
+                <InputLabel onChange={(e) => {
+                    setInputPathCreate(e.target.value)
+                }} label={'*Ссылка'}/>
             </div>
             <div className={style['infoLabel']}>
                 {infoLabel}
@@ -33,6 +37,7 @@ const CreateInfoBlock = ({onClose, setPromoList}) => {
                     await createInfoBlock(authenticationData, {
                         name: inputNameCreate,
                         body: inputBodyCreate,
+                        path: inputPathCreate,
                     }).then(()=> getInfoBlock(setPromoList).then())
                     onClose();
                 }}>

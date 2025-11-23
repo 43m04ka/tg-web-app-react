@@ -116,7 +116,7 @@ const AccountData = ({returnAccountData}) => {
     }
 
     return (
-        <div className={style['mainContainer']} style={{height: (selectNewAccount ? '34.5vw' : '73.97vw')}}>
+        <div className={style['mainContainer']} style={{minHeight: (selectNewAccount ? '34.5vw' : '73.97vw')}}>
 
             <div className={style['title']}>Куда оформить заказ?</div>
             <div className={style['selectPlace']}>

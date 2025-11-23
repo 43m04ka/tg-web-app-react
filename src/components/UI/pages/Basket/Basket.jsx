@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import style from './Basket.module.scss';
 import {useServer} from "./useServer";
 import {useTelegram} from "../../../../hooks/useTelegram";
@@ -19,15 +19,21 @@ const Basket = () => {
     const [orderId, setOrderId] = useState(null)
     const [status, setStatus] = useState(0)
     const [username, setUsername] = useState('')
+    const inputRef = useRef(null);
 
     useEffect(() => {
         tg.BackButton.show();
-        tg.onEvent('backButtonClicked', ()=> navigate(-1))
+        tg.onEvent('backButtonClicked', () => navigate(-1))
         return () => {
-            tg.offEvent('backButtonClicked', ()=> navigate(-1))
+            tg.offEvent('backButtonClicked', () => navigate(-1))
         }
     }, [])
 
+    useEffect(() => {
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [status])
 
     if (status === 2) {
         return (<div style={{flexDirection: 'column', display: 'flex'}}>
@@ -56,13 +62,12 @@ const Basket = () => {
                 поле ниже
             </div>
             <div className={style['usernameInput']}>
-                <input placeholder={'Ваш никнейм Telegram'} onChange={e => setUsername(e.target.value)}/>
+                <input ref={inputRef} placeholder={'Ваш никнейм Telegram'} onChange={e => setUsername(e.target.value)}/>
             </div>
             <button className={style['button']} onClick={() => {
                 if (username !== '') {
                     createOrder(accountData, {
-                        id: user.id,
-                        username: '@' + username
+                        id: user.id, username: '@' + username
                     }, pageId, promoData.name, ((res) => {
                         setOrderId(res.number)
                         setStatus(2)

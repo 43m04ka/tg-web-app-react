@@ -19,7 +19,7 @@ const Search = () => {
     const {pageId} = useGlobalData()
     const inputRef = useRef(null)
     const scrollRef = useRef(null);
-    const navigate = useNavigate ();
+    const navigate = useNavigate();
 
 
     const [inputValue, setInputValue] = useState(lastText)
@@ -64,9 +64,7 @@ const Search = () => {
 
     useEffect(() => {
         if (inputRef.current) {
-            setTimeout(() => {
-                inputRef.current.click();
-            }, 300)
+            inputRef.current.focus();
         }
         if (scrollRef.current) {
             scrollRef.current.scrollTo({

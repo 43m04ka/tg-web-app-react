@@ -10,17 +10,17 @@ const AccountData = ({returnAccountData}) => {
     const {pageId} = useGlobalData()
 
     const updateAccountData = () => {
-        if(pageId === 20){
-            if(selectNewAccount){
+        if (pageId === 20) {
+            if (selectNewAccount) {
                 returnAccountData('Нет своего аккаунта PSN.')
-            }else {
+            } else {
                 returnAccountData(`Логин: ${inputData[0]} \nПароль: ${inputData[1]} \nРезервные коды: ${inputData[2]}, ${inputData[3]}, ${inputData[4]}`);
             }
         }
-        if(pageId === 28){
-            if(selectNewAccount){
+        if (pageId === 28) {
+            if (selectNewAccount) {
                 returnAccountData('Нет своего аккаунта Xbox.')
-            }else {
+            } else {
                 returnAccountData(`Логин: ${inputData[0]} \nПароль: ${inputData[1]} \nРезервная почта: ${inputData[2]} \nРезервный телефон: ${inputData[3]}`);
             }
         }
@@ -116,7 +116,7 @@ const AccountData = ({returnAccountData}) => {
     }
 
     return (
-        <div className={style['mainContainer']}>
+        <div className={style['mainContainer']} style={{height: (selectNewAccount ? '34.5vw' : '73.97vw')}}>
 
             <div className={style['title']}>Куда оформить заказ?</div>
             <div className={style['selectPlace']}>
@@ -135,10 +135,8 @@ const AccountData = ({returnAccountData}) => {
             </div>
 
             <div style={{
-                transitionProperty: 'height',
-                transitionDuration: '0.2s',
-                marginTop: '7px',
-                marginBottom: '7px'
+                marginTop: '2vw',
+                marginBottom: '2vw'
             }}>{menuDesigns}</div>
         </div>
     );

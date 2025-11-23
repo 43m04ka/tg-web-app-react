@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import '../styles/style.css';
 import {useTelegram} from "../../hooks/useTelegram";
 import useGlobalData from "../../hooks/useGlobalData";
@@ -12,12 +12,14 @@ import Basket from "./pages/Basket/Basket";
 import MoreInfo from "./pages/MoreInfo/MoreInfo";
 import SelectPlatform from "./pages/SelectPlatform/SelectPlatform";
 
+let lastScroll = 0
 
 const MainPage = ({page}) => {
     const {tg} = useTelegram();
     const [heightTab, setHeightTab] = useState(0);
     const [zIndexTab, setZIndexTab] = useState(-10);
     const [height, setHeight] = useState(0);
+    const scrollRef = useRef(null);
     const {pageId, setPageId} = useGlobalData()
 
 
@@ -25,6 +27,11 @@ const MainPage = ({page}) => {
         tg.BackButton.hide();
         if (pageId === -1) {
             setPageId(page.id)
+        }
+        if (scrollRef.current) {
+            scrollRef.current.scrollTo({
+                top: lastScroll, behavior: "instant",
+            });
         }
     }, [])
 
@@ -36,7 +43,12 @@ const MainPage = ({page}) => {
 
 
     return (<div className={style['mainDivision']} style={{height: String(height) + 'px'}}>
-        <div style={{zIndex: 100, height: String(height) + 'px'}}>
+        <div
+            style={{zIndex: 100, height: String(height) + 'px'}}
+            onScroll={(event) => {
+                lastScroll = (event.target.scrollTop);
+            }}
+            ref={scrollRef}>
             <div>
                 <CatalogListHead/>
                 <CatalogListBody/>

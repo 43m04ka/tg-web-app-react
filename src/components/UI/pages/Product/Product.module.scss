@@ -80,11 +80,13 @@ $block-border-radius: 5.35vw;
       > div:nth-child(1) {
         opacity: 0.5;
         margin: 0;
+        font-weight: normal;
       }
 
       > div:nth-child(2) {
         margin-left: 1vw;
         opacity: 1;
+        font-weight: normal;
       }
     }
   }
@@ -202,6 +204,7 @@ $block-border-radius: 5.35vw;
 .basketButton {
   position: absolute;
   bottom: 0;
+  z-index: 500;
   z-index: 500;
   width: 100vw;
   display: flex;

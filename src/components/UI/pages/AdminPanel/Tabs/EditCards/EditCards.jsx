@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import EditCard from "../../Blocks/EditCard";
+import EditDataCard from "./EditData/EditDataCard";
 import {useServer} from "../../useServer";
 import style from "./EditCards.module.scss";
 import ButtonLine from "../../Elements/ButtonLine/ButtonLine";
@@ -128,7 +128,7 @@ const EditCards = () => {
                       returnOption={returnOptionList} setSelectList={setSelectList} selectList={selectList}
                       checkBoxType={'any'}/>) : ''}
 
-            {editTabOpen ? <EditCard onClose={() => {
+            {editTabOpen ? <EditDataCard onClose={() => {
                 setEditTabOpen(false);
             }} onReload={() => searchForName(setCardList, searchInputValue).then()} cardId={cardId}/> : ''}
 
@@ -141,36 +141,3 @@ const EditCards = () => {
 
 
 export default EditCards;
-
-
-// const onReload = async () => {await searchForName(setCardList, searchInputValue)}
-//
-// return (
-//     <div>
-//         <BlockLabel label={'Поиск карты'}>
-//             <InputLabel label={'Имя товара'} placeholder={'FC 25'} onChange={(e) => setSearchInputValue(e.currentTarget.value)} />
-//             <ButtonLabel label={'Поиск'} onClick={onReload}/>
-//         </BlockLabel>
-//         <BlockLabel label={'Результат'} onReload={onReload}>
-//             {cardList === null || cardList.length === 0 ? (<div className={styles['card-choice-empty']}>
-//                 Ничего не найдено
-//             </div>) : cardList.map(card => (<div
-//                 className={`${styles['card-choice-block']} ${selectCardId === card.id ? styles['card-choice-active'] : ''}`}
-//                 key={card.id} onClick={() => setSelectCardId(card.id)}>
-//                 <div className={styles['card-choice-label']}>
-//                     {card.name}</div>
-//                 <div
-//                     className={styles['card-choice-btn']}>
-//                     {selectCardId === card.id ? '> Выбран ˂' : '» Выбрать «'}</div>
-//             </div>))}
-//             {selectCardId !== -1 ? <>
-//                 <SeparatorLabel label={'Редактирование карты'}/>
-//                 <div>
-//                     {selectCardId !== -1 ? <EditCard onReload={onReload} cardId={selectCardId}/> : ''}
-//                 </div>
-//             </> : ''}
-//         </BlockLabel>
-//
-//     </div>
-// );
-// };

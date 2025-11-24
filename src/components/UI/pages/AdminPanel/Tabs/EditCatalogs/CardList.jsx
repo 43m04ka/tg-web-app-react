@@ -5,7 +5,7 @@ import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import styles from "./CardList.module.scss";
 import {useServer} from "../../useServer";
-import EditCard from "../../Blocks/EditCard";
+import EditDataCard from "../EditCards/EditData/EditDataCard";
 import PopUpWindow from "../../Elements/PopUpWindow/PopUpWindow";
 import List from "../../Elements/List/List";
 import style from "../Promo/Promo.module.scss";
@@ -162,7 +162,7 @@ const CardList = ({catalogId, onReload, onClose}) => {
             </div>
         </div>
     </PopUpWindow>
-        {editTabOpen ? <EditCard onClose={() => {
+        {editTabOpen ? <EditDataCard onClose={() => {
             setEditTabOpen(false);
         }} onReload={() => getCardList(setResult, catalogId, listNumber).then()} cardId={cardId}/> : ''}
     </div>);

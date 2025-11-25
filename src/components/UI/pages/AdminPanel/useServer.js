@@ -78,6 +78,21 @@ export function useServer() {
         })
     }
 
+    const updateCatalogData = async (setResult, authenticationData, catalogId, updateData) => {
+        await fetch(`${URL}/updateCatalogData`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({authenticationData:authenticationData, catalogId:catalogId, updateData:updateData})
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
 
 
     const searchForName = async (setResult, searchString) => {
@@ -118,7 +133,7 @@ export function useServer() {
 
     return {
         getCardList, getCard, getCatalogList,
-
+        updateCatalogData,
         updateCardData, updateAssociations,
         deleteCard,
         searchForName, setExchangeIndiaCatalog}

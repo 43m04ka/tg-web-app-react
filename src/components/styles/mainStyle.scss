@@ -5,17 +5,17 @@ $button-border-radius: 1.5vw;
 
 @font-face {
   font-family: 'font-medium';
-  src: url('./fonts/SF-Pro-Display-Medium.otf') format('opentype');
+  src: url('./fonts/SF-Pro-Display-Medium.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'font-bold';
-  src: url('./fonts/SF-Pro-Display-Bold.otf') format('opentype');
+  src: url('./fonts/SF-Pro-Display-Bold.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'font-extrabold';
-  src: url('./fonts/Jano Sans Pro Extrabold.ttf') format('truetype');
+  src: url('./fonts/SF-Pro-Display-Bold.ttf') format('truetype');
 }
 
 
@@ -38,7 +38,7 @@ $button-border-radius: 1.5vw;
   text-decoration: none;
   font-variant: normal;
   font-family: 'font-extrabold';
-  font-weight: normal;
+  font-weight: bold;
 }
 
 %no-select {

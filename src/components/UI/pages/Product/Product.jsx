@@ -150,15 +150,20 @@ const Product = () => {
             <div className={style['priceNameBlock']} ref={blockRef}>
                 <p className={style['title']}>{productData.name}</p>
 
-                {selectCardList !== null && selectCardList.length > 1 ? (
-                    <ChoiceElement list={selectCardList} parameter={'name'} index={selectGroup} set={(index) => {
-                        setSelectGroup(index);
-                        setSelectPosition(0)
-                    }}/>) : ''}
-                {selectCardList !== null ? (
-                    <ChoiceElement list={selectCardList[selectGroup]?.body} parentIndex={selectGroup}
-                                   parameter={'choiceRow'}
-                                   index={selectPosition} set={setSelectPosition}/>) : ''}
+                {selectCardList !== null && selectCardList.length > 1 ? (<ChoiceElement list={selectCardList}
+                                                                                        isXbox={productData.name.toLowerCase().includes('game pass')}
+                                                                                        parameter={'name'}
+                                                                                        index={selectGroup}
+                                                                                        set={(index) => {
+                                                                                            setSelectGroup(index);
+                                                                                            setSelectPosition(0)
+                                                                                        }}/>) : ''}
+                {selectCardList !== null ? (<ChoiceElement list={selectCardList[selectGroup]?.body}
+                                                           isXbox={productData.name.toLowerCase().includes('game pass')}
+                                                           parentIndex={selectGroup}
+                                                           parameter={'choiceRow'}
+                                                           index={selectPosition}
+                                                           set={setSelectPosition}/>) : ''}
 
                 <div className={style['price']}>
                     <div style={{borderColor: oldPrice !== '' ? '#D86147' : '#171717'}}>{price}</div>
@@ -185,8 +190,7 @@ const Product = () => {
             <div className={style['basketButton']}
                  style={{
                      paddingBottom: (buttonHidden ? '0' : String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px'),
-                     height: (buttonHidden ? '0' : String((0.15 * window.innerWidth) + tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom
-                     ) + 'px'),
+                     height: (buttonHidden ? '0' : String((0.15 * window.innerWidth) + tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px'),
                  }}>
                 <button onClick={() => {
                     if (productData.onSale) {

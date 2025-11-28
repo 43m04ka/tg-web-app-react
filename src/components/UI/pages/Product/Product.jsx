@@ -42,6 +42,18 @@ const Product = () => {
     const [buttonHidden, setButtonHidden] = React.useState(false);
     const blockRef = useRef(null);
 
+    const [imageLoaded, setImageLoaded] = useState(false);
+
+    useEffect(() => {
+        if (productData !== null) {
+            const img = new Image();
+            img.src = (selectCardList !== null ? productData?.image : productData?.image.slice(0, productData?.image.indexOf('?w=') + 1) + "w=1024");
+            img.onload = () => {
+                setImageLoaded(true);
+            };
+        }
+    }, [productData?.image]);
+
     let flag = false
     basket.map(pos => {
         if (pos.id === cardId) {
@@ -54,6 +66,7 @@ const Product = () => {
 
     if ((productData !== null && !isNaN(cardId) && cardId !== productData.id) || (productData !== null && selectCardList !== null && productData.id !== selectCardList[selectGroup]?.body[selectPosition]?.id)) {
         setProductData(null)
+        setImageLoaded(false)
         if (isNaN(cardId)) {
             cardId = selectCardList[selectGroup].body[selectPosition].id
         } else {
@@ -125,8 +138,8 @@ const Product = () => {
             }
 
         }}>
-            <div className={style['productImage']}
-                 style={{backgroundImage: 'url(' + (selectCardList !== null ? productData.image : productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024") + ')'}}>
+            {imageLoaded ? <div className={style['productImage']}
+                                style={{backgroundImage: 'url(' + (selectCardList !== null ? productData.image : productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024") + ')'}}>
                 {percent !== '' ? (<div className={style['percent']}>{percent}</div>) : ''}
                 <button className={style['favorite']} style={{marginLeft: (percent !== '' ? '0' : '78.91vw')}}
                         onClick={async () => {
@@ -145,7 +158,14 @@ const Product = () => {
                     <div/>
                     <div style={{scale: (cardInFavorite ? '1' : '0.5'), opacity: (cardInFavorite ? '1' : '0')}}/>
                 </button>
-            </div>
+            </div> : (<div className={style['preloadProductImage']}>
+                <svg>
+                    <path/>
+                </svg>
+                <svg>
+                    <path/>
+                </svg>
+            </div>)}
 
             <div className={style['priceNameBlock']} ref={blockRef}>
                 <p className={style['title']}>{productData.name}</p>

@@ -19,6 +19,10 @@ const History = () => {
     const [orderId, setOrderId] = React.useState(-1);
     const [selectList, setSelectList] = useState([]);
 
+    useEffect(()=>{
+        getHistoryList(setHistoryList, '').then()
+    }, [])
+
     if (listButtonData[0].status !== (selectList.length === 1)) {
         let newValue = listButtonData
         newValue[0].status = selectList.length === 1;

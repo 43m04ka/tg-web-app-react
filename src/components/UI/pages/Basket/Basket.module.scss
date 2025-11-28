@@ -19,12 +19,22 @@
 
 .label {
   @extend %font-medium;
-  margin: 0 10vw;
+  margin: 2vw 10vw 0 3vw;
   text-align: center;
   font-size: 4vw;
   color: white;
   user-select: none;
 }
+
+.infoLabel {
+  @extend %font-medium;
+  margin: 2vw 10vw 1vw 3vw;
+  text-align: left;
+  font-size: 4vw;
+  color: #ed7373;
+  user-select: none;
+}
+
 
 .happyDuck {
   display: flex;
@@ -56,7 +66,9 @@
   width: 100%;
   height: max-content;
   border-top: 2px solid #585858;
-  margin-top: 6vw;
+  position: absolute;
+  bottom: 16vw;
+  background: $menu-color;
 
   > div:nth-child(1) {
     display: flex;
@@ -97,7 +109,8 @@
     border-radius: $button-border-radius;
     color: white;
     padding: 3vw;
-    background: #50A355;
+    transition-property: background;
+    transition-duration: 0.3s;
     >div {
       margin: 0 auto;
       display: flex;
@@ -166,7 +179,7 @@
   display: flex;
   flex-direction: column;
   border-radius: 4vw;
-  margin: 0 8vw 1vw 8vw;
+  margin: 1vw 2vw 0vw 2vw;
 
   > input {
     @extend %font-bold;

@@ -17,7 +17,7 @@ const Basket = () => {
     const [accountData, setAccountData] = useState('')
     const [promoData, setPromoData] = useState({percent: 0, name: ''})
     const [orderId, setOrderId] = useState(null)
-    const [status, setStatus] = useState(0)
+    const [infoLabel, setInfoLabel] = useState('')
     const [username, setUsername] = useState('')
     const inputRef = useRef(null);
 
@@ -29,13 +29,7 @@ const Basket = () => {
         }
     }, [])
 
-    useEffect(() => {
-        if (inputRef.current) {
-            inputRef.current.focus();
-        }
-    }, [status])
-
-    if (status === 2) {
+    if (orderId !== null) {
         return (<div style={{flexDirection: 'column', display: 'flex'}}>
             <div className={style['happyDuck']}/>
             <div className={style['label']}>{'Заказ №' + String(orderId) + ' успешно оформлен.'}</div>
@@ -54,34 +48,6 @@ const Basket = () => {
                 </button>
             </Link>
         </div>)
-    } else if (status === 1) {
-        return (<div style={{flexDirection: 'column', display: 'flex'}}>
-            <div className={style['secretDuck']}/>
-            <div className={style['label']} style={{marginBottom: '5vw'}}>
-                Упс, у Вас скрытый никнейм в Telegram, мы не можем написать Вам, уточните, пожалуйста, свой никнейм в
-                поле ниже
-            </div>
-            <div className={style['usernameInput']}>
-                <input ref={inputRef} placeholder={'Ваш никнейм Telegram'} value={username} onChange={e => setUsername(e.target.value.replace(/[^a-zA-Z0-9]/g, ''))}/>
-            </div>
-            <button className={style['button']} onClick={() => {
-                if (username !== '') {
-                    createOrder(accountData, {
-                        id: user.id, username: '@' + username
-                    }, pageId, promoData.name, ((res) => {
-                        setOrderId(res.number)
-                        setStatus(2)
-                    })).then()
-                }
-            }} style={{
-                background: username !== '' ? '#50A355' : '#454545',
-                transitionProperty: 'background',
-                transitionDuration: '0.3s',
-                transitionTimingFunction: 'ease-in-out'
-            }}>
-                Оформить заказ
-            </button>
-        </div>)
     } else {
         if (basket !== null) {
             if (basket.length === 0) {
@@ -96,13 +62,29 @@ const Basket = () => {
             } else if (basket.length > 0) {
 
                 return (<div className={style['mainContainer']}
-                             style={{paddingBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px'}}>
+                             style={{paddingBottom: String(window.innerWidth * 0.53 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px'}}>
                     <div className={style['title']}>Ваша корзина</div>
+
                     {basket.map(item => (<ProductItemBasket product={item} onReload={() => {
                         updateBasket(catalogList, pageId)
                     }}/>))}
+
+                    <div className={style['infoLabel']}>
+                        {infoLabel}
+                    </div>
+
+                    <div className={style['usernameInput']}>
+                        <input ref={inputRef} placeholder={'Ваш никнейм в Telegram для связи'} value={username}
+                               onChange={e => {
+                                   setUsername(e.target.value.replace(/[^a-zA-Z0-9]/g, ''));
+                                   setInfoLabel('')
+                               }}/>
+                    </div>
+
                     {pageId !== 29 ? <AccountData returnAccountData={setAccountData}/> : ''}
-                    {<Promo setPromoData={setPromoData}/>}
+
+                    <Promo setPromoData={setPromoData}/>
+
                     <div className={style['total']}>
                         <div>
                             <div>Итого к оплате:</div>
@@ -116,17 +98,20 @@ const Basket = () => {
                                 }).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}₽
                             </div> : ''}
                         </div>
-                        <button onClick={() => {
-                            if (typeof user.username !== 'undefined') {
-                                createOrder(accountData, user, pageId, promoData.name, ((res) => {
-                                    setOrderId(res.number)
-                                    setStatus(2)
-
-                                })).then()
-                            } else {
-                                setStatus(1)
-                            }
-                        }}>
+                        <button
+                            style={{background: (typeof user.username !== 'undefined' || username !== '' ? '#50A355' : '#adadad')}}
+                            onClick={() => {
+                                if (typeof user.username !== 'undefined' || username !== '') {
+                                    createOrder(accountData, {
+                                        id: user.id, username: '@' + (user.username || username)
+                                    }, pageId, promoData.name, ((res) => {
+                                        setOrderId(res.number)
+                                    })).then()
+                                } else {
+                                    setInfoLabel('*Обязательное для заполнения поле');
+                                    inputRef.current.focus();
+                                }
+                            }}>
                             <div>Оформить заказ</div>
                         </button>
                         <div>

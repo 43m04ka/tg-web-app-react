@@ -17,7 +17,7 @@ const Order = ({orderId, onClose}) => {
     }, [orderId]);
 
     const cap = {
-        name: ['Id', 'Имя', 'Цена',],
+        name: ['Id', 'Имя', 'Цена'],
         key: ['id', (item) => {
             return item.body.name
         }, (item) => {

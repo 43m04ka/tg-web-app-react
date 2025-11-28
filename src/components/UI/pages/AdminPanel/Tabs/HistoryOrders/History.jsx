@@ -30,10 +30,10 @@ const History = () => {
     }
 
     const cap = {
-        name: ['Id', 'Сумма', 'Дата',],
+        name: ['Id', 'Сумма', 'Дата', 'id пользователя'],
         key: ['id', 'summa', (item) => {
             return (new Date(item['createdAt'])).toLocaleString()
-        }],
+        }, 'userDatumId'],
     }
 
     const positionOptionsList = {

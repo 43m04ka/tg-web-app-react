@@ -123,6 +123,36 @@ const Product = () => {
             }
         }
 
+        let saleType = null
+        let saleLabel = ''
+
+        if(productData.additionalParameter !== null) {
+            if (productData.additionalParameter.includes('Save') && productData.additionalParameter.includes('ps-plus')) {
+                saleType = 'logoPS'
+                saleLabel = 'ДОПОЛНИТЕЛЬНАЯ СКИДКА С PS PLUS'
+            }
+            if (productData.additionalParameter.includes('Extra')) {
+                saleType = 'logoPS'
+                saleLabel = 'БЕСПЛАТНО С PS PLUS EXTRA'
+            }
+            if (productData.additionalParameter.includes('Deluxe')) {
+                saleType = 'logoPS'
+                saleLabel = 'БЕСПЛАТНО С PS PLUS DELUXE'
+            }
+            if (productData.additionalParameter.includes('Included')) {
+                saleType = 'logoEA'
+                saleLabel = 'БЕСПЛАТНО С EA PLAY'
+            }
+        }
+
+        // {productData.additionalParameter !== null && productData.additionalParameter.includes('Save') && productData.additionalParameter.includes('ps-plus') ? <Link to={'/catalog/ps_psplus'}><div className={'background-ps-plus-save'} style={{display: 'flex', marginLeft:'7px', marginTop:'7px', flexDirection: 'row', justifyContent: 'space-between', borderRadius:'10px', width:String(window.innerWidth-34)+'px', height:String((window.innerWidth-34)*0.17142)+'px'}}/></Link> : ''}
+// {productData.additionalParameter !== null && productData.additionalParameter.includes('Extra') ? <Link to={'/catalog/ps_psplus'}><div className={'background-ps-plus-extra'} style={{display: 'flex', marginLeft:'7px', marginTop:'7px', flexDirection: 'row', justifyContent: 'space-between', borderRadius:'10px', width:String(window.innerWidth-34)+'px', height:String((window.innerWidth-34)*0.17142)+'px'}}/></Link> : ''}
+// {productData.additionalParameter !== null && productData.additionalParameter.includes('Deluxe') ? <Link to={'/catalog/ps_psplus'}><div className={'background-ps-plus-deluxe'} style={{display: 'flex', marginLeft:'7px', marginTop:'7px', flexDirection: 'row', justifyContent: 'space-between', borderRadius:'10px', width:String(window.innerWidth-34)+'px', height:String((window.innerWidth-34)*0.17142)+'px'}}/></Link> : ''}
+// {productData.additionalParameter !== null && productData.additionalParameter.includes('Included') ? <Link to={'/catalog/ps_eaplay'}><div className={'background-ea-play-free'} style={{display: 'flex', marginLeft:'7px', marginTop:'7px', flexDirection: 'row', justifyContent: 'space-between', borderRadius:'10px', width:String(window.innerWidth-34)+'px', height:String((window.innerWidth-34)*0.17142)+'px'}}/></Link> : ''}
+// {productData.additionalParameter !== null && productData.additionalParameter.includes('GamePass') ? <Link to={'/catalog/xbox_sub'}><div className={'background-game-pass-free'} style={{display: 'flex', marginLeft:'7px', marginTop:'7px', flexDirection: 'row', justifyContent: 'space-between', borderRadius:'10px', width:String(window.innerWidth-34)+'px', height:String((window.innerWidth-34)*0.17142)+'px'}}/></Link> : ''}
+//
+
+
         return (<div className={style['container']} style={{
             paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
             paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.03 * window.innerWidth) + 'px',
@@ -187,6 +217,15 @@ const Product = () => {
 
                 <div className={style['price']}>
                     <div style={{borderColor: oldPrice !== '' ? '#D86147' : '#171717'}}>{price}</div>
+                    {saleType !== null ? <div style={{borderColor: '#171717'}} className={style['sale'] + ' ' + style['bg-' + saleType]}>
+                        <div className={style[saleType]}/>
+                        <div className={style[saleType]}/>
+                        <div className={style[saleType]}/>
+                        <div className={style[saleType]}/>
+                        <div>{saleLabel}</div>
+                        <div/>
+                    </div> : ''}
+
                 </div>
                 {endDatePromotion !== '' ? (<div className={style['endDatePromotion']}>
                     {endDatePromotion}

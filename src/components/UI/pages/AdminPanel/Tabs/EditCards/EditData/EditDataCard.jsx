@@ -26,6 +26,12 @@ const structure = [
     {type: 'string', key: 'choiceColumn', label: 'Подвид'},
     {type: 'string', key: 'additionalParameter', label: 'Доп. параметр для баннера подписки'},
     {type: 'number', key: 'catalogId', label: 'id каталога'},
+    {
+        type: 'list',
+        key: 'descriptionImages',
+        label: 'Дополнительные изображения',
+        body: {type: 'string', label: 'Ссылка на изображение:'}
+    },
 ]
 
 const EditDataCard = ({cardId, onReload, onClose}) => {

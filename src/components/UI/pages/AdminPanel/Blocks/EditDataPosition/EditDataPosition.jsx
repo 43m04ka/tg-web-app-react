@@ -2,6 +2,8 @@ import React from 'react';
 import InputLabel from "../../Elements/Input/InputLabel";
 import style from './EditDataPosition.module.scss'
 import SwitchLabel from "../../Elements/SwitchLabel/SwitchLabel";
+import ButtonLabel from "../../Elements/ButtonLabel";
+import Button from "../../Elements/ButtonLabel";
 
 const EditDataPosition = ({structure, setNewData, currentData}) => {
 
@@ -20,6 +22,42 @@ const EditDataPosition = ({structure, setNewData, currentData}) => {
                         setNewData(newJson);
                     }}/>)
             }
+            if (parameter.type === 'list') {
+                return (<div>
+                    <p className={style['infoLabel']}>
+                        {parameter.label}
+                    </p>
+                    <div>
+                        <div>
+                            {(json[parameter.key] || []).map((str, index) => (
+                                <>
+                                    <InputLabel
+                                        label={parameter.body.label || parameter.body.key}
+                                        defaultValue={json[parameter.key][index] || ''}
+                                        onChange={(e) => {
+                                            let newJson = json
+                                            newJson[parameter.key][index] = e.target.value;
+                                            setJson(newJson);
+                                            setNewData(newJson);
+                                        }}/>
+                                    <ButtonLabel label={'Удалить'} onClick={() => {
+                                        let newJson = json
+                                        newJson[parameter.key] = [...(json[parameter.key] || []), '']
+                                        setJson(newJson);
+                                        setNewData(newJson);
+                                    }}/>
+                                </>
+                            ))}
+                        </div>
+                        <ButtonLabel label={'Добавить изображение'} onClick={() => {
+                            let newJson = json
+                            newJson[parameter.key] = [...(json[parameter.key] || []), '']
+                            setJson(newJson);
+                            setNewData(newJson);
+                        }}/>
+                    </div>
+                </div>)
+            }
             if (parameter.type === 'number') {
                 return (<InputLabel
                     label={parameter.label || parameter.key}
@@ -35,12 +73,12 @@ const EditDataPosition = ({structure, setNewData, currentData}) => {
                 return (<SwitchLabel
                     defaultValue={json[parameter.key] || ''}
                     label={parameter.label || parameter.key}
-                onChange={(e) => {
-                    let newJson = json
-                    newJson[parameter.key] = e.target.checked;
-                    setJson(newJson);
-                    setNewData(newJson);
-                }}/>)
+                    onChange={(e) => {
+                        let newJson = json
+                        newJson[parameter.key] = e.target.checked;
+                        setJson(newJson);
+                        setNewData(newJson);
+                    }}/>)
             }
         })}
     </div>);

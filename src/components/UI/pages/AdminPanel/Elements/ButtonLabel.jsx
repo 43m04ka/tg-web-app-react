@@ -7,7 +7,7 @@ const Button = ({label, onClick}) => {
         <div className={styles['input-box']}>
             <div className={styles[`block-border`]}>
                 <button className={styles['button']} type="text"
-                        onClick={() => onClick()}>» {label} «</button>
+                        onClick={() => onClick()}>{label}</button>
             </div>
         </div>
     );

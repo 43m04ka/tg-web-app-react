@@ -59,11 +59,7 @@ const MainPage = ({page}) => {
             height: String(height) + 'px',
             background: zIndexTab > 0 && opacityTab !== 0 ? '#222222' : 'none'
         }}>
-            <div style={{
-                opacity: opacityTab,
-                paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
-                paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.17 * window.innerWidth) + 'px',
-            }}>
+            <div style={{opacity: opacityTab}}>
                 <Routes>
                     <Route path="/search" element={<Search/>}/>
                     <Route path="/basket" element={<Basket/>}/>

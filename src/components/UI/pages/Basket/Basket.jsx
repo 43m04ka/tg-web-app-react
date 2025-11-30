@@ -62,7 +62,10 @@ const Basket = () => {
             } else if (basket.length > 0) {
 
                 return (<div className={style['mainContainer']}
-                             style={{paddingBottom: String(window.innerWidth * 0.53 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px'}}>
+                             style={{
+                                 paddingBottom: String(window.innerWidth * 0.53 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px',
+                                 paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
+                             }}>
                     <div className={style['title']}>Ваша корзина</div>
 
                     {basket.map(item => (<ProductItemBasket product={item} onReload={() => {
@@ -85,7 +88,8 @@ const Basket = () => {
 
                     <Promo setPromoData={setPromoData}/>
 
-                    <div className={style['total']}>
+                    <div className={style['total']}
+                         style={{bottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.17 * window.innerWidth) + 'px'}}>
                         <div>
                             <div>Итого к оплате:</div>
                             <div>{basket.map(el => {

@@ -106,7 +106,7 @@ const Search = () => {
         }
     }, [inputValue])
 
-    return (<div className={style['mainDivision']}>
+    return (<div className={style['mainDivision']} style={{paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px'}}>
         <div>
             <div>
                 <div/>

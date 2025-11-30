@@ -7,14 +7,12 @@ import Catalog from "./components/UI/pages/Catalog/Catalog";
 import MainPage from "./components/UI/MainPage";
 import ErrorPage from "./components/UI/pages/other/ErrorPage";
 import AdminPanel from "./components/UI/pages/AdminPanel/AdminPanel";
-import ProductListSelector from "./components/UI/pages/other/ProductListSelector";
 import History from "./components/UI/pages/other/History";
 import Favorites from "./components/UI/pages/other/Favorites";
 import AP_Authentication from "./components/UI/pages/AdminPanel/AP_Authentication";
 import useGlobalData from "./hooks/useGlobalData";
 import Product from "./components/UI/pages/Product/Product";
 import style from './App.module.scss'
-import {repeat} from "rxjs";
 
 const getRandomInt = (max) => Math.floor(Math.random() * Math.floor(max));
 
@@ -94,7 +92,6 @@ function App() {
         setTimeout(() => {
             updatePageList()
         }, 2500)
-        window.clearInterval(interval)
 
         for (let i = 0; i < 8; i++) {
             timeouts[i] = setTimeout(() => {

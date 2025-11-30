@@ -62,7 +62,7 @@ const MainPage = ({page}) => {
             <div style={{opacity: opacityTab}}>
                 <Routes>
                     <Route path="/search" element={<Search/>}/>
-                    <Route path="/basket" element={<Basket/>}/>
+                    <Route path="/basket" element={<Basket height={height}/>}/>
                     <Route path="/selectPlatform" element={<SelectPlatform/>}/>
                     <Route path="/more" element={<MoreInfo/>}/>
                 </Routes>

@@ -8,7 +8,7 @@ import AccountData from "./Elements/AccountData";
 import Promo from "./Elements/Promo";
 import {Link, useNavigate} from "react-router-dom";
 
-const Basket = () => {
+const Basket = ({height}) => {
 
     const {getBasketList, createOrder} = useServer()
     const {user, tg} = useTelegram()
@@ -89,7 +89,7 @@ const Basket = () => {
                     <Promo setPromoData={setPromoData}/>
 
                     <div className={style['total']}
-                         style={{bottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.16 * window.innerWidth) + 'px'}}>
+                         style={{marginTop: String(height - (tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.52 * window.innerWidth)) + 'px'}}>
                         <div>
                             <div>Итого к оплате:</div>
                             <div>{basket.map(el => {

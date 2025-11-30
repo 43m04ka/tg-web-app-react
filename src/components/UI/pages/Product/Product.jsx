@@ -47,7 +47,7 @@ const Product = () => {
     useEffect(() => {
         if (productData !== null) {
             const img = new Image();
-            img.src = (selectCardList !== null ? productData?.image : productData?.image.slice(0, productData?.image.indexOf('?w=') + 1) + "w=1024");
+            img.src = ((selectCardList !== null || !productData?.image.includes('?w=')) ? productData?.image : productData?.image.slice(0, productData?.image.indexOf('?w=') + 1) + "w=1024");
             img.onload = () => {
                 setImageLoaded(true);
             };
@@ -139,9 +139,9 @@ const Product = () => {
 
         }}>
             {imageLoaded ? <div className={style['productImage']}
-                                style={{backgroundImage: 'url(' + (selectCardList !== null ? productData.image : productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024") + ')'}}>
+                                style={{backgroundImage: 'url(' + ((selectCardList !== null || !productData.image.includes('?w=')) ? productData.image : productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024") + ')'}}>
                 {percent !== '' ? (<div className={style['percent']}>{percent}</div>) : ''}
-                <button className={style['favorite']} style={{marginLeft: (percent !== '' ? '0' : '78.91vw')}}
+                <button className={style['favorite']} style={{marginLeft: (percent !== '' ? '0' : '79.91vw')}}
                         onClick={async () => {
                             if (cardInFavorite) {
                                 setCardInFavorite(false)

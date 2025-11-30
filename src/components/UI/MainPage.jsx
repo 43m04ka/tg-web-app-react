@@ -16,7 +16,7 @@ let lastScroll = 0
 
 const MainPage = ({page}) => {
     const {tg} = useTelegram();
-    const [heightTab, setHeightTab] = useState(0);
+    const [opacityTab, setOpacityTab] = useState(0);
     const [zIndexTab, setZIndexTab] = useState(-10);
     const [height, setHeight] = useState(0);
     const scrollRef = useRef(null);
@@ -54,8 +54,8 @@ const MainPage = ({page}) => {
                 <CatalogListBody/>
             </div>
         </div>
-        <div style={{zIndex: zIndexTab, height: String(height) + 'px'}}>
-            <div style={{height: heightTab, zIndex: zIndexTab}}>
+        <div style={{zIndex: zIndexTab, height: String(height) + 'px', background: zIndexTab > 0 && opacityTab !== 0 ? '#222222' : 'none'}}>
+            <div style={{opacity: opacityTab}}>
                 <Routes>
                     <Route path="/search" element={<Search/>}/>
                     <Route path="/basket" element={<Basket/>}/>
@@ -65,8 +65,8 @@ const MainPage = ({page}) => {
             </div>
         </div>
         <div style={{top: String(height) + 'px'}}>
-            <NavigationBar setZIndexTab={setZIndexTab} zIndexTab={zIndexTab} heightTab={heightTab}
-                           setHeightTab={setHeightTab} height={height}/>
+            <NavigationBar setZIndexTab={setZIndexTab} zIndexTab={zIndexTab} opacityTab={opacityTab}
+                           setOpacityTab={setOpacityTab} height={height}/>
         </div>
 
         {/*<div style={{height: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px', overflow:'hidden', background:'#222222', zIndex:'-100'}}><div style={{height: '100vh'}}/></div>*/}

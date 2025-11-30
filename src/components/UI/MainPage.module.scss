@@ -9,7 +9,6 @@
   -webkit-animation: animOpacity 0.5s ease-in-out forwards;
 
   > div:nth-child(1) {
-
     height: 100%;
     width: 100%;
     overflow-y: scroll;
@@ -27,19 +26,17 @@
   > div:nth-child(2) {
     position: absolute;
     width: 100vw;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     top: 0;
     > div {
+      min-width: 100vw;
+      min-height: 100vh;
+      height: 100vh;
+      top: 0;
       position: absolute;
-      border-top-right-radius: 20px;
-      border-top-left-radius: 20px;
-      bottom: 0;
-      width: 100%;
       background: $menu-color;
       overflow: hidden;
-      transition-property: height;
-      transition-duration: 0.3s;
+      transition-property: opacity;
+      transition-duration: 0.1s;
       transition-timing-function: ease-in-out;
     }
 

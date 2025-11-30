@@ -218,8 +218,10 @@ const Product = () => {
                 <div className={style['price']}>
 
                     <div style={{borderColor: oldPrice !== '' ? '#D86147' : '#171717'}}>{price}</div>
-                    {saleType !== null ? <Link to={saleType === 'logoPS' ? '/catalog/ps_psplus' : '/catalog/ps_eaplay'}>
-                        <div style={{borderColor: '#171717'}} className={style['sale'] + ' ' + style['bg-' + saleType]}>
+                    {saleType !== null ?
+                        <div style={{borderColor: '#171717'}} className={style['sale'] + ' ' + style['bg-' + saleType]} onClick={()=>{
+                            navigate(saleType === 'logoPS' ? '/catalog/ps_psplus' : '/catalog/ps_eaplay')
+                        }}>
                             <div className={style[saleType]}/>
                             <div className={style[saleType]}/>
                             <div className={style[saleType]}/>
@@ -227,7 +229,7 @@ const Product = () => {
                             <div>{saleLabel}</div>
                             <div/>
                         </div>
-                    </Link> : ''}
+                    : ''}
 
                 </div>
                 {endDatePromotion !== '' ? (<div className={style['endDatePromotion']}>

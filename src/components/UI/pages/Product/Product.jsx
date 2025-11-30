@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useTelegram} from "../../../../hooks/useTelegram";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useServer} from "./useServer";
 import useGlobalData from "../../../../hooks/useGlobalData";
 import Recommendations from "./Recommendations";
@@ -126,7 +126,7 @@ const Product = () => {
         let saleType = null
         let saleLabel = ''
 
-        if(productData.additionalParameter !== null) {
+        if (productData.additionalParameter !== null) {
             if (productData.additionalParameter.includes('Save') && productData.additionalParameter.includes('ps-plus')) {
                 saleType = 'logoPS'
                 saleLabel = 'ДОПОЛНИТЕЛЬНАЯ СКИДКА С PS PLUS'
@@ -216,15 +216,18 @@ const Product = () => {
                                                            set={setSelectPosition}/>) : ''}
 
                 <div className={style['price']}>
+
                     <div style={{borderColor: oldPrice !== '' ? '#D86147' : '#171717'}}>{price}</div>
-                    {saleType !== null ? <div style={{borderColor: '#171717'}} className={style['sale'] + ' ' + style['bg-' + saleType]}>
-                        <div className={style[saleType]}/>
-                        <div className={style[saleType]}/>
-                        <div className={style[saleType]}/>
-                        <div className={style[saleType]}/>
-                        <div>{saleLabel}</div>
-                        <div/>
-                    </div> : ''}
+                    {saleType !== null ? <Link to={saleType === 'logoPS' ? '/catalog/ps_psplus' : '/catalog/ps_eaplay'}>
+                        <div style={{borderColor: '#171717'}} className={style['sale'] + ' ' + style['bg-' + saleType]}>
+                            <div className={style[saleType]}/>
+                            <div className={style[saleType]}/>
+                            <div className={style[saleType]}/>
+                            <div className={style[saleType]}/>
+                            <div>{saleLabel}</div>
+                            <div/>
+                        </div>
+                    </Link> : ''}
 
                 </div>
                 {endDatePromotion !== '' ? (<div className={style['endDatePromotion']}>

@@ -89,7 +89,7 @@ const Basket = () => {
                     <Promo setPromoData={setPromoData}/>
 
                     <div className={style['total']}
-                         style={{bottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.17 * window.innerWidth) + 'px'}}>
+                         style={{bottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.16 * window.innerWidth) + 'px'}}>
                         <div>
                             <div>Итого к оплате:</div>
                             <div>{basket.map(el => {

@@ -89,7 +89,7 @@ const Basket = ({height}) => {
                     <Promo setPromoData={setPromoData}/>
 
                     <div className={style['total']}
-                         style={{marginTop: String(height - (tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.52 * window.innerWidth)) + 'px'}}>
+                         style={{marginTop: String(height - (tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top + 0.52 * window.innerWidth)) + 'px'}}>
                         <div>
                             <div>Итого к оплате:</div>
                             <div>{basket.map(el => {

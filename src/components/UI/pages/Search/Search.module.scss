@@ -77,6 +77,8 @@
   overflow: hidden;
   position: relative;
   max-height: 32.5vw;
+  min-height: 32.5vw;
+  height: 32.5vw;
   z-index: 150;
 
   > div {

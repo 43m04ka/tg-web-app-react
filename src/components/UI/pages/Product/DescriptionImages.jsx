@@ -26,22 +26,26 @@ const DescriptionImages = ({data}) => {
         >
             {data.map((el, index) => (<SwiperSlide key={index} className={style['slide']}>
                 <img src={el} className={style['descriptionImage']} onClick={() => {
-                    tg.BackButton.show();
-                    tg.onEvent('backButtonClicked', () => setSelectedId(null));
-                    return () => {
-                        tg.offEvent('backButtonClicked', () => setSelectedId(null))
-                    }
                     setSelectedId(index)
+                    tg.BackButton.show();
+                    tg.onEvent('backButtonClicked', () => {
+                        onBack()
+                    });
+                    return () => {
+                        tg.offEvent('backButtonClicked', () => {
+                            onBack()
+                        })
+                    }
                 }}/>
             </SwiperSlide>))}
         </Swiper>
         {selectedId !== null ? <div onClick={(event) => {
+            setSelectedId(null)
             tg.BackButton.show();
             tg.onEvent('backButtonClicked', () => navigate(-1));
             return () => {
                 tg.offEvent('backButtonClicked', () => navigate(-1))
             }
-            setSelectedId(null)
         }} className={style['bigSlide']}>
             <img src={data[selectedId]} className={style['descriptionImageOpen']}/>
         </div> : ''}

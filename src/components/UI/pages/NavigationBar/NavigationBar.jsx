@@ -104,7 +104,7 @@ const NavigationBar = ({setOpacityTab, opacityTab, setZIndexTab, height}) => {
                     setActiveTab(index)
                 }}>
                     <div style={{backgroundImage: `url(${button.icon})`}} className={style['button-' + button.icon]}/>
-                    <p>{button.label}</p>
+                    {/*<p>{button.label}</p>*/}
                 </button>
             ))}
         </div>

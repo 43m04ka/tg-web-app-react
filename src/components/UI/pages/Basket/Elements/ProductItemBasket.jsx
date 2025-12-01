@@ -3,6 +3,8 @@ import {useTelegram} from "../../../../../hooks/useTelegram";
 import {Link} from "react-router-dom";
 import {useServer} from "../useServer";
 import useGlobalData from "../../../../../hooks/useGlobalData";
+import ProductBasketCounter from "../../Product/Elements/ProductBasketCounter";
+import PositionCounter from "./PositionCounter";
 
 const ProductItemBasket = ({product, onReload, page}) => {
     const item = product;
@@ -97,7 +99,7 @@ const ProductItemBasket = ({product, onReload, page}) => {
 
     return (<div style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 40px',
+        gridTemplateColumns: '1fr 21.4vw',
         padding: '5px', background: '#585858', borderRadius: '10px', margin: '1vw 2vw',
     }}>
         <Link to={'/card/' + item.id} className={'link-element'}
@@ -144,16 +146,7 @@ const ProductItemBasket = ({product, onReload, page}) => {
                 </div>
             </div>
         </Link>
-        <div onClick={async () => {
-            await deleteCardToBasket(async () => {
-                onReload();
-                updatePreviewBasketData(user.id)
-            }, user.id, product.id).then()
-        }} style={{margin: 'auto', background: '#717171', height: '30px', width: '30px', borderRadius: '5px'}}>
-            <div className={'background-trash'}
-                 style={{height: '14px', width: '14px', margin: '8px'}}>
-            </div>
-        </div>
+        <PositionCounter/>
     </div>);
 };
 

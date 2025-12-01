@@ -507,13 +507,15 @@ $block-border-radius: 5.35vw;
 .descriptionImageOpen {
   display: flex;
   overflow: hidden;
-  position: relative;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   width: 90vw;
   height: auto;
   object-fit: cover;
   border: 1px solid gray;
   border-radius: $block-border-radius/3;
-  margin: auto 5vw auto 5vw;
+  margin-left: 5vw;
 }
 
 .slide {
@@ -529,7 +531,6 @@ $block-border-radius: 5.35vw;
   top: 0;
   z-index: 1000;
   background-color: rgba(0, 0, 0, 0.7);
-  align-content: center;
   opacity: 0;
   -webkit-opacity: 0;
   animation: animOpacity 0.3s ease-in-out forwards;

@@ -16,6 +16,7 @@ const DescriptionImages = ({data}) => {
     }
 
     useEffect(() => {
+        tg.BackButton.hide();
         tg.BackButton.show();
         tg.onEvent('backButtonClicked', () => onBack());
         return () => {

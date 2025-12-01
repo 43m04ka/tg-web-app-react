@@ -92,12 +92,13 @@ const Product = () => {
     }
 
     useEffect(() => {
-        tg.BackButton.show();
-        tg.onEvent('backButtonClicked', () => navigate(-1))
-        return () => {
-            tg.offEvent('backButtonClicked', () => navigate(-1))
+        if (productData.descriptionImages === null) {
+            tg.BackButton.show();
+            tg.onEvent('backButtonClicked', () => navigate(-1))
+            return () => {
+                tg.offEvent('backButtonClicked', () => navigate(-1))
+            }
         }
-
     }, [])
 
     if (productData !== null) {
@@ -213,17 +214,17 @@ const Product = () => {
 
                     <div style={{borderColor: oldPrice !== '' ? '#D86147' : '#171717'}}>{price}</div>
                     {saleType !== null ?
-                        <div style={{borderColor: '#171717'}} className={style['sale'] + ' ' + style['bg-' + saleType]} onClick={()=>{
-                            navigate(saleType === 'logoPS' ? '/choice-catalog/ps_psplus' : '/choice-catalog/ps_eaplay')
-                        }}>
+                        <div style={{borderColor: '#171717'}} className={style['sale'] + ' ' + style['bg-' + saleType]}
+                             onClick={() => {
+                                 navigate(saleType === 'logoPS' ? '/choice-catalog/ps_psplus' : '/choice-catalog/ps_eaplay')
+                             }}>
                             <div className={style[saleType]}/>
                             <div className={style[saleType]}/>
                             <div className={style[saleType]}/>
                             <div className={style[saleType]}/>
                             <p>{saleLabel}</p>
                             <div/>
-                        </div>
-                    : ''}
+                        </div> : ''}
 
                 </div>
                 {endDatePromotion !== '' ? (<div className={style['endDatePromotion']}>
@@ -241,7 +242,7 @@ const Product = () => {
                 </div>
             </div>
 
-            {productData.descriptionImages !== null ?  <DescriptionImages data={productData.descriptionImages} /> : ''}
+            {productData.descriptionImages !== null ? <DescriptionImages data={productData.descriptionImages}/> : ''}
 
 
             <Description>{productData.description}</Description>

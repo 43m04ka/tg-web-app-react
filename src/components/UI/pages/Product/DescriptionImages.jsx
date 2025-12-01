@@ -3,14 +3,16 @@ import {Swiper, SwiperSlide} from "swiper/react";
 import {Pagination} from "swiper/modules";
 import style from './Product.module.scss'
 import {useTelegram} from "../../../../hooks/useTelegram";
+import {useNavigate} from "react-router-dom";
 
 const DescriptionImages = ({data}) => {
 
     const {tg} = useTelegram()
+    const navigate = useNavigate();
 
     const [selectedId, setSelectedId] = React.useState(null);
-    const onBack = () =>{
-        selectedId === null ? navigate(-1) : setSelectedId(null)
+    const onBack = () => {
+        return selectedId === null ? navigate(-1) : setSelectedId(null)
     }
 
     useEffect(() => {

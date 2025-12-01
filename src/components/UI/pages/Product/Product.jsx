@@ -92,12 +92,10 @@ const Product = () => {
     }
 
     useEffect(() => {
-        if (productData?.descriptionImages === null) {
-            tg.BackButton.show();
-            tg.onEvent('backButtonClicked', () => navigate(-1))
-            return () => {
-                tg.offEvent('backButtonClicked', () => navigate(-1))
-            }
+        tg.BackButton.show();
+        tg.onEvent('backButtonClicked', () => navigate(-1))
+        return () => {
+            tg.offEvent('backButtonClicked', () => navigate(-1))
         }
     }, [])
 

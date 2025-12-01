@@ -21,7 +21,7 @@ const DescriptionImages = ({data}) => {
         return () => {
             tg.offEvent('backButtonClicked', () => onBack())
         }
-    }, [])
+    }, [selectedId])
 
     return (<div style={{width:'100vw', minHeight: '45vw', overflowX:'hidden'}}>
         <Swiper

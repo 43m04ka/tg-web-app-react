@@ -9,14 +9,16 @@ const DescriptionImages = ({data}) => {
     const {tg} = useTelegram()
 
     const [selectedId, setSelectedId] = React.useState(null);
+    const onBack = () =>{
+        selectedId === null ? navigate(-1) : setSelectedId(null)
+    }
 
     useEffect(() => {
         tg.BackButton.show();
-        tg.onEvent('backButtonClicked', () => (selectedId === null ? navigate(-1) : setSelectedId(null)));
+        tg.onEvent('backButtonClicked', () => onBack());
         return () => {
-            tg.offEvent('backButtonClicked', () => (selectedId === null ? navigate(-1) : setSelectedId(null)))
+            tg.offEvent('backButtonClicked', () => onBack())
         }
-
     }, [])
 
     return (<div style={{width:'100vw', minHeight: '45vw', overflowX:'hidden'}}>

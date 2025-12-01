@@ -7,6 +7,7 @@ import Recommendations from "./Recommendations";
 import style from './Product.module.scss'
 import Description from "./Description";
 import ChoiceElement from "./ChoiceElement";
+import DescriptionImages from "./DescriptionImages";
 
 const parameters = [{label: 'Платформа', key: 'platform'}, {
     label: 'Регион активации', key: 'regionActivate'
@@ -239,6 +240,9 @@ const Product = () => {
                     })}
                 </div>
             </div>
+
+            {productData.descriptionImages !== null ?  <DescriptionImages data={productData.descriptionImages} /> : ''}
+
 
             <Description>{productData.description}</Description>
 

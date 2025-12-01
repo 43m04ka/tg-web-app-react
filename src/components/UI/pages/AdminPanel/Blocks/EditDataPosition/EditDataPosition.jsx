@@ -9,6 +9,12 @@ const EditDataPosition = ({structure, setNewData, currentData}) => {
 
     const [json, setJson] = React.useState(currentData);
 
+    const [updateTrigger, setUpdateTrigger] = React.useState(0);
+
+    const forceRerender = () => {
+        setUpdateTrigger(prevValue => prevValue + 1);
+    };
+
     return (<div className={style['container']}>
         {structure.map((parameter) => {
             if (parameter.type === 'string') {
@@ -28,9 +34,10 @@ const EditDataPosition = ({structure, setNewData, currentData}) => {
                         {parameter.label}
                     </p>
                     <div>
-                        <div>
-                            {(json[parameter.key] || []).map((str, index) => (
-                                <>
+                        <div style={{borderLeft:'solid 1px gray', paddingLeft: '5px', marginLeft:'10px', marginRight:'10px'}}>
+                            {json[parameter.key] !== null ? json[parameter.key].map((str, index) => (
+                                <div>
+                                <div style={{display:'grid', gridTemplateColumns:'1fr max-content'}}>
                                     <InputLabel
                                         label={parameter.body.label || parameter.body.key}
                                         defaultValue={json[parameter.key][index] || ''}
@@ -39,21 +46,27 @@ const EditDataPosition = ({structure, setNewData, currentData}) => {
                                             newJson[parameter.key][index] = e.target.value;
                                             setJson(newJson);
                                             setNewData(newJson);
+                                            forceRerender();
                                         }}/>
                                     <ButtonLabel label={'Удалить'} onClick={() => {
                                         let newJson = json
-                                        newJson[parameter.key] = [...(json[parameter.key] || []), '']
+                                        newJson[parameter.key].splice(index, 1);
                                         setJson(newJson);
                                         setNewData(newJson);
+                                        forceRerender();
                                     }}/>
-                                </>
-                            ))}
+                                </div>
+                                    <img style={{height:'150px', width:'auto', marginLeft:'7px', borderRadius:'10px', border:'1px solid gray'}} src={json[parameter.key][index]}/>
+                                </div>
+                            )) : ''}
                         </div>
                         <ButtonLabel label={'Добавить изображение'} onClick={() => {
                             let newJson = json
                             newJson[parameter.key] = [...(json[parameter.key] || []), '']
+
                             setJson(newJson);
                             setNewData(newJson);
+                            forceRerender();
                         }}/>
                     </div>
                 </div>)

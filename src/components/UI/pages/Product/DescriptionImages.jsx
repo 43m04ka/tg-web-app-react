@@ -11,20 +11,12 @@ const DescriptionImages = ({data}) => {
     const navigate = useNavigate();
 
     const [selectedId, setSelectedId] = React.useState(null);
+
     const onBack = () => {
         return selectedId === null ? navigate(-1) : setSelectedId(null)
     }
 
-    useEffect(() => {
-        tg.BackButton.hide();
-        tg.BackButton.show();
-        tg.onEvent('backButtonClicked', () => onBack());
-        return () => {
-            tg.offEvent('backButtonClicked', () => onBack())
-        }
-    }, [selectedId])
-
-    return (<div style={{width:'100vw', minHeight: '45vw', overflowX:'hidden'}}>
+    return (<div style={{width: '100vw', minHeight: '45vw', overflowX: 'hidden'}}>
         <Swiper
             slidesPerView={3}
             centeredSlides={true}
@@ -34,11 +26,21 @@ const DescriptionImages = ({data}) => {
         >
             {data.map((el, index) => (<SwiperSlide key={index} className={style['slide']}>
                 <img src={el} className={style['descriptionImage']} onClick={() => {
+                    tg.BackButton.show();
+                    tg.onEvent('backButtonClicked', () => setSelectedId(null));
+                    return () => {
+                        tg.offEvent('backButtonClicked', () => setSelectedId(null))
+                    }
                     setSelectedId(index)
                 }}/>
             </SwiperSlide>))}
         </Swiper>
         {selectedId !== null ? <div onClick={(event) => {
+            tg.BackButton.show();
+            tg.onEvent('backButtonClicked', () => navigate(-1));
+            return () => {
+                tg.offEvent('backButtonClicked', () => navigate(-1))
+            }
             setSelectedId(null)
         }} className={style['bigSlide']}>
             <img src={data[selectedId]} className={style['descriptionImageOpen']}/>

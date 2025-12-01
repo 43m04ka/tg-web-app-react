@@ -3,11 +3,12 @@ import {useTelegram} from "../../../../hooks/useTelegram";
 import {Link, useNavigate} from "react-router-dom";
 import {useServer} from "./useServer";
 import useGlobalData from "../../../../hooks/useGlobalData";
-import Recommendations from "./Recommendations";
+import Recommendations from "./Elements/Recommendations";
 import style from './Product.module.scss'
-import Description from "./Description";
-import ChoiceElement from "./ChoiceElement";
-import DescriptionImages from "./DescriptionImages";
+import Description from "./Elements/Description";
+import ChoiceElement from "./Elements/ChoiceElement";
+import DescriptionImages from "./Elements/DescriptionImages";
+import ProductBasketCounter from "./Elements/ProductBasketCounter";
 
 const parameters = [{label: 'Платформа', key: 'platform'}, {
     label: 'Регион активации', key: 'regionActivate'
@@ -269,8 +270,9 @@ const Product = () => {
                     }
                 }}
                         style={{background: productData.onSale ? cardInBasket ? '#50A355' : '#404ADE' : '#585c59'}}>
-                    {productData.onSale ? cardInBasket ? 'В корзине / перейти в корзину' : 'Добавить в корзину' : 'Нет в продаже'}
+                    {productData.onSale ? cardInBasket ? 'В корзине' : 'Добавить в корзину' : 'Нет в продаже'}
                 </button>
+                {productData.onSale && cardInBasket ? <ProductBasketCounter/> : ''}
             </div>
         </div>);
     } else {

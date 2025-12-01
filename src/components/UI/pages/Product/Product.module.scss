@@ -213,16 +213,15 @@ $block-border-radius: 5.35vw;
   position: absolute;
   bottom: 0;
   z-index: 500;
-  z-index: 500;
   width: 100vw;
   display: flex;
   background-color: #222222;
   transition-property: height, padding-bottom;
   transition-duration: 0.2s;
 
-  > button {
+  > button:nth-child(1) {
     border-radius: $block-border-radius / 7 * 3;
-    border: 0.5vw solid #FFFFFF3F;
+    border: 0.5vw solid #7c7676;
     width: 100%;
     padding: 2vw 1vw;
 
@@ -236,7 +235,7 @@ $block-border-radius: 5.35vw;
     transition-duration: 0.3s;
   }
 
-  > button:active {
+  > button:nth-child(1):active {
     transform: scaleX(101%) scaleY(107%);
     outline: none;
   }
@@ -524,7 +523,7 @@ $block-border-radius: 5.35vw;
   align-items: center;
 }
 
-.bigSlide{
+.bigSlide {
   position: absolute;
   width: 100vw;
   height: 100vh;
@@ -535,6 +534,56 @@ $block-border-radius: 5.35vw;
   -webkit-opacity: 0;
   animation: animOpacity 0.3s ease-in-out forwards;
   -webkit-animation: animOpacity 0.3s ease-in-out forwards;
+}
+
+.productBasketCounter {
+  height: 10.7vw;
+  background: #171717;
+  min-width: 33vw;
+  width: 33vw;
+  border-radius: $block-border-radius / 7 * 3;
+  border: 0.5vw solid #7c7676;
+  @extend %font-medium;
+  color: white;
+  font-size: 4vw;
+  margin: 2.7vw 2.7vw 1vw 0vw;
+  display: flex;
+  flex-direction: row;
+
+  > div {
+    height: 7.7vw;
+    width: 7.7vw;
+    background: #222222;
+    border-radius: $block-border-radius / 7 * 1.5;
+    >p{
+      display: flex;
+      line-height: 7.7vw;
+      width: max-content;
+      margin: auto;
+    }
+    transition-property: background-color, transform;
+    transition-duration: 0.3s;
+  }
+
+  > div:active {
+    transform: scaleX(105%) scaleY(105%);
+    outline: none;
+  }
+
+  > div:nth-child(1) {
+    margin: 1vw auto 1vw 1vw;
+  }
+
+  > div:nth-child(3) {
+    margin: 1vw 1vw 1vw auto;
+  }
+
+  >p{
+    display: flex;
+    line-height: 9.7vw;
+    width: max-content;
+    margin: auto;
+  }
 }
 
 

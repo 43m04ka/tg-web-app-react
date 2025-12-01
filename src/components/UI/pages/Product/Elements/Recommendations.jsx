@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import CatalogItem from "../Catalog/CatalogItem";
-import {useServerUser} from "../../../../hooks/useServerUser";
-import useGlobalData from "../../../../hooks/useGlobalData";
+import CatalogItem from "../../Catalog/CatalogItem";
+import {useServerUser} from "../../../../../hooks/useServerUser";
+import useGlobalData from "../../../../../hooks/useGlobalData";
 
 const Recommendations = () => {
 

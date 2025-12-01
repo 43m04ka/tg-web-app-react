@@ -1,5 +1,5 @@
 import React from 'react';
-import style from './Product.module.scss';
+import style from '../Product.module.scss';
 
 
 const ChoiceElement = ({set, list, index: selectedIndex, parentIndex, parameter, isXbox}) => {

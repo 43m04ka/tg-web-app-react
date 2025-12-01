@@ -1,5 +1,5 @@
 import React, {createRef, useEffect, useState} from 'react';
-import styles from './Product.module.scss';
+import styles from '../Product.module.scss';
 
 const Description = ({children}) => {
 

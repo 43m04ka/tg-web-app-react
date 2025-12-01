@@ -1,8 +1,8 @@
 import React, {useEffect} from 'react';
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Pagination} from "swiper/modules";
-import style from './Product.module.scss'
-import {useTelegram} from "../../../../hooks/useTelegram";
+import style from '../Product.module.scss'
+import {useTelegram} from "../../../../../hooks/useTelegram";
 import {useNavigate} from "react-router-dom";
 
 const DescriptionImages = ({data}) => {

@@ -272,7 +272,7 @@ const Product = () => {
                         style={{background: productData.onSale ? cardInBasket ? '#50A355' : '#404ADE' : '#585c59'}}>
                     {productData.onSale ? cardInBasket ? 'В корзине' : 'Добавить в корзину' : 'Нет в продаже'}
                 </button>
-                {productData.onSale && cardInBasket ? <ProductBasketCounter/> : ''}
+                {productData.onSale && cardInBasket ? <ProductBasketCounter idPos={productData.id} setCardInBasket={setCardInBasket}/> : ''}
             </div>
         </div>);
     } else {

@@ -88,12 +88,12 @@ const Basket = () => {
                             <p className={style['title']}>Итого:</p>
                             {promoData.percent > 0 ? <p className={style['title']} style={{margin: 'auto 1vw 0 auto', fontSize:'4vw', textDecoration:'line-through', color: '#757373', lineHeight:'7vw'}}>
                                 {basket.map(el => {
-                                    return el.similarCard !== null ? el.similarCard.price : el.price
+                                    return el.similarCard !== null ? el.similarCard.price * el.count : el.price * el.count
                                 }).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}₽
                             </p> : ''}
                             <p className={style['title']} style={{marginRight:'0', marginLeft:promoData.percent > 0 ? '0' : 'auto'}}>
                                 {basket.map(el => {
-                                    return el.similarCard !== null ? el.similarCard.price : el.price
+                                    return el.similarCard !== null ? el.similarCard.price * el.count : el.price * el.count
                                 }).reduce((accumulator, currentValue) => accumulator + currentValue, 0) * (1 - promoData.percent / 100)}₽
                             </p>
                         </div>

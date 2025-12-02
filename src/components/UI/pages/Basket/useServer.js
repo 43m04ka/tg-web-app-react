@@ -113,6 +113,19 @@ export function useServer() {
         })
     }
 
+    const setBasketPositionCount = async (setResult, userId, cardId, count) => {
+        fetch(`${URL}/setBasketPositionCount`, {
+            method: 'POST', headers: {
+                'Content-Type': 'application/json',
+            }, body: JSON.stringify({cardId: cardId, userId: userId, count: count}),
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
 
-    return {getPreviewBasketList, addCardToBasket, deleteCardToBasket, getBasketList, createOrder, usePromo, addCardToFavorite, deleteCardToFavorite}
+
+    return {getPreviewBasketList, addCardToBasket, deleteCardToBasket, getBasketList, createOrder, usePromo, addCardToFavorite, deleteCardToFavorite, setBasketPositionCount}
 }

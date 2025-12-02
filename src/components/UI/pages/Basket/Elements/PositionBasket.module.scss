@@ -2,7 +2,7 @@
 
 $k: 1.1;
 $b: 1.6;
-$t: 1.2;
+$t: 1;
 
 .container {
   display: flex;
@@ -142,7 +142,7 @@ $t: 1.2;
     text-decoration: line-through;
     font-size: $t * 3.4vw;
     line-height: $b * 4.8vw;
-    margin: auto $b * 1vw 0 auto;
+    margin: auto 1vw 0 auto;
   }
 }
 

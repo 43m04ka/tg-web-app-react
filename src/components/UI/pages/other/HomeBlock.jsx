@@ -57,7 +57,8 @@ const HomeBlock = ({data}) => {
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                     <div style={{
                         fontSize: '6vw',
-                        fontFamily: "font-medium",
+                        fontWeight: 'normal',
+                        fontFamily: "'SF PRO Display', sans-serif",
                         color: 'white',
                         marginLeft: '15px',
                         overflow: 'hidden',
@@ -76,7 +77,8 @@ const HomeBlock = ({data}) => {
                 <div style={{width: '100%'}}>
                     <div onClick={()=> navigate(link + data.path)}
                         style={{
-                            fontFamily: "font-medium",
+                            fontWeight: 'normal',
+                            fontFamily: "'SF PRO Display', sans-serif",
                             color: 'white',
                             borderRadius: '1.5vw',
                             backgroundColor: '#222222',

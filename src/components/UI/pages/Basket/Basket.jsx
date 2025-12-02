@@ -57,23 +57,20 @@ const Basket = () => {
                     <div>В корзине ничего нет</div>
                     <div className={style['button']} onClick={() => {
                         navigate(window.location.pathname.replace('/basket', ''));
-                    }}>перейти к покупкам
+                    }}>Перейти к покупкам
                     </div>
                 </div>)
             } else if (basket.length > 0) {
                 return (<div
                     className={style['mainContainer']}
-                    style={{
-                        paddingBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px',
-                        paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
-                    }}>
+                    style={{paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px', paddingBottom: String(window.innerWidth * 0.15 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
                     <div className={style['basketBlock']}>
                         <p className={style['title']}>Ваша корзина:</p>
                         {basket.map((item, index) => (<>
                             <PositionBasket product={item} onReload={() => {
                                 updateBasket(catalogList, pageId)
                             }}/>
-                            {index !== basket.length - 1 ? (<div className={style['separator']} style={{height:'1px', margin: 0}}/>) : ''}
+                            {index !== basket.length - 1 ? (<div className={style['separator']} style={{height:'1px', marginTop:'0'}}/>) : ''}
                         </>))}
                     </div>
 

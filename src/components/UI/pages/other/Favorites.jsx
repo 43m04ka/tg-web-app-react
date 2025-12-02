@@ -24,34 +24,33 @@ const Favorites = () => {
 
     if (cardList === null) {
         return (<div className={'plup-loader'} style={{
-            marginTop: String(window.innerHeight / 2 - 50) + 'px',
-            marginLeft: String(window.innerWidth / 2 - 50) + 'px'
+            marginTop: String(window.innerHeight / 2 - 50) + 'px', marginLeft: String(window.innerWidth / 2 - 50) + 'px'
         }}></div>);
     } else {
         if (cardList.length === 0) {
-            return (
-                <div style={{display: 'grid'}}>
-                    <div style={{
-                        height: String(window.innerHeight - 60 - 15 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
-                        marginTop: '15px', textAlign: 'center',
-                        color: 'gray', fontSize: '16px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }} className={'text-element'}>
-                        <div className={'background-basketSaid'} style={{width: '65px', height: '83px'}}/>
-                        <div className={'text-element'}>В избранном ничего нет...</div>
-                    </div>
-                    <Link to={'/'} className={'link-element'}>
-                        <button className={'all-see-button'} style={{marginTop: '10px', width: String(300) + 'px'}}>На
-                            главную
-                        </button>
-                    </Link>
-                </div>)
-        } else {
-            return (
+            return (<div style={{display: 'grid'}}>
                 <div style={{
+                    height: String(window.innerHeight - 60 - 15 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
+                    marginTop: '15px',
+                    textAlign: 'center',
+                    color: 'gray',
+                    fontSize: '16px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }} className={'text-element'}>
+                    <div className={'background-basketSaid'} style={{width: '65px', height: '83px'}}/>
+                    <div className={'text-element'}>В избранном ничего нет...</div>
+                </div>
+                <Link to={'/'} className={'link-element'}>
+                    <button className={'all-see-button'} style={{marginTop: '10px', width: String(300) + 'px'}}>На
+                        главную
+                    </button>
+                </Link>
+            </div>)
+        } else {
+            return (<div style={{
                     display: 'grid',
                     position: 'relative',
                     overflowY: 'scroll',
@@ -65,8 +64,9 @@ const Favorites = () => {
                         margin: '1.6vw 0 0 0 ',
                         lineHeight: '7vw',
                         fontSize: '4.7vw',
-                        fontFamily: 'font-bold',
-                        color:'white'
+                        fontWeight: 'bold',
+                        fontFamily: "'SF PRO Display', sans-serif",
+                        color: 'white'
                     }}>Избранное
                     </div>
                     {cardList.map(item => {
@@ -120,8 +120,8 @@ const Favorites = () => {
                                 textDecoration: 'none',
                                 textAlign: 'left',
                                 marginRight: '5px',
-                                fontFamily: "'Montserrat', sans-serif",
-                                fontWeight: 700,
+                                fontWeight: 'bold',
+                                fontFamily: "'SF PRO Display', sans-serif",
                                 fontSize: '12px',
                                 overflow: 'hidden',
                                 color: 'white',
@@ -144,10 +144,7 @@ const Favorites = () => {
                             type = 1
                         }
                         let priceEl = (<div className={'text-element text-basket'} style={{
-                            lineHeight: '15px',
-                            marginTop: '0',
-                            height: '15px',
-                            fontSize: '15px',
+                            lineHeight: '15px', marginTop: '0', height: '15px', fontSize: '15px',
                         }}>{item.price + ' ₽'}</div>)
 
                         let oldPriceEl = (<div></div>)
@@ -172,83 +169,77 @@ const Favorites = () => {
                         }
                         if (type === 2) {
                             oldPriceEl = (<div className={'text-element text-basket'} style={{
-                                lineHeight: '15px',
-                                marginTop: '0',
-                                height: '15px',
-                                fontSize: '15px',
-                                color: '#4a9ed6',
+                                lineHeight: '15px', marginTop: '0', height: '15px', fontSize: '15px', color: '#4a9ed6',
                             }}>Предзаказ</div>)
                         }
 
-                        return (
-                            <div style={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                padding: '5px',
-                                background: '#232323',
-                                borderRadius: '10px',
-                                margin: '10px 0 0 10px',
-                                width: String(window.innerWidth - 20) + 'px'
-                            }}>
-                                <Link to={'/card/' + item.id} className={'link-element'}
-                                      style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>
-                                    <div className={'img'} style={{
-                                        height: '80px',
-                                        width: '80px',
-                                        borderRadius: '7px',
-                                        backgroundImage: "url('" + item.image + "')",
-                                        backgroundSize: 'cover',
+                        return (<div style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            padding: '5px',
+                            background: '#232323',
+                            borderRadius: '10px',
+                            margin: '10px 0 0 10px',
+                            width: String(window.innerWidth - 20) + 'px'
+                        }}>
+                            <Link to={'/card/' + item.id} className={'link-element'}
+                                  style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>
+                                <div className={'img'} style={{
+                                    height: '80px',
+                                    width: '80px',
+                                    borderRadius: '7px',
+                                    backgroundImage: "url('" + item.image + "')",
+                                    backgroundSize: 'cover',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'end',
+                                    justifyContent: 'space-between',
+                                }}></div>
+                                <div style={{
+                                    width: String(window.innerWidth - 140) + 'px',
+                                    display: 'grid',
+                                    gridTemplateRows: '30fr 15px 15fr',
+                                    height: '75px'
+                                }}>
+                                    <div className={'text-element text-basket'} style={{
+                                        marginTop: '5px',
+                                        lineHeight: '15px',
+                                        height: '30px',
+                                        fontSize: '13px',
+                                        overflow: 'hidden',
                                         display: 'flex',
-                                        flexDirection: 'row',
-                                        alignItems: 'end',
-                                        justifyContent: 'space-between',
-                                    }}></div>
+                                    }}>{platform + ' • ' + item.name}</div>
                                     <div style={{
-                                        width: String(window.innerWidth - 140) + 'px',
-                                        display: 'grid',
-                                        gridTemplateRows: '30fr 15px 15fr',
-                                        height: '75px'
+                                        marginTop: '0px',
+                                        display: 'flex',
+                                        justifyContent: 'left',
+                                        alignItems: 'center',
+                                        height: '15px'
                                     }}>
-                                        <div className={'text-element text-basket'} style={{
-                                            marginTop: '5px',
-                                            lineHeight: '15px',
-                                            height: '30px',
-                                            fontSize: '13px',
-                                            overflow: 'hidden',
-                                            display: 'flex',
-                                        }}>{platform + ' • ' + item.name}</div>
-                                        <div style={{
-                                            marginTop: '0px',
-                                            display: 'flex',
-                                            justifyContent: 'left',
-                                            alignItems: 'center',
-                                            height: '15px'
-                                        }}>
-                                            {priceEl}
-                                            {oldPriceEl}
-                                        </div>
-                                        <div className={'text-element'} style={{
-                                            fontSize: '13px',
-                                            color: '#696969',
-                                            overflow: 'hidden',
-                                            lineHeight: '15px',
-                                            height: '15px',
-                                            marginTop: '5px'
-                                        }}>
-                                            {endDatePromotion}
-                                        </div>
+                                        {priceEl}
+                                        {oldPriceEl}
                                     </div>
-                                </Link>
-                                <div onClick={() => {
-
-                                }} style={{marginRight: '20px'}}>
-                                    <div className={'background-trash'}
-                                         style={{padding: '10px', height: '20px', width: '20px', marginTop: '30px'}}>
+                                    <div className={'text-element'} style={{
+                                        fontSize: '13px',
+                                        color: '#696969',
+                                        overflow: 'hidden',
+                                        lineHeight: '15px',
+                                        height: '15px',
+                                        marginTop: '5px'
+                                    }}>
+                                        {endDatePromotion}
                                     </div>
                                 </div>
+                            </Link>
+                            <div onClick={() => {
+
+                            }} style={{marginRight: '20px'}}>
+                                <div className={'background-trash'}
+                                     style={{padding: '10px', height: '20px', width: '20px', marginTop: '30px'}}>
+                                </div>
                             </div>
-                        );
+                        </div>);
                     })}
                 </div>
 

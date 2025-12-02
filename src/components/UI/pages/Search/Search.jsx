@@ -145,7 +145,7 @@ const Search = () => {
             <div className={style['helpPlace']}>
                 <div> не нашли то, что искали?</div>
                 <div> напишите нам, мы поможем</div>
-                <button onClick={() => window.open('https://t.me/gwstore_admin')}>написать в поддержку</button>
+                <button onClick={() => window.open('https://t.me/gwstore_admin')}>Написать в поддержку</button>
             </div>
         </div>) : (<div className={style['emptyList']}>
             <div/>
@@ -154,7 +154,7 @@ const Search = () => {
             <div>ничего не найдено.</div>
             <div>попробуйте другой запрос</div>
             <div>или напишите в поддержку</div>
-            <button onClick={() => window.open('https://t.me/gwstore_admin')}>написать в поддержку</button>
+            <button onClick={() => window.open('https://t.me/gwstore_admin')}>Написать в поддержку</button>
         </div>)) : (<div className={style["wrapper"]}>
             <div className={style["circle"]}></div>
             <div className={style["circle"]}></div>

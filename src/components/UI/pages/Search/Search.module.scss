@@ -49,9 +49,12 @@
       }
 
       > button {
+        border: none;
+        font-size: 3.7vw;
+        color: white;
+        padding: 2vw 2.5vw;
         margin: 3vw;
         background: #636363;
-        border: none;
         border-radius: 5px;
 
         > div {
@@ -158,15 +161,15 @@
   }
 
   > button {
+    border: none;
+    font-size: 3.7vw;
+    color: white;
+    padding: 2vw 2.5vw;
     width: max-content;
     display: flex;
     margin: 1.8% auto 0 auto;
     border-radius: $button-border-radius;
-    padding: 1% 2.8%;
     @extend %font-medium;
-    font-size: 4vw;
-    border: none;
-    color: white;
     background: #5a5a5a;
   }
 }
@@ -227,15 +230,15 @@
   }
 
   > button {
+    border: none;
+    font-size: 3.7vw;
+    color: white;
+    padding: 2vw 2.5vw;
     width: max-content;
     display: flex;
     margin: 4% auto 0 auto;
     border-radius: $button-border-radius;
-    padding: 2% 2.8%;
     @extend %font-medium;
-    font-size: 3.5vw;
-    border: none;
-    color: white;
     background: #5a5a5a;
   }
 }

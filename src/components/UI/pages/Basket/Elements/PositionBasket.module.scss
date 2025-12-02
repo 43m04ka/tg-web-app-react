@@ -31,7 +31,7 @@ $t: 1.2;
 
   > p:nth-child(1) {
     margin-top: 1vw;
-    height: $k * 8vw;
+    max-height: $k * 8vw;
     line-height: $k * 4vw;
     font-size: $k * 3.2vw;
     font-family: 'SF PRO Display', serif;

@@ -94,7 +94,7 @@ const Basket = ({height}) => {
                         <div className={style['separator']}/>
 
                         <input className={style['usernameInput']} ref={inputRef}
-                               placeholder={'Ваш никнейм в Telegram для связи'} value={username}
+                               placeholder={'Пример — gwstore_admin'} value={username}
                                onChange={e => {
                                    setUsername(e.target.value.replace(/[^a-zA-Z0-9]/g, ''));
                                    setInfoLabel('')

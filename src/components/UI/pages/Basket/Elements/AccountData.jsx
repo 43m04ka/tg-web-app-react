@@ -41,7 +41,7 @@ const AccountData = ({returnAccountData}) => {
     if ((pageId === 20 || pageId === 3) && selectNewAccount) {
         menuDesigns = (
             <div className={style['label']} style={{textAlign:'right'}}>
-                {'Мы оформим заказ на новый аккаунт PSN и передадим Вам его в полном доступе.\n Аккаунт будет принадлежать только Вам.\n Это бесплатно.'}
+                Мы оформим заказ на новый аккаунт PSN и передадим Вам его в полном доступе.<br/> Аккаунт будет принадлежать только Вам.<br/> Это бесплатно.
             < /div>)
     } else if ((pageId === 20 || pageId === 3)) {
         menuDesigns = (<div style={{
@@ -82,7 +82,7 @@ const AccountData = ({returnAccountData}) => {
     if (pageId === 28 && selectNewAccount === true) {
         menuDesigns = (
             <div className={style['label']}  style={{textAlign:'right'}}>
-                Мы оформим заказ на новый аккаунт Xbox и передадим Вам его в полном доступе. Это бесплатно.
+                Мы оформим заказ на новый аккаунт Xbox и передадим Вам его в полном доступе. <br/> Это бесплатно.
             </div>)
     } else if (pageId === 28) {
         menuDesigns = (<div style={{display: 'flex', flexDirection: 'column',}}>

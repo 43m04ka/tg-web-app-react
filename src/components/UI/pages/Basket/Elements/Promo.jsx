@@ -40,7 +40,7 @@ const Promo = ({setPromoData}) => {
                         if(e.target.value === ''){
                             setColor('#222222')
                         }else{
-                            setColor('#50A355')
+                            setColor('#222222')
                         }
                         setInputValue(e.target.value.toUpperCase())
                     }

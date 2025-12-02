@@ -87,5 +87,32 @@ export function useServer() {
         })
     }
 
-    return {getPreviewBasketList, addCardToBasket, deleteCardToBasket, getBasketList, createOrder, usePromo}
+    const addCardToFavorite = async (setResult, userId, cardId) => {
+        fetch(`${URL}/addCardToFavorite`, {
+            method: 'POST', headers: {
+                'Content-Type': 'application/json',
+            }, body: JSON.stringify({cardId: cardId, userId: userId}),
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
+    const deleteCardToFavorite = async (setResult, userId, cardId) => {
+        fetch(`${URL}/deleteCardToFavorite`, {
+            method: 'POST', headers: {
+                'Content-Type': 'application/json',
+            }, body: JSON.stringify({cardId: cardId, userId: userId}),
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
+
+    return {getPreviewBasketList, addCardToBasket, deleteCardToBasket, getBasketList, createOrder, usePromo, addCardToFavorite, deleteCardToFavorite}
 }

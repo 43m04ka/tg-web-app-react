@@ -5,7 +5,7 @@ import {useTelegram} from "../../../../../hooks/useTelegram";
 import useGlobalData from "../../../../../hooks/useGlobalData";
 import {useNavigate} from "react-router-dom";
 
-const PositionBasket = ({product, page}) => {
+const PositionBasket = ({product, page, percent}) => {
     const item = product;
 
     const {addCardToFavorite, deleteCardToFavorite, deleteCardToBasket} = useServer()
@@ -17,51 +17,26 @@ const PositionBasket = ({product, page}) => {
     const [cardInFavorite, setCardInFavorite] = useState(previewFavoriteData.includes(product.id))
 
     let oldPrice = ''
-    let parcent = ''
     let type = 0
-    let price = (item.price*counter).toLocaleString() + ' ₽'
+    let price = item.price*counter
 
 
     if (item.oldPrice !== null) {
         type = 1
-        oldPrice = (item.oldPrice*counter).toLocaleString() + ' ₽'
-        parcent = 'Скидка −' + Math.ceil((1 - item.price / item.oldPrice) * 100) + '%' + ' ' + item.endDatePromotion
+        oldPrice = item.oldPrice*counter
     } else if (item.similarCard !== null) {
         type = 0
-        price = (item.similarCard?.price*counter).toLocaleString() + ' ₽'
+        price = item.similarCard?.price*counter
         if (typeof item.similarCard.oldPrice !== 'undefined' && typeof item.similarCard.oldPrice !== 'undefined') {
             type = 1
-            parcent = 'Скидка −' + Math.ceil((1 - item.similarCard?.price / item.similarCard?.oldPrice) * 100) + '%' + ' ' + item.similarCard?.endDatePromotion
-            oldPrice = (item.similarCard?.oldPrice*counter).toLocaleString() + ' ₽'
+            oldPrice = item.similarCard?.oldPrice*counter
         }
     }
 
-    if (item.priceInOtherCurrency !== null && page === 3) {
-        price = item.priceInOtherCurrency.toLocaleString() + ' Rs'
-        type = 0
-        parcent = 'Цена в PS Store'
-    }
-
-    let parcentEl = (<div></div>)
-    if (parcent !== '') {
-        parcentEl = (<div style={{
-            lineHeight: '20px',
-            background: '#ff5d5d',
-            paddingLeft: '3px',
-            paddingRight: '3px',
-            borderRadius: '5px',
-            marginBottom: '5px',
-            textDecoration: 'none',
-            textAlign: 'left',
-            marginRight: '5px',
-            fontFamily: "'Montserrat', sans-serif",
-            fontWeight: 700,
-            fontSize: '12px',
-            overflow: 'hidden',
-            color: 'white',
-            width: 'max-content',
-            height: '20px'
-        }}>{parcent}</div>)
+    if(percent > 0){
+        type = 1
+        oldPrice = price
+        price = price - price*percent/100
     }
 
     return (<div className={style['container']}>
@@ -124,8 +99,8 @@ const PositionBasket = ({product, page}) => {
 
             </div>
             <div className={style['pricePlace']}>
-                <p className={style['priceOld']}>{oldPrice}</p>
-                <p className={style[type === 0 ? 'priceDefault' : 'priceDiscount']}>{price}</p>
+                <p className={style['priceOld']}>{oldPrice !== '' ? (oldPrice).toLocaleString() + ' ₽' : ''}</p>
+                <p className={style[type === 0 ? 'priceDefault' : 'priceDiscount']}>{(price).toLocaleString() + ' ₽'}</p>
             </div>
         </div>
     </div>);

@@ -70,7 +70,7 @@ const Basket = () => {
                     <div className={style['basketBlock']}>
                         <p className={style['title']}>Ваша корзина:</p>
                         {basket.map((item, index) => (<>
-                            <PositionBasket product={item} onReload={() => {
+                            <PositionBasket percent={promoData.percent} product={item} onReload={() => {
                                 updateBasket(catalogList, pageId)
                             }}/>
                             {index !== basket.length - 1 ? (
@@ -91,7 +91,7 @@ const Basket = () => {
                                     return el.similarCard !== null ? el.similarCard.price : el.price
                                 }).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}₽
                             </p> : ''}
-                            <p className={style['title']}>
+                            <p className={style['title']} style={{marginRight:'0', marginLeft:promoData.percent > 0 ? '0' : 'auto'}}>
                                 {basket.map(el => {
                                     return el.similarCard !== null ? el.similarCard.price : el.price
                                 }).reduce((accumulator, currentValue) => accumulator + currentValue, 0) * (1 - promoData.percent / 100)}₽

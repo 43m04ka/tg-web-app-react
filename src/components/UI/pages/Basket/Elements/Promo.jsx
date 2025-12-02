@@ -30,7 +30,7 @@ const Promo = ({setPromoData}) => {
                 onClick={() => {
                     if (text !== 'Скидка активна') {
                         setInputValue('')
-                        setColor('##222222')
+                        setColor('#222222')
                         setText('Применить')
                     }
                 }}
@@ -40,7 +40,7 @@ const Promo = ({setPromoData}) => {
                         if(e.target.value === ''){
                             setColor('#222222')
                         }else{
-                            setColor('#222222')
+                            setColor('#50A355')
                         }
                         setInputValue(e.target.value.toUpperCase())
                     }

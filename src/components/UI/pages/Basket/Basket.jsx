@@ -9,7 +9,7 @@ import Promo from "./Elements/Promo";
 import {Link, useNavigate} from "react-router-dom";
 import Recommendations from "../Product/Elements/Recommendations";
 
-const Basket = ({height}) => {
+const Basket = () => {
 
     const {getBasketList, createOrder} = useServer()
     const {user, tg} = useTelegram()
@@ -64,14 +64,17 @@ const Basket = ({height}) => {
                 return (<div
                     className={style['mainContainer']}
                     style={{
-                        paddingBottom: String(window.innerWidth * 0.53 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px',
+                        paddingBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px',
                         paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
                     }}>
                     <div className={style['basketBlock']}>
                         <p className={style['title']}>Ваша корзина:</p>
-                        {basket.map(item => (<PositionBasket product={item} onReload={() => {
-                            updateBasket(catalogList, pageId)
-                        }}/>))}
+                        {basket.map((item, index) => (<>
+                            <PositionBasket product={item} onReload={() => {
+                                updateBasket(catalogList, pageId)
+                            }}/>
+                            {index !== basket.length - 1 ? (<div className={style['separator']} style={{height:'1px', margin: 0}}/>) : ''}
+                        </>))}
                     </div>
 
                     <div className={style['basketBlock']}>
@@ -106,7 +109,7 @@ const Basket = ({height}) => {
 
                         <button
                             className={style['buttonBuy']}
-                            style={{background: (typeof user.username !== 'undefined' || username !== '' ? '#50A355' : '#adadad')}}
+                            style={{background: (typeof user.username !== 'undefined' || username !== '' ? '#50A355' : '#7a7a7a')}}
                             onClick={() => {
                                 if (typeof user.username !== 'undefined' || username !== '') {
                                     createOrder(accountData, {

@@ -11,29 +11,33 @@
 
 
   > input {
-    @extend %font-medium;
+    font-family: 'SF PRO Display', serif;
+    font-weight: bold;
     background: none;
     text-align: center;
     font-size: 3.6vw;
     border: none;
     outline: none;
-    padding: 2vw 3vw;
+    padding: 2.3vw 3vw;
     width: 50%;
+    caret-color: black;
+    height: 8.5vw;
   }
 
   > button {
     transition-property: background, transform;
     transition-duration: 0.2s;
     width: 50%;
-    height: 100%;
+    height: 8.5vw;
     border-radius: $button-border-radius / 3 * 2;
     border-left: 0.5vw solid #595959;
 
     > p {
-      @extend %font-medium;
+      font-family: 'SF PRO Display', serif;
+      font-weight: bold;
       color: white;
       font-size: 3.5vw;
-      margin: 2vw auto;
+      margin: 2.3vw auto;
       width: max-content;
     }
   }

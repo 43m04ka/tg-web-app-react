@@ -63,14 +63,18 @@ const Basket = () => {
             } else if (basket.length > 0) {
                 return (<div
                     className={style['mainContainer']}
-                    style={{paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px', paddingBottom: String(window.innerWidth * 0.15 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
+                    style={{
+                        paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
+                        paddingBottom: String(window.innerWidth * 0.15 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'
+                    }}>
                     <div className={style['basketBlock']}>
                         <p className={style['title']}>Ваша корзина:</p>
                         {basket.map((item, index) => (<>
                             <PositionBasket product={item} onReload={() => {
                                 updateBasket(catalogList, pageId)
                             }}/>
-                            {index !== basket.length - 1 ? (<div className={style['separator']} style={{height:'1px', marginTop:'0'}}/>) : ''}
+                            {index !== basket.length - 1 ? (
+                                <div className={style['separator']} style={{height: '1px', marginTop: '0'}}/>) : ''}
                         </>))}
                     </div>
 
@@ -82,7 +86,12 @@ const Basket = () => {
                     <div className={style['basketBlock']} style={{marginBottom: '0'}}>
                         <div style={{display: 'flex', flexDirection: 'row'}}>
                             <p className={style['title']}>Итого:</p>
-                            <p className={style['title']} style={{marginLeft: 'auto', marginRight: '0'}}>
+                            {promoData.percent > 0 ? <p className={style['title']} style={{margin: 'auto 1vw 0 auto', fontSize:'4vw', textDecoration:'line-through', color: '#757373', lineHeight:'7vw'}}>
+                                {basket.map(el => {
+                                    return el.similarCard !== null ? el.similarCard.price : el.price
+                                }).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}₽
+                            </p> : ''}
+                            <p className={style['title']}>
                                 {basket.map(el => {
                                     return el.similarCard !== null ? el.similarCard.price : el.price
                                 }).reduce((accumulator, currentValue) => accumulator + currentValue, 0) * (1 - promoData.percent / 100)}₽

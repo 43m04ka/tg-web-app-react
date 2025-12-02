@@ -34,7 +34,6 @@ const PositionBasket = ({product, page}) => {
             parcent = 'Скидка −' + Math.ceil((1 - item.similarCard?.price / item.similarCard?.oldPrice) * 100) + '%' + ' ' + item.similarCard?.endDatePromotion
             oldPrice = (item.similarCard?.oldPrice*counter).toLocaleString() + ' ₽'
         }
-
     }
 
     if (item.priceInOtherCurrency !== null && page === 3) {

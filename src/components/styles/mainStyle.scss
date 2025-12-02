@@ -1,44 +1,51 @@
 $bg-color: #171717;
 $menu-color: #222222;
 $button-border-radius: 1.5vw;
+$block-border-radius: 5.35vw;
 
 
 @font-face {
-  font-family: 'font-medium';
   src: url('./fonts/SF-Pro-Display-Medium.ttf') format('truetype');
+  font-family: 'SF PRO Display';
+  font-weight: normal;
+  font-style: normal;
 }
 
 @font-face {
-  font-family: 'font-bold';
   src: url('./fonts/SF-Pro-Display-Bold.ttf') format('truetype');
+  font-family: 'SF PRO Display';
+  font-weight: 700;
+  font-style: normal;
 }
 
 @font-face {
-  font-family: 'font-extrabold';
   src: url('./fonts/SF-Pro-Display-Bold.ttf') format('truetype');
+  font-family: 'SF PRO Display';
+  font-weight: 900;
+  font-style: normal;
 }
 
 
 %font-medium {
+  font-family: 'SF PRO Display', serif;
   text-decoration: none;
-  font-variant: normal;
-  font-family: 'font-medium';
-  line-height: 4vw;
   font-weight: normal;
+  font-variant: normal;
+  line-height: 4vw;
 }
 
 %font-bold {
+  font-family: 'SF PRO Display', serif;
   text-decoration: none;
   font-variant: normal;
-  font-family: 'font-bold';
-  font-weight: normal;
+  font-weight: 700;
 }
 
 %font-extrabold {
+  font-family: 'SF PRO Display', serif;
   text-decoration: none;
   font-variant: normal;
-  font-family: 'font-extrabold';
-  font-weight: bold;
+  font-weight: 900;
 }
 
 %no-select {

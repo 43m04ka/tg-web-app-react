@@ -40,9 +40,8 @@ const AccountData = ({returnAccountData}) => {
     let menuDesigns = null
     if ((pageId === 20 || pageId === 3) && selectNewAccount) {
         menuDesigns = (
-            <div className={style['label']}>
-                Мы оформим заказ на новый аккаунт PSN и передадим Вам его в полном доступе.
-                Это бесплатно.
+            <div className={style['label']} style={{textAlign:'right'}}>
+                {'Мы оформим заказ на новый аккаунт PSN и передадим Вам его в полном доступе.\n Аккаунт будет принадлежать только Вам.\n Это бесплатно.'}
             < /div>)
     } else if ((pageId === 20 || pageId === 3)) {
         menuDesigns = (<div style={{
@@ -82,7 +81,7 @@ const AccountData = ({returnAccountData}) => {
 
     if (pageId === 28 && selectNewAccount === true) {
         menuDesigns = (
-            <div className={style['label']}>
+            <div className={style['label']}  style={{textAlign:'right'}}>
                 Мы оформим заказ на новый аккаунт Xbox и передадим Вам его в полном доступе. Это бесплатно.
             </div>)
     } else if (pageId === 28) {
@@ -116,9 +115,7 @@ const AccountData = ({returnAccountData}) => {
     }
 
     return (
-        <div className={style['mainContainer']} style={{minHeight: (selectNewAccount ? '34.5vw' : '73.97vw')}}>
-
-            <div className={style['title']}>Куда оформить заказ?</div>
+        <div className={style['mainContainer']} style={{minHeight: (selectNewAccount ? '24.5vw' : '63.97vw')}}>
             <div className={style['selectPlace']}>
                 <div style={{background: !selectNewAccount ? '#50A355' : 'none'}}
                      onClick={() => {

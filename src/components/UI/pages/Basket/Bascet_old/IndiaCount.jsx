@@ -1,7 +1,7 @@
 import React from 'react';
 import useGlobalData from "../../../../../hooks/useGlobalData";
 import {useServerUser} from "../../../../../hooks/useServerUser";
-import ProductItemBasket from "../Elements/ProductItemBasket";
+import PositionBasket from "../Elements/PositionBasket";
 import IndiaCountElement from "./IndiaCountElement";
 
 const IndiaCount = ({basketList, setSum, onReload}) => {

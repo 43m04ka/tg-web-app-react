@@ -1,0 +1,164 @@
+@import "src/components/styles/mainStyle";
+
+$k: 1;
+$b: 1.4;
+$t: 1.1;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  margin: 2.9vw 0 0 0;
+
+  > div {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.positionImage {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: $k * 18.7vw;
+  height: $k * 18.7vw;
+  min-width: $k * 18.7vw;
+  min-height: $k * 18.7vw;
+  border-radius: 1.3vw;
+}
+
+.infoPlace {
+  margin: 0 1.0vw auto 1.0vw;
+
+  > p:nth-child(1) {
+    margin-top: 1vw;
+    height: 9.6vw;
+    line-height: 4.8vw;
+    font-size: 3.2vw;
+    font-family: 'SF PRO Display', serif;
+    font-variant: normal;
+    font-style: normal;
+    font-weight: bold;
+    color: white;
+  }
+
+  > p:nth-child(2) {
+    height: 4.2vw;
+    line-height: 4.2vw;
+    font-size: 2.1vw;
+    font-family: 'SF PRO Display', serif;
+    font-variant: normal;
+    font-style: normal;
+    font-weight: normal;
+    color: white;
+  }
+}
+
+.buttonPlace {
+  display: flex;
+  flex-direction: row;
+  margin: 1.3vw auto 1vw 0;
+
+  > div {
+    width: $b * 5.3vw;
+    height: $b * 5.3vw;
+    min-width: $b * 5.3vw;
+    min-height: $b *  5.3vw;
+    background: #171717;
+    border-radius: 1.3vw;
+    border: 0.4vw solid #595959;
+  }
+
+  > div:nth-child(2) {
+    margin-left: 1.3vw;
+  }
+}
+
+.pricePlace {
+  display: flex;
+  flex-direction: row;
+  margin: $b * 1.3vw $b * 1.3vw $b * 1vw auto;
+  font-family: "SF PRO Display", serif;
+  font-style: normal;
+  font-weight: bold;
+
+  .priceDefault {
+    color: white;
+    font-size: $t * 4.2vw;
+    line-height: $b * 5.3vw;
+    margin: auto 0 0 auto;
+  }
+
+  .priceDiscount {
+    color: #D86147;
+    font-size: $t * 4.2vw;
+    line-height: $b * 5.3vw;
+    margin: auto 0 0 auto;
+  }
+
+  .priceOld {
+    color: #5C5C5C;
+    text-decoration: line-through;
+    font-size: $t * 3.4vw;
+    line-height: $b * 4.8vw;
+    margin: auto $b * 1vw 0 auto;
+  }
+}
+
+.productBasketCounter {
+  display: flex;
+  flex-direction: row;
+  width: max-content !important;
+  margin-left: 1.3vw;
+  border: 0.4vw solid #7c7676;
+  background: #171717;
+  border-radius: 1.3vw;
+
+  font-family: 'SF PRO Display', serif;
+  font-variant: normal;
+  font-style: normal;
+  font-weight: bold;
+  font-size: $b * 2vw;
+  color: white;
+
+  > div {
+    width: $b * 3.8vw;
+    height: $b * 3.8vw;
+    min-width: $b * 3.8vw;
+    min-height: $b *  3.8vw;
+    background: #222222;
+    border-radius: 1.3vw;
+
+    > p {
+      display: flex;
+      line-height: $b *  3.5vw;
+      width: max-content;
+      margin: auto;
+    }
+
+    transition-property: background-color, transform;
+    transition-duration: 0.3s;
+  }
+
+  > div:active {
+    transform: scaleX(107%) scaleY(107%);
+    outline: none;
+  }
+
+  > div:nth-child(1) {
+    margin: $b * 0.5vw auto $b * 0.5vw $b * 0.5vw;
+  }
+
+  > div:nth-child(3) {
+    margin: $b * 0.5vw $b * 0.5vw $b * 0.5vw auto;
+  }
+
+
+  > p {
+    font-size: $b * 1.25vw;
+    line-height: $b *  3.8vw;
+    width: $b * 4vw;
+    margin: auto $b * 0.5vw;
+    text-wrap: nowrap;
+    text-align: center;
+  }
+}

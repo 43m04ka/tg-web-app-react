@@ -2,42 +2,40 @@
 
 
 .mainContainer {
-  background: #454545;
-  padding: 2.5vw 3vw;
+  background: white;
+  border-radius: $button-border-radius;
   display: flex;
-  flex-direction: column;
-  border-radius: 4vw;
-  margin: 4vw 2vw 0 2vw;
+  flex-direction: row;
+  margin: 2.9vw 0 0 0;
+  border: 0.5vw solid #595959;
 
-  > div {
-    background: white;
-    border-radius: $button-border-radius;
-    display: flex;
 
-    > input {
+  > input {
+    @extend %font-medium;
+    background: none;
+    text-align: center;
+    font-size: 3.6vw;
+    border: none;
+    outline: none;
+    padding: 2vw 3vw;
+    width: 50%;
+  }
+
+  > button {
+    transition-property: background, transform;
+    transition-duration: 0.2s;
+    width: 50%;
+    height: 100%;
+    border-radius: $button-border-radius / 3 * 2;
+    border-left: 0.5vw solid #595959;
+
+    > p {
       @extend %font-medium;
-      background: none;
-      text-align: center;
-      font-size: 3.6vw;
-      border: none;
-      outline: none;
-      padding: 2vw 3vw;
-      width: 50%;
-    }
-
-    > button {
-      transition-property: background, transform;
-      transition-duration: 0.2s;
-      width: 50%;
-      height: 100%;
-      border-radius: $button-border-radius;
-      >p{
-        @extend %font-medium;
-        color: white;
-        font-size: 3.5vw;
-        margin: 2vw auto;
-        width: max-content;
-      }
+      color: white;
+      font-size: 3.5vw;
+      margin: 2vw auto;
+      width: max-content;
     }
   }
 }
+

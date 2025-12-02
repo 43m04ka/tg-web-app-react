@@ -5,8 +5,8 @@ import {useServer} from "../useServer";
 const Promo = ({setPromoData}) => {
 
     const [inputValue, setInputValue] = React.useState('');
-    const [color, setColor] = React.useState('#AEAEAE');
-    const [text, setText] = React.useState('ПРИМЕНИТЬ');
+    const [color, setColor] = React.useState('#222222');
+    const [text, setText] = React.useState('Применить');
     const {usePromo} = useServer()
 
     const onReturnResult = (result) => {
@@ -26,20 +26,19 @@ const Promo = ({setPromoData}) => {
     }
 
     return (<div className={style['mainContainer']}>
-        <div>
             <input
                 onClick={() => {
                     if (text !== 'Скидка активна') {
                         setInputValue('')
-                        setColor('#AEAEAE')
-                        setText('ПРИМЕНИТЬ')
+                        setColor('##222222')
+                        setText('Применить')
                     }
                 }}
                 placeholder={'Промокод'} value={inputValue}
                 onChange={(e) => {
                     if (text !== 'Скидка активна') {
                         if(e.target.value === ''){
-                            setColor('#AEAEAE')
+                            setColor('#222222')
                         }else{
                             setColor('#50A355')
                         }
@@ -53,7 +52,6 @@ const Promo = ({setPromoData}) => {
                     {text}
                 </p>
             </button>
-        </div>
     </div>);
 };
 

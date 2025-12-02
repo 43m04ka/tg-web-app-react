@@ -5,14 +5,26 @@
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
+  background: #171717;
   width: 100%;
   height: 100%;
 }
 
+.basketBlock {
+  background: $menu-color;
+  margin: 1.6vw 3.2vw 4.0vw 3.2vw;
+  width: 93.6vw;
+  border-radius: $block-border-radius;
+  height: max-content;
+  padding: 2.9vw 4.8vw;
+}
+
 .title {
-  @extend %font-medium;
-  margin: 4vw auto;
-  font-size: 5vw;
+  font-family: 'SF PRO Display', serif;
+  font-variant: normal;
+  font-weight: 700;
+  font-size: 5.3vw;
+  line-height: 8.5vw;
   color: white;
 }
 
@@ -96,41 +108,43 @@
       margin: 1vw 0 0 1vw;
     }
   }
+}
 
-  > button {
+.buttonBuy {
+  display: flex;
+  margin: 2.9vw 0 0 0;
+  width: 100%;
+  letter-spacing: 0.2vw;
+  @extend %font-medium;
+  font-size: 3.5vw;
+  font-weight: 900;
+  border-radius: $button-border-radius;
+  color: white;
+  padding: 2.4vw;
+  transition-property: background;
+  transition-duration: 0.3s;
+
+  > div {
+    margin: 0 auto;
     display: flex;
-    margin: 3vw 3vw;
-    width: 94vw;
-    letter-spacing: 0.2vw;
-    @extend %font-medium;
-    font-size: 3.8vw;
-    font-weight: 900;
-    border-radius: $button-border-radius;
-    color: white;
-    padding: 3vw;
-    transition-property: background;
-    transition-duration: 0.3s;
-    >div {
-      margin: 0 auto;
-      display: flex;
-      width: max-content;
-    }
-  }
-
-  > div:nth-child(3) {
-    @extend %font-medium;
-    font-size: 2.5vw;
-    text-align: center;
-    color: white;
-    margin: 0 2.5vw 3vw 2.5vw;
-
-    > a {
-      text-decoration: none;
-      margin: 0 0.6vw;
-      color: #4F8AE7;
-    }
+    width: max-content;
   }
 }
+
+.labelBuy {
+  @extend %font-medium;
+  font-size: 2.5vw;
+  text-align: center;
+  color: white;
+  margin: 2.9vw 0 0 0;
+
+  > a {
+    text-decoration: none;
+    margin: 0 0.6vw;
+    color: #4F8AE7;
+  }
+}
+
 
 .emptyBasket {
   width: 100%;
@@ -162,7 +176,7 @@
   }
 }
 
-.secretDuck{
+.secretDuck {
   display: flex;
   width: 30vw;
   height: 30vw;
@@ -173,22 +187,30 @@
 
 
 .usernameInput {
-  background: #454545;
-  padding: 2.5vw 3vw;
-  display: flex;
-  flex-direction: column;
-  border-radius: 4vw;
-  margin: 1vw 2vw 0vw 2vw;
-
-  > input {
-    @extend %font-bold;
-    font-size: 3.5vw;
-    background: white;
-    text-align: center;
-    border: none;
-    outline: none;
-    padding: 2vw 3vw;
-    width: 100%;
-    border-radius: $button-border-radius;
-  }
+  margin-top: 2.9vw;
+  @extend %font-bold;
+  font-size: 3.5vw;
+  background: white;
+  text-align: center;
+  border: none;
+  outline: none;
+  padding: 2.3vw 3vw;
+  width: 100%;
+  border-radius: $button-border-radius;
 }
+
+.usernameLabel {
+  @extend %font-bold;
+  font-size: 2.8vw;
+  text-align: center;
+  color: white;
+  margin: 2.9vw 0 0 0;
+}
+
+.separator {
+  height: 0.6vw;
+  width: 100%;
+  margin-top: 2.9vw;
+  background: #595959;
+}
+

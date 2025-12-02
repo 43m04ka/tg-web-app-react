@@ -3,10 +3,11 @@ import style from './Basket.module.scss';
 import {useServer} from "./useServer";
 import {useTelegram} from "../../../../hooks/useTelegram";
 import useGlobalData from "../../../../hooks/useGlobalData";
-import ProductItemBasket from "./Elements/ProductItemBasket";
+import PositionBasket from "./Elements/PositionBasket";
 import AccountData from "./Elements/AccountData";
 import Promo from "./Elements/Promo";
 import {Link, useNavigate} from "react-router-dom";
+import Recommendations from "../Product/Elements/Recommendations";
 
 const Basket = ({height}) => {
 
@@ -60,49 +61,51 @@ const Basket = ({height}) => {
                     </div>
                 </div>)
             } else if (basket.length > 0) {
-
-                return (<div className={style['mainContainer']}
-                             style={{
-                                 paddingBottom: String(window.innerWidth * 0.53 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px',
-                                 paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
-                             }}>
-                    <div className={style['title']}>Ваша корзина</div>
-
-                    {basket.map(item => (<ProductItemBasket product={item} onReload={() => {
-                        updateBasket(catalogList, pageId)
-                    }}/>))}
-
-                    <div className={style['infoLabel']}>
-                        {infoLabel}
+                return (<div
+                    className={style['mainContainer']}
+                    style={{
+                        paddingBottom: String(window.innerWidth * 0.53 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px',
+                        paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
+                    }}>
+                    <div className={style['basketBlock']}>
+                        <p className={style['title']}>Ваша корзина:</p>
+                        {basket.map(item => (<PositionBasket product={item} onReload={() => {
+                            updateBasket(catalogList, pageId)
+                        }}/>))}
                     </div>
 
-                    <div className={style['usernameInput']}>
-                        <input ref={inputRef} placeholder={'Ваш никнейм в Telegram для связи'} value={username}
+                    <div className={style['basketBlock']}>
+                        <p className={style['title']}>Куда оформить заказ:</p>
+                        <AccountData returnAccountData={setAccountData}/>
+                    </div>
+
+                    <div className={style['basketBlock']} style={{marginBottom: '0'}}>
+                        <div style={{display: 'flex', flexDirection: 'row'}}>
+                            <p className={style['title']}>Итого:</p>
+                            <p className={style['title']} style={{marginLeft: 'auto', marginRight: '0'}}>
+                                {basket.map(el => {
+                                    return el.similarCard !== null ? el.similarCard.price : el.price
+                                }).reduce((accumulator, currentValue) => accumulator + currentValue, 0) * (1 - promoData.percent / 100)}₽
+                            </p>
+                        </div>
+
+                        <Promo setPromoData={setPromoData}/>
+
+                        <div className={style['separator']}/>
+
+                        <input className={style['usernameInput']} ref={inputRef}
+                               placeholder={'Ваш никнейм в Telegram для связи'} value={username}
                                onChange={e => {
                                    setUsername(e.target.value.replace(/[^a-zA-Z0-9]/g, ''));
                                    setInfoLabel('')
                                }}/>
-                    </div>
 
-                    {pageId !== 29 ? <AccountData returnAccountData={setAccountData}/> : ''}
-
-                    <Promo setPromoData={setPromoData}/>
-
-                    <div className={style['total']}
-                         style={{marginTop: String(height - (tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top + 0.52 * window.innerWidth)) + 'px'}}>
-                        <div>
-                            <div>Итого к оплате:</div>
-                            <div>{basket.map(el => {
-                                return el.similarCard !== null ? el.similarCard.price : el.price
-                            }).reduce((accumulator, currentValue) => accumulator + currentValue, 0) * (1 - promoData.percent / 100)}₽
-                            </div>
-                            {promoData.percent > 0 ? <div>
-                                {basket.map(el => {
-                                    return el.similarCard !== null ? el.similarCard.price : el.price
-                                }).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}₽
-                            </div> : ''}
+                        <div className={style['usernameLabel']}>
+                            Введите Ваш никнейм в Telegram, чтобы мы могли связаться с Вами после оформления заказа
                         </div>
+
                         <button
+                            className={style['buttonBuy']}
                             style={{background: (typeof user.username !== 'undefined' || username !== '' ? '#50A355' : '#adadad')}}
                             onClick={() => {
                                 if (typeof user.username !== 'undefined' || username !== '') {
@@ -118,7 +121,7 @@ const Basket = ({height}) => {
                             }}>
                             <div>Оформить заказ</div>
                         </button>
-                        <div>
+                        <div className={style['labelBuy']}>
                             Нажимая на кнопку, Вы соглашаетесь с
                             <a href={'https://t.me/gwstore_faq/12'}>
                                 Условиями обработки персональных данных
@@ -129,6 +132,8 @@ const Basket = ({height}) => {
                             </a>
                         </div>
                     </div>
+
+                    <Recommendations/>
                 </div>);
             }
         }
@@ -136,3 +141,43 @@ const Basket = ({height}) => {
 };
 
 export default Basket;
+
+//
+// <div className={style['title']}>Ваша корзина</div>
+//
+// {basket.map(item => (<PositionBasket product={item} onReload={() => {
+//     updateBasket(catalogList, pageId)
+// }}/>))}
+//
+// <div className={style['infoLabel']}>
+//     {infoLabel}
+// </div>
+//
+// <div className={style['usernameInput']}>
+//     <input ref={inputRef} placeholder={'Ваш никнейм в Telegram для связи'} value={username}
+//            onChange={e => {
+//                setUsername(e.target.value.replace(/[^a-zA-Z0-9]/g, ''));
+//                setInfoLabel('')
+//            }}/>
+// </div>
+//
+// {pageId !== 29 ? <AccountData returnAccountData={setAccountData}/> : ''}
+//
+// <Promo setPromoData={setPromoData}/>
+//
+// <div className={style['total']}
+//      style={{marginTop: String(height - (tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top + 0.52 * window.innerWidth)) + 'px'}}>
+//     <div>
+//         <div>Итого к оплате:</div>
+//         <div>{basket.map(el => {
+//             return el.similarCard !== null ? el.similarCard.price : el.price
+//         }).reduce((accumulator, currentValue) => accumulator + currentValue, 0) * (1 - promoData.percent / 100)}₽
+//         </div>
+//         {promoData.percent > 0 ? <div>
+//             {basket.map(el => {
+//                 return el.similarCard !== null ? el.similarCard.price : el.price
+//             }).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}₽
+//         </div> : ''}
+//     </div>
+
+// </div>

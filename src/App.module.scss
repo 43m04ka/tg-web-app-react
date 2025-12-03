@@ -8,6 +8,11 @@
   overflow-y: hidden;
 }
 
+.App{
+  min-height: 80vh;
+  max-height: 82vh;
+}
+
 .loader {
   --size: 35vh;
   --duration: 2s;

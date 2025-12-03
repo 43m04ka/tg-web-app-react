@@ -64,7 +64,7 @@ const Basket = ({height}) => {
                 return (<div
                     className={style['mainContainer']}
                     style={{
-                        height: String(height) + 'px',
+                        minHeight: String(height) + 'px',
                         paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
                         paddingBottom: String(window.innerWidth * 0.15 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'
                     }}>

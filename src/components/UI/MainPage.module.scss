@@ -2,7 +2,6 @@
 
 .mainDivision {
   width: 100vw;
-  overflow: hidden;
   overflow-y: hidden;
   opacity: 0.3;
   -webkit-opacity: 0.3;
@@ -25,6 +24,7 @@
   }
 
   > div:nth-child(2) {
+    overflow-y: hidden;
     position: absolute;
     width: 100vw;
     top: 0;

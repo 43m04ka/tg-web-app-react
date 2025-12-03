@@ -1,6 +1,8 @@
 html, body {
   overflow-x: hidden;
   overflow-y: hidden;
+  touch-action: none;
+  touch-action: none;
 }
 
 * {

@@ -34,7 +34,7 @@
       top: 0;
       position: absolute;
       background: $menu-color;
-      overflow: hidden;
+      overflow-y: scroll;
       transition-property: opacity;
       transition-duration: 0.1s;
       transition-timing-function: ease-in-out;

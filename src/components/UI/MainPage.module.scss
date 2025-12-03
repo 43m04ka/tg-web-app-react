@@ -3,6 +3,7 @@
 .mainDivision {
   width: 100vw;
   overflow: hidden;
+  overflow-y: hidden;
   opacity: 0.3;
   -webkit-opacity: 0.3;
   animation: animOpacity 0.5s ease-in-out forwards;

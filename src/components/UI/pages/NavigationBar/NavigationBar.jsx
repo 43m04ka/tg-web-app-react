@@ -71,7 +71,8 @@ const NavigationBar = ({setOpacityTab, opacityTab, setZIndexTab, height}) => {
 
 
     return (<div className={style['container']}
-                 style={typeBar ? {paddingBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'} : {marginBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
+                 style={typeBar ? {paddingBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'} :
+                     {marginBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
         {!typeBar ? <div>
             <div style={{marginLeft: String(19.5 * (activeTab)) + '%'}}/>
         </div> : ''}

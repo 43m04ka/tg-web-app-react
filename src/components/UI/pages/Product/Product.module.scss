@@ -114,6 +114,7 @@
   font-size: 5vw;
 }
 
+
 .favorite {
   width: 9.35vw;
   height: 9.35vw;
@@ -220,7 +221,7 @@
   > button:nth-child(1) {
     border-radius: $block-border-radius / 7 * 3;
     border: 0.5vw solid #7c7676;
-    width: 100%;
+    width: 94.6vw;
     padding: 2vw 1vw;
 
     @extend %font-medium;
@@ -229,13 +230,20 @@
     margin: 2.7vw 2.7vw 1vw 2.7vw;
     color: white;
     text-align: center;
-    transition-property: background-color, transform;
-    transition-duration: 0.3s;
+    transition: all 0.7s cubic-bezier(0, 0.8, 0.26, 0.99);
+  }
+
+
+  > button:nth-child(1):before {
+    transition: 0.7s cubic-bezier(0, 0.8, 0.26, 0.99);
+  }
+
+  > button:nth-child(1):after {
+    transition: 0.7s cubic-bezier(0, 0.8, 0.26, 0.99);
   }
 
   > button:nth-child(1):active {
-    transform: scaleX(101%) scaleY(107%);
-    outline: none;
+    transform: scaleY(107%) scaleX(101%);
   }
 }
 

@@ -261,15 +261,13 @@ const Product = () => {
                     if (productData.onSale) {
                         cardInBasket ? navigate('/' + pageList.map(page => {
                             return pageId === page.id ? page.link : null
-                        }).filter(page => page !== null)[0] + '/basket?from=product') : addCardToBasket(() => {
-                            setCardInBasket(true)
+                        }).filter(page => page !== null)[0] + '/basket?from=product') : addCardToBasket(async () => {
+                            await setCardInBasket(true)
+                            await updateBasket(catalogList, pageId)
                         }, user.id, productData.id)
-                        setTimeout(() => {
-                            updateBasket(catalogList, pageId)
-                        }, 250)
                     }
                 }}
-                        style={{background: productData.onSale ? cardInBasket ? '#50A355' : '#404ADE' : '#585c59'}}>
+                        style={{background: productData.onSale ? cardInBasket ? '#50A355' : '#404ADE' : '#6e6e6e'}}>
                     {productData.onSale ? cardInBasket ? 'В корзине' : 'Добавить в корзину' : 'Нет в продаже'}
                 </button>
                 {productData.onSale && cardInBasket ? <ProductBasketCounter idPos={productData.id} setCardInBasket={setCardInBasket}/> : ''}

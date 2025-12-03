@@ -7,7 +7,7 @@ const CatalogItem = ({product, isClicked}) => {
 
     let oldPrice = ''
     let parcent = ''
-    let price = product.price.toLocaleString() + ' ₽'
+    let price = String(product.price).toLocaleString() + ' ₽'
 
     if (product.oldPrice !== null) {
         oldPrice = String(product.oldPrice).toLocaleString() + ' ₽'

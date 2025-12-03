@@ -55,10 +55,10 @@ const Basket = ({height}) => {
                 return (<div className={style['emptyBasket']}>
                     <div/>
                     <div>В корзине ничего нет</div>
-                    <div className={style['button']} onClick={() => {
+                    <button className={style['button']} style={{background: '#454545'}} onClick={() => {
                         navigate(window.location.pathname.replace('/basket', ''));
                     }}>Перейти к покупкам
-                    </div>
+                    </button>
                 </div>)
             } else if (basket.length > 0) {
                 return (<div

@@ -223,27 +223,12 @@
     border: 0.5vw solid #7c7676;
     width: 94.6vw;
     padding: 2vw 1vw;
-
     @extend %font-medium;
     height: 10.7vw;
     font-size: 4vw;
     margin: 2.7vw 2.7vw 1vw 2.7vw;
     color: white;
     text-align: center;
-    transition: all 0.7s cubic-bezier(0, 0.8, 0.26, 0.99);
-  }
-
-
-  > button:nth-child(1):before {
-    transition: 0.7s cubic-bezier(0, 0.8, 0.26, 0.99);
-  }
-
-  > button:nth-child(1):after {
-    transition: 0.7s cubic-bezier(0, 0.8, 0.26, 0.99);
-  }
-
-  > button:nth-child(1):active {
-    transform: scaleY(107%) scaleX(101%);
   }
 }
 

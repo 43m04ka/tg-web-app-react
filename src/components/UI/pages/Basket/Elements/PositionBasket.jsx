@@ -18,7 +18,6 @@ const PositionBasket = ({product, percent}) => {
         if (product.count !== counter) {
             setBasketPositionCount(() => {
                 updateBasket(catalogList, pageId)
-                console.log(product.id, counter, product.name)
             }, user.id, product.id, counter).then()
         }
     }, [counter])

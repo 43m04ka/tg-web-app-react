@@ -115,20 +115,21 @@ const AccountData = ({returnAccountData}) => {
     }
 
     return (
-        <div className={style['mainContainer']} style={{minHeight: (selectNewAccount ? '24.5vw' : '63.97vw')}}>
+        <div className={style['mainContainer']} style={{minHeight: (selectNewAccount ? '24.5vw' : '63.97vw'), height: (selectNewAccount ? '31.5vw' : '63.97vw')}}>
             <div className={style['selectPlace']}>
-                <div style={{background: !selectNewAccount ? '#50A355' : 'none'}}
+                <div
                      onClick={() => {
                          setSelectNewAccount(false)
                      }}>
                     <div style={{color: !selectNewAccount ? 'white' : '#575757'}}>На мой аккаунт</div>
                 </div>
-                <div style={{background: selectNewAccount ? '#50A355' : 'none'}}
+                <div
                      onClick={() => {
                          setSelectNewAccount(true)
                      }}>
                     <div style={{color: selectNewAccount ? 'white' : '#575757'}}>Новый аккаунт</div>
                 </div>
+                <div/>
             </div>
 
             <div style={{

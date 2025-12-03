@@ -20,7 +20,7 @@ const DescriptionImages = ({data}) => {
         <Swiper
             slidesPerView={3}
             centeredSlides={true}
-            spaceBetween={0}
+            spaceBetween={-15}
             style={{marginLeft: '-60vw', width: '220vw'}}
             loop={data.length > 3}
         >

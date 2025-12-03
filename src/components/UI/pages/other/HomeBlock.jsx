@@ -75,7 +75,7 @@ const HomeBlock = ({data}) => {
                     )}
                 </div>
                 <div style={{width: '100%'}}>
-                    <div onClick={()=> navigate(link + data.path)}
+                    <button onClick={()=> navigate(link + data.path)}
                         style={{
                             fontWeight: 'normal',
                             fontFamily: "'SF PRO Display', sans-serif",
@@ -90,7 +90,7 @@ const HomeBlock = ({data}) => {
                             marginTop:'10px',
                         }}>
                         Открыть каталог
-                    </div>
+                    </button>
                 </div>
             </div>
         );

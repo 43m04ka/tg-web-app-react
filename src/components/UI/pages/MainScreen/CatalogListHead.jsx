@@ -45,7 +45,7 @@ const CatalogListHead = () => {
     }
 
     let loop = false
-    if (data.length > 3) {
+    if (data.length > 4) {
         loop = true
     }
 

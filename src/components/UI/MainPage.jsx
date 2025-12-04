@@ -18,7 +18,7 @@ const MainPage = ({page}) => {
     const {tg} = useTelegram();
     const [opacityTab, setOpacityTab] = useState(0);
     const [zIndexTab, setZIndexTab] = useState(-10);
-    const [height, setHeight] = useState(0);
+    const [barIsVisible, setBarIsVisible] = useState(true);
     const scrollRef = useRef(null);
     const {pageId, setPageId} = useGlobalData()
 
@@ -34,6 +34,10 @@ const MainPage = ({page}) => {
             });
         }
     }, [])
+
+    useEffect(()=>{
+        setBarIsVisible(window.innerHeight >= window.screen.availHeight * 0.8)
+    }, [window.innerHeight , window.screen.availHeight])
 
     return (<div className={style['mainDivision']}>
         <div
@@ -60,7 +64,7 @@ const MainPage = ({page}) => {
                 </Routes>
             </div>
         </div>
-        <div style={{opacity: window.innerHeight < window.screen.availHeight * 0.8 ? 0 : 1}}>
+        <div style={{opacity: barIsVisible ? 1 : 0}}>
             <NavigationBar setZIndexTab={setZIndexTab} zIndexTab={zIndexTab} opacityTab={opacityTab}
                            setOpacityTab={setOpacityTab}/>
         </div>

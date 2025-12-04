@@ -46,7 +46,7 @@ const History = () => {
                             display: 'grid',
                             gridTemplateColumns: '1fr 20px',
                         }}>
-                            <div>
+                            <div style={{marginLeft:'10px'}}>
                                 <div style={{display: 'flex', justifyContent: 'left', alignItems: 'center'}}>
                                     <div className={'text-element'}>{'Заказ №' + String(order.id)}</div>
                                     <div className={'text-element'} style={{marginLeft: '30px'}}>

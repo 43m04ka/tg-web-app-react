@@ -2,18 +2,20 @@ import React, {useEffect, useState} from 'react';
 import {useTelegram} from "../../../../hooks/useTelegram";
 import {Link, useNavigate} from "react-router-dom";
 import {useServerUser} from "../../../../hooks/useServerUser";
+import useGlobalData from "../../../../hooks/useGlobalData";
 
 const Favorites = () => {
 
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const [cardList, setCardList] = useState(null)
-    const {getFavoriteList} = useServerUser()
+    const {getFavoriteList, deleteCardToFavorite} = useServerUser()
 
     if (cardList === null) {
-        console.log(cardList)
         getFavoriteList(setCardList, user.id).then()
     }
+
+    const {updatePreviewFavoriteData} = useGlobalData()
 
     useEffect(() => {
         tg.onEvent('backButtonClicked', () => navigate(-1))
@@ -51,7 +53,8 @@ const Favorites = () => {
             </div>)
         } else {
             return (<div style={{
-                    display: 'grid',
+                    display: 'flex',
+                    flexDirection:'column',
                     position: 'relative',
                     overflowY: 'scroll',
                     height: '100vh',
@@ -181,6 +184,7 @@ const Favorites = () => {
                             background: '#232323',
                             borderRadius: '10px',
                             margin: '10px 0 0 10px',
+                            height: 'max-content',
                             width: String(window.innerWidth - 20) + 'px'
                         }}>
                             <Link to={'/card/' + item.id} className={'link-element'}
@@ -232,8 +236,11 @@ const Favorites = () => {
                                     </div>
                                 </div>
                             </Link>
-                            <div onClick={() => {
-
+                            <div onClick={async () => {
+                                await deleteCardToFavorite(() => {
+                                    updatePreviewFavoriteData()
+                                    getFavoriteList(setCardList, user.id)
+                                }, user.id, item.id)
                             }} style={{marginRight: '20px'}}>
                                 <div className={'background-trash'}
                                      style={{padding: '10px', height: '20px', width: '20px', marginTop: '30px'}}>

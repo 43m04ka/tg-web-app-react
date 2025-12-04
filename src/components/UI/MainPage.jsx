@@ -39,6 +39,18 @@ const MainPage = ({page}) => {
         setBarIsVisible(window.innerHeight >= window.screen.availHeight * 0.8)
     }, [window.innerHeight , window.screen.availHeight])
 
+    const resizeHandler = () => {
+        setBarIsVisible(window.innerHeight >= window.screen.availHeight * 0.8)
+    };
+
+    useEffect(() => {
+        window.addEventListener("resize", resizeHandler);
+        resizeHandler();
+        return () => {
+            window.removeEventListener("resize", resizeHandler);
+        };
+    }, [])
+
     return (<div className={style['mainDivision']}>
         <div
             style={{zIndex: 100, paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.1 * window.innerWidth) + 'px'}}

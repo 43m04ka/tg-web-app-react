@@ -62,20 +62,7 @@ function App() {
     } = useGlobalData();
 
 
-    const [size, setSize] = React.useState(window.innerHeight);
     const [isLoaded, setIsLoaded] = React.useState(true);
-
-    const resizeHandler = () => {
-        setSize(window.innerHeight);
-    };
-
-    useEffect(() => {
-        window.addEventListener("resize", resizeHandler);
-        resizeHandler();
-        return () => {
-            window.removeEventListener("resize", resizeHandler);
-        };
-    }, [])
 
     useEffect(() => {
         try {
@@ -150,7 +137,7 @@ function App() {
                 {pageList.map((page) => (
                     <Route path={page['link'] + '/*'} key={page['id']} element={<MainPage page={page}/>}/>))}
                 <Route path={'favorites'} element={<Favorites/>}/>
-                <Route path={'/catalog/*'} element={<Catalog height={size}/>}/>
+                <Route path={'/catalog/*'} element={<Catalog/>}/>
                 <Route path={'/card/*'} element={<Product/>}/>
                 <Route path={'/choice-catalog/*'} element={<Product/>}/>
                 <Route path={'admin-panel/*'} element={<AdminPanel/>}/>

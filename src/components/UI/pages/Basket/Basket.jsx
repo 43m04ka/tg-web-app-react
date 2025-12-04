@@ -52,13 +52,24 @@ const Basket = () => {
     } else {
         if (basket !== null) {
             if (basket.length === 0) {
-                return (<div className={style['emptyBasket']}>
-                    <div/>
-                    <div>В корзине ничего нет</div>
-                    <button className={style['button']} style={{background: '#454545'}} onClick={() => {
-                        navigate(window.location.pathname.replace('/basket', ''));
-                    }}>Перейти к покупкам
-                    </button>
+                return (<div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    position: 'relative',
+                    overflowY: 'scroll',
+                    height: '100vh',
+                    paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
+                    paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 20) + 'px',
+                }}>
+                    <div className={style['emptyBasket']}>
+                        <div/>
+                        <div>В корзине ничего нет</div>
+                        <button className={style['button']} style={{background: '#454545'}} onClick={() => {
+                            navigate(window.location.pathname.replace('/basket', ''));
+                        }}>Перейти к покупкам
+                        </button>
+                    </div>
+                    <Recommendations/>
                 </div>)
             } else if (basket.length > 0) {
                 return (<div

@@ -149,13 +149,14 @@
 
 .emptyBasket {
   width: 100%;
+  margin-bottom: 10vw;
 
   div:nth-child(1) {
     display: flex;
     width: 30vw;
     height: 30vw;
     background-size: cover;
-    margin: 33.5vh auto 3vw auto;
+    margin: 10vw auto 3vw auto;
     @extend %saidDuck;
   }
 

@@ -3,6 +3,8 @@ import {useTelegram} from "../../../../hooks/useTelegram";
 import {Link, useNavigate} from "react-router-dom";
 import {useServerUser} from "../../../../hooks/useServerUser";
 import useGlobalData from "../../../../hooks/useGlobalData";
+import style from '../Basket/Basket.module.scss';
+import Recommendations from "../Product/Elements/Recommendations";
 
 const Favorites = () => {
 
@@ -30,36 +32,34 @@ const Favorites = () => {
         }}></div>);
     } else {
         if (cardList.length === 0) {
-            return (<div style={{display: 'grid'}}>
-                <div style={{
-                    height: String(window.innerHeight - 60 - 15 - tg?.contentSafeAreaInset.bottom - tg?.safeAreaInset.bottom - tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
-                    marginTop: '15px',
-                    textAlign: 'center',
-                    color: 'gray',
-                    fontSize: '16px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                }} className={'text-element'}>
-                    <div className={'background-basketSaid'} style={{width: '65px', height: '83px'}}/>
-                    <div className={'text-element'}>В избранном ничего нет...</div>
-                </div>
-                <Link to={'/'} className={'link-element'}>
-                    <button className={'all-see-button'} style={{marginTop: '10px', width: String(300) + 'px'}}>На
-                        главную
+            return (<div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                position: 'relative',
+                overflowY: 'scroll',
+                height: '100vh',
+                paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
+                paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px',
+            }}>
+                <div className={style['emptyBasket']}>
+                    <div/>
+                    <div>В избранном ничего нет</div>
+                    <button className={style['button']} style={{background: '#454545'}} onClick={() => {
+                        navigate('/');
+                    }}>Перейти к покупкам
                     </button>
-                </Link>
+                </div>
+                <Recommendations/>
             </div>)
         } else {
             return (<div style={{
                     display: 'flex',
-                    flexDirection:'column',
+                    flexDirection: 'column',
                     position: 'relative',
                     overflowY: 'scroll',
                     height: '100vh',
                     paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
-                    paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px',
+                    paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 20) + 'px',
                 }}>
                     <div style={{
                         width: '100%',

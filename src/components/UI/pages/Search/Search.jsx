@@ -134,7 +134,7 @@ const Search = () => {
                                                                                    lastScroll = (event.target.scrollTop);
                                                                                }}
                                                                                ref={scrollRef}
-                                                                               style={{paddingBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px'}}>
+                                                                               style={{paddingBottom: String(window.innerWidth * 0.1 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px'}}>
             <div className={'list-grid'}>
                 {cardList.map(item => {
                     return (<div style={{marginLeft: '6vw'}}>

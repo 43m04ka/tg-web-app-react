@@ -10,12 +10,12 @@ function countOccurrences(str, sub) {
     return matches ? matches.length : 0;
 }
 
-const NavigationBar = ({setOpacityTab, opacityTab, setZIndexTab, height}) => {
+const NavigationBar = ({setOpacityTab, setZIndexTab}) => {
 
     const {tg} = useTelegram()
     const {pageId, pageList, updateBasket, basket, catalogList} = useGlobalData()
 
-    const [typeBar, setTypeBar] = useState(true)
+    const [typeBar] = useState(true)
 
     const navigate = useNavigate()
 
@@ -58,16 +58,14 @@ const NavigationBar = ({setOpacityTab, opacityTab, setZIndexTab, height}) => {
                     }
                     setActiveTab(index)
                     updateBasket(catalogList, pageId)
-                    //window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
                 }
             })
         } else {
             setActiveTab(0)
             setZIndexTab(-100)
             tg.BackButton.hide();
-            //window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         }
-    }, [window.location.pathname, height])
+    }, [window.location.pathname])
 
 
     return (<div className={style['container']}

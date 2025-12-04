@@ -35,16 +35,9 @@ const MainPage = ({page}) => {
         }
     }, [])
 
-    useEffect(() => {
-        if (window.innerHeight > height) {
-            setHeight(window.innerHeight)
-        }
-    }, [window.innerHeight])
-
-
-    return (<div className={style['mainDivision']} style={{height: String(height) + 'px'}}>
+    return (<div className={style['mainDivision']}>
         <div
-            style={{zIndex: 100, height: String(height) + 'px'}}
+            style={{zIndex: 100, paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.1 * window.innerWidth) + 'px'}}
             onScroll={(event) => {
                 lastScroll = (event.target.scrollTop);
             }}
@@ -56,21 +49,20 @@ const MainPage = ({page}) => {
         </div>
         <div style={{
             zIndex: zIndexTab,
-            height: String(height) + 'px',
             background: zIndexTab > 0 && opacityTab !== 0 ? '#222222' : 'none'
         }}>
             <div style={{opacity: opacityTab}}>
                 <Routes>
                     <Route path="/search" element={<Search/>}/>
-                    <Route path="/basket" element={<Basket height={height}/>}/>
+                    <Route path="/basket" element={<Basket/>}/>
                     <Route path="/selectPlatform" element={<SelectPlatform/>}/>
                     <Route path="/more" element={<MoreInfo/>}/>
                 </Routes>
             </div>
         </div>
-        <div style={{top: String(height) + 'px'}}>
+        <div style={{opacity: window.innerHeight < window.screen.availHeight * 0.8 ? 0 : 1}}>
             <NavigationBar setZIndexTab={setZIndexTab} zIndexTab={zIndexTab} opacityTab={opacityTab}
-                           setOpacityTab={setOpacityTab} height={height}/>
+                           setOpacityTab={setOpacityTab}/>
         </div>
 
         {/*<div style={{height: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px', overflow:'hidden', background:'#222222', zIndex:'-100'}}><div style={{height: '100vh'}}/></div>*/}

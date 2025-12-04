@@ -9,7 +9,7 @@ import Promo from "./Elements/Promo";
 import {Link, useNavigate} from "react-router-dom";
 import Recommendations from "../Product/Elements/Recommendations";
 
-const Basket = ({height}) => {
+const Basket = () => {
 
     const {getBasketList, createOrder} = useServer()
     const {user, tg} = useTelegram()
@@ -64,7 +64,6 @@ const Basket = ({height}) => {
                 return (<div
                     className={style['mainContainer']}
                     style={{
-                        minHeight: String(height) + 'px',
                         paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
                         paddingBottom: String(window.innerWidth * 0.15 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'
                     }}>

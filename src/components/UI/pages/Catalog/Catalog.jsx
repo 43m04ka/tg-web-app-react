@@ -85,7 +85,7 @@ const Catalog = () => {
                      }}
                      style={{
                          paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
-                         paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 20) + 'px',
+                         paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.03 * window.innerWidth) + 'px',
                          height: '100vh',
                      }}>
                     <div className={style['title']}>

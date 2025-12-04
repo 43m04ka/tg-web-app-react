@@ -3,7 +3,7 @@ import CatalogItem from "../../Catalog/CatalogItem";
 import {useServerUser} from "../../../../../hooks/useServerUser";
 import useGlobalData from "../../../../../hooks/useGlobalData";
 
-const Recommendations = () => {
+const Recommendations = ({from}) => {
 
     const {getRecommendationsGames} = useServerUser()
     const {pageId} = useGlobalData()
@@ -21,7 +21,7 @@ const Recommendations = () => {
                     {products.map(item => {
                         return (
                             <div style={{marginLeft: '6vw'}}>
-                                <CatalogItem key={item.id} product={item}/>
+                                <CatalogItem key={item.id} product={item} from={from}/>
                             </div>)
                     })}
                 </div>

@@ -3,7 +3,7 @@ import '../../../styles/style.css';
 import {Link} from "react-router-dom";
 import style from './Catalog.module.scss'
 
-const CatalogItem = ({product, isClicked}) => {
+const CatalogItem = ({product, isClicked, from}) => {
 
     let oldPrice = ''
     let parcent = ''
@@ -90,7 +90,7 @@ const CatalogItem = ({product, isClicked}) => {
 
 
     return (<div className={'list-element'}>
-        <Link to={isClicked === false ? null : '/card/' + product.id} className={'link-element'}>
+        <Link to={isClicked === false ? null : '/card/' + product.id + (typeof from !== "undefined" ? '?from=' + from : '')} className={'link-element'}>
             <div className={'box-home-block-element'}>
                 {imageLoaded ? (<div style={{
                     backgroundImage: 'url("' + product.image + '")',

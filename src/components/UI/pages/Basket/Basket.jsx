@@ -142,7 +142,7 @@ const Basket = () => {
                         </div>
                     </div>
 
-                    <Recommendations/>
+                    <Recommendations from={'basket'}/>
                 </div>);
             }
         }

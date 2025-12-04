@@ -257,20 +257,28 @@ const Product = () => {
                      paddingBottom: (buttonHidden ? '0' : String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px'),
                      height: (buttonHidden ? '0' : String((0.15 * window.innerWidth) + tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px'),
                  }}>
-                <button onClick={() => {
+                <button onClick={async () => {
                     if (productData.onSale) {
-                        cardInBasket ? navigate('/' + pageList.map(page => {
-                            return pageId === page.id ? page.link : null
-                        }).filter(page => page !== null)[0] + '/basket?from=product') : addCardToBasket(async () => {
-                            await setCardInBasket(true)
-                            await updateBasket(catalogList, pageId)
-                        }, user.id, productData.id)
+                        if (cardInBasket) {
+                            let params = new URLSearchParams(window.location.search);
+                            let valueOfKey = params.get('from');
+
+                            navigate('/' + pageList.map(page => {
+                                return pageId === page.id ? page.link : null
+                            }).filter(page => page !== null)[0] + (valueOfKey !== 'basket' ? '/basket?from=product' : '/basket'))
+                        } else {
+                            await addCardToBasket(async () => {
+                                await setCardInBasket(true)
+                                await updateBasket(catalogList, pageId)
+                            }, user.id, productData.id)
+                        }
                     }
                 }}
                         style={{background: productData.onSale ? cardInBasket ? '#50A355' : '#404ADE' : '#6e6e6e'}}>
                     {productData.onSale ? cardInBasket ? 'В корзине' : 'Добавить в корзину' : 'Нет в продаже'}
                 </button>
-                {productData.onSale && cardInBasket ? <ProductBasketCounter idPos={productData.id} setCardInBasket={setCardInBasket}/> : ''}
+                {productData.onSale && cardInBasket ?
+                    <ProductBasketCounter idPos={productData.id} setCardInBasket={setCardInBasket}/> : ''}
             </div>
         </div>);
     } else {

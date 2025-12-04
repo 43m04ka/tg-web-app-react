@@ -40,8 +40,9 @@ const AccountData = ({returnAccountData}) => {
     let menuDesigns = null
     if ((pageId === 20 || pageId === 3) && selectNewAccount) {
         menuDesigns = (
-            <div className={style['label']} style={{textAlign:'right'}}>
-                Мы оформим заказ на новый аккаунт PSN и передадим Вам его в полном доступе.<br/> Аккаунт будет принадлежать только Вам.<br/> Это бесплатно.
+            <div className={style['label']} style={{textAlign: 'right'}}>
+                Мы оформим заказ на новый аккаунт PSN и передадим Вам его в полном доступе.<br/> Аккаунт будет
+                принадлежать только Вам.<br/> Это бесплатно.
             < /div>)
     } else if ((pageId === 20 || pageId === 3)) {
         menuDesigns = (<div style={{
@@ -81,7 +82,7 @@ const AccountData = ({returnAccountData}) => {
 
     if (pageId === 28 && selectNewAccount === true) {
         menuDesigns = (
-            <div className={style['label']}  style={{textAlign:'right'}}>
+            <div className={style['label']} style={{textAlign: 'right'}}>
                 Мы оформим заказ на новый аккаунт Xbox и передадим Вам его в полном доступе. <br/> Это бесплатно.
             </div>)
     } else if (pageId === 28) {
@@ -115,21 +116,26 @@ const AccountData = ({returnAccountData}) => {
     }
 
     return (
-        <div className={style['mainContainer']} style={{minHeight: (selectNewAccount ? '24.5vw' : '63.97vw'), height: (selectNewAccount ? '31.5vw' : '63.97vw')}}>
+        <div className={style['mainContainer']} style={{
+            minHeight: (selectNewAccount ? '24.5vw' : '63.97vw'),
+            height: (selectNewAccount ? '31.5vw' : '63.97vw')
+        }}>
             <div className={style['selectPlace']}>
-                <div
-                     onClick={() => {
-                         setSelectNewAccount(false)
-                     }}>
-                    <div style={{color: !selectNewAccount ? 'white' : '#575757'}}>На мой аккаунт</div>
+                <div>
+                    <div
+                        onClick={() => {
+                            setSelectNewAccount(false)
+                        }}>
+                        <div style={{color: !selectNewAccount ? 'white' : '#575757'}}>На мой аккаунт</div>
+                    </div>
+                    <div
+                        onClick={() => {
+                            setSelectNewAccount(true)
+                        }}>
+                        <div style={{color: selectNewAccount ? 'white' : '#575757'}}>Новый аккаунт</div>
+                    </div>
                 </div>
-                <div
-                     onClick={() => {
-                         setSelectNewAccount(true)
-                     }}>
-                    <div style={{color: selectNewAccount ? 'white' : '#575757'}}>Новый аккаунт</div>
-                </div>
-                <div/>
+                <div style={{transform: selectNewAccount ? 'translateX(100%)' : 'translateX(0)'}}/>
             </div>
 
             <div style={{

@@ -10,26 +10,41 @@
 }
 
 .selectPlace {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
   margin: 1.5vw 0 0 0;
   background: none;
   border: 0.5vw solid #595959;
   border-radius: $button-border-radius;
-
-  > div {
-    display: flex;
-    border-radius: $button-border-radius / 3 * 2;
+  >div:nth-child(1) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    z-index: 10;
 
     > div {
-      transition-property: color;
-      transition-duration: 0.2s;
-      transition-timing-function: ease-in-out;
-      margin: 2.25vw auto;
-      @extend %font-medium;
-      font-weight: 500;
-      font-size: 3.75vw;
+      display: flex;
+      border-radius: $button-border-radius / 3 * 2;
+      z-index: 10;
+
+      > div {
+        z-index: 10;
+        transition-property: color;
+        transition-duration: 0.2s;
+        transition-timing-function: ease-in-out;
+        margin: 2.25vw auto;
+        @extend %font-medium;
+        font-weight: 500;
+        font-size: 3.75vw;
+
+      }
     }
+  }
+  >div:nth-child(2) {
+    position: absolute;
+    height: 8.5vw;
+    margin-top: -8.5vw;
+    width: calc(83.1vw / 2);
+    border-radius: $button-border-radius / 3 * 2;
+    background: #50a255;
+    transition: transform 0.4s ease-in-out;
   }
 }
 

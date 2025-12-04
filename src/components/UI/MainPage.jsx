@@ -39,14 +39,14 @@ const MainPage = ({page}) => {
         setBarIsVisible(window.innerHeight >= window.screen.availHeight * 0.8)
         setTimeout(()=>{
             setBarIsVisible(window.innerHeight >= window.screen.availHeight * 0.8)
-        }, 50)
+        }, 300)
     }, [window.innerHeight , window.screen.availHeight])
 
     const resizeHandler = () => {
         setBarIsVisible(window.innerHeight >= window.screen.availHeight * 0.8)
         setTimeout(()=>{
             setBarIsVisible(window.innerHeight >= window.screen.availHeight * 0.8)
-        }, 50)
+        }, 300)
     };
 
     useEffect(() => {

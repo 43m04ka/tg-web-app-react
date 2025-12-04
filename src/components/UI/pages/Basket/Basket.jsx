@@ -69,7 +69,7 @@ const Basket = () => {
                         }}>Перейти к покупкам
                         </button>
                     </div>
-                    <Recommendations/>
+                    <Recommendations from={'basket'}/>
                 </div>)
             } else if (basket.length > 0) {
                 return (<div

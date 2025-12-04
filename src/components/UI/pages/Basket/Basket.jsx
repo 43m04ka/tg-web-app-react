@@ -67,7 +67,7 @@ const Basket = () => {
                         paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
                         paddingBottom: String(window.innerWidth * 0.15 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'
                     }}>
-                    <div className={style['basketBlock']}>
+                    <div className={style['basketBlock']} style={{height:String(0.33372*window.innerWidth*basket.length + (basket.length-1) + 0.143 * window.innerWidth) + 'px'}}>
                         <p className={style['title']}>Ваша корзина:</p>
                         {basket.map((item, index) => (<>
                             <PositionBasket percent={promoData.percent} product={item} onReload={() => {

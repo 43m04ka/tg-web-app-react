@@ -131,10 +131,26 @@ export function useServer() {
         })
     }
 
+
+    const getAssociationsStatus = async (setResult) => {
+        await fetch(URL + '/getAssociationsStatus?time='+Date.now(), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.status)
+            })
+        })
+    }
+
     return {
         getCardList, getCard, getCatalogList,
         updateCatalogData,
         updateCardData, updateAssociations,
         deleteCard,
-        searchForName, setExchangeIndiaCatalog}
+        searchForName, setExchangeIndiaCatalog,
+        getAssociationsStatus}
 }

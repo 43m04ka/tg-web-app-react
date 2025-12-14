@@ -10,10 +10,11 @@ import List from "../../Elements/List/List";
 const Order = ({orderId, onClose}) => {
 
     const [orderData, setOrderData] = React.useState([]);
+    const [userData, setUserData] = React.useState([]);
     const {getOrderData, sendMassageUndefinedName} = useServer()
 
     useEffect(() => {
-        getOrderData(setOrderData, orderId).then();
+        getOrderData(setOrderData, setUserData, orderId).then();
     }, [orderId]);
 
     const cap = {
@@ -35,6 +36,9 @@ const Order = ({orderId, onClose}) => {
             <PopUpWindow title={'Заказ №' + orderId}>
                 <List listData={orderData} cap={cap} positionOptions={positionOptionsList}
                       checkBoxType={'none'} selectList={[]}/>
+                <div className={style['infoLabel']}>
+                    {userData.username || 'Контакта пользователля нет'}
+                </div>
                 <div className={style['buttonPlace']}>
                     <div className={style['buttonCancel']} onClick={() => {
                         onClose();

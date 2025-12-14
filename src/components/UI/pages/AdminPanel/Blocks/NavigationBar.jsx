@@ -7,8 +7,17 @@ import useData from "../useData";
 
 const NavigationBar = ({routeData}) => {
     const navigator = useNavigate();
-    const {updateAssociations} = useServer()
+    const {updateAssociations, getAssociationsStatus} = useServer()
     const {authenticationData} = useData()
+    const [status, setStatus] = React.useState(false);
+
+    const updateStatus = (res) => {
+        if(res){
+            getAssociationsStatus(updateStatus)
+        }else{
+            setStatus(false);
+        }
+    }
 
     return (
         <div className={styles['main-division']}>
@@ -30,7 +39,9 @@ const NavigationBar = ({routeData}) => {
             </div>
             <button className={styles['buttonUpdate']} onClick={() => {
                 updateAssociations(authenticationData).then()
-            }}>Обновить асоциации</button>
+                setStatus(true);
+                updateStatus(true);
+            }}>{status ? 'Ожидайте, обновление' : 'Обновить асоциации'}</button>
         </div>
     );
 };

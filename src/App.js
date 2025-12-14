@@ -105,10 +105,13 @@ function App() {
                 }, 80 * i + 1100)
             }
         }, 2000)
+
         updateCatalogStructureList()
         updateMainPageCards()
         updateCatalogList()
-        updatePreviewFavoriteData(user.id)
+        if(typeof user !== 'undefined') {
+            updatePreviewFavoriteData(user.id)
+        }
     }, [])
 
     useEffect(() => {

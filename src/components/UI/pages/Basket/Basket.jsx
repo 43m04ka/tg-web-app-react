@@ -113,16 +113,17 @@ const Basket = () => {
 
                         <div className={style['separator']}/>
 
-                        <input className={style['usernameInput']} ref={inputRef}
-                               placeholder={'Пример — gwstore_admin'} value={username}
-                               onChange={e => {
-                                   setUsername(e.target.value.replace(/[^a-zA-Z0-9]/g, ''));
-                                   setInfoLabel('')
-                               }}/>
 
-                        <div className={style['usernameLabel']}>
-                            Введите Ваш никнейм в Telegram, чтобы мы могли связаться с Вами после оформления заказа
-                        </div>
+                        {typeof user.username === 'undefined' ? (<><input className={style['usernameInput']} ref={inputRef}
+                                                                          placeholder={'Пример — gwstore_admin'} value={username}
+                                                                          onChange={e => {
+                                                                              setUsername(e.target.value.replace(/[^a-zA-Z0-9]/g, ''));
+                                                                              setInfoLabel('')
+                                                                          }}/>
+
+                            <div className={style['usernameLabel']}>
+                                Введите Ваш никнейм в Telegram, чтобы мы могли связаться с Вами после оформления заказа
+                            </div></>) : ''}
 
                         <button
                             className={style['buttonBuy']}

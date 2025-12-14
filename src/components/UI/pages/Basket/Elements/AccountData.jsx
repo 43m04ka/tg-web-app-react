@@ -117,8 +117,8 @@ const AccountData = ({returnAccountData}) => {
 
     return (
         <div className={style['mainContainer']} style={{
-            minHeight: (selectNewAccount ? '24.5vw' : '63.97vw'),
-            height: (selectNewAccount ? '31.5vw' : '63.97vw')
+            minHeight: (selectNewAccount ? '24.5vw' : (pageId === 20 ? '63.97vw' : '83.72vw')),
+            height: (selectNewAccount ? '31.5vw' : (pageId === 20 ? '63.97vw' : '83.72vw'))
         }}>
             <div className={style['selectPlace']}>
                 <div>

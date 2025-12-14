@@ -37,7 +37,7 @@ const Order = ({orderId, onClose}) => {
                 <List listData={orderData} cap={cap} positionOptions={positionOptionsList}
                       checkBoxType={'none'} selectList={[]}/>
                 <div className={style['infoLabel']}>
-                    {userData.username || 'Контакта пользователля нет'}
+                    {orderData.length > 0 ? userData.username || 'Контакта пользователля нет' : ''}
                 </div>
                 <div className={style['buttonPlace']}>
                     <div className={style['buttonCancel']} onClick={() => {

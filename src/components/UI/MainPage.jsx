@@ -36,16 +36,16 @@ const MainPage = ({page}) => {
     }, [])
 
     useEffect(()=>{
-        setBarIsVisible(window.innerHeight >= window.screen.availHeight * 0.8)
+        setBarIsVisible(window.screen.availHeight < window.screen.availWidth || window.innerHeight >= window.screen.availHeight * 0.8)
         setTimeout(()=>{
-            setBarIsVisible(window.innerHeight >= window.screen.availHeight * 0.8)
+            setBarIsVisible(window.screen.availHeight < window.screen.availWidth ||window.innerHeight >= window.screen.availHeight * 0.8)
         }, 300)
-    }, [window.innerHeight , window.screen.availHeight])
+    }, [window.innerHeight , window.screen.availHeight, window.screen.availHeight])
 
     const resizeHandler = () => {
-        setBarIsVisible(window.innerHeight >= window.screen.availHeight * 0.8)
+        setBarIsVisible(window.screen.availHeight < window.screen.availWidth ||window.innerHeight >= window.screen.availHeight * 0.8)
         setTimeout(()=>{
-            setBarIsVisible(window.innerHeight >= window.screen.availHeight * 0.8)
+            setBarIsVisible(window.screen.availHeight < window.screen.availWidth || window.innerHeight >= window.screen.availHeight * 0.8)
         }, 300)
     };
 

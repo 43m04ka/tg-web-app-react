@@ -67,6 +67,32 @@ const NavigationBar = ({setOpacityTab, setZIndexTab}) => {
         }
     }, [window.location.pathname])
 
+    const onButtonClick = (button, index) => {
+        let params = new URLSearchParams(window.location.search);
+        let valueOfKey = params.get('from');
+        if (activeTab !== index && button.path !== 'selectPlatform') {
+            if (!window.location.pathname.includes(button.path) && button.path !== '') {
+                setOpacityTab(0.01)
+            }
+            if (button.path === '') {
+                if (valueOfKey === 'product') {
+                    navigate(-1)
+                } else {
+                    setOpacityTab(0)
+                    setTimeout(() => {
+                        navigate('')
+                    }, 100)
+
+                }
+            } else {
+                setTimeout(() => {
+                    navigate(button.path)
+                }, 100)
+            }
+
+        }
+        setActiveTab(index)
+    }
 
     return (<div className={style['container']}
                  style={typeBar ? {paddingBottom: String(tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'} :
@@ -76,32 +102,7 @@ const NavigationBar = ({setOpacityTab, setZIndexTab}) => {
         </div> : ''}
         <div>
             {buttons.map((button, index) => (
-                <button className={style['activeTab-' + (activeTab === index)]} onTouchStart={() => {
-                    let params = new URLSearchParams(window.location.search);
-                    let valueOfKey = params.get('from');
-                    if (activeTab !== index && button.path !== 'selectPlatform') {
-                        if (!window.location.pathname.includes(button.path) && button.path !== '') {
-                            setOpacityTab(0.01)
-                        }
-                        if (button.path === '') {
-                            if (valueOfKey === 'product') {
-                                navigate(-1)
-                            } else {
-                                setOpacityTab(0)
-                                setTimeout(() => {
-                                    navigate('')
-                                }, 100)
-
-                            }
-                        } else {
-                            setTimeout(() => {
-                                navigate(button.path)
-                            }, 100)
-                        }
-
-                    }
-                    setActiveTab(index)
-                }}>
+                <button className={style['activeTab-' + (activeTab === index)]} onTouchStart={()=>onButtonClick(button, index)} onClick={()=>onButtonClick(button, index)}>
                     <div style={{backgroundImage: `url(${button.icon})`}} className={style['button-' + button.icon]}/>
                     {/*<p>{button.label}</p>*/}
                 </button>

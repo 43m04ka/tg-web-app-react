@@ -68,7 +68,10 @@ function App() {
         try {
             tg.disableVerticalSwipes();
             tg.lockOrientation();
-            tg.requestFullscreen();
+
+            if (window.screen.availHeight > window.screen.availWidth) {
+                tg.requestFullscreen();
+            }
         } catch (e) {
         }
         tg.ready();
@@ -109,7 +112,7 @@ function App() {
         updateCatalogStructureList()
         updateMainPageCards()
         updateCatalogList()
-        if(typeof user !== 'undefined') {
+        if (typeof user !== 'undefined') {
             updatePreviewFavoriteData(user.id)
         }
     }, [])
@@ -151,27 +154,27 @@ function App() {
         </div>);
     } else {
         return (<div className={style["container"]}>
-                <div className={style['loader']}>
-                    <div className={style['box']}>
-                        <div className={style['logo']}>
-                            <div/>
-                        </div>
+            <div className={style['loader']}>
+                <div className={style['box']}>
+                    <div className={style['logo']}>
+                        <div/>
                     </div>
-                    <div className={style['box']}></div>
-                    <div className={style['box']}></div>
-                    <div className={style['box']}></div>
-                    <div className={style['box']}></div>
                 </div>
-                <div className={style['fillContainer']}>
-                    <div
-                        style={{scale: (catalogList !== null && pageList !== null && mainPageCards !== null ? '12' : '0')}}/>
-                </div>
-                <div className={style["ticker"]}>
-                    {tickets.map((item, index) => (<div className={style["ticker__in"]}>
-                        {item.map((tag) => (<span className={style["ticker__item"]}>{tag}</span>))}
-                    </div>))}
-                </div>
-            </div>);
+                <div className={style['box']}></div>
+                <div className={style['box']}></div>
+                <div className={style['box']}></div>
+                <div className={style['box']}></div>
+            </div>
+            <div className={style['fillContainer']}>
+                <div
+                    style={{scale: (catalogList !== null && pageList !== null && mainPageCards !== null ? '12' : '0')}}/>
+            </div>
+            <div className={style["ticker"]}>
+                {tickets.map((item, index) => (<div className={style["ticker__in"]}>
+                    {item.map((tag) => (<span className={style["ticker__item"]}>{tag}</span>))}
+                </div>))}
+            </div>
+        </div>);
     }
 }
 

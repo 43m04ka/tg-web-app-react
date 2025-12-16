@@ -68,6 +68,7 @@ function App() {
         try {
             tg.disableVerticalSwipes();
             tg.lockOrientation();
+            tg.isClosingConfirmationEnabled = true;
             if (window.screen.availHeight > window.screen.availWidth) {
                 tg.requestFullscreen();
             }

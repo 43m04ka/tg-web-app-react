@@ -55,12 +55,15 @@
         }
 
         >p{
+          display: flex;
+          margin: auto auto auto 1.5vw;
+          width: max-content;
+          height: max-content;
           font-size: 3.7vw;
           font-variant: normal;
           text-align: left;
           font-family: 'SF PRO Display', serif;
           color: white;
-          margin: 1.5vw;
         }
         .selected{
           margin-right: 3vw;
@@ -73,7 +76,10 @@
           background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAABrElEQVR4nO3dwUobURhA4Zj6JoJ2V7CIPrMbF1Jc2pcRuqmGLhqDiyOhs2u1sWDuaXK+J/iZw/x3dWdmsyRJkn8FHIyeIb9CfAJugCWwAq6Bj6Pn2ucYP/jdA3A+er69M70ZL1kUZYuA+bSmXrMoyhYBP/8SZK0o2wJcsZlFUbYAOJoO8KJYAKfA9zdEuRg9884rilBRhIoiVBShoggVRagoQhTFh6L4UBQfiuJDUXwoig9F8aEoPhTFh6L4UBQfiuJDUXwoig9F8aEoPhTFh6L4UBQfiuJDUXwoig9F8aEoPhTFh6L4AOfTw97E+hre8eiZdx5vi3I5et69wObr69voWfcC8Bm43yDI3ehZdx6tLA861P/LNbXWBwzeUzFEKIYHxfCgGB4Uw4NieFAMD4rhQTE8KIYHxfCgGB4Uw4NieFAMD4rhQTE8KIYHxfCgGB4Uw4NieFAMD4rhQTE8iiFSDJFiiBRDpBgixRAphkgxRICTfr0qAnwphgTwAVgVQwI4BJ6KIQJ8LYYIcAYs/xBjfdAXY2CU22l9PQLXXcr3HPLz0XMkSZLM3ssz7I2Kx8KxzfsAAAAASUVORK5CYII=");
         }
         >input{
-          margin-left: 5vw;
+          width: 3.7vw;
+          height: 3.7vw;
+          display: flex;
+          margin: auto 0 auto 5vw;
         }
       }
 

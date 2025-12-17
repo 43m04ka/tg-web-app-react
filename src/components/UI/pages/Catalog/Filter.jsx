@@ -63,7 +63,7 @@ const Filter = ({onClose, json, setJson}) => {
                                 <div className={style['arrow']}/>
                             </div>
                             <>{param.list.map(item => (
-                                <div style={{height: selected.indexOf(index) !== -1 ? '8vw' : 0}}
+                                <div style={{height: selected.indexOf(index) !== -1 ? '9vw' : 0}}
                                      onClick={() => {
                                          let newJson = json
                                          if (!localJson[param.type].includes(item)) {

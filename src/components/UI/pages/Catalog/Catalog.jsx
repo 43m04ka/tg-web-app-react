@@ -6,6 +6,8 @@ import useGlobalData from "../../../../hooks/useGlobalData";
 import {useServerUser} from "../../../../hooks/useServerUser";
 import CatalogItem from "./CatalogItem";
 import style from './Catalog.module.scss'
+import Sorting from "./Sorting";
+import Filter from "./Filter";
 
 let lastScroll = 0
 let scrollCtrl = 0
@@ -22,6 +24,10 @@ const Catalog = () => {
     const {catalogList, catalogStructureList} = useGlobalData()
     const {getCardList} = useServerUser()
     const [height, setHeight] = useState(0);
+
+    const [sortWindowOpen, setSortWindowOpen] = useState(false);
+    const [filterWindowOpen, setFilterWindowOpen] = useState(false);
+    const [json, setJson] = useState({sorting:'default', platform:[], language:[], numberPlayers:[]});
 
     const [cardList, setCardList] = useState(lastCardList)
     const scrollRef = useRef();
@@ -72,6 +78,14 @@ const Catalog = () => {
         }
     }, [scrollRef])
 
+    const onClose = () => {
+        setFilterWindowOpen(false);
+        setSortWindowOpen(false);
+        setCardList(null)
+        lastScroll = 0
+        lastCardList = null
+    }
+
     if (catalog !== null) {
         if (cardList !== null) {
             return (<div className={style['mainDivision']}>
@@ -80,7 +94,7 @@ const Catalog = () => {
                          lastScroll = event.target.scrollTop
                          if (listNumber < len && event.target.scrollTop + 2000 > scrollRef.current.scrollHeight && !onLoad) {
                              onLoad = true
-                             getCardList(setNewCardData, catalog.id, listNumber + 1).then()
+                             getCardList(setNewCardData, catalog.id, listNumber + 1, json).then()
                          }
                      }}
                      style={{
@@ -95,18 +109,26 @@ const Catalog = () => {
                             }
                         })}
                     </div>
-                    <div className={'list-grid'}>
+                    <div className={style['listGrid']}>
+                        <button className={style['sorting']} onClick={()=>{setSortWindowOpen(true)}}>
+                            <div/>
+                            <p>Сортировка</p>
+                        </button>
+                        <button className={style['filter']} onClick={()=>{setFilterWindowOpen(true)}}>
+                            <div/>
+                            <p>Фильтры</p>
+                        </button>
                         {cardList.map(item => (
                             <div style={{marginLeft: '6vw'}}>
                                 <CatalogItem key={item.id} product={item}/></div>))}
                     </div>
                 </div>
+                {sortWindowOpen ? (<Sorting onClose={onClose} json={json} setJson={setJson}/>) : ''}
+                {filterWindowOpen ? (<Filter onClose={onClose}  json={json} setJson={setJson}/>) : ''}
             </div>);
         } else {
-            getCardList(setNewCardData, catalog.id, 1).then()
-            return (<div className={'plup-loader'} style={{
-                marginTop: '10px', marginLeft: String(window.innerWidth / 2 - 50) + 'px'
-            }}></div>)
+            getCardList(setNewCardData, catalog.id, 1, json).then()
+            return (<div></div>)
         }
     }
 };

@@ -73,12 +73,12 @@ export function useServerUser() {
         })
     }
 
-    const getCardList = async (setResult, catalogId, listNumber) => {
-        fetch(`${URL}/getCardList?time=${Date.now()}&catalogId=${catalogId}&listNumber=${listNumber}`, {
-            method: 'GET',
+    const getCardList = async (setResult, catalogId, listNumber, json) => {
+        fetch(`${URL}/getCardList`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            },
+            },body: JSON.stringify({catalogId: catalogId, listNumber: listNumber, json:json}),
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {

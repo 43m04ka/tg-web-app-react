@@ -27,13 +27,6 @@ body {
 }
 
 
-.list-grid {
-    display: grid;
-    width: 100%;
-    grid-template-columns: max-content max-content;
-    justify-items: auto;
-}
-
 .title {
     color: white;
     text-align: left;

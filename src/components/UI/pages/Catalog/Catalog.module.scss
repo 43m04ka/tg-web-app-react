@@ -1,6 +1,7 @@
 @import "src/components/styles/mainStyle";
 
 .mainDivision {
+  z-index: 1;
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -9,6 +10,55 @@
   -webkit-opacity: 0.3;
   animation: animOpacity 0.5s ease-in-out forwards;
   -webkit-animation: animOpacity 0.5s ease-in-out forwards;
+}
+
+.listGrid {
+  z-index: 1;
+  display: grid;
+  width: 100%;
+  grid-template-columns: max-content max-content;
+  justify-items: auto;
+}
+
+.sorting {
+  > div {
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAADyElEQVR4nO3dW6hlcxzA8eUybiG5E4MkJYnkUpTLPMzDhBIeJJNCLqNJcpcyUZhcXhRKkzwQD4pcJpqHSWoYDyJ5MU9MmoeZyG0wPvqbpTQz5uyz19r7///v9fvUejud/V/ru/c66/LfZzVNCCGEEEIIIYQi4SjchzfxFh7DybnHNUi4DD/Y2e9Ylnt8g4Kz8Zvduyr3OAcD75nbBuyRe6wzD/u3u6VRnJ57vDMPxxvd4hIGvACLcANuHnFZivNr+IjjxHkEWZJ7sFdio/F9hXObgqklCK7FX7r7Fec0hVJDEBz8P8fk4/qy1N2XSoKkvxd9K/JTopIgj08gyHVNgVQS5KEJBLmiKZBKglzUc4x04nV0UyA1BGkH+lGPQV5oCqWiIMfh6x5irEmXJ5pCqSVIO9gD8XB7gjfX1dD/+gmf4jbs1RRMTUGGQAQpSwQpTAQpTAQpTAQpTAQpTAQpTAQpTAQpTHVBcGyauYdn0kXCCS3P4cE0MSLD+tURJN1ybe+L/GG63scRU1zPaoKkd2wu67DvlNaz/CA4BlvldUsP63EIrsad6Rbyrm6SdQ0yymt0htvlt6bjOizbxcyZ9CZ7Anv3EWTU1+gMK+W3ocP4757jd6fvfyzoEqTd6Luzqq8e6cXukd+6Mcd+woi723+ijBNkhBj/uqSvIGfI75EJfTp2jHLKPH5+yTxiJC/1EqRdsdfksxFHjjnuF+f5Wh9P6GeTtX0GOQirTd+3XWY54mnleKe3IO3K7dke0r3Rnhusn+Cyuv3bdWjHMV+uHHc3Q2f7m+iz3CXwfTpHyb09ioCT2l1fLmka1AW5t0NRbD96yhHlZ1yae/2LZPpRIkZBUSJGQVEiRkFRIkZBUSJGQVEiRkFR8sVIl5DxPN7FBwUtb+OpdGV6ylHSSd/F/W/puQe8H15Vvm14dEpR8sQY8zJ2bssnHCVrjFN7+rca07QFB0woSr4Y7QDvUqfFHb/kmr6guqMvcFa/W7jOSQ7jWNrDup+ZpiDhDlyYLuf3s1W7DWq5Oi1qZhEW4k912TSt2Y5Z4EkD210VLc28w7MVHG1tTfv7ZihwGlbgFbxe0LIK96ajo9zbKIQQQgghhBBCCIOEfdpv5K7Fd9hc8bIJn7cTIxY2tcHh+MRs2lLdvZN22s8s25yertPUAOcZhpVNDfCAYVjf1KDCu4Xj+qapQftgryFY3dQAh+EXs+/6pha41Wz7sPQHBewEN+FHs2UbXk5Pfmhq1P6LjWtwf/tsqlqXFbgxHscdQgghhBBCCCGEEEIzsr8BAUU8mBDuEKgAAAAASUVORK5CYII=");
+  }
+}
+
+.filter{
+  >div{
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAADKElEQVR4nO2cT4iMYRzHH+tPoU1KFOXEwcaBg0TJYV0c1t7cnWzJrijhMjeUEyfbXlycpGTlIFcOhMMkRVHERUlqNcJHTztKsu3vnWae9/c87/dT72173t8zn2b2M9M8E4IQQgghhBBCCCGEEIUDrAAOA2d08fc1BixPLWMr8BKxEC+ALSmfGZJhkzL4ZwowbhhGzDOWQsi57s3E4pxNIaRlGETM05IQX0iIM1wImQOeNOSay0FIOzQEoC0hjshFyEdgOBQOMNzdq3shkXvAslAowFLgtuFxSCJkAhvToVCAq8bH4FiKYXYAv4wDTYbCACaNe/8JbE811IxxqB9JPs9JRPej9bgnCzMpB1sJPDIOFlt9d8gcYCfw1bjn+B5ldeoB1wGvjQN+ADaHTAE2Au+Me30DbKhr0G3AZ+OgsdnXhDzz9rlxj1/i/9i6Bz4AdIwDZ5XD2PM28h04GDwAHMXOdIF5G5kIngAuYcd9DgNTFfZzMXgDWALcqNDo48EpwKEKeXsTGAoe6ebww5xzmGp5+zh53jYph8klb5uQw+SWtyXnMLnmbak5TM55O+AcnqphvpNZ521JOUwpeVtCDgO7KubtqlAS3Rx+5SGHKTVvc8xhSs/bnHKYpuRtLjlMtbwd/BcUPBETMmUOUy1vL4SmkTKHaWreesxhmp63nnIY5W1vACMVcvip5TBl/BvgmXHNeO+RNLvNBGC0m5oWjhvWO2FcK95zNM0uy83hu4a14nsYC83K2wHlcLsPZzfK+PR20ABDwGwCIbONzds6Tmnh4XRTKSAhvkBCfIGE+AIJ8QUS4gskxBdIiC+QEF8gIb5AQnyBhPgCCfEFEuILJMQXSIgvkBBfICG+QEJ8gYRkJ+R9/FbiImtISOIf2uwA14BNC6whITX9nHnnf2IkpI8Ap6jON+DKn5cyCekjwP4ehPwr5q2E9BHgPoNFQqoArAVuSYgzgH3AHQkpX0yr7j0VAf0TIyHOxLTq3kPJifygByHn6569aKgu5kjdMzcCbGLi8epmn0d3JOYTsLfu+RoLsAe4DFwHTgPr655JCCGEEEIIIYIjfgNJ8AtXTj40DgAAAABJRU5ErkJggg==");
+  }
+}
+
+.filter, .sorting {
+  z-index: 1;
+  margin-top: 3vw;
+  margin-left: 6vw;
+  background-color: $menu-color;
+  border-radius: $button-border-radius;
+  display: flex;
+  flex-direction: row;
+
+  > div {
+    min-height: 5vw;
+    min-width: 5vw;
+    display: flex;
+    margin: auto 1vw auto auto;
+    background-size: cover;
+  }
+
+  > p {
+    font-family: 'SF PRO Display', serif;
+    color: white;
+    font-weight: normal;
+    font-variant: normal;
+    font-size: 4vw;
+    padding: 2vw;
+    text-align: center;
+    margin-right: auto;
+  }
 }
 
 @keyframes animOpacity {
@@ -25,6 +75,7 @@
 }
 
 .productImage {
+  z-index: 1;
   opacity: 0.3;
   animation: animOpacity 0.5s ease-in-out forwards;
   -webkit-animation: animOpacity 0.5s ease-in-out forwards;
@@ -34,6 +85,7 @@
 }
 
 .title {
+  z-index: 1;
   @extend %font-medium;
   font-size: 5vw;
   text-align: left;
@@ -42,6 +94,7 @@
 }
 
 .preloadProductImage {
+  z-index: 1;
   width: 41vw;
   min-height: 41vw;
   border-radius: 3vw;

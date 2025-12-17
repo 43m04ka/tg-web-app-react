@@ -1,0 +1,133 @@
+@import "src/components/styles/mainStyle";
+
+.container {
+  z-index: 100;
+  position: absolute;
+  width: 100vw;
+  animation: forwards 0.3s ease-in-out backdrop;
+  transition: all 0.3s ease-in-out;
+
+  > div {
+    z-index: 150;
+    position: absolute;
+    overflow: hidden;
+    width: 100vw;
+    bottom: 0;
+    opacity: 0.3;
+    animation: forwards 0.25s ease-in-out openFilters;
+    display: grid;
+    grid-template-rows: max-content 23vw;
+
+    > div {
+      padding: 3vw;
+      width: 94vw;
+      max-height: 60vh;
+      margin: 0 3vw;
+      background: $menu-color;
+      color: white;
+      border-radius: $button-border-radius;
+      position: absolute;
+      bottom: 23vw;
+
+      .title{
+        display: flex;
+        margin: 1vw auto 2vw auto;
+        width: max-content;
+        font-size: 4.7vw;
+        font-family: 'SF PRO Display', serif;
+        font-weight: bold;
+        color: white;
+      }
+
+      >div{
+        display: flex;
+        flex-direction: row;
+        transition: all ease-in-out 0.2s;
+        overflow: hidden;
+
+        >div{
+          min-height: 5vw;
+          min-width: 5vw;
+          width: 5vw;
+          height: 5vw;
+          margin: auto 0 auto 2vw;
+          background-size: cover;
+        }
+
+        >p{
+          font-size: 3.7vw;
+          font-variant: normal;
+          text-align: left;
+          font-family: 'SF PRO Display', serif;
+          color: white;
+          margin: 1.5vw;
+        }
+        .selected{
+          margin-right: 3vw;
+          margin-left: auto;
+          background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAADyklEQVR4nO3d26tmYxwH8MU45HxqxDiEmEIKU4pIkhjNBSk5tC+k9tTcTLmh3NBcTdPUKAkXczEXJGqcy6HURKJIyCGnsC+MQ8Ygx5mPVu+r9gXtvd/5ve/vfdZ6Pn/Au57v+u7TWuv3rN00VVVVVVVVVVVVVVVVVVV1Eo7BKizPXkuv4Tg8hj0G9uJZnJ69tt7BQXjDf/sZa7Ff9jp7Axss7EWckr3WzsOF+NPi7MJs9po7CwfjPUv3HFZkr79zsMnoduKS7AydgUvn/UU1qu9xbHaW4uEwfCLG+uw8xcP94jyYnadouHJ40Rfl3uxMxcKR+DKwjL9xTnauYmGrWJuyMxULa4LL+BCHZOcqEo7G14Fl/IWLsnMVC4+ItSE7U7FwXXAZ77R3h7NzFQnLh7c4orQ3IVdl5yoWnhDr7uxMxcJMcBlv4cDsXEXCCvwQWMbvODc7V7HwvFh3ZGcqFmaDy3gNy7JzFQmnYXdgGb/irOxcRcL+eEWsddm5ioX1wWW8XEd/RoQzhvNTUX7CqaOup9cMflTtEOu27FzFwl3BZTyTnalYOBu/BZbxI07OzlUkHIA3xbopO1excE9wGduzMxULFyxhHncxvsXx2blKnsd9V6wbsnMVCxuDy9jWdOApXDtsdvGknw8YHLOdhYoy125ha0rUnnxsGU5czA+0ZkLHPxQfB5bRTi+ubgouY/v/BGu/YmcmsIb7xHqo6WAZEylFzNaB+b7AEU1HyxhrKQZbBz4NLKMt9oqm42WMrRQ8LNaWpidlhJeCq4K3DnyGw5sCy3hyH4O3pdwSMI87F1TEv2sqb08gNgeegJFLwTaxNjalwVH4I/AkjFSK+Hnc99tbLk1phlfC0ZZUisGdgG8Cj1/uPG67Pct4LLoUPB587HL3ALZTFvhIUim4OfiYbxc/j4vLhrOsEy0FJ45hHve8pgtwdfCz6gWvUwzeTRXpzqZLJlkKbg/+/Nc7OY87iVJw0nDaI3Ied2XTVbh2zL9TPgj+zO6/e2TM3ymRXm0nGZs+KKCUX3Bm0ydTXsps00dTWspLvd46MGWl7KpvC52uUmayz8XUmIJSnso+B1MnsZTvcEJ2/qmUVMqN2bmn2oRLeTQ7bxEmVMrOunVgukq5PjtjccZYytbsbMUaQylzxW4d6GApe3FNdp5OCCrlgewcnbKPpXxe5NaBjpayB5dnr72zLL2Uzdlr7jysHj7dW8iOIudxS4TzF9hr/kL9zzUThmXD0dGn8dXwbQrtG+Fu7c2gQlVVVVVVVVVVVVVVVVVVVbNI/wAywxd5pkkIdgAAAABJRU5ErkJggg==");
+        }
+        .arrow{
+          margin-right: 3vw;
+          margin-left: auto;
+          background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAABrElEQVR4nO3dwUobURhA4Zj6JoJ2V7CIPrMbF1Jc2pcRuqmGLhqDiyOhs2u1sWDuaXK+J/iZw/x3dWdmsyRJkn8FHIyeIb9CfAJugCWwAq6Bj6Pn2ucYP/jdA3A+er69M70ZL1kUZYuA+bSmXrMoyhYBP/8SZK0o2wJcsZlFUbYAOJoO8KJYAKfA9zdEuRg9884rilBRhIoiVBShoggVRagoQhTFh6L4UBQfiuJDUXwoig9F8aEoPhTFh6L4UBQfiuJDUXwoig9F8aEoPhTFh6L4UBQfiuJDUXwoig9F8aEoPhTFh6L4AOfTw97E+hre8eiZdx5vi3I5et69wObr69voWfcC8Bm43yDI3ehZdx6tLA861P/LNbXWBwzeUzFEKIYHxfCgGB4Uw4NieFAMD4rhQTE8KIYHxfCgGB4Uw4NieFAMD4rhQTE8KIYHxfCgGB4Uw4NieFAMD4rhQTE8iiFSDJFiiBRDpBgixRAphkgxRICTfr0qAnwphgTwAVgVQwI4BJ6KIQJ8LYYIcAYs/xBjfdAXY2CU22l9PQLXXcr3HPLz0XMkSZLM3ssz7I2Kx8KxzfsAAAAASUVORK5CYII=");
+        }
+        >input{
+          margin-left: 5vw;
+        }
+      }
+
+      .separator {
+        margin: 3vw
+        1.5vw;
+        height: 1px;
+        width: 81vw;
+        background: #323232;
+      }
+    }
+
+    > button {
+      font-family: 'SF PRO Display', serif;
+      font-size: 4.2vw;
+      font-weight: bold;
+      margin: 3vw 3vw 7vw 3vw;
+      height: 13vw;
+      width: 94vw;
+      background: $menu-color;
+      color: white;
+      border-radius: $button-border-radius;
+      position: absolute;
+      bottom: 0;
+    }
+  }
+}
+
+@keyframes backdrop {
+  0% {
+    backdrop-filter: blur(0);
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 100;
+  }
+  100% {
+    backdrop-filter: blur(5px);
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 100;
+  }
+}
+
+;
+
+@keyframes openFilters {
+  0% {
+    height: 0;
+    opacity: 0.3;
+    -webkit-opacity: 0.3;
+  }
+  100% {
+    height: 78vh;
+    opacity: 1;
+    -webkit-opacity: 1;
+  }
+}
+
+;

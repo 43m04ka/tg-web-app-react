@@ -122,7 +122,8 @@ const Catalog = () => {
                         <button className={style['filter']} onClick={() => {
                             setFilterWindowOpen(true)
                         }}>
-                            <div className={style[json.platform.length + json.language.length + json.numberPlayers.length > 0 ? 'pulseBg' : '']}/>
+                            <div
+                                className={style[json.platform.length + json.language.length + json.numberPlayers.length > 0 ? 'pulseBg' : '']}/>
                             <div/>
                             <p>Фильтры</p>
                         </button>
@@ -136,7 +137,16 @@ const Catalog = () => {
             </div>);
         } else {
             getCardList(setNewCardData, catalog.id, 1, json).then()
-            return (<div></div>)
+            return (<div>
+                <div className={style["wrapper"]}>
+                    <div className={style["circle"]}></div>
+                    <div className={style["circle"]}></div>
+                    <div className={style["circle"]}></div>
+                    <div className={style["shadow"]}></div>
+                    <div className={style["shadow"]}></div>
+                    <div className={style["shadow"]}></div>
+                </div>
+            </div>)
         }
     }
 };

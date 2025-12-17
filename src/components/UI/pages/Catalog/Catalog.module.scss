@@ -32,6 +32,7 @@
   margin-left: 6vw;
   border-radius: $button-border-radius;
   background: $menu-color;
+  min-width: 41vw;
 
   > div:first-child {
     background: linear-gradient(145deg, $menu-color 0%, #616161 100%);

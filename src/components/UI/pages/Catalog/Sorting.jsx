@@ -29,7 +29,7 @@ const parameters = [
     },
 ]
 
-const Sorting = ({onClose, json, setJson}) => {
+const Sorting = ({onClose, json, setJson, setIcon}) => {
 
     const [selected, setSelected] = React.useState(parameters.map((el, index) => {
         return el.parameter === json.sorting ? index : null
@@ -38,6 +38,7 @@ const Sorting = ({onClose, json, setJson}) => {
     return (
         <div className={style['container']} style={{height: String(window.innerHeight) + 'px'}}>
             <div>
+                <div onClick={onClose}/>
                 <div>
                     <div className={style['title']}>
                         Сортировка
@@ -49,6 +50,7 @@ const Sorting = ({onClose, json, setJson}) => {
                                 let newJson = json
                                 newJson.sorting = param.parameter
                                 setJson(newJson)
+                                setIcon(param.image)
                                 onClose()
                             }}>
                                 <div style={{backgroundImage: `url(${param.image})`}}/>

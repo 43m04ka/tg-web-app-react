@@ -38,10 +38,11 @@ const Filter = ({onClose, json, setJson}) => {
 
     const [localJson, setLocalJson] = React.useState(json)
 
-    const[counter, setCounter] = React.useState(0)
+    const [counter, setCounter] = React.useState(0)
     return (
         <div className={style['container']} style={{height: String(window.innerHeight) + 'px'}}>
             <div>
+                <div onClick={onClose}/>
                 <div>
                     <div className={style['title']}>
                         Фильтры
@@ -75,7 +76,9 @@ const Filter = ({onClose, json, setJson}) => {
                                          setLocalJson(newJson)
                                          setCounter(counter + 1)
                                      }}>
-                                    <input type="checkbox" checked={localJson[param.type].includes(item)} onChange={()=>{}}/>
+                                    <input type="checkbox" checked={localJson[param.type].includes(item)}
+                                           onChange={() => {
+                                           }}/>
                                     <p>
                                         {item}
                                     </p>

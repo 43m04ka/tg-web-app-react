@@ -16,9 +16,9 @@
     opacity: 0.3;
     animation: forwards 0.25s ease-in-out openFilters;
     display: grid;
-    grid-template-rows: max-content 23vw;
+    grid-template-rows: 1fr max-content 23vw;
 
-    > div {
+    > div:nth-child(2) {
       padding: 3vw;
       width: 94vw;
       max-height: 60vh;
@@ -130,7 +130,7 @@
     -webkit-opacity: 0.3;
   }
   100% {
-    height: 78vh;
+    height: 100vh;
     opacity: 1;
     -webkit-opacity: 1;
   }

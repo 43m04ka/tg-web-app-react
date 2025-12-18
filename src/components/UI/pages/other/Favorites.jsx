@@ -4,7 +4,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {useServerUser} from "../../../../hooks/useServerUser";
 import useGlobalData from "../../../../hooks/useGlobalData";
 import style from '../Basket/Basket.module.scss';
-import Recommendations from "../Product/Elements/Recommendations";
+import Recommendations from "../../Elements/Recommendations/Recommendations";
 
 const Favorites = () => {
 

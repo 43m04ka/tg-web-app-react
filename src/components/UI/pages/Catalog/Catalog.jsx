@@ -6,8 +6,8 @@ import useGlobalData from "../../../../hooks/useGlobalData";
 import {useServerUser} from "../../../../hooks/useServerUser";
 import CatalogItem from "./CatalogItem";
 import style from './Catalog.module.scss'
-import Sorting from "./Sorting";
-import Filter from "./Filter";
+import Sorting from "../../Elements/Filter/Sorting";
+import Filter from "../../Elements/Filter/Filter";
 
 let lastScroll = 0
 let scrollCtrl = 0

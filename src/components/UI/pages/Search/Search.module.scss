@@ -352,5 +352,74 @@
   justify-items: auto;
 }
 
+.filter {
+  > div {
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAADKElEQVR4nO2cT4iMYRzHH+tPoU1KFOXEwcaBg0TJYV0c1t7cnWzJrijhMjeUEyfbXlycpGTlIFcOhMMkRVHERUlqNcJHTztKsu3vnWae9/c87/dT72173t8zn2b2M9M8E4IQQgghhBBCCCGEEIUDrAAOA2d08fc1BixPLWMr8BKxEC+ALSmfGZJhkzL4ZwowbhhGzDOWQsi57s3E4pxNIaRlGETM05IQX0iIM1wImQOeNOSay0FIOzQEoC0hjshFyEdgOBQOMNzdq3shkXvAslAowFLgtuFxSCJkAhvToVCAq8bH4FiKYXYAv4wDTYbCACaNe/8JbE811IxxqB9JPs9JRPej9bgnCzMpB1sJPDIOFlt9d8gcYCfw1bjn+B5ldeoB1wGvjQN+ADaHTAE2Au+Me30DbKhr0G3AZ+OgsdnXhDzz9rlxj1/i/9i6Bz4AdIwDZ5XD2PM28h04GDwAHMXOdIF5G5kIngAuYcd9DgNTFfZzMXgDWALcqNDo48EpwKEKeXsTGAoe6ebww5xzmGp5+zh53jYph8klb5uQw+SWtyXnMLnmbak5TM55O+AcnqphvpNZ521JOUwpeVtCDgO7KubtqlAS3Rx+5SGHKTVvc8xhSs/bnHKYpuRtLjlMtbwd/BcUPBETMmUOUy1vL4SmkTKHaWreesxhmp63nnIY5W1vACMVcvip5TBl/BvgmXHNeO+RNLvNBGC0m5oWjhvWO2FcK95zNM0uy83hu4a14nsYC83K2wHlcLsPZzfK+PR20ABDwGwCIbONzds6Tmnh4XRTKSAhvkBCfIGE+AIJ8QUS4gskxBdIiC+QEF8gIb5AQnyBhPgCCfEFEuILJMQXSIgvkBBfICG+QEJ8gYRkJ+R9/FbiImtISOIf2uwA14BNC6whITX9nHnnf2IkpI8Ap6jON+DKn5cyCekjwP4ehPwr5q2E9BHgPoNFQqoArAVuSYgzgH3AHQkpX0yr7j0VAf0TIyHOxLTq3kPJifygByHn6569aKgu5kjdMzcCbGLi8epmn0d3JOYTsLfu+RoLsAe4DFwHTgPr655JCCGEEEIIIYIjfgNJ8AtXTj40DgAAAABJRU5ErkJggg==");
+  }
+}
+
+.filter, .sorting {
+  z-index: 1;
+  margin-top: 3vw;
+  margin-left: 6vw;
+  border-radius: $button-border-radius;
+  background: #343434;
+  width: 88vw;
+
+  > div:first-child {
+    background: linear-gradient(145deg, #343434 0%, #777777 100%);
+    opacity: 0;
+    z-index: 25;
+    display: flex;
+    flex-direction: row;
+    border-radius: $button-border-radius;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  > div:nth-child(2) {
+    z-index: 50;
+    min-height: 5vw;
+    min-width: 5vw;
+    display: flex;
+    margin: auto 1vw auto auto;
+    background-size: cover;
+  }
+
+  > p {
+    z-index: 50;
+    font-family: 'SF PRO Display', serif;
+    color: white;
+    font-weight: normal;
+    font-variant: normal;
+    font-size: 4vw;
+    padding: 2vw;
+    text-align: center;
+    margin-right: auto;
+  }
+
+}
+
+.staticBg {
+  background: $menu-color;
+}
+
+.pulseBg {
+  animation: pulse 3s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 
 

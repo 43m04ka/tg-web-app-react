@@ -3,7 +3,7 @@ import {useTelegram} from "../../../../hooks/useTelegram";
 import {Link, useNavigate} from "react-router-dom";
 import {useServer} from "./useServer";
 import useGlobalData from "../../../../hooks/useGlobalData";
-import Recommendations from "./Elements/Recommendations";
+import Recommendations from "../../Elements/Recommendations/Recommendations";
 import style from './Product.module.scss'
 import Description from "./Elements/Description";
 import ChoiceElement from "./Elements/ChoiceElement";

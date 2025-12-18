@@ -18,9 +18,9 @@ const MainPage = ({page}) => {
     const {tg} = useTelegram();
     const [opacityTab, setOpacityTab] = useState(0);
     const [zIndexTab, setZIndexTab] = useState(-10);
-    const [barIsVisible, setBarIsVisible] = useState(true);
+    const [barIsVisibleLocal, setBarIsVisibleLocal] = useState(true);
     const scrollRef = useRef(null);
-    const {pageId, setPageId} = useGlobalData()
+    const {pageId, setPageId, barIsVisible} = useGlobalData()
 
 
     useEffect(() => {
@@ -36,16 +36,16 @@ const MainPage = ({page}) => {
     }, [])
 
     useEffect(()=>{
-        setBarIsVisible(window.screen.availHeight < window.screen.availWidth || window.innerHeight >= window.screen.availHeight * 0.8)
+        setBarIsVisibleLocal(window.screen.availHeight < window.screen.availWidth || window.innerHeight >= window.screen.availHeight * 0.8)
         setTimeout(()=>{
-            setBarIsVisible(window.screen.availHeight < window.screen.availWidth ||window.innerHeight >= window.screen.availHeight * 0.8)
+            setBarIsVisibleLocal(window.screen.availHeight < window.screen.availWidth ||window.innerHeight >= window.screen.availHeight * 0.8)
         }, 300)
     }, [window.innerHeight , window.screen.availHeight, window.screen.availHeight])
 
     const resizeHandler = () => {
-        setBarIsVisible(window.screen.availHeight < window.screen.availWidth ||window.innerHeight >= window.screen.availHeight * 0.8)
+        setBarIsVisibleLocal(window.screen.availHeight < window.screen.availWidth ||window.innerHeight >= window.screen.availHeight * 0.8)
         setTimeout(()=>{
-            setBarIsVisible(window.screen.availHeight < window.screen.availWidth || window.innerHeight >= window.screen.availHeight * 0.8)
+            setBarIsVisibleLocal(window.screen.availHeight < window.screen.availWidth || window.innerHeight >= window.screen.availHeight * 0.8)
         }, 300)
     };
 
@@ -82,7 +82,7 @@ const MainPage = ({page}) => {
                 </Routes>
             </div>
         </div>
-        <div style={{opacity: barIsVisible ? 1 : 0}}>
+        <div style={{opacity: barIsVisibleLocal && barIsVisible ? 1 : 0}}>
             <NavigationBar setZIndexTab={setZIndexTab} zIndexTab={zIndexTab} opacityTab={opacityTab}
                            setOpacityTab={setOpacityTab}/>
         </div>

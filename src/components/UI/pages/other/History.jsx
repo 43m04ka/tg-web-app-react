@@ -4,7 +4,7 @@ import {useTelegram} from "../../../../hooks/useTelegram";
 import {useServerUser} from "../../../../hooks/useServerUser";
 import Order from "./Order";
 import style from "../Basket/Basket.module.scss";
-import Recommendations from "../Product/Elements/Recommendations";
+import Recommendations from "../../Elements/Recommendations/Recommendations";
 
 const History = () => {
     const navigate = useNavigate();

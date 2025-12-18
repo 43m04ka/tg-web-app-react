@@ -54,6 +54,8 @@ const useGlobalData = create(devtools(set => ({
     pageId: -1,
     setPageId: (pageId) => set(() => ({pageId: pageId})),
 
+    barIsVisible: true,
+    setBarIsVisible: (boolean) => set(() => ({barIsVisible: boolean})),
 })))
 
 window.state = useGlobalData

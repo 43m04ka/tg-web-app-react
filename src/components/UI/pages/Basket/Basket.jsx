@@ -7,7 +7,7 @@ import PositionBasket from "./Elements/PositionBasket";
 import AccountData from "./Elements/AccountData";
 import Promo from "./Elements/Promo";
 import {Link, useNavigate} from "react-router-dom";
-import Recommendations from "../Product/Elements/Recommendations";
+import Recommendations from "../../Elements/Recommendations/Recommendations";
 
 const Basket = () => {
 

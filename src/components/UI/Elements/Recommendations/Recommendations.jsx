@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import CatalogItem from "../../Catalog/CatalogItem";
-import {useServerUser} from "../../../../../hooks/useServerUser";
-import useGlobalData from "../../../../../hooks/useGlobalData";
-import style from '../Product.module.scss'
+import CatalogItem from "../../pages/Catalog/CatalogItem";
+import {useServerUser} from "../../../../hooks/useServerUser";
+import useGlobalData from "../../../../hooks/useGlobalData";
+import style from '../../pages/Product/Product.module.scss'
 
 const Recommendations = ({from}) => {
 

@@ -93,7 +93,31 @@ const Catalog = () => {
 
     if (catalog !== null) {
         if (cardList !== null) {
-            return (<div className={style['mainDivision']}>
+            return (<div className={style['mainDivision']} style={{paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',}}>
+                <div className={style['title']}>
+                    {catalogStructureList.map(catalog => {
+                        if (catalog.path === lastPath && typeof catalog.name !== 'undefined') {
+                            return catalog.name
+                        }
+                    })}
+                </div>
+                <div style={{display:'flex', flexDirection:'row', marginBottom: '3vw'}}>
+                <button className={style['sorting']} onClick={() => {
+                    setSortWindowOpen(true)
+                }}>
+                    <div/>
+                    <div style={{backgroundImage: `url(${icon})`}}/>
+                    <p>Сортировка</p>
+                </button>
+                <button className={style['filter']} onClick={() => {
+                    setFilterWindowOpen(true)
+                }}>
+                    <div
+                        className={style[json.platform.length + json.language.length + json.numberPlayers.length > 0 ? 'pulseBg' : '']}/>
+                    <div/>
+                    <p>Фильтры</p>
+                </button>
+                </div>
                 <div className={'scroll-container-y'} ref={scrollRef}
                      onScroll={async (event) => {
                          lastScroll = event.target.scrollTop
@@ -103,33 +127,11 @@ const Catalog = () => {
                          }
                      }}
                      style={{
-                         paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
                          paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.03 * window.innerWidth) + 'px',
                          height: '100vh',
                      }}>
-                    <div className={style['title']}>
-                        {catalogStructureList.map(catalog => {
-                            if (catalog.path === lastPath && typeof catalog.name !== 'undefined') {
-                                return catalog.name
-                            }
-                        })}
-                    </div>
                     <div className={style['listGrid']}>
-                        <button className={style['sorting']} onClick={() => {
-                            setSortWindowOpen(true)
-                        }}>
-                            <div/>
-                            <div style={{backgroundImage: `url(${icon})`}}/>
-                            <p>Сортировка</p>
-                        </button>
-                        <button className={style['filter']} onClick={() => {
-                            setFilterWindowOpen(true)
-                        }}>
-                            <div
-                                className={style[json.platform.length + json.language.length + json.numberPlayers.length > 0 ? 'pulseBg' : '']}/>
-                            <div/>
-                            <p>Фильтры</p>
-                        </button>
+
                         {cardList.map(item => (
                                 <div style={{marginLeft: '6vw'}}>
                                     <CatalogItem key={item.id} product={item}/></div>))}

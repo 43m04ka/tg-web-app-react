@@ -104,7 +104,7 @@ const MoreInfo = () => {
 
             <div style={{width: '100vw', overflow: 'hidden', height: '46vw'}}>
                 <Swiper slidesPerView={2} pagination={pagination} style={{width: '105vw', marginLeft: '-2.5vw'}}
-                        modules={[Pagination]} spaceBetween={0}>
+                        modules={[Pagination]} spaceBetween={0} loop={info.length > 3}>
                     {info.map((item, index) => (<SwiperSlide key={index}>
                         <div className={style['slide']} style={{
                             webkitAnimationDelay: String(0.1 * index) + 's',
@@ -116,9 +116,8 @@ const MoreInfo = () => {
                             <div>{item.body}</div>
                         </div>
                     </SwiperSlide>))}
-                    <SwiperSlide>
+                    {info.length < 4 ? <SwiperSlide/> : ''}
 
-                    </SwiperSlide>
                 </Swiper>
             </div>
 

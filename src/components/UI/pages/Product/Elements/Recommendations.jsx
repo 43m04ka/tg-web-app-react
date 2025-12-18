@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import CatalogItem from "../../Catalog/CatalogItem";
 import {useServerUser} from "../../../../../hooks/useServerUser";
 import useGlobalData from "../../../../../hooks/useGlobalData";
+import style from '../Product.module.scss'
 
 const Recommendations = ({from}) => {
 
@@ -17,7 +18,7 @@ const Recommendations = ({from}) => {
         return (
             <div>
                 <div className={"title"}>Подобрали для Вас:</div>
-                <div className={'list-grid'}>
+                <div className={style['listGrid']}>
                     {products.map(item => {
                         return (
                             <div style={{marginLeft: '6vw'}}>

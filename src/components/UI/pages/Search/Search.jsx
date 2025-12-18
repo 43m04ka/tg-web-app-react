@@ -135,7 +135,7 @@ const Search = () => {
                                                                                }}
                                                                                ref={scrollRef}
                                                                                style={{paddingBottom: String(window.innerWidth * 0.1 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px'}}>
-            <div className={'list-grid'}>
+            <div className={style['listGrid']}>
                 {cardList.map(item => {
                     return (<div style={{marginLeft: '6vw'}}>
                         <CatalogItem key={item.id} product={item} isClicked={!isInputFocused}/>

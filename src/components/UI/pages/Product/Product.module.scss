@@ -383,6 +383,17 @@
 }
 
 
+
+.listGrid {
+  z-index: 1;
+  display: grid;
+  width: 100%;
+  grid-template-columns: max-content max-content;
+  justify-items: auto;
+}
+
+
+
 .sale {
   overflow: hidden;
   position: relative;

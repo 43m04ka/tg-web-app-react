@@ -105,7 +105,7 @@ const Catalog = () => {
                 <button className={style['sorting']} onClick={() => {
                     setSortWindowOpen(true)
                 }}>
-                    <div/>
+                    <div className={style[json.sorting !== 'default' ? 'pulseBg' : '']}/>
                     <div style={{backgroundImage: `url(${icon})`}}/>
                     <p>Сортировка</p>
                 </button>

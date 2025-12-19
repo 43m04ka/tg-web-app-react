@@ -25,12 +25,24 @@ const History = () => {
 
     if (historyData !== null && historyData.length !== 0) {
         return (<div style={{
-            height: '100vh', paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
+            height: '100vh',
+            paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
             display: 'flex',
             flexDirection: 'column',
         }}>
-            <div className={'title'}
-                 style={{marginTop: '1vw', textAlign: 'center', marginBottom: '2vw', width:'100%', marginLeft:'0', height:'13vw'}}>История
+            <div
+                 style={{
+                     marginTop: '1vw',
+                     textAlign: 'center',
+                     marginBottom: '2vw',
+                     width: '100%',
+                     marginLeft: '0',
+                     lineHeight: '7vw',
+                     fontSize: '4.7vw',
+                     fontWeight: 'bold',
+                     fontFamily: "'SF PRO Display', sans-serif",
+                     color: 'white',
+                 }}>История
                 заказов
             </div>
             <div style={{

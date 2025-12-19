@@ -17,7 +17,7 @@ const Payment = () => {
                 <button className={style[selected === 1 ? 'activeButton' : 'noActiveButton']} onClick={() => setSelected(1)}>
                     <div/>
                     <p>
-                        Сплит
+                        Яндекс Сплит
                     </p>
                 </button>
                 <button className={style[selected === 2 ? 'activeButton' : 'noActiveButton']} onClick={() => setSelected(2)}>

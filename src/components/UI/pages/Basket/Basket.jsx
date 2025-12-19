@@ -8,6 +8,7 @@ import AccountData from "./Elements/AccountData";
 import Promo from "./Elements/Promo";
 import {Link, useNavigate} from "react-router-dom";
 import Recommendations from "../../Elements/Recommendations/Recommendations";
+import Payment from "./Elements/Payment";
 
 const Basket = () => {
 
@@ -17,6 +18,7 @@ const Basket = () => {
     const navigate = useNavigate();
     const [accountData, setAccountData] = useState('')
     const [promoData, setPromoData] = useState({percent: 0, name: ''})
+    const [promoIsVisible, setPromoIsVisible] = useState(false)
     const [orderId, setOrderId] = useState(null)
     const [username, setUsername] = useState('')
     const inputRef = useRef(null);
@@ -77,7 +79,8 @@ const Basket = () => {
                         paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
                         paddingBottom: String(window.innerWidth * 0.15 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'
                     }}>
-                    <div className={style['basketBlock']} style={{height:String(0.33372 * window.innerWidth*basket.length + (basket.length-1) + 0.143 * window.innerWidth) + 'px'}}>
+                    <div className={style['basketBlock']}
+                         style={{height: String(0.33372 * window.innerWidth * basket.length + (basket.length - 1) + 0.143 * window.innerWidth) + 'px'}}>
                         <p className={style['title']}>Ваша корзина:</p>
                         {basket.map((item, index) => (<>
                             <PositionBasket percent={promoData.percent} product={item} onReload={() => {
@@ -96,32 +99,44 @@ const Basket = () => {
                     <div className={style['basketBlock']} style={{marginBottom: '0'}}>
                         <div style={{display: 'flex', flexDirection: 'row'}}>
                             <p className={style['title']}>Итого:</p>
-                            {promoData.percent > 0 ? <p className={style['title']} style={{margin: 'auto 1vw 0 auto', fontSize:'4vw', textDecoration:'line-through', color: '#757373', lineHeight:'7vw'}}>
+                            {promoData.percent > 0 ? <p className={style['title']} style={{
+                                margin: 'auto 1vw 0 auto',
+                                fontSize: '4vw',
+                                textDecoration: 'line-through',
+                                color: '#757373',
+                                lineHeight: '7vw'
+                            }}>
                                 {basket.map(el => {
                                     return el.similarCard !== null ? el.similarCard.price * el.count : el.price * el.count
                                 }).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}₽
                             </p> : ''}
-                            <p className={style['title']} style={{marginRight:'0', marginLeft:promoData.percent > 0 ? '0' : 'auto'}}>
+                            <p className={style['title']}
+                               style={{marginRight: '0', marginLeft: promoData.percent > 0 ? '0' : 'auto'}}>
                                 {basket.map(el => {
                                     return el.similarCard !== null ? el.similarCard.price * el.count : el.price * el.count
                                 }).reduce((accumulator, currentValue) => accumulator + currentValue, 0) * (1 - promoData.percent / 100)}₽
                             </p>
                         </div>
 
-                        <Promo setPromoData={setPromoData}/>
+                        <Payment/>
 
                         <div className={style['separator']}/>
 
-
-                        {typeof user.username === 'undefined' ? (<><input className={style['usernameInput']} ref={inputRef}
-                                                                          placeholder={'Пример — gwstore_admin'} value={username}
-                                                                          onChange={e => {
-                                                                              setUsername(e.target.value.replace(/[^a-zA-Z0-9]/g, ''));
-                                                                          }}/>
-
+                        {typeof user.username === 'undefined' ? (<>
                             <div className={style['usernameLabel']}>
                                 Введите Ваш никнейм в Telegram, чтобы мы могли связаться с Вами после оформления заказа
-                            </div></>) : ''}
+                            </div>
+                            <input className={style['usernameInput']} ref={inputRef}
+                                   placeholder={'Пример — gwstore_admin'} value={username}
+                                   onChange={e => {
+                                       setUsername(e.target.value.replace(/[^a-zA-Z0-9]/g, ''));
+                                   }}/>
+
+                        </>) : ''}
+
+                        <div style={{height: promoIsVisible ? '9vw' : '3vw', transition:'all 0.3s'}}>
+                        {promoIsVisible ?  <Promo setPromoData={setPromoData}/> : <div className={style['promoLabel']} onClick={()=>{setPromoIsVisible(true)}}>У меня есть промокод</div>}
+                    </div>
 
                         <button
                             className={style['buttonBuy']}

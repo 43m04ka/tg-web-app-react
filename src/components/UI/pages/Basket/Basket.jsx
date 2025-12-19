@@ -11,14 +11,13 @@ import Recommendations from "../../Elements/Recommendations/Recommendations";
 
 const Basket = () => {
 
-    const {getBasketList, createOrder} = useServer()
+    const {createOrder} = useServer()
     const {user, tg} = useTelegram()
     const {pageId, catalogList, basket, updateBasket} = useGlobalData()
     const navigate = useNavigate();
     const [accountData, setAccountData] = useState('')
     const [promoData, setPromoData] = useState({percent: 0, name: ''})
     const [orderId, setOrderId] = useState(null)
-    const [infoLabel, setInfoLabel] = useState('')
     const [username, setUsername] = useState('')
     const inputRef = useRef(null);
 
@@ -78,7 +77,7 @@ const Basket = () => {
                         paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
                         paddingBottom: String(window.innerWidth * 0.15 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'
                     }}>
-                    <div className={style['basketBlock']} style={{height:String(0.33372*window.innerWidth*basket.length + (basket.length-1) + 0.143 * window.innerWidth) + 'px'}}>
+                    <div className={style['basketBlock']} style={{height:String(0.33372 * window.innerWidth*basket.length + (basket.length-1) + 0.143 * window.innerWidth) + 'px'}}>
                         <p className={style['title']}>Ваша корзина:</p>
                         {basket.map((item, index) => (<>
                             <PositionBasket percent={promoData.percent} product={item} onReload={() => {
@@ -118,7 +117,6 @@ const Basket = () => {
                                                                           placeholder={'Пример — gwstore_admin'} value={username}
                                                                           onChange={e => {
                                                                               setUsername(e.target.value.replace(/[^a-zA-Z0-9]/g, ''));
-                                                                              setInfoLabel('')
                                                                           }}/>
 
                             <div className={style['usernameLabel']}>
@@ -136,7 +134,6 @@ const Basket = () => {
                                         setOrderId(res.number)
                                     })).then()
                                 } else {
-                                    setInfoLabel('*Обязательное для заполнения поле');
                                     inputRef.current.focus();
                                 }
                             }}>
@@ -162,43 +159,3 @@ const Basket = () => {
 };
 
 export default Basket;
-
-//
-// <div className={style['title']}>Ваша корзина</div>
-//
-// {basket.map(item => (<PositionBasket product={item} onReload={() => {
-//     updateBasket(catalogList, pageId)
-// }}/>))}
-//
-// <div className={style['infoLabel']}>
-//     {infoLabel}
-// </div>
-//
-// <div className={style['usernameInput']}>
-//     <input ref={inputRef} placeholder={'Ваш никнейм в Telegram для связи'} value={username}
-//            onChange={e => {
-//                setUsername(e.target.value.replace(/[^a-zA-Z0-9]/g, ''));
-//                setInfoLabel('')
-//            }}/>
-// </div>
-//
-// {pageId !== 29 ? <AccountData returnAccountData={setAccountData}/> : ''}
-//
-// <Promo setPromoData={setPromoData}/>
-//
-// <div className={style['total']}
-//      style={{marginTop: String(height - (tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top + 0.52 * window.innerWidth)) + 'px'}}>
-//     <div>
-//         <div>Итого к оплате:</div>
-//         <div>{basket.map(el => {
-//             return el.similarCard !== null ? el.similarCard.price : el.price
-//         }).reduce((accumulator, currentValue) => accumulator + currentValue, 0) * (1 - promoData.percent / 100)}₽
-//         </div>
-//         {promoData.percent > 0 ? <div>
-//             {basket.map(el => {
-//                 return el.similarCard !== null ? el.similarCard.price : el.price
-//             }).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}₽
-//         </div> : ''}
-//     </div>
-
-// </div>

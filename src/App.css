@@ -40,5 +40,5 @@ button:after {
 }
 
 button:active {
-  transform: scaleY(107%) scaleX(101%);
+  transform: scale(105%);
 }

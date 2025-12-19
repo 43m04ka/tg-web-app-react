@@ -83,6 +83,8 @@ function App() {
             updatePageList()
         }, 2500)
 
+        console.log(tg)
+
         // for (let i = 0; i < 8; i++) {
         //     timeouts[i] = setTimeout(() => {
         //         window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');

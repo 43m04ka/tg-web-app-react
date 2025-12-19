@@ -36,7 +36,7 @@ const Sorting = ({onClose, json, setJson, setIcon}) => {
     }).filter(el => el !== null)[0])
 
     return (
-        <div className={style['container']} style={{height: String(window.innerHeight) + 'px'}}>
+        <div className={style['container']} style={{height: String(window.innerHeight) + 'px', marginTop: String(-tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',}}>
             <div>
                 <div onClick={onClose}/>
                 <div>

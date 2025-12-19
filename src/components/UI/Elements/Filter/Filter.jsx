@@ -43,7 +43,7 @@ const Filter = ({onClose, json, setJson}) => {
 
     const [counter, setCounter] = React.useState(0)
     return (
-        <div className={style['container']} style={{height: String(window.innerHeight) + 'px'}}>
+        <div className={style['container']} style={{height: String(window.innerHeight) + 'px', marginTop: String(-tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',}}>
             <div>
                 <div onClick={onClose}/>
                 <div>

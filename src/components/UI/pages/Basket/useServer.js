@@ -59,12 +59,12 @@ export function useServer() {
         })
     }
 
-    const createOrder = async (accData, user, page, promo, setResult) => {
+    const createOrder = async (paymentData, accData, user, page, promo, setResult) => {
         fetch(`${URL}/createOrder`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            }, body: JSON.stringify({accData: accData, user: user, page: page, promo: promo}),
+            }, body: JSON.stringify({paymentData: paymentData, accData: accData, user: user, page: page, promo: promo}),
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {

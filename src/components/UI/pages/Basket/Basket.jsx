@@ -22,6 +22,7 @@ const Basket = () => {
     const [orderId, setOrderId] = useState(null)
     const [username, setUsername] = useState('')
     const inputRef = useRef(null);
+    const [paymentString, setPaymentString] = useState('Способ оплаты: СБП')
 
     useEffect(() => {
         tg.BackButton.show();
@@ -118,7 +119,7 @@ const Basket = () => {
                             </p>
                         </div>
 
-                        <Payment sumPrice={basket.map(el => {
+                        <Payment setPaymentMethodString={setPaymentString} sumPrice={basket.map(el => {
                             return el.similarCard !== null ? el.similarCard.price * el.count : el.price * el.count
                         }).reduce((accumulator, currentValue) => accumulator + currentValue, 0) * (1 - promoData.percent / 100)}/>
 
@@ -145,7 +146,7 @@ const Basket = () => {
                             style={{background: (typeof user.username !== 'undefined' || username !== '' ? '#50A355' : '#7a7a7a')}}
                             onClick={() => {
                                 if (typeof user.username !== 'undefined' || username !== '') {
-                                    createOrder(accountData, {
+                                    createOrder(paymentString, accountData, {
                                         id: user.id, username: '@' + (user.username || username)
                                     }, pageId, promoData.name, ((res) => {
                                         setOrderId(res.number)

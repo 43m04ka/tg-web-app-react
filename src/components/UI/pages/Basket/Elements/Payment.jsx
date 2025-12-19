@@ -7,7 +7,7 @@ Date.prototype.addDays = function (days) {
     return date;
 };
 
-const Payment = ({sumPrice}) => {
+const Payment = ({sumPrice, setPaymentMethodString}) => {
 
     const [selected, setSelected] = React.useState(0);
 
@@ -18,21 +18,30 @@ const Payment = ({sumPrice}) => {
     return (<div>
             <div className={style['buttons']}>
                 <button className={style[selected === 0 ? 'activeButton' : 'noActiveButton']}
-                        onClick={() => setSelected(0)}>
+                        onClick={() => {
+                            setSelected(0)
+                            setPaymentMethodString('Способ оплаты: СБП')
+                        }}>
                     <div/>
                     <p>
                         СБП
                     </p>
                 </button>
                 <button className={style[selected === 1 ? 'activeButton' : 'noActiveButton']}
-                        onClick={() => setSelected(1)}>
+                        onClick={() => {
+                            setSelected(1)
+                            setPaymentMethodString('Способ оплаты: Яндекс Сплит')
+                        }}>
                     <div/>
                     <p>
                         Яндекс Сплит
                     </p>
                 </button>
                 <button className={style[selected === 2 ? 'activeButton' : 'noActiveButton']}
-                        onClick={() => setSelected(2)}>
+                        onClick={() => {
+                            setSelected(2)
+                            setPaymentMethodString('Способ оплаты: Долями')
+                        }}>
                     <div/>
                     <p>
                         Долями

@@ -5,9 +5,11 @@
   background: white;
   border-radius: $button-border-radius;
   display: flex;
+  opacity: 0;
   flex-direction: row;
   margin: 2.9vw 0 0 0;
   border: 0.5vw solid #595959;
+  animation: animationOpacity 0.4s forwards;
 
 
   > input {
@@ -39,6 +41,15 @@
       margin: 2.3vw auto;
       width: max-content;
     }
+  }
+}
+
+@keyframes animationOpacity {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
 

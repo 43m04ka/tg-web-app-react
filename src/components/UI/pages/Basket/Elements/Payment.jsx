@@ -1,5 +1,5 @@
 import React from 'react';
-import style from  "./Payment.module.scss";
+import style from "./Payment.module.scss";
 
 Date.prototype.addDays = function (days) {
     let date = new Date(this.valueOf());
@@ -12,86 +12,83 @@ const Payment = ({sumPrice}) => {
     const [selected, setSelected] = React.useState(0);
 
 
-    const options = { month: 'long', day: 'numeric' }
+    const options = {month: 'long', day: 'numeric'}
     const date = new Date();
-    let dates = [];
 
-
-
-    for (let i = 0; i < 14; i++) {
-        dates.push(date.addDays(i));
-    }
-
-    dates.forEach((date) => {
-        console.log(date.toLocaleString('ru-RU', options));
-    });
-
-    return (
-        <div>
+    return (<div>
             <div className={style['buttons']}>
-                <button className={style[selected === 0 ? 'activeButton' : 'noActiveButton']} onClick={() => setSelected(0)}>
+                <button className={style[selected === 0 ? 'activeButton' : 'noActiveButton']}
+                        onClick={() => setSelected(0)}>
                     <div/>
                     <p>
                         СБП
                     </p>
                 </button>
-                <button className={style[selected === 1 ? 'activeButton' : 'noActiveButton']} onClick={() => setSelected(1)}>
+                <button className={style[selected === 1 ? 'activeButton' : 'noActiveButton']}
+                        onClick={() => setSelected(1)}>
                     <div/>
                     <p>
                         Яндекс Сплит
                     </p>
                 </button>
-                <button className={style[selected === 2 ? 'activeButton' : 'noActiveButton']} onClick={() => setSelected(2)}>
+                <button className={style[selected === 2 ? 'activeButton' : 'noActiveButton']}
+                        onClick={() => setSelected(2)}>
                     <div/>
                     <p>
                         Долями
                     </p>
                 </button>
             </div>
-            {selected === 1 || selected === 2 ?
-                (<div className={style['datePlace']}>
-                    <div>
-                        <p>
-                            Сегодня
-                        </p>
-                        <p>
-                            {Math.round(sumPrice/4).toLocaleString()} ₽
-                        </p>
-                        <div/>
+            <div style={{height: selected === 1 || selected === 2 ? selected === 1 ? '26vw' : '28vw' : '0', transition: 'all 0.15s ease-in-out'}}>
+                {selected === 1 || selected === 2 ? (<>
+                    <div className={style['datePlace']}>
+                        <div>
+                            <p>
+                                Сегодня
+                            </p>
+                            <p>
+                                {Math.round(sumPrice / 4).toLocaleString()} ₽
+                            </p>
+                            <div/>
+                        </div>
+                        <div>
+                            <p>
+                                {date.addDays(14).toLocaleString('ru-RU', options)}
+                            </p>
+                            <p>
+                                {Math.round(sumPrice / 4).toLocaleString()} ₽
+                            </p>
+                            <div/>
+                        </div>
+                        <div>
+                            <p>
+                                {date.addDays(28).toLocaleString('ru-RU', options)}
+                            </p>
+                            <p>
+                                {Math.round(sumPrice / 4).toLocaleString()} ₽
+                            </p>
+                            <div/>
+                        </div>
+                        <div>
+                            <p>
+                                {date.addDays(42).toLocaleString('ru-RU', options)}
+                            </p>
+                            <p>
+                                {Math.round(sumPrice / 4).toLocaleString()} ₽
+                            </p>
+                            <div/>
+                        </div>
                     </div>
-                    <div>
-                        <p>
-                            {date.addDays(14).toLocaleString('ru-RU', options)}
-                        </p>
-                        <p>
-                            {Math.round(sumPrice/4).toLocaleString()} ₽
-                        </p>
-                        <div/>
-                    </div>
-                    <div>
-                        <p>
-                            {date.addDays(28).toLocaleString('ru-RU', options)}
-                        </p>
-                        <p>
-                            {Math.round(sumPrice/4).toLocaleString()} ₽
-                        </p>
-                        <div/>
-                    </div>
-                    <div>
-                        <p>
-                            {date.addDays(42).toLocaleString('ru-RU', options)}
-                        </p>
-                        <p>
-                            {Math.round(sumPrice/4).toLocaleString()} ₽
-                        </p>
-                        <div/>
-                    </div>
-                </div>) : ''}
-            <p>
+                    {selected === 1 ?
+                        <p className={style['infoLabel']}>График платежей является информационным и может отличаться
+                            от конечного при оформлении. <br/> <a href={'https://yandex.ru/legal/yandexpay_b2c/'}>Подробные условия сервиса</a>
+                        </p> :
+                        <p className={style['infoLabel']}>График платежей является информационным и может отличаться
+                            от конечного при оформлении. <br/> Возможен сервисный сбор. <br/> <a href={'https://dolyame.ru/'}>Подробные условия сервиса</a></p>}
 
-            </p>
-        </div>
-    );
+                </>) : ''}
+            </div>
+        </div>);
 };
 
 export default Payment;

@@ -71,7 +71,8 @@
 .datePlace {
   display: flex;
   flex-direction: row;
-  margin-top: 2vw;
+  margin: 2vw -1vw 0 -1vw;
+  animation: animationOpacity 0.4s forwards ease-out;
 
   > div {
     width: 21vw;
@@ -105,5 +106,29 @@
     >div{
       background: rgba(80, 161, 85, 1) !important;
     }
+  }
+}
+
+.infoLabel{
+  @extend %font-medium;
+  font-size: 2.8vw;
+  line-height: 3.3vw;
+  text-align: left;
+  color: white;
+  margin: 2vw 0 0 0;
+  animation: animationOpacity 0.4s forwards ease-out;
+
+  > a {
+    text-decoration: none;
+    color: #4F8AE7;
+  }
+}
+
+@keyframes animationOpacity {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }

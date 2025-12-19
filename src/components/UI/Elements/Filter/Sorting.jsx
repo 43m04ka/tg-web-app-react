@@ -1,5 +1,6 @@
 import React from 'react';
 import style from './SortingFilter.module.scss'
+import {useTelegram} from "../../../../hooks/useTelegram";
 
 
 const parameters = [
@@ -31,12 +32,14 @@ const parameters = [
 
 const Sorting = ({onClose, json, setJson, setIcon}) => {
 
+    const {tg} = useTelegram()
+
     const [selected, setSelected] = React.useState(parameters.map((el, index) => {
         return el.parameter === json.sorting ? index : null
     }).filter(el => el !== null)[0])
 
     return (
-        <div className={style['container']} style={{height: String(window.innerHeight) + 'px', marginTop: String(-tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',}}>
+        <div className={style['container']} style={{height: String(window.innerHeight) + 'px', marginTop: String(- tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',}}>
             <div>
                 <div onClick={onClose}/>
                 <div>

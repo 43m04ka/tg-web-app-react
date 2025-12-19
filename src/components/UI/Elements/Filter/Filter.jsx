@@ -1,10 +1,12 @@
 import React from 'react';
 import style from './SortingFilter.module.scss'
 import useGlobalData from "../../../../hooks/useGlobalData";
+import {useTelegram} from "../../../../hooks/useTelegram";
 
 
 const Filter = ({onClose, json, setJson}) => {
 
+    const {tg} = useTelegram()
     const {pageId} = useGlobalData()
 
     let parameters = [

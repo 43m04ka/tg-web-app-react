@@ -124,6 +124,15 @@
   }
 }
 
+.title{
+  @extend %font-medium;
+  font-size: 4vw;
+  line-height: 3.3vw;
+  text-align: left;
+  color: white;
+  margin: 2vw 0 0 0;
+}
+
 @keyframes animationOpacity {
   0% {
     opacity: 0;

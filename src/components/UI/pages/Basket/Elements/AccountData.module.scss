@@ -3,26 +3,25 @@
 .mainContainer {
   display: flex;
   flex-direction: column;
-  position: relative;
-  overflow: hidden;
   transition-property: all;
   transition-duration: 0.4s;
+  >div:nth-child(2) {
+    position: relative;
+    overflow-y: hidden;
+    overflow-x: visible;
+  }
 }
 
 .selectPlace {
   margin: 1.5vw 0 0 0;
-  background: none;
-  border: 0.5vw solid #595959;
-  border-radius: $button-border-radius;
-  >div:nth-child(1) {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    z-index: 10;
+  display: flex;
+  flex-direction: row;
 
-    > div {
+    > button {
       display: flex;
       border-radius: $button-border-radius / 3 * 2;
       z-index: 10;
+      width: 40vw;
 
       > div {
         z-index: 10;
@@ -33,18 +32,24 @@
         @extend %font-medium;
         font-weight: 500;
         font-size: 3.75vw;
-
+        color: white;
       }
-    }
   }
-  >div:nth-child(2) {
-    position: absolute;
-    height: 8.5vw;
-    margin-top: -8.5vw;
-    width: calc(83.1vw / 2);
-    border-radius: $button-border-radius / 3 * 2;
-    background: #50a255;
-    transition: transform 0.4s ease-in-out;
+
+  >button:nth-child(2) {
+    margin: auto 0 auto auto;
+  }
+
+  .activeButton {
+    box-shadow: 0.2vw 0.4vw 1vw rgba(80, 161, 85, 0.3);
+    background: rgba(80, 161, 85, 0.3);
+    border: 2px solid rgba(80, 161, 85, 1);
+  }
+
+  .noActiveButton {
+    box-shadow: 0.2vw 0.4vw 1vw rgba(80, 161, 85, 0);
+    background: $menu-color;
+    border: #323232 solid 2px;
   }
 }
 

@@ -55,11 +55,9 @@ const Favorites = () => {
             return (<div style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    position: 'relative',
-                    overflowY: 'scroll',
                     height: '100vh',
                     paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
-                    paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 20) + 'px',
+
                 }}>
                     <div style={{
                         width: '100%',
@@ -69,185 +67,196 @@ const Favorites = () => {
                         fontSize: '4.7vw',
                         fontWeight: 'bold',
                         fontFamily: "'SF PRO Display', sans-serif",
-                        color: 'white'
+                        color: 'white',
+                        marginBottom:'2vw'
                     }}>Избранное
                     </div>
-                    {cardList.map(item => {
-                        let platform = ''
-                        if (item.platform !== null) {
-                            if (item.choiceColumn === null) {
-                                platform = item.platform
+                    <div style={{
+                        paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 20) + 'px',
+                        position: 'relative',
+                        overflowY: 'scroll',
+                    }}>
+                        {cardList.map(item => {
+                            let platform = ''
+                            if (item.platform !== null) {
+                                if (item.choiceColumn === null) {
+                                    platform = item.platform
+                                } else {
+                                    platform = item.choiceColumn + ' ' + item.choiceRow
+                                }
                             } else {
-                                platform = item.choiceColumn + ' ' + item.choiceRow
+                                platform = ''
                             }
-                        } else {
-                            platform = ''
-                        }
 
-                        let price = ''
-                        if (item.isSale) {
-                            price = item.price + ' ₽'
-                        } else {
-                            price = 'Нет в продаже!'
-                        }
-
-                        let oldPrice = ''
-                        let parcent = ''
-                        if (item.oldPrice === null) {
-                            if (item.releaseDate === null) {
-                                parcent = ''
+                            let price = ''
+                            if (item.isSale) {
+                                price = item.price + ' ₽'
                             } else {
-                                parcent = item.releaseDate.replace('#', '')
-                                parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
+                                price = 'Нет в продаже!'
                             }
-                        } else {
-                            oldPrice = String(item.oldPrice) + ' ₽'
-                            parcent = '−' + String(Math.ceil((1 - item.price / item.oldPrice) * 100)) + '%'
-                        }
 
-                        let endDatePromotion = ''
-                        if (item.endDatePromotion === null) {
-                            endDatePromotion = ''
-                        } else {
-                            endDatePromotion = 'Скидка ' + parcent + ' ' + item.endDatePromotion
-                        }
-                        let parcentEl = (<div></div>)
-                        if (parcent !== '') {
-                            parcentEl = (<div style={{
-                                lineHeight: '20px',
-                                background: '#ff5d5d',
-                                paddingLeft: '3px',
-                                paddingRight: '3px',
-                                borderRadius: '5px',
-                                marginBottom: '5px',
-                                textDecoration: 'none',
-                                textAlign: 'left',
-                                marginRight: '5px',
-                                fontWeight: 'bold',
-                                fontFamily: "'SF PRO Display', sans-serif",
-                                fontSize: '12px',
-                                overflow: 'hidden',
-                                color: 'white',
-                                width: 'max-content',
-                                height: '20px'
-                            }}>{parcent}</div>)
-                        }
-
-                        let type = 0
-                        if (item.oldPrice === null) {
-                            if (item.releaseDate === null) {
-                                parcent = ''
-                                type = 0
+                            let oldPrice = ''
+                            let parcent = ''
+                            if (item.oldPrice === null) {
+                                if (item.releaseDate === null) {
+                                    parcent = ''
+                                } else {
+                                    parcent = item.releaseDate.replace('#', '')
+                                    parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
+                                }
                             } else {
-                                parcent = item.releaseDate
-                                parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
-                                type = 2
+                                oldPrice = String(item.oldPrice) + ' ₽'
+                                parcent = '−' + String(Math.ceil((1 - item.price / item.oldPrice) * 100)) + '%'
                             }
-                        } else {
-                            type = 1
-                        }
-                        let priceEl = (<div className={'text-element text-basket'} style={{
-                            lineHeight: '15px', marginTop: '0', height: '15px', fontSize: '15px',
-                        }}>{item.price + ' ₽'}</div>)
 
-                        let oldPriceEl = (<div></div>)
+                            let endDatePromotion = ''
+                            if (item.endDatePromotion === null) {
+                                endDatePromotion = ''
+                            } else {
+                                endDatePromotion = 'Скидка ' + parcent + ' ' + item.endDatePromotion
+                            }
+                            let parcentEl = (<div></div>)
+                            if (parcent !== '') {
+                                parcentEl = (<div style={{
+                                    lineHeight: '20px',
+                                    background: '#ff5d5d',
+                                    paddingLeft: '3px',
+                                    paddingRight: '3px',
+                                    borderRadius: '5px',
+                                    marginBottom: '5px',
+                                    textDecoration: 'none',
+                                    textAlign: 'left',
+                                    marginRight: '5px',
+                                    fontWeight: 'bold',
+                                    fontFamily: "'SF PRO Display', sans-serif",
+                                    fontSize: '12px',
+                                    overflow: 'hidden',
+                                    color: 'white',
+                                    width: 'max-content',
+                                    height: '20px'
+                                }}>{parcent}</div>)
+                            }
 
-                        if (type === 1) {
-                            priceEl = (<div className={'text-element text-basket'} style={{
-                                lineHeight: '15px',
-                                marginTop: '0',
-                                height: '15px',
-                                fontSize: '15px',
-                                color: '#ff5d5d',
-                                marginRight: '0px'
+                            let type = 0
+                            if (item.oldPrice === null) {
+                                if (item.releaseDate === null) {
+                                    parcent = ''
+                                    type = 0
+                                } else {
+                                    parcent = item.releaseDate
+                                    parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
+                                    type = 2
+                                }
+                            } else {
+                                type = 1
+                            }
+                            let priceEl = (<div className={'text-element text-basket'} style={{
+                                lineHeight: '15px', marginTop: '0', height: '15px', fontSize: '15px',
                             }}>{item.price + ' ₽'}</div>)
-                            oldPriceEl = (<div className={'text-element text-basket'} style={{
-                                lineHeight: '15px',
-                                marginTop: '0',
-                                height: '15px',
-                                fontSize: '15px',
-                                color: 'gray',
-                                textDecoration: 'line-through'
-                            }}>{item.oldPrice + ' ₽'}</div>)
-                        }
-                        if (type === 2) {
-                            oldPriceEl = (<div className={'text-element text-basket'} style={{
-                                lineHeight: '15px', marginTop: '0', height: '15px', fontSize: '15px', color: '#4a9ed6',
-                            }}>Предзаказ</div>)
-                        }
 
-                        return (<div style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            padding: '5px',
-                            background: '#232323',
-                            borderRadius: '10px',
-                            margin: '10px 0 0 10px',
-                            height: 'max-content',
-                            width: String(window.innerWidth - 20) + 'px'
-                        }}>
-                            <Link to={'/card/' + item.id} className={'link-element'}
-                                  style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>
-                                <div className={'img'} style={{
-                                    height: '80px',
-                                    width: '80px',
-                                    borderRadius: '7px',
-                                    backgroundImage: "url('" + item.image + "')",
-                                    backgroundSize: 'cover',
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    alignItems: 'end',
-                                    justifyContent: 'space-between',
-                                }}></div>
-                                <div style={{
-                                    width: String(window.innerWidth - 140) + 'px',
-                                    display: 'grid',
-                                    gridTemplateRows: '30fr 15px 15fr',
-                                    height: '75px'
-                                }}>
-                                    <div className={'text-element text-basket'} style={{
-                                        marginTop: '5px',
-                                        lineHeight: '15px',
-                                        height: '30px',
-                                        fontSize: '13px',
-                                        overflow: 'hidden',
+                            let oldPriceEl = (<div></div>)
+
+                            if (type === 1) {
+                                priceEl = (<div className={'text-element text-basket'} style={{
+                                    lineHeight: '15px',
+                                    marginTop: '0',
+                                    height: '15px',
+                                    fontSize: '15px',
+                                    color: '#ff5d5d',
+                                    marginRight: '0px'
+                                }}>{item.price + ' ₽'}</div>)
+                                oldPriceEl = (<div className={'text-element text-basket'} style={{
+                                    lineHeight: '15px',
+                                    marginTop: '0',
+                                    height: '15px',
+                                    fontSize: '15px',
+                                    color: 'gray',
+                                    textDecoration: 'line-through'
+                                }}>{item.oldPrice + ' ₽'}</div>)
+                            }
+                            if (type === 2) {
+                                oldPriceEl = (<div className={'text-element text-basket'} style={{
+                                    lineHeight: '15px',
+                                    marginTop: '0',
+                                    height: '15px',
+                                    fontSize: '15px',
+                                    color: '#4a9ed6',
+                                }}>Предзаказ</div>)
+                            }
+
+                            return (<div style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                padding: '5px',
+                                background: '#232323',
+                                borderRadius: '10px',
+                                margin: '10px 0 0 10px',
+                                height: 'max-content',
+                                width: String(window.innerWidth - 20) + 'px'
+                            }}>
+                                <Link to={'/card/' + item.id} className={'link-element'}
+                                      style={{display: 'flex', flexDirection: 'row', justifyContent: 'left'}}>
+                                    <div className={'img'} style={{
+                                        height: '80px',
+                                        width: '80px',
+                                        borderRadius: '7px',
+                                        backgroundImage: "url('" + item.image + "')",
+                                        backgroundSize: 'cover',
                                         display: 'flex',
-                                    }}>{platform + ' • ' + item.name}</div>
+                                        flexDirection: 'row',
+                                        alignItems: 'end',
+                                        justifyContent: 'space-between',
+                                    }}></div>
                                     <div style={{
-                                        marginTop: '0px',
-                                        display: 'flex',
-                                        justifyContent: 'left',
-                                        alignItems: 'center',
-                                        height: '15px'
+                                        width: String(window.innerWidth - 140) + 'px',
+                                        display: 'grid',
+                                        gridTemplateRows: '30fr 15px 15fr',
+                                        height: '75px'
                                     }}>
-                                        {priceEl}
-                                        {oldPriceEl}
+                                        <div className={'text-element text-basket'} style={{
+                                            marginTop: '5px',
+                                            lineHeight: '15px',
+                                            height: '30px',
+                                            fontSize: '13px',
+                                            overflow: 'hidden',
+                                            display: 'flex',
+                                        }}>{platform + ' • ' + item.name}</div>
+                                        <div style={{
+                                            marginTop: '0px',
+                                            display: 'flex',
+                                            justifyContent: 'left',
+                                            alignItems: 'center',
+                                            height: '15px'
+                                        }}>
+                                            {priceEl}
+                                            {oldPriceEl}
+                                        </div>
+                                        <div className={'text-element'} style={{
+                                            fontSize: '13px',
+                                            color: '#696969',
+                                            overflow: 'hidden',
+                                            lineHeight: '15px',
+                                            height: '15px',
+                                            marginTop: '5px'
+                                        }}>
+                                            {endDatePromotion}
+                                        </div>
                                     </div>
-                                    <div className={'text-element'} style={{
-                                        fontSize: '13px',
-                                        color: '#696969',
-                                        overflow: 'hidden',
-                                        lineHeight: '15px',
-                                        height: '15px',
-                                        marginTop: '5px'
-                                    }}>
-                                        {endDatePromotion}
+                                </Link>
+                                <div onClick={async () => {
+                                    await deleteCardToFavorite(() => {
+                                        updatePreviewFavoriteData()
+                                        getFavoriteList(setCardList, user.id)
+                                    }, user.id, item.id)
+                                }} style={{marginRight: '20px'}}>
+                                    <div className={'background-trash'}
+                                         style={{padding: '10px', height: '20px', width: '20px', marginTop: '30px'}}>
                                     </div>
                                 </div>
-                            </Link>
-                            <div onClick={async () => {
-                                await deleteCardToFavorite(() => {
-                                    updatePreviewFavoriteData()
-                                    getFavoriteList(setCardList, user.id)
-                                }, user.id, item.id)
-                            }} style={{marginRight: '20px'}}>
-                                <div className={'background-trash'}
-                                     style={{padding: '10px', height: '20px', width: '20px', marginTop: '30px'}}>
-                                </div>
-                            </div>
-                        </div>);
-                    })}
+                            </div>);
+                        })}
+                    </div>
                 </div>
 
             );

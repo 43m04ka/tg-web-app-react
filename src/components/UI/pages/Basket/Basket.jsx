@@ -118,7 +118,13 @@ const Basket = () => {
                             </p>
                         </div>
 
-                        <Payment/>
+                        <Payment sumPrice={basket.map(el => {
+                            return el.similarCard !== null ? el.similarCard.price * el.count : el.price * el.count
+                        }).reduce((accumulator, currentValue) => accumulator + currentValue, 0) * (1 - promoData.percent / 100)}/>
+
+                        <div style={{height: promoIsVisible ? '9vw' : '3vw', transition:'all 0.3s'}}>
+                            {promoIsVisible ?  <Promo setPromoData={setPromoData}/> : <div className={style['promoLabel']} onClick={()=>{setPromoIsVisible(true)}}>У меня есть промокод</div>}
+                        </div>
 
                         <div className={style['separator']}/>
 
@@ -133,10 +139,6 @@ const Basket = () => {
                                    }}/>
 
                         </>) : ''}
-
-                        <div style={{height: promoIsVisible ? '9vw' : '3vw', transition:'all 0.3s'}}>
-                        {promoIsVisible ?  <Promo setPromoData={setPromoData}/> : <div className={style['promoLabel']} onClick={()=>{setPromoIsVisible(true)}}>У меня есть промокод</div>}
-                    </div>
 
                         <button
                             className={style['buttonBuy']}

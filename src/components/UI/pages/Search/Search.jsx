@@ -90,6 +90,7 @@ const Search = () => {
         lastScroll = 0
         lastText = ''
         lastListRes = []
+        setBarIsVisible(true)
     }, [])
 
     const handleFocus = () => {

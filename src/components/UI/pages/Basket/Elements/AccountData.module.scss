@@ -19,7 +19,7 @@
 
     > button {
       display: flex;
-      border-radius: $button-border-radius / 3 * 2;
+      border-radius: $block-border-radius / 2;
       z-index: 10;
       width: 40vw;
 
@@ -55,7 +55,7 @@
 
 .input {
   padding: 2.25vw 1vw;
-  border-radius: $button-border-radius;
+  border-radius: $block-border-radius / 2;
   border: none;
   background: white;
   outline: none;

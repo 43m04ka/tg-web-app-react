@@ -104,11 +104,10 @@
 
   >div:nth-child(1){
     >div{
-      background: rgba(80, 161, 85, 1) !important;
+      background: linear-gradient(90deg, rgb(80, 160, 85) 30%, rgba(80, 161, 85, 0.7) 100%) !important;
     }
   }
 }
-
 .infoLabel{
   @extend %font-medium;
   font-size: 2.8vw;

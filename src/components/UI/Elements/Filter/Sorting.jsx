@@ -42,7 +42,7 @@ const Sorting = ({onClose, json, setJson, setIcon}) => {
         <div className={style['container']} style={{height: String(window.innerHeight) + 'px', marginTop: String(- tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',}}>
             <div>
                 <div onClick={onClose}/>
-                <div>
+                <div style={{bottom:'23vw'}}>
                     <div className={style['title']}>
                         Сортировка
                     </div>

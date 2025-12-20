@@ -45,10 +45,13 @@ const Filter = ({onClose, json, setJson}) => {
 
     const [counter, setCounter] = React.useState(0)
     return (
-        <div className={style['container']} style={{height: String(window.innerHeight) + 'px', marginTop: String(-tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',}}>
+        <div className={style['container']} style={{
+            height: String(window.innerHeight) + 'px',
+            marginTop: String(-tg?.contentSafeAreaInset.top - tg?.safeAreaInset.top) + 'px',
+        }}>
             <div>
                 <div onClick={onClose}/>
-                <div>
+                <div style={{bottom: '37vw'}}>
                     <div className={style['title']}>
                         Фильтры
                     </div>
@@ -66,7 +69,8 @@ const Filter = ({onClose, json, setJson}) => {
                                 <p>
                                     {param.name}
                                 </p>
-                                <div className={style['arrow']}/>
+                                <div
+                                    className={style['arrow'] + ' ' + style[selected.indexOf(index) !== -1 ? 'selectedArrow' : '']}/>
                             </div>
                             <>{param.list.map(item => (
                                 <div style={{height: selected.indexOf(index) !== -1 ? '9vw' : 0}}
@@ -93,8 +97,22 @@ const Filter = ({onClose, json, setJson}) => {
                         </>
                     ))}
                 </div>
+
                 <button onClick={onClose}>
                     Применить
+                </button>
+
+                <button onClick={() => {
+                    let newJson = json
+                    parameters.map((param, index) => {
+                        newJson[param.type] = []
+                    })
+                    setLocalJson(newJson)
+                    setJson(newJson)
+                    onClose()
+                }
+                }>
+                    Сбросить фильтры
                 </button>
             </div>
         </div>);

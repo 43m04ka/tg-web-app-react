@@ -19,13 +19,13 @@
     grid-template-rows: 1fr max-content max-content max-content;
 
     > div:nth-child(2) {
-      padding: 3vw;
+      padding: 3vw 3vw 5vw 3vw;
       width: 94vw;
       max-height: 60vh;
       margin: 0 3vw;
       background: $menu-color;
       color: white;
-      border-radius: $button-border-radius;
+      border-radius: $block-border-radius/2;
       position: absolute;
 
 
@@ -108,7 +108,7 @@
       width: 94vw;
       background: $menu-color;
       color: white;
-      border-radius: $button-border-radius;
+      border-radius: $block-border-radius/2;
       position: absolute;
     }
 

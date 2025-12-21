@@ -178,7 +178,7 @@ const Product = () => {
 
                 {percent !== '' ? (<div className={style['percent']}>{percent}</div>) : ''}
 
-                <button className={style['share']}
+                <button className={style['share']}  style={{marginLeft: (percent !== '' ? '0' : '68.91vw')}}
                         onClick={async () => {
                             await prepareShareMessage((messageId) => {
                                 console.log(Date.now())
@@ -188,7 +188,7 @@ const Product = () => {
                     <div/>
                 </button>
 
-                <button className={style['favorite']} style={{marginLeft: (percent !== '' ? '0' : '79.91vw')}}
+                <button className={style['favorite']}
                         onClick={async () => {
                             if (cardInFavorite) {
                                 setCardInFavorite(false)

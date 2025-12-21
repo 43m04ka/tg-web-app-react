@@ -120,7 +120,7 @@
   height: 9.35vw;
   position: relative;
   display: flex;
-  margin: auto 4.28vw 6.14vw 0;
+  margin: auto 3vw 6.14vw 0;
   border-radius: $button-border-radius;
   background: #222222;
 
@@ -149,9 +149,9 @@
 .share {
   width: 9.35vw;
   height: 9.35vw;
-  position: absolute;
+  position: relative;
   display: flex;
-  margin: 4.28vw 6.14vw auto 79.91vw;
+  margin: auto 2vw 6.14vw 0;
   border-radius: $button-border-radius;
   background: #222222;
 

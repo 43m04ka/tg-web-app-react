@@ -30,7 +30,14 @@ const Product = () => {
 
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
-    const {getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket, findCardsByCatalog, prepareShareMessage} = useServer()
+    const {
+        getCard,
+        addCardToFavorite,
+        deleteCardToFavorite,
+        addCardToBasket,
+        findCardsByCatalog,
+        prepareShareMessage
+    } = useServer()
     const {
         updatePreviewFavoriteData, previewFavoriteData, pageId, pageList, basket, catalogList, updateBasket
     } = useGlobalData()
@@ -168,7 +175,19 @@ const Product = () => {
         }}>
             {imageLoaded ? <div className={style['productImage']}
                                 style={{backgroundImage: 'url(' + ((selectCardList !== null || !productData.image.includes('?w=')) ? productData.image : productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024") + ')'}}>
+
                 {percent !== '' ? (<div className={style['percent']}>{percent}</div>) : ''}
+
+                <button className={style['share']}
+                        onClick={async () => {
+                            await prepareShareMessage((messageId) => {
+                                console.log(Date.now())
+                                tg.shareMessage(messageId)
+                            }, productData.id, user.id)
+                        }}>
+                    <div/>
+                </button>
+
                 <button className={style['favorite']} style={{marginLeft: (percent !== '' ? '0' : '79.91vw')}}
                         onClick={async () => {
                             if (cardInFavorite) {
@@ -185,13 +204,6 @@ const Product = () => {
                         }}>
                     <div/>
                     <div style={{scale: (cardInFavorite ? '1' : '0.5'), opacity: (cardInFavorite ? '1' : '0')}}/>
-                </button>
-
-                <button className={style['share']}
-                        onClick={async () => {
-                            await prepareShareMessage((messageId)=>{tg.shareMessage(messageId)}, productData.id, user.id)
-                }}>
-                    <div/>
                 </button>
             </div> : (<div className={style['preloadProductImage']}>
                 <svg>

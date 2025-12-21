@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useTelegram} from "../../../../hooks/useTelegram";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useServer} from "./useServer";
 import useGlobalData from "../../../../hooks/useGlobalData";
 import Recommendations from "../../Elements/Recommendations/Recommendations";
@@ -185,6 +185,13 @@ const Product = () => {
                         }}>
                     <div/>
                     <div style={{scale: (cardInFavorite ? '1' : '0.5'), opacity: (cardInFavorite ? '1' : '0')}}/>
+                </button>
+
+                <button className={style['share']}
+                        onClick={() => {
+                            tg.switchInlineQuery('product_id_123', ['users', 'groups', 'channels']);
+                }}>
+                    <div/>
                 </button>
             </div> : (<div className={style['preloadProductImage']}>
                 <svg>

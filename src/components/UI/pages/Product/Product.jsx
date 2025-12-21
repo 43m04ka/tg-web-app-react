@@ -189,9 +189,7 @@ const Product = () => {
 
                 <button className={style['share']}
                         onClick={async () => {
-                            let messageId = ''
-                            await prepareShareMessage((id=>{messageId = id}), productData.id, user.id)
-                            tg.shareMessage(messageId);
+                            await prepareShareMessage((messageId)=>{tg.shareMessage(messageId)}, productData.id, user.id)
                 }}>
                     <div/>
                 </button>

@@ -30,7 +30,7 @@ const Product = () => {
 
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
-    const {getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket, findCardsByCatalog} = useServer()
+    const {getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket, findCardsByCatalog, prepareShareMessage} = useServer()
     const {
         updatePreviewFavoriteData, previewFavoriteData, pageId, pageList, basket, catalogList, updateBasket
     } = useGlobalData()
@@ -188,8 +188,10 @@ const Product = () => {
                 </button>
 
                 <button className={style['share']}
-                        onClick={() => {
-                            tg.switchInlineQuery('product_id_123', ['users', 'groups', 'channels']);
+                        onClick={async () => {
+                            let messageId = ''
+                            await prepareShareMessage((id=>{messageId = id}), productData.id, user.id)
+                            tg.shareMessage(messageId);
                 }}>
                     <div/>
                 </button>

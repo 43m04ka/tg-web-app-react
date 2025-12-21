@@ -15,6 +15,19 @@ export function useServer() {
         })
     }
 
+    const prepareShareMessage = async (setResult, id, userId) => {
+        fetch(`${URL}/prepareShareMessage?time=${Date.now()}&id=${id}&userId=${userId}`, {
+            method: 'GET', headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.id)
+            })
+        })
+    }
+
     const addCardToFavorite = async (setResult, userId, cardId) => {
         fetch(`${URL}/addCardToFavorite`, {
             method: 'POST', headers: {
@@ -74,6 +87,6 @@ export function useServer() {
 
 
     return {
-        getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket, findCardsByCatalog
+        getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket, findCardsByCatalog, prepareShareMessage
     }
 }

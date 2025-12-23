@@ -9,6 +9,7 @@ import Description from "./Elements/Description";
 import ChoiceElement from "./Elements/ChoiceElement";
 import DescriptionImages from "./Elements/DescriptionImages";
 import ProductBasketCounter from "./Elements/ProductBasketCounter";
+import SimilarProducts from "./Elements/SimilarProducts";
 
 const parameters = [{label: 'Платформа', key: 'platform'}, {
     label: 'Регион активации', key: 'regionActivate'
@@ -36,7 +37,8 @@ const Product = () => {
         deleteCardToFavorite,
         addCardToBasket,
         findCardsByCatalog,
-        prepareShareMessage
+        prepareShareMessage,
+        getSearch
     } = useServer()
     const {
         updatePreviewFavoriteData, previewFavoriteData, pageId, pageList, basket, catalogList, updateBasket
@@ -47,6 +49,7 @@ const Product = () => {
     const [productData, setProductData] = useState(null);
     const [selectCardList, setSelectCardList] = React.useState(null);
     const [selectGroup, setSelectGroup] = React.useState(0);
+    const [similarProducts, setSimilarProducts] = React.useState([]);
     const [selectPosition, setSelectPosition] = React.useState(0);
     const [buttonHidden, setButtonHidden] = React.useState(false);
     const blockRef = useRef(null);
@@ -268,6 +271,8 @@ const Product = () => {
 
 
             <Description>{productData.description}</Description>
+
+            <SimilarProducts name={productData.name} minRating={productData.name.length}/>
 
             <Recommendations/>
 

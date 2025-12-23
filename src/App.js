@@ -83,8 +83,6 @@ function App() {
             updatePageList()
         }, 2500)
 
-        console.log(tg)
-
         // for (let i = 0; i < 8; i++) {
         //     timeouts[i] = setTimeout(() => {
         //         window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
@@ -138,7 +136,12 @@ function App() {
 
     if (!isLoaded) {
         if (window.location.pathname === '/') {
-            navigate(pageList[0]['link'])
+            if (typeof tg.initDataUnsafe.start_param !== 'undefined') {
+                navigate(pageList[0]['link'])
+                navigate('/card/'+String(tg.initDataUnsafe.start_param))
+            }else {
+                navigate(pageList[0]['link'])
+            }
         }
         return (<div className={style['App']}>
             <Routes>

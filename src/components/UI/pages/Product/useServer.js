@@ -84,9 +84,40 @@ export function useServer() {
         })
     };
 
+    const getSearch = async (setResult, name, pageId) => {
+        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/getSearch', {
+            method: 'POST', headers: {
+                'Content-Type': 'application/json',
+            }, body: JSON.stringify({
+                str: name, pageId: pageId, json: {platform: [], language: [], numberPlayers: []}
+            })
+        }).then(r => {
+            let Promise = r.json()
+            Promise.then(prom => {
+                let resultList = []
+                prom.cards.map(card => {
+                    let flag = true
+                    resultList.map(resCard => {
+                        if (card.name === resCard.name && card.similarCard?.price === resCard.similarCard?.price && card.similarCard?.regionActivate === resCard.similarCard?.regionActivate) {
+                            flag = false
+                        }
+                    })
+                    if (flag) {
+                        resultList.push(card)
+                    }
+                }).filter(el => el !== null)
+                if (name === '') {
+                    setResult(null)
+                } else {
+                    setResult(resultList.splice(0, 20))
+                }
+            })
+        })
+    }
+
 
 
     return {
-        getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket, findCardsByCatalog, prepareShareMessage
+        getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket, findCardsByCatalog, prepareShareMessage, getSearch
     }
 }

@@ -17,10 +17,10 @@ const SimilarProducts = ({name, minRating}) => {
         return (
             <div>
                 <div className={"title"}>Похожее:</div>
-                <div className={style['listGrid']}>
+                <div style={{display: 'flex', flexDirection:'row', position: 'relative', overflowX:'scroll', paddingLeft:'4vw', paddingRight:'6vw'}}>
                     {products.map(item => {
                         return (
-                            <div style={{marginLeft: '6vw'}}>
+                            <div style={{marginLeft: '2vw'}}>
                                 <CatalogItem key={item.id} product={item}/>
                             </div>)
                     })}

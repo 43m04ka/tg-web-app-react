@@ -52,7 +52,7 @@ const Search = () => {
                 prom.cards.map(card => {
                     let flag = true
                     resultList.map(resCard => {
-                        if (card.name === resCard.name && card.similarCard?.price === resCard.similarCard?.price && card.similarCard?.regionActivate === resCard.similarCard?.regionActivate) {
+                        if (card.name === resCard.name && card.similarCard?.price === resCard.similarCard?.price && card.regionActivate === resCard.regionActivate && card.choiceRow === resCard.choiceRow && card.choiceColumn === resCard.choiceColumn) {
                             flag = false
                         }
                     })

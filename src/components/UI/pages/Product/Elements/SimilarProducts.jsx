@@ -4,13 +4,13 @@ import style from "../Product.module.scss";
 import CatalogItem from "../../Catalog/CatalogItem";
 import {useServer} from "../useServer";
 
-const SimilarProducts = ({name, minRating}) => {
+const SimilarProducts = ({name, minRating, id}) => {
     const {getSearch}=  useServer()
     const {pageId} = useGlobalData()
     const [products, setProducts] = useState(null);
 
     useEffect(() => {
-        getSearch((result) => {setProducts(result.filter((item, index) => item.rating >= minRating && index !== 0))}, name, pageId).then()
+        getSearch((result) => {setProducts(result.filter(item => item.rating >= minRating && item.id !== id))}, name, pageId).then()
     }, [])
 
     if(products !== null && products.length > 0) {

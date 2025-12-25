@@ -163,7 +163,7 @@ const Product = () => {
 
         return (<div className={style['container']} style={{
             paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
-            paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.1 * window.innerWidth) + 'px',
+            paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.2 * window.innerWidth) + 'px',
             height: '100vh',
         }} onScroll={(event) => {
             let scroll = event.target.scrollTop

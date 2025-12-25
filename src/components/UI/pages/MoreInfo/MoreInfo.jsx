@@ -1,33 +1,32 @@
-import {Autoplay, Controller, EffectCoverflow, Pagination} from "swiper/modules";
-
-const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
-
-import React, {useCallback, useEffect, useState} from 'react';
+import {Pagination} from "swiper/modules";
+import React, {useEffect, useState} from 'react';
 import {useTelegram} from "../../../../hooks/useTelegram";
 import {useNavigate} from "react-router-dom";
 import style from './MoreInfo.module.scss'
 import {Swiper, SwiperSlide} from "swiper/react";
 import 'swiper/css/pagination';
 
+const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
+
 const clueList = [{
-    name: 'пользовательское соглашение',
-    path: 'https://t.me/gwstore_faq/11'
+    name: 'пользовательское соглашение', path: 'https://t.me/gwstore_faq/11'
 }, {
-    name: 'политика конфиндециальности',
-    path: 'https://t.me/gwstore_faq/12'
+    name: 'политика конфиндециальности', path: 'https://t.me/gwstore_faq/12'
 }, {
-    name: 'группа вк со скидками для playstation',
-    path: 'https://vk.com/gwstore.playstation'
-}, {name: 'tg канал со скидками для xbox', path: 'https://t.me/gwstore_xbox'}, {
-    name: 'группа вк со скидками для xbox',
-    path: 'https://vk.com/gwstore.xbox'
+    name: 'группа вк со скидками для playstation', path: 'https://vk.com/gwstore.playstation'
 }, {
-    name: 'tg канал со скидками для playstation',
-    path: 'https://t.me/gwstore_playstation'
-}, {name: 'faq для playstation', path: 'https://t.me/gwstore_faq/10'}, {
-    name: 'faq для xbox',
-    path: 'https://t.me/gwstore_faq/9'
-}, {name: 'написать в поддержку', path: 'https://t.me/gwstore_admin'},]
+    name: 'tg канал со скидками для xbox', path: 'https://t.me/gwstore_xbox'
+}, {
+    name: 'группа вк со скидками для xbox', path: 'https://vk.com/gwstore.xbox'
+}, {
+    name: 'tg канал со скидками для playstation', path: 'https://t.me/gwstore_playstation'
+}, {
+    name: 'faq для playstation', path: 'https://t.me/gwstore_faq/10'
+}, {
+    name: 'faq для xbox', path: 'https://t.me/gwstore_faq/9'
+}, {
+    name: 'написать в поддержку', path: 'https://t.me/gwstore_admin'
+},]
 
 const MoreInfo = () => {
     const {tg} = useTelegram();

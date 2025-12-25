@@ -122,7 +122,7 @@ const Product = () => {
         let percent = ''
 
         if (productData.endDatePromotion !== null) {
-            endDatePromotion = `*cкидка действует ${productData.endDatePromotion}`
+            endDatePromotion = `*cкидка действует до ${productData.endDatePromotion}`
         }
         if (productData.oldPrice !== null) {
             oldPrice = productData.oldPrice.toLocaleString() + ' ₽'
@@ -134,7 +134,7 @@ const Product = () => {
                 percent = '-' + Math.ceil((1 - productData.similarCard?.price / productData.similarCard?.oldPrice) * 100) + '%'
             }
             if (typeof productData.similarCard.endDatePromotion !== 'undefined') {
-                endDatePromotion = `*cкидка действует ${productData.similarCard?.endDatePromotion}`
+                endDatePromotion = `*cкидка действует до ${productData.similarCard?.endDatePromotion}`
             }
         }
 

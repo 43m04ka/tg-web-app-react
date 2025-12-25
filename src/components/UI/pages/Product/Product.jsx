@@ -272,7 +272,7 @@ const Product = () => {
 
             <Description>{productData.description}</Description>
 
-            <SimilarProducts name={productData.name} minRating={productData.name.split(' ')[0].length} id={productData.id}/>
+            <SimilarProducts name={productData.name} minRating={productData.name.replace(/[^a-zA-Z0-9\s]/g, "").split(' ')[0].length} id={productData.id}/>
 
             <Recommendations/>
 

@@ -1,6 +1,6 @@
 import './App.css';
 
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {useTelegram} from "./hooks/useTelegram";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import Catalog from "./components/UI/pages/Catalog/Catalog";
@@ -75,7 +75,6 @@ function App() {
         } catch (e) {
         }
         tg.ready();
-
     }, [])
 
     useEffect(() => {
@@ -83,31 +82,31 @@ function App() {
             updatePageList()
         }, 2500)
 
-        // for (let i = 0; i < 8; i++) {
-        //     timeouts[i] = setTimeout(() => {
-        //         window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-        //     }, 80 * i + 550)
-        // }
-        //
-        // for (let i = 8; i < 16; i++) {
-        //     timeouts[i] = setTimeout(() => {
-        //         window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
-        //     }, 80 * i + 1100)
-        // }
-        //
-        // interval = setInterval(() => {
-        //     for (let i = 0; i < 8; i++) {
-        //         timeouts[i] = setTimeout(() => {
-        //             window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-        //         }, 80 * i + 550)
-        //     }
-        //
-        //     for (let i = 8; i < 16; i++) {
-        //         timeouts[i] = setTimeout(() => {
-        //             window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
-        //         }, 80 * i + 1100)
-        //     }
-        // }, 2000)
+        for (let i = 0; i < 8; i++) {
+            timeouts[i] = setTimeout(() => {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+            }, 80 * i + 550)
+        }
+
+        for (let i = 8; i < 16; i++) {
+            timeouts[i] = setTimeout(() => {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
+            }, 80 * i + 1100)
+        }
+
+        interval = setInterval(() => {
+            for (let i = 0; i < 8; i++) {
+                timeouts[i] = setTimeout(() => {
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+                }, 80 * i + 550)
+            }
+
+            for (let i = 8; i < 16; i++) {
+                timeouts[i] = setTimeout(() => {
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
+                }, 80 * i + 1100)
+            }
+        }, 2000)
 
         updateCatalogStructureList()
         updateMainPageCards()
@@ -138,8 +137,8 @@ function App() {
         if (window.location.pathname === '/') {
             if (typeof tg.initDataUnsafe.start_param !== 'undefined') {
                 navigate(pageList[0]['link'])
-                navigate('/card/'+String(tg.initDataUnsafe.start_param))
-            }else {
+                navigate('/card/' + String(tg.initDataUnsafe.start_param))
+            } else {
                 navigate(pageList[0]['link'])
             }
         }

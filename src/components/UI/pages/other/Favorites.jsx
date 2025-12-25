@@ -20,6 +20,7 @@ const Favorites = () => {
     const {updatePreviewFavoriteData} = useGlobalData()
 
     useEffect(() => {
+        tg.BackButton.show();
         tg.onEvent('backButtonClicked', () => navigate(-1))
         return () => {
             tg.offEvent('backButtonClicked', () => navigate(-1))

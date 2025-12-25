@@ -163,7 +163,7 @@ const Product = () => {
 
         return (<div className={style['container']} style={{
             paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
-            paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.1 * window.innerWidth) + 'px',
+            paddingBottom: String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom + 0.4 * window.innerWidth) + 'px',
             height: '100vh',
         }} onScroll={(event) => {
             let scroll = event.target.scrollTop
@@ -274,7 +274,7 @@ const Product = () => {
 
             <SimilarProducts name={productData.name} minRating={productData.name.replace(/[^a-zA-Z0-9\s]/g, "").split(' ')[0].length} id={productData.id}/>
 
-            <Recommendations/>
+            <Recommendations horizontal={true}/>
 
             <div className={style['basketButton']}
                  style={{

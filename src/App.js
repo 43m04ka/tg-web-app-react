@@ -58,7 +58,8 @@ function App() {
         updateMainPageCards,
         updateCatalogStructureList,
         updatePreviewFavoriteData,
-        updateBasket
+        updateBasket,
+        setPageId
     } = useGlobalData();
 
 
@@ -134,6 +135,7 @@ function App() {
     }
 
     if (!isLoaded) {
+        setPageId(pageList[0].id)
         if (window.location.pathname === '/') {
             if (typeof tg.initDataUnsafe.start_param !== 'undefined') {
                 navigate(pageList[0]['link'])

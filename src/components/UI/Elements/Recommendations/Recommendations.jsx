@@ -9,10 +9,6 @@ const Recommendations = ({from, horizontal}) => {
     const {pageId} = useGlobalData()
     const [products, setProducts] = useState(null);
 
-    useEffect(() => {
-        getRecommendationsGames(setProducts, pageId).then()
-    }, [])
-
     if (products !== null) {
         return (
             <div>
@@ -41,6 +37,8 @@ const Recommendations = ({from, horizontal}) => {
                 </div>
             </div>
         );
+    }else {
+        getRecommendationsGames(setProducts, pageId).then()
     }
 };
 

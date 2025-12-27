@@ -49,7 +49,6 @@ const Product = () => {
     const [productData, setProductData] = useState(null);
     const [selectCardList, setSelectCardList] = React.useState(null);
     const [selectGroup, setSelectGroup] = React.useState(0);
-    const [similarProducts, setSimilarProducts] = React.useState([]);
     const [selectPosition, setSelectPosition] = React.useState(0);
     const [buttonHidden, setButtonHidden] = React.useState(false);
     const blockRef = useRef(null);
@@ -250,7 +249,6 @@ const Product = () => {
                             <p>{saleLabel}</p>
                             <div/>
                         </div> : ''}
-
                 </div>
                 {endDatePromotion !== '' ? (<div className={style['endDatePromotion']}>
                     {endDatePromotion}
@@ -275,6 +273,22 @@ const Product = () => {
             <SimilarProducts name={productData.name} minRating={productData.name.replace(/[^a-zA-Z0-9\s]/g, "").split(' ')[0].length} id={productData.id}/>
 
             <Recommendations horizontal={true}/>
+
+            <div className={style['shareLabel']}
+                 onClick={async () => {
+                await prepareShareMessage((messageId) => {
+                    console.log(Date.now())
+                    tg.shareMessage(messageId)
+                }, productData.id, user.id)
+            }}>
+                <div className={style['shareLabelShare']}/>
+                <p>Поделиться карточкой</p>
+            </div>
+
+            <div className={style['shareLabel']}>
+                <div className={style['shareLabelCopy']}/>
+                <p>Скопировать прямую ссылку</p>
+            </div>
 
             <div className={style['basketButton']}
                  style={{

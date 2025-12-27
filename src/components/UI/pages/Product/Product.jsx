@@ -285,7 +285,10 @@ const Product = () => {
                 <p>Поделиться карточкой</p>
             </div>
 
-            <div className={style['shareLabel']}>
+            <div className={style['shareLabel']}
+            onClick={()=>{
+                navigator.clipboard.writeText('https://t.me/gwstore_bot/app?startapp=' + String(productData.id));
+            }}>
                 <div className={style['shareLabelCopy']}/>
                 <p>Скопировать прямую ссылку</p>
             </div>

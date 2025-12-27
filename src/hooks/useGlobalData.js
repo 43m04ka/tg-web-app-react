@@ -51,7 +51,7 @@ const useGlobalData = create(devtools(set => ({
     updatePreviewFavoriteData: () => getPreviewFavoriteList((result) => set(() => ({previewFavoriteData: result})), user.id),
 
 
-    pageId: -1,
+    pageId: 20,
     setPageId: (pageId) => set(() => ({pageId: pageId})),
 
     barIsVisible: true,

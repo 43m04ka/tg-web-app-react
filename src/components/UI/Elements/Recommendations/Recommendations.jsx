@@ -9,6 +9,7 @@ const Recommendations = ({from, horizontal}) => {
     const {pageId} = useGlobalData()
     const [products, setProducts] = useState(null);
 
+
     if (products !== null) {
         return (
             <div>

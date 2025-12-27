@@ -53,13 +53,15 @@
       > div:nth-child(1) {
         display: flex;
         flex-direction: row;
+
         > p:nth-child(1) {
           font-size: 4.2vw;
           font-family: 'SF PRO Display', serif;
           color: white;
           line-height: 9vw;
         }
-        >div:nth-child(2) {
+
+        > div:nth-child(2) {
           background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAABrElEQVR4nO3dwUobURhA4Zj6JoJ2V7CIPrMbF1Jc2pcRuqmGLhqDiyOhs2u1sWDuaXK+J/iZw/x3dWdmsyRJkn8FHIyeIb9CfAJugCWwAq6Bj6Pn2ucYP/jdA3A+er69M70ZL1kUZYuA+bSmXrMoyhYBP/8SZK0o2wJcsZlFUbYAOJoO8KJYAKfA9zdEuRg9884rilBRhIoiVBShoggVRagoQhTFh6L4UBQfiuJDUXwoig9F8aEoPhTFh6L4UBQfiuJDUXwoig9F8aEoPhTFh6L4UBQfiuJDUXwoig9F8aEoPhTFh6L4AOfTw97E+hre8eiZdx5vi3I5et69wObr69voWfcC8Bm43yDI3ehZdx6tLA861P/LNbXWBwzeUzFEKIYHxfCgGB4Uw4NieFAMD4rhQTE8KIYHxfCgGB4Uw4NieFAMD4rhQTE8KIYHxfCgGB4Uw4NieFAMD4rhQTE8iiFSDJFiiBRDpBgixRAphkgxRICTfr0qAnwphgTwAVgVQwI4BJ6KIQJ8LYYIcAYs/xBjfdAXY2CU22l9PQLXXcr3HPLz0XMkSZLM3ssz7I2Kx8KxzfsAAAAASUVORK5CYII=");
           height: 4vw;
           width: 4vw;
@@ -85,7 +87,6 @@
   width: 50vw;
   height: 40vw;
   border-radius: 5vw;
-  padding: 3vw;
   background: $menu-color;
   text-align: left !important;
   margin-left: 5vw;
@@ -95,23 +96,53 @@
   opacity: 0;
   -webkit-transform: scale(0);
   transform: scale(0);
+  padding: 3vw;
 
   > div:nth-child(1) {
+    position: absolute;
+    z-index: 25;
+    margin: -3vw;
+    border-radius: 5vw;
+    animation: pulse 3s infinite ease-in-out;
+    background: linear-gradient(145deg, $menu-color 0%, #616161 100%);
+    width: 100%;
+    height: 100%;
+    padding: 3vw;
+  }
+
+  > div:nth-child(2) {
+    position: relative;
     @extend %font-bold;
     color: white;
     font-size: 5vw;
     line-height: 7vw;
+    z-index: 50;
   }
 
-  > div:nth-child(2) {
+  > div:nth-child(3) {
+    position: relative;
     margin-top: 1vw;
     @extend %font-medium;
     font-size: 5vw;
     line-height: 5.5vw;
     font-weight: normal;
     color: rgba(255, 255, 255, 0.84);
+    z-index: 50;
   }
 }
+
+@keyframes pulse {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 
 .homeScreen {
   height: 40vw;

@@ -58,7 +58,8 @@ function App() {
         updateMainPageCards,
         updateCatalogStructureList,
         updatePreviewFavoriteData,
-        updateBasket
+        updateBasket,
+        setPageId
     } = useGlobalData();
 
 
@@ -128,6 +129,7 @@ function App() {
             timeouts.map(id => {
                 window.clearTimeout(id)
             })
+            setPageId(pageList[0].id)
             setIsLoaded(false)
             window.Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
         }, 150)

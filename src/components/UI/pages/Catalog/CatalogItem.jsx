@@ -1,7 +1,5 @@
-import {useState, useEffect} from 'react';
-import '../../../styles/style.css';
-import {Link} from "react-router-dom";
-import style from './Catalog.module.scss'
+import {useEffect, useState} from 'react';
+import style from './CatalogItem.module.scss';
 
 const CatalogItem = ({product, isClicked, from}) => {
 
@@ -89,40 +87,56 @@ const CatalogItem = ({product, isClicked, from}) => {
     }, [product.url]);
 
 
-    return (<div className={'list-element'}>
-        <Link to={isClicked === false ? null : '/card/' + product.id + (typeof from !== "undefined" ? '?from=' + from : '')} className={'link-element'}>
-            <div className={'box-home-block-element'}>
-                {imageLoaded ? (<div style={{
-                    backgroundImage: 'url("' + product.image + '")',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundSize: 'cover',
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'end',
-                    justifyContent: 'space-between',
-                }} className={style['productImage']}>
-                    {platform}
-                    {parcentEl}
-                </div>) : (<div className={style['preloadProductImage']}>
-                    <svg>
-                        <path/>
-                    </svg>
-                    <svg>
-                        <path/>
-                    </svg>
-                </div>)}
+    return (
+        <div className={style['catalogItem']}>
+            <div style={{backgroundImage: 'url("' + product.image + '")',}}/>
+            <div className={style['gradient']}>
+                <div className={style['platform']}>
 
-                <div style={{height: '8.5vw', overflow: 'hidden'}}>
-                    <div className={'text-element name-element'}>{product.name + view}</div>
                 </div>
-                <div style={{display: 'flex', justifyContent: 'left'}}>
-                    <div className={'text-element price-element'}>{price}</div>
-                    <div className={'text-element price-element'}
-                         style={{textDecoration: 'line-through', color: 'gray'}}>{oldPrice}</div>
-                </div>
+                <p className={style['cardName']}>
+                    {product.name}
+                </p>
+                <p className={style['cardPrice']}>
+                    {price}
+                </p>
             </div>
-        </Link>
-    </div>);
+        </div>);
 };
 
 export default CatalogItem;
+//
+// <Link
+//     to={isClicked === false ? null : '/card/' + product.id + (typeof from !== "undefined" ? '?from=' + from : '')}
+//     className={'link-element'}>
+
+// <div className={'box-home-block-element'}>
+//     {imageLoaded ? (<div style={{
+//         backgroundImage: 'url("' + product.image + '")',
+//         backgroundRepeat: 'no-repeat',
+//         backgroundSize: 'cover',
+//         display: 'flex',
+//         flexDirection: 'row',
+//         alignItems: 'end',
+//         justifyContent: 'space-between',
+//     }} className={style['productImage']}>
+//         {platform}
+//         {parcentEl}
+//     </div>) : (<div className={style['preloadProductImage']}>
+//         <svg>
+//             <path/>
+//         </svg>
+//         <svg>
+//             <path/>
+//         </svg>
+//     </div>)}
+//
+//     <div style={{height: '8.5vw', overflow: 'hidden'}}>
+//         <div className={'text-element name-element'}>{product.name + view}</div>
+//     </div>
+//     <div style={{display: 'flex', justifyContent: 'left'}}>
+//         <div className={'text-element price-element'}>{price}</div>
+//         <div className={'text-element price-element'}
+//              style={{textDecoration: 'line-through', color: 'gray'}}>{oldPrice}</div>
+//     </div>
+// </div>

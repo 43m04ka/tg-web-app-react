@@ -1,0 +1,60 @@
+@import "src/components/styles/mainStyle";
+
+.catalogItem{
+  display: flex;
+  position: relative;
+  width: 41vw;
+  height: 61.5vw;
+  min-height: 61.5vw;
+  min-width: 41vw;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: $block-border-radius / 2;
+
+  >div{
+    display: flex;
+    width: 61.5vw;
+    height: 61.5vw;
+    margin-left: -9.75vw;
+    background-size: cover;
+  }
+
+  .gradient{
+    position: absolute;
+    width: 41vw;
+    margin-left: 0;
+    height: 61.5vw;
+    background: linear-gradient(180deg, #00000000 10%, #171717 93%);
+    display: flex;
+    flex-direction: column;
+
+    .cardName{
+      display: flex;
+      margin: auto 1.55vw 0 1.55vw;
+      font-size: 3.15vw;
+      height: 9.4vw;
+      min-height: 9.4vw;
+      max-height: 9.4vw;
+      overflow: hidden;
+      line-height: 4.6vw;
+      font-family: 'SF PRO Display', serif;
+      font-weight: 700;
+      color: white;
+    }
+    .cardPrice{
+      display: flex;
+      margin: 0 1.55vw 0 1.55vw;
+      font-size: 3.15vw;
+      height: 6.3vw;
+      min-height: 6.3vw;
+      max-height: 6.3vw;
+      overflow: hidden;
+      line-height: 6.3vw;
+      font-family: 'SF PRO Display', serif;
+      font-variant: normal;
+      font-weight: 900;
+      color: white;
+    }
+  }
+
+}

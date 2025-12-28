@@ -1,6 +1,7 @@
 @import "src/components/UI/pages/AdminPanel/AdminPanel.module";
 
 .buttonLine {
+  z-index: 0;
   margin-left: 0px;
   display: flex;
   flex-direction: row;

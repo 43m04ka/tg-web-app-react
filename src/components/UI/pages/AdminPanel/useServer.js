@@ -146,11 +146,25 @@ export function useServer() {
         })
     }
 
+    const getCatalogIcons = async (setResult) => {
+        await fetch(URL + '/catalogIcons?time='+Date.now(), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
+
     return {
         getCardList, getCard, getCatalogList,
         updateCatalogData,
         updateCardData, updateAssociations,
         deleteCard,
         searchForName, setExchangeIndiaCatalog,
-        getAssociationsStatus}
+        getAssociationsStatus, getCatalogIcons}
 }

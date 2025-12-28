@@ -8,23 +8,39 @@ import useData from "../../../../useData";
 const CreateBody = ({onClose, page, onReload, copyData}) => {
 
     const newCatalog = [{
-        argument: "serialNumber", placeholder: 'Порядковый номер', type: 'number', defaultValue: copyData.serialNumber || '',
+        argument: "serialNumber",
+        placeholder: 'Порядковый номер',
+        type: 'number',
+        defaultValue: copyData.serialNumber || '',
     }, {argument: "backgroundColor", placeholder: 'Выделение цветом', defaultValue: copyData.backgroundColor || ''}, [{
-        name: 'Обычный', select: [{argument: 'type', value: 'ordinary'}, {
-            argument: 'name', placeholder: 'Имя каталога'
-        }, {argument: "path", placeholder: 'Путь до категории'}]
+        name: 'Обычный', select: [{
+            argument: 'type', value: 'ordinary'
+        }, {
+            argument: 'name', placeholder: 'Имя каталога',
+        }, {
+            argument: "path", placeholder: 'Путь до категории'
+        }]
     }, {
-        name: 'Каталог-выбор', select: [{argument: 'type', value: 'ordinary-choice'}, {
+        name: 'Каталог-выбор', select: [{
+            argument: 'type', value: 'ordinary-choice'
+        }, {
             argument: 'name', placeholder: 'Имя каталога'
-        }, {argument: "path", placeholder: 'Путь до категории'}]
+        }, {
+            argument: "path", placeholder: 'Путь до категории'
+        }]
     }, {
-        name: 'Скидочный', select: [{argument: 'type', value: 'discount'}, {
+        name: 'Скидочный', select: [{
+            argument: 'type', value: 'discount'
+        }, {
             argument: 'name', placeholder: 'Имя каталога'
-        }, {argument: "path", placeholder: 'Путь до категории'}, {
+        }, {
+            argument: "path", placeholder: 'Путь до категории'
+        }, {
             argument: "deleteDate", placeholder: 'Дата и время удаления'
         }]
     }, {
-        name: 'Баннер', select: [{argument: "url", placeholder: 'url изображения'}, [{
+        name: 'Баннер', select: [{
+            argument: "url", placeholder: 'url изображения'}, [{
             name: 'Некликабельный',
             select: [{argument: 'type', value: 'banner-non-clickable'}, {argument: "path", value: null}]
         }, {

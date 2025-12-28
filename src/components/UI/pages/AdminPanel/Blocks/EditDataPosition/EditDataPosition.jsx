@@ -4,6 +4,7 @@ import style from './EditDataPosition.module.scss'
 import SwitchLabel from "../../Elements/SwitchLabel/SwitchLabel";
 import ButtonLabel from "../../Elements/ButtonLabel";
 import Button from "../../Elements/ButtonLabel";
+import DropBox from "../../Elements/DropBox/DropBox";
 
 const EditDataPosition = ({structure, setNewData, currentData}) => {
 
@@ -89,6 +90,16 @@ const EditDataPosition = ({structure, setNewData, currentData}) => {
                     onChange={(e) => {
                         let newJson = json
                         newJson[parameter.key] = e.target.checked;
+                        setJson(newJson);
+                        setNewData(newJson);
+                    }}/>)
+            }
+            if(parameter.type === 'dropbox') {
+                return (<DropBox
+                    label={parameter.data.map(el=>{return {name : el.label}})}
+                    onChange={(e) => {
+                        let newJson = json
+                        newJson[parameter.key] = parameter.data[e].value;
                         setJson(newJson);
                         setNewData(newJson);
                     }}/>)

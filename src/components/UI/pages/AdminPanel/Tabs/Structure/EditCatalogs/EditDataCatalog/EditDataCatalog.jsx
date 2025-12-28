@@ -1,17 +1,9 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import PopUpWindow from "../../../../Elements/PopUpWindow/PopUpWindow";
 import EditDataPosition from "../../../../Blocks/EditDataPosition/EditDataPosition";
 import style from "../../../EditCards/EditData/EditDataCard.module.scss";
 import useData from "../../../../useData";
 import {useServer} from "../../../../useServer";
-
-const parameters = [
-    {type: 'string', key:'name', label: 'Имя'},
-    {type: 'string', key:'url', label: 'Ссылка на изображение'},
-    {type: 'string', key:'backgroundColor', label: 'Цвет фона'},
-    {type: 'string', key:'path', label: 'Ссылка элемента'},
-    {type: 'number', defaultValue: 0, key:'serialNumber', label: 'Порядковый номер'},
-]
 
 const EditDataCatalog = ({catalogList, onClose, onReload, catalogId}) => {
 
@@ -24,8 +16,23 @@ const EditDataCatalog = ({catalogList, onClose, onReload, catalogId}) => {
     })
 
     const [newData, setNewData] = React.useState({});
-    const {updateCatalogData} = useServer();
+    const {updateCatalogData, getCatalogIcons} = useServer();
     const {authenticationData} = useData()
+    const [iconsData, setIconsData] = React.useState([]);
+
+    useEffect(() => {
+        getCatalogIcons(setIconsData).then()
+    }, []);
+
+
+    const parameters = [
+        {type: 'string', key:'name', label: 'Имя'},
+        {type: 'string', key:'url', label: 'Ссылка на изображение'},
+        {type: 'string', key:'backgroundColor', label: 'Цвет фона'},
+        {type: 'string', key:'path', label: 'Ссылка элемента'},
+        {type: 'dropbox', key:'imageIcon', label: 'Иконкка каталога', data: iconsData},
+        {type: 'number', defaultValue: 0, key:'serialNumber', label: 'Порядковый номер'},
+    ]
 
     return (
         <PopUpWindow title={'Редактирование каталога'}>

@@ -1,6 +1,7 @@
 @import "src/components/UI/pages/AdminPanel/AdminPanel.module";
 
 .main {
+  z-index: 200;
   position: absolute;
   top: 0;
   right: 0;
@@ -11,6 +12,7 @@
 }
 
 .container {
+  z-index: 200;
   position: absolute;
   top: 0;
   right: 0;

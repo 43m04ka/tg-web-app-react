@@ -8,7 +8,9 @@ const ShareLabels = ({productData, parameters}) => {
     const {tg} = useTelegram()
     const {prepareShareMessage} = useServer()
 
-    let textMessage = `${productData.name} — ${String(productData.similarCard.price || productData.price).toLocaleString()} ₽\n`
+    console.log(productData)
+
+    let textMessage = `${productData.name} — ${String(productData.similarCard?.price || productData.price).toLocaleString()} ₽\n`
 
     let endDatePromotion = '\n'
     let parcent = ''

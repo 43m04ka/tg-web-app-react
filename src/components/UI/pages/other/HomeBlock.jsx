@@ -12,13 +12,11 @@ const HomeBlock = ({data}) => {
             styleBlock = {
                 background: data.backgroundColor,
                 paddingTop: '10px',
-                paddingLeft: '7px',
-                paddingRight: '7px',
                 paddingBottom: '15px'
             }
         } else {
             styleBlock = {
-                paddingTop: '5px', paddingLeft: '7px', paddingRight: '7px', paddingBottom: '15px', marginTop: '10px'
+                paddingTop: '5px', paddingBottom: '15px', marginTop: '10px'
             }
         }
     } else {
@@ -98,7 +96,6 @@ const HomeBlock = ({data}) => {
                 <Link to={data.path} className={'link-element'}>
                     <div className={'img'} style={{
                         height: String((window.innerWidth) / 5 * 2) + 'px',
-                        borderRadius: '15px',
                         backgroundImage: "url('" + data.url + "')",
                         backgroundSize: 'cover',
                         display: 'flex',

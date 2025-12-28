@@ -44,7 +44,9 @@ const CatalogItem = ({product, isClicked, from}) => {
 
 
     return (<div className={style['catalogItem']}>
+        <div>
         <div style={{backgroundImage: 'url("' + product.image + '")',}}/>
+        </div>
         <div className={style['gradient']}>
             <div className={style['platform']}>
                 <div>

@@ -1,37 +1,50 @@
 @import "src/components/styles/mainStyle";
 
-.catalogItem{
+.catalogItem {
   display: flex;
+  border-radius: $block-border-radius / 2;
+  margin-top: 3vw;
   position: relative;
   width: 41vw;
   height: 57.5vw;
   min-height: 57.5vw;
   min-width: 41vw;
   box-sizing: border-box;
-  overflow: hidden;
-  border-radius: $block-border-radius / 2;
-  margin-top: 3vw;
 
-
-  >div{
-    display: flex;
-    width: 57.5vw;
+  > div:nth-child(1) {
+    position: relative;
+    width: 41vw;
     height: 57.5vw;
-    margin-left: -8.25vw;
-    background-size: cover;
+    min-height: 57.5vw;
+    min-width: 41vw;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: $block-border-radius / 2;
+
+    > div {
+      display: flex;
+      width: 57.5vw;
+      height: 57.5vw;
+      margin-left: -8.25vw;
+      background-size: cover;
+      border-radius: $block-border-radius / 2;
+    }
   }
 
-  .gradient{
+
+  .gradient {
     position: absolute;
-    width: 41vw;
-    margin-left: 0;
-    height: 57.5vw;
+    width: 42.0vw;
+    margin-left: -0.5vw;
+    margin-top: -0.5vw;
+    height: 58.5vw;
     background: linear-gradient(180deg, #00000000 50%, rgba(23, 23, 23, 0.83) 70%, #171717 90%);
     display: flex;
     flex-direction: column;
-    padding: 0.5vw;
+    padding: 1vw;
+    border-radius: $block-border-radius / 2;
 
-    .cardName{
+    .cardName {
       display: flex;
       margin: 2vw 1.55vw 0 1.55vw;
       font-size: 3.5vw;
@@ -45,7 +58,7 @@
       color: white;
     }
 
-    .cardPrice{
+    .cardPrice {
       display: flex;
       margin: 0 1.55vw 0 1.55vw;
       font-size: 3.5vw;
@@ -59,7 +72,8 @@
       font-weight: 900;
       color: white;
     }
-    .parcent{
+
+    .parcent {
       background: #EFD101;
       padding: 0.63vw 1.26vw;
       font-family: 'SF PRO Display', serif;
@@ -73,11 +87,12 @@
       margin: auto auto auto 1vw;
     }
 
-    .platform{
+    .platform {
       margin: auto 1.55vw 0 1.55vw;
       display: flex;
       flex-direction: row;
-      >div:nth-child(1){
+
+      > div:nth-child(1) {
         background: white;
         padding: 0.63vw 1.26vw;
         font-family: 'SF PRO Display', serif;

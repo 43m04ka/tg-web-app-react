@@ -54,13 +54,17 @@ const HomeBlock = ({data}) => {
 
     if (!data.type.includes('banner')) {
         return (<div style={styleBlock}>
-                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <div style={{display: 'flex', flexDirection:'row'}}>
+                    {typeof data.imageIcon !== 'undefined' && data.imageIcon !== null ? (
+                        <div style={{height: '9vw', width: '9vw', marginLeft: '0.5vw', backgroundSize:'cover', backgroundImage:'url(' + data.imageIcon + ')'}} />
+                    ) : ''}
                     <div style={{
                         fontSize: '6vw',
+                        lineHeight: '9vw',
                         fontWeight: 'normal',
                         fontFamily: "'SF PRO Display', sans-serif",
                         color: 'white',
-                        marginLeft: '15px',
+                        marginLeft: '1vw',
                         overflow: 'hidden',
                         width: 'auto',
                         letterSpacing: '0.1vw',

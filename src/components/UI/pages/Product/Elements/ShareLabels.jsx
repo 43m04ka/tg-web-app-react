@@ -35,7 +35,7 @@ const ShareLabels = ({productData, parameters}) => {
         }
     })
 
-    textMessage += '\nКупить можно в приложении Геймворд  — \nhttps://t.me/gwstore_bot/app?startapp=' + String(productData.id)
+    textMessage += '\nКупить можно в приложении Геймворд  — https://t.me/gwstore_bot/app?startapp=' + String(productData.id)
     return (
         <div>
             <div className={style['shareLabel']}

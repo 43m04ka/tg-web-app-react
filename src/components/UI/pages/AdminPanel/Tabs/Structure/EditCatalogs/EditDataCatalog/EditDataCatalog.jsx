@@ -30,7 +30,7 @@ const EditDataCatalog = ({catalogList, onClose, onReload, catalogId}) => {
         {type: 'string', key:'url', label: 'Ссылка на изображение'},
         {type: 'string', key:'backgroundColor', label: 'Цвет фона'},
         {type: 'string', key:'path', label: 'Ссылка элемента'},
-        {type: 'dropbox', key:'imageIcon', label: 'Иконкка каталога', data: iconsData},
+        {type: 'dropbox', key:'imageIcon', label: 'Иконкка каталога', data: [{label:'Без иконки', value: null},...iconsData]},
         {type: 'number', defaultValue: 0, key:'serialNumber', label: 'Порядковый номер'},
     ]
 

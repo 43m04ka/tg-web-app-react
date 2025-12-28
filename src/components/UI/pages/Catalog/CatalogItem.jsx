@@ -15,7 +15,7 @@ const CatalogItem = ({product, isClicked, from}) => {
     } else if (product.similarCard !== null) {
         price = String(product.similarCard?.price).toLocaleString() + ' ₽'
 
-        if (typeof product.similarCard.oldPrice !== 'undefined') {
+        if (typeof product.similarCard.oldPrice !== 'undefined' && product.similarCard.oldPrice !== null) {
             parcent = '−' + Math.ceil((1 - product.similarCard?.price / product.similarCard?.oldPrice) * 100) + '%'
             oldPrice = product.similarCard?.oldPrice.toLocaleString() + ' ₽'
         }

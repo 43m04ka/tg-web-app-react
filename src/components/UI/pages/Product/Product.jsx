@@ -10,6 +10,7 @@ import ChoiceElement from "./Elements/ChoiceElement";
 import DescriptionImages from "./Elements/DescriptionImages";
 import ProductBasketCounter from "./Elements/ProductBasketCounter";
 import SimilarProducts from "./Elements/SimilarProducts";
+import ShareLabels from "./Elements/ShareLabels";
 
 const parameters = [{label: 'Платформа', key: 'platform'}, {
     label: 'Регион активации', key: 'regionActivate'
@@ -274,24 +275,7 @@ const Product = () => {
 
             <Recommendations horizontal={true}/>
 
-            <div className={style['shareLabel']}
-                 onClick={async () => {
-                await prepareShareMessage((messageId) => {
-                    console.log(Date.now())
-                    tg.shareMessage(messageId)
-                }, productData.id, user.id)
-            }}>
-                <div className={style['shareLabelShare']}/>
-                <p>Поделиться карточкой</p>
-            </div>
-
-            <div className={style['shareLabel']}
-            onClick={()=>{
-                navigator.clipboard.writeText('https://t.me/gwstore_bot/app?startapp=' + String(productData.id));
-            }}>
-                <div className={style['shareLabelCopy']}/>
-                <p>Скопировать прямую ссылку</p>
-            </div>
+            <ShareLabels productData={productData} parameters={parameters}/>
 
             <div className={style['basketButton']}
                  style={{

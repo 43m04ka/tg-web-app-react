@@ -32,50 +32,6 @@ const CatalogItem = ({product, isClicked, from}) => {
         }
     }
 
-    let parcentEl = (<div></div>)
-    if (parcent !== '') {
-        parcentEl = (<div style={{
-            lineHeight: '20px',
-            background: '#ff5d5d',
-            paddingLeft: '3px',
-            paddingRight: '3px',
-            borderRadius: '5px',
-            marginBottom: '5px',
-            textDecoration: 'none',
-            textAlign: 'left',
-            marginRight: '5px',
-            fontWeight: 'normal',
-            fontFamily: "'SF PRO Display', sans-serif",
-            fontSize: '12px',
-            overflow: 'hidden',
-            color: 'white',
-            width: 'max-content'
-        }}>{parcent}</div>)
-    }
-
-    let view = product.choiceRow === null ? '' : ' ' + product.choiceRow
-
-    let platform = (<div></div>)
-    if (typeof product.platform !== null && product.platform !== null) {
-        platform = (<div style={{
-            lineHeight: '20px',
-            background: '#191919',
-            paddingLeft: '3px',
-            paddingRight: '3px',
-            borderRadius: '5px',
-            marginBottom: '5px',
-            textDecoration: 'none',
-            textAlign: 'left',
-            marginLeft: '5px',
-            fontWeight: 'normal',
-            fontFamily: "'SF PRO Display', sans-serif",
-            fontSize: '12px',
-            overflow: 'hidden',
-            color: 'white',
-            width: 'max-content'
-        }}>{product.platform}</div>)
-    }
-
     const [imageLoaded, setImageLoaded] = useState(false);
 
     useEffect(() => {
@@ -87,21 +43,30 @@ const CatalogItem = ({product, isClicked, from}) => {
     }, [product.url]);
 
 
-    return (
-        <div className={style['catalogItem']}>
-            <div style={{backgroundImage: 'url("' + product.image + '")',}}/>
-            <div className={style['gradient']}>
-                <div className={style['platform']}>
-
+    return (<div className={style['catalogItem']}>
+        <div style={{backgroundImage: 'url("' + product.image + '")',}}/>
+        <div className={style['gradient']}>
+            <div className={style['platform']}>
+                <div>
+                    {product.platform}
                 </div>
-                <p className={style['cardName']}>
-                    {product.name}
-                </p>
+                {parcent !== '' && parcent.charAt(0) !== '−' ? <div className={style['parcent']} style={{margin:'auto 0 auto auto'}}>
+                    {parcent}
+                </div> : ''}
+            </div>
+            <p className={style['cardName']}>
+                {product.name}
+            </p>
+            <div style={{display:'flex', flexDirection:'row'}}>
                 <p className={style['cardPrice']}>
                     {price}
                 </p>
+                {parcent !== '' && parcent.charAt(0) === '−' ? <div className={style['parcent']}>
+                    {parcent}
+                </div> : ''}
             </div>
-        </div>);
+        </div>
+    </div>);
 };
 
 export default CatalogItem;

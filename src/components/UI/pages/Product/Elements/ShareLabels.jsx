@@ -5,7 +5,7 @@ import {useServer} from "../useServer";
 
 const ShareLabels = ({productData, parameters}) => {
 
-    const {tg} = useTelegram()
+    const {tg, user} = useTelegram()
     const {prepareShareMessage} = useServer()
 
     console.log(productData)
@@ -15,6 +15,11 @@ const ShareLabels = ({productData, parameters}) => {
     let endDatePromotion = '\n'
     let parcent = ''
 
+
+    if(typeof productData.endDatePromotion !== 'undefined'){
+        endDatePromotion = `*cкидка ${parcent} действует до ${productData.endDatePromotion} \n\n`
+    }
+
     if (productData.oldPrice !== null) {
         parcent = Math.ceil((1 - productData.price / productData.oldPrice) * 100) + '%'
     } else if (productData.similarCard !== null) {
@@ -23,8 +28,6 @@ const ShareLabels = ({productData, parameters}) => {
         }
         if (typeof productData.similarCard.endDatePromotion !== 'undefined') {
             endDatePromotion = `*cкидка ${parcent} действует до ${productData.similarCard?.endDatePromotion} \n\n`
-        }else{
-            endDatePromotion = `*cкидка ${parcent} действует до ${productData.endDatePromotion} \n\n`
         }
     }
     textMessage += endDatePromotion
@@ -35,13 +38,13 @@ const ShareLabels = ({productData, parameters}) => {
         }
     })
 
-    textMessage += '\nКупить можно в приложении Геймворд  — https://t.me/gwstore_bot/app?startapp=' + String(productData.id)
+    textMessage += '\nКупить можно в приложении Геймворд — https://t.me/gwstore_bot/app?startapp=' + String(productData.id)
+
     return (
         <div>
             <div className={style['shareLabel']}
                  onClick={async () => {
                      await prepareShareMessage((messageId) => {
-                         console.log(Date.now())
                          tg.shareMessage(messageId)
                      }, productData.id, user.id)
                  }}>

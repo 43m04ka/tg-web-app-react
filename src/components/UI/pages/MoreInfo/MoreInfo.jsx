@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 import style from './MoreInfo.module.scss'
 import {Swiper, SwiperSlide} from "swiper/react";
 import 'swiper/css/pagination';
+import NameBlock from "./NameBlock";
 
 const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
 
@@ -103,6 +104,8 @@ const MoreInfo = () => {
                 paddingBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px',
                 paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top + 10) + 'px',
             }}>
+            <NameBlock/>
+
             {buttonList.map((block) => (<div className={style['blockButton']}>
                 {block.map((button, index) => (<div onClick={() => {
                     if (typeof button.path !== 'undefined') {

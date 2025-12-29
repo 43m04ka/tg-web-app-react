@@ -124,6 +124,7 @@ const Product = () => {
         if (productData.endDatePromotion !== null) {
             endDatePromotion = `*cкидка действует до ${productData.endDatePromotion}`
         }
+
         if (productData.oldPrice !== null) {
             oldPrice = productData.oldPrice.toLocaleString() + ' ₽'
             percent = '-' + Math.ceil((1 - productData.price / productData.oldPrice) * 100) + '%'
@@ -181,17 +182,7 @@ const Product = () => {
 
                 {percent !== '' ? (<div className={style['percent']}>{percent}</div>) : ''}
 
-                <button className={style['share']}  style={{marginLeft: (percent !== '' ? '0' : '68.91vw')}}
-                        onClick={async () => {
-                            await prepareShareMessage((messageId) => {
-                                console.log(Date.now())
-                                tg.shareMessage(messageId)
-                            }, productData.id, user.id)
-                        }}>
-                    <div/>
-                </button>
-
-                <button className={style['favorite']}
+                <button className={style['favorite']}  style={{marginLeft: (percent !== '' ? '0' : '79.91vw')}}
                         onClick={async () => {
                             if (cardInFavorite) {
                                 setCardInFavorite(false)

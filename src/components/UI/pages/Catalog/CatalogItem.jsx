@@ -1,7 +1,9 @@
 import {useEffect, useState} from 'react';
 import style from './CatalogItem.module.scss';
+import {useNavigate} from "react-router-dom";
 
 const CatalogItem = ({product, isClicked, from}) => {
+    const navigate = useNavigate()
 
     let oldPrice = ''
     let parcent = ''
@@ -45,21 +47,24 @@ const CatalogItem = ({product, isClicked, from}) => {
 
     return (<div className={style['catalogItem']}>
         <div>
-        <div style={{backgroundImage: 'url("' + product.image + '")',}}/>
+            <div style={{backgroundImage: 'url("' + product.image + '")',}}/>
         </div>
-        <div className={style['gradient']}>
+        <div onClick={() => {
+            navigate(isClicked === false ? null : '/card/' + product.id + (typeof from !== "undefined" ? '?from=' + from : ''))
+        }} className={style['gradient']}>
             <div className={style['platform']}>
                 <div>
                     {product.platform}
                 </div>
-                {parcent !== '' && parcent.charAt(0) !== '−' ? <div className={style['parcent']} style={{margin:'auto 0 auto auto'}}>
-                    {parcent}
-                </div> : ''}
+                {parcent !== '' && parcent.charAt(0) !== '−' ?
+                    <div className={style['parcent']} style={{margin: 'auto 0 auto auto'}}>
+                        {parcent}
+                    </div> : ''}
             </div>
             <p className={style['cardName']}>
                 {product.name}
             </p>
-            <div style={{display:'flex', flexDirection:'row'}}>
+            <div style={{display: 'flex', flexDirection: 'row'}}>
                 <p className={style['cardPrice']}>
                     {price}
                 </p>
@@ -72,38 +77,3 @@ const CatalogItem = ({product, isClicked, from}) => {
 };
 
 export default CatalogItem;
-//
-// <Link
-//     to={isClicked === false ? null : '/card/' + product.id + (typeof from !== "undefined" ? '?from=' + from : '')}
-//     className={'link-element'}>
-
-// <div className={'box-home-block-element'}>
-//     {imageLoaded ? (<div style={{
-//         backgroundImage: 'url("' + product.image + '")',
-//         backgroundRepeat: 'no-repeat',
-//         backgroundSize: 'cover',
-//         display: 'flex',
-//         flexDirection: 'row',
-//         alignItems: 'end',
-//         justifyContent: 'space-between',
-//     }} className={style['productImage']}>
-//         {platform}
-//         {parcentEl}
-//     </div>) : (<div className={style['preloadProductImage']}>
-//         <svg>
-//             <path/>
-//         </svg>
-//         <svg>
-//             <path/>
-//         </svg>
-//     </div>)}
-//
-//     <div style={{height: '8.5vw', overflow: 'hidden'}}>
-//         <div className={'text-element name-element'}>{product.name + view}</div>
-//     </div>
-//     <div style={{display: 'flex', justifyContent: 'left'}}>
-//         <div className={'text-element price-element'}>{price}</div>
-//         <div className={'text-element price-element'}
-//              style={{textDecoration: 'line-through', color: 'gray'}}>{oldPrice}</div>
-//     </div>
-// </div>

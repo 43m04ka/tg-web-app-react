@@ -2,13 +2,17 @@ import React from 'react';
 import style from "../Product.module.scss";
 import {useTelegram} from "../../../../../hooks/useTelegram";
 import {useServer} from "../useServer";
+import toast, { Toaster } from 'react-hot-toast';
 
 const ShareLabels = ({productData, parameters}) => {
 
     const {tg, user} = useTelegram()
     const {prepareShareMessage} = useServer()
 
-    console.log(productData)
+    const notify = () => toast.success('Скопировано!', {
+        duration: 2000,
+        position: 'bottom-center',
+    });
 
     let textMessage = `${productData.name} — ${String(productData.similarCard?.price || productData.price).toLocaleString()} ₽\n`
 
@@ -51,12 +55,11 @@ const ShareLabels = ({productData, parameters}) => {
                 <div className={style['shareLabelShare']}/>
                 <p>Поделиться карточкой</p>
             </div>
-
             <div className={style['shareLabel']}
                  onClick={async ()=>{
                      try {
                          await navigator.clipboard.writeText(textMessage);
-                         showToast("Скопировано!");
+                         notify();
                      } catch (err) {
                          console.error("Ошибка при копировании", err);
                      }

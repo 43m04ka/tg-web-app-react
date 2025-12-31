@@ -1,20 +1,13 @@
-import React from 'react';
+import React, {useState} from 'react';
 import style from "../Product.module.scss";
 import {useTelegram} from "../../../../../hooks/useTelegram";
 import {useServer} from "../useServer";
-import toast from 'react-hot-toast';
 
 const ShareLabels = ({productData, parameters}) => {
 
     const {tg, user} = useTelegram()
     const {prepareShareMessage} = useServer()
-
-    const notify = () => {
-        toast.success('Скопировано')
-        if (window.navigator.vibrate) {
-            window.navigator.vibrate(50);
-        }
-    };
+    const [copied, setCopied] = useState(false);
 
     let textMessage = `${productData.name} — ${String(productData.similarCard?.price || productData.price).toLocaleString()} ₽\n`
 
@@ -46,8 +39,7 @@ const ShareLabels = ({productData, parameters}) => {
 
     textMessage += '\nКупить можно в приложении Геймворд — https://t.me/gwstore_bot/app?startapp=' + String(productData.id)
 
-    return (
-        <div>
+    return (<div>
             <div className={style['shareLabel']}
                  onClick={async () => {
                      await prepareShareMessage((messageId) => {
@@ -61,7 +53,8 @@ const ShareLabels = ({productData, parameters}) => {
                  onClick={async () => {
                      try {
                          await navigator.clipboard.writeText(textMessage);
-                         notify();
+                         setCopied(true);
+                         setTimeout(() => setCopied(false), 2000);
                      } catch (err) {
                          console.error("Ошибка при копировании", err);
                      }
@@ -69,8 +62,8 @@ const ShareLabels = ({productData, parameters}) => {
                 <div className={style['shareLabelCopy']}/>
                 <p>Скопировать прямую ссылку</p>
             </div>
-        </div>
-    );
+            {copied ? (<span className={style['copyNotify']}>Скопировано!</span>) : ''}
+        </div>);
 };
 
 export default ShareLabels;

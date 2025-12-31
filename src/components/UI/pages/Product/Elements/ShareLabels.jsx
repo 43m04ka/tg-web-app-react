@@ -2,17 +2,19 @@ import React from 'react';
 import style from "../Product.module.scss";
 import {useTelegram} from "../../../../../hooks/useTelegram";
 import {useServer} from "../useServer";
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 const ShareLabels = ({productData, parameters}) => {
 
     const {tg, user} = useTelegram()
     const {prepareShareMessage} = useServer()
 
-    const notify = () => toast.success('Скопировано!', {
-        duration: 2000,
-        position: 'bottom-center',
-    });
+    const notify = () => {
+        toast.success('Скопировано')
+        if (window.navigator.vibrate) {
+            window.navigator.vibrate(50);
+        }
+    };
 
     let textMessage = `${productData.name} — ${String(productData.similarCard?.price || productData.price).toLocaleString()} ₽\n`
 
@@ -20,7 +22,7 @@ const ShareLabels = ({productData, parameters}) => {
     let parcent = ''
 
 
-    if(typeof productData.endDatePromotion !== 'undefined' && productData.endDatePromotion !== null){
+    if (typeof productData.endDatePromotion !== 'undefined' && productData.endDatePromotion !== null) {
         endDatePromotion = `*cкидка ${parcent} действует до ${productData.endDatePromotion} \n\n`
     }
 
@@ -56,7 +58,7 @@ const ShareLabels = ({productData, parameters}) => {
                 <p>Поделиться карточкой</p>
             </div>
             <div className={style['shareLabel']}
-                 onClick={async ()=>{
+                 onClick={async () => {
                      try {
                          await navigator.clipboard.writeText(textMessage);
                          notify();

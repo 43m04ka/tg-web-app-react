@@ -16,7 +16,7 @@ const ShareLabels = ({productData, parameters}) => {
     let parcent = ''
 
 
-    if(typeof productData.endDatePromotion !== 'undefined'){
+    if(typeof productData.endDatePromotion !== 'undefined' && productData.endDatePromotion !== null){
         endDatePromotion = `*cкидка ${parcent} действует до ${productData.endDatePromotion} \n\n`
     }
 
@@ -26,7 +26,7 @@ const ShareLabels = ({productData, parameters}) => {
         if (typeof productData.similarCard.oldPrice !== 'undefined') {
             parcent = Math.ceil((1 - productData.similarCard?.price / productData.similarCard?.oldPrice) * 100) + '%'
         }
-        if (typeof productData.similarCard.endDatePromotion !== 'undefined') {
+        if (typeof productData.similarCard.endDatePromotion !== 'undefined' && productData.similarCard.endDatePromotion !== null) {
             endDatePromotion = `*cкидка ${parcent} действует до ${productData.similarCard?.endDatePromotion} \n\n`
         }
     }
@@ -53,8 +53,13 @@ const ShareLabels = ({productData, parameters}) => {
             </div>
 
             <div className={style['shareLabel']}
-                 onClick={()=>{
-                     navigator.clipboard.writeText(textMessage);
+                 onClick={async ()=>{
+                     try {
+                         await navigator.clipboard.writeText(textMessage);
+                         showToast("Скопировано!");
+                     } catch (err) {
+                         console.error("Ошибка при копировании", err);
+                     }
                  }}>
                 <div className={style['shareLabelCopy']}/>
                 <p>Скопировать прямую ссылку</p>

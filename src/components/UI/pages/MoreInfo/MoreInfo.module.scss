@@ -1,4 +1,5 @@
 @import "src/components/styles/mainStyle";
+@import "DuckGif";
 
 .container {
   overflow-y: scroll;
@@ -201,5 +202,29 @@
     opacity: 1;
     -webkit-transform: scale(1);
     transform: scale(1);
+  }
+}
+
+.nameBlock{
+  display: flex;
+  flex-direction: row;
+  margin: 1vw;
+
+  >p {
+    width: max-content;
+    margin: auto 2vw auto auto;
+    line-height: 10vw;
+    font-family: 'SF PRO Display', serif;
+    font-size: 5vw;
+    font-weight: 700;
+    color: white;
+  }
+  >div{
+    height: 10vw;
+    width: 10vw;
+    margin: auto auto auto 0;
+    display: flex;
+    background-size: cover;
+    background-image: $helloDuck;
   }
 }

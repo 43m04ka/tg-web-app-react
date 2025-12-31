@@ -1,17 +1,19 @@
 import React from 'react';
-import style from "./MoreInfo.module.scss";
 import {useTelegram} from "../../../../hooks/useTelegram";
+import style from './MoreInfo.module.scss'
 
 const NameBlock = () => {
 
-    const {tg} = useTelegram()
-    console.log(tg)
+    const {user} = useTelegram()
 
-    return (
-        <div>
-
-        </div>
-    );
+    if (user.first_name !== 'undefined') {
+        return (
+            <div className={style['nameBlock']}>
+                <p>Привет, {user.first_name.slice(0, 15)}!</p>
+                <div/>
+            </div>
+        );
+    }
 };
 
 export default NameBlock;

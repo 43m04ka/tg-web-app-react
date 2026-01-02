@@ -22,6 +22,7 @@ const Basket = () => {
     const [promoData, setPromoData] = useState({percent: 0, name: ''})
     const [promoIsVisible, setPromoIsVisible] = useState(false)
     const [orderId, setOrderId] = useState(null)
+    const [orderPositionList, setOrderPositionList] = useState([])
     const [username, setUsername] = useState('')
     const inputRef = useRef(null);
     const [paymentString, setPaymentString] = useState('Способ оплаты: СБП')
@@ -128,19 +129,14 @@ const Basket = () => {
                     </div>
 
                     <ButtonBuy onBuy={(onLoaded) => {
-                        // createOrder(paymentString, accountData, {
-                        //     id: user.id, username: '@' + (user.username || username)
-                        // }, pageId, promoData.name, ((res) => {
-                        //     setOrderId(res.number)
-                        //     onLoaded()
-                        // })).then()
-                        setTimeout(() => {
-                            onLoaded();
-                            setOrderId(1245)
-                            setTimeout(()=>{
-                                setOrderId(null)
-                            }, 5000)
-                        }, 1000)
+                        createOrder(paymentString, accountData, {
+                            id: user.id, username: '@' + (user.username || username)
+                        }, pageId, promoData.name, ((res) => {
+                            setOrderId(res.number)
+                            setOrderPositionList(res.list)
+                            onLoaded()
+                            updateBasket(catalogList, pageId)
+                        })).then()
                     }} inputUsernameRef={inputRef} username={username}/>
 
                     <div className={style['labelBuy']}>
@@ -155,7 +151,7 @@ const Basket = () => {
                     </div>
                 </div>
                 <Recommendations from={'basket'}/>
-                {orderId !== null ? <OrderPage orderId={orderId}/> : ''}
+                {orderId !== null ? <OrderPage orderId={orderId} positionList={orderPositionList}/> : ''}
             </div>);
         }
     }

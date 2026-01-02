@@ -1,4 +1,5 @@
 @import "src/components/styles/mainStyle";
+@import "src/components/UI/pages/Basket/gif/Duck";
 
 .container {
   position: fixed;
@@ -98,4 +99,139 @@
     background: rgba(80, 161, 85, 0.3);
     opacity: 0;
   }
+}
+
+.orderPage {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background-color: #171717;
+  z-index: 500;
+  overflow-y: scroll;
+  padding-bottom: 10vw;
+
+  > div:not(:first-child) {
+    background: $menu-color;
+    margin: 3.2vw 3.2vw 4.0vw 3.2vw;
+    width: 93.6vw;
+    border-radius: $block-border-radius;
+    padding: 2.9vw 4.8vw;
+    font-family: 'SF PRO Display', serif;
+    color: white;
+    font-size: 4vw;
+  }
+
+  > div {
+    opacity: 0;
+    transform: translateY(5%);
+    animation: appearanceBlock 0.4s forwards ease-in-out;
+  }
+
+  > div:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  > div:nth-child(3) {
+    animation-delay: 0.6s;
+  }
+
+  > div:nth-child(4) {
+    animation-delay: 1s;
+  }
+}
+
+@keyframes appearanceBlock {
+  0% {
+    opacity: 0;
+    transform: translateY(5%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.label {
+  @extend %font-medium;
+  margin: 2vw 0 0 0;
+  text-align: center;
+  font-size: 4vw;
+  color: white;
+  user-select: none;
+}
+
+.button {
+  display: flex;
+  margin: 2.9vw 0 0 0;
+  width: 100%;
+  @extend %font-medium;
+  font-size: 4vw;
+  font-weight: 900;
+  border-radius: $block-border-radius / 2;
+  color: white;
+  padding: 2.4vw 0;
+  transition-property: background;
+  transition-duration: 0.3s;
+}
+
+.mainMenuButton {
+  display: flex;
+  margin: 2.9vw 0 0 0;
+  width: 100%;
+  border-radius: $block-border-radius / 2 !important;
+  color: white;
+  background: #50A355 !important;
+  padding: 2.4vw 0;
+  transition-property: background;
+  transition-duration: 0.3s;
+
+  > p {
+    font-family: 'SF PRO Display', serif;
+    font-size: 4vw;
+    font-weight: 900;
+    display: flex;
+    width: max-content;
+    margin: auto;
+  }
+}
+
+
+.happyDuck {
+  display: flex;
+  width: 30vw;
+  height: 30vw;
+  background-size: cover;
+  margin: 3.2vw auto;
+  @extend %happyDuck;
+}
+
+.orderPosition {
+  display: grid;
+  grid-template-columns: 15vw 1fr;
+
+  > div:first-child {
+    width: 15vw;
+    height: 15vw;
+    background-size: cover;
+    border-radius: $block-border-radius / 3;
+  }
+  >div:nth-child(2) {
+    margin-left: 2vw;
+    >p:first-child {
+      font-size: 3.5vw;
+      line-height: 5vw;
+      height: 10vw;
+      overflow: hidden;
+    }
+    >p:nth-child(2) {
+      font-size: 4.5vw;
+    }
+  }
+}
+
+.separator {
+  height: 1px;
+  width: 100%;
+  margin: 1.5vw 0;
+  background: #595959;
 }

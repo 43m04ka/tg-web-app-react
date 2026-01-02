@@ -48,16 +48,6 @@
   user-select: none;
 }
 
-
-.happyDuck {
-  display: flex;
-  width: 30vw;
-  height: 30vw;
-  background-size: cover;
-  margin: 25vh auto 3vw auto;
-  @extend %happyDuck;
-}
-
 .button {
   @extend %font-medium;
   margin: 1vw auto;

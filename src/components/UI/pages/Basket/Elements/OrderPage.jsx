@@ -26,8 +26,8 @@ const OrderPage = ({orderData}) => {
             <div className={style['orderPageContainer']}/>
         </>) : (<div className={style['orderPage']} style={{
             paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
-            paddingBottom: String(window.innerWidth * 0.15 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'
-        }}>>
+            paddingBottom: String(window.innerWidth * 0.15 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px',
+        }}>
             <div>
                 <div className={style['label']} style={{
                     fontSize: '5vw',
@@ -36,39 +36,50 @@ const OrderPage = ({orderData}) => {
                 <div className={style['label']} style={{
                     fontSize: '4vw',
                     marginBottom: '3vw',
-                    textAlign:'left'
-                }}>Состав заказа:</div>
-                {list.map((item, index) => {
-                    return (<>
-                        <div className={style['orderPosition']} key={index}>
-                            <div style={{backgroundImage: `url(${item.image})`}}/>
-                            <div>
-                                <p>
-                                    {item.name}
-                                </p>
-                                <p>
-                                    {item.platform !== null ? 'для ' +item.platform : ''}
-                                </p>
-                                <p>
-                                    {item.similarCard !== null ? item.similarCard.price : item.price} ₽
-                                </p>
+                    textAlign: 'left'
+                }}>Состав заказа:
+                </div>
+                <div style={{maxHeight: String(window.innerWidth * 0.80)  + 'px', overflowY:'scroll'}}>
+                    {list.map((item, index) => {
+                        return (<>
+                            <div className={style['orderPosition']} key={index}>
+                                <div style={{backgroundImage: `url(${item.image})`}}/>
+                                <div>
+                                    <p>
+                                        {item.name}
+                                    </p>
+                                    <p>
+                                        {item.platform !== null ? 'для ' + item.platform : ''}
+                                    </p>
+                                    <p>
+                                        {item.similarCard !== null ? item.similarCard.price : item.price} ₽
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                        {list.length - 1 > index ? (<div className={style['separator']}/>) : ''}</>)
-                })}
+                            {list.length - 1 > index ? (<div className={style['separator']}/>) : ''}</>)
+                    })}
+                </div>
                 <div className={style['label']} style={{
                     fontSize: '4vw',
                     marginTop: '5vw',
-                    textAlign:'left'
-                }}>Сумма: {summa} ₽</div>
+                    textAlign: 'left'
+                }}>Сумма: {summa} ₽
+                </div>
             </div>
             <div>
                 <div className={style['label']}>
-                    Для оплаты и активации заказа с Вами свяжется наш менеджер @gwstore_admin.<br/>Рабочее время с 10:00 до 22:00 по МСК.
+                    Для оплаты и активации заказа с Вами свяжется наш менеджер @gwstore_admin.
+                    <br/>Рабочее время с 10:00 до 22:00 по МСК.
+                    <br/>Вы можете задать вопрос по заказу по кнопке ниже.
                 </div>
-                <button onClick={()=>{window.open('https://t.me/gwstore_admin')}} className={style['button']} style={{background: '#414143'}}>Написать менеджеру</button>
+                <button onClick={() => {
+                    window.open('https://t.me/gwstore_admin')
+                }} className={style['button']} style={{background: '#414143'}}>Написать менеджеру
+                </button>
             </div>
-            <div className={style['mainMenuButton']} onClick={()=>{navigate('/')}}>
+            <div className={style['mainMenuButton']} onClick={() => {
+                navigate('/')
+            }}>
                 <p>Вернуться на главную</p>
             </div>
         </div>)}

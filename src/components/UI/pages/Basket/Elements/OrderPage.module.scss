@@ -18,11 +18,11 @@
   width: 18vw;
   position: absolute;
   animation: appearance, kick;
-  animation-duration: 0.7s, 4s;
+  animation-duration: 0.7s, 0.4s;
   animation-delay: 0s, 0.7s;
   animation-iteration-count: 1, 1;
   animation-fill-mode: forwards, forwards;
-  animation-timing-function: ease-out, linear;
+  animation-timing-function: ease-out, ease-in-out;
   left: 50vw;
   bottom: -20vw;
 
@@ -52,16 +52,20 @@
     transform: scale(1.5) translateX(-33.3%) translateY(0%);
     opacity: 1;
   }
+  12%{
+    transform: scale(1.2) translateX(-41.66%) translateY(0%);
+    opacity: 1;
+  }
   25%{
-    transform: scale(0.9) translateX(-55.5%) translateY(0%);
+    transform: scale(0.95) translateX(-52.63%) translateY(0%);
     opacity: 1;
   }
   50%{
-    transform: scale(1.1) translateX(-45.5%) translateY(0%);
+    transform: scale(1.05) translateX(-47.62%) translateY(0%);
     opacity: 0.8;
   }
   75%{
-    transform: scale(0.95) translateX(-52.6%) translateY(0%);
+    transform: scale(0.98) translateX(-51.02%) translateY(0%);
     opacity: 0.2;
   }
   100%{

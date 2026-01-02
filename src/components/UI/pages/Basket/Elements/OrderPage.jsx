@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import style from "./OrderPage.module.scss";
 import {useNavigate} from "react-router-dom";
+import {useTelegram} from "../../../../../hooks/useTelegram";
 
 const OrderPage = ({orderData}) => {
 
     const {number, list, summa} = orderData
+    const {tg} = useTelegram()
 
     const [stage, setStage] = useState(0);
 
@@ -22,8 +24,10 @@ const OrderPage = ({orderData}) => {
                 <div/>
             </div>
             <div className={style['orderPageContainer']}/>
-        </>) : (<div className={style['orderPage']}>
-            <div className={style['happyDuck']}/>
+        </>) : (<div className={style['orderPage']} style={{
+            paddingTop: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top) + 'px',
+            paddingBottom: String(window.innerWidth * 0.15 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'
+        }}>>
             <div>
                 <div className={style['label']} style={{
                     fontSize: '5vw',

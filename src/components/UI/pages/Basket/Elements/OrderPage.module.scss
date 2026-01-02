@@ -207,11 +207,11 @@
 
 .orderPosition {
   display: grid;
-  grid-template-columns: 15vw 1fr;
+  grid-template-columns: 20vw 1fr;
 
   > div:first-child {
-    width: 15vw;
-    height: 15vw;
+    width: 20vw;
+    height: 20vw;
     background-size: cover;
     border-radius: $block-border-radius / 3;
   }
@@ -222,9 +222,18 @@
       line-height: 5vw;
       height: 10vw;
       overflow: hidden;
+      font-weight: 700;
     }
     >p:nth-child(2) {
+      font-size: 3vw;
+      font-weight: 500;
+    }
+    >p:nth-child(3) {
       font-size: 4.5vw;
+      display: flex;
+      width: max-content;
+      margin: 0 0 auto auto;
+      font-weight: 900;
     }
   }
 }

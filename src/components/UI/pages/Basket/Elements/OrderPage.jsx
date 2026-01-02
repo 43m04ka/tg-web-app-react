@@ -2,7 +2,9 @@ import React, {useEffect, useState} from 'react';
 import style from "./OrderPage.module.scss";
 import {useNavigate} from "react-router-dom";
 
-const OrderPage = ({orderId, positionList}) => {
+const OrderPage = ({orderData}) => {
+
+    const {number, list, summa} = orderData
 
     const [stage, setStage] = useState(0);
 
@@ -24,10 +26,15 @@ const OrderPage = ({orderId, positionList}) => {
             <div className={style['happyDuck']}/>
             <div>
                 <div className={style['label']} style={{
-                    fontSize: '4.3vw',
-                    marginBottom: '3vw'
-                }}>{'Заказ №' + String(orderId) + ' успешно оформлен.'}</div>
-                {positionList.map((item, index) => {
+                    fontSize: '5vw',
+                    marginBottom: '5vw'
+                }}>{'Заказ №' + String(number) + ' успешно оформлен!'}</div>
+                <div className={style['label']} style={{
+                    fontSize: '4vw',
+                    marginBottom: '3vw',
+                    textAlign:'left'
+                }}>Состав заказа:</div>
+                {list.map((item, index) => {
                     return (<>
                         <div className={style['orderPosition']} key={index}>
                             <div style={{backgroundImage: `url(${item.image})`}}/>
@@ -36,17 +43,24 @@ const OrderPage = ({orderId, positionList}) => {
                                     {item.name}
                                 </p>
                                 <p>
+                                    {item.platform !== null ? 'для ' +item.platform : ''}
+                                </p>
+                                <p>
                                     {item.similarCard !== null ? item.similarCard.price : item.price} ₽
                                 </p>
                             </div>
                         </div>
-                        {positionList.length - 1 > index ? (<div className={style['separator']}/>) : ''}</>)
+                        {list.length - 1 > index ? (<div className={style['separator']}/>) : ''}</>)
                 })}
+                <div className={style['label']} style={{
+                    fontSize: '4vw',
+                    marginTop: '5vw',
+                    textAlign:'left'
+                }}>Сумма: {summa} ₽</div>
             </div>
             <div>
                 <div className={style['label']}>
-                    Совсем скоро с Вами свяжется наш менеджер - @gwstore_admin для оплаты и активации Вашего
-                    заказа.
+                    Для оплаты и активации заказа с Вами свяжется наш менеджер @gwstore_admin.<br/>Рабочее время с 10:00 до 22:00 по МСК.
                 </div>
                 <button onClick={()=>{window.open('https://t.me/gwstore_admin')}} className={style['button']} style={{background: '#414143'}}>Написать менеджеру</button>
             </div>

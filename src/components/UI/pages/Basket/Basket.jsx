@@ -21,8 +21,7 @@ const Basket = () => {
     const [accountData, setAccountData] = useState('')
     const [promoData, setPromoData] = useState({percent: 0, name: ''})
     const [promoIsVisible, setPromoIsVisible] = useState(false)
-    const [orderId, setOrderId] = useState(null)
-    const [orderPositionList, setOrderPositionList] = useState([])
+    const [orderData, setOrderData] = useState(null)
     const [username, setUsername] = useState('')
     const inputRef = useRef(null);
     const [paymentString, setPaymentString] = useState('Способ оплаты: СБП')
@@ -36,7 +35,7 @@ const Basket = () => {
     }, [])
 
     if (basket !== null) {
-        if (basket.length === 0 && orderId === null) {
+        if (basket.length === 0 && orderData === null) {
             return (<div style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -134,8 +133,7 @@ const Basket = () => {
                         createOrder(paymentString, accountData, {
                             id: user.id, username: '@' + (user.username || username)
                         }, pageId, promoData.name, ((res) => {
-                            setOrderId(res.number)
-                            setOrderPositionList(res.list)
+                            setOrderData(res)
                             onLoaded()
                         })).then()
                     }} inputUsernameRef={inputRef} username={username}/>
@@ -152,7 +150,7 @@ const Basket = () => {
                     </div>
                 </div>
                 <Recommendations from={'basket'}/>
-                {orderId !== null ? <OrderPage orderId={orderId} positionList={orderPositionList}/> : ''}
+                {orderData !== null ? <OrderPage orderData={orderData}/> : ''}
             </div>);
         }
     }

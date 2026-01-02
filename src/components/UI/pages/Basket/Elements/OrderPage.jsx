@@ -16,6 +16,9 @@ const OrderPage = ({orderData}) => {
         setTimeout(() => {
             setStage(1)
         }, 1350)
+        setTimeout(()=>{
+            window.Telegram.WebApp.HapticFeedback.notificationOccurred("success");
+        }, 750)
     }, [])
 
     return (<div className={style['container']}>

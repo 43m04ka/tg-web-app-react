@@ -29,15 +29,8 @@ const OrderPage = ({orderData}) => {
             paddingBottom: String(window.innerWidth * 0.15 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px',
         }}>
             <div>
-                <div className={style['label']} style={{
-                    fontSize: '5vw',
-                    marginBottom: '5vw'
-                }}>{'Заказ №' + String(number) + ' успешно оформлен!'}</div>
-                <div className={style['label']} style={{
-                    fontSize: '4vw',
-                    marginBottom: '3vw',
-                    textAlign: 'left'
-                }}>Состав заказа:
+                <div className={style['title']}>{'Заказ №' + String(number) + ' успешно оформлен!'}</div>
+                <div className={style['miniTitle']} style={{marginBottom:'3vw'}}>Состав заказа:
                 </div>
                 <div style={{maxHeight: String(window.innerWidth * 0.80)  + 'px', overflowY:'scroll'}}>
                     {list.map((item, index) => {
@@ -59,11 +52,7 @@ const OrderPage = ({orderData}) => {
                             {list.length - 1 > index ? (<div className={style['separator']}/>) : ''}</>)
                     })}
                 </div>
-                <div className={style['label']} style={{
-                    fontSize: '4vw',
-                    marginTop: '5vw',
-                    textAlign: 'left'
-                }}>Сумма: {summa} ₽
+                <div className={style['miniTitle']}>Сумма: {summa} ₽
                 </div>
             </div>
             <div>
@@ -74,7 +63,8 @@ const OrderPage = ({orderData}) => {
                 </div>
                 <button onClick={() => {
                     window.open('https://t.me/gwstore_admin')
-                }} className={style['button']} style={{background: '#414143'}}>Написать менеджеру
+                }} className={style['button']} style={{background: '#414143'}}>
+                    Поддержка магазина
                 </button>
             </div>
             <div className={style['mainMenuButton']} onClick={() => {

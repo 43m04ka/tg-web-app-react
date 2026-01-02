@@ -149,14 +149,33 @@
 }
 
 .label {
-  @extend %font-medium;
-  margin: 2vw 0 0 0;
+  font-family: 'SF PRO Display', serif;
+  line-height: 4vw;
   text-align: center;
-  font-size: 4vw;
-  line-height: 6vw;
+  font-size: 3.5vw;
   color: white;
-  user-select: none;
+  margin: 1vw 0;
+  white-space: pre-wrap;
 }
+
+.title {
+  font-family: 'SF PRO Display', serif;
+  font-variant: normal;
+  font-weight: 700;
+  font-size: 4.8vw;
+  line-height: 8vw;
+  color: white;
+}
+
+.miniTitle{
+  @extend %font-medium;
+  font-size: 4vw;
+  line-height: 5.3vw;
+  text-align: left;
+  color: white;
+  margin: 2vw 0 0 0;
+}
+
 
 .button {
   display: flex;

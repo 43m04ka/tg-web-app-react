@@ -16,7 +16,7 @@ const Basket = () => {
 
     const {createOrder} = useServer()
     const {user, tg} = useTelegram()
-    const {pageId, catalogList, basket, updateBasket} = useGlobalData()
+    const {pageId, catalogList, basket, updateBasket, pageList} = useGlobalData()
     const navigate = useNavigate();
     const [accountData, setAccountData] = useState('')
     const [promoData, setPromoData] = useState({percent: 0, name: ''})
@@ -36,7 +36,7 @@ const Basket = () => {
     }, [])
 
     if (basket !== null) {
-        if (basket.length === 0) {
+        if (basket.length === 0 && orderId === null) {
             return (<div style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -129,13 +129,14 @@ const Basket = () => {
                     </div>
 
                     <ButtonBuy onBuy={(onLoaded) => {
+                        navigate('/'+pageList.filter(item => item.id === pageId)[0].link + '/basket')
+
                         createOrder(paymentString, accountData, {
                             id: user.id, username: '@' + (user.username || username)
                         }, pageId, promoData.name, ((res) => {
                             setOrderId(res.number)
                             setOrderPositionList(res.list)
                             onLoaded()
-                            updateBasket(catalogList, pageId)
                         })).then()
                     }} inputUsernameRef={inputRef} username={username}/>
 

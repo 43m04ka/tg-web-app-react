@@ -40,30 +40,37 @@ const ShareLabels = ({productData, parameters}) => {
     textMessage += '\nКупить можно в приложении Геймворд — https://t.me/gwstore_bot/app?startapp=' + String(productData.id)
 
     return (<div>
-            <div className={style['shareLabel']}
-                 onClick={async () => {
-                     await prepareShareMessage((messageId) => {
-                         tg.shareMessage(messageId)
-                     }, productData.id, user.id)
-                 }}>
-                <div className={style['shareLabelShare']}/>
-                <p>Поделиться карточкой</p>
-            </div>
-            <div className={style['shareLabel']}
-                 onClick={async () => {
-                     try {
-                         await navigator.clipboard.writeText(textMessage);
-                         setCopied(true);
-                         setTimeout(() => setCopied(false), 2000);
-                     } catch (err) {
-                         console.error("Ошибка при копировании", err);
-                     }
-                 }}>
-                <div className={style['shareLabelCopy']}/>
-                <p>Скопировать прямую ссылку</p>
-            </div>
-            {copied ? (<span className={style['copyNotify']}>Скопировано!</span>) : ''}
-        </div>);
+        <div className={style['shareLabel']}
+             onClick={async () => {
+                 await prepareShareMessage((messageId) => {
+                     tg.shareMessage(messageId)
+                 }, productData.id, user.id)
+             }}>
+            <div className={style['shareLabelShare']}/>
+            <p>Поделиться карточкой</p>
+        </div>
+        <div className={style['shareLabel']}
+             onClick={async () => {
+                 try {
+                     await navigator.clipboard.writeText(textMessage);
+                     setCopied(true);
+                     setTimeout(() => setCopied(false), 2000);
+                 } catch (err) {
+                     console.error("Ошибка при копировании", err);
+                 }
+             }}>
+            <div className={style['shareLabelCopy']}/>
+            <p>Скопировать прямую ссылку</p>
+        </div>
+        {copied ? (<div style={{
+            top: String(tg?.contentSafeAreaInset.top + tg?.safeAreaInset.top + 20) + 'px',
+        }} className={style['copyNotify']}>
+            <div className={style['shareLabelCopy']}/>
+            <p>
+                Ссылка скопирована в буфер обмена
+            </p>
+        </div>) : ''}
+    </div>);
 };
 
 export default ShareLabels;

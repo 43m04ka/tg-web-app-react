@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import CatalogItem from "../../pages/Catalog/CatalogItem";
 import {useServerUser} from "../../../../hooks/useServerUser";
 import useGlobalData from "../../../../hooks/useGlobalData";
+import style from './Recommendations.module.scss'
 
 const Recommendations = ({from, horizontal}) => {
 
@@ -10,7 +11,7 @@ const Recommendations = ({from, horizontal}) => {
     const [products, setProducts] = useState(null);
 
     useEffect(()=>{
-        getRecommendationsGames(setProducts, pageId).then()
+        getRecommendationsGames((res) => {products === null ? setProducts(res) : ''}, pageId).then()
     }, [])
 
 
@@ -31,7 +32,7 @@ const Recommendations = ({from, horizontal}) => {
                         overflowX: 'scroll',
                         paddingLeft: '4vw',
                         paddingRight: '6vw'
-                    }}>
+                    }} className={style['list']}>
                     {products.map(item => {
                         return (
                             <div

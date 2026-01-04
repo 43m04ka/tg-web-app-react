@@ -1,0 +1,26 @@
+@import "src/components/styles/mainStyle";
+
+.list {
+  @for $i from 1 through 50 {
+    > div:nth-child(#{$i}) {
+      animation-delay: 0.1s * $i;
+    }
+  }
+
+  > div {
+    opacity: 0;
+    transform: translateY(5%);
+    animation: appearanceBlock 0.4s forwards ease-in-out;
+  }
+}
+
+@keyframes appearanceBlock {
+  0% {
+    opacity: 0;
+    transform: translateY(5%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

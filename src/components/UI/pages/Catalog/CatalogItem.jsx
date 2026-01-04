@@ -47,7 +47,8 @@ const CatalogItem = ({product, isClicked, from}) => {
 
     return (<div className={style['catalogItem']}>
         <div>
-            <div style={{backgroundImage: 'url("' + product.image + '")',}}/>
+            <div style={imageLoaded ? {backgroundImage: 'url("' + product.image + '")'} : {background: '#232323'}}/>
+            <div style={imageLoaded ? {backgroundImage: 'url("' + product.image + '")'} : {background: '#232323'}}/>
         </div>
         <div onClick={() => {
             navigate(isClicked === false ? null : '/card/' + product.id + (typeof from !== "undefined" ? '?from=' + from : ''))

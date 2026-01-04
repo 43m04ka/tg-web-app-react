@@ -21,6 +21,19 @@
   color: white;
 }
 
+.blockButton:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.blockButton:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+.blockButton:nth-child(4) {
+  animation-delay: 0.9s;
+}
+
+
 .blockButton {
   background: $menu-color;
   margin: 1.6vw 3.2vw 4.0vw 3.2vw;
@@ -29,6 +42,9 @@
   height: max-content;
   padding: 2.9vw 0 2.9vw 2vw;
   transition: height 0.3s ease;
+  opacity: 0;
+  transform: translateY(5%);
+  animation: appearanceBlock 0.4s forwards ease-in-out;
 
   > div {
     width: 100%;
@@ -144,34 +160,38 @@
   }
 }
 
+.nameBlock{
+  display: flex;
+  flex-direction: row;
+  margin: 1vw;
 
-.homeScreen {
-  height: 40vw;
-  margin: 1vw 0;
-  position: relative;
-  overflow-x: scroll;
-  z-index: 300;
-
-  > div {
-    width: 150vw;
-    flex-direction: row;
-    flex-wrap: wrap;
+  >p {
+    width: max-content;
+    margin: auto 2vw auto auto;
+    line-height: 10vw;
+    font-family: 'SF PRO Display', serif;
+    font-size: 5vw;
+    font-weight: 700;
+    color: white;
+  }
+  >div{
+    height: 10vw;
+    width: 10vw;
+    margin: auto auto auto 0;
     display: flex;
-    position: absolute;
-    padding-left: 5vw;
-    z-index: 1000;
+    background-size: cover;
+    background-image: $helloDuck;
+  }
+}
 
-    > div {
-      width: max-content;
-      padding: 1.3vw 2.3vw;
-      @extend %font-medium;
-      border-radius: 3.5vw;
-      margin: 1.2vw 1.2vw 0 0;
-      height: 6.7vw;
-      color: white;
-      font-size: 3.2vw;
-      text-align: center;
-    }
+@keyframes appearanceBlock {
+  0% {
+    opacity: 0;
+    transform: translateY(5%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -202,29 +222,5 @@
     opacity: 1;
     -webkit-transform: scale(1);
     transform: scale(1);
-  }
-}
-
-.nameBlock{
-  display: flex;
-  flex-direction: row;
-  margin: 1vw;
-
-  >p {
-    width: max-content;
-    margin: auto 2vw auto auto;
-    line-height: 10vw;
-    font-family: 'SF PRO Display', serif;
-    font-size: 5vw;
-    font-weight: 700;
-    color: white;
-  }
-  >div{
-    height: 10vw;
-    width: 10vw;
-    margin: auto auto auto 0;
-    display: flex;
-    background-size: cover;
-    background-image: $helloDuck;
   }
 }

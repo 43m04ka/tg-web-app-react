@@ -23,12 +23,21 @@
 
     > div {
       display: flex;
-      width: 56.5vw;
+      width: 41vw;
       height: 56.5vw;
-      margin-left: -7.5vw;
+      margin-left: 0.5vw;
       margin-top: 0.5vw;
-      background-size: cover;
+      background-size: 100% 75%;
       border-radius: $block-border-radius / 2;
+    }
+    >div:last-child{
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      mask: linear-gradient(to top, black 30%, transparent 50%);
+      filter: blur(15px)
     }
   }
 
@@ -36,8 +45,9 @@
   .gradient {
     position: absolute;
     width: 42.0vw;
-    height: 57.5vw;
+    height: 58.5vw;
     margin-left: -0.5vw;
+    margin-top: -0.5vw;
     padding: 1vw;
     background: linear-gradient(180deg, #00000000 50%, rgba(23, 23, 23, 0.83) 70%, #171717 90%);
     display: flex;
@@ -105,5 +115,4 @@
       }
     }
   }
-
 }

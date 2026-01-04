@@ -50,6 +50,10 @@ const useGlobalData = create(devtools(set => ({
     previewFavoriteData: [],
     updatePreviewFavoriteData: () => getPreviewFavoriteList((result) => set(() => ({previewFavoriteData: result})), user.id),
 
+    bufferCardsCatalog: [],
+    setBufferCardsCatalog: (cards) => set(() => ({bufferCardsCatalog: cards})),
+    bufferCardsRecommendations: [],
+    setBufferCardsRecommendations: (cards) => set(() => ({bufferCardsRecommendations: cards})),
 
     pageId: -1,
     setPageId: (pageId) => set(() => ({pageId: pageId})),

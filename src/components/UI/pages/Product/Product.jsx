@@ -11,10 +11,11 @@ import DescriptionImages from "./Elements/DescriptionImages";
 import ProductBasketCounter from "./Elements/ProductBasketCounter";
 import SimilarProducts from "./Elements/SimilarProducts";
 import ShareLabels from "./Elements/ShareLabels";
+import InfoBubbles from "./Elements/InfoBubbles";
 
-const parameters = [{label: 'Платформа', key: 'platform'}, {
-    label: 'Регион активации', key: 'regionActivate'
-}, {label: 'Язык в игре', key: 'language'}, {
+const parameters = [{label: 'Платформа', key: 'platform', type: 'bubble'}, {
+    label: 'Регион активации', key: 'regionActivate', type: 'bubble'
+}, {label: 'Язык в игре', key: 'language', type: 'bubble'}, {
     label: 'Дата релиза', key: (item) => {
         let a = (new Date(item.releaseDate)) * 24 * 60 * 60 * 1000
         let currentDate = new Date('1899-12-30T00:00:00.000Z')
@@ -25,24 +26,27 @@ const parameters = [{label: 'Платформа', key: 'platform'}, {
         } else {
             return newDate.toLocaleDateString('ru-RU')
         }
-    }
-}, {label: 'Количество игроков', key: 'numberPlayers'},]
+    }, type: 'bubble'
+}, {label: 'Количество игроков', key: 'numberPlayers', type: 'bubble'},]
 
 const Product = () => {
 
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const {
-        getCard,
-        addCardToFavorite,
-        deleteCardToFavorite,
-        addCardToBasket,
-        findCardsByCatalog,
-        prepareShareMessage,
-        getSearch
+        getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket, findCardsByCatalog,
     } = useServer()
     const {
-        updatePreviewFavoriteData, previewFavoriteData, pageId, pageList, basket, catalogList, updateBasket
+        updatePreviewFavoriteData,
+        previewFavoriteData,
+        pageId,
+        pageList,
+        basket,
+        catalogList,
+        updateBasket,
+        bufferCardsCatalog,
+        bufferCardsRecommendations,
+        mainPageCards
     } = useGlobalData()
 
     let cardId = Number((window.location.pathname).replace('/card/', ''))
@@ -171,6 +175,7 @@ const Product = () => {
             let height = blockRef.current.clientHeight + (window.innerWidth * 1.2)
 
             if (scroll > height && !buttonHidden) {
+
                 setButtonHidden(true)
             } else if (scroll < height && buttonHidden) {
                 setButtonHidden(false)
@@ -182,7 +187,7 @@ const Product = () => {
 
                 {percent !== '' ? (<div className={style['percent']}>{percent}</div>) : ''}
 
-                <button className={style['favorite']}  style={{marginLeft: (percent !== '' ? '0' : '79.91vw')}}
+                <button className={style['favorite']} style={{marginLeft: (percent !== '' ? '0' : '79.91vw')}}
                         onClick={async () => {
                             if (cardInFavorite) {
                                 setCardInFavorite(false)
@@ -210,6 +215,8 @@ const Product = () => {
 
             <div className={style['priceNameBlock']} ref={blockRef}>
                 <p className={style['title']}>{productData.name}</p>
+
+                <InfoBubbles parameters={parameters} productData={productData}/>
 
                 {selectCardList !== null && selectCardList.length > 1 ? (<ChoiceElement list={selectCardList}
                                                                                         isXbox={productData.name.toLowerCase().includes('game pass')}
@@ -246,7 +253,7 @@ const Product = () => {
                     {endDatePromotion}
                 </div>) : ''}
                 <div className={style['parameters']}>
-                    {parameters.map((parameter, index) => {
+                    {parameters.filter(item => item.type !== 'bubble').map((parameter, index) => {
                         if (productData[parameter.key] !== null && productData[parameter.key] !== '') {
                             return (<div key={index}>
                                 <div>{parameter.label}:</div>
@@ -262,7 +269,9 @@ const Product = () => {
 
             <Description>{productData.description}</Description>
 
-            <SimilarProducts name={productData.name} minRating={productData.name.replace(/[^a-zA-Z0-9\s]/g, "").split(' ')[0].length} id={productData.id}/>
+            <SimilarProducts name={productData.name}
+                             minRating={productData.name.replace(/[^a-zA-Z0-9\s]/g, "").split(' ')[0].length}
+                             id={productData.id}/>
 
             <Recommendations horizontal={true}/>
 
@@ -299,7 +308,17 @@ const Product = () => {
         </div>);
     } else {
         if (!isNaN(cardId)) {
-            getCard(setProductData, cardId).then()
+            let bufferedCardList = [...bufferCardsCatalog, ...bufferCardsRecommendations, ...(mainPageCards === null ? [] : mainPageCards)].map(card => {
+                return card.id === cardId ? card : null
+            }).filter(item => item !== null)
+
+            if (bufferedCardList.length === 1) {
+                setTimeout(()=>{
+                    setProductData(bufferedCardList[0])
+                }, 50)
+            } else {
+                getCard(setProductData, cardId).then()
+            }
         } else if (selectCardList === null) {
             let catalogId = 0
             catalogList.map(el => {

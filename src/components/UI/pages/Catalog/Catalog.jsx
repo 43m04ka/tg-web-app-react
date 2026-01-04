@@ -22,7 +22,7 @@ const Catalog = () => {
 
     const navigate = useNavigate();
     const {tg} = useTelegram()
-    const {catalogList, catalogStructureList} = useGlobalData()
+    const {catalogList, catalogStructureList, setBufferCardsCatalog} = useGlobalData()
     const {getCardList} = useServerUser()
     const [height, setHeight] = useState(0);
 
@@ -37,6 +37,7 @@ const Catalog = () => {
 
     const setNewCardData = (data, number) => {
         setCardList([...(cardList || []), ...data.cardList])
+        setBufferCardsCatalog([...(cardList || []), ...data.cardList])
         lastCardList = [...(cardList || []), ...data.cardList]
         listNumber = number
         len = data.len

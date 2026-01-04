@@ -516,7 +516,7 @@
   height: 40vw;
   object-fit: cover;
   border: 1px solid gray;
-  border-radius: $block-border-radius;
+  border-radius: $block-border-radius / 2;
   margin: 3vw 3.2vw 0 3.2vw;
 }
 
@@ -683,9 +683,7 @@
   100% {
     opacity: 0
   }
-}
-
-;
+};
 
 
 

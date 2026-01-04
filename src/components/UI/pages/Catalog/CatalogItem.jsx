@@ -62,9 +62,11 @@ const CatalogItem = ({product, isClicked, from}) => {
                         {parcent}
                     </div> : ''}
             </div>
-            <p className={style['cardName']}>
-                {product.name}
-            </p>
+            <div className={style['cardName']}>
+                <p>
+                    {product.name}
+                </p>
+            </div>
             <div style={{display: 'flex', flexDirection: 'row'}}>
                 <p className={style['cardPrice']}>
                     {price}

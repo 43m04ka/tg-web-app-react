@@ -1,0 +1,27 @@
+@import "src/components/styles/mainStyle";
+
+.infoBubbles {
+  margin: 0 4.38vw 4.28vw 4.38vw;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 84vw;
+  display: flex;
+
+  > div {
+    margin: 2vw 2vw 0 0;
+    display: flex;
+    flex-direction: row;
+    font-size: 3.3vw;
+    line-height: 5.35vw;
+    width: max-content;
+    border-radius: 100vh;
+    background: white;
+
+    >p {
+      color: #222222;
+      font-family: 'SF PRO Display', serif;
+      font-weight: 900;
+      margin: 0.5vw 3vw;
+    }
+  }
+}

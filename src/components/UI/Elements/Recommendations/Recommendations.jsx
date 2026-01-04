@@ -7,11 +7,16 @@ import style from './Recommendations.module.scss'
 const Recommendations = ({from, horizontal}) => {
 
     const {getRecommendationsGames} = useServerUser()
-    const {pageId} = useGlobalData()
+    const {pageId, setBufferCardsRecommendations} = useGlobalData()
     const [products, setProducts] = useState(null);
 
-    useEffect(()=>{
-        getRecommendationsGames((res) => {products === null ? setProducts(res) : ''}, pageId).then()
+    useEffect(() => {
+        getRecommendationsGames((res) => {
+            if (products === null) {
+                setProducts(res)
+                setBufferCardsRecommendations(res)
+            }
+        }, pageId).then()
     }, [])
 
 

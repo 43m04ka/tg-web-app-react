@@ -56,15 +56,20 @@
     .cardName {
       display: flex;
       margin: 2vw 1.55vw 0 1.55vw;
-      font-size: 3.5vw;
       height: 9.4vw;
       min-height: 9.4vw;
       max-height: 9.4vw;
       overflow: hidden;
-      line-height: 4.6vw;
-      font-family: 'SF PRO Display', serif;
-      font-weight: 500;
-      color: white;
+      >p{
+        display: flex;
+        height: max-content;
+        margin: auto 0;
+        font-size: 3.5vw;
+        line-height: 4.6vw;
+        font-family: 'SF PRO Display', serif;
+        font-weight: 500;
+        color: white;
+      }
     }
 
     .cardPrice {

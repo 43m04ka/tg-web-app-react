@@ -143,6 +143,20 @@ const Product = () => {
             }
         }
 
+        if(productData.releaseDate !== null) {
+            let a = (new Date(productData.releaseDate)) * 24 * 60 * 60 * 1000
+            let currentDate = new Date('1899-12-30T00:00:00.000Z')
+            let newDate = new Date(a + currentDate.getTime());
+            percent = 'Предзаказ'
+
+            if (newDate < ((new Date()))) {
+                endDatePromotion = "Уже в продаже"
+            } else {
+                endDatePromotion = newDate.toLocaleDateString('ru-RU') + 'г.'
+            }
+        }
+
+
         let saleType = null
         let saleLabel = ''
 

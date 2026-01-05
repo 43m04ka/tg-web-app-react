@@ -28,27 +28,32 @@ const Description = ({parameters, productData}) => {
             </button>
         </div>
 
-        <div className={style['textContainer']} style={{height: textHidden && mode === 0 ? String(window.innerWidth * 5.35 * 3 / 100) + 'px' : height + 'px'}}>
+        <div className={style['textContainer']}
+             style={{height: textHidden && mode === 0 ? String(window.innerWidth * 5.35 * 3 / 100) + 'px' : height + 'px'}}>
             {mode === 0 ?
                 <div className={style['description']}>
-                <div ref={refText}>
-                    {productData.description}
-                </div>
-            </div> : <div className={style['parameters']} ref={refText}>
-                {parameters.map((parameter, index) => {
-                    if (productData[parameter.key] !== null && productData[parameter.key] !== '') {
-                        return (<div key={index}>
-                            <div>{parameter.label}:</div>
-                            <div>{typeof parameter.key !== 'function' ? productData[parameter.key] : parameter.key(productData)}</div>
-                        </div>)
-                    }
-                })}
-            </div>}
+                    <div ref={refText}
+                         onClick={() => {
+                             setTextHidden(false)
+                         }}>
+                        {productData.description}
+                    </div>
+                </div> : <div className={style['parameters']} ref={refText}>
+                    {parameters.map((parameter, index) => {
+                        if (productData[parameter.key] !== null && productData[parameter.key] !== '') {
+                            return (<div key={index}>
+                                <div>{parameter.label}:</div>
+                                <div>{typeof parameter.key !== 'function' ? productData[parameter.key] : parameter.key(productData)}</div>
+                            </div>)
+                        }
+                    })}
+                </div>}
         </div>
 
-        <div className={style['seeAll']} style={{height: textHidden && mode === 0 ? '5.35vw' : '0'}} onClick={() => {
-            setTextHidden(false)
-        }}>
+        <div className={style['seeAll']} style={{height: textHidden && mode === 0 ? '5.35vw' : '0'}}
+             onClick={() => {
+                 setTextHidden(false)
+             }}>
             нажать, чтобы прочитать полностью
         </div>
     </div>);

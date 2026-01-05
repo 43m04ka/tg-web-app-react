@@ -202,7 +202,7 @@ const Product = () => {
                                 }}>
                 {percent !== '' ? (<div className={style['percent']}>
                     <div>
-                        <div/>
+                        <div className={style[percent === 'Предзаказ' ? 'preOrder' : 'sale']}/>
                         <p>{percent}</p>
                     </div>
                     <p>{endDatePromotion}</p>
@@ -271,7 +271,7 @@ const Product = () => {
                             <div/>
                         </div> : ''}
                 </div>
-                <InfoBubbles parameters={parameters} productData={productData}/>
+                {/*<InfoBubbles parameters={parameters} productData={productData}/>*/}
             </div>
 
             {productData.descriptionImages !== null ? <DescriptionImages data={productData.descriptionImages}/> : ''}

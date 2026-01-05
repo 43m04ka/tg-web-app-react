@@ -1,0 +1,68 @@
+@import "src/components/styles/mainStyle";
+
+.description {
+  margin: 2.1vw 3.2vw 0 3.2vw;
+  padding: 3.20vw 4.38vw 3.20vw 4.38vw;
+  background-color: #222222;
+  display: flex;
+  flex-direction: column;
+  border-radius: $block-border-radius;
+
+  > div:nth-child(2) {
+    position: relative;
+    overflow: hidden;
+    transition-property: height;
+    transition-duration: 0.2s;
+    @extend %font-bold;
+    line-height: 5.35vw;
+    font-size: 3.5vw;
+    color: white;
+    opacity: 1;
+  }
+
+  > div:nth-child(3) {
+    @extend %font-bold;
+    overflow: hidden;
+    line-height: 5.35vw;
+    font-size: 2.7vw;
+    opacity: 0.5;
+    margin: 0 0 0 auto;
+    display: flex;
+    color: white;
+    transition: all 0.2s ease-in-out;
+  }
+}
+
+.description:active {
+  > div:nth-child(2) {
+    transform: translateY(0.5vw);
+  }
+}
+
+.modeButtons{
+  display: flex;
+  flex-direction: row;
+  overflow-x: scroll;
+
+  >button{
+    margin: 0 2vw 2vw 0;
+    padding: 0.8vw 1.6vw;
+    font-size: 3.2vw;
+    color: white;
+    font-family: 'SF PRO Display', serif;
+    border-radius: 1.5vw;
+  }
+
+
+  .activeButton {
+    box-shadow: 0.2vw 0.4vw 1vw rgba(80, 161, 85, 0.3);
+    background: rgba(80, 161, 85, 0.3);
+    border: 2px solid rgba(80, 161, 85, 1);
+  }
+
+  .noActiveButton {
+    box-shadow: 0.2vw 0.4vw 1vw rgba(80, 161, 85, 0);
+    background: $menu-color;
+    border: #323232 solid 2px;
+  }
+}

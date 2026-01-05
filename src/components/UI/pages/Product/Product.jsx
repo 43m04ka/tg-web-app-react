@@ -14,7 +14,7 @@ import ShareLabels from "./Elements/ShareLabels";
 import InfoBubbles from "./Elements/InfoBubbles";
 
 const parameters = [{label: 'Платформа', key: 'platform', type: 'bubble'}, {
-    label: 'Регион активации', key: 'regionActivate', type: 'bubble'
+    label: 'Регион активации', key: 'regionActivate', type: 'parameter'
 }, {label: 'Язык в игре', key: 'language', type: 'bubble'}, {
     label: 'Дата релиза', key: (item) => {
         let a = (new Date(item.releaseDate)) * 24 * 60 * 60 * 1000
@@ -126,7 +126,7 @@ const Product = () => {
         let percent = ''
 
         if (productData.endDatePromotion !== null) {
-            endDatePromotion = `*cкидка действует до ${productData.endDatePromotion}`
+            endDatePromotion = `до ${productData.endDatePromotion}`
         }
 
         if (productData.oldPrice !== null) {
@@ -139,7 +139,7 @@ const Product = () => {
                 percent = '-' + Math.ceil((1 - productData.similarCard?.price / productData.similarCard?.oldPrice) * 100) + '%'
             }
             if (typeof productData.similarCard.endDatePromotion !== 'undefined') {
-                endDatePromotion = `*cкидка действует до ${productData.similarCard?.endDatePromotion}`
+                endDatePromotion = `до ${productData.similarCard?.endDatePromotion}`
             }
         }
 
@@ -183,10 +183,13 @@ const Product = () => {
 
         }}>
             {imageLoaded ? <div className={style['productImage']}
-                                style={{backgroundImage: 'url(' + ((selectCardList !== null || !productData.image.includes('?w=')) ? productData.image : productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024") + ')'}}>
-
-                {percent !== '' ? (<div className={style['percent']}>{percent}</div>) : ''}
-
+                                style={{
+                                    backgroundImage: 'url(' + ((selectCardList !== null || !productData.image.includes('?w=')) ? productData.image : productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024") + ')'
+                                }}>
+                {percent !== '' ? (<div className={style['percent']}>
+                    <p>{percent}</p>
+                    <p>{endDatePromotion}</p>
+                </div>) : ''}
             </div> : (<div className={style['preloadProductImage']}>
                 <svg>
                     <path/>
@@ -236,7 +239,7 @@ const Product = () => {
                 <div className={style['price']}>
                     <div>
                         <p style={{color: oldPrice !== '' ? '#D86147' : '#ffffff'}}>{price}</p>
-                        <p>{oldPrice}</p>
+                        {oldPrice !== '' ? <p>{oldPrice}</p> : ''}
                     </div>
                     {saleType !== null ?
                         <div style={{borderColor: '#171717'}} className={style['sale'] + ' ' + style['bg-' + saleType]}
@@ -257,17 +260,17 @@ const Product = () => {
             {productData.descriptionImages !== null ? <DescriptionImages data={productData.descriptionImages}/> : ''}
 
 
-            <Description>{productData.description}</Description>
-            <div className={style['parameters']}>
-                {parameters.filter(item => item.type !== 'bubble').map((parameter, index) => {
-                    if (productData[parameter.key] !== null && productData[parameter.key] !== '') {
-                        return (<div key={index}>
-                            <div>{parameter.label}:</div>
-                            <div>{typeof parameter.key !== 'function' ? productData[parameter.key] : parameter.key(productData)}</div>
-                        </div>)
-                    }
-                })}
-            </div>
+            <Description productData={productData} parameters={parameters}/>
+            {/*<div className={style['parameters']}>*/}
+            {/*    {parameters.filter(item => item.type !== 'bubble').map((parameter, index) => {*/}
+            {/*        if (productData[parameter.key] !== null && productData[parameter.key] !== '') {*/}
+            {/*            return (<div key={index}>*/}
+            {/*                <div>{parameter.label}:</div>*/}
+            {/*                <div>{typeof parameter.key !== 'function' ? productData[parameter.key] : parameter.key(productData)}</div>*/}
+            {/*            </div>)*/}
+            {/*        }*/}
+            {/*    })}*/}
+            {/*</div>*/}
 
             <SimilarProducts name={productData.name}
                              minRating={productData.name.replace(/[^a-zA-Z0-9\s]/g, "").split(' ')[0].length}

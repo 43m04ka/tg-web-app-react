@@ -38,7 +38,9 @@
     @extend %font-bold;
     font-size: 5.35vw;
     line-height: 6.45vw;
-    height: 12.9vw;
+    max-height: 12.9vw;
+    min-height: 6.45vw;
+    height: max-content;
     overflow: hidden;
     text-align: left;
     margin: 2.4vw 4.28vw 1.4vw 4.28vw;
@@ -77,14 +79,6 @@
 
   }
 
-  .endDatePromotion {
-    @extend %font-bold;
-    color: #D86147;
-    font-size: 3.5vw;
-    line-height: 5.35vw;
-    margin: 0 4.38vw 0vw 4.38vw;
-  }
-
   .parameters {
     margin: 0 4.38vw 4.28vw 4.38vw;
 
@@ -111,18 +105,23 @@
 
 .percent {
   width: max-content;
-  height: 9.35vw;
   position: relative;
   display: flex;
   margin: auto 2.14vw 6.14vw auto;
-  border-radius: $button-border-radius;
-  background: #D86147;
+  border-radius: 1vw;
+  overflow: hidden;
   @extend %font-bold;
   color: white;
   text-align: center;
-  padding: 0.53vw 1.6vw;
-  line-height: 8.29vw;
-  font-size: 5vw;
+  font-size: 3vw;
+  >p:nth-child(1) {
+    background-color: #d76147;
+    padding: 0.8vw 1.6vw;
+  }
+  >p:nth-child(2) {
+    background-color: #222222;
+    padding: 0.8vw 1.6vw;
+  }
 }
 
 
@@ -131,8 +130,8 @@
   height: 9.35vw;
   position: relative;
   display: flex;
-  margin: auto 3vw 6.14vw 0;
-  border-radius: $button-border-radius;
+  margin: 1vw 2vw 0 auto;
+  border-radius: $button-border-radius * 2;
   background: #222222;
 
   > div:nth-child(1) {
@@ -195,48 +194,6 @@
   }
 }
 
-.description {
-  margin: 2.1vw 3.2vw 0 3.2vw;
-  padding: 3.20vw 4.38vw 3.20vw 4.38vw;
-  background-color: #222222;
-  display: flex;
-  flex-direction: column;
-  border-radius: $block-border-radius;
-
-  > div:nth-child(1) {
-    position: relative;
-    overflow: hidden;
-    transition-property: height;
-    transition-duration: 0.2s;
-    @extend %font-bold;
-    line-height: 5.35vw;
-    font-size: 3.5vw;
-    color: white;
-    opacity: 1;
-
-    > span {
-      opacity: 0.5;
-      margin-right: 1vw;
-    }
-  }
-
-  > div:nth-child(2) {
-    @extend %font-bold;
-    line-height: 5.35vw;
-    font-size: 2.7vw;
-    opacity: 0.5;
-    margin: 0 0 0 auto;
-    display: flex;
-    color: white;
-    transition: transform 300ms cubic-bezier(.68, -0.55, 0.27, 2.5);
-  }
-}
-
-.description:active {
-  > div:nth-child(2) {
-    transform: translateY(0.5vw);
-  }
-}
 
 .basketButton {
   position: absolute;

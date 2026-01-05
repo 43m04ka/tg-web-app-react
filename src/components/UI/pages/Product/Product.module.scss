@@ -37,7 +37,9 @@
   .title {
     @extend %font-bold;
     font-size: 5.35vw;
-    line-height: 8.55vw;
+    line-height: 6.45vw;
+    height: 12.9vw;
+    overflow: hidden;
     text-align: left;
     margin: 2.4vw 4.28vw 1.4vw 4.28vw;
     color: white;
@@ -45,25 +47,34 @@
 
   .price {
     display: flex;
-    margin: 0 3.18vw 2.1vw 3.18vw;
+    margin: 0 3.78vw 2.1vw 3.78vw;
     flex-direction: row;
     justify-content: space-between;
 
     > div {
       border-radius: $block-border-radius / 3 * 2;
-      border-width: 1.1vw;
+      border-width: 0.5vw;
       border-style: solid;
+      display: flex;
+      flex-direction: row;
+      border-color: #595959;
+      font-family: 'SF PRO Display', serif;
+      font-weight: 700;
+
+      >p:nth-child(1) {
+        font-size: 6.9vw;
+        padding: 1.6vw 2.1vw;
+      }
+
+      >p:nth-child(2) {
+        text-decoration: line-through;
+        font-size: 6.1vw;
+        color: #595959;
+        padding: 1.6vw 2.1vw;
+        margin-top: 0.8vw;
+      }
     }
 
-    > div:nth-child(1) {
-      font-size: 7vw;
-      line-height: 8.55vw;
-      padding: 1.6vw 2.1vw;
-      width: max-content;
-      white-space: nowrap;
-      @extend %font-medium;
-      color: white;
-    }
   }
 
   .endDatePromotion {

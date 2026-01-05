@@ -187,23 +187,6 @@ const Product = () => {
 
                 {percent !== '' ? (<div className={style['percent']}>{percent}</div>) : ''}
 
-                <button className={style['favorite']} style={{marginLeft: (percent !== '' ? '0' : '79.91vw')}}
-                        onClick={async () => {
-                            if (cardInFavorite) {
-                                setCardInFavorite(false)
-                                await deleteCardToFavorite(() => {
-                                    updatePreviewFavoriteData()
-                                }, user.id, productData.id)
-                            } else {
-                                setCardInFavorite(true)
-                                await addCardToFavorite(() => {
-                                    updatePreviewFavoriteData()
-                                }, user.id, productData.id)
-                            }
-                        }}>
-                    <div/>
-                    <div style={{scale: (cardInFavorite ? '1' : '0.5'), opacity: (cardInFavorite ? '1' : '0')}}/>
-                </button>
             </div> : (<div className={style['preloadProductImage']}>
                 <svg>
                     <path/>
@@ -214,9 +197,26 @@ const Product = () => {
             </div>)}
 
             <div className={style['priceNameBlock']} ref={blockRef}>
-                <p className={style['title']}>{productData.name}</p>
-
-                <InfoBubbles parameters={parameters} productData={productData}/>
+                <div style={{display: 'grid', gridTemplateColumns: '1fr max-content'}}>
+                    <p className={style['title']}>{productData.name}</p>
+                    <button className={style['favorite']}
+                            onClick={async () => {
+                                if (cardInFavorite) {
+                                    setCardInFavorite(false)
+                                    await deleteCardToFavorite(() => {
+                                        updatePreviewFavoriteData()
+                                    }, user.id, productData.id)
+                                } else {
+                                    setCardInFavorite(true)
+                                    await addCardToFavorite(() => {
+                                        updatePreviewFavoriteData()
+                                    }, user.id, productData.id)
+                                }
+                            }}>
+                        <div/>
+                        <div style={{scale: (cardInFavorite ? '1' : '0.5'), opacity: (cardInFavorite ? '1' : '0')}}/>
+                    </button>
+                </div>
 
                 {selectCardList !== null && selectCardList.length > 1 ? (<ChoiceElement list={selectCardList}
                                                                                         isXbox={productData.name.toLowerCase().includes('game pass')}
@@ -234,8 +234,10 @@ const Product = () => {
                                                            set={setSelectPosition}/>) : ''}
 
                 <div className={style['price']}>
-
-                    <div style={{borderColor: oldPrice !== '' ? '#D86147' : '#171717'}}>{price}</div>
+                    <div>
+                        <p style={{color: oldPrice !== '' ? '#D86147' : '#ffffff'}}>{price}</p>
+                        <p>{oldPrice}</p>
+                    </div>
                     {saleType !== null ?
                         <div style={{borderColor: '#171717'}} className={style['sale'] + ' ' + style['bg-' + saleType]}
                              onClick={() => {
@@ -249,25 +251,23 @@ const Product = () => {
                             <div/>
                         </div> : ''}
                 </div>
-                {endDatePromotion !== '' ? (<div className={style['endDatePromotion']}>
-                    {endDatePromotion}
-                </div>) : ''}
-                <div className={style['parameters']}>
-                    {parameters.filter(item => item.type !== 'bubble').map((parameter, index) => {
-                        if (productData[parameter.key] !== null && productData[parameter.key] !== '') {
-                            return (<div key={index}>
-                                <div>{parameter.label}:</div>
-                                <div>{typeof parameter.key !== 'function' ? productData[parameter.key] : parameter.key(productData)}</div>
-                            </div>)
-                        }
-                    })}
-                </div>
+                <InfoBubbles parameters={parameters} productData={productData}/>
             </div>
 
             {productData.descriptionImages !== null ? <DescriptionImages data={productData.descriptionImages}/> : ''}
 
 
             <Description>{productData.description}</Description>
+            <div className={style['parameters']}>
+                {parameters.filter(item => item.type !== 'bubble').map((parameter, index) => {
+                    if (productData[parameter.key] !== null && productData[parameter.key] !== '') {
+                        return (<div key={index}>
+                            <div>{parameter.label}:</div>
+                            <div>{typeof parameter.key !== 'function' ? productData[parameter.key] : parameter.key(productData)}</div>
+                        </div>)
+                    }
+                })}
+            </div>
 
             <SimilarProducts name={productData.name}
                              minRating={productData.name.replace(/[^a-zA-Z0-9\s]/g, "").split(' ')[0].length}
@@ -313,7 +313,7 @@ const Product = () => {
             }).filter(item => item !== null)
 
             if (bufferedCardList.length === 1) {
-                setTimeout(()=>{
+                setTimeout(() => {
                     setProductData(bufferedCardList[0])
                 }, 50)
             } else {

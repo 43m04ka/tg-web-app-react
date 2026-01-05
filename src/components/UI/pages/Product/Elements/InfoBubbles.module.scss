@@ -15,13 +15,20 @@
     border-radius: 1.8vw;
     background: white;
 
+    >div{
+      background-size: cover;
+      width: 3vw;
+      height: 3vw;
+      margin: auto 0 auto 2.1vw;
+    }
+
     >p {
       color: #222222;
       font-size: 2.4vw;
       line-height: 2.4vw;
       font-family: 'SF PRO Display', serif;
       font-weight: 900;
-      margin: 0.9vw 2.1vw;
+      margin: 0.9vw 2.1vw 0.9vw 1vw;
     }
   }
 }

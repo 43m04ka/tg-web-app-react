@@ -43,7 +43,7 @@
     height: max-content;
     overflow: hidden;
     text-align: left;
-    margin: 3.4vw 4.28vw 2.4vw 4.28vw;
+    margin: 3.4vw 4.28vw 1.9vw 4.28vw;
     color: white;
   }
 
@@ -91,9 +91,18 @@
   color: white;
   text-align: center;
   font-size: 3vw;
-  >p:nth-child(1) {
+  >div:nth-child(1) {
     background-color: #d76147;
     padding: 0.8vw 1.6vw;
+    display: flex;
+    flex-direction: row;
+    >div{
+      margin: auto 1vw auto 0;
+      width: 3vw;
+      height: 3vw;
+      background-size: cover;
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAvCAYAAAClgknJAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAJjSURBVHgBzZmBVYMwEIYPF5ANZARGqBOoE4gb6ATqBHYD3aDPCeoGdYPUCVon+E1MqpReEiAJ4Xsvj5Z3XP4fuIRAQQMBUMlNKVt7e976XZnQw/bTtOeiKLYUmYJ4kUpMLduVEVIbgSWFsZQmHiglUvy1bALp2JgTlET8I6YhvgmZsMG0RDFRtAwI+i88F1vZ9q3td+v3335VsEZgI9uLJZcq7pvg4oa+7znW0Femhh59xuZ3XV0RkvvQwZJJ/EoRMSdhl8SEOdNdrikyyUxAF1SX2hG/kO3etAUNIIkJS8ILS+citOPoJrgsTEzl6DSfCSPsJAETt4afJQ3A9C2CTEDfz102TEd92NFAQk2cWfbvO/+rHjGKEkztuDCT2CXpCZCYftcuE2fEi9t2/rNiiRf0RQMJMWEz8NXpQE35nIkuHzSSniZOhnZlgDuTnNhn8nNHAYwyIXesmOJhZ2G5/8lWvLI1FAlPYe+OTIAfHhee5Etz3MqYir5AQd/RyRJU0wzwmNgcgrjZMM2SbwQeE02vx4jcOEysbVdgQTMD/BPDzlbEAqGrpAQwOqHmgXcmtiLPFD41lrti//sSC6FPhIlx1oAJSLdeTSde0bQDZ2fCI15wB8zGBMauE2Bf905mYrT4aAlyio+eKIf4ZAlz9DWFCaSuOwxZYIwTn37kS2ECUw/bMU0g15wTwwRyT5ghJqCf6/PP9h4TilvmmFtHvJhMfMfExiHqEfpxvYT7C2i6T689TJRwm/CRT3wEE/nFHzAmVgPEr2Yjvg3srx/bDPoQMjnQxf2G49tKQL+SjPrW7webWtyhIw3KnwAAAABJRU5ErkJggg==");
+    }
   }
   >p:nth-child(2) {
     background-color: #222222;

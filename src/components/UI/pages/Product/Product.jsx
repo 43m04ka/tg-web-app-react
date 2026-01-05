@@ -187,7 +187,10 @@ const Product = () => {
                                     backgroundImage: 'url(' + ((selectCardList !== null || !productData.image.includes('?w=')) ? productData.image : productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024") + ')'
                                 }}>
                 {percent !== '' ? (<div className={style['percent']}>
-                    <p>{percent}</p>
+                    <div>
+                        <div/>
+                        <p>{percent}</p>
+                    </div>
                     <p>{endDatePromotion}</p>
                 </div>) : ''}
             </div> : (<div className={style['preloadProductImage']}>
@@ -259,9 +262,7 @@ const Product = () => {
 
             {productData.descriptionImages !== null ? <DescriptionImages data={productData.descriptionImages}/> : ''}
 
-
             <Description productData={productData} parameters={parameters}/>
-
 
             <SimilarProducts name={productData.name}
                              minRating={productData.name.replace(/[^a-zA-Z0-9\s]/g, "").split(' ')[0].length}

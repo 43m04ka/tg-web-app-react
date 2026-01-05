@@ -54,7 +54,7 @@
     justify-content: space-between;
 
     > div {
-      border-radius: $block-border-radius / 3 * 2;
+      border-radius: 2.6vw;
       border-width: 0.5vw;
       border-style: solid;
       display: flex;
@@ -77,29 +77,6 @@
       }
     }
 
-  }
-
-  .parameters {
-    margin: 0 4.38vw 4.28vw 4.38vw;
-
-    > div {
-      display: flex;
-      flex-direction: row;
-      font-size: 3.5vw;
-      line-height: 5.35vw;
-
-      > div:nth-child(1) {
-        margin: 0;
-        color: rgba(255, 255, 255, 0.5);
-        @extend %font-bold;
-      }
-
-      > div:nth-child(2) {
-        margin-left: 1vw;
-        color: white;
-        @extend %font-bold;
-      }
-    }
   }
 }
 
@@ -130,7 +107,7 @@
   height: 9.35vw;
   position: relative;
   display: flex;
-  margin: 1vw 2vw 0 auto;
+  margin: 2vw 3vw 0 auto;
   border-radius: $button-border-radius * 2;
   background: #222222;
 

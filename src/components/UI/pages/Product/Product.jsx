@@ -261,16 +261,7 @@ const Product = () => {
 
 
             <Description productData={productData} parameters={parameters}/>
-            {/*<div className={style['parameters']}>*/}
-            {/*    {parameters.filter(item => item.type !== 'bubble').map((parameter, index) => {*/}
-            {/*        if (productData[parameter.key] !== null && productData[parameter.key] !== '') {*/}
-            {/*            return (<div key={index}>*/}
-            {/*                <div>{parameter.label}:</div>*/}
-            {/*                <div>{typeof parameter.key !== 'function' ? productData[parameter.key] : parameter.key(productData)}</div>*/}
-            {/*            </div>)*/}
-            {/*        }*/}
-            {/*    })}*/}
-            {/*</div>*/}
+
 
             <SimilarProducts name={productData.name}
                              minRating={productData.name.replace(/[^a-zA-Z0-9\s]/g, "").split(' ')[0].length}

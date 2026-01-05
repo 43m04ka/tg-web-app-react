@@ -1,53 +1,76 @@
 @import "src/components/styles/mainStyle";
 
-.description {
+.descriptionContainer {
   margin: 2.1vw 3.2vw 0 3.2vw;
   padding: 3.20vw 4.38vw 3.20vw 4.38vw;
   background-color: #222222;
   display: flex;
   flex-direction: column;
   border-radius: $block-border-radius;
+}
 
-  > div:nth-child(2) {
+.textContainer {
+  transition: all 0.2s ease-in-out;
+  overflow: hidden;
+}
+
+.description {
+  > div:nth-child(1) {
     position: relative;
+    transition: all 0.2s ease-in-out;
     overflow: hidden;
-    transition-property: height;
-    transition-duration: 0.2s;
     @extend %font-bold;
     line-height: 5.35vw;
     font-size: 3.5vw;
     color: white;
     opacity: 1;
   }
+}
 
-  > div:nth-child(3) {
-    @extend %font-bold;
-    overflow: hidden;
-    line-height: 5.35vw;
-    font-size: 2.7vw;
-    opacity: 0.5;
-    margin: 0 0 0 auto;
+.parameters {
+  margin: 0 4.38vw 0 0;
+
+  > div {
     display: flex;
-    color: white;
-    transition: all 0.2s ease-in-out;
+    flex-direction: row;
+    font-size: 3.5vw;
+    line-height: 5.35vw;
+
+    > div:nth-child(1) {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.5);
+      @extend %font-bold;
+    }
+
+    > div:nth-child(2) {
+      margin-left: 1vw;
+      color: white;
+      @extend %font-bold;
+    }
   }
 }
 
-.description:active {
-  > div:nth-child(2) {
-    transform: translateY(0.5vw);
-  }
+.seeAll {
+  @extend %font-bold;
+  overflow: hidden;
+  line-height: 5.35vw;
+  font-size: 2.7vw;
+  opacity: 0.5;
+  margin: 0 0 0 auto;
+  display: flex;
+  color: white;
+  transition: all 0.2s ease-in-out;
 }
 
-.modeButtons{
+.modeButtons {
   display: flex;
   flex-direction: row;
   overflow-x: scroll;
 
-  >button{
+  > button {
     margin: 0 2vw 2vw 0;
-    padding: 0.8vw 1.6vw;
-    font-size: 3.2vw;
+    padding: 1.2vw 2.4vw;
+    font-size: 3.5vw;
     color: white;
     font-family: 'SF PRO Display', serif;
     border-radius: 1.5vw;

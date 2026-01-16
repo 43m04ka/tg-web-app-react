@@ -11,20 +11,27 @@ import DescriptionImages from "./Elements/DescriptionImages";
 import ProductBasketCounter from "./Elements/ProductBasketCounter";
 import SimilarProducts from "./Elements/SimilarProducts";
 import ShareLabels from "./Elements/ShareLabels";
-import InfoBubbles from "./Elements/InfoBubbles";
+import BackgroundImage from "./Elements/BackgroundImage";
+import NamePlace from "./Elements/NamePlace";
 
 const parameters = [{label: 'Платформа', key: 'platform', type: 'bubble'}, {
     label: 'Регион активации', key: 'regionActivate', type: 'parameter'
 }, {label: 'Язык в игре', key: 'language', type: 'bubble'}, {
     label: 'Дата релиза', key: (item) => {
-        let a = (new Date(item.releaseDate)) * 24 * 60 * 60 * 1000
-        let currentDate = new Date('1899-12-30T00:00:00.000Z')
-        let newDate = new Date(a + currentDate.getTime());
+        if (item.releaseDate !== null && !Number.isNaN(Number(item.releaseDate)) && item.releaseDate.trim() !== "" || (new Date(item.releaseDate)).getFullYear() < 1980) {
+            let a = (new Date(item.releaseDate)) * 24 * 60 * 60 * 1000
+            let currentDate = new Date('1899-12-30T00:00:00.000Z')
+            let newDate = new Date(a + currentDate.getTime());
 
-        if (newDate < ((new Date()))) {
-            return "Уже в продаже"
-        } else {
-            return newDate.toLocaleDateString('ru-RU')
+            if (newDate < ((new Date()))) {
+                return "Уже в продаже"
+            } else {
+                return newDate.toLocaleDateString('ru-RU')
+            }
+        }else if(item.releaseDate !== null && item.releaseDate !== '') {
+            return (new Date(item.releaseDate)).toLocaleDateString('ru-RU')
+        }else{
+            return null
         }
     }, type: 'bubble'
 }, {label: 'Количество игроков', key: 'numberPlayers', type: 'bubble'},]
@@ -34,10 +41,9 @@ const Product = () => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const {
-        getCard, addCardToFavorite, deleteCardToFavorite, addCardToBasket, findCardsByCatalog,
+        getCard, addCardToBasket, findCardsByCatalog,
     } = useServer()
     const {
-        updatePreviewFavoriteData,
         previewFavoriteData,
         pageId,
         pageList,
@@ -58,18 +64,6 @@ const Product = () => {
     const [buttonHidden, setButtonHidden] = React.useState(false);
     const blockRef = useRef(null);
 
-    const [imageLoaded, setImageLoaded] = useState(false);
-
-    useEffect(() => {
-        if (productData !== null) {
-            const img = new Image();
-            img.src = ((selectCardList !== null || !productData?.image.includes('?w=')) ? productData?.image : productData?.image.slice(0, productData?.image.indexOf('?w=') + 1) + "w=1024");
-            img.onload = () => {
-                setImageLoaded(true);
-            };
-        }
-    }, [productData?.image]);
-
     let flag = false
     basket.map(pos => {
         if (pos.id === cardId) {
@@ -82,7 +76,6 @@ const Product = () => {
 
     if ((productData !== null && !isNaN(cardId) && cardId !== productData.id) || (productData !== null && selectCardList !== null && productData.id !== selectCardList[selectGroup]?.body[selectPosition]?.id)) {
         setProductData(null)
-        setImageLoaded(false)
         if (isNaN(cardId)) {
             cardId = selectCardList[selectGroup].body[selectPosition].id
         } else {
@@ -122,37 +115,14 @@ const Product = () => {
 
         let oldPrice = ''
         let price = productData.price.toLocaleString() + ' ₽'
-        let endDatePromotion = ''
-        let percent = ''
 
-        if (productData.endDatePromotion !== null) {
-            endDatePromotion = `до ${productData.endDatePromotion}`
-        }
 
         if (productData.oldPrice !== null) {
             oldPrice = productData.oldPrice.toLocaleString() + ' ₽'
-            percent = '-' + Math.ceil((1 - productData.price / productData.oldPrice) * 100) + '%'
         } else if (productData.similarCard !== null) {
             price = productData.similarCard?.price.toLocaleString() + ' ₽'
             if (typeof productData.similarCard.oldPrice !== 'undefined') {
                 oldPrice = productData.similarCard?.oldPrice.toLocaleString() + ' ₽'
-                percent = '-' + Math.ceil((1 - productData.similarCard?.price / productData.similarCard?.oldPrice) * 100) + '%'
-            }
-            if (typeof productData.similarCard.endDatePromotion !== 'undefined') {
-                endDatePromotion = `до ${productData.similarCard?.endDatePromotion}`
-            }
-        }
-
-        if(productData.releaseDate !== null) {
-            let a = (new Date(productData.releaseDate)) * 24 * 60 * 60 * 1000
-            let currentDate = new Date('1899-12-30T00:00:00.000Z')
-            let newDate = new Date(a + currentDate.getTime());
-            percent = 'Предзаказ'
-
-            if (newDate < ((new Date()))) {
-                endDatePromotion = "Уже в продаже"
-            } else {
-                endDatePromotion = newDate.toLocaleDateString('ru-RU') + 'г.'
             }
         }
 
@@ -196,47 +166,12 @@ const Product = () => {
             }
 
         }}>
-            {imageLoaded ? <div className={style['productImage']}
-                                style={{
-                                    backgroundImage: 'url(' + ((selectCardList !== null || !productData.image.includes('?w=')) ? productData.image : productData.image.slice(0, productData.image.indexOf('?w=') + 1) + "w=1024") + ')'
-                                }}>
-                {percent !== '' ? (<div className={style['percent']}>
-                    <div>
-                        <div className={style[percent === 'Предзаказ' ? 'preOrder' : 'sale']}/>
-                        <p>{percent}</p>
-                    </div>
-                    <p>{endDatePromotion}</p>
-                </div>) : ''}
-            </div> : (<div className={style['preloadProductImage']}>
-                <svg>
-                    <path/>
-                </svg>
-                <svg>
-                    <path/>
-                </svg>
-            </div>)}
+            <BackgroundImage productData={productData} selectCardList={selectCardList}/>
 
             <div className={style['priceNameBlock']} ref={blockRef}>
-                <div style={{display: 'grid', gridTemplateColumns: '1fr max-content'}}>
-                    <p className={style['title']}>{productData.name}</p>
-                    <button className={style['favorite']}
-                            onClick={async () => {
-                                if (cardInFavorite) {
-                                    setCardInFavorite(false)
-                                    await deleteCardToFavorite(() => {
-                                        updatePreviewFavoriteData()
-                                    }, user.id, productData.id)
-                                } else {
-                                    setCardInFavorite(true)
-                                    await addCardToFavorite(() => {
-                                        updatePreviewFavoriteData()
-                                    }, user.id, productData.id)
-                                }
-                            }}>
-                        <div/>
-                        <div style={{scale: (cardInFavorite ? '1' : '0.5'), opacity: (cardInFavorite ? '1' : '0')}}/>
-                    </button>
-                </div>
+
+                <NamePlace productData={productData} cardInFavorite={cardInFavorite}
+                           setCardInFavorite={setCardInFavorite}/>
 
                 {selectCardList !== null && selectCardList.length > 1 ? (<ChoiceElement list={selectCardList}
                                                                                         isXbox={productData.name.toLowerCase().includes('game pass')}
@@ -271,12 +206,13 @@ const Product = () => {
                             <div/>
                         </div> : ''}
                 </div>
+
                 {/*<InfoBubbles parameters={parameters} productData={productData}/>*/}
+
+                <DescriptionImages data={productData.descriptionImages}/>
+
+                <Description productData={productData} parameters={parameters}/>
             </div>
-
-            {productData.descriptionImages !== null ? <DescriptionImages data={productData.descriptionImages}/> : ''}
-
-            <Description productData={productData} parameters={parameters}/>
 
             <SimilarProducts name={productData.name}
                              minRating={productData.name.replace(/[^a-zA-Z0-9\s]/g, "").split(' ')[0].length}
@@ -322,6 +258,7 @@ const Product = () => {
             }).filter(item => item !== null)
 
             if (bufferedCardList.length === 1) {
+                getCard(setProductData, cardId).then()
                 setTimeout(() => {
                     setProductData(bufferedCardList[0])
                 }, 50)

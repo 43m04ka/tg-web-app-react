@@ -5,32 +5,27 @@ import {useNavigate} from "react-router-dom";
 const CatalogItem = ({product, isClicked, from}) => {
     const navigate = useNavigate()
 
-    let oldPrice = ''
-    let parcent = ''
+    let percent = ''
     let price = String(product.price).toLocaleString() + ' ₽'
 
     if (product.oldPrice !== null) {
-        oldPrice = String(product.oldPrice).toLocaleString() + ' ₽'
-        parcent = '−' + Math.ceil((1 - product.price / product.oldPrice) * 100) + '%'
+        percent = '−' + Math.ceil((1 - product.price / product.oldPrice) * 100) + '%'
     } else if (product.similarCard !== null) {
         price = String(product.similarCard?.price).toLocaleString() + ' ₽'
 
         if (typeof product.similarCard.oldPrice !== 'undefined' && product.similarCard.oldPrice !== null) {
-            parcent = '−' + Math.ceil((1 - product.similarCard?.price / product.similarCard?.oldPrice) * 100) + '%'
-            oldPrice = product.similarCard?.oldPrice.toLocaleString() + ' ₽'
+            percent = '−' + Math.ceil((1 - product.similarCard?.price / product.similarCard?.oldPrice) * 100) + '%'
         }
     }
 
-    if (product.releaseDate !== null) {
+    if (product.releaseDate !== null && !Number.isNaN(Number(product.releaseDate)) && product.releaseDate.trim() !== "" || (new Date(product.releaseDate)).getFullYear() < 1980) {
         let a = (new Date(product.releaseDate)) * 24 * 60 * 60 * 1000
+        console.log(a, product.releaseDate)
         let currentDate = new Date('1899-12-30T00:00:00.000Z')
         let newDate = new Date(a + currentDate.getTime());
 
-        if (newDate < ((new Date()))) {
-            parcent = "Релиз"
-        } else {
-            parcent = newDate.toLocaleDateString('ru-RU')
-            parcent = parcent.slice(0, 6) + parcent.slice(8, 10)
+        if (newDate > ((new Date()))) {
+            percent = newDate.toLocaleDateString('ru-RU')
         }
     }
 
@@ -54,12 +49,12 @@ const CatalogItem = ({product, isClicked, from}) => {
             navigate(isClicked === false ? null : '/card/' + product.id + (typeof from !== "undefined" ? '?from=' + from : ''))
         }} className={style['gradient']}>
             <div className={style['platform']}>
-                <div>
+                {product.platform !== null && product.platform !== '' ? <div>
                     {product.platform}
-                </div>
-                {parcent !== '' && parcent.charAt(0) !== '−' ?
+                </div> : ''}
+                {percent !== '' && percent.charAt(0) !== '−' ?
                     <div className={style['parcent']} style={{margin: 'auto 0 auto auto'}}>
-                        {parcent}
+                        {percent}
                     </div> : ''}
             </div>
             <div className={style['cardName']}>
@@ -71,8 +66,8 @@ const CatalogItem = ({product, isClicked, from}) => {
                 <p className={style['cardPrice']}>
                     {price}
                 </p>
-                {parcent !== '' && parcent.charAt(0) === '−' ? <div className={style['parcent']}>
-                    {parcent}
+                {percent !== '' && percent.charAt(0) === '−' ? <div className={style['parcent']}>
+                    {percent}
                 </div> : ''}
             </div>
         </div>

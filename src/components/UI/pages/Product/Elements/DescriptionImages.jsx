@@ -1,6 +1,5 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Swiper, SwiperSlide} from "swiper/react";
-import {Pagination} from "swiper/modules";
 import style from '../Product.module.scss'
 import {useTelegram} from "../../../../../hooks/useTelegram";
 import {useNavigate} from "react-router-dom";
@@ -16,41 +15,43 @@ const DescriptionImages = ({data}) => {
         return selectedId === null ? navigate(-1) : setSelectedId(null)
     }
 
-    return (<div style={{width: '100vw', minHeight: '45vw', overflowX: 'hidden'}}>
-        <Swiper
-            slidesPerView={3}
-            centeredSlides={true}
-            spaceBetween={-15}
-            style={{marginLeft: '-60vw', width: '220vw'}}
-            loop={data.length > 3}
-        >
-            {data.map((el, index) => (<SwiperSlide key={index} className={style['slide']}>
-                <img src={el} className={style['descriptionImage']} onClick={() => {
-                    setSelectedId(index)
-                    tg.BackButton.show();
-                    tg.onEvent('backButtonClicked', () => {
-                        onBack()
-                    });
-                    return () => {
-                        tg.offEvent('backButtonClicked', () => {
+    if (data !== null && typeof data !== "undefined" && data.length !== 0) {
+        return (<div style={{width: '100vw', minHeight: '45vw', overflowX: 'hidden', marginLeft: '-3.5vw'}}>
+            <Swiper
+                slidesPerView={3}
+                centeredSlides={true}
+                spaceBetween={-15}
+                style={{marginLeft: '-60vw', width: '220vw'}}
+                loop={data.length > 3}
+            >
+                {data.map((el, index) => (<SwiperSlide key={index} className={style['slide']}>
+                    <img src={el} className={style['descriptionImage']} onClick={() => {
+                        setSelectedId(index)
+                        tg.BackButton.show();
+                        tg.onEvent('backButtonClicked', () => {
                             onBack()
-                        })
-                    }
-                }}/>
-            </SwiperSlide>))}
-        </Swiper>
-        {selectedId !== null ? <div onClick={(event) => {
-            setSelectedId(null)
-            tg.BackButton.show();
-            tg.onEvent('backButtonClicked', () => navigate(-1));
-            return () => {
-                tg.offEvent('backButtonClicked', () => navigate(-1))
-            }
-        }} className={style['bigSlide']}>
-            <img src={data[selectedId]} className={style['descriptionImageOpen']}/>
-        </div> : ''}
+                        });
+                        return () => {
+                            tg.offEvent('backButtonClicked', () => {
+                                onBack()
+                            })
+                        }
+                    }}/>
+                </SwiperSlide>))}
+            </Swiper>
+            {selectedId !== null ? <div onClick={(event) => {
+                setSelectedId(null)
+                tg.BackButton.show();
+                tg.onEvent('backButtonClicked', () => navigate(-1));
+                return () => {
+                    tg.offEvent('backButtonClicked', () => navigate(-1))
+                }
+            }} className={style['bigSlide']}>
+                <img src={data[selectedId]} className={style['descriptionImageOpen']}/>
+            </div> : ''}
 
-    </div>);
+        </div>);
+    }
 };
 
 export default DescriptionImages;

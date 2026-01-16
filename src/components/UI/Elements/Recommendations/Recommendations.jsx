@@ -4,11 +4,11 @@ import {useServerUser} from "../../../../hooks/useServerUser";
 import useGlobalData from "../../../../hooks/useGlobalData";
 import style from './Recommendations.module.scss'
 
-const Recommendations = ({from, horizontal}) => {
+const Recommendations = ({from, horizontal, data}) => {
 
     const {getRecommendationsGames} = useServerUser()
     const {pageId, setBufferCardsRecommendations} = useGlobalData()
-    const [products, setProducts] = useState(null);
+    const [products, setProducts] = useState(typeof data !== "undefined" ? data : null);
 
     useEffect(() => {
         getRecommendationsGames((res) => {
@@ -36,7 +36,8 @@ const Recommendations = ({from, horizontal}) => {
                         position: 'relative',
                         overflowX: 'scroll',
                         paddingLeft: '4vw',
-                        paddingRight: '6vw'
+                        paddingRight: '6vw',
+                        minHeight: '54vw',
                     }} className={style['list']}>
                     {products.map(item => {
                         return (

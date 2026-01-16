@@ -54,6 +54,7 @@ const ShareLabels = ({productData, parameters}) => {
                  try {
                      await navigator.clipboard.writeText(textMessage);
                      setCopied(true);
+                     window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
                      setTimeout(() => setCopied(false), 2000);
                  } catch (err) {
                      console.error("Ошибка при копировании", err);

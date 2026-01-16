@@ -34,7 +34,8 @@ const parameters = [{label: 'Платформа', key: 'platform', type: 'bubble
             return null
         }
     }, type: 'bubble'
-}, {label: 'Количество игроков', key: 'numberPlayers', type: 'bubble'},]
+}, {label: 'Количество игроков', key: 'numberPlayers', type: 'bubble'},
+    {label: 'Тип', key: 'typeLabel', type: 'bubble'},]
 
 const Product = () => {
 
@@ -214,9 +215,9 @@ const Product = () => {
                 <Description productData={productData} parameters={parameters}/>
             </div>
 
-            <SimilarProducts name={productData.name}
-                             minRating={productData.name.replace(/[^a-zA-Z0-9\s]/g, "").split(' ')[0].length}
-                             id={productData.id}/>
+            {/*<SimilarProducts name={productData.name}*/}
+            {/*                 minRating={productData.name.replace(/[^a-zA-Z0-9\s]/g, "").split(' ')[0].length}*/}
+            {/*                 id={productData.id}/>*/}
 
             <Recommendations horizontal={true}/>
 

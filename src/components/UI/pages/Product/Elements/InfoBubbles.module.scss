@@ -1,34 +1,38 @@
 @import "src/components/styles/mainStyle";
 
 .infoBubbles {
-  margin: 0 4.38vw 2.38vw 4.38vw;
+  margin: 2.78vw 4.38vw 0 4.38vw;
   flex-direction: row;
   flex-wrap: wrap;
   width: 84vw;
   display: flex;
 
   > div {
-    margin: 0 2vw 2vw 0;
+    margin: 0 2vw -1vw 0;
     display: flex;
     flex-direction: row;
     width: max-content;
-    border-radius: 1.8vw;
+    border-radius: 2.2vw;
     background: white;
+    height: 5.5vw;
 
     >div{
       background-size: cover;
-      width: 3.5vw;
-      height: 3.5vw;
+      width: 4vw;
+      height: 4vw;
       margin: auto 0 auto 2.1vw;
     }
 
     >p {
+      display: flex;
       color: #222222;
-      font-size: 2.4vw;
-      line-height: 2.4vw;
+      font-size: 2.7vw;
+      line-height: 2.7vw;
       font-family: 'SF PRO Display', serif;
       font-weight: 900;
-      margin: 0.9vw 2.1vw 0.9vw 1vw;
+      margin: auto 2.1vw auto 1vw;
+      height: max-content;
+      width: max-content;
     }
   }
 }

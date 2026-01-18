@@ -22,7 +22,7 @@ const BackgroundImage = ({productData, selectCardList}) => {
     if (productData.endDatePromotion !== null) {
         if (!Number.isNaN(Number(productData.endDatePromotion)) && productData.endDatePromotion.trim() !== "") {
             endDatePromotion = `до ${(new Date(Number(productData.endDatePromotion))).toLocaleDateString('ru-RU')}`
-        }else {
+        } else {
             endDatePromotion = `до ${productData.endDatePromotion}`
         }
     }
@@ -36,7 +36,7 @@ const BackgroundImage = ({productData, selectCardList}) => {
         if (typeof productData.similarCard.endDatePromotion !== 'undefined') {
             if (!Number.isNaN(Number(productData.similarCard?.endDatePromotion)) && productData.similarCard?.endDatePromotion.trim() !== "") {
                 endDatePromotion = `до ${(new Date(Number(productData.similarCard?.endDatePromotion))).toLocaleDateString('ru-RU')}`
-            }else {
+            } else {
                 endDatePromotion = `до ${productData.similarCard?.endDatePromotion}`
             }
         }
@@ -52,20 +52,40 @@ const BackgroundImage = ({productData, selectCardList}) => {
         }
     }
 
+    let oldPrice = ''
+    let price = productData.price.toLocaleString() + ' ₽'
+
+
+    if (productData.oldPrice !== null) {
+        oldPrice = productData.oldPrice.toLocaleString() + ' ₽'
+    } else if (productData.similarCard !== null) {
+        price = productData.similarCard?.price.toLocaleString() + ' ₽'
+        if (typeof productData.similarCard.oldPrice !== 'undefined') {
+            oldPrice = productData.similarCard?.oldPrice.toLocaleString() + ' ₽'
+        }
+    }
+
     return (<div className={style['image']}>
         {imageLoaded ? <div
                 style={{backgroundImage: 'url("' + (productData.backgroundUrl !== null ? productData.backgroundUrl : productData.image) + '")'}}/> :
             <div className={style['backgroundImagePreloader']}/>}
 
-        {percent !== '' ? <div className={style['percent']}>
+        <div className={style['percent']}>
             <div>
-                <div>
-                    <div className={style[percent === 'Предзаказ' ? 'preOrder' : 'sale']}/>
-                    <p>{percent}</p>
+                <p className={style['typeLabel']}>{productData.typeLabel || ''}</p>
+
+                <div className={style['price']}>
+                    <p style={{color: oldPrice !== '' ? '#D86147' : '#ffffff'}}>{price}</p>
+                    {oldPrice !== '' ? <p>{oldPrice}</p> : ''}
                 </div>
-                <p>{endDatePromotion}</p>
+                {percent !== '' ?
+                    <div>
+                        <div className={style[percent === 'Предзаказ' ? 'preOrder' : 'sale']}/>
+                        <p className={style['saleLabel']}>скидка {percent} {endDatePromotion}</p>
+                    </div>
+                    : ''}
             </div>
-        </div> : ''}
+        </div>
 
     </div>)
 

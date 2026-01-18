@@ -13,44 +13,12 @@
 }
 
 .priceNameBlock {
-  margin: -5vw 3.2vw 0 3.2vw;
   background-color: #222222;
   display: flex;
   flex-direction: column;
-  border-radius: $block-border-radius;
+  border-bottom-left-radius: $block-border-radius;
+  border-bottom-right-radius: $block-border-radius;
   padding-bottom: 2vw;
-
-  .price {
-    display: flex;
-    margin: 0 3.78vw 3vw 4.38vw;
-    flex-direction: row;
-    justify-content: space-between;
-
-    > div {
-      border-radius: 2.6vw;
-      border-width: 0.5vw;
-      border-style: solid;
-      display: flex;
-      flex-direction: row;
-      border-color: #595959;
-      font-family: 'SF PRO Display', serif;
-      font-weight: 700;
-
-      > p:nth-child(1) {
-        font-size: 6.9vw;
-        padding: 1.6vw 2.1vw;
-      }
-
-      > p:nth-child(2) {
-        text-decoration: line-through;
-        font-size: 6.1vw;
-        color: #595959;
-        padding: 1.6vw 2.1vw;
-        margin-top: 0.8vw;
-      }
-    }
-
-  }
 }
 
 .share {

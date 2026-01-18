@@ -16,7 +16,7 @@ const DescriptionImages = ({data}) => {
     }
 
     if (data !== null && typeof data !== "undefined" && data.length !== 0) {
-        return (<div style={{width: '100vw', minHeight: '45vw', overflowX: 'hidden', marginLeft: '-3.5vw'}}>
+        return (<div style={{width: '100vw', minHeight: '45vw', overflowX: 'hidden'}}>
             <Swiper
                 slidesPerView={3}
                 centeredSlides={true}

@@ -51,40 +51,94 @@
     width: max-content;
     position: relative;
     display: flex;
-    margin: auto 3.5vw 6.5vw auto;
-    border-radius: 1.5vw;
+    flex-direction: column;
+    margin: auto auto 3.2vw 3.2vw;
+    border-radius: 2.6vw;
     overflow: hidden;
-    @extend %font-bold;
     color: white;
-    text-align: center;
-    font-size: 3.5vw;
     z-index: 100;
+    background-color: rgba(34, 34, 34, 0.95);
+    padding: 2.6vw;
+    min-width: 40vw;
 
-    > div:nth-child(1) {
-      background-color: #d76147;
-      padding: 1.2vw 2.4vw;
+    > div {
       display: flex;
       flex-direction: row;
 
-      > div {
+      .sale {
+        opacity: 0.8;
         margin: auto 1vw auto 0;
         width: 3.5vw;
         height: 3.5vw;
         background-size: cover;
-      }
-
-      .sale {
         background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAvCAYAAAClgknJAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAJjSURBVHgBzZmBVYMwEIYPF5ANZARGqBOoE4gb6ATqBHYD3aDPCeoGdYPUCVon+E1MqpReEiAJ4Xsvj5Z3XP4fuIRAQQMBUMlNKVt7e976XZnQw/bTtOeiKLYUmYJ4kUpMLduVEVIbgSWFsZQmHiglUvy1bALp2JgTlET8I6YhvgmZsMG0RDFRtAwI+i88F1vZ9q3td+v3335VsEZgI9uLJZcq7pvg4oa+7znW0Femhh59xuZ3XV0RkvvQwZJJ/EoRMSdhl8SEOdNdrikyyUxAF1SX2hG/kO3etAUNIIkJS8ILS+citOPoJrgsTEzl6DSfCSPsJAETt4afJQ3A9C2CTEDfz102TEd92NFAQk2cWfbvO/+rHjGKEkztuDCT2CXpCZCYftcuE2fEi9t2/rNiiRf0RQMJMWEz8NXpQE35nIkuHzSSniZOhnZlgDuTnNhn8nNHAYwyIXesmOJhZ2G5/8lWvLI1FAlPYe+OTIAfHhee5Etz3MqYir5AQd/RyRJU0wzwmNgcgrjZMM2SbwQeE02vx4jcOEysbVdgQTMD/BPDzlbEAqGrpAQwOqHmgXcmtiLPFD41lrti//sSC6FPhIlx1oAJSLdeTSde0bQDZ2fCI15wB8zGBMauE2Bf905mYrT4aAlyio+eKIf4ZAlz9DWFCaSuOwxZYIwTn37kS2ECUw/bMU0g15wTwwRyT5ghJqCf6/PP9h4TilvmmFtHvJhMfMfExiHqEfpxvYT7C2i6T689TJRwm/CRT3wEE/nFHzAmVgPEr2Yjvg3srx/bDPoQMjnQxf2G49tKQL+SjPrW7webWtyhIw3KnwAAAABJRU5ErkJggg==");
       }
 
       .preOrder {
+        opacity: 0.8;
+        margin: auto 1vw auto 0;
+        width: 3.5vw;
+        height: 3.5vw;
+        background-size: cover;
         background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAUFSURBVHgB7Z3rcds4FIWPd/b/qoNlKkg6CF3B2hWsUkGSCixXYKcCKRXYqUBMBXYHQiqIU8ENEEBjheGl8SIhivebwWgMEyCIA168QUAQBEEQBEEQBGFEiOhKu+/OrbVbYGD0Pd5otyXLTrsl5ojL/DZ3GBAdf+UyvU2NucFkBA35Fui4L5h73qIQf6EcFeM/pBni4v4HhSgpgKD5G8eHsdMYiGIlneMMI+Dseq3dW1jT8wa8CSrBk3bK/T5q91W75uzs7AlTxlV6W5ouW5piM1Un+j3Ztv2psKOBhMhqgnQijWlZw5qYU0Rpd65Nk0ImsrWCdOa/1z9bnG7mGyrtHvSzfsAxQd292lPnCscAWXvvw3685wPxPVJDTXbI4NBl6ZzpeJbMPRt3X5O2O+J76W3+R0lc5rzEljrGWnqurzAQPQKsO671acGZQlXO5FJ/SdlRzyAXHbkArTC7vudEAtGVMFkbWDH/VrCthYaPAZPo5Ohn2Oifc9hn6sJYgRXGhPhh3X3Jrzzi2OYuTR73rJk0Lz3Cmmfm+jbGf/C5jMPEcK+yofaMoy3iKPZU32PVSu8mIGxf42G8pqm+2QOTiHVgPAv3UMsxS5AT/4IiJmKIr5i3GAPqb/mccifsF8SbMRqlEBFvfga138cE8XXBEoHEtIK4Ut5gPnxh/IMtQIwArxn/L5gPj4x/hUBiBKgY/2lPXoShGP/XCCSnAArzQSETMikfB/e2VwhEBChMzlURZii3q2T8i9MjW3s/eErSNHYhsOjBu6A8FRNUGBGgMCJAYUSAwogAhREBCiMCFEYEKIwIUBgRoDAiQGFEgMKIAIUpKcC9du+0u0bcDNNGu0vYZYOfEU7j7h8bvgyUh2Urzr6ljl2sOtJ1GxD+riN8TRnA0FA690y8vhmwY8KbVXa++9IqJo4tJYJASpighvFX8KPzOrelVMGDnj1eXzEyJQSoGH/fab5FRNy/QfwSwuBlJaND6XQu5Sa7fcmXi47wvlulDDcd4X12+7wIhobysCO3kJes7b6hcK7Inv1TRYZf0/N+NLOgIMu+ZgQik/KZkUn5iSECFEYEKIwIUBgRoDAiQGFKCrA/nUohHhO+QTwKU9taRXnY0EFvmOzGv5CO0I4OBtQofDTV3Ktuhb+jDGBoKB1uNHMVEEfVET5kKGHJpGFHiSCQEiaIm/zYwI+mazTT+T3CA3f+QxejbzSMESB1M95ToH+bRUTcvtcojEwJAf5j/C/gR+cBTs4s1XgZM/jHXfcWaQy/U5T4cyJCuGrFGVqJbun3SngRmK4HatUjFDaczRF8WkDMaOhG/+Q4qkvBNgEr+JXcrvDG5ptSZ96e0H1bCnZhwDfYt7JGOqZ+Og8JECOAOZblBkIXn7QAQcfWxNQBXi2NmRKcN7ECzOlYghAaBBIsgFt9IG/BnzzGnKgb2xG7htDmEyKIEsCdhqgg7FGIHNRLGYqQt+CZz7EHeiednk72oLoa80bpzH+FSFIH48zq4rm3iC6RQJIA7rV7h/lyrfMgqUWYPBytE7Bf5z83TOavkEi2L2iQXa9pDm4d/uzM8nzUmX+LDOT+hEkF+xWNCqeJ0u4y1ewcknVGzNQJrkVgTJLC6WAaGsbkvMqZ+YZBvyNGdu7VDF3XmCYN7BTq/VDfFBtUgD30/CE348wmCPN3heOoL54OnCndP2AzfvofchMEQRAEQRAE4Sj5CR7T063hGGCrAAAAAElFTkSuQmCC");
       }
-    }
 
-    > p:nth-child(2) {
-      background-color: #222222;
-      padding: 1.2vw 2.4vw;
+      .saleLabel{
+        opacity: 0.8;
+        @extend %font-bold;
+        font-size: 3vw;
+      }
     }
   }
 }
+
+.typeLabel{
+  @extend %font-bold;
+  font-size: 3.5vw;
+  margin-bottom: 2vw;
+}
+
+.price {
+  display: flex;
+  flex-direction: row;
+  font-family: 'SF PRO Display', serif;
+  font-weight: 700;
+
+  > p:nth-child(1) {
+    font-size: 6.3vw;
+    padding: 1.6vw 0;
+  }
+
+  > p:nth-child(2) {
+    text-decoration: line-through;
+    font-size: 5.5vw;
+    color: #595959;
+    padding: 1.6vw;
+    margin-left: 2.1vw;
+    margin-top: 0.8vw;
+  }
+
+
+}
+
+//
+
+//
+//  > div:nth-child(1) {
+//    background-color: #d76147;
+//    padding: 1.2vw 2.4vw;
+//    display: flex;
+//    flex-direction: row;
+//
+//    > div {
+
+//    }
+//
+
+//  }
+//
+//  > p:nth-child(2) {
+//    background-color: #222222;
+//    padding: 1.2vw 2.4vw;
+//  }
+//}

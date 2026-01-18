@@ -13,6 +13,8 @@ import SimilarProducts from "./Elements/SimilarProducts";
 import ShareLabels from "./Elements/ShareLabels";
 import BackgroundImage from "./Elements/BackgroundImage";
 import NamePlace from "./Elements/NamePlace";
+import InfoBubbles from "./Elements/InfoBubbles";
+import DescriptionText from "./Elements/DescriptionText";
 
 const parameters = [{label: 'Платформа', key: 'platform', type: 'bubble'}, {
     label: 'Регион активации', key: 'regionActivate', type: 'parameter'
@@ -114,19 +116,6 @@ const Product = () => {
 
     if (productData !== null) {
 
-        let oldPrice = ''
-        let price = productData.price.toLocaleString() + ' ₽'
-
-
-        if (productData.oldPrice !== null) {
-            oldPrice = productData.oldPrice.toLocaleString() + ' ₽'
-        } else if (productData.similarCard !== null) {
-            price = productData.similarCard?.price.toLocaleString() + ' ₽'
-            if (typeof productData.similarCard.oldPrice !== 'undefined') {
-                oldPrice = productData.similarCard?.oldPrice.toLocaleString() + ' ₽'
-            }
-        }
-
 
         let saleType = null
         let saleLabel = ''
@@ -171,6 +160,8 @@ const Product = () => {
 
             <div className={style['priceNameBlock']} ref={blockRef}>
 
+                <InfoBubbles productData={productData}/>
+
                 <NamePlace productData={productData} cardInFavorite={cardInFavorite}
                            setCardInFavorite={setCardInFavorite}/>
 
@@ -189,26 +180,20 @@ const Product = () => {
                                                            index={selectPosition}
                                                            set={setSelectPosition}/>) : ''}
 
-                <div className={style['price']}>
-                    <div>
-                        <p style={{color: oldPrice !== '' ? '#D86147' : '#ffffff'}}>{price}</p>
-                        {oldPrice !== '' ? <p>{oldPrice}</p> : ''}
-                    </div>
-                    {saleType !== null ?
-                        <div style={{borderColor: '#171717'}} className={style['sale'] + ' ' + style['bg-' + saleType]}
-                             onClick={() => {
-                                 navigate(saleType === 'logoPS' ? '/choice-catalog/ps_psplus' : '/choice-catalog/ps_eaplay')
-                             }}>
-                            <div className={style[saleType]}/>
-                            <div className={style[saleType]}/>
-                            <div className={style[saleType]}/>
-                            <div className={style[saleType]}/>
-                            <p>{saleLabel}</p>
-                            <div/>
-                        </div> : ''}
-                </div>
+                {saleType !== null ?
+                    <div style={{borderColor: '#171717'}} className={style['sale'] + ' ' + style['bg-' + saleType]}
+                         onClick={() => {
+                             navigate(saleType === 'logoPS' ? '/choice-catalog/ps_psplus' : '/choice-catalog/ps_eaplay')
+                         }}>
+                        <div className={style[saleType]}/>
+                        <div className={style[saleType]}/>
+                        <div className={style[saleType]}/>
+                        <div className={style[saleType]}/>
+                        <p>{saleLabel}</p>
+                        <div/>
+                    </div> : ''}
 
-                {/*<InfoBubbles parameters={parameters} productData={productData}/>*/}
+                <DescriptionText productData={productData}/>
 
                 <DescriptionImages data={productData.descriptionImages}/>
 

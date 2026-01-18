@@ -72,7 +72,7 @@ const BackgroundImage = ({productData, selectCardList}) => {
 
         <div className={style['percent']}>
             <div>
-                <p className={style['typeLabel']}>{productData.typeLabel || ''}</p>
+                {/*<p className={style['typeLabel']}>{productData.typeLabel || ''}</p>*/}
 
                 <div className={style['price']}>
                     <p style={{color: oldPrice !== '' ? '#D86147' : '#ffffff'}}>{price}</p>

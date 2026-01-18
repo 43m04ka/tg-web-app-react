@@ -89,6 +89,9 @@
         font-size: 3vw;
       }
     }
+    >div:nth-child(2) {
+      margin-top: 1.6vw;
+    }
   }
 }
 
@@ -106,14 +109,12 @@
 
   > p:nth-child(1) {
     font-size: 6.3vw;
-    padding: 1.6vw 0;
   }
 
   > p:nth-child(2) {
     text-decoration: line-through;
     font-size: 5.5vw;
     color: #595959;
-    padding: 1.6vw;
     margin-left: 2.1vw;
     margin-top: 0.8vw;
   }

@@ -37,6 +37,9 @@ const NamePlace = ({setCardInFavorite, cardInFavorite, productData}) => {
     if(productData.platform !== null && productData.platform !== ''){
         infoLabelArray.push(productData.platform)
     }
+    if(productData.typeLabel !== null && productData.typeLabel !== ''){
+        infoLabelArray.push(productData.typeLabel)
+    }
 
     return (
         <div className={style['namePlace']}>

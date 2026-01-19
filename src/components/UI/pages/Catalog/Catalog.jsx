@@ -16,7 +16,7 @@ let lastCardList = null
 let lastPath = ''
 let len = 1
 let onLoad = false
-let lastJson = {sorting: 'default', platform: [], language: [], numberPlayers: []}
+let lastJson = {sorting: 'default', platform: [], language: [], numberPlayers: [], genre:[], type:[]}
 
 const Catalog = () => {
 
@@ -61,7 +61,7 @@ const Catalog = () => {
                 setCardList(null)
                 lastScroll = 0
                 lastCardList = null
-                lastJson = {sorting: 'default', platform: [], language: [], numberPlayers: []}
+                lastJson = {sorting: 'default', platform: [], language: [], numberPlayers: [], genre:[], type:[]}
             }
             return catalog
         } else {

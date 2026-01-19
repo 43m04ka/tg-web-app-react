@@ -5,6 +5,18 @@ import {useNavigate} from "react-router-dom";
 const CatalogItem = ({product, isClicked, from}) => {
     const navigate = useNavigate()
 
+    let typeLabel = null
+
+    if(product.type === 'ADD_ON'){
+        typeLabel = 'DLC'
+    }
+    if(product.type === 'GAME'){
+        typeLabel = 'Игра'
+    }
+    if(product.typeLabel === 'Виртуальная валюта'){
+        typeLabel = 'Донат'
+    }
+
     let percent = ''
     let price = String(product.price).toLocaleString() + ' ₽'
 
@@ -49,9 +61,13 @@ const CatalogItem = ({product, isClicked, from}) => {
             navigate(isClicked === false ? null : '/card/' + product.id + (typeof from !== "undefined" ? '?from=' + from : ''))
         }} className={style['gradient']}>
             <div className={style['platform']}>
-                {product.platform !== null && product.platform !== '' ? <div>
+                {product.platform !== null && product.platform !== '' ? <div style={{margin: 'auto 1vw auto 0'}}>
                     {product.platform}
                 </div> : ''}
+                {typeLabel !== null ?
+                    <div style={{margin: 'auto auto auto 0'}}>
+                        {typeLabel}
+                    </div> : ''}
                 {percent !== '' && percent.charAt(0) !== '−' ?
                     <div className={style['parcent']} style={{margin: 'auto 0 auto auto'}}>
                         {percent}

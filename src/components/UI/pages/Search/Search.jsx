@@ -14,7 +14,7 @@ let timerId = -1
 let lastListRes = []
 let lastText = ''
 let lastScroll = 0
-let lastJson = {platform: [], language: [], numberPlayers: []}
+let lastJson = {platform: [], language: [], numberPlayers: [], genre:[], type:[]}
 
 
 const Search = () => {

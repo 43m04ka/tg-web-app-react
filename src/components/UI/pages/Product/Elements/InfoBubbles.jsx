@@ -18,8 +18,8 @@ const InfoBubbles = ({productData}) => {
         }))]
     }
 
-    if(productData.numberPlayers !== null) {
-        bubbles = [...bubbles, {label: productData.numberPlayers + productData.numberPlayers.includes('-') ? ' игрока' : ' игрок', icon: productData.numberPlayers.includes('-') ? morePeople : onePeople}]
+    if(productData.numberPlayers !== null && productData.numberPlayers !== '') {
+        bubbles = [...bubbles, {label: productData.numberPlayers + (productData.numberPlayers.includes('-') ? ' игрока' : ' игрок'), icon: productData.numberPlayers.includes('-') ? morePeople : onePeople}]
     }
 
     if(productData.language !== null) {

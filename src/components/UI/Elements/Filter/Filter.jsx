@@ -72,7 +72,13 @@ const Filter = ({onClose, json, setJson}) => {
         parameters = [{
             type: 'platform',
             name: 'Платформа',
-            list: pageId === 20 ? ['PS5', 'PS4'] : ['One', 'Series'],
+            list: pageId === 20 ? [
+                {label: 'PS5'},
+                {label: 'PS4'}
+            ] : [
+                {label: 'One'},
+                {label: 'Series'}
+            ],
             image: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAADqElEQVR4nO2dy6tNURzHt0chl5CJRyl3iCJ5DAykK5eBq4Q/wGMiAyYGQpTyKJlIuSaKgT2X0Z0ib2Imz/JMHqE8P9rupuO017rHXvuxzjrfT+3ZWb/1XftzTmfvffb+nSgSQgghhBBCCCGEEEKIqgCmAZuBo8AZINZGsi2uWsRc4ALwE5HFuipl7AR+ZMYQ1QoBjv2dUtQrBNhijSCqEwJMBt7/M6WoVchB6/SiciEPMHMdWAqMLTWEGATotsh4BIyrO2NHkb77TeyuO1/HAay1CNlQd76OI/mC8uKMVAwiIZ4RmhAGD1JWpeuqe+sDFgIjO04IsAa4g5+8AfYCYzpCCHCE9uBqclUkaCHANtqLAWBYkEKAScA72o/1oQrZRHtyPlQhJ2hPXoYq5JwtuwfbJUO2n6EKiU3Bo3bNJyHl0YlCdphu1Yk8oOOE+I6EeIaEeIaEeIaEeIaEeIb3QoARQG96ufxsCXelHwc2AhMjD/BaCLAAuEs1vAO2FpU9OCHprUafqZ7DReQPSggwAXhFfax2XUNoQvZQL7dd1xCakJvUT7frOkIS8pH66XVdR0hCTMSutX0/n5IQMxLSUN9E7Fq7aR4JaTGUhGRgGyQhJSEhZiSkob6J2LV20zwS0mIoCcnANkhCSkJCzEhIQ30TsWvtpnkkpMVQEpKBbZCElISEmJGQhvomYtfaTfNISIuhJCSD2lprWGrHrrVDFWJrPrOngFASkoFt0EzMPAbGO4YyEbvUDVZIOvC+ZTE3gGV5G5hJSDZDDdyPG8YFW8bEBS8+KCETgbcS4tEzkEl3AQmpUEiLvdvztoqVkBxCnlAeEpJDSNKFpiwkJIeQ7ZRH2wrh31YYMywPGhXZWuO3kKnAJ7f9nmvBvgtpZK/hNbMpmD+FD1AOoQh5mjzPkvGa0xTMn8KjgctFFw9ICGnfxp7kkhEwqwwZCY0BppTQLDIkIVXwoTlEV/oUbFF/aSQh/8c1U5hFaROwD7ghIf/HrqEWMyo9kliZ8/BuuqX2V0Oop5YrBj2GWl2WMRctO6DPIyHPXX/ScAJ4mCP0SUOtFTl3wnxLvipJTjuWRHUCnMoR/FvyS2ZGS9h7OWq9Tk7sLPmq4hYwL6obYA7wPaeU/rRVxj7gWc4dYf0PlBLaezRuyQXdQ8ByYHjkC2nf8zq4kpx71b1+70haa6dS8nxS8jIwZJ/1Tic9kutPv+i/UDwvkq7R6ZGfub+6EEIIIYQQQgghRNTIL4plgK07uZydAAAAAElFTkSuQmCC'
         }, ...parameters]
     }
@@ -125,7 +131,8 @@ const Filter = ({onClose, json, setJson}) => {
                                          setLocalJson(newJson)
                                          setCounter(counter + 1)
                                      }}>
-                                    <input type="checkbox" checked={localJson[param.type].includes((typeof element.value === 'undefined' ? element.label : element.value))}
+                                    <input type="checkbox"
+                                           checked={localJson[param.type].includes((typeof element.value === 'undefined' ? element.label : element.value))}
                                            onChange={() => {
                                            }}/>
                                     <p>

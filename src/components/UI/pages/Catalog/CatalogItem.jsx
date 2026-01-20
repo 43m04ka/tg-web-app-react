@@ -32,7 +32,6 @@ const CatalogItem = ({product, isClicked, from}) => {
 
     if (product.releaseDate !== null && !Number.isNaN(Number(product.releaseDate)) && product.releaseDate.trim() !== "" || (new Date(product.releaseDate)).getFullYear() < 1980) {
         let a = (new Date(product.releaseDate)) * 24 * 60 * 60 * 1000
-        console.log(a, product.releaseDate)
         let currentDate = new Date('1899-12-30T00:00:00.000Z')
         let newDate = new Date(a + currentDate.getTime());
 

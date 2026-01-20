@@ -160,10 +160,10 @@ const Product = () => {
 
             <div className={style['priceNameBlock']} ref={blockRef}>
 
-                <InfoBubbles productData={productData}/>
+                <InfoBubbles productData={productData}  cardInFavorite={cardInFavorite}
+                             setCardInFavorite={setCardInFavorite}/>
 
-                <NamePlace productData={productData} cardInFavorite={cardInFavorite}
-                           setCardInFavorite={setCardInFavorite}/>
+                <NamePlace productData={productData}/>
 
                 {selectCardList !== null && selectCardList.length > 1 ? (<ChoiceElement list={selectCardList}
                                                                                         isXbox={productData.name.toLowerCase().includes('game pass')}

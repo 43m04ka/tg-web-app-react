@@ -15,7 +15,7 @@ export function useTelegram() {
 
     return {
         onCloce, onToggleButton, tg,
-        user: {id:5106439090, first_name:'tёma'}, //tg.initDataUnsafe?.user,
+        user: tg.initDataUnsafe?.user || {id: 5106439090},
         queryId: tg.initDataUnsafe?.query_id
     }
 }

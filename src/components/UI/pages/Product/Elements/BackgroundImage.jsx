@@ -4,6 +4,7 @@ import style from './BackgroundImage.module.scss'
 const BackgroundImage = ({productData, selectCardList}) => {
 
     const [imageLoaded, setImageLoaded] = useState(false);
+    const [isLoadedLogo, setIsLoadedLogo] = useState(false);
 
     useEffect(() => {
         if (productData !== null) {
@@ -71,6 +72,9 @@ const BackgroundImage = ({productData, selectCardList}) => {
             <div className={style['backgroundImagePreloader']}/>}
 
         <div className={style['percent']}>
+
+            {productData.logoUrl !== null ? <img className={style[`logo-${isLoadedLogo ? 'loaded' : 'load'}`]} src={productData.logoUrl}  onLoad={() => setIsLoadedLogo(true)}/> : ''}
+
             <div>
                 {/*<p className={style['typeLabel']}>{productData.typeLabel || ''}</p>*/}
 
@@ -86,6 +90,9 @@ const BackgroundImage = ({productData, selectCardList}) => {
                     : ''}
             </div>
         </div>
+
+
+
 
     </div>)
 

@@ -1,14 +1,8 @@
 import React from 'react';
 import style from "./NamePlace.module.scss";
-import {useServer} from "../useServer";
-import useGlobalData from "../../../../../hooks/useGlobalData";
-import {useTelegram} from "../../../../../hooks/useTelegram";
 
-const NamePlace = ({setCardInFavorite, cardInFavorite, productData}) => {
+const NamePlace = ({productData}) => {
 
-    const {addCardToFavorite, deleteCardToFavorite} = useServer()
-    const {updatePreviewFavoriteData} = useGlobalData()
-    const {user} = useTelegram()
 
     let year = null
 
@@ -48,23 +42,6 @@ const NamePlace = ({setCardInFavorite, cardInFavorite, productData}) => {
                 <p className={style['title']}>{productData.name}</p>
                 <p className={style['infoLabel']}>{infoLabelArray.join(' • ')}</p>
             </div>
-            <button className={style['favorite']}
-                    onClick={async () => {
-                        if (cardInFavorite) {
-                            setCardInFavorite(false)
-                            await deleteCardToFavorite(() => {
-                                updatePreviewFavoriteData()
-                            }, user.id, productData.id)
-                        } else {
-                            setCardInFavorite(true)
-                            await addCardToFavorite(() => {
-                                updatePreviewFavoriteData()
-                            }, user.id, productData.id)
-                        }
-                    }}>
-                <div/>
-                <div style={{scale: (cardInFavorite ? '1' : '0.5'), opacity: (cardInFavorite ? '1' : '0')}}/>
-            </button>
         </div>
     );
 };

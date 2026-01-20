@@ -46,8 +46,32 @@
   min-width: 100vw;
   position: absolute;
   display: flex;
+  flex-direction: column;
 
-  > div {
+  .logo-load{
+    width: 45vw;
+    height: auto;
+    display: flex;
+    background-size: cover;
+    margin: 3.2vw 3.2vw auto auto;
+    position: relative;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+  }
+  .logo-loaded {
+    opacity: 1;
+    width: auto;
+    height: auto;
+    max-height: 20vw;
+    max-width: 40vw;
+    display: flex;
+    background-size: cover;
+    margin: 3.2vw 3.2vw auto auto;
+    position: relative;
+    transition: opacity 0.8s ease-in-out;
+  }
+
+  > div:last-child {
     width: max-content;
     position: relative;
     display: flex;
@@ -59,7 +83,6 @@
     z-index: 100;
     background-color: rgba(34, 34, 34, 0.95);
     padding: 2.6vw;
-    min-width: 40vw;
 
     > div {
       display: flex;
@@ -118,10 +141,7 @@
     margin-left: 2.1vw;
     margin-top: 0.8vw;
   }
-
-
 }
-
 //
 
 //

@@ -9,7 +9,6 @@ import Description from "./Elements/Description";
 import ChoiceElement from "./Elements/ChoiceElement";
 import DescriptionImages from "./Elements/DescriptionImages";
 import ProductBasketCounter from "./Elements/ProductBasketCounter";
-import SimilarProducts from "./Elements/SimilarProducts";
 import ShareLabels from "./Elements/ShareLabels";
 import BackgroundImage from "./Elements/BackgroundImage";
 import NamePlace from "./Elements/NamePlace";
@@ -30,14 +29,21 @@ const parameters = [{label: 'Платформа', key: 'platform', type: 'bubble
             } else {
                 return newDate.toLocaleDateString('ru-RU')
             }
-        }else if(item.releaseDate !== null && item.releaseDate !== '') {
+        } else if (item.releaseDate !== null && item.releaseDate !== '') {
             return (new Date(item.releaseDate)).toLocaleDateString('ru-RU')
-        }else{
+        } else {
             return null
         }
     }, type: 'bubble'
-}, {label: 'Количество игроков', key: 'numberPlayers', type: 'bubble'},
-    {label: 'Тип', key: 'typeLabel', type: 'bubble'},]
+}, {
+    label: 'Количество игроков', key: (item) => {
+        if (item.numberPlayers !== null && item.numberPlayers !== '') {
+            return item.numberPlayers + (item.numberPlayers.includes('-') ? ' игрока' : ' игрок')
+        } else {
+            return null
+        }
+    }, type: 'bubble'
+}, {label: 'Тип', key: 'typeLabel', type: 'bubble'},]
 
 const Product = () => {
 
@@ -160,10 +166,10 @@ const Product = () => {
 
             <div className={style['priceNameBlock']} ref={blockRef}>
 
-                <InfoBubbles productData={productData}  cardInFavorite={cardInFavorite}
-                             setCardInFavorite={setCardInFavorite}/>
+                <NamePlace productData={productData} cardInFavorite={cardInFavorite}
+                           setCardInFavorite={setCardInFavorite}/>
 
-                <NamePlace productData={productData}/>
+                <InfoBubbles productData={productData}/>
 
                 {selectCardList !== null && selectCardList.length > 1 ? (<ChoiceElement list={selectCardList}
                                                                                         isXbox={productData.name.toLowerCase().includes('game pass')}

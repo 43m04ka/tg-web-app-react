@@ -33,7 +33,7 @@ const Description = ({parameters, productData}) => {
                 <button onClick={() => {
                     setMode(3)
                 }} className={style[mode === 3 ? 'activeButton' : 'noActiveButton']}>
-                    Донат
+                    Донат и дополнения
                 </button> : ''}
         </div>
 

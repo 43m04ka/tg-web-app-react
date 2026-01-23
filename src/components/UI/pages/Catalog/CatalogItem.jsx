@@ -13,8 +13,14 @@ const CatalogItem = ({product, isClicked, from}) => {
     if(product.type === 'GAME'){
         typeLabel = 'Игра'
     }
-    if(product.typeLabel === 'Виртуальная валюта'){
+    if(product.type === 'DONATION'){
         typeLabel = 'Донат'
+    }
+    if(product.type === 'SUBSCRIPTION'){
+        typeLabel = 'Подписка'
+    }
+    if(product.type === 'CODE'){
+        typeLabel = 'Код'
     }
 
     let percent = ''

@@ -80,8 +80,8 @@ function App() {
 
     useEffect(() => {
         setTimeout(() => {
-            updatePageList(true)
-        }, 2500)
+            updatePageList()
+        }, 2000)
 
         // for (let i = 0; i < 8; i++) {
         //     timeouts[i] = setTimeout(() => {

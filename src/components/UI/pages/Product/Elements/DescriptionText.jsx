@@ -9,17 +9,19 @@ const DescriptionText = ({productData}) => {
 
     useEffect(() => {
         if (refText.current) {
+            if (refText.current.scrollHeight < window.innerWidth * 5.35 * 3 / 100) {
+                setTextHidden(false)
+            }
             setHeight(String(refText.current.scrollHeight))
         }
-    }, []);
+    }, [productData.description]);
 
-    return (
-        <div className={style['descriptionContainer']}>
+    return (<div className={style['descriptionContainer']}>
             <div className={style['textContainer']}
                  style={{height: textHidden ? String(window.innerWidth * 5.35 * 3 / 100) + 'px' : height + 'px'}}>
                 <div className={style['description']}>
                     <div ref={refText} onClick={() => {
-                        setTextHidden(false)
+                        setTextHidden(!textHidden)
                     }}>
                         {productData.description.split('<br/>').map((item, index) => (<span key={index}>
                             {item}
@@ -28,14 +30,13 @@ const DescriptionText = ({productData}) => {
                     </div>
                 </div>
             </div>
-            <div className={style['seeAll']} style={{height: textHidden ? '5.35vw' : '0'}}
+            <div className={style['seeAll']}
                  onClick={() => {
-                     setTextHidden(false)
+                     setTextHidden(!textHidden)
                  }}>
-                нажать, чтобы прочитать полностью
+                {textHidden ? 'нажать, чтобы прочитать полностью' : 'нажать, чтобы скрыть'}
             </div>
-        </div>
-    );
+        </div>);
 };
 
 export default DescriptionText;

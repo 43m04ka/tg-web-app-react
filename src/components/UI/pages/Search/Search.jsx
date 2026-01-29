@@ -14,7 +14,7 @@ let timerId = -1
 let lastListRes = []
 let lastText = ''
 let lastScroll = 0
-let lastJson = {platform: [], language: [], numberPlayers: [], genre:[], type:[]}
+let lastJson = {sorting: 'default', platform: [], language: [], numberPlayers: [], genre:[], type:[]}
 
 
 const Search = () => {
@@ -143,7 +143,7 @@ const Search = () => {
                 <button onClick={() => {
                     setInputValue('');
                     setCardList(null)
-                    lastJson = {sorting: 'default', platform: [], language: [], numberPlayers: []}
+                    lastJson = {sorting: 'default', platform: [], language: [], numberPlayers: [], genre:[], type:[]}
                     setJson(lastJson)
                 }}>
                     <div/>

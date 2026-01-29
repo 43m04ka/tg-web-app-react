@@ -141,7 +141,7 @@ export function useServer() {
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
-                setResult(data.status)
+                setResult(data.status, data.percent)
             })
         })
     }

@@ -9,7 +9,7 @@ import ButtonLine from "../../Elements/ButtonLine/ButtonLine";
 import PopUpWindow from "../../Elements/PopUpWindow/PopUpWindow";
 import InputLabel from "../../Elements/Input/InputLabel";
 import DropBox from "../../Elements/DropBox/DropBox";
-import ButtonLabel from "../../Elements/ButtonLabel";
+import SwitchLabel from "../../Elements/SwitchLabel/SwitchLabel";
 
 const EditDirectories = () => {
     const {createCatalog, deleteCatalog, changeSaleStatusCatalog} = useServer();
@@ -40,8 +40,8 @@ const EditDirectories = () => {
     const [selectedCatalogId, setSelectedCatalogId] = useState(-1);
     const [openListCards, setOpenListCards] = React.useState(false);
     const [createTabOpen, setCreateTabOpen] = React.useState(false);
-    const [pathNewCatalog, setPathNewCatalog] = useState('')
-    const [pageNewCatalog, setPageNewCatalog] = useState(pageList[0].id)
+    const [parsingCatalogPlaystation, setParsingCatalogPlaystation] = useState(0)
+    const [newCatalogData, setNewCatalogData] = useState({structurePageId: pageList[0].id, type:'DEFAULT'})
 
     //---------------------
 
@@ -125,18 +125,50 @@ const EditDirectories = () => {
                 <PopUpWindow title={'Создать каталог'}>
                     <div>
                         <InputLabel placeholder={'xbox_new'} label={'Путь до каталога'}
-                                    onChange={(event) => setPathNewCatalog(event.target.value)}/>
+                                    onChange={(event) => {
+                                        let newData = newCatalogData
+                                        newData.path = event.target.value
+                                        setNewCatalogData(newData)
+                                    }}/>
                         <DropBox label={pageList.map(page => {
                             page.label = page.name;
                             return page
-                        })} onChange={(result) => setPageNewCatalog(pageList[result].id)}/>
+                        })} onChange={(result) => {
+                            let newData = newCatalogData
+                            newData.structurePageId = pageList[result].id
+                            setNewCatalogData(newData)
+                        }}/>
+                        <SwitchLabel label={'Пропарсить каталог с сайта PlaystationStore'}
+                                     onChange={(value) => {
+                                         setParsingCatalogPlaystation(value.target.checked)
+
+                                         let newData = newCatalogData
+                                         newData.type = value.target.checked ? 'PLAYSTATION' : 'DEFAULT'
+                                         setNewCatalogData(newData)
+                                     }}/>
+                        {parsingCatalogPlaystation ?
+                            <div>
+                                <InputLabel label={'ID каталога с сайта PlaystationStore'}
+                                            onChange={(event) => {
+                                                let newData = newCatalogData
+                                                newData.playstationCatalogId = event.target.value
+                                                setNewCatalogData(newData)
+                                            }}/>
+                                <InputLabel label={'Количество страниц в каталоге на сайте PlaystationStore'}
+                                            onChange={(event) => {
+                                                let newData = newCatalogData
+                                                newData.playstationCountPages = event.target.value
+                                                setNewCatalogData(newData)
+                                            }}/>
+                            </div>
+                            : ''}
                     </div>
                     <div className={style['buttonPlace']}>
                         <div className={style['buttonAccept']}
                              onClick={async () => {
                                  await createCatalog(() => {
                                      updateCatalogList()
-                                 }, authenticationData, pathNewCatalog, pageNewCatalog);
+                                 }, authenticationData, newCatalogData);
                                  updateCatalogList()
                                  setCreateTabOpen(false);
                              }}>
@@ -158,53 +190,3 @@ const EditDirectories = () => {
 };
 
 export default EditDirectories;
-
-
-// {catalogList.length === 0 ? (<div className={styles['catalog-choice-empty']}>
-//     Нет загруженных каталогов
-// </div>) : catalogList.map(catalog => (<div
-//     className={`${styles['catalog-choice-block']} ${selectedCatalogId === catalog.id ? styles['catalog-choice-active'] : ''}`}
-//     key={catalog.path} onClick={() => setSelectedCatalogId(catalog.id)}>
-//     <div className={styles['catalog-choice-label']}>
-//         {(catalog.isExchangeIndiaCatalog ? '₹ ' : '') + catalog.path}</div>
-//     <div
-//         className={`${styles['catalog-choice-label']} ${styles['catalog-choice-status-' + String(catalog.onSale)]}`}>
-//         {catalog.onSale}</div>
-//     <div
-//         className={styles['catalog-choice-btn']}>
-//         {selectedCatalogId === catalog.id ? '> Выбран ˂' : '» Выбрать «'}</div>
-// </div>))}
-
-
-// <div style={{display: "flex", flexDirection: 'column'}}>
-//     <BlockLabel label={'Создать каталог'}>
-//         <InputLabel placeholder={'xbox_new'} label={'Путь до каталога'}
-//                     onChange={(event) => setPathNewCatalog(event.target.value)}/>
-//         <DropBox label={pageList.map(page => {
-//             page.label = page.name;
-//             return page
-//         })} onChange={(result) => setPageNewCatalog(pageList[result].id)}/>
-//         <ButtonLabel label={'Создать каталог'} onClick={createNewCatalog}/>
-//     </BlockLabel>
-//     {selectedCatalogId !== -1 ? (<BlockLabel label={'Действие'}>
-//         <SwitchLabel label={['Скрыть список карт', 'Раскрыть список карт']}
-//                      onChange={setOpenListCards}/>
-//         <ButtonLabel label={'Использовать как обмен для индии'} onClick={() => {
-//             setExchangeIndiaCatalog(authenticationData, selectedCatalogId).then()
-//             getCatalogList(setCatalogList).then()
-//         }}/>
-//         <SeparatorLabel label={'Изменить статус'}/>
-//         <ButtonLabel label={'Выставить в продажу'}
-//                      onClick={() => changeSaleStatusCatalog(() => getCatalogList(setCatalogList).then(),
-//                          authenticationData, selectedCatalogId, true)}/>
-//         <ButtonLabel label={'Убрать с продажи'}
-//                      onClick={() => changeSaleStatusCatalog(() => getCatalogList(setCatalogList).then(),
-//                          authenticationData, selectedCatalogId, false)}/>
-//         <SeparatorLabel/>
-//         <ButtonLabel label={'Удалить'} onClick={() => {
-//             deleteCatalog(setCatalogList, authenticationData, selectedCatalogId).then()
-//             setSelectedCatalogId(-1)
-//             setOpenListCards(false)
-//         }}/>
-//     </BlockLabel>) : ''}
-// </div>

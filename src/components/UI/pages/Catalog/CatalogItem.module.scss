@@ -21,34 +21,28 @@
     overflow: hidden;
     border-radius: $block-border-radius / 2;
 
+    > img {
+      display: flex;
+      width: 41vw;
+      height: 41vw;
+      border-radius: $block-border-radius / 2;
+    }
+
     > div {
       display: flex;
       width: 41vw;
-      height: 56.5vw;
-      margin-left: 0.5vw;
-      margin-top: 0.5vw;
-      background-size: 100% 75%;
+      height: 41vw;
       border-radius: $block-border-radius / 2;
-    }
-    >div:last-child{
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      mask: linear-gradient(to top, black 30%, transparent 50%);
-      filter: blur(15px)
     }
   }
 
 
   .gradient {
     position: absolute;
-    width: 42.0vw;
-    height: 57.5vw;
-    margin-left: -0.5vw;
-    padding: 1vw;
-    background: linear-gradient(180deg, #00000000 50%, rgba(23, 23, 23, 0.83) 70%, #171717 90%);
+    width: 41.0vw;
+    height: 56.5vw;
+    padding: 0.5vw;
+    background: linear-gradient(180deg, #00000000 55%, rgba(34, 34, 34, 0.93) 65%, $menu-color 80%);
     display: flex;
     flex-direction: column;
     border-radius: $block-border-radius / 2;

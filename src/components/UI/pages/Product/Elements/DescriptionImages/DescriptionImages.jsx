@@ -1,8 +1,9 @@
 import React from 'react';
 import {Swiper, SwiperSlide} from "swiper/react";
-import style from '../Product.module.scss'
-import {useTelegram} from "../../../../../hooks/useTelegram";
+import style from '../../Product.module.scss'
+import {useTelegram} from "../../../../../../hooks/useTelegram";
 import {useNavigate} from "react-router-dom";
+import ImageSlider from "./ImageSlider";
 
 const DescriptionImages = ({data}) => {
 
@@ -25,18 +26,7 @@ const DescriptionImages = ({data}) => {
                 loop={data.length > 3}
             >
                 {data.map((el, index) => (<SwiperSlide key={index} className={style['slide']}>
-                    <img src={el} className={style['descriptionImage']} onClick={() => {
-                        setSelectedId(index)
-                        tg.BackButton.show();
-                        tg.onEvent('backButtonClicked', () => {
-                            onBack()
-                        });
-                        return () => {
-                            tg.offEvent('backButtonClicked', () => {
-                                onBack()
-                            })
-                        }
-                    }}/>
+                    <ImageSlider src={el} setSelectedId={setSelectedId} onBack={onBack} i={index}/>
                 </SwiperSlide>))}
             </Swiper>
             {selectedId !== null ? <div onClick={(event) => {

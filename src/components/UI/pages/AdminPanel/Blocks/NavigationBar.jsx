@@ -1,7 +1,6 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styles from './NavigationBar.module.scss';
 import {useNavigate} from "react-router-dom";
-import ButtonLabel from "../Elements/ButtonLabel";
 import {useServer} from "../useServer";
 import useData from "../useData";
 
@@ -10,14 +9,23 @@ const NavigationBar = ({routeData}) => {
     const {updateAssociations, getAssociationsStatus} = useServer()
     const {authenticationData} = useData()
     const [status, setStatus] = React.useState(false);
+    const [percent, setPercent] = React.useState(0);
 
-    const updateStatus = (res) => {
+    const updateStatus = (res, percent) => {
         if(res){
-            getAssociationsStatus(updateStatus)
+            setPercent(percent);
+            setStatus(true)
+            setTimeout(()=>{
+                getAssociationsStatus(updateStatus)
+            }, 1000)
         }else{
             setStatus(false);
         }
     }
+
+    useEffect(() => {
+        getAssociationsStatus(updateStatus).then()
+    }, []);
 
     return (
         <div className={styles['main-division']}>
@@ -41,7 +49,7 @@ const NavigationBar = ({routeData}) => {
                 updateAssociations(authenticationData).then()
                 setStatus(true);
                 updateStatus(true);
-            }}>{status ? 'Ожидайте, обновление' : 'Обновить асоциации'}</button>
+            }}>{status ? `Ожидайте, обновление ${(percent * 100).toFixed(0)}%` : 'Обновить асоциации'}</button>
         </div>
     );
 };

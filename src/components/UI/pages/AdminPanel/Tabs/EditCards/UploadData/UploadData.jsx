@@ -1,24 +1,34 @@
 import React, {useState} from 'react';
 import useGlobalData from "../../../../../../../hooks/useGlobalData";
-import SwitchLabel from "../../../Elements/SwitchLabel/SwitchLabel";
-import BlockLabel from "../../../Elements/BlockLabel";
 import ExcelReader from "../../../Blocks/ExcelReader";
 import DropBox from "../../../Elements/DropBox/DropBox";
 import useData from "../../../useData";
-import {useServer} from "../../../useServer";
 import PopUpWindow from "../../../Elements/PopUpWindow/PopUpWindow";
 import style from "../../HistoryOrders/History.module.scss";
 
 const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
+
+const typeList = [{
+    name: 'Не выбрано (без пометки)', type: 'OTHER',
+}, {
+    name: 'Игра', type: 'GAME',
+}, {
+    name: 'Подписка', type: 'SUBSCRIPTION',
+}, {
+    name: 'Аддон', type: 'ADD_ON',
+}, {
+    name: 'Кoд', type: 'CODE',
+}, {
+    name: 'Донат', type: 'DONATION',
+}]
 
 const UploadData = ({onClose, onReload}) => {
 
     const {authenticationData} = useData();
     const {pageList, pageId, catalogList} = useGlobalData()
 
-    const [gameType, setGameType] = useState(0)
+    const [gameType, setGameType] = useState('OTHER')
     const [selectedCatalogId, setSelectedCatalogId] = useState(catalogList[0].id);
-    const [addToAll, setAddToAll] = useState(0)
     const [onLoad, setOnLoad] = useState(false)
     const [left, setLeft] = useState(0)
 
@@ -27,11 +37,9 @@ const UploadData = ({onClose, onReload}) => {
 
     const uploadCards = async (authenticationData, cardList) => {
         await fetch(URL + '/uploadCards', {
-            method: 'POST',
-            headers: {
+            method: 'POST', headers: {
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({authenticationData: authenticationData, cardList: cardList})
+            }, body: JSON.stringify({authenticationData: authenticationData, cardList: cardList})
         })
     }
 
@@ -46,7 +54,7 @@ const UploadData = ({onClose, onReload}) => {
             card.priceInOtherCurrency = Math.round(card.priceInOtherCurrency);
 
             card.catalogId = selectedCatalogId
-            card.type = gameType === 1 ? 'game' : 'other'
+            card.type = card.type || gameType
 
             let lang = false
             let voice = false
@@ -90,44 +98,45 @@ const UploadData = ({onClose, onReload}) => {
         </div>)
     } else {
         if (catalogList !== null) {
-            return (
-                <PopUpWindow
-                    title={`Загрузить новые карты`}>
+            return (<PopUpWindow title={`Загрузить новые карты`}>
 
-                    <div>
+                <div>
                     <DropBox label={catalogList.map(catalog => {
                         catalog.name = catalog.path;
                         return catalog
                     })}
                              onChange={(index) => setSelectedCatalogId(catalogList[index].id)}/>
-                    <SwitchLabel label={'Добавлять в общий каталог'}
-                                 onChange={(value) => setAddToAll(value.target.checked)}/>
-                    <SwitchLabel label={'Карты принадлежат типу игр'}
-                                 onChange={(value) => setGameType(value.target.checked)}/>
+
+                    <div className={style['infoLabel']}>Тип карты:</div>
+
+                    <DropBox label={typeList}
+                             onChange={(value) => setGameType(typeList[value].type)}/>
+
+                    {/*<SwitchLabel label={'Добавлять в общий каталог'}*/}
+                    {/*             onChange={(value) => setAddToAll(value.target.checked)}/>*/}
 
                     <ExcelReader setButtonTable={setTable}/>
+                </div>
+                <div className={style['buttonPlace']}>
+                    <div className={style['buttonAccept']}
+                         onClick={() => {
+                             setButtonTableClassic(table).then();
+                             onReload();
+                             onClose();
+                         }}>
+                        <div/>
+                        <p>Загрузить</p>
                     </div>
-                    <div className={style['buttonPlace']}>
-                        <div className={style['buttonAccept']}
-                             onClick={() => {
-                                 setButtonTableClassic(table).then();
-                                 onReload();
-                                 onClose();
-                             }}>
-                            <div/>
-                            <p>Загрузить</p>
-                        </div>
 
-                        <div className={style['buttonCancel']}
-                             onClick={() => {
-                                 onClose()
-                             }}>
-                            <div/>
-                            <p>Отмена</p>
-                        </div>
+                    <div className={style['buttonCancel']}
+                         onClick={() => {
+                             onClose()
+                         }}>
+                        <div/>
+                        <p>Отмена</p>
                     </div>
-                </PopUpWindow>
-            );
+                </div>
+            </PopUpWindow>);
         }
     }
 };

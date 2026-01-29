@@ -59,8 +59,8 @@ const CatalogItem = ({product, isClicked, from}) => {
 
     return (<div className={style['catalogItem']}>
         <div>
-            <div style={imageLoaded ? {backgroundImage: 'url("' + product.image + '")'} : {background: '#232323'}}/>
-            <div style={imageLoaded ? {backgroundImage: 'url("' + product.image + '")'} : {background: '#232323'}}/>
+            {imageLoaded ?  <img src={product.image}/> : <div style={{background:'#343434'}}/>}
+
         </div>
         <div onClick={() => {
             navigate(isClicked === false ? null : '/card/' + product.id + (typeof from !== "undefined" ? '?from=' + from : ''))
@@ -80,7 +80,7 @@ const CatalogItem = ({product, isClicked, from}) => {
             </div>
             <div className={style['cardName']}>
                 <p>
-                    {product.name}
+                    {product.name + (product.choiceRow !== null ? ' ' + product.choiceRow : '')}
                 </p>
             </div>
             <div style={{display: 'flex', flexDirection: 'row'}}>

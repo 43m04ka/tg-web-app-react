@@ -62,10 +62,11 @@
 
 .basketButton {
   position: fixed;
+  display: flex;
   bottom: 0;
+  left: 0;
   z-index: 500;
   width: 100vw;
-  display: flex;
   background-color: #222222;
   transition-property: height, padding-bottom;
   transition-duration: 0.2s;
@@ -86,8 +87,8 @@
 
 
 .choiceBlock {
-  margin: 0 3.2vw 0vw 3.2vw;
-  width: 87.2vw;
+  margin: 1vw 3.9vw 0 3.9vw;
+  width: 92.2vw;
 
   > div:nth-child(1) {
     @extend %font-bold;
@@ -120,74 +121,85 @@
 
 
 .subSlider {
-  width: 87.2vw;
-  display: flex;
-  position: relative;
-  margin: 0 3.2vw 1.23vw 3.2vw;
-  border-radius: $block-border-radius / 3 * 2;
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(12px);
-  box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.2),
-  inset -1px -1px 6px rgba(0, 0, 0, 0.3),
-  0 4px 12px rgba(0, 0, 0, 0.15);
 
   > div:nth-child(1) {
-    z-index: 200;
-    display: flex;
-    flex-direction: row;
-    width: 87.2vw;
-    justify-content: space-between;
-
-    > div {
-      @extend %font-bold;
-      width: 100%;
-      text-align: center;
-      height: 12vw;
-      line-height: 5.35vw;
-      font-size: 3.5vw;
-      color: white;
-      padding: 3.32vw 2.67vw;
-    }
+    @extend %font-bold;
+    margin: 0 1.23vw 1.23vw 3.9vw;
+    line-height: 5.35vw;
+    font-size: 3.5vw;
+    color: rgba(255, 255, 255, 0.5);
   }
 
   > div:nth-child(2) {
-    z-index: 100;
-    position: absolute;
+    width: 92.2vw;
     display: flex;
-    height: 12vw;
-    width: calc(87.2vw / 3);
-    border-radius: 1rem;
-    transition: transform 0.3s ease-in-out, background 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
-  }
+    position: relative;
+    margin: 1vw 3.9vw 2vw 3.9vw;
+    border-radius: $block-border-radius / 3 * 2;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(12px);
+    box-shadow: inset 1px 1px 4px rgba(255, 255, 255, 0.2),
+    inset -1px -1px 6px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.15);
 
-  .v1 {
-    transform: translateX(0%);
-  }
+    > div:nth-child(1) {
+      z-index: 200;
+      display: flex;
+      flex-direction: row;
+      width: 92.2vw;
+      justify-content: space-between;
 
-  .d1 {
-    background: linear-gradient(135deg, #c0c0c055, #e0e0e0);
-    box-shadow: 0 0 18px rgba(192, 192, 192, 0.5),
-    0 0 10px rgba(255, 255, 255, 0.4) inset;
-  }
+      > div {
+        @extend %font-bold;
+        width: 100%;
+        text-align: center;
+        height: 12vw;
+        line-height: 5.35vw;
+        font-size: 3.5vw;
+        color: white;
+        padding: 3.32vw 2.67vw;
+      }
+    }
 
-  .v2 {
-    transform: translateX(100%);
-  }
+    > div:nth-child(2) {
+      z-index: 100;
+      position: absolute;
+      display: flex;
+      height: 12vw;
+      width: calc(92.2vw / 3);
+      border-radius: 1rem;
+      transition: transform 0.3s ease-in-out, background 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+    }
 
-  .d2 {
-    background: linear-gradient(135deg, #ffd70055, #ffcc00);
-    box-shadow: 0 0 18px rgba(255, 215, 0, 0.5),
-    0 0 10px rgba(255, 235, 150, 0.4) inset;
-  }
+    .v1 {
+      transform: translateX(0%);
+    }
 
-  .v3 {
-    transform: translateX(200%);
-  }
+    .d1 {
+      background: linear-gradient(135deg, #c0c0c055, #e0e0e0);
+      box-shadow: 0 0 18px rgba(192, 192, 192, 0.5),
+      0 0 10px rgba(255, 255, 255, 0.4) inset;
+    }
 
-  .d3 {
-    background: linear-gradient(135deg, #141414, #453C00);
-    box-shadow: 0 0 18px rgba(205, 165, 0, 0.5),
-    0 0 10px rgba(255, 235, 150, 0.4) inset;
+    .v2 {
+      transform: translateX(100%);
+    }
+
+    .d2 {
+      background: linear-gradient(135deg, #ffd70055, #ffcc00);
+      box-shadow: 0 0 18px rgba(255, 215, 0, 0.5),
+      0 0 10px rgba(255, 235, 150, 0.4) inset;
+    }
+
+    .v3 {
+      transform: translateX(200%);
+    }
+
+    .d3 {
+      background: linear-gradient(135deg, #141414, #453C00);
+      box-shadow: 0 0 18px rgba(205, 165, 0, 0.5),
+      0 0 10px rgba(255, 235, 150, 0.4) inset;
+    }
   }
 }
 
@@ -322,6 +334,25 @@
   border: 1px solid gray;
   border-radius: $block-border-radius/3;
   margin-left: 5vw;
+}
+
+.backgroundImagePreloader {
+  background: #272727;
+  animation: preloader 2s ease-in-out infinite;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+@keyframes preloader {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .slide {
@@ -475,7 +506,9 @@
   100% {
     opacity: 0
   }
-};
+}
+
+;
 
 
 

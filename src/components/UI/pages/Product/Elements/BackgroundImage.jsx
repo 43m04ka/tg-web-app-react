@@ -22,9 +22,9 @@ const BackgroundImage = ({productData, selectCardList}) => {
 
     if (productData.endDatePromotion !== null) {
         if (!Number.isNaN(Number(productData.endDatePromotion)) && productData.endDatePromotion.trim() !== "") {
-            endDatePromotion = `до ${(new Date(Number(productData.endDatePromotion))).toLocaleDateString('ru-RU')}`
+            endDatePromotion = `*до ${(new Date(Number(productData.endDatePromotion))).toLocaleDateString('ru-RU')}`
         } else {
-            endDatePromotion = `до ${productData.endDatePromotion}`
+            endDatePromotion = `*до ${productData.endDatePromotion}`
         }
     }
 
@@ -36,9 +36,9 @@ const BackgroundImage = ({productData, selectCardList}) => {
         }
         if (typeof productData.similarCard.endDatePromotion !== 'undefined') {
             if (!Number.isNaN(Number(productData.similarCard?.endDatePromotion)) && productData.similarCard?.endDatePromotion.trim() !== "") {
-                endDatePromotion = `до ${(new Date(Number(productData.similarCard?.endDatePromotion))).toLocaleDateString('ru-RU')}`
+                endDatePromotion = `*до ${(new Date(Number(productData.similarCard?.endDatePromotion))).toLocaleDateString('ru-RU')}`
             } else {
-                endDatePromotion = `до ${productData.similarCard?.endDatePromotion}`
+                endDatePromotion = `*до ${productData.similarCard?.endDatePromotion}`
             }
         }
     }

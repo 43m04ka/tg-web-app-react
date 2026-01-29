@@ -2,7 +2,7 @@ import React, {useCallback} from 'react';
 import {Link, useNavigate} from "react-router-dom";
 import CatalogItem from "../Catalog/CatalogItem";
 
-const HomeBlock = ({data}) => {
+const HomeBlock = ({data, lastIsBanner}) => {
 
     const navigate = useNavigate();
 
@@ -11,8 +11,10 @@ const HomeBlock = ({data}) => {
         if (data.backgroundColor !== 'none' && typeof data.backgroundColor !== 'undefined') {
             styleBlock = {
                 background: data.backgroundColor,
-                paddingTop: '10px',
-                paddingBottom: '15px'
+                paddingBottom: '15px',
+                borderTopLeftRadius: '3.9vw',
+                borderTopRightRadius: '3.9vw',
+                overflow: 'hidden',
             }
         } else {
             styleBlock = {
@@ -28,7 +30,11 @@ const HomeBlock = ({data}) => {
                     paddingTop: '10px',
                     marginTop: '0px',
                     paddingLeft: '7px',
-                    marginBottom: '10px'
+                    marginBottom: '10px',
+                    borderBottomLeftRadius: '3.9vw',
+                    borderBottomRightRadius: '3.9vw',
+                    borderTopLeftRadius: lastIsBanner ? '0' : '3.9vw',
+                    borderTopRightRadius: lastIsBanner ? '0' : '3.9vw',
                 }
             } else {
                 styleBlock = {
@@ -37,7 +43,11 @@ const HomeBlock = ({data}) => {
                     paddingTop: '0',
                     marginTop: '-15px',
                     paddingLeft: '7px',
-                    marginBottom: '10px'
+                    marginBottom: '10px',
+                    borderBottomLeftRadius: '3.9vw',
+                    borderBottomRightRadius: '3.9vw',
+                    borderTopLeftRadius: lastIsBanner ? '0' : '3.9vw',
+                    borderTopRightRadius: lastIsBanner ? '0' : '3.9vw',
                 }
             }
         } else {

@@ -7,13 +7,14 @@ import Recommendations from "../../Elements/Recommendations/Recommendations";
 import style from './Product.module.scss'
 import Description from "./Elements/Description";
 import ChoiceElement from "./Elements/ChoiceElement";
-import DescriptionImages from "./Elements/DescriptionImages";
+import DescriptionImages from "./Elements/DescriptionImages/DescriptionImages";
 import ProductBasketCounter from "./Elements/ProductBasketCounter";
 import ShareLabels from "./Elements/ShareLabels";
 import BackgroundImage from "./Elements/BackgroundImage";
 import NamePlace from "./Elements/NamePlace";
 import InfoBubbles from "./Elements/InfoBubbles";
 import DescriptionText from "./Elements/DescriptionText";
+import SimilarProducts from "./Elements/SimilarProducts";
 
 const parameters = [{label: 'Платформа', key: 'platform', type: 'bubble'}, {
     label: 'Регион активации', key: 'regionActivate', type: 'parameter'
@@ -162,6 +163,35 @@ const Product = () => {
             }
 
         }}>
+            <div className={style['basketButton']}
+                 style={{
+                     paddingBottom: (buttonHidden ? '0' : String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px'),
+                     height: (buttonHidden ? '0' : String((0.15 * window.innerWidth) + tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px'),
+                 }}>
+                <button onClick={async () => {
+                    if (productData.onSale) {
+                        if (cardInBasket) {
+                            let params = new URLSearchParams(window.location.search);
+                            let valueOfKey = params.get('from');
+
+                            navigate('/' + pageList.map(page => {
+                                return pageId === page.id ? page.link : null
+                            }).filter(page => page !== null)[0] + (valueOfKey !== 'basket' ? '/basket?from=product' : '/basket'))
+                        } else {
+                            await addCardToBasket(async () => {
+                                await setCardInBasket(true)
+                                await updateBasket(catalogList, pageId)
+                            }, user.id, productData.id)
+                        }
+                    }
+                }}
+                        style={{background: productData.onSale ? cardInBasket ? '#50A355' : '#404ADE' : '#6e6e6e'}}>
+                    {productData.onSale ? cardInBasket ? 'В корзине' : 'Добавить в корзину' : 'Нет в продаже'}
+                </button>
+                {productData.onSale && cardInBasket ?
+                    <ProductBasketCounter idPos={productData.id} setCardInBasket={setCardInBasket}/> : ''}
+            </div>
+
             <BackgroundImage productData={productData} selectCardList={selectCardList}/>
 
             <div className={style['priceNameBlock']} ref={blockRef}>
@@ -206,42 +236,13 @@ const Product = () => {
                 <Description productData={productData} parameters={parameters}/>
             </div>
 
-            {/*<SimilarProducts name={productData.name}*/}
-            {/*                 minRating={productData.name.replace(/[^a-zA-Z0-9\s]/g, "").split(' ')[0].length}*/}
-            {/*                 id={productData.id}/>*/}
+            <SimilarProducts minRating={productData.name.replace(/[^a-zA-Z0-9\s]/g, "").split(' ')[0].length}
+                             productData={productData}/>
 
             <Recommendations horizontal={true}/>
 
             <ShareLabels productData={productData} parameters={parameters}/>
 
-            <div className={style['basketButton']}
-                 style={{
-                     paddingBottom: (buttonHidden ? '0' : String(tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px'),
-                     height: (buttonHidden ? '0' : String((0.15 * window.innerWidth) + tg?.contentSafeAreaInset.bottom + tg?.safeAreaInset.bottom) + 'px'),
-                 }}>
-                <button onClick={async () => {
-                    if (productData.onSale) {
-                        if (cardInBasket) {
-                            let params = new URLSearchParams(window.location.search);
-                            let valueOfKey = params.get('from');
-
-                            navigate('/' + pageList.map(page => {
-                                return pageId === page.id ? page.link : null
-                            }).filter(page => page !== null)[0] + (valueOfKey !== 'basket' ? '/basket?from=product' : '/basket'))
-                        } else {
-                            await addCardToBasket(async () => {
-                                await setCardInBasket(true)
-                                await updateBasket(catalogList, pageId)
-                            }, user.id, productData.id)
-                        }
-                    }
-                }}
-                        style={{background: productData.onSale ? cardInBasket ? '#50A355' : '#404ADE' : '#6e6e6e'}}>
-                    {productData.onSale ? cardInBasket ? 'В корзине' : 'Добавить в корзину' : 'Нет в продаже'}
-                </button>
-                {productData.onSale && cardInBasket ?
-                    <ProductBasketCounter idPos={productData.id} setCardInBasket={setCardInBasket}/> : ''}
-            </div>
         </div>);
     } else {
         if (!isNaN(cardId)) {

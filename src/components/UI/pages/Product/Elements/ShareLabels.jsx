@@ -11,24 +11,34 @@ const ShareLabels = ({productData, parameters}) => {
 
     let textMessage = `${productData.name} — ${String(productData.similarCard?.price || productData.price).toLocaleString()} ₽\n`
 
-    let endDatePromotion = '\n'
-    let parcent = ''
 
-
-    if (typeof productData.endDatePromotion !== 'undefined' && productData.endDatePromotion !== null) {
-        endDatePromotion = `*cкидка ${parcent} действует до ${productData.endDatePromotion} \n\n`
-    }
+    let endDatePromotion = ''
+    let percent = ''
 
     if (productData.oldPrice !== null) {
-        parcent = Math.ceil((1 - productData.price / productData.oldPrice) * 100) + '%'
+        percent = '-' + Math.ceil((1 - productData.price / productData.oldPrice) * 100) + '%'
+
+        if (productData.endDatePromotion !== null) {
+            if (!Number.isNaN(Number(productData.endDatePromotion)) && productData.endDatePromotion.trim() !== "") {
+                endDatePromotion = `*cкидка ${percent} действует до ${(new Date(Number(productData.endDatePromotion))).toLocaleDateString('ru-RU')} \n\n`
+            } else {
+                endDatePromotion = `*cкидка ${percent} действует до ${productData.endDatePromotion} \n\n`
+            }
+        }
+
     } else if (productData.similarCard !== null) {
         if (typeof productData.similarCard.oldPrice !== 'undefined') {
-            parcent = Math.ceil((1 - productData.similarCard?.price / productData.similarCard?.oldPrice) * 100) + '%'
+            percent = '-' + Math.ceil((1 - productData.similarCard?.price / productData.similarCard?.oldPrice) * 100) + '%'
         }
-        if (typeof productData.similarCard.endDatePromotion !== 'undefined' && productData.similarCard.endDatePromotion !== null) {
-            endDatePromotion = `*cкидка ${parcent} действует до ${productData.similarCard?.endDatePromotion} \n\n`
+        if (typeof productData.similarCard.endDatePromotion !== 'undefined') {
+            if (!Number.isNaN(Number(productData.similarCard?.endDatePromotion)) && productData.similarCard?.endDatePromotion.trim() !== "") {
+                endDatePromotion = `*cкидка ${percent} действует до ${(new Date(Number(productData.similarCard?.endDatePromotion))).toLocaleDateString('ru-RU')} \n\n`
+            } else {
+                endDatePromotion = `*cкидка ${percent} действует до ${productData.similarCard?.endDatePromotion} \n\n`
+            }
         }
     }
+
     textMessage += endDatePromotion
 
     parameters.map((parameter) => {

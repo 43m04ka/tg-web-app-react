@@ -9,6 +9,8 @@ const CatalogListBody = () => {
 
     if (catalogStructureList !== null && mainPageCards !== null && catalogList !== null) {
 
+        let lastIsBanner = false
+
         const catalogStructureResultList = catalogStructureList.filter(item => item.structurePageId === pageId && item.group === 'body').sort((a, b) => {
             return a.serialNumber - b.serialNumber
         }).map((catalogStructure) => {
@@ -27,13 +29,20 @@ const CatalogListBody = () => {
                     }
                 })
                 catalogStructure.body = cardArray
+                catalogStructure.lastIsBanner = lastIsBanner
+
+                if(catalogStructure.type.includes('banner')){
+                    lastIsBanner = true
+                }else{
+                    lastIsBanner = false
+                }
             }
             return catalogStructure
         })
 
         return (<div style={{marginBottom: String(window.innerWidth * 0.20 + tg.contentSafeAreaInset.bottom + tg.safeAreaInset.bottom) + 'px'}}>
                 {catalogStructureResultList.map((catalogStructure) => {
-                    return (<HomeBlock data={catalogStructure}/>)
+                    return (<HomeBlock data={catalogStructure} lastIsBanner={catalogStructure.lastIsBanner}/>)
                 })}
             </div>
         )

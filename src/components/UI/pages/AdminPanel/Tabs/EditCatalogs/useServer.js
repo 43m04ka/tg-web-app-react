@@ -2,13 +2,16 @@ const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
 
 export function useServer() {
 
-    const createCatalog = async (setResult, authenticationData, path, pageId) => {
+    const createCatalog = async (setResult, authenticationData, newCatalogData) => {
+        let body  = newCatalogData
+        body.authenticationData = authenticationData
+
         await fetch(`${URL}/createCatalog`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({authenticationData:authenticationData, path:path, structurePageId:pageId})
+            body: JSON.stringify(body)
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {

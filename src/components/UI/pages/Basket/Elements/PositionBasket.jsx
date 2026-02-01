@@ -4,15 +4,16 @@ import {useServer} from "../useServer";
 import {useTelegram} from "../../../../../hooks/useTelegram";
 import useGlobalData from "../../../../../hooks/useGlobalData";
 import {useNavigate} from "react-router-dom";
+import {useServerUser} from "../../../../../hooks/useServerUser";
 
 const PositionBasket = ({product, percent}) => {
-    const {addCardToFavorite, deleteCardToFavorite, deleteCardToBasket, setBasketPositionCount} = useServer()
+    const {addCardToFavorite, deleteCardToFavorite, deleteCardToBasket, setBasketPositionCount} = useServerUser();
     const {user} = useTelegram();
-    const {updatePreviewFavoriteData, previewFavoriteData, pageId, catalogList, updateBasket} = useGlobalData()
-    const navigate = useNavigate()
+    const {updatePreviewFavoriteData, previewFavoriteData, pageId, catalogList, updateBasket} = useGlobalData();
+    const navigate = useNavigate();
 
     const [counter, setCounter] = useState(product.count);
-    const [cardInFavorite, setCardInFavorite] = useState(previewFavoriteData.includes(product.id))
+    const [cardInFavorite, setCardInFavorite] = useState(previewFavoriteData.includes(product.id));
 
     useEffect(() => {
         if (product.count !== counter) {

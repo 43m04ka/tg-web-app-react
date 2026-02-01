@@ -3,17 +3,18 @@ import style from "./NamePlace.module.scss";
 import {useServer} from "../useServer";
 import useGlobalData from "../../../../../hooks/useGlobalData";
 import {useTelegram} from "../../../../../hooks/useTelegram";
+import {useServerUser} from "../../../../../hooks/useServerUser";
 
 const NamePlace = ({setCardInFavorite, cardInFavorite, productData}) => {
 
-    const {addCardToFavorite, deleteCardToFavorite} = useServer()
+    const {addCardToFavorite, deleteCardToFavorite} = useServerUser()
     const {updatePreviewFavoriteData} = useGlobalData()
     const {user} = useTelegram()
 
     let year = null
 
     if(productData.releaseDate !== null) {
-        if (productData.releaseDate !== null && !Number.isNaN(Number(productData.releaseDate)) && productData.releaseDate.trim() !== "" || (new Date(productData.releaseDate)).getFullYear() < 1980) {
+        if (!Number.isNaN(Number(productData.releaseDate)) && productData.releaseDate.trim() !== "" || (new Date(productData.releaseDate)).getFullYear() < 1980) {
             let a = (new Date(productData.releaseDate)) * 24 * 60 * 60 * 1000
             let currentDate = new Date('1899-12-30T00:00:00.000Z')
             let newDate = new Date(a + currentDate.getTime());

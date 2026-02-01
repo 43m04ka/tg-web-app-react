@@ -2,15 +2,14 @@ import React, {useEffect, useState} from 'react';
 import style from '../Product.module.scss'
 import {useTelegram} from "../../../../../hooks/useTelegram";
 import useGlobalData from "../../../../../hooks/useGlobalData";
-import {useServer} from "../../Basket/useServer";
+import {useServerUser} from "../../../../../hooks/useServerUser";
 
 const ProductBasketCounter = ({idPos, setCardInBasket}) => {
 
     const {user} = useTelegram();
 
-
     const {pageId, basket, catalogList, updateBasket} = useGlobalData()
-    const {setBasketPositionCount, deleteCardToBasket} = useServer()
+    const {setBasketPositionCount, deleteCardToBasket} = useServerUser()
 
     let productData = {}
 
@@ -19,7 +18,6 @@ const ProductBasketCounter = ({idPos, setCardInBasket}) => {
             productData = el
         }
     })
-
 
     const [product, setProduct] = useState(productData);
     const [counter, setCounter] = React.useState(productData.count || 1);
@@ -32,8 +30,6 @@ const ProductBasketCounter = ({idPos, setCardInBasket}) => {
             }
         })
     }, [idPos])
-
-
 
     useEffect(() => {
         if (product.count !== counter) {

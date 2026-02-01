@@ -1,239 +1,40 @@
-const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
+import {productRoute} from "./useServerRoutes/productRoute";
+import {structureRoute} from "./useServerRoutes/structureRoute";
+import {searchRoute} from "./useServerRoutes/searchRoute";
+import {favoriteRoute} from "./useServerRoutes/favoriteRoute";
+import {basketRoute} from "./useServerRoutes/basketRoute";
+import {catalogRoute} from "./useServerRoutes/catalogRoute";
+import {orderRoute} from "./useServerRoutes/orderRoute";
+
+const {getCard, getRecommendationsGames} = productRoute()
+const {getSearch, getClueList} = searchRoute()
+const {getPageList, getPreviewCardList, getStructureCatalogList, getInfoBlocks} = structureRoute()
+const {getCatalogList, getCardList} = catalogRoute()
+const {getPreviewFavoriteList, deleteCardToFavorite, addCardToFavorite, getFavoriteList} = favoriteRoute()
+const {getBasketList, addCardToBasket, setBasketPositionCount, deleteCardToBasket} = basketRoute()
+const {createOrder, getHistoryList} = orderRoute()
 
 export function useServerUser() {
-
-    const getPageList = async (setResult, hide) => {
-        await fetch(URL + '/getPageList?time=' + Date.now(), {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                let result = data.result.sort((a, b) => a.serialNumber - b.serialNumber).filter(page => typeof hide !== 'undefined' || page.isHide === 1)
-                setResult(result)
-            })
-        })
-    }
-
-    const getStructureCatalogList = async (setResult) => {
-        await fetch(URL + '/getStructureCatalogList?time=' + Date.now(), {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    }
-
-    const getPreviewCardList = async (setResult) => {
-        await fetch(URL + '/getPreviewCardList?time=' + Date.now(), {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result.sort((a, b) => a.serialNumber - b.serialNumber))
-            })
-        })
-    }
-
-    const getCatalogList = async (setResult) => {
-        await fetch(`${URL}/getCatalogList?time=${Date.now()}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    }
-
-    const getCard = async (setResult, id) => {
-        fetch(`${URL}/getCard?time=${Date.now()}&id=${id}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    }
-
-    const getCardList = async (setResult, catalogId, listNumber, json) => {
-        fetch(`${URL}/getCardList`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },body: JSON.stringify({catalogId: catalogId, listNumber: listNumber, json:json}),
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data, listNumber)
-            })
-        })
-    }
-
-
-    const getPreviewFavoriteList = async (setResult, userId) => {
-        fetch(`${URL}/getPreviewFavoriteList?time=${Date.now()}&userId=${userId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    }
-
-    const getFavoriteList = async (setResult, userId) => {
-        fetch(`${URL}/getFavoriteList?time=${Date.now()}&userId=${userId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    }
-
-    const addCardToFavorite = async (setResult, userId, cardId) => {
-        fetch(`${URL}/addCardToFavorite`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }, body: JSON.stringify({cardId: cardId, userId: userId}),
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    }
-
-    const deleteCardToFavorite = async (setResult, userId, cardId) => {
-        fetch(`${URL}/deleteCardToFavorite`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }, body: JSON.stringify({cardId: cardId, userId: userId}),
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    }
-    
-    const getPreviewBasketList = async (setResult, userId) => {
-        fetch(`${URL}/getPreviewBasketList?time=${Date.now()}&userId=${userId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    }
-
-    const getBasketList = async (setResult, userId) => {
-        fetch(`${URL}/getBasketList?time=${Date.now()}&userId=${userId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    }
-
-    const addCardToBasket = async (setResult, userId, cardId) => {
-        fetch(`${URL}/addCardToBasket`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }, body: JSON.stringify({cardId: cardId, userId: userId}),
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    }
-
-    const deleteCardToBasket = async (setResult, userId, cardId) => {
-        fetch(`${URL}/deleteCardToBasket`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }, body: JSON.stringify({cardId: cardId, userId: userId}),
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    }
-
-    const getHistoryList = async (setResult, chatId) => {
-        fetch(`${URL}/history?time=${Date.now()}&chatId=${chatId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    }
-
-    const getRecommendationsGames = async (setResult, pageId) => {
-        fetch(`${URL}/recommendationsGames?time=${Date.now()}&pageId=${pageId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result || null)
-            })
-        })
-    }
-
-
-
     return {
-        getPageList, getStructureCatalogList, getPreviewCardList, getCatalogList, getCardList, getCard,
-        getPreviewFavoriteList, addCardToFavorite, deleteCardToFavorite, getFavoriteList,
-        getPreviewBasketList, addCardToBasket, deleteCardToBasket, getBasketList,
-        getHistoryList, getRecommendationsGames
+        getPageList,
+        getPreviewCardList,
+        getStructureCatalogList,
+        getCatalogList,
+        getCard,
+        getSearch,
+        getPreviewFavoriteList,
+        getBasketList,
+        getRecommendationsGames,
+        addCardToFavorite,
+        deleteCardToFavorite,
+        getClueList,
+        addCardToBasket,
+        setBasketPositionCount,
+        deleteCardToBasket,
+        getCardList,
+        createOrder,
+        getHistoryList,
+        getFavoriteList,
+        getInfoBlocks
     }
 }

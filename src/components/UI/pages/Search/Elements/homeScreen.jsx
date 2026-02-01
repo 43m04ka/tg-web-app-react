@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {useServer} from "../../AdminPanel/Tabs/Search/useServer";
 import style from '../Search.module.scss'
 import useGlobalData from "../../../../../hooks/useGlobalData";
+import {useServerUser} from "../../../../../hooks/useServerUser";
 
 
 function shuffleArray(array) {
@@ -14,7 +14,7 @@ function shuffleArray(array) {
 
 const HomeScreen = ({setInputValue}) => {
 
-    const {getClueList} = useServer()
+    const {getClueList} = useServerUser()
     const {pageId} = useGlobalData()
 
     const [clueList, setClueList] = useState([])

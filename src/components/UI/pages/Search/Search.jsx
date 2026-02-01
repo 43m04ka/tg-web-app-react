@@ -7,6 +7,7 @@ import CatalogItem from "../Catalog/CatalogItem";
 import {useNavigate} from "react-router-dom";
 import Sorting from "../../Elements/Filter/Sorting";
 import Filter from "../../Elements/Filter/Filter";
+import {useServerUser} from "../../../../hooks/useServerUser";
 
 let timerId = -1
 
@@ -24,6 +25,8 @@ const Search = () => {
     const scrollRef = useRef(null);
     const navigate = useNavigate();
 
+    const {getSearch} = useServerUser()
+
     const [sortWindowOpen, setSortWindowOpen] = useState(false);
     const [filterWindowOpen, setFilterWindowOpen] = useState(false);
     const [json, setJson] = useState(lastJson);
@@ -37,37 +40,6 @@ const Search = () => {
         lastListRes = cardList
         lastText = inputValue
     }, [cardList, inputValue]);
-
-    const getCardList = async () => {
-        fetch('https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net/getSearch', {
-            method: 'POST', headers: {
-                'Content-Type': 'application/json',
-            }, body: JSON.stringify({
-                str: inputValue, pageId: pageId, json: json
-            })
-        }).then(r => {
-            let Promise = r.json()
-            Promise.then(prom => {
-                let resultList = []
-                prom.cards.map(card => {
-                    let flag = true
-                    resultList.map(resCard => {
-                        if (card.name === resCard.name && card.similarCard?.price === resCard.similarCard?.price && card.regionActivate === resCard.regionActivate && card.choiceRow === resCard.choiceRow && card.choiceColumn === resCard.choiceColumn) {
-                            flag = false
-                        }
-                    })
-                    if (flag) {
-                        resultList.push(card)
-                    }
-                }).filter(el => el !== null)
-                if (inputValue === '') {
-                    setCardList(null)
-                } else {
-                    setCardList(resultList.splice(0, 20))
-                }
-            })
-        })
-    }
 
     useEffect(() => {
         if (inputRef.current) {
@@ -107,7 +79,7 @@ const Search = () => {
         window.clearTimeout(timerId);
         if (inputValue !== '') {
             timerId = window.setTimeout(() => {
-                getCardList().then()
+                getSearch(setCardList, inputValue, pageId, json).then()
             }, 250)
         } else {
             setCardList(null)
@@ -121,7 +93,7 @@ const Search = () => {
         lastScroll = 0
         lastListRes = null
         setBarIsVisible(true)
-        getCardList().then()
+        getSearch(setCardList, inputValue, pageId, json).then()
     }
 
     return (<div className={style['mainDivision']}

@@ -1,27 +1,12 @@
-const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
-
-export function useServer() {
+export function favoriteRoute(){
 
 
-
-    const prepareShareMessage = async (setResult, id, userId) => {
-        fetch(`${URL}/prepareShareMessage?time=${Date.now()}&id=${id}&userId=${userId}`, {
-            method: 'GET', headers: {
+    const getPreviewFavoriteList = async (setResult, userId) => {
+        fetch(`/api/favorite/previewFavoriteProducts/${userId}?time=${Date.now()}`, {
+            method: 'GET',
+            headers: {
                 'Content-Type': 'application/json',
             },
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.id)
-            })
-        })
-    }
-
-    const addCardToFavorite = async (setResult, userId, cardId) => {
-        fetch(`${URL}/addCardToFavorite`, {
-            method: 'POST', headers: {
-                'Content-Type': 'application/json',
-            }, body: JSON.stringify({cardId: cardId, userId: userId}),
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
@@ -31,7 +16,7 @@ export function useServer() {
     }
 
     const deleteCardToFavorite = async (setResult, userId, cardId) => {
-        fetch(`${URL}/deleteCardToFavorite`, {
+        fetch(`/api/favorite/deleteProduct`, {
             method: 'POST', headers: {
                 'Content-Type': 'application/json',
             }, body: JSON.stringify({cardId: cardId, userId: userId}),
@@ -44,8 +29,8 @@ export function useServer() {
     }
 
 
-    const addCardToBasket = async (setResult, userId, cardId) => {
-        fetch(`${URL}/addCardToBasket`, {
+    const addCardToFavorite = async (setResult, userId, cardId) => {
+        fetch(`/api/favorite/addProduct`, {
             method: 'POST', headers: {
                 'Content-Type': 'application/json',
             }, body: JSON.stringify({cardId: cardId, userId: userId}),
@@ -57,25 +42,19 @@ export function useServer() {
         })
     }
 
-
-
-    const findCardsByCatalog = async (catalogId, setResult) => {
-        await fetch(URL + '/findCardsByCatalog?catalogId='+catalogId+'&time='+Date.now(), {
+    const getFavoriteList = async (setResult, userId) => {
+        fetch(`/api/favorite/allFavoriteProducts/${userId}?time=${Date.now()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-            }
+            },
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
                 setResult(data.result)
             })
         })
-    };
-
-
-
-    return {
-        addCardToFavorite, deleteCardToFavorite, addCardToBasket, findCardsByCatalog, prepareShareMessage
     }
+
+    return {getPreviewFavoriteList, addCardToFavorite, deleteCardToFavorite, getFavoriteList}
 }

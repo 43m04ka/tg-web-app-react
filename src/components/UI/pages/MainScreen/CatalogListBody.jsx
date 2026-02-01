@@ -23,6 +23,7 @@ const CatalogListBody = () => {
                     }
                 });
                 let cardArray = []
+
                 mainPageCards.map(card => {
                     if (card.catalogId === catalogId) {
                         cardArray.push(card)

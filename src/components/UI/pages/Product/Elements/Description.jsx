@@ -29,7 +29,7 @@ const Description = ({parameters, productData}) => {
                     Издания
                 </button>
                 : ''}
-            {productData.conceptAddOns !== null ?
+            {productData.conceptAddOns !== null && productData.conceptAddOns.length > 0 ?
                 <button onClick={() => {
                     setMode(3)
                 }} className={style[mode === 3 ? 'activeButton' : 'noActiveButton']}>

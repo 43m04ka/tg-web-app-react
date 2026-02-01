@@ -6,6 +6,7 @@ import style from './MoreInfo.module.scss'
 import {Swiper, SwiperSlide} from "swiper/react";
 import 'swiper/css/pagination';
 import NameBlock from "./NameBlock";
+import {useServerUser} from "../../../../hooks/useServerUser";
 
 const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
 
@@ -69,6 +70,7 @@ const buttonList = [[{
 const MoreInfo = () => {
     const {tg} = useTelegram();
     const navigate = useNavigate();
+    const {getInfoBlocks} = useServerUser()
     const [info, setInfo] = useState([]);
 
     const pagination = {
@@ -78,16 +80,7 @@ const MoreInfo = () => {
     };
 
     useEffect(() => {
-        fetch(`${URL}/getInfoBlock?time${new Date()}`, {
-            method: 'GET', headers: {
-                'Content-Type': 'application/json',
-            }
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setInfo(data.result)
-            })
-        })
+        getInfoBlocks(setInfo).then()
     }, [])
 
     useEffect(() => {

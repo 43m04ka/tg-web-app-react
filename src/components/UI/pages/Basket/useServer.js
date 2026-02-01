@@ -30,49 +30,6 @@ export function useServer() {
         })
     }
 
-
-    const addCardToBasket = async (setResult, userId, cardId) => {
-        fetch(`${URL}/addCardToBasket`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }, body: JSON.stringify({cardId: cardId, userId: userId}),
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    }
-
-    const deleteCardToBasket = async (setResult, userId, cardId) => {
-        fetch(`${URL}/deleteCardToBasket`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }, body: JSON.stringify({cardId: cardId, userId: userId}),
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    }
-
-    const createOrder = async (paymentData, accData, user, page, promo, setResult) => {
-        fetch(`${URL}/createOrder`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }, body: JSON.stringify({paymentData: paymentData, accData: accData, user: user, page: page, promo: promo}),
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data)
-            })
-        })
-    }
-
     const usePromo = async (name, setResult) => {
         await fetch(URL + '/usePromo?time=' + Date.now() + '&name=' + name, {
             method: 'GET',
@@ -113,19 +70,7 @@ export function useServer() {
         })
     }
 
-    const setBasketPositionCount = async (setResult, userId, cardId, count) => {
-        fetch(`${URL}/setBasketPositionCount`, {
-            method: 'POST', headers: {
-                'Content-Type': 'application/json',
-            }, body: JSON.stringify({cardId: cardId, userId: userId, count: count}),
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    }
 
 
-    return {getPreviewBasketList, addCardToBasket, deleteCardToBasket, getBasketList, createOrder, usePromo, addCardToFavorite, deleteCardToFavorite, setBasketPositionCount}
+    return {getPreviewBasketList, getBasketList, createOrder, usePromo, addCardToFavorite, deleteCardToFavorite}
 }

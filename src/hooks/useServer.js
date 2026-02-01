@@ -133,29 +133,3 @@ export function useServer() {
         getPreviewCards,
     }
 }
-
-
-//
-//
-// if (method === 'getDataAdmin') {
-//     setDataStructure(prom.structure)
-//     let DataCat = []
-//     for (let i = 0; i < prom.allCategory.length; i++) {
-//         DataCat.push({path: prom.allCategory[i], isSale: prom.isSaleArr[i]})
-//     }
-//     setDataCategory(DataCat)
-//     setStatus(2)
-// } else if (method === 'getSearch') {
-//     setDataCards(prom.cards)
-// } else if (method === 'changeStatus' || method === 'delete' || method === 'editPriceCard') {
-//     try {
-//         dataRequestDatabase.method = 'getSearch'
-//         dataRequestDatabase.data = {str: searchInput.current.value, page: page}
-//         await sendRequestDatabase()
-//     } catch (e) {
-//         await onReload()
-//     }
-//     setStatus(2)
-// } else if (method === 'getOrderHistory') {
-//     setDataOrderHistory(prom.allOrders)
-// }

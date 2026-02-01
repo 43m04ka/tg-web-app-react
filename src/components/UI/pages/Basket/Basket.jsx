@@ -11,10 +11,11 @@ import Recommendations from "../../Elements/Recommendations/Recommendations";
 import Payment from "./Elements/Payment";
 import ButtonBuy from "./Elements/ButtonBuy";
 import OrderPage from "./Elements/OrderPage";
+import {useServerUser} from "../../../../hooks/useServerUser";
 
 const Basket = () => {
 
-    const {createOrder} = useServer()
+    const {createOrder} = useServerUser()
     const {user, tg} = useTelegram()
     const {pageId, catalogList, basket, updateBasket, pageList} = useGlobalData()
     const navigate = useNavigate();

@@ -15,6 +15,7 @@ import NamePlace from "./Elements/NamePlace";
 import InfoBubbles from "./Elements/InfoBubbles";
 import DescriptionText from "./Elements/DescriptionText";
 import SimilarProducts from "./Elements/SimilarProducts";
+import {useServerUser} from "../../../../hooks/useServerUser";
 
 const parameters = [{label: 'Платформа', key: 'platform', type: 'bubble'}, {
     label: 'Регион активации', key: 'regionActivate', type: 'parameter'
@@ -51,8 +52,14 @@ const Product = () => {
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
     const {
-        getCard, addCardToBasket, findCardsByCatalog,
+         findCardsByCatalog,
     } = useServer()
+
+    const {
+        addCardToBasket,
+        getCard
+    } = useServerUser()
+
     const {
         previewFavoriteData,
         pageId,

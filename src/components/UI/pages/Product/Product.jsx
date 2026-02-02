@@ -178,8 +178,8 @@ const Product = () => {
                                 return pageId === page.id ? page.link : null
                             }).filter(page => page !== null)[0] + (valueOfKey !== 'basket' ? '/basket?from=product' : '/basket'))
                         } else {
+                            setCardInBasket(true)
                             await addCardToBasket(async () => {
-                                await setCardInBasket(true)
                                 await updateBasket(catalogList, pageId)
                             }, user.id, productData.id)
                         }

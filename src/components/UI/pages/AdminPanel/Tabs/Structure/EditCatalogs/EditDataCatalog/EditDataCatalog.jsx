@@ -32,6 +32,8 @@ const EditDataCatalog = ({catalogList, onClose, onReload, catalogId}) => {
         {type: 'string', key:'path', label: 'Ссылка элемента'},
         {type: 'dropbox', key:'imageIcon', label: 'Иконкка каталога', data: [{label:'Без иконки', value: null},...iconsData]},
         {type: 'number', defaultValue: 0, key:'serialNumber', label: 'Порядковый номер'},
+        {type: 'boolean', key:'isRoundedBorderTop', label: 'Закругление сверху'},
+        {type: 'boolean', key:'isRoundedBorderBottom', label: 'Закругление снизу'},
     ]
 
     return (

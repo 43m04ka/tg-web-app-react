@@ -28,5 +28,21 @@ export function catalogRoute(){
         })
     }
 
-    return {getCatalogList, getCardList}
+
+    const findCardsByCatalog = async (catalogId, setResult) => {
+        await fetch(URL + '/api/product/getAllProducts?catalogId='+catalogId+'&time='+Date.now(), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    };
+
+
+    return {getCatalogList, getCardList, findCardsByCatalog}
 }

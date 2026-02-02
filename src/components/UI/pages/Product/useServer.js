@@ -4,18 +4,7 @@ export function useServer() {
 
 
 
-    const prepareShareMessage = async (setResult, id, userId) => {
-        fetch(`${URL}/prepareShareMessage?time=${Date.now()}&id=${id}&userId=${userId}`, {
-            method: 'GET', headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.id)
-            })
-        })
-    }
+
 
     const addCardToFavorite = async (setResult, userId, cardId) => {
         fetch(`${URL}/addCardToFavorite`, {
@@ -59,23 +48,9 @@ export function useServer() {
 
 
 
-    const findCardsByCatalog = async (catalogId, setResult) => {
-        await fetch(URL + '/findCardsByCatalog?catalogId='+catalogId+'&time='+Date.now(), {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    };
-
 
 
     return {
-        addCardToFavorite, deleteCardToFavorite, addCardToBasket, findCardsByCatalog, prepareShareMessage
+        addCardToFavorite, deleteCardToFavorite, addCardToBasket
     }
 }

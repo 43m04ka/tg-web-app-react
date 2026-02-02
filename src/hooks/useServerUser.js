@@ -6,10 +6,10 @@ import {basketRoute} from "./useServerRoutes/basketRoute";
 import {catalogRoute} from "./useServerRoutes/catalogRoute";
 import {orderRoute} from "./useServerRoutes/orderRoute";
 
-const {getCard, getRecommendationsGames} = productRoute()
+const {getCard, getRecommendationsGames, prepareShareMessage} = productRoute()
 const {getSearch, getClueList} = searchRoute()
 const {getPageList, getPreviewCardList, getStructureCatalogList, getInfoBlocks} = structureRoute()
-const {getCatalogList, getCardList} = catalogRoute()
+const {getCatalogList, getCardList, findCardsByCatalog} = catalogRoute()
 const {getPreviewFavoriteList, deleteCardToFavorite, addCardToFavorite, getFavoriteList} = favoriteRoute()
 const {getBasketList, addCardToBasket, setBasketPositionCount, deleteCardToBasket} = basketRoute()
 const {createOrder, getHistoryList} = orderRoute()
@@ -35,6 +35,8 @@ export function useServerUser() {
         createOrder,
         getHistoryList,
         getFavoriteList,
-        getInfoBlocks
+        getInfoBlocks,
+        prepareShareMessage,
+        findCardsByCatalog
     }
 }

@@ -29,5 +29,18 @@ export function productRoute(){
         })
     }
 
-    return {getCard, getRecommendationsGames}
+    const prepareShareMessage = async (setResult, id, userId) => {
+        fetch(`/api/product/prepareShareMessage?time=${Date.now()}&id=${id}&userId=${userId}`, {
+            method: 'GET', headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.id)
+            })
+        })
+    }
+
+    return {getCard, getRecommendationsGames, prepareShareMessage}
 }

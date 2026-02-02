@@ -3,7 +3,7 @@ const URL = '/api/admin'
 export function useServer() {
 
     const getCardList = async (setResult, catalogId, listNumber) => {
-        fetch(`${URL}/getCardList?time=${Date.now()}&catalogId=${catalogId}&listNumber=${listNumber}`, {
+        fetch(`${URL}/productList?time=${Date.now()}&catalogId=${catalogId}&listNumber=${listNumber}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

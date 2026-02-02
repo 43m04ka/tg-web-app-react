@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useTelegram} from "../../../../hooks/useTelegram";
 import {useNavigate} from "react-router-dom";
-import {useServer} from "./useServer";
 import useGlobalData from "../../../../hooks/useGlobalData";
 import Recommendations from "../../Elements/Recommendations/Recommendations";
 import style from './Product.module.scss'
@@ -51,14 +50,8 @@ const Product = () => {
 
     const {tg, user} = useTelegram();
     const navigate = useNavigate();
-    const {
-         findCardsByCatalog,
-    } = useServer()
 
-    const {
-        addCardToBasket,
-        getCard
-    } = useServerUser()
+    const {addCardToBasket, getCard, findCardsByCatalog} = useServerUser()
 
     const {
         previewFavoriteData,

@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import style from "../Product.module.scss";
 import {useTelegram} from "../../../../../hooks/useTelegram";
-import {useServer} from "../useServer";
+import {useServerUser} from "../../../../../hooks/useServerUser";
 
 const ShareLabels = ({productData, parameters}) => {
 
     const {tg, user} = useTelegram()
-    const {prepareShareMessage} = useServer()
+    const {prepareShareMessage} = useServerUser()
     const [copied, setCopied] = useState(false);
 
     let textMessage = `${productData.name} — ${String(productData.similarCard?.price || productData.price).toLocaleString()} ₽\n`

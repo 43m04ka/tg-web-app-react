@@ -3,7 +3,7 @@ const URL = '/api/admin'
 export function useServer() {
 
     const getClueList = async (setResult) => {
-        fetch(`${URL}/getSearchClue?time=${Date.now()}`, {
+        fetch(`/api/search/getSearchClue?time=${Date.now()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

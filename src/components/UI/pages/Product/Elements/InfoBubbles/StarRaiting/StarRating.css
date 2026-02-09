@@ -14,16 +14,14 @@
 
 .stars-row {
     display: flex;
-    gap: 2px;
+    width: max-content;
+    gap: 0.4vw;
 }
 
 .star-container {
-    position: relative;
     display: flex;
     flex-direction: row;
     font-size: 2.8vw;
-    left: -2vw;
-    top: -0.25vw;
 }
 
 .star-empty {
@@ -43,5 +41,5 @@
 
 .rating-count {
     color: #3e3e3e;
-    margin: 0 2.5vw 0 11vw;
+    margin: 0 2.5vw;
 }

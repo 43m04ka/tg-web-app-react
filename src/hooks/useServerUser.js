@@ -11,7 +11,7 @@ const {getSearch, getClueList} = searchRoute()
 const {getPageList, getPreviewCardList, getStructureCatalogList, getInfoBlocks} = structureRoute()
 const {getCatalogList, getCardList, findCardsByCatalog} = catalogRoute()
 const {getPreviewFavoriteList, deleteCardToFavorite, addCardToFavorite, getFavoriteList} = favoriteRoute()
-const {getBasketList, addCardToBasket, setBasketPositionCount, deleteCardToBasket} = basketRoute()
+const {getBasketList, addCardToBasket, setBasketPositionCount, deleteCardToBasket, usePromo} = basketRoute()
 const {createOrder, getHistoryList} = orderRoute()
 
 export function useServerUser() {
@@ -37,6 +37,7 @@ export function useServerUser() {
         getFavoriteList,
         getInfoBlocks,
         prepareShareMessage,
-        findCardsByCatalog
+        findCardsByCatalog,
+        usePromo
     }
 }

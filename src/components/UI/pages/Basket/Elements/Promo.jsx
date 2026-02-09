@@ -1,13 +1,13 @@
 import React, {useEffect} from 'react';
 import style from './Promo.module.scss'
-import {useServer} from "../useServer";
+import {useServerUser} from "../../../../../hooks/useServerUser";
 
 const Promo = ({setPromoData}) => {
 
     const [inputValue, setInputValue] = React.useState('');
     const [color, setColor] = React.useState('#222222');
     const [text, setText] = React.useState('Применить');
-    const {usePromo} = useServer()
+    const {usePromo} = useServerUser()
 
     const onReturnResult = (result) => {
         if (result !== null) {

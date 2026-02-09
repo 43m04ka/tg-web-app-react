@@ -30,19 +30,7 @@ export function useServer() {
         })
     }
 
-    const usePromo = async (name, setResult) => {
-        await fetch(URL + '/usePromo?time=' + Date.now() + '&name=' + name, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    }
+
 
     const addCardToFavorite = async (setResult, userId, cardId) => {
         fetch(`${URL}/addCardToFavorite`, {

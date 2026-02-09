@@ -12,6 +12,7 @@ import History from "./Tabs/HistoryOrders/History";
 import Promo from "./Tabs/Promo/Promo";
 import Search from "./Tabs/Search/Search";
 import InfoBlock from "./Tabs/InfoBloks/InfoBlock";
+import AdminGallery from "./Tabs/Hosting/AdminGallary";
 
 const AdminPanel = () => {
 
@@ -24,12 +25,13 @@ const AdminPanel = () => {
 
     const routeData = [{name: 'Редактировать каталоги', path: 'edit-directories', element: <EditDirectories/>},
         {name: 'Редактировать карты', path: 'edit-cards', element: <AP_EditCards/>},
-        {name: 'Структура', path: 'structure', element: <EditCatalogs/>},
+        {name: 'Структура', path: 'structure', element: <EditCatalogs/>,},
         {name: 'Поиск', path: 'search', element: <Search/>},
         {name: 'Акции в "ещё"', path: 'more', element: <InfoBlock/>},
         {name: 'Промокоды', path: 'promo', element: <Promo/>},
         {name: 'Страницы', path: 'pages', element: <EditPages/>},
-        {name: 'История заказов', path: 'history-orders', element: <History/>},];
+        {name: 'История заказов', path: 'history-orders', element: <History/>},
+        {name: 'Хостинг', path: 'hosting', element: <AdminGallery/>}];
 
     return (
         <div className={styles['main-division']}>

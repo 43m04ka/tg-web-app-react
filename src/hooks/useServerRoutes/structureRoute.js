@@ -1,7 +1,9 @@
+const URL = 'https://gwstorebot.ru'
+
 export function structureRoute(){
 
     const getPageList = async (setResult, hide) => {
-        await fetch('/api/structure/allPages?time=' + Date.now(), {
+        await fetch(URL + '/api/structure/allPages?time=' + Date.now(), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -17,7 +19,7 @@ export function structureRoute(){
 
 
     const getStructureCatalogList = async (setResult) => {
-        await fetch('/api/structure/allStructureBlocks?time=' + Date.now(), {
+        await fetch(URL + '/api/structure/allStructureBlocks?time=' + Date.now(), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -31,7 +33,7 @@ export function structureRoute(){
     }
 
     const getPreviewCardList = async (setResult) => {
-        await fetch('/api/structure/mainPageProducts?time=' + Date.now(), {
+        await fetch(URL + '/api/structure/mainPageProducts?time=' + Date.now(), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -45,7 +47,7 @@ export function structureRoute(){
     }
 
     const getInfoBlocks = async (setResult) => {
-        await fetch(`/api/structure/infoBlocks?time${new Date()}`, {
+        await fetch(URL + `/api/structure/infoBlocks?time${new Date()}`, {
             method: 'GET', headers: {
                 'Content-Type': 'application/json',
             }

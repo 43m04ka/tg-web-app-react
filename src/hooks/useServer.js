@@ -1,4 +1,4 @@
-const URL = '/api/admin'
+const URL = 'https://gwstorebot.ru/api/admin'
 
 export function useServer() {
 

@@ -16,6 +16,7 @@ let lastListRes = []
 let lastText = ''
 let lastScroll = 0
 let lastJson = {sorting: 'default', platform: [], language: [], numberPlayers: [], genre:[], type:[]}
+let lastTime = new Date()
 
 
 const Search = () => {
@@ -79,7 +80,7 @@ const Search = () => {
         window.clearTimeout(timerId);
         if (inputValue !== '') {
             timerId = window.setTimeout(() => {
-                getSearch(setCardList, inputValue, pageId, json).then()
+                sendRequest().then()
             }, 250)
         } else {
             setCardList(null)
@@ -93,7 +94,17 @@ const Search = () => {
         lastScroll = 0
         lastListRes = null
         setBarIsVisible(true)
-        getSearch(setCardList, inputValue, pageId, json).then()
+        sendRequest().then()
+    }
+
+    const sendRequest = async () => {
+        let startTime = new Date();
+        getSearch((res)=>{
+            if(startTime > lastTime){
+                lastTime = startTime;
+                setCardList(res)
+            }
+        }, inputValue, pageId, json).then()
     }
 
     return (<div className={style['mainDivision']}

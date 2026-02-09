@@ -55,6 +55,20 @@ export function basketRoute(){
             })
         })
     }
+
+    const usePromo = async (name, setResult) => {
+        await fetch('/api/basket/usePromo?time=' + Date.now() + '&name=' + name, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                setResult(data.result)
+            })
+        })
+    }
     
-    return {getBasketList, deleteCardToBasket, addCardToBasket, setBasketPositionCount}
+    return {getBasketList, deleteCardToBasket, addCardToBasket, setBasketPositionCount, usePromo}
 }

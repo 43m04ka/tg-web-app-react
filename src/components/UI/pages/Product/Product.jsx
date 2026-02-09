@@ -9,9 +9,9 @@ import ChoiceElement from "./Elements/ChoiceElement";
 import DescriptionImages from "./Elements/DescriptionImages/DescriptionImages";
 import ProductBasketCounter from "./Elements/ProductBasketCounter";
 import ShareLabels from "./Elements/ShareLabels";
-import BackgroundImage from "./Elements/BackgroundImage";
+import BackgroundImage from "./Elements/BackgroundImage/BackgroundImage";
 import NamePlace from "./Elements/NamePlace";
-import InfoBubbles from "./Elements/InfoBubbles";
+import InfoBubbles from "./Elements/InfoBubbles/InfoBubbles";
 import DescriptionText from "./Elements/DescriptionText";
 import SimilarProducts from "./Elements/SimilarProducts";
 import {useServerUser} from "../../../../hooks/useServerUser";
@@ -178,7 +178,9 @@ const Product = () => {
                                 return pageId === page.id ? page.link : null
                             }).filter(page => page !== null)[0] + (valueOfKey !== 'basket' ? '/basket?from=product' : '/basket'))
                         } else {
-                            setCardInBasket(true)
+                            setTimeout(()=>{
+                                setCardInBasket(true)
+                            }, 50)
                             await addCardToBasket(async () => {
                                 await updateBasket(catalogList, pageId)
                             }, user.id, productData.id)
@@ -202,7 +204,7 @@ const Product = () => {
                 <InfoBubbles productData={productData}/>
 
                 {selectCardList !== null && selectCardList.length > 1 ? (<ChoiceElement list={selectCardList}
-                                                                                        isXbox={productData.name.toLowerCase().includes('game pass')}
+                                                                                        isXbox={productData.name.toLowerCase().includes('gpu')}
                                                                                         parameter={'name'}
                                                                                         index={selectGroup}
                                                                                         set={(index) => {
@@ -210,7 +212,7 @@ const Product = () => {
                                                                                             setSelectPosition(0)
                                                                                         }}/>) : ''}
                 {selectCardList !== null ? (<ChoiceElement list={selectCardList[selectGroup]?.body}
-                                                           isXbox={productData.name.toLowerCase().includes('game pass')}
+                                                           isXbox={productData.name.toLowerCase().includes('gpu')}
                                                            parentIndex={selectGroup}
                                                            parameter={'choiceRow'}
                                                            index={selectPosition}

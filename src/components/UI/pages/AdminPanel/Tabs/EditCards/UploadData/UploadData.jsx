@@ -56,6 +56,8 @@ const UploadData = ({onClose, onReload}) => {
             card.catalogId = selectedCatalogId
             card.type = card.type || gameType
 
+            card.bubbles = card.bubbles ? card.bubbles.split(',') : null
+
             let lang = false
             let voice = false
 

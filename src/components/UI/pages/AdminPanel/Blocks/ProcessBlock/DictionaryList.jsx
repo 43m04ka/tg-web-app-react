@@ -1,6 +1,6 @@
 import React from 'react';
-import useDictionaryItems from './useDictionaryItems'; // Используем новый хук
-import './DictionaryList.css';
+import useDictionaryItems from './useDictionaryItems';
+import s from './DictionaryList.module.css';
 
 const DictionaryList = () => {
     const { items, loading, error, updateNotificationStatus } = useDictionaryItems();
@@ -10,36 +10,38 @@ const DictionaryList = () => {
         updateNotificationStatus(id, isChecked);
     };
 
-    if (loading) return <div className="container custom-scrollbar">Загрузка данных...</div>;
-    if (error) return <div className="container error custom-scrollbar">Ошибка: {error}</div>;
+    if (loading) return <div className={`${s.container} ${s['custom-scrollbar']}`}>Загрузка данных...</div>;
+    if (error) return <div className={`${s.container} ${s.error} ${s['custom-scrollbar']}`}>Ошибка: {error}</div>;
 
     return (
-        <div className="container custom-scrollbar">
+        <div className={`${s.container} ${s['custom-scrollbar']}`}>
             <div>
                 {items.map(item => (
-                    <div key={item.id} className="card card-hover-effect">
-                        <div className="card-header">
-                            <div className="card-header-left">
-                                <span className="notify-label">Уведомить о завершении</span>
-                                <span className="badge">{item.name}</span>
+                    <div key={item.id} className={`${s.card} ${s['card-hover-effect']}`}>
+                        <div className={s['card-header']}>
+                            <div className={s['card-header-left']}>
+                                <span className={s['notify-label']}>Уведомить о завершении</span>
+                                <span className={s.badge}>{item.name}</span>
                             </div>
-                            <label className="switch" title="Отметить как обработанное">
+                            <label className={s.switch} title="Отметить как обработанное">
                                 <input
                                     type="checkbox"
-                                    defaultValue={item.notification}
+                                    defaultChecked={item.notification} // Заменил defaultValue на defaultChecked для чекбокса
                                     onChange={(e) => handleToggleChange(item.id, e)}
                                 />
-                                <span className="slider round"></span>
+                                <span className={`${s.slider} ${s.round}`}></span>
                             </label>
                         </div>
-                        <p className="card-text">{item.text}</p>
-                        <div className="progress-bar-container">
+                        <p className={s['card-text']}>{item.text}</p>
+                        <div className={s['progress-bar-container']}>
                             <div
-                                className="progress-bar progress-bar-animation"
+                                className={`${s['progress-bar']} ${s['progress-bar-animation']}`}
                                 style={{ width: `${item.progress}%` }}
                             />
                         </div>
-                        <span className="progress-text">Прогресс: **{item.progress.toFixed(4)}%**</span>
+                        <span className={s['progress-text']}>
+                            Прогресс: **{item.progress.toFixed(4)}%**
+                        </span>
                     </div>
                 ))}
             </div>

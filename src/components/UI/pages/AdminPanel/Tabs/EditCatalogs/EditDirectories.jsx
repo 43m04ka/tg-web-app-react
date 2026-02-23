@@ -138,30 +138,6 @@ const EditDirectories = () => {
                             newData.structurePageId = pageList[result].id
                             setNewCatalogData(newData)
                         }}/>
-                        <SwitchLabel label={'Пропарсить каталог с сайта PlaystationStore'}
-                                     onChange={(value) => {
-                                         setParsingCatalogPlaystation(value.target.checked)
-
-                                         let newData = newCatalogData
-                                         newData.type = value.target.checked ? 'PLAYSTATION' : 'DEFAULT'
-                                         setNewCatalogData(newData)
-                                     }}/>
-                        {parsingCatalogPlaystation ?
-                            <div>
-                                <InputLabel label={'ID каталога с сайта PlaystationStore'}
-                                            onChange={(event) => {
-                                                let newData = newCatalogData
-                                                newData.playstationCatalogId = event.target.value
-                                                setNewCatalogData(newData)
-                                            }}/>
-                                <InputLabel label={'Количество страниц в каталоге на сайте PlaystationStore'}
-                                            onChange={(event) => {
-                                                let newData = newCatalogData
-                                                newData.playstationCountPages = event.target.value
-                                                setNewCatalogData(newData)
-                                            }}/>
-                            </div>
-                            : ''}
                     </div>
                     <div className={style['buttonPlace']}>
                         <div className={style['buttonAccept']}

@@ -43,7 +43,7 @@ const EditPages = ({}) => {
     const returnOptionsButtonLine = (option) => {
         switch (option) {
             case 'reload':
-                updatePageList(true).then()
+                updatePageList(true)
                 break;
             case 'edit':
                 setPageId(selectList[0])
@@ -84,7 +84,7 @@ const EditPages = ({}) => {
     }
 
     useEffect(() => {
-        updatePageList(true).then()
+        updatePageList(true)
     }, [updatePageList]);
 
     return (

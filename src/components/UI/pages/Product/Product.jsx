@@ -231,7 +231,7 @@ const Product = () => {
                         <div/>
                     </div> : ''}
 
-                <DescriptionText productData={productData}/>
+                {productData.description !== null ? <DescriptionText productData={productData}/> : ''}
 
                 <DescriptionImages data={productData.descriptionImages}/>
 

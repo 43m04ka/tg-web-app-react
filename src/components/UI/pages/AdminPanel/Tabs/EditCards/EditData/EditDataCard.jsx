@@ -32,6 +32,12 @@ const structure = [
         label: 'Дополнительные изображения',
         body: {type: 'string', label: 'Ссылка на изображение:'}
     },
+    {
+        type: 'list',
+        key: 'bubbles',
+        label: 'Островки',
+        body: {type: 'string', label: 'Текст островка:'}
+    },
 ]
 
 const EditDataCard = ({cardId, onReload, onClose}) => {

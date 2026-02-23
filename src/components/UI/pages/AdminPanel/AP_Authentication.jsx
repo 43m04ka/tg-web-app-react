@@ -56,7 +56,8 @@ const ApAuthentication = () => {
                 padding: '5px',
                 border: '0px',
                 width: '100px',
-                fontSize: '20px'
+                fontSize: '20px',
+                background:'#06071c'
             }}>Войти
             </button>
         </div>

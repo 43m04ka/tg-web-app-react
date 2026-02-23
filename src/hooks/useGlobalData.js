@@ -18,7 +18,13 @@ const useGlobalData = create(devtools(set => ({
                 set(() => ({pageList: result}));
             })
         } else {
-            set(() => ({pageList: data.sort((a, b) => a.serialNumber - b.serialNumber).filter(page => page.isHide === 1)}));
+            if (data === true) {
+                getPageList((result) => {
+                    set(() => ({pageList: result}));
+                }, data)
+            } else {
+                set(() => ({pageList: data.sort((a, b) => a.serialNumber - b.serialNumber).filter(page => page.isHide === 1)}));
+            }
         }
     },
 

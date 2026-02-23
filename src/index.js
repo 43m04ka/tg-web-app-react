@@ -2,12 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import {BrowserRouter} from "react-router-dom";
-import AdminPanel from "./components/UI/pages/AdminPanel/AdminPanel";
-
-
+import vkBridge from '@vkontakte/vk-bridge';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
+vkBridge.send("VKWebAppInit");
 
 
 root.render(

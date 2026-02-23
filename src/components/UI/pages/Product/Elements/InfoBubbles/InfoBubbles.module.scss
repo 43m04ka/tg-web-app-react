@@ -36,4 +36,37 @@
       width: max-content;
     }
   }
+
+  transition: all 0.3s ease-in-out;
+
+  .fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .toggleBtn {
+    cursor: pointer;
+    background: #157f3d; // Можно выделить цветом как на скрине (зеленоватый)
+    color: white;
+
+    .arrow {
+      transition: transform 0.3s ease;
+      // Используем ваши размеры для иконок
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      width: 3vw;
+      height: 3vw;
+      margin: auto 2.1vw auto 0;
+    }
+
+    .rotated {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
 }

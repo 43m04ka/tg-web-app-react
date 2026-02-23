@@ -13,6 +13,7 @@ import Promo from "./Tabs/Promo/Promo";
 import Search from "./Tabs/Search/Search";
 import InfoBlock from "./Tabs/InfoBloks/InfoBlock";
 import AdminGallery from "./Tabs/Hosting/AdminGallary";
+import Parsing from "./Tabs/Parsing/Parsing";
 
 const AdminPanel = () => {
 
@@ -31,6 +32,7 @@ const AdminPanel = () => {
         {name: 'Промокоды', path: 'promo', element: <Promo/>},
         {name: 'Страницы', path: 'pages', element: <EditPages/>},
         {name: 'История заказов', path: 'history-orders', element: <History/>},
+        {name: 'Парсинг', path: 'parsing', element: <Parsing/>},
         {name: 'Хостинг', path: 'hosting', element: <AdminGallery/>}];
 
     return (

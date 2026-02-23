@@ -17,7 +17,7 @@ export function useServer() {
     }
 
     const getCard = async (setResult, id) => {
-        fetch(`${URL}/getCard?time=${Date.now()}&id=${id}`, {
+        fetch(`/api/product/${id}?time=${Date.now()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export function useServer() {
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
-                setResult(data.result)
+                setResult(data)
             })
         })
     }

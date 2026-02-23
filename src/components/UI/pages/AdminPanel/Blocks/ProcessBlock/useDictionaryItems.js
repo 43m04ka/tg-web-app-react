@@ -11,6 +11,7 @@ const useDictionaryItems = () => {
             const response = await fetch('/api/admin/processList?time=' + new Date());
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
+            setError(null)
             setItems(data);
         } catch (err) {
             setError(err.message);

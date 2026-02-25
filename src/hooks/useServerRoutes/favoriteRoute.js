@@ -1,8 +1,10 @@
+import {API_BASE_URL} from "./baseUrl";
+
 export function favoriteRoute(){
 
 
     const getPreviewFavoriteList = async (setResult, userId) => {
-        fetch(`/api/favorite/previewFavoriteProducts/${userId}?time=${Date.now()}`, {
+        fetch(`${API_BASE_URL}/api/favorite/previewFavoriteProducts/${userId}?time=${Date.now()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -16,7 +18,7 @@ export function favoriteRoute(){
     }
 
     const deleteCardToFavorite = async (setResult, userId, cardId) => {
-        fetch(`/api/favorite/deleteProduct`, {
+        fetch(`${API_BASE_URL}/api/favorite/deleteProduct`, {
             method: 'POST', headers: {
                 'Content-Type': 'application/json',
             }, body: JSON.stringify({cardId: cardId, userId: userId}),
@@ -30,7 +32,7 @@ export function favoriteRoute(){
 
 
     const addCardToFavorite = async (setResult, userId, cardId) => {
-        fetch(`/api/favorite/addProduct`, {
+        fetch(`${API_BASE_URL}/api/favorite/addProduct`, {
             method: 'POST', headers: {
                 'Content-Type': 'application/json',
             }, body: JSON.stringify({cardId: cardId, userId: userId}),
@@ -43,7 +45,7 @@ export function favoriteRoute(){
     }
 
     const getFavoriteList = async (setResult, userId) => {
-        fetch(`/api/favorite/allFavoriteProducts/${userId}?time=${Date.now()}`, {
+        fetch(`${API_BASE_URL}/api/favorite/allFavoriteProducts/${userId}?time=${Date.now()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

@@ -1,7 +1,9 @@
+import {API_BASE_URL} from "./baseUrl";
+
 export function searchRoute() {
 
     const getSearch = async (setResult, searchString, pageId, filterJson) => {
-        fetch('/api/search/', {
+        fetch(`${API_BASE_URL}/api/search/`, {
             method: 'POST', headers: {
                 'Content-Type': 'application/json',
             }, body: JSON.stringify({
@@ -36,7 +38,7 @@ export function searchRoute() {
     }
 
     const getClueList = async (setResult) => {
-        fetch(`/api/search/allClue?time=${Date.now()}`, {
+        fetch(`${API_BASE_URL}/api/search/allClue?time=${Date.now()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

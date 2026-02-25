@@ -1,9 +1,9 @@
-const URL = 'https://gwstorebot.ru'
+import {API_BASE_URL} from "./baseUrl";
 
 export function structureRoute(){
 
     const getPageList = async (setResult, hide) => {
-        await fetch(URL + '/api/structure/allPages?time=' + Date.now(), {
+        await fetch(`${API_BASE_URL}/api/structure/allPages?time=${Date.now()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ export function structureRoute(){
 
 
     const getStructureCatalogList = async (setResult) => {
-        await fetch(URL + '/api/structure/allStructureBlocks?time=' + Date.now(), {
+        await fetch(`${API_BASE_URL}/api/structure/allStructureBlocks?time=${Date.now()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ export function structureRoute(){
     }
 
     const getPreviewCardList = async (setResult) => {
-        await fetch(URL + '/api/structure/mainPageProducts?time=' + Date.now(), {
+        await fetch(`${API_BASE_URL}/api/structure/mainPageProducts?time=${Date.now()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export function structureRoute(){
     }
 
     const getInfoBlocks = async (setResult) => {
-        await fetch(URL + `/api/structure/infoBlocks?time${new Date()}`, {
+        await fetch(`${API_BASE_URL}/api/structure/infoBlocks?time${new Date()}`, {
             method: 'GET', headers: {
                 'Content-Type': 'application/json',
             }

@@ -1,7 +1,9 @@
+import {API_BASE_URL} from "./baseUrl";
+
 export function basketRoute(){
 
     const getBasketList = async (setResult, userId) => {
-        fetch(`/api/basket/${userId}?time=${Date.now()}`, {
+        fetch(`${API_BASE_URL}/api/basket/${userId}?time=${Date.now()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -16,7 +18,7 @@ export function basketRoute(){
 
 
     const setBasketPositionCount = async (setResult, userId, cardId, count) => {
-        fetch(`/api/basket/updateCountProduct`, {
+        fetch(`${API_BASE_URL}/api/basket/updateCountProduct`, {
             method: 'POST', headers: {
                 'Content-Type': 'application/json',
             }, body: JSON.stringify({cardId: cardId, userId: userId, count: count}),
@@ -29,7 +31,7 @@ export function basketRoute(){
     }
 
     const addCardToBasket = async (setResult, userId, cardId) => {
-        fetch(`/api/basket/addProduct`, {
+        fetch(`${API_BASE_URL}/api/basket/addProduct`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -43,7 +45,7 @@ export function basketRoute(){
     }
 
     const deleteCardToBasket = async (setResult, userId, cardId) => {
-        fetch(`/api/basket/deleteProduct`, {
+        fetch(`${API_BASE_URL}/api/basket/deleteProduct`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -57,7 +59,7 @@ export function basketRoute(){
     }
 
     const usePromo = async (name, setResult) => {
-        await fetch('/api/basket/usePromo?time=' + Date.now() + '&name=' + name, {
+        await fetch(`${API_BASE_URL}/api/basket/usePromo?time=${Date.now()}&name=${name}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

@@ -1,7 +1,9 @@
+import {API_BASE_URL} from "./baseUrl";
+
 export function orderRoute(){
 
     const createOrder = async (paymentData, accData, user, page, promo, setResult) => {
-        fetch(`/api/order/create`, {
+        fetch(`${API_BASE_URL}/api/order/create`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -16,7 +18,7 @@ export function orderRoute(){
 
 
     const getHistoryList = async (setResult, chatId) => {
-        fetch(`/api/order/history?time=${Date.now()}&chatId=${chatId}`, {
+        fetch(`${API_BASE_URL}/api/order/history?time=${Date.now()}&chatId=${chatId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

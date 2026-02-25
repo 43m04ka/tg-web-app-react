@@ -1,7 +1,9 @@
+import {API_BASE_URL} from "./baseUrl";
+
 export function catalogRoute(){
 
     const getCatalogList = async (setResult) => {
-        await fetch(`/api/catalog/allCatalogs?time=${Date.now()}`, {
+        await fetch(`${API_BASE_URL}/api/catalog/allCatalogs?time=${Date.now()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -15,7 +17,7 @@ export function catalogRoute(){
     }
 
     const getCardList = async (setResult, catalogId, listNumber, json) => {
-        fetch(`/api/catalog/productList`, {
+        fetch(`${API_BASE_URL}/api/catalog/productList`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -30,7 +32,7 @@ export function catalogRoute(){
 
 
     const findCardsByCatalog = async (catalogId, setResult) => {
-        await fetch('/api/catalog/getAllProducts?catalogId='+catalogId+'&time='+Date.now(), {
+        await fetch(`${API_BASE_URL}/api/catalog/getAllProducts?catalogId=${catalogId}&time=${Date.now()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

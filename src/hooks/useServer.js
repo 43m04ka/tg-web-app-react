@@ -1,4 +1,6 @@
-const URL = 'https://gwstorebot.ru/api/admin'
+import {API_BASE_URL} from "./useServerRoutes/baseUrl";
+
+const URL = `${API_BASE_URL}/api/admin`
 
 export function useServer() {
 

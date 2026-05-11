@@ -51,7 +51,7 @@ def merge_first_cell_row(text: str, total_cols: int) -> TableRow:
 
 
 def build_assortiment_sheet() -> Table:
-    """Лист «Ассортимент товаров» — упражнение 1 (данные по учебнику без скана приближены)."""
+    """Лист «Ассортимент товаров» — упражнение 1 (рис. 8.1 в PDF без скана; данные приближены)."""
     t = Table(name="Ассортимент товаров")
     for _ in range(6):
         t.addElement(TableColumn())
@@ -117,109 +117,115 @@ def build_assortiment_sheet() -> Table:
 
 
 def build_kseroksy_sheet() -> Table:
-    """Лист «Ксероксы» — рис. 8.15 (структура и числа согласованы с заданиями 4–7)."""
+    """Лист «Ксероксы» — рис. 8.15 из методички (данные со скрина учебника)."""
+    cols = 7
     t = Table(name="Ксероксы")
-    for _ in range(6):
+    for _ in range(cols):
         t.addElement(TableColumn())
 
-    t.addElement(merge_first_cell_row("Продажа копировальной техники. Отчёт", 6))
-    t.addElement(TableRow())
+    # Рис. 8.15: строка 1 — заголовок отчёта, строка 2 — шапка таблицы, строки 3–15 — данные (без лишней пустой строки).
+    t.addElement(merge_first_cell_row("Продажа копировальной техники. Отчёт", cols))
 
+    hdr_labels = (
+        "Торговый агент",
+        "Филиал",
+        "Модель",
+        "Количество",
+        "Цена",
+        "Выручка",
+        "Доставка",
+    )
     hdr = TableRow()
-    for h in ("Торговый агент", "№ филиала", "Количество", "Цена (руб.)", "Выручка (руб.)", "Доставка"):
+    for h in hdr_labels:
         hdr.addElement(cell_str(h))
     t.addElement(hdr)
 
-    # Колонки: A-F; формула Выручка = Количество * Цена  -> E = C * D
-    # Строка заголовков = 3, первая строка данных = 4
+    # Кортеж: агент, филиал, модель, количество, цена, доставка (цена как в учебнике).
     raw = [
-        ("Андреев В.П.", 195, 4, 1200, "АВИА"),
-        ("Борисов К.М.", 261, 5, 3500, "Ж/Д"),
-        ("Волков А.С.", 140, 3, 2800, "Авто"),
-        ("Громов Д.Л.", 195, 3, 2500, "АВИА"),
-        ("Дмитриев О.Н.", 261, 2, 2900, "Ж/Д"),
-        ("Егоров П.Р.", 195, 10, 150, "АВИА"),
-        ("Жуков И.Т.", 261, 4, 4200, "Ж/Д"),
-        ("Зайцев В.Г.", 140, 2, 3100, "АВИА"),
-        ("Иванов М.К.", 195, 8, 900, "Ж/Д"),
-        ("Козлов С.А.", 261, 2, 3100, "Ж/Д"),
+        ("Белкин Семён", 261, "C250GLS", 6, 4620.8, "АВИА"),
+        ("Белкин Семён", 195, "C100GLS", 2, 1289.6, "АВИА"),
+        ("Милова Жанна", 261, "C300GLS", 5, 3208.9, "АВИА"),
+        ("Милова Жанна", 195, "C100GLS", 9, 1074.7, "Ж/Д"),
+        ("Милова Жанна", 261, "C300GLS", 2, 3208.9, "АВИА"),
+        ("Матвиенко Пётр", 195, "C500GLS", 4, 1149.8, "Ж/Д"),
+        ("Матвиенко Пётр", 261, "C150GLS", 3, 1547.5, "АВИА"),
+        ("Матвиенко Пётр", 195, "C250GLS", 2, 4620.8, "АВИА"),
+        ("Сергеев Максим", 261, "C400GLS", 8, 5545.0, "АВИА"),
+        ("Сергеев Максим", 195, "C150GLS", 3, 1547.5, "Ж/Д"),
+        ("Гранкин Александр", 261, "C500GLS", 1, 1149.8, "АВИА"),
+        ("Гранкин Александр", 195, "C200GLS", 6, 1547.5, "Ж/Д"),
+        ("Гранкин Александр", 261, "C300GLS", 5, 3208.9, "Ж/Д"),
     ]
 
-    first_row = 4
-    for i, (агент, филиал, кол, цена, дост) in enumerate(raw):
-        rnum = first_row + i
+    header_row = 2
+    first_data_row = header_row + 1
+    n_data = len(raw)
+
+    def add_data_row(rnum: int, row_tuple: tuple) -> None:
+        агент, филиал, модель, кол, цена, дост = row_tuple
         row = TableRow()
         row.addElement(cell_str(агент))
         row.addElement(cell_float_num(float(филиал)))
+        row.addElement(cell_str(модель))
         row.addElement(cell_float_num(float(кол)))
         row.addElement(cell_float_num(float(цена)))
-        vr = float(кол) * float(цена)
-        row.addElement(cell_formula_float(f"of:=C{rnum}*D{rnum}", vr))
+        vr = round(float(кол) * float(цена), 2)
+        row.addElement(cell_formula_float(f"of:=D{rnum}*E{rnum}", float(vr)))
         row.addElement(cell_str(дост))
         t.addElement(row)
 
-    # Блок отсортированной таблицы (задание 4)
-    t.addElement(TableRow())
-    t.addElement(merge_first_cell_row("Отсортированная таблица (задание 4: агент по алфавиту, филиал по возрастанию)", 6))
+    for i, tup in enumerate(raw):
+        add_data_row(first_data_row + i, tup)
 
-    hdr2 = TableRow()
-    for h in ("Торговый агент", "№ филиала", "Количество", "Цена (руб.)", "Выручка (руб.)", "Доставка"):
-        hdr2.addElement(cell_str(h))
-    t.addElement(hdr2)
+    last_data_row = first_data_row + n_data - 1
 
-    def sort_key(item):
-        агент, филиал, *_ = item
-        return (агент.lower(), филиал)
-
-    sorted_raw = sorted(raw, key=sort_key)
-    base_row = len(raw) + 7
-
-    for i, (агент, филиал, кол, цена, дост) in enumerate(sorted_raw):
-        rnum = base_row + i
-        row = TableRow()
-        row.addElement(cell_str(агент))
-        row.addElement(cell_float_num(float(филиал)))
-        row.addElement(cell_float_num(float(кол)))
-        row.addElement(cell_float_num(float(цена)))
-        vr = float(кол) * float(цена)
-        row.addElement(cell_formula_float(f"of:=C{rnum}*D{rnum}", vr))
-        row.addElement(cell_str(дост))
-        t.addElement(row)
-
-    # Задание 6: филиал 261, цена > 3000 (все строки — ксероксы по смыслу листа)
+    # Задание 4: новая таблица — фамилии по алфавиту, № филиала по возрастанию.
     t.addElement(TableRow())
     t.addElement(
         merge_first_cell_row(
-            "Филиал 261, цена единицы свыше 3000 руб. (задание 6)", 6
+            "Отсортированная таблица (задание 4: агент по алфавиту, филиал по возрастанию)",
+            cols,
+        )
+    )
+    hdr2 = TableRow()
+    for h in hdr_labels:
+        hdr2.addElement(cell_str(h))
+    t.addElement(hdr2)
+
+    def sort_key(item: tuple) -> tuple:
+        агент, филиал, модель, *_ = item
+        return (агент.lower(), филиал, модель)
+
+    sorted_raw = sorted(raw, key=sort_key)
+    base_sorted = last_data_row + 4
+
+    for i, tup in enumerate(sorted_raw):
+        add_data_row(base_sorted + i, tup)
+
+    # Задание 6: филиал 261 и цена единицы > 3000 руб.
+    t.addElement(TableRow())
+    t.addElement(
+        merge_first_cell_row(
+            "Филиал 261, цена единицы свыше 3000 руб. (задание 6)",
+            cols,
         )
     )
     h6 = TableRow()
-    for h in ("Торговый агент", "№ филиала", "Количество", "Цена (руб.)", "Выручка (руб.)", "Доставка"):
+    for h in hdr_labels:
         h6.addElement(cell_str(h))
     t.addElement(h6)
 
-    filt_261 = [(a, f, k, p, d) for (a, f, k, p, d) in raw if f == 261 and p > 3000]
-    base6 = base_row + len(sorted_raw) + 3
-    for i, (агент, филиал, кол, цена, дост) in enumerate(filt_261):
-        rnum = base6 + i
-        row = TableRow()
-        row.addElement(cell_str(агент))
-        row.addElement(cell_float_num(float(филиал)))
-        row.addElement(cell_float_num(float(кол)))
-        row.addElement(cell_float_num(float(цена)))
-        vr = float(кол) * float(цена)
-        row.addElement(cell_formula_float(f"of:=C{rnum}*D{rnum}", vr))
-        row.addElement(cell_str(дост))
-        t.addElement(row)
+    filt_261 = [tup for tup in raw if tup[1] == 261 and tup[4] > 3000]
+    base6 = base_sorted + n_data + 3
+    for i, tup in enumerate(filt_261):
+        add_data_row(base6 + i, tup)
 
-    # Задание 7: область критериев расширенного фильтра (И на строку 1, ИЛИ строка 2)
+    # Задание 7: шаблон области критериев расширенного фильтра (как в методичке).
     t.addElement(TableRow())
-    t.addElement(merge_first_cell_row("Критерии расширенного фильтра (задание 7)", 6))
+    t.addElement(merge_first_cell_row("Критерии расширенного фильтра (задание 7)", 4))
     crit_hdr = TableRow()
-    for h in ("№ филиала", "Выручка (руб.)", "Выручка (руб.)", "Доставка"):
+    for h in ("Филиал", "Выручка", "Выручка", "Доставка"):
         crit_hdr.addElement(cell_str(h))
-    crit_hdr.addElement(cell_str(""))
-    crit_hdr.addElement(cell_str(""))
     t.addElement(crit_hdr)
 
     r_crit1 = TableRow()
@@ -227,8 +233,6 @@ def build_kseroksy_sheet() -> Table:
     r_crit1.addElement(cell_str(">1000"))
     r_crit1.addElement(cell_str("<10000"))
     r_crit1.addElement(cell_str("АВИА"))
-    r_crit1.addElement(cell_str(""))
-    r_crit1.addElement(cell_str(""))
     t.addElement(r_crit1)
 
     r_crit2 = TableRow()
@@ -236,8 +240,6 @@ def build_kseroksy_sheet() -> Table:
     r_crit2.addElement(cell_str(">10000"))
     r_crit2.addElement(cell_str(""))
     r_crit2.addElement(cell_str("Ж/Д"))
-    r_crit2.addElement(cell_str(""))
-    r_crit2.addElement(cell_str(""))
     t.addElement(r_crit2)
 
     return t

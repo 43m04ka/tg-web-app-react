@@ -29,6 +29,47 @@ R_REK, R_ARE, R_NAL, R_PROC = 15, 16, 17, 18
 R_RASH, R_PROF = 19, 20
 
 
+def _oref(col: str, row: int) -> str:
+    """Явная ссылка на ячейку в OpenFormula (текущий лист) — [.C10], без превращения в текст с кавычками."""
+    return f"[.{col}{row}]"
+
+
+def _oabs(col: str, row: int) -> str:
+    """Абсолютная ссылка $C$6 в OpenFormula — [.$C$6]."""
+    return f"[.${col}${row}]"
+
+
+def _sum_rect(c1: str, r1: int, c2: str, r2: int) -> str:
+    """Диапазон для SUM: C10:H10 → SUM([.C10:.H10])."""
+    return f"SUM([.{c1}{r1}:.{c2}{r2}])"
+
+
+def _sum_col(c: str, r1: int, r2: int) -> str:
+    """Один столбец C15:C18 → SUM([.C15:.C18])."""
+    return f"SUM([.{c}{r1}:.{c}{r2}])"
+
+
+def _row_empty9(t: Table) -> None:
+    rw = TableRow()
+    for _ in range(9):
+        rw.addElement(_txt("", "b_tl"))
+    t.addElement(rw)
+
+
+def _row_empty5(t: Table) -> None:
+    rw = TableRow()
+    for _ in range(5):
+        rw.addElement(_txt("", "u_tl"))
+    t.addElement(rw)
+
+
+def _row_empty2(t: Table) -> None:
+    rw = TableRow()
+    rw.addElement(_txt("", "u_tl"))
+    rw.addElement(_txt("", "u_tl"))
+    t.addElement(rw)
+
+
 def _reg(doc: OpenDocumentSpreadsheet, *, budget: bool) -> None:
     def add(n: str, bg: str | None, al: str, bold: bool = False) -> None:
         st = Style(name=n, family="table-cell", parentstylename="Default")
@@ -144,7 +185,13 @@ def tab_rashody() -> Table:
         row.addElement(_flt(float(z), "u_num"))
         row.addElement(_flt(float(zp), "u_num"))
         tot = a + z + zp
-        row.addElement(_flt(float(tot), "u_num", formula=f"of:=B{i}+C{i}+D{i}"))
+        row.addElement(
+            _flt(
+                float(tot),
+                "u_num",
+                formula=f"of:={_oref('B', i)}+{_oref('C', i)}+{_oref('D', i)}",
+            )
+        )
         t.addElement(row)
     return t
 
@@ -170,7 +217,7 @@ def _head_budget(t: Table, *, rost: float, udor: float) -> None:
         r.addElement(_txt("", "b_tl"))
     t.addElement(r)
 
-    t.addElement(TableRow())
+    _row_empty9(t)
 
     r = TableRow()
     r.addElement(_txt("", "b_tl"))
@@ -196,7 +243,7 @@ def _head_budget(t: Table, *, rost: float, udor: float) -> None:
         r.addElement(_txt("", "b_tl"))
     t.addElement(r)
 
-    t.addElement(TableRow())
+    _row_empty9(t)
 
     r = TableRow()
     r.addElement(_txt("", "b_tl"))
@@ -225,7 +272,7 @@ def tab_budget_urok1() -> Table:
     r.addElement(_txt("", "b_tl"))
     for v in приход:
         r.addElement(_flt(float(v), "b_num"))
-    r.addElement(_flt(sum(приход), "b_num", formula=f"of:=SUM(C{r_pr}:H{r_pr})"))
+    r.addElement(_flt(sum(приход), "b_num", formula=f"of:={_sum_rect('C', r_pr, 'H', r_pr)}"))
     t.addElement(r)
 
     r = TableRow()
@@ -234,7 +281,7 @@ def tab_budget_urok1() -> Table:
     r.addElement(_txt("", "b_tl"))
     for v in затр:
         r.addElement(_flt(float(v), "b_num"))
-    r.addElement(_flt(sum(затр), "b_num", formula=f"of:=SUM(C{r_z}:H{r_z})"))
+    r.addElement(_flt(sum(затр), "b_num", formula=f"of:={_sum_rect('C', r_z, 'H', r_z)}"))
     t.addElement(r)
 
     r = TableRow()
@@ -242,17 +289,23 @@ def tab_budget_urok1() -> Table:
     r.addElement(_txt("Полная выручка", "b_tl"))
     r.addElement(_txt("", "b_tl"))
     for i, L in enumerate(_MC):
-        r.addElement(_flt(float(приход[i] - затр[i]), "b_num", formula=f"of:={L}{r_pr}-{L}{r_z}"))
+        r.addElement(
+            _flt(
+                float(приход[i] - затр[i]),
+                "b_num",
+                formula=f"of:={_oref(L, r_pr)}-{_oref(L, r_z)}",
+            )
+        )
     r.addElement(
         _flt(
             sum(приход[i] - затр[i] for i in range(6)),
             "b_num",
-            formula=f"of:=SUM(C{r_v}:H{r_v})",
+            formula=f"of:={_sum_rect('C', r_v, 'H', r_v)}",
         )
     )
     t.addElement(r)
 
-    t.addElement(TableRow())
+    _row_empty9(t)
 
     t.addElement(_mrg("Статьи расходов", 9, "b_sec", "b_cov"))
 
@@ -264,7 +317,7 @@ def tab_budget_urok1() -> Table:
     r.addElement(_txt("", "b_tl"))
     for _ in range(6):
         r.addElement(_flt(4000.0, "b_num"))
-    r.addElement(_flt(24000.0, "b_num", formula=f"of:=SUM(C{r_rk}:H{r_rk})"))
+    r.addElement(_flt(24000.0, "b_num", formula=f"of:={_sum_rect('C', r_rk, 'H', r_rk)}"))
     t.addElement(r)
 
     r = TableRow()
@@ -273,7 +326,7 @@ def tab_budget_urok1() -> Table:
     r.addElement(_txt("", "b_tl"))
     for _ in range(6):
         r.addElement(_flt(500.0, "b_num"))
-    r.addElement(_flt(3000.0, "b_num", formula=f"of:=SUM(C{r_ar}:H{r_ar})"))
+    r.addElement(_flt(3000.0, "b_num", formula=f"of:={_sum_rect('C', r_ar, 'H', r_ar)}"))
     t.addElement(r)
 
     нл = [240, 241, 242, 243, 244, 245]
@@ -283,7 +336,7 @@ def tab_budget_urok1() -> Table:
     r.addElement(_txt("", "b_tl"))
     for v in нл:
         r.addElement(_flt(float(v), "b_num"))
-    r.addElement(_flt(float(sum(нл)), "b_num", formula=f"of:=SUM(C{r_nl}:H{r_nl})"))
+    r.addElement(_flt(float(sum(нл)), "b_num", formula=f"of:={_sum_rect('C', r_nl, 'H', r_nl)}"))
     t.addElement(r)
 
     proc = [800 + 7 * i for i in range(6)]
@@ -293,7 +346,7 @@ def tab_budget_urok1() -> Table:
     r.addElement(_txt("", "b_tl"))
     for v in proc:
         r.addElement(_flt(float(v), "b_num"))
-    r.addElement(_flt(float(sum(proc)), "b_num", formula=f"of:=SUM(C{r_pc}:H{r_pc})"))
+    r.addElement(_flt(float(sum(proc)), "b_num", formula=f"of:={_sum_rect('C', r_pc, 'H', r_pc)}"))
     t.addElement(r)
 
     rs, pf = R_RASH, R_PROF
@@ -303,8 +356,8 @@ def tab_budget_urok1() -> Table:
     r.addElement(_txt("Расходы всего", "b_tl"))
     r.addElement(_txt("", "b_tl"))
     for L in _MC:
-        r.addElement(_flt(0.0, "b_num", formula=f"of:=SUM({L}{r_rk}:{L}{r_pc})"))
-    r.addElement(_flt(0.0, "b_num", formula=f"of:=SUM(C{rs}:H{rs})"))
+        r.addElement(_flt(0.0, "b_num", formula=f"of:={_sum_col(L, r_rk, r_pc)}"))
+    r.addElement(_flt(0.0, "b_num", formula=f"of:={_sum_rect('C', rs, 'H', rs)}"))
     t.addElement(r)
 
     r = TableRow()
@@ -312,8 +365,8 @@ def tab_budget_urok1() -> Table:
     r.addElement(_txt("Прибыль", "b_plbl"))
     r.addElement(_txt("", "b_plbl"))
     for L in _MC:
-        r.addElement(_flt(0.0, "b_pval", formula=f"of:={L}{r_v}-{L}{rs}"))
-    r.addElement(_flt(0.0, "b_pval", formula=f"of:=I{r_v}-I{rs}"))
+        r.addElement(_flt(0.0, "b_pval", formula=f"of:={_oref(L, r_v)}-{_oref(L, rs)}"))
+    r.addElement(_flt(0.0, "b_pval", formula=f"of:={_oref('I', r_v)}-{_oref('I', rs)}"))
     t.addElement(r)
 
     return t
@@ -342,10 +395,10 @@ def tab_budget_urok2() -> Table:
             _flt(
                 0.0,
                 "b_num",
-                formula=f"of:={prev}{rp}+{prev}{rp}*$C$6",
+                formula=f"of:={_oref(prev, rp)}+{_oref(prev, rp)}*{_oabs('C', R_ROST)}",
             )
         )
-    r.addElement(_flt(0.0, "b_num", formula=f"of:=SUM(C{rp}:H{rp})"))
+    r.addElement(_flt(0.0, "b_num", formula=f"of:={_sum_rect('C', rp, 'H', rp)}"))
     t.addElement(r)
 
     r = TableRow()
@@ -359,10 +412,10 @@ def tab_budget_urok2() -> Table:
             _flt(
                 0.0,
                 "b_num",
-                formula=f"of:={prev}{rz}+{prev}{rz}*$C$7",
+                formula=f"of:={_oref(prev, rz)}+{_oref(prev, rz)}*{_oabs('C', R_UDOR)}",
             )
         )
-    r.addElement(_flt(0.0, "b_num", formula=f"of:=SUM(C{rz}:H{rz})"))
+    r.addElement(_flt(0.0, "b_num", formula=f"of:={_sum_rect('C', rz, 'H', rz)}"))
     t.addElement(r)
 
     r = TableRow()
@@ -370,11 +423,11 @@ def tab_budget_urok2() -> Table:
     r.addElement(_txt("Полная выручка", "b_tl"))
     r.addElement(_txt("", "b_tl"))
     for L in _MC:
-        r.addElement(_flt(0.0, "b_num", formula=f"of:={L}{rp}-{L}{rz}"))
-    r.addElement(_flt(0.0, "b_num", formula=f"of:=SUM(C{rv}:H{rv})"))
+        r.addElement(_flt(0.0, "b_num", formula=f"of:={_oref(L, rp)}-{_oref(L, rz)}"))
+    r.addElement(_flt(0.0, "b_num", formula=f"of:={_sum_rect('C', rv, 'H', rv)}"))
     t.addElement(r)
 
-    t.addElement(TableRow())
+    _row_empty9(t)
 
     t.addElement(_mrg("Статьи расходов", 9, "b_sec", "b_cov"))
 
@@ -384,7 +437,7 @@ def tab_budget_urok2() -> Table:
     r.addElement(_txt("", "b_tl"))
     for _ in range(6):
         r.addElement(_flt(4000.0, "b_num"))
-    r.addElement(_flt(24000.0, "b_num", formula=f"of:=SUM(C{rr}:H{rr})"))
+    r.addElement(_flt(24000.0, "b_num", formula=f"of:={_sum_rect('C', rr, 'H', rr)}"))
     t.addElement(r)
 
     r = TableRow()
@@ -393,7 +446,7 @@ def tab_budget_urok2() -> Table:
     r.addElement(_txt("", "b_tl"))
     for _ in range(6):
         r.addElement(_flt(500.0, "b_num"))
-    r.addElement(_flt(3000.0, "b_num", formula=f"of:=SUM(C{ra}:H{ra})"))
+    r.addElement(_flt(3000.0, "b_num", formula=f"of:={_sum_rect('C', ra, 'H', ra)}"))
     t.addElement(r)
 
     r = TableRow()
@@ -403,8 +456,8 @@ def tab_budget_urok2() -> Table:
     r.addElement(_flt(240.0, "b_num"))
     for i in range(1, 6):
         prev = _MC[i - 1]
-        r.addElement(_flt(0.0, "b_num", formula=f"of:={prev}{rn}+{prev}{rn}*0.4"))
-    r.addElement(_flt(0.0, "b_num", formula=f"of:=SUM(C{rn}:H{rn})"))
+        r.addElement(_flt(0.0, "b_num", formula=f"of:={_oref(prev, rn)}+{_oref(prev, rn)}*0.4"))
+    r.addElement(_flt(0.0, "b_num", formula=f"of:={_sum_rect('C', rn, 'H', rn)}"))
     t.addElement(r)
 
     r = TableRow()
@@ -414,8 +467,8 @@ def tab_budget_urok2() -> Table:
     r.addElement(_flt(800.0, "b_num"))
     for i in range(1, 6):
         prev = _MC[i - 1]
-        r.addElement(_flt(0.0, "b_num", formula=f"of:={prev}{rp2}+7"))
-    r.addElement(_flt(0.0, "b_num", formula=f"of:=SUM(C{rp2}:H{rp2})"))
+        r.addElement(_flt(0.0, "b_num", formula=f"of:={_oref(prev, rp2)}+7"))
+    r.addElement(_flt(0.0, "b_num", formula=f"of:={_sum_rect('C', rp2, 'H', rp2)}"))
     t.addElement(r)
 
     r = TableRow()
@@ -423,8 +476,8 @@ def tab_budget_urok2() -> Table:
     r.addElement(_txt("Расходы всего", "b_tl"))
     r.addElement(_txt("", "b_tl"))
     for L in _MC:
-        r.addElement(_flt(0.0, "b_num", formula=f"of:=SUM({L}{rr}:{L}{rp2})"))
-    r.addElement(_flt(0.0, "b_num", formula=f"of:=SUM(C{rs}:H{rs})"))
+        r.addElement(_flt(0.0, "b_num", formula=f"of:={_sum_col(L, rr, rp2)}"))
+    r.addElement(_flt(0.0, "b_num", formula=f"of:={_sum_rect('C', rs, 'H', rs)}"))
     t.addElement(r)
 
     r = TableRow()
@@ -432,8 +485,8 @@ def tab_budget_urok2() -> Table:
     r.addElement(_txt("Прибыль", "b_plbl"))
     r.addElement(_txt("", "b_plbl"))
     for L in _MC:
-        r.addElement(_flt(0.0, "b_pval", formula=f"of:={L}{rv}-{L}{rs}"))
-    r.addElement(_flt(0.0, "b_pval", formula=f"of:=I{rv}-I{rs}"))
+        r.addElement(_flt(0.0, "b_pval", formula=f"of:={_oref(L, rv)}-{_oref(L, rs)}"))
+    r.addElement(_flt(0.0, "b_pval", formula=f"of:={_oref('I', rv)}-{_oref('I', rs)}"))
     t.addElement(r)
 
     return t
@@ -454,10 +507,10 @@ def tab_tan() -> Table:
         x = -10 + i
         row = TableRow()
         row.addElement(_flt(float(x), "u_num"))
-        row.addElement(_flt(0.0, "u_num", formula=f"of:=TAN(A{rr})"))
+        row.addElement(_flt(0.0, "u_num", formula=f"of:=TAN({_oref('A', rr)})"))
         t.addElement(row)
 
-    t.addElement(TableRow())
+    _row_empty2(t)
     row = TableRow()
     row.addElement(_txt("Рисунок 7.5 – диаграмма типа «Линии» по столбцам A:B", "u_tl", numbercolumnsspanned="2"))
     row.addElement(CoveredTableCell(stylename="u_cov"))

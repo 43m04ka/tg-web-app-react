@@ -1,0 +1,161 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 360px;
+  max-width: 480px;
+}
+
+.typeRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.typeButton {
+  @extend %button;
+  flex: 1;
+  min-width: 100px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(79, 95, 130, 0.4);
+  background: rgba(19, 21, 29, 0.6);
+  color: #8e95a3;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    border-color: rgba($theme-color, 0.5);
+    color: $text-color;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.7;
+  }
+}
+
+.typeButtonActive {
+  border-color: $theme-color;
+  background: rgba($theme-color, 0.15);
+  color: $theme-color;
+}
+
+
+.emptyPages {
+  @extend %text;
+  font-size: 13px;
+  color: #ff6b6b;
+}
+
+.infoLabel {
+  @extend %text;
+  font-size: 13px;
+  color: #ff6b6b;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.actionsRight {
+  display: flex;
+  gap: 8px;
+}
+
+.deleteButton {
+  @extend %button;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 107, 107, 0.35);
+  background: transparent;
+  color: #ff6b6b;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: rgba(255, 107, 107, 0.1);
+  }
+}
+
+.cancelButton {
+  @extend %button;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(79, 95, 130, 0.4);
+  background: transparent;
+  color: $text-color;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.saveButton {
+  @extend %button;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: none;
+  background: $theme-color;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+  &:disabled,
+  .deleteButton:disabled,
+  .cancelButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.colorInputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.colorLabel {
+  @extend %text;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #8e95a3;
+}
+
+.colorInput {
+  width: 100%;
+  height: 44px;
+  padding: 2px;
+  background-color: rgba(19, 21, 29, 0.6);
+  border: 1px solid rgba(79, 95, 130, 0.4);
+  border-radius: 8px;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: rgba(79, 95, 130, 0.6);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $theme-color;
+    box-shadow: 0 0 0 3px rgba($theme-color, 0.1);
+  }
+}

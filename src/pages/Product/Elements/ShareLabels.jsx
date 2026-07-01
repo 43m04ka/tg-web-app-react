@@ -3,7 +3,9 @@ import style from "../Product.module.scss";
 import {useTelegram} from "../../../hooks/useTelegram";
 import {useServerUser} from "../../../hooks/useServerUser";
 
-const EMPTY_STRING_VALUES = new Set(['null', 'none', 'undefined', 'n/a', 'na', '-']);
+const EMPTY_STRING_VALUES = new Set([
+    'null', 'none', 'undefined', 'n/a', 'na', '-', 'nan', 'infinity', '-infinity',
+]);
 
 const isMeaningfulValue = (value) => {
     if (value === null || value === undefined) return false;
@@ -16,13 +18,20 @@ const isMeaningfulValue = (value) => {
     return !EMPTY_STRING_VALUES.has(trimmed.toLowerCase());
 };
 
+const formatPrice = (value) => {
+    if (!isMeaningfulValue(value)) return '';
+
+    const price = Number(value);
+    return Number.isFinite(price) ? price.toLocaleString('ru-RU') : '';
+};
+
 const formatPromotionDate = (dateValue) => {
     if (!isMeaningfulValue(dateValue)) return null;
 
     const raw = String(dateValue).trim();
     const timestamp = Number(raw);
 
-    if (!Number.isNaN(timestamp) && raw !== '') {
+    if (Number.isFinite(timestamp)) {
         const date = new Date(timestamp);
         if (!Number.isNaN(date.getTime())) {
             return date.toLocaleDateString('ru-RU');
@@ -33,6 +42,10 @@ const formatPromotionDate = (dateValue) => {
 };
 
 const getDiscountPercent = (price, oldPrice) => {
+    if (!isMeaningfulValue(price) || !isMeaningfulValue(oldPrice)) {
+        return null;
+    }
+
     const current = Number(price);
     const previous = Number(oldPrice);
 
@@ -43,19 +56,38 @@ const getDiscountPercent = (price, oldPrice) => {
     return `-${Math.ceil((1 - current / previous) * 100)}%`;
 };
 
+const getPromotionSource = (productData) => {
+    if (isMeaningfulValue(productData.oldPrice)) {
+        return productData;
+    }
+
+    if (productData.similarCard && isMeaningfulValue(productData.similarCard.oldPrice)) {
+        return productData.similarCard;
+    }
+
+    return null;
+};
+
 const ShareLabels = ({productData, parameters}) => {
 
     const { tg, user, isTg, safeAreaInset, contentSafeAreaInset } = useTelegram()
     const {prepareShareMessage} = useServerUser()
     const [copied, setCopied] = useState(false);
 
-    const price = Number(productData.price);
-    const formattedPrice = Number.isFinite(price) ? price.toLocaleString('ru-RU') : String(productData.price ?? '').trim();
+    const displayPrice = isMeaningfulValue(productData.similarCard?.price)
+        ? productData.similarCard.price
+        : productData.price;
+    const formattedPrice = formatPrice(displayPrice);
 
     let textMessage = `${productData.name} — ${formattedPrice} ₽\n`;
 
-    const percent = getDiscountPercent(productData.price, productData.oldPrice);
-    const promotionDate = formatPromotionDate(productData.endDatePromotion);
+    const promotionSource = getPromotionSource(productData);
+    const percent = promotionSource
+        ? getDiscountPercent(promotionSource.price, promotionSource.oldPrice)
+        : null;
+    const promotionDate = promotionSource
+        ? formatPromotionDate(promotionSource.endDatePromotion)
+        : null;
 
     if (percent && promotionDate) {
         textMessage += `*cкидка ${percent} действует до ${promotionDate} \n\n`;

@@ -1,110 +1,66 @@
-import React, {useEffect} from 'react';
-import style from './SelectPlatform.module.scss'
-import useGlobalData from "../../hooks/useGlobalData";
-import {useNavigate} from "react-router-dom";
-import {useTelegram} from "../../hooks/useTelegram";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import style from './SelectPlatform.module.scss';
+import useGlobalData from '../../hooks/useGlobalData';
+import {useNavigate} from 'react-router-dom';
+import {useTelegram} from '../../hooks/useTelegram';
+import {useIsDesktopMedia} from '../../hooks/useIsDesktopMedia';
+import PlatformCard from './Elements/PlatformCard';
+import SelectPlatformHeader from './Elements/SelectPlatformText';
+import SelectPlatformLink from './Elements/SelectPlatformLink';
 
-
-const SelectPlatform = ({setActiveTab, activeTab, setHeightTab}) => {
-    const {pageList, setPageId} = useGlobalData()
-    const [mouseDownId, setMouseDownId] = React.useState(-1);
-    const [isOpen, setIsOpen] = React.useState(false)
+const SelectPlatform = () => {
+    const {pageList, pageId, setPageId, updateBasket, catalogList, setBarIsVisible, startPageList} = useGlobalData();
     const navigate = useNavigate();
-    const { tg, safeAreaInset, contentSafeAreaInset } = useTelegram()
+    const {tg, safeAreaInset, contentSafeAreaInset, botType} = useTelegram();
+    const isDesktop = useIsDesktopMedia();
+    const selectingRef = useRef(false);
 
     useEffect(() => {
-        if (mouseDownId > -1) {
-            window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+        tg.BackButton.hide();
+    }, [tg]);
+
+    const handleSelect = useCallback((item) => {
+        if (selectingRef.current) {
+            return;
         }
-    }, [mouseDownId])
+
+        window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium');
+
+        if (item.id !== pageId) {
+            setPageId(item.id);
+            updateBasket(catalogList, item.id);
+        }
+
+        setTimeout(()=>{
+            setBarIsVisible(true);
+            navigate('/main/catalogs');  
+        }, 300)
+    }, [catalogList, pageId, setPageId, updateBasket]);
 
 
-    useEffect(() => {
-        if (activeTab !== 3) {
-            setIsOpen(false)
-        }
-    }, [activeTab]);
+    if (!pageList?.length) {
+        return null;
+    }
 
     return (
-        <div className={style['container']} id={-2}
-             style={{paddingBottom: String(contentSafeAreaInset.bottom + safeAreaInset.bottom + 0.16  * window.innerWidth) + 'px'}}
-             onTouchStart={(e) => {
-                 e.preventDefault();
-                 let id = Number(document?.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY).id || -1)
-                 if (id !== mouseDownId) {
-                     setMouseDownId(Number(id))
-                 }
-                 if (isOpen && id === -2) {
-                     setIsOpen(false)
-                     setActiveTab(0)
-                     setHeightTab(0)
-                     setTimeout(() => {
-                         navigate('')
-                     }, 200)
-
-                 } else {
-                     setIsOpen(true)
-                     setActiveTab(3)
-                 }
-             }}
-             onTouchMove={(e) => {
-                 let id = document.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY).id || -1
-                 if (id !== mouseDownId) {
-                     setMouseDownId(Number(id))
-                 }
-             }} onTouchEnd={(e) => {
-            e.preventDefault();
-            let id = Number(document.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY).id)
-            if ((typeof id !== 'undefined') && id !== -1 && id !== -2) {
-                setPageId(pageList[id].id)
-                setActiveTab(0)
-                setHeightTab(0)
-                setTimeout(() => {
-                    navigate('')
-                }, 200)
-            }
-            if (id !== -2 || (id === -2 && isOpen && (mouseDownId !== -2))) {
-                setIsOpen(false)
-            }
-        }}
-             onClick={(e) => {
-                 let id = Number(e.target.id || -2);
-                 if (id === -2) {
-                     if (isOpen) {
-                         setIsOpen(false)
-                         setActiveTab(0)
-                         setHeightTab(0)
-                         setTimeout(() => navigate(''), 200)
-                     } else {
-                         setIsOpen(true)
-                         setActiveTab(3)
-                     }
-                 } else if (id >= 0 && id < pageList.length) {
-                     setPageId(pageList[id].id)
-                     setIsOpen(false)
-                     setActiveTab(0)
-                     setHeightTab(0)
-                     setTimeout(() => navigate(''), 200)
-                 }
-             }}>
-            <div style={!isOpen ? {
-                scale: '0',
-                opacity: '0',
-                height: '0'
-            } : {
-                height: String((7 * (pageList.length + 2) + 4) / 100 * window.innerWidth) + 'px',
-                opacity: '1',
-                scale: '1'
-            }}>
-                <div className={style['label']}>Выберите платформу</div>
-                {pageList.map((item, index) => (
-                    <>
-                        <div className={style[mouseDownId === index ? 'selectedItem' : '']} id={index}>
-                            <div id={index} style={{backgroundImage: `url(${item.url})`}}/>
-                            <div id={index}>{item.name}</div>
-                        </div>
-                    </>
-                ))}</div>
+        <div className={style.container}style={{paddingTop: String(safeAreaInset.top + contentSafeAreaInset.top) + 'px'}}>
+            {(startPageList.sort((a, b) => a.serialNumber - b.serialNumber)).map((item, index) => {
+                if(item.platform === botType){
+                    if(item.type === 'page'){
+                        return(<PlatformCard
+                            key={item.id}
+                            item={{...pageList.find(user => user.id === item.structurePageId), ...item}}
+                            isActive={item.structurePageId === pageId}
+                            animationDelay={`${index * 0.08}s`}
+                            onSelect={() => handleSelect(pageList.find(user => user.id === item.structurePageId))}
+                        />)
+                    }else if(item.type === 'link'){
+                        return(<SelectPlatformLink item={item} animationDelay={'0s'}/>)
+                    }else{
+                        return(<SelectPlatformHeader data={item}/>)
+                    }
+                }
+            })}
         </div>
     );
 };

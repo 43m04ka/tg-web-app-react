@@ -1,0 +1,79 @@
+@import "../../../app/styles/mainStyle";
+
+.header {
+  margin-bottom: 5px;
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  gap: 2vw;
+  margin-top: 25px;
+}
+
+.iconWrap {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 7vw;
+  height: 7vw;
+}
+
+.icon {
+  width: 7vw;
+  height: 7vw;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.title {
+  @extend %font-bold;
+  margin: 0;
+  min-width: 0;
+  color: #fffffc;
+  font-size: 5.4vw;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.hint {
+  @extend %font-medium;
+  width: 100%;
+  margin: 0 0 25px 0;
+  color: #72757E ;
+  font-size: 4vw;
+  line-height: 1.4;
+  margin-left: 2px;
+}
+
+@media (min-width: 768px) {
+  .header {
+    margin-bottom: 28px;
+  }
+
+  .topRow {
+    gap: 16px;
+  }
+
+  .iconWrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+  }
+
+  .icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .title {
+    font-size: 30px;
+  }
+
+  .hint {
+    margin-top: 12px;
+    font-size: 15px;
+  }
+}

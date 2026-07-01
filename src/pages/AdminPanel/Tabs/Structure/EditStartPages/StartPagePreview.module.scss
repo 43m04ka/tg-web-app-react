@@ -1,0 +1,194 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+
+.frame {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.frameHeader {
+  @extend %text;
+  font-size: 14px;
+  font-weight: 600;
+  color: #8e95a3;
+}
+
+.phone {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  padding: 8px 0 16px;
+  overflow: auto;
+}
+
+.phoneInner {
+  width: 100%;
+  max-width: 500px;
+  min-height: 640px;
+  border-radius: 24px;
+  border: 1px solid #2c2c2e;
+  background:
+    radial-gradient(ellipse 120% 60% at 50% -10%, rgba(80, 90, 140, 0.18) 0%, transparent 55%),
+    #121212;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  padding: 20px 16px 28px;
+  box-sizing: border-box;
+  overflow-y: scroll;
+
+  /* ИЗМЕНЕНИЕ: Создаем контекст контейнера. 
+     Это позволит дочерним элементам (внутри карточек), если вы укажете им единицы cqi вместо vw,
+     считать свои размеры строго от ширины этого виртуального экрана телефона (макс. 500px), 
+     а не от ширины вашего физического монитора компьютера. */
+  container-type: inline-size; 
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.item {
+  position: relative;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  transition: border-color 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+  cursor: grab;
+
+  &:hover {
+    border-color: rgba($theme-color, 0.35);
+    background: rgba($theme-color, 0.06);
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.itemDragging {
+  opacity: 0.45;
+}
+
+.itemDropTarget {
+  border-color: $theme-color;
+  background: rgba($theme-color, 0.1);
+}
+
+.itemToolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  padding: 0 4px;
+}
+
+.dragHandle {
+  color: #5d6577;
+  font-size: 16px;
+  line-height: 1;
+  user-select: none;
+}
+
+.typeBadge {
+  @extend %text;
+  font-size: 11px;
+  font-weight: 600;
+  color: #8e95a3;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.editButton {
+  margin-left: auto;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 6px;
+  border: 1px solid rgba($theme-color, 0.35);
+  background: rgba($theme-color, 0.12);
+  color: $theme-color;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba($theme-color, 0.2);
+  }
+}
+
+.titleBlock {
+  margin: 0;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.titleIconWrap {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.titleIcon {
+  width: 32px;
+  height: 32px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.titleText {
+  margin: 0;
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.labelText {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.cardWrap {
+  pointer-events: none;
+  width: 100%; 
+  
+  & > div {
+    margin-bottom: 0 !important;
+  }
+}
+
+
+.missingPage {
+  @extend %text;
+  padding: 166px;
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 107, 107, 0.4);
+  color: #ff6b6b;
+  font-size: 14px;
+}
+
+.empty {
+  @extend %text;
+  margin-top: 40px;
+  text-align: center;
+  color: #5d6577;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 0 20px;
+}

@@ -5,13 +5,12 @@ import useGlobalData from "../../hooks/useGlobalData";
 import style from './MainPage.module.scss'
 import NavigationBar from "../NavigationBar/NavigationBar";
 import DesktopHeader from "../NavigationBar/DesktopHeader";
-import CatalogListBody from "../MainScreen/CatalogListBody";
-import CatalogListHead from "../MainScreen/CatalogListHead";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import Search from "../Search/Search";
 import Basket from "../Basket/Basket";
 import MoreInfo from "../MoreInfo/MoreInfo";
 import SelectPlatform from "../SelectPlatform/SelectPlatform";
+import Catalogs from '../MainScreen/Catalogs';
 
 let lastScroll = 0
 
@@ -23,12 +22,13 @@ const MainPage = ({page}) => {
     const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
     const scrollRef = useRef(null);
     const {pageId, setPageId, barIsVisible} = useGlobalData()
+    const navigate = useNavigate();
 
 
     useEffect(() => {
         tg.BackButton.hide();
         if (pageId === -1) {
-            setPageId(page.id)
+            navigate('/selectPlatfom')
         }
         if (scrollRef.current) {
             scrollRef.current.scrollTo({
@@ -40,13 +40,13 @@ const MainPage = ({page}) => {
     useEffect(()=>{
         setBarIsVisibleLocal(window.screen.availHeight < window.screen.availWidth || window.innerHeight >= window.screen.availHeight * 0.8)
         setTimeout(()=>{
-            setBarIsVisibleLocal(window.screen.availHeight < window.screen.availWidth ||window.innerHeight >= window.screen.availHeight * 0.8)
+            setBarIsVisibleLocal(window.screen.availHeight < window.screen.availWidth || window.innerHeight >= window.screen.availHeight * 0.8)
         }, 300)
     }, [window.innerHeight , window.screen.availHeight, window.screen.availHeight])
 
     const resizeHandler = () => {
         setIsDesktop(window.innerWidth >= 768)
-        setBarIsVisibleLocal(window.screen.availHeight < window.screen.availWidth ||window.innerHeight >= window.screen.availHeight * 0.8)
+        setBarIsVisibleLocal(window.screen.availHeight < window.screen.availWidth || window.innerHeight >= window.screen.availHeight * 0.8)
         setTimeout(()=>{
             setBarIsVisibleLocal(window.screen.availHeight < window.screen.availWidth || window.innerHeight >= window.screen.availHeight * 0.8)
         }, 300)
@@ -60,32 +60,17 @@ const MainPage = ({page}) => {
         };
     }, [])
 
-    return (<div className={style['mainDivision']}>
-        <div
-            style={{zIndex: 100, paddingBottom: String(contentSafeAreaInset.bottom + safeAreaInset.bottom + 0.1 * window.innerWidth) + 'px'}}
-            onScroll={(event) => {
-                lastScroll = (event.target.scrollTop);
-            }}
-            ref={scrollRef}>
-            <div>
-                <CatalogListHead/>
-                <CatalogListBody/>
-            </div>
+    return (<div className={style.mainDivision}>
+        <div style={{opacity: opacityTab}} className={style.bodyContainer}>
+            <Routes>
+                <Route path="catalogs" element={<Catalogs/>}/>
+                <Route path="search" element={<Search/>}/>
+                <Route path="basket" element={<Basket/>}/>
+                <Route path="selectPlatform" element={<SelectPlatform/>}/>
+                <Route path="more" element={<MoreInfo/>}/>
+            </Routes>
         </div>
-        <div style={{
-            zIndex: zIndexTab,
-            background: zIndexTab > 0 && opacityTab !== 0 ? '#222222' : 'none'
-        }}>
-            <div style={{opacity: opacityTab}}>
-                <Routes>
-                    <Route path="/search" element={<Search/>}/>
-                    <Route path="/basket" element={<Basket/>}/>
-                    <Route path="/selectPlatform" element={<SelectPlatform/>}/>
-                    <Route path="/more" element={<MoreInfo/>}/>
-                </Routes>
-            </div>
-        </div>
-        <div className={style['barSlot']}>
+        <div className={style.barSlot}>
             {isDesktop ? (
                 <DesktopHeader setZIndexTab={setZIndexTab} setOpacityTab={setOpacityTab}/>
             ) : (

@@ -1,20 +1,21 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import style from './EditPageData.module.scss'
 import useData from "../../../useData";
-import {useServer} from "../useServer";
+import { useServer } from "../useServer";
 import PopUpWindow from "../../../Elements/PopUpWindow/PopUpWindow";
 import InputLabel from "../../../Elements/Input/InputLabel";
 import useGlobalData from "../../../../../hooks/useGlobalData";
 import SwitchLabel from "../../../Elements/SwitchLabel/SwitchLabel";
 import DropBox from "../../../Elements/DropBox/DropBox";
+import DropImage from '../../../Elements/DropImage/DropImage';
 
-const EditPageData = ({onClose, updatePageList, id}) => {
+const EditPageData = ({ onClose, updatePageList, id }) => {
 
     const platformOptions = [
-        { key: 'vk-xbox', name: 'Сообщество Xbox',},
-        { key: 'vk-ps', name: 'Сообщество Playstation',},
-        { key: 'tg', name: 'Бот телеграмм',},
-        { key: 'web', name: 'Браузерная версия',}
+        { key: 'vk-xbox', name: 'Сообщество Xbox', },
+        { key: 'vk-ps', name: 'Сообщество Playstation', },
+        { key: 'tg', name: 'Бот телеграмм', },
+        { key: 'web', name: 'Браузерная версия', }
     ];
 
     const typeOptions = [
@@ -23,18 +24,19 @@ const EditPageData = ({onClose, updatePageList, id}) => {
         { key: 'other', name: 'Без полей' }
     ];
 
-    const {pageList} = useGlobalData();
-    let pageData = {platform: 'tg', isHide: 1}
+    const { pageList } = useGlobalData();
+    let pageData = { platform: 'tg', isHide: 1 }
     pageList.map((item) => {
-        if(item.id === id){
+        if (item.id === id) {
             pageData = item;
         }
     })
     const [infoLabel, setInfoLabel] = useState('*Поля обязательные для заполнения')
     const [updatePageJson, setUpdatePageJson] = useState({})
 
-    const {authenticationData} = useData();
-    const {updatePageData, createPage, deletePageData} = useServer()
+
+    const { authenticationData } = useData();
+    const { updatePageData, createPage, deletePageData } = useServer()
     const selectedPlatform = updatePageJson.platform || pageData.platform || 'tg'
     const selectedPlatformIndex = Math.max(0, platformOptions.findIndex(item => item.key === selectedPlatform))
 
@@ -48,24 +50,31 @@ const EditPageData = ({onClose, updatePageList, id}) => {
         }));
     }
 
+    const [icon1, setIcon1] = useState(pageData.url)
+    const [icon2, setIcon2] = useState(pageData.urlBar)
+
     return (
         <PopUpWindow title={id === -1 ? 'Создать страницу' : 'Редактировать страницу'} onClose={onClose}>
             <div className={style['container']}>
                 <div className={style['formSection']}>
                     <InputLabel label={'Имя'} defaultValue={pageData.name}
-                                onChange={(e) => handleInputChange('name', e.target.value)}/>
+                        onChange={(e) => handleInputChange('name', e.target.value)} />
                     <InputLabel label={'Ссылка'} defaultValue={pageData.link}
-                                onChange={(e) => handleInputChange('link', e.target.value)}/>
-                    <InputLabel label={'Изображение в переключателе'} defaultValue={pageData.url}
-                                onChange={(e) => handleInputChange('url', e.target.value)}/>
-                    <InputLabel label={'Изображение в баре'} defaultValue={pageData.urlBar}
-                                onChange={(e) => handleInputChange('urlBar', e.target.value)}/>
-                    <InputLabel label={'Порядковый номер'} defaultValue={pageData.serialNumber}
-                                onChange={(e) => handleInputChange('serialNumber', e.target.value)}/>
+                        onChange={(e) => handleInputChange('link', e.target.value)} />
+                    <DropImage label={'Изображение в переключателе'} icon={icon1}
+                        setValue={(e) => {
+                            handleInputChange('url', e)
+                            setIcon1(e)
+                        }} />
+                    <DropImage label={'Изображение в баре'} icon={icon2}
+                        setValue={(e) => {
+                            handleInputChange('urlBar', e)
+                            setIcon2(e)
+                        }} />
 
                     <div className={style['colorInputGroup']}>
                         <label className={style['colorLabel']}>Цвет</label>
-                        <input 
+                        <input
                             className={style['colorInput']}
                             type="color"
                             defaultValue={pageData.color || '#5B78E3'}
@@ -74,22 +83,22 @@ const EditPageData = ({onClose, updatePageList, id}) => {
                     </div>
 
                     <InputLabel label={'Заголовок в сообщении'} defaultValue={pageData.titleForMessage}
-                                onChange={(e) => handleInputChange('titleForMessage', e.target.value)}/>
+                        onChange={(e) => handleInputChange('titleForMessage', e.target.value)} />
 
                     <div className={style['dropboxLabel']}>Платформа</div>
                     <DropBox label={platformOptions} onChange={(value) => {
                         handleInputChange('platform', platformOptions[value].key);
-                    }} defaultIndex={selectedPlatformIndex}/>
+                    }} defaultIndex={selectedPlatformIndex} />
 
                     <div className={style['dropboxLabel']}>Тип</div>
                     <DropBox label={typeOptions} onChange={(value) => {
                         handleInputChange('type', typeOptions[value].key);
-                    }} defaultIndex={selectedTypeIndex}/>
+                    }} defaultIndex={selectedTypeIndex} />
 
                     <SwitchLabel label={'Страница скрыта'} defaultValue={pageData.isHide}
-                                onChange={(e) => {
-                                    handleInputChange('isHide', e.target.checked ? 1 : 0);
-                                }}/>
+                        onChange={(e) => {
+                            handleInputChange('isHide', e.target.checked ? 1 : 0);
+                        }} />
                 </div>
 
                 <div className={style['infoLabel']}>
@@ -114,14 +123,14 @@ const EditPageData = ({onClose, updatePageList, id}) => {
                                 ...updatePageJson,
                                 platform: updatePageJson.platform || pageData.platform || 'tg'
                             }
-                            await createPage(() => {}, authenticationData, createPageJson)
+                            await createPage(() => { }, authenticationData, createPageJson)
                         } else {
                             await updatePageData(authenticationData, id, updatePageJson)
                         }
                         await updatePageList()
                         onClose();
                     }}>
-                        <div/>
+                        <div />
                         <p>Сохранить</p>
                     </div>
                 </div>

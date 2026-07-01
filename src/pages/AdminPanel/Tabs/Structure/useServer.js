@@ -1,6 +1,6 @@
-import {adminAuthHeadersJson, withJsonAuth} from '../../adminAuth';
+import {ADMIN_API_URL, adminAuthHeadersJson, withJsonAuth} from '../../adminAuth';
 
-const URL = '/api/admin';
+const URL = ADMIN_API_URL;
 
 export function useServer() {
 
@@ -112,6 +112,57 @@ export function useServer() {
         })
     }
 
-    return {deletePageData, updatePageData, createPage, getStructureCatalogList, createStructureCatalog, deleteStructureCatalog, updateCatalogData, getCatalogIcons}
+    const getStartPageList = async (setResult) => {
+        await fetch(`${URL}/getStartPageList`, {
+            method: 'POST',
+            headers: adminAuthHeadersJson(),
+            body: JSON.stringify(withJsonAuth({})),
+        }).then(async (response) => {
+            const answer = await response.json();
+            setResult(answer.result || []);
+        }).catch(() => setResult([]));
+    };
+
+    const createStartPage = async (authenticationData, startPageData) => {
+        const response = await fetch(`${URL}/createStartPage`, {
+            method: 'POST',
+            headers: adminAuthHeadersJson(),
+            body: JSON.stringify(withJsonAuth({authenticationData, startPageData})),
+        });
+        return response.json();
+    };
+
+    const updateStartPage = async (authenticationData, id, updateData) => {
+        const response = await fetch(`${URL}/updateStartPage`, {
+            method: 'POST',
+            headers: adminAuthHeadersJson(),
+            body: JSON.stringify(withJsonAuth({authenticationData, id, updateData})),
+        });
+        return response.json();
+    };
+
+    const deleteStartPage = async (authenticationData, id) => {
+        const response = await fetch(`${URL}/deleteStartPage`, {
+            method: 'POST',
+            headers: adminAuthHeadersJson(),
+            body: JSON.stringify(withJsonAuth({authenticationData, id})),
+        });
+        return response.json();
+    };
+
+    return {
+        deletePageData,
+        updatePageData,
+        createPage,
+        getStructureCatalogList,
+        createStructureCatalog,
+        deleteStructureCatalog,
+        updateCatalogData,
+        getCatalogIcons,
+        getStartPageList,
+        createStartPage,
+        updateStartPage,
+        deleteStartPage,
+    };
 
 }

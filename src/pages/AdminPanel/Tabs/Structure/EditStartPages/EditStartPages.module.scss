@@ -1,0 +1,137 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+
+.mainContainer {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 40px; /* Отступ между левой панелью управления и превью */
+  padding: 24px; /* Внутренние отступы для всей страницы */
+  box-sizing: border-box;
+}
+
+.childContainer {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-height: 0;
+  width: 360px; /* Оптимальная ширина для панели управления */
+  gap: 24px; /* Одинаковое расстояние между логическими блоками */
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center; /* Выравнивание заголовка и кнопки по центру */
+  width: 100%;
+}
+
+.headerTitle {
+  @extend %text;
+  font-size: 24px; /* Чуть аккуратнее */
+  font-weight: 700;
+  color: $text-color;
+  margin: 0;
+  margin-bottom: 15px;
+}
+
+.headerHint {
+  @extend %text;
+  margin-top: 6px;
+  font-size: 14px;
+  color: #8e95a3;
+}
+
+.reloadButton {
+  @extend %button;
+  height: 36px; /* Чуть компактнее */
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid rgba($theme-color, 0.35);
+  background: rgba($theme-color, 0.12);
+  color: $theme-color;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba($theme-color, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* Переводим табы в аккуратный горизонтальный ряд */
+.platformTabs {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 колонки для баланса (Telegram/Web и VK) */
+  gap: 8px;
+}
+
+.platformTab {
+  @extend %button;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(79, 95, 130, 0.4);
+  background: rgba(19, 21, 29, 0.6);
+  color: #8e95a3;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+
+  &:hover {
+    border-color: rgba($theme-color, 0.45);
+    color: $text-color;
+  }
+}
+
+.platformTabActive {
+  border-color: $theme-color;
+  background: rgba($theme-color, 0.15);
+  color: $theme-color;
+}
+
+/* Кнопки действий выстроены строго по левому краю в полную ширину контейнера */
+.toolbar {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.addButton {
+  @extend %button;
+  height: 42px; /* Кнопки добавления делаем более акцентными */
+  padding: 0 16px;
+  border-radius: 8px;
+  border: none;
+  background: $theme-color;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left; /* Текст с левым выравниванием выглядит профессиональнее */
+  padding-left: 20px;
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba($theme-color, 0.2);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}

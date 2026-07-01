@@ -1,20 +1,14 @@
 @import "src/app/styles/mainStyle";
 
 .container {
-  position: absolute;
-  display: flex;
-  bottom: 0;
   background: $menu-color;
-  width: 100vw;
   z-index: 250;
-
-  > div:nth-child(1) {
-    height: 8%;
-    margin: 2% 3vw;
-    width: 95vw;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+  height: 14vw;
+  padding: 0vw 3vw;
+  width: 100vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 
     > button:active {
       outline: none;
@@ -49,7 +43,6 @@
         text-align: center;
       }
     }
-  }
 
 }
 

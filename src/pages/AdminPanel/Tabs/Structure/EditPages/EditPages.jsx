@@ -3,10 +3,12 @@ import {useServer} from "../useServer";
 import useGlobalData from "../../../../../hooks/useGlobalData";
 import useData from "../../../useData";
 import style from "./EditPages.module.scss";
-import ButtonLine from "../../../Elements/ButtonLine/ButtonLine";
+import structureStyle from "../Structure.module.scss";
 import EditPageData from "./EditPageData";
+import EditStartPages from "../EditStartPages/EditStartPages";
 
 const EditPages = ({}) => {
+    const [activeSection, setActiveSection] = useState('pages');
 
     const platformOptions = [
         { key: 'vk-xbox', name: 'Сообщество Xbox',},
@@ -102,6 +104,27 @@ const EditPages = ({}) => {
 
     return (
         <div className={style['mainContainer']}>
+            <div className={structureStyle['tabsContainer']}>
+                <button
+                    type="button"
+                    className={`${structureStyle['tab']} ${activeSection === 'pages' ? structureStyle['activeTab'] : ''}`}
+                    onClick={() => setActiveSection('pages')}
+                >
+                    Страницы
+                </button>
+                <button
+                    type="button"
+                    className={`${structureStyle['tab']} ${activeSection === 'start' ? structureStyle['activeTab'] : ''}`}
+                    onClick={() => setActiveSection('start')}
+                >
+                    Первая страница
+                </button>
+            </div>
+
+            {activeSection === 'start' ? (
+                <EditStartPages />
+            ) : (
+                <>
             <div className={style['header']}>
                 <div className={style['headerTitle']}>Структура</div>
                 <div className={style['headerControls']}>
@@ -142,7 +165,7 @@ const EditPages = ({}) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredList && filteredList.map((page) => (
+                        {((filteredList && filteredList).sort((a, b) => a.platform.localeCompare(b.platform))).map((page) => (
                             <tr key={page.id} onClick={() => handleRowClick(page.id)}>
                                 <td>{page.id}</td>
                                 <td>{page.name}</td>
@@ -182,6 +205,8 @@ const EditPages = ({}) => {
                 setEditTabOpen(false);
                 setPageId(-1)
             }} updatePageList={()=>updatePageList(true)} id={pageId}/> : ''}
+                </>
+            )}
         </div>
     )
 };

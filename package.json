@@ -22,7 +22,7 @@
     "zustand": "^5.0.6"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set HOST=0.0.0.0&&react-scripts start",
     "build": "react-scripts build",
     "deploy": "npm run build && scp -r ./build/* root@79.174.84.244:/var/www/gwstorebot/frontend/",
     "test": "react-scripts test",

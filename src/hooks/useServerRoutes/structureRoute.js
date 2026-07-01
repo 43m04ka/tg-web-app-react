@@ -48,6 +48,21 @@ export function structureRoute(){
         })
     }
 
+    const getStartPageList = async (setResult) => {
+        await fetch(`${API_BASE_URL}/api/structure/allStartPages?time=${Date.now()}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                let result = data.result.sort((a, b) => a.serialNumber - b.serialNumber)
+                setResult(result)
+            })
+        })
+    }
+
 
     const getStructureCatalogList = async (setResult) => {
         await fetch(`${API_BASE_URL}/api/structure/allStructureBlocks?time=${Date.now()}`, {
@@ -90,5 +105,5 @@ export function structureRoute(){
         })
     }
 
-    return {getStructureCatalogList, getPreviewCardList, getPageList, getInfoBlocks, syncUser}
+    return {getStructureCatalogList, getPreviewCardList, getPageList, getStartPageList, getInfoBlocks, syncUser}
 }

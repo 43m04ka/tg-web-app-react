@@ -14,7 +14,6 @@ function isStoreMainHome(pathname) {
 }
 
 const HEADER_INNER_PAD_Y = 10;
-/** Matches desktop header row: logo 44px + .logoButton vertical padding 6+6 */
 const HEADER_ROW_MIN = 56;
 
 const CustomBackButton = () => {
@@ -46,8 +45,7 @@ const CustomBackButton = () => {
     if (hideOnDesktopMain) return null;
 
     const useDesktopChrome = isDesktop && isVisible;
-    const desktopCenterTop =
-        contentSafeAreaInset.top + HEADER_INNER_PAD_Y + HEADER_ROW_MIN / 2;
+    const desktopCenterTop = contentSafeAreaInset.top + HEADER_INNER_PAD_Y + HEADER_ROW_MIN / 2;
 
     const desktopContainerStyle = isDesktop
         ? {

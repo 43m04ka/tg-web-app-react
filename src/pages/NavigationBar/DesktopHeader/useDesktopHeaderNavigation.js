@@ -59,10 +59,8 @@ export const useDesktopHeaderNavigation = ({
         }
 
         setActiveTab(currentButton.id);
-        if (currentButton.path !== 'selectPlatform') {
-            setOpacityTab(currentButton.opacity);
-            setZIndexTab(currentButton.opacity === 0 ? -100 : 100);
-        }
+        setOpacityTab(currentButton.opacity);
+        setZIndexTab(currentButton.opacity === 0 ? -100 : 100);
         updateBasket(catalogList, pageId);
     }, [location.pathname, visibleButtons, pageId, catalogList]);
 
@@ -71,21 +69,19 @@ export const useDesktopHeaderNavigation = ({
         const valueOfKey = params.get('from');
         const basePath = '/' + location.pathname.split('/').filter(Boolean)[0];
 
-        if (button.path !== 'selectPlatform') {
-            if (!location.pathname.includes(button.path) && button.path !== '') {
-                setOpacityTab(0.01);
-            }
+        if (!location.pathname.includes(button.path) && button.path !== '') {
+            setOpacityTab(0.01);
+        }
 
-            if (button.path === '') {
-                if (valueOfKey === 'product') {
-                    navigate(-1);
-                } else {
-                    setOpacityTab(0);
-                    setTimeout(() => navigate(basePath), 100);
-                }
+        if (button.path === '') {
+            if (valueOfKey === 'product') {
+                navigate(-1);
             } else {
-                setTimeout(() => navigate(basePath + '/' + button.path), 100);
+                setOpacityTab(0);
+                setTimeout(() => navigate(basePath), 100);
             }
+        } else {
+            setTimeout(() => navigate(basePath + '/' + button.path), 100);
         }
 
         setActiveTab(button.id);

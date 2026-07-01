@@ -31,17 +31,25 @@ const AdminPanel = () => {
         navigate('/admin')
     }
 
-    const routeData = [{name: 'Редактировать каталоги', path: 'edit-directories', element: <EditDirectories/>},
+    const routeData = [
         {name: 'Редактировать карты', path: 'edit-cards', element: <AP_EditCards/>},
-        {name: 'Структура', path: 'structure', element: <EditCatalogs/>,},
-        {name: 'Поиск', path: 'search', element: <Search/>},
-        {name: 'Акции в "ещё"', path: 'more', element: <InfoBlock/>},
-        {name: 'Промокоды', path: 'promo', element: <Promo/>},
+        {name: 'Редактировать каталоги', path: 'edit-directories', element: <EditDirectories/>},
+        {name: 'Структура', path: 'structure', element: <EditCatalogs/>},
         {name: 'Страницы', path: 'pages', element: <EditPages/>},
+        {name: 'Подсказки в поиске', path: 'search', element: <Search/>},
+      
+        
         {name: 'История заказов', path: 'history-orders', element: <History/>},
+
+
+        {name: 'Промокоды', path: 'promo', element: <Promo/>},
+        {name: 'Акции в "ещё"', path: 'more', element: <InfoBlock/>},
+      
+
+        {name: 'Рассылка', path: 'broadcast', element: <Broadcast/>},
         {name: 'Парсинг', path: 'parsing', element: <Parsing/>},
-        {name: 'Хостинг', path: 'hosting', element: <AdminGallery/>},
-        {name: 'Рассылка', path: 'broadcast', element: <Broadcast/>}];
+        {name: 'Хостинг', path: 'hosting', element: <AdminGallery/>}
+      ];
 
     return (
         <div className={styles['main-division']}>

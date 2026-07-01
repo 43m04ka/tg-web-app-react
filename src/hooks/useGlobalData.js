@@ -5,7 +5,7 @@ import {getBotType, getUser} from "./useTelegram";
 
 
 const {
-    getPageList, getStructureCatalogList, getPreviewCardList, getCatalogList, getPreviewFavoriteList
+    getPageList, getStructureCatalogList, getPreviewCardList, getCatalogList, getPreviewFavoriteList, getStartPageList
 } = useServerUser()
 const {getBasketList} = useServerUser()
 
@@ -36,6 +36,17 @@ const useGlobalData = create(devtools((set, get) => ({
             } else {
                 set(() => ({pageList: filterVisiblePagesByPlatform(data)}));
             }
+        }
+    },
+
+    startPageList: [],
+    updateStartPageList: (data) => {
+        if (typeof data === 'undefined') {
+            getStartPageList((result) => {
+                set(() => ({startPageList: result}));
+            })
+        } else {
+            set(() => ({startPageList: data}));
         }
     },
 

@@ -16,6 +16,7 @@ import Product from "../pages/Product/Product";
 import CustomBackButton from "../shared/ui/CustomBackButton/CustomBackButton";
 import DanyaDr from "../pages/DanyaDr/DanyaDr";
 import style from './App.module.scss'
+import SelectPlatform from '../pages/SelectPlatform/SelectPlatform';
 
 const normalizeInitialState = (rawInitialData) => {
     const data = rawInitialData || {};
@@ -33,7 +34,8 @@ const normalizeInitialState = (rawInitialData) => {
         pages: pickValue('pages', 'allPages'),
         structureBlocks: pickValue('structureBlocks', 'allStructureBlocks'),
         mainPageProducts: pickValue('mainPageProducts'),
-        allCatalogs: pickValue('allCatalogs', 'catalogs')
+        allCatalogs: pickValue('allCatalogs', 'catalogs'),
+        startPages: pickValue('startPages', 'allStartPages')
     };
 };
 
@@ -50,6 +52,7 @@ try {
 
     console.log('[App] initial data loaded:', {
         pages: Array.isArray(initialState.pages) ? initialState.pages.length : 'undefined',
+        startPages: Array.isArray(initialState.startPages) ? initialState.startPages.length : 'undefined',
         structureBlocks: Array.isArray(initialState.structureBlocks) ? initialState.structureBlocks.length : 'undefined',
         mainPageProducts: Array.isArray(initialState.mainPageProducts) ? initialState.mainPageProducts.length : 'undefined',
         allCatalogs: Array.isArray(initialState.allCatalogs) ? initialState.allCatalogs.length : 'undefined'
@@ -73,6 +76,8 @@ function App() {
         mainPageCards,
         updateMainPageCards,
         updateCatalogStructureList,
+        updateStartPageList,
+        startPageList,
         updatePreviewFavoriteData,
         updateBasket,
         setPageId,
@@ -98,6 +103,7 @@ function App() {
         updateCatalogStructureList(initialState.structureBlocks)
         updateMainPageCards(initialState.mainPageProducts)
         updateCatalogList(initialState.allCatalogs)
+        updateStartPageList(initialState.startPages)
     }, [])
 
     useEffect(() => {
@@ -120,9 +126,8 @@ function App() {
         }
     }, [pageId])
 
-    if (catalogList !== null && pageList !== null && mainPageCards !== null && isLoaded) {
+    if (catalogList !== null && pageList !== null && mainPageCards !== null && startPageList !== null && isLoaded) {
         setTimeout(() => {
-            setPageId(pageList[0]?.id || -1)
             setIsLoaded(false)
         }, 150)
     }
@@ -140,20 +145,20 @@ function App() {
                     navigate('/card/' + param);
                 }
             } else {
-                navigate(pageList[0]['link'])
+                navigate('/selectPlatform')
             }
         }
-        return (<div className={style['App']}>
+        return (<div className={style['App']} style={{height: String(window.innerHeight) + 'px'}}>
             <CustomBackButton />
             <Routes>
-                {pageList.map((page) => (
-                    <Route path={page['link'] + '/*'} key={page['id']} element={<MainPage page={page}/>}/>))}
-                <Route path={'favorites'} element={<Favorites/>}/>
+                <Route path={'/main/*'} element={<MainPage/>}/>
+                <Route path={'/favorites'} element={<Favorites/>}/>
+                <Route path={"/selectPlatform"} element={<SelectPlatform/>}/>
                 <Route path={'/catalog/*'} element={<Catalog/>}/>
                 <Route path={'/card/*'} element={<Product/>}/>
                 <Route path={'/choice-catalog/*'} element={<Product/>}/>
-                <Route path={'admin-panel/*'} element={<AdminPanel/>}/>
-                <Route path={'admin'} element={<AP_Authentication/>}/>
+                <Route path={'/admin-panel/*'} element={<AdminPanel/>}/>
+                <Route path={'/admin'} element={<AP_Authentication/>}/>
                 <Route path={'/history'} element={<History/>}/>
                 <Route path={'/danya_dr'} element={<DanyaDr/>}/>
                 <Route path="*" element={<ErrorPage/>}/>

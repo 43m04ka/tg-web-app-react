@@ -1,0 +1,84 @@
+﻿import React, {useState} from 'react';
+import EditDataCard from "./EditData/EditDataCard";
+import {useServer} from "../../useServer";
+import style from "./EditCards.module.scss";
+import CardTable from "./CardTable";
+import useData from "../../useData";
+
+
+const EditCards = () => {
+
+    const {searchForName, updateCardData} = useServer()
+    const {authenticationData} = useData()
+
+    const [cardList, setCardList] = useState([])
+    const [searchInputValue, setSearchInputValue] = useState('')
+
+    const [uploadCard, setUploadCard] = useState(false);
+
+    const [editTabOpen, setEditTabOpen] = useState(false);
+    const [cardId, setCardId] = React.useState(-1);
+
+    const cap = {
+        name: ['Имя', 'Id', 'Цена', 'Статус'],
+        key: ['name', 'id', 'price', (item) => {
+            return item.onSale ? 'В продаже' : 'Нет в продаже'
+        }],
+    }
+
+    const returnOptionList = (option, id) => {
+        switch (option) {
+            case 'edit':
+                setEditTabOpen(true)
+                setCardId(id)
+                break;
+            default:
+                break;
+        }
+    }
+
+    const onChangeStatus = async (listId, bool) => {
+        for await (const id of listId) {
+            await updateCardData(() => {}, authenticationData, id, {onSale: bool})
+        }
+        await searchForName(setCardList, searchInputValue).then()
+    }
+
+
+    return (
+        <div className={style['mainContainer']}>
+            <div className={style['header']}>
+                <div className={style['headerTitle']}>Карты</div>
+                <div className={style['flexRow']}>
+                    <input className={style['inputFind']} placeholder={'Поиск'}
+                           onChange={async (event) => {
+                               await searchForName(setCardList, event.target.value);
+                               setSearchInputValue(event.target.value)
+                           }}/>
+                    <div className={style['buttonUpload']} onClick={() => {
+                        setUploadCard(true);
+                    }}>
+                        <p>Импортировать</p>
+                    </div>
+                </div>
+            </div>
+
+            <div className={style['tableWrapMain']}>
+                {cardList !== null ? (
+                    <CardTable cardList={cardList} cap={cap}
+                               returnOption={returnOptionList} onChangeStatus={onChangeStatus}/>) : ''}
+            </div>
+
+            {editTabOpen ? <EditDataCard onClose={() => {
+                setEditTabOpen(false);
+            }} onReload={() => searchForName(setCardList, searchInputValue).then()} cardId={cardId}/> : ''}
+
+            {uploadCard ? <UploadData onClose={() => {
+                setUploadCard(false);
+            }} onReload={() => searchForName(setCardList, searchInputValue).then()}/> : ''}
+        </div>);
+
+};
+
+
+export default EditCards;

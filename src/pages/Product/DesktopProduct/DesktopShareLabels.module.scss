@@ -1,0 +1,57 @@
+@import "src/app/styles/mainStyle";
+
+.card {
+  padding: 20px;
+  border-radius: 18px;
+  background: linear-gradient(150deg, #242424 0%, #1c1c1c 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  button {
+    @extend %font-bold;
+    min-height: 42px;
+    padding: 0 18px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+    }
+  }
+}
+
+.shareBtn {
+  @extend %font-bold;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid rgba(64, 74, 222, 0.4) !important;
+  border-radius: 12px;
+  background: rgba(64, 74, 222, 0.12) !important;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: rgba(64, 74, 222, 0.25) !important;
+    border-color: #404ADE !important;
+  }
+}
+
+.shareBtnCopied {
+  @extend .shareBtn;
+  background: rgba(80, 163, 85, 0.15) !important;
+  border-color: rgba(80, 163, 85, 0.6) !important;
+  color: #84d29c;
+}

@@ -1,0 +1,156 @@
+@import "src/app/styles/mainStyle";
+
+.card {
+  background: #222222;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  display: grid;
+  grid-template-columns: 100px 1fr 40px;
+  gap: 16px;
+  padding: 16px;
+  align-items: center;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+}
+
+.imageWrap {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.25s;
+
+  .imageWrap:hover & {
+    transform: scale(1.04);
+  }
+}
+
+.badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: #ff5d5d;
+  color: white;
+  font-family: 'SF PRO Display', serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+.badgeBlue {
+  @extend .badge;
+  background: #4a9ed6;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.name {
+  font-family: 'SF PRO Display', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 22px;
+  transition: color 0.15s;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.75);
+  }
+}
+
+.platform {
+  font-family: 'SF PRO Display', serif;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.priceRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.price {
+  font-family: 'SF PRO Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+}
+
+.priceDiscount {
+  @extend .price;
+  color: #ff5d5d;
+}
+
+.oldPrice {
+  font-family: 'SF PRO Display', serif;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.35);
+  text-decoration: line-through;
+}
+
+.notForSale {
+  font-family: 'SF PRO Display', serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.promo {
+  font-family: 'SF PRO Display', serif;
+  font-size: 12px;
+  color: rgba(255, 215, 0, 0.8);
+}
+
+.deleteBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #171717;
+  color: rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+
+  > svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    background: rgba(255, 93, 93, 0.12);
+    color: #ff5d5d;
+    border-color: rgba(255, 93, 93, 0.3);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}

@@ -1,0 +1,259 @@
+﻿@import "src/pages/AdminPanel/AdminPanel.module";
+
+.mainContainer {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  padding: 40px 40px 20px 40px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: 0 0 24px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.headerTitle {
+  @extend %text;
+  font-size: 28px;
+  font-weight: 700;
+  color: $text-color;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.headerControls {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  flex: 1;
+  max-width: 600px;
+}
+
+.inputFind {
+  @extend %text;
+  display: flex;
+  flex: 1;
+  height: 40px;
+  padding: 0 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  font-size: 14px;
+  color: $text-color;
+  background-color: rgba(19, 21, 29, 0.6);
+  background-clip: padding-box;
+  border: 1px solid rgba(79, 95, 130, 0.4);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: $theme-color;
+    background-color: rgba(19, 21, 29, 0.8);
+    box-shadow: 0 0 0 3px rgba($theme-color, 0.1);
+  }
+
+  &:hover:not(:focus) {
+    border-color: rgba(79, 95, 130, 0.6);
+  }
+
+  &::placeholder {
+    color: #5d6577;
+  }
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 10px;
+}
+
+.button {
+  @extend %button;
+  background: $theme-color;
+  padding: 0 16px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba($theme-color, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  > p {
+    margin: 0;
+  }
+}
+
+.tabsContainer {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid #2c2c2e;
+  margin-bottom: 20px;
+}
+
+.tab {
+  @extend %button;
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  color: #8e95a3;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: $text-color;
+  }
+
+  &.activeTab {
+    color: $theme-color;
+    border-bottom-color: $theme-color;
+  }
+}
+
+.tableWrapMain {
+  width: 100%;
+  overflow: auto;
+  max-height: calc(100vh - 280px);
+  min-height: 320px;
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 1px solid #2c2c2e;
+  border-radius: 14px;
+  background: #13151d;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+  table-layout: auto;
+
+  th,
+  td {
+    @extend %text;
+    padding: 12px 14px;
+    border-bottom: 1px solid #242730;
+    text-align: left;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  thead th {
+    color: #8e95a3;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: #11131a;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  tbody tr {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:nth-child(even) {
+      background: rgba(79, 95, 130, 0.08);
+    }
+
+    &:hover {
+      background: rgba(91, 120, 227, 0.12);
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+.actionButtons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.actionButton {
+  @extend %button;
+  padding: 4px 10px;
+  background: transparent;
+  color: $theme-color;
+  border: 1px solid rgba($theme-color, 0.3);
+  border-radius: 6px;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba($theme-color, 0.1);
+    border-color: $theme-color;
+  }
+
+  &:active {
+    opacity: 0.8;
+  }
+
+  &.deleteButton {
+    color: #ff6b6b;
+    border-color: rgba(255, 107, 107, 0.3);
+
+    &:hover {
+      background: rgba(255, 107, 107, 0.1);
+      border-color: #ff6b6b;
+    }
+  }
+
+  > p {
+    margin: 0;
+  }
+}
+
+.emptyCell {
+  color: #8e95a3 !important;
+  text-align: center !important;
+  padding: 20px !important;
+}
+
+.infoLabel {
+  @extend %text;
+  margin: 12px 0 0 0;
+  font-size: 14px;
+  color: #a0a8b8;
+}
+

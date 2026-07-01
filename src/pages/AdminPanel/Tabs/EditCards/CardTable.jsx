@@ -1,0 +1,53 @@
+import React from 'react';
+import style from './EditCards.module.scss';
+
+const CardTable = ({ cardList, cap, returnOption, onChangeStatus }) => {
+    return (
+        <table className={style['table']}>
+            <thead>
+                <tr>
+                    {cap.name.map((name, index) => (
+                        <th key={index}>{name}</th>
+                    ))}
+                    <th>ДЕЙСТВИЯ</th>
+                </tr>
+            </thead>
+            <tbody>
+                {cardList.length === 0 ? (
+                    <tr>
+                        <td colSpan={cap.name.length + 1} className={style['emptyCell']}>
+                            Карты не найдены
+                        </td>
+                    </tr>
+                ) : (
+                    cardList.map((item) => (
+                        <tr key={item.id}>
+                            {cap.key.map((key, index) => (
+                                <td key={index}>
+                                    {typeof key === 'function' ? key(item) : item[key]}
+                                </td>
+                            ))}
+                            <td className={style['actionsCell']}>
+                                <button 
+                                    className={style['actionButton']}
+                                    onClick={() => returnOption('edit', item.id)}
+                                >
+                                    Изменить
+                                </button>
+                                <button 
+                                    className={style['actionButton']}
+                                    onClick={() => onChangeStatus([item.id], !item.onSale)}
+                                    style={{color: item.onSale ? '#ff6b6b' : '#22a54a'}}
+                                >
+                                    {item.onSale ? 'Убрать' : 'В продажу'}
+                                </button>
+                            </td>
+                        </tr>
+                    ))
+                )}
+            </tbody>
+        </table>
+    );
+};
+
+export default CardTable;

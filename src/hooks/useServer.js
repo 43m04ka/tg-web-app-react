@@ -1,4 +1,5 @@
 import {API_BASE_URL} from "./useServerRoutes/baseUrl";
+import useData from "../pages/AdminPanel/useData";
 
 const URL = `${API_BASE_URL}/api/admin`
 
@@ -6,15 +7,27 @@ export function useServer() {
 
 
     const authentication = async (data, setResult) => {
-        await fetch(URL + '/authentication', {
+        const response = await fetch(URL + '/authentication', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(data)
-        }).then(async response => {
-            setResult(response.status === 200);
-        })
+            body: JSON.stringify(data),
+        });
+        if (response.status !== 200) {
+            useData.getState().setAdminAuthToken(null);
+            setResult(false);
+            return;
+        }
+        try {
+            const payload = await response.json();
+            if (payload?.token) {
+                useData.getState().setAdminAuthToken(payload.token);
+            }
+        } catch {
+            /* ответ без JSON — как раньше, без токена */
+        }
+        setResult(true);
     }
 
     const getCategories = async (setResult) => {

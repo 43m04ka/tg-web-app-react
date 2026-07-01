@@ -1,0 +1,161 @@
+﻿import React, {useState} from 'react';
+import useGlobalData from "../../../../../hooks/useGlobalData";
+import ExcelReader from "../../../Blocks/ExcelReader";
+import useData from "../../../useData";
+import PopUpWindow from "../../../Elements/PopUpWindow/PopUpWindow";
+import style from "../../HistoryOrders/History.module.scss";
+import {API_BASE_URL} from "../../../../../hooks/useServerRoutes/baseUrl";
+
+const UploadData = ({onClose, onReload}) => {
+
+    const {authenticationData} = useData();
+    const {catalogList} = useGlobalData()
+
+    const [onLoad, setOnLoad] = useState(false)
+    const [importStatus, setImportStatus] = useState(null)
+    const [errorList, setErrorList] = useState([])
+
+    const [file, setFile] = useState(null)
+
+    const importProductsFromExcel = async (excelFile) => {
+        const formData = new FormData();
+        formData.append('file', excelFile);
+
+        try {
+            setOnLoad(true)
+            const response = await fetch(`${API_BASE_URL}/api/product/import`, {
+                method: 'POST',
+                body: formData
+            })
+
+            const result = await response.json()
+
+            if (response.ok) {
+                setImportStatus({
+                    message: result.message,
+                    successCount: result.successCount,
+                    errorCount: result.errorCount
+                })
+
+                if (result.errors && result.errors.length > 0) {
+                    setErrorList(result.errors)
+                }
+            } else {
+                setImportStatus({
+                    message: result.message || 'Ошибка при импорте',
+                    successCount: result.successCount || 0,
+                    errorCount: result.errorCount || 0
+                })
+                setErrorList(result.errors || [])
+            }
+        } catch (error) {
+            console.error('Import error:', error)
+            setImportStatus({
+                message: 'Ошибка сети при импорте',
+                successCount: 0,
+                errorCount: 0
+            })
+        } finally {
+            setOnLoad(false)
+        }
+    }
+
+    const handleImportClick = async () => {
+        if (!file) {
+            alert('Пожалуйста, выберите файл')
+            return
+        }
+        await importProductsFromExcel(file)
+    }
+    if (onLoad) {
+        return (<div className={'text-element'} style={{
+            fontSize: '20px',
+            marginTop: '30px',
+            marginLeft: '30px',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+        }}>
+            Импорт товаров в процессе...
+        </div>)
+    }
+
+    if (importStatus) {
+        return (<PopUpWindow title={`Результат импорта`}>
+            <div>
+                <div className={style['infoLabel']} style={{fontSize: '16px', marginBottom: '10px'}}>
+                    {importStatus.message}
+                </div>
+                <div style={{marginBottom: '10px'}}>
+                    <div style={{color: 'green', marginBottom: '5px'}}>
+                        ✓ Успешно загружено: <strong>{importStatus.successCount}</strong>
+                    </div>
+                    <div style={{color: 'red'}}>
+                        ✗ Ошибок: <strong>{importStatus.errorCount}</strong>
+                    </div>
+                </div>
+
+                {errorList.length > 0 && (
+                    <div style={{
+                        maxHeight: '200px',
+                        overflowY: 'auto',
+                        border: '1px solid #ddd',
+                        padding: '10px',
+                        marginBottom: '15px',
+                        borderRadius: '4px'
+                    }}>
+                        <div style={{fontWeight: 'bold', marginBottom: '10px'}}>Ошибки:</div>
+                        {errorList.map((error, index) => (
+                            <div key={index} style={{fontSize: '12px', marginBottom: '5px', color: '#666'}}>
+                                <strong>Строка {error.row}:</strong> {error.error}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+            <div className={style['buttonPlace']}>
+                <div className={style['buttonAccept']}
+                     onClick={() => {
+                         onReload();
+                         onClose();
+                     }}>
+                    <div/>
+                    <p>Закрыть</p>
+                </div>
+            </div>
+        </PopUpWindow>);
+    }
+
+    if (catalogList !== null) {
+        return (<PopUpWindow title={`Загрузить новые товары`}>
+            <div>
+                <div className={style['infoLabel']}>Выберите файл Excel для импорта:</div>
+
+                <ExcelReader setButtonTable={(fileData) => setFile(fileData.file || fileData)} />
+
+                <div style={{fontSize: '12px', color: '#666', marginTop: '10px', padding: '10px', backgroundColor: '#f5f5f5', borderRadius: '4px'}}>
+                    <div><strong>Поддерживаемые форматы:</strong> .xlsx, .xls</div>
+                    <div><strong>Максимальный размер:</strong> 50 МБ</div>
+                    <div style={{marginTop: '5px'}}>Плоский Excel автоматически преобразуется в объекты (profile.name → profile: {'{name}'})</div>
+                </div>
+            </div>
+            <div className={style['buttonPlace']}>
+                <div className={style['buttonAccept']}
+                     onClick={handleImportClick}>
+                    <div/>
+                    <p>Импортировать</p>
+                </div>
+
+                <div className={style['buttonCancel']}
+                     onClick={() => {
+                         onClose()
+                     }}>
+                    <div/>
+                    <p>Отмена</p>
+                </div>
+            </div>
+        </PopUpWindow>);
+    }
+};
+
+export default UploadData;

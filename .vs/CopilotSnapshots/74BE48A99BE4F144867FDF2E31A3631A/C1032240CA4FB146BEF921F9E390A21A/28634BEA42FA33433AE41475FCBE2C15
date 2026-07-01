@@ -1,0 +1,224 @@
+﻿import React, { useState, useEffect } from 'react';
+import vkBridge from '@vkontakte/vk-bridge';
+
+const tg = window.Telegram?.WebApp || {
+    close: () => {},
+    expand: () => {},
+    MainButton: { isVisible: false, hide: () => {}, show: () => {} },
+    BackButton: { show: () => {}, hide: () => {} },
+    onEvent: () => {},
+    offEvent: () => {},
+    initDataUnsafe: {},
+    safeAreaInset: { top: 0, bottom: 0 },
+    contentSafeAreaInset: { top: 0, bottom: 0 }
+};
+
+const VK_GROUP_ID_XBOX = 236197114;
+const VK_GROUP_ID_PS = 236197114;
+
+const isVk = vkBridge.isWebView() || vkBridge.isIframe() || window.location.search.includes('vk_');
+const isTg = !isVk && !!window.Telegram?.WebApp;
+
+export const getBotType = () => {
+    if (isVk) {
+        return window.location.href.toLowerCase().includes('app54461112') ? 'vk-xbox' : 'vk-ps';
+    }
+
+    if (isTg) {
+        return 'tg';
+    }
+
+    return 'web';
+};
+
+const vkState = {
+    user: null,
+    insets: { top: 0, bottom: 0 },
+    groupId: null,
+    initialized: false,
+    initPromise: null,
+    bridgeSubscribed: false,
+    listeners: new Set()
+};
+
+const getVkGroupId = () => {
+    const href = window.location.href.toLowerCase();
+    return href.includes('app54461112') ? VK_GROUP_ID_XBOX : VK_GROUP_ID_PS;
+};
+
+const notify = () => {
+    vkState.listeners.forEach((listener) => listener());
+};
+
+const updateVkState = (partial) => {
+    Object.assign(vkState, partial);
+    console.log('[useTelegram] vkState updated:', {
+        user: vkState.user,
+        insets: vkState.insets,
+        groupId: vkState.groupId,
+        initialized: vkState.initialized
+    });
+    notify();
+};
+
+const initVk = async () => {
+    if (!isVk || vkState.initialized) return;
+    if (vkState.initPromise) return vkState.initPromise;
+
+    vkState.initPromise = (async () => {
+        let initSuccess = false;
+        updateVkState({ groupId: getVkGroupId() });
+
+        if (!vkState.bridgeSubscribed) {
+            vkBridge.subscribe((e) => {
+                if (e.detail.type === 'VKWebAppUpdateConfig') {
+                    const data = e.detail.data;
+                    if (data?.safe_area) {
+                        updateVkState({
+                            insets: {
+                                top: data.safe_area.top || 0,
+                                bottom: data.safe_area.bottom || 0
+                            }
+                        });
+                    }
+                }
+            });
+            vkState.bridgeSubscribed = true;
+        }
+
+        vkBridge.send('VKWebAppSetViewSettings', {
+            status_bar_style: 'light',
+            action_bar_color: 'none'
+        }).catch(() => {});
+
+        try {
+            await vkBridge.send('VKWebAppInit').catch(() => {});
+            const user = await vkBridge.send('VKWebAppGetUserInfo');
+            updateVkState({ user });
+            initSuccess = true;
+        } catch (e) {
+            console.error('[useTelegram] VK init failed:', e);
+        }
+
+        vkState.initialized = initSuccess;
+        vkState.initPromise = null;
+
+        if (!initSuccess) {
+            setTimeout(() => initVk(), 5000);
+        }
+    })();
+
+    return vkState.initPromise;
+};
+
+if (isVk) {
+    initVk();
+}
+
+export const getUser = () => {
+    if (isVk) {
+        if (!vkState.initialized && !vkState.initPromise) {
+            initVk();
+        }
+        return vkState.user
+            ? { id: vkState.user.id, first_name: vkState.user.first_name, last_name: vkState.user.last_name, platform: 'vk' }
+            : { id: 5106439090, first_name: 'Гость', platform: 'vk' };
+    }
+
+    if (isTg) {
+        return tg.initDataUnsafe?.user
+            ? { ...tg.initDataUnsafe.user, platform: 'tg' }
+            : { id: 5106439090, first_name: 'Гость', platform: 'tg' };
+    }
+
+    return { id: 5106439090, first_name: 'Гость', platform: 'web' };
+};
+
+export function useTelegram() {
+    const [snapshot, setSnapshot] = useState({
+        user: vkState.user,
+        insets: vkState.insets,
+        groupId: vkState.groupId
+    });
+
+    useEffect(() => {
+        if (!isVk) return;
+
+        const onChange = () => {
+            setSnapshot({
+                user: vkState.user,
+                insets: vkState.insets,
+                groupId: vkState.groupId
+            });
+        };
+
+        vkState.listeners.add(onChange);
+        initVk();
+
+        return () => {
+            vkState.listeners.delete(onChange);
+        };
+    }, []);
+
+    const onClose = () => {
+        if (isVk) {
+            vkBridge.send('VKWebAppClose', { status: 'success' });
+        } else {
+            tg.close();
+        }
+    };
+
+    const onToggleButton = () => {
+        if (isVk) return;
+        if (tg.MainButton.isVisible) {
+            tg.MainButton.hide();
+        } else {
+            tg.MainButton.show();
+        }
+    };
+
+    const expand = () => {
+        if (isVk) return;
+        tg.expand();
+    };
+
+    const user = isVk
+        ? (snapshot.user
+            ? { id: snapshot.user.id, first_name: snapshot.user.first_name, last_name: snapshot.user.last_name, platform: 'vk' }
+            : { id: 5106439090, first_name: 'Гость', platform: 'vk' })
+        : (isTg
+            ? (tg.initDataUnsafe?.user ? { ...tg.initDataUnsafe.user, platform: 'tg' } : { id: 5106439090, first_name: 'Гость', platform: 'tg' })
+            : { id: 5106439090, first_name: 'Гость', platform: 'web' });
+
+    const safeAreaInset = isVk
+        ? snapshot.insets
+        : {
+            top: tg.safeAreaInset?.top,
+            bottom: tg.safeAreaInset?.bottom
+        };
+
+    const contentSafeAreaInset = isVk
+        ? snapshot.insets
+        : {
+            top: tg.contentSafeAreaInset?.top,
+            bottom: tg.contentSafeAreaInset?.bottom
+        };
+
+    const botType = getBotType();
+
+    return {
+        onClose, onToggleButton, expand, tg,
+        user,
+        isVk,
+        isVkUserLoaded: !isVk || !!snapshot.user,
+        isTg,
+        isWeb: !isVk && !isTg,
+        botType,
+        vkGroupId: snapshot.groupId,
+        queryId: tg.initDataUnsafe?.query_id,
+        safeAreaInset,
+        contentSafeAreaInset
+    };
+}
+
+//{id:5106439090, first_name:'tёma'},

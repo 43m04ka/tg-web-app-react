@@ -1,0 +1,144 @@
+﻿import style from './DanyaDr.module.scss';
+import React, { useState } from 'react';
+import s from './DanyaDrStyles.module.scss';
+
+
+const QUIZ_DATA = [
+    {
+        question: "Где мы сделали наше самое первое селфи?",
+        options: ["В парке", "В универе", "На той странной вписке", "В Макдаке"],
+        correctAnswer: "В парке",
+        memoryNote: "Это было в 2019-м, мы тогда еще даже не знали имен друг друга толком!"
+    },
+    {
+        question: "Какая песня у нас ассоциируется с той поездкой на дачу?",
+        options: ["Life is Highway", "Третье сентября", "Потому что есть Алешка", "Gimme! Gimme! Gimme!"],
+        correctAnswer: "Gimme! Gimme! Gimme!",
+        memoryNote: "Мы слушали её на повторе все 3 часа в пробке."
+    },
+    {
+        question: "Сколько пицц мы съели за один присест в прошлый четверг?",
+        options: ["Одну", "Две", "Три", "Мы сбились со счета"],
+        correctAnswer: "Три",
+        memoryNote: "Рекорд побит, желудки в шоке, мы легенды."
+    }
+];
+
+const DanyaDr = () => {
+    const [currentStep, setCurrentStep] = useState(0);
+    const [score, setScore] = useState(0);
+    const [showResult, setShowResult] = useState(false);
+    const [selectedAnswer, setSelectedAnswer] = useState(null);
+    const [isConfirmed, setIsConfirmed] = useState(false);
+
+    const handleAnswerSelect = (option) => {
+        if (isConfirmed) return;
+        setSelectedAnswer(option);
+    };
+
+    const handleConfirm = () => {
+        if (!selectedAnswer) return;
+        if (selectedAnswer === QUIZ_DATA[currentStep].correctAnswer) {
+            setScore(score + 1);
+        }
+        setIsConfirmed(true);
+    };
+
+    const handleNext = () => {
+        const nextStep = currentStep + 1;
+        if (nextStep < QUIZ_DATA.length) {
+            setCurrentStep(nextStep);
+            setSelectedAnswer(null);
+            setIsConfirmed(false);
+        } else {
+            setShowResult(true);
+        }
+    };
+
+    if (showResult) {
+        return (
+            <div className={style.container}>
+                <div className={s.resultCard}>
+                    <div className={s.resultTitle}>Квиз окончен! 🎉</div>
+                    <div className={s.resultScore}>Ты набрал {score} из {QUIZ_DATA.length} баллов.</div>
+                    <p className={s.resultMessage}>
+                        {score === QUIZ_DATA.length
+                            ? "Ты помнишь всё! Лучший друг года!"
+                            : "Ну, память уже не та, пора создавать новые моменты!"}
+                    </p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className={s.resultBtn}
+                    >
+                        Пройти еще раз
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    const currentQuestion = QUIZ_DATA[currentStep];
+
+    return (
+        <div className={style.container}>
+            <div className={s.quizCard}>
+                <div className={s.questionCounter}>
+                    Вопрос {currentStep + 1} из {QUIZ_DATA.length}
+                </div>
+
+                <h3 className={s.questionTitle}>
+                    {currentQuestion.question}
+                </h3>
+
+                <div className={s.optionsContainer}>
+                    {currentQuestion.options.map((option) => {
+                        let optionClass = s.option;
+                        if (selectedAnswer === option) optionClass += ` ${s.selected}`;
+                        if (isConfirmed) {
+                            if (option === currentQuestion.correctAnswer) optionClass += ` ${s.correct}`;
+                            else if (selectedAnswer === option) optionClass += ` ${s.incorrect}`;
+                        }
+
+                        return (
+                            <button
+                                key={option}
+                                onClick={() => handleAnswerSelect(option)}
+                                disabled={isConfirmed}
+                                className={optionClass}
+                            >
+                                {option}
+                            </button>
+                        );
+                    })}
+                </div>
+
+                {isConfirmed && (
+                    <div className={s.memoryNote}>
+                        💡 {currentQuestion.memoryNote}
+                    </div>
+                )}
+
+                <div className={s.buttonContainer}>
+                    {!isConfirmed ? (
+                        <button
+                            onClick={handleConfirm}
+                            disabled={!selectedAnswer}
+                            className={s.confirmBtn}
+                        >
+                            Ответить
+                        </button>
+                    ) : (
+                        <button
+                            onClick={handleNext}
+                            className={s.nextBtn}
+                        >
+                            {currentStep + 1 === QUIZ_DATA.length ? "Результат" : "Дальше →"}
+                        </button>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default DanyaDr;

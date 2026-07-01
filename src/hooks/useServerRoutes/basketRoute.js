@@ -1,9 +1,11 @@
 import {API_BASE_URL} from "./baseUrl";
+import useGlobalData from "../useGlobalData";
 
 export function basketRoute(){
 
     const getBasketList = async (setResult, userId) => {
-        fetch(`${API_BASE_URL}/api/basket/${userId}?time=${Date.now()}`, {
+        const actualUserId = useGlobalData.getState().internalUserId || userId;
+        fetch(`${API_BASE_URL}/api/basket/${actualUserId}?time=${Date.now()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -18,10 +20,11 @@ export function basketRoute(){
 
 
     const setBasketPositionCount = async (setResult, userId, cardId, count) => {
+        const actualUserId = useGlobalData.getState().internalUserId || userId;
         fetch(`${API_BASE_URL}/api/basket/updateCountProduct`, {
             method: 'POST', headers: {
                 'Content-Type': 'application/json',
-            }, body: JSON.stringify({cardId: cardId, userId: userId, count: count}),
+            }, body: JSON.stringify({cardId: cardId, userId: actualUserId, count: count}),
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
@@ -31,11 +34,12 @@ export function basketRoute(){
     }
 
     const addCardToBasket = async (setResult, userId, cardId) => {
+        const actualUserId = useGlobalData.getState().internalUserId || userId;
         fetch(`${API_BASE_URL}/api/basket/addProduct`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            }, body: JSON.stringify({cardId: cardId, userId: userId}),
+            }, body: JSON.stringify({cardId: cardId, userId: actualUserId}),
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
@@ -45,11 +49,12 @@ export function basketRoute(){
     }
 
     const deleteCardToBasket = async (setResult, userId, cardId) => {
+        const actualUserId = useGlobalData.getState().internalUserId || userId;
         fetch(`${API_BASE_URL}/api/basket/deleteProduct`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            }, body: JSON.stringify({cardId: cardId, userId: userId}),
+            }, body: JSON.stringify({cardId: cardId, userId: actualUserId}),
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {

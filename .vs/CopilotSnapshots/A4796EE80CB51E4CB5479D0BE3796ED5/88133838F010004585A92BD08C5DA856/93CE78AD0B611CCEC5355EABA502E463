@@ -1,0 +1,67 @@
+﻿@import "src/pages/AdminPanel/AdminPanel.module";
+
+.label {
+  margin: 5px;
+  border-radius: 100px;
+  padding: 5px;
+  border: 0;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.title {
+  margin: 20px;
+}
+
+.active {
+  color: #a7c6f8;
+  margin-right: 0;
+}
+
+.main-division {
+  width: max-content;
+  display: grid;
+  grid-template-rows: 1fr 300px 70px;
+  justify-content: space-between;
+  padding: 10px;
+  height: 100vh;
+  border-right: 1px solid $secondary-color;
+}
+
+.separator {
+  width: 100%;
+  height: 2px;
+  background-color: #fff;
+}
+
+.buttonUpdate {
+  @extend %text;
+  color: white;
+  background: $theme-color;
+  width: 270px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba($theme-color, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

@@ -1,0 +1,35 @@
+﻿const tg = window.Telegram.WebApp;
+
+export function useTelegram() {
+    const onClose = () => {
+        tg.close();
+    }
+
+    const onToggleButton = () => {
+        if (tg.MainButton.isVisible) {
+            tg.MainButton.hide();
+        } else {
+            tg.MainButton.show();
+        }
+    }
+
+    const expand = () => {
+        tg.expand();
+    }
+
+    return {
+        onClose, onToggleButton, expand, tg,
+        user: tg.initDataUnsafe?.user || {id: 5106439090, first_name: 'Гость'},
+        queryId: tg.initDataUnsafe?.query_id,
+        safeAreaInset: {
+            top: tg.safeAreaInset?.top,
+            bottom: tg.safeAreaInset?.bottom
+        },
+        contentSafeAreaInset: {
+            top: tg.contentSafeAreaInset?.top,
+            bottom: tg.contentSafeAreaInset?.bottom
+        }
+    }
+}
+
+//{id:5106439090, first_name:'tёma'},

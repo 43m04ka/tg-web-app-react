@@ -1,0 +1,129 @@
+@import "src/app/styles/mainStyle";
+
+.card {
+  padding: 20px;
+  border-radius: 18px;
+  background: linear-gradient(150deg, #242424 0%, #1c1c1c 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.tab,
+.tabActive {
+  @extend %font-bold;
+  border: none;
+  border-radius: 12px;
+  padding: 9px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tab {
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.tabActive {
+  color: #ffffff;
+  background: #4f8ae7;
+  border: 1px solid transparent;
+}
+
+.descriptionText,
+.parameterLabel,
+.parameterValue {
+  @extend %font-bold;
+  margin: 0;
+  color: #ffffff;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.descriptionText {
+  p {
+    margin: 0 0 10px;
+  }
+
+  b,
+  strong {
+    color: #ffffff;
+  }
+
+  font[color="orange"] {
+    color: #f2a74a;
+  }
+}
+
+.descriptionCollapse {
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.parameterRow {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 16px;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.parameterLabel {
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 14px;
+}
+
+.parameterValue {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.catalogRow {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.catalogCard {
+  min-width: 180px;
+}
+
+.seeAll {
+  @extend %font-bold;
+  margin-top: 14px;
+  border: none;
+  background: transparent;
+  color: #5b93ef;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+}

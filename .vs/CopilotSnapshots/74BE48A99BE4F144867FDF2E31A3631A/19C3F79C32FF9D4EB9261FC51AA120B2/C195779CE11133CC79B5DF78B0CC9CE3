@@ -1,0 +1,108 @@
+﻿@import "../../AdminPanel.module";
+
+.body {
+  margin: 12px 0;
+  position: relative;
+  width: 100%;
+
+  > button {
+    @extend %text;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid rgba(79, 95, 130, 0.4);
+    border-radius: 8px;
+    width: 100%;
+    padding: 10px 14px;
+    background: rgba(19, 21, 29, 0.6);
+    color: #e4e8f2;
+    height: 44px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+
+    &:hover {
+      border-color: rgba(79, 95, 130, 0.6);
+      background: rgba(19, 21, 29, 0.8);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $theme-color;
+      box-shadow: 0 0 0 3px rgba($theme-color, 0.1);
+    }
+
+    > p {
+      margin: 0;
+      font-size: 14px;
+      flex: 1;
+      text-align: left;
+    }
+  }
+
+  > div {
+    position: absolute;
+    width: 100%;
+    z-index: 500;
+    top: 100%;
+    margin-top: 4px;
+
+    > ul {
+      background: rgba(19, 21, 29, 0.95);
+      border: 1px solid rgba(79, 95, 130, 0.4);
+      border-radius: 8px;
+      padding: 0;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      height: max-content;
+      max-height: 260px;
+      list-style: none;
+      margin: 0;
+
+      > div {
+        @extend %text;
+        padding: 12px 14px;
+        cursor: pointer;
+        color: #e4e8f2;
+        font-size: 14px;
+        transition: all 0.15s ease;
+        border-bottom: 1px solid rgba(79, 95, 130, 0.1);
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:hover {
+          background: rgba(91, 120, 227, 0.15);
+          color: $theme-color;
+          padding-left: 18px;
+        }
+
+        &:active {
+          background: rgba(91, 120, 227, 0.25);
+        }
+      }
+    }
+  }
+}
+
+.background-arrow {
+  background-image: url("../../../../shared/assets/icons/arrow.png");
+  background-size: cover;
+  transition: rotate 0.2s ease;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &-active {
+    rotate: 180deg;
+  }
+}
+
+.buttonOptionSeparator {
+  display: none;
+}

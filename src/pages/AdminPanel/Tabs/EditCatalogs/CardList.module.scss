@@ -1,0 +1,200 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+
+.tableWrap {
+  width: 100%;
+  overflow: auto;
+  max-height: 55vh;
+  min-height: 200px;
+  border: 1px solid #2c2c2e;
+  border-radius: 14px;
+  background: #13151d;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 500px;
+  table-layout: fixed;
+
+  th,
+  td {
+    @extend %text;
+    padding: 10px 14px;
+    border-bottom: 1px solid #242730;
+    text-align: left;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  thead th {
+    color: #8e95a3;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: #11131a;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  tbody tr {
+    transition: background-color 0.2s ease;
+
+    &:nth-child(even) {
+      background: rgba(79, 95, 130, 0.08);
+    }
+
+    &:hover {
+      background: rgba(91, 120, 227, 0.12);
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+.colName { width: 45%; }
+.colPrice { width: 12%; }
+.colStatus { width: 15%; }
+.colActions { width: 28%; }
+
+.nameCell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 0;
+}
+
+.statusOn {
+  color: #22a54a;
+  font-weight: 600;
+}
+
+.statusOff {
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.actionButton {
+  @extend %button;
+  padding: 4px 10px;
+  background: transparent;
+  color: $theme-color;
+  border: 1px solid rgba($theme-color, 0.3);
+  border-radius: 6px;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba($theme-color, 0.1);
+    border-color: $theme-color;
+  }
+}
+
+.deleteButton {
+  color: #ff6b6b;
+  border-color: rgba(255, 107, 107, 0.3);
+
+  &:hover {
+    background: rgba(255, 107, 107, 0.1);
+    border-color: #ff6b6b;
+  }
+}
+
+.emptyCell {
+  color: #8e95a3 !important;
+  text-align: center !important;
+  padding: 20px !important;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin-top: 16px;
+}
+
+.pageBtn {
+  @extend %text;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid rgba(79, 95, 130, 0.4);
+  border-radius: 8px;
+  background: transparent;
+  color: #8e95a3;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(91, 120, 227, 0.12);
+    border-color: $theme-color;
+    color: $text-color;
+  }
+}
+
+.pageBtnActive {
+  background: $theme-color;
+  border-color: $theme-color;
+  color: white;
+
+  &:hover {
+    background: $theme-color;
+    opacity: 0.9;
+  }
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 10px;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 8px;
+}
+
+.button {
+  @extend %button;
+  background: $theme-color;
+  padding: 0 14px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba($theme-color, 0.3);
+  }
+}

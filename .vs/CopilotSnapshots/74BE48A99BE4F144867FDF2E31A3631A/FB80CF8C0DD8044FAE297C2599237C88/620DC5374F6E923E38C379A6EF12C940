@@ -1,0 +1,112 @@
+﻿@import "src/pages/AdminPanel/AdminPanel.module";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.colorInputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.colorLabel {
+  @extend %text;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #8e95a3;
+}
+
+.colorInput {
+  width: 100%;
+  height: 44px;
+  padding: 2px;
+  background-color: rgba(19, 21, 29, 0.6);
+  border: 1px solid rgba(79, 95, 130, 0.4);
+  border-radius: 8px;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: rgba(79, 95, 130, 0.6);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $theme-color;
+    box-shadow: 0 0 0 3px rgba($theme-color, 0.1);
+  }
+}
+
+.dropboxLabel {
+  @extend %text;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #8e95a3;
+  margin: 12px 0 8px 0;
+}
+
+.infoLabel {
+  @extend %text;
+  margin: 12px 0 0 0;
+  font-size: 12px;
+  color: #8e95a3;
+  font-style: italic;
+}
+
+.buttonPlace {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(79, 95, 130, 0.2);
+}
+
+.buttonAccept {
+  @extend %button;
+  background: $theme-color;
+  padding: 8px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  > div {
+    width: 16px;
+    height: 16px;
+    background-size: cover;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAACXBIWXMAAAsTAAALEwEAmpwYAAABBUlEQVR4nO3UzyoFURwH8GElyr+6PImFYkM2kpUH8ABeQdnJRmHHjh0PYWNlKSlSSimylgX3fjS5aYxj3MOZsrjf5Zzf/D7nd5o5WdbNfwiWsY1GncgkXr3nAQt1IP249DnP6E0Nbfmaw9TIFJol5BHjKZEBXAemWUqG5MFuADnIUgZzaJWQO4ymRIZwG5hmPqbJCNbz/6KiZj+A7MUgwzhtv/iE2UDNYgC5wWAMdFxqkGMzhfUG7ks1rWJNp9BJYLcfGI4C6ztRSLvRGM6/wTYDz6/y6ycaKhzPmZ/TxPSvkEhs409Ih9gF+pJAFdgLJpIhFR/IWnKkdOWsYgU9tUHdZIG8AXfnYXxwGVtiAAAAAElFTkSuQmCC');
+  }
+
+  > p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+.buttonCancel {
+  display: none;
+}

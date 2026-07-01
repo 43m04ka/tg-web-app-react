@@ -1,0 +1,90 @@
+@import "src/app/styles/mainStyle";
+
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background: #171717;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 5vw;
+}
+
+.basketBlock {
+  background: $menu-color;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 22px 24px;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-family: 'SF PRO Display', serif;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 30px;
+  letter-spacing: -0.3px;
+  color: white;
+}
+
+.oldPrice {
+  font-family: 'SF PRO Display', serif;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 30px;
+  color: #5c5c5c;
+  text-decoration: line-through;
+  margin: auto 6px 0 auto;
+}
+
+.separator {
+  height: 1px;
+  width: 100%;
+  margin: 12px 0;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.labelBuy {
+  font-family: 'SF PRO Display', serif;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 10px;
+
+  a {
+    color: #4F8AE7;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.promoLabel {
+  font-family: 'SF PRO Display', serif;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  padding: 14px 0 0 0;
+  transition: color 0.2s;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(255, 255, 255, 0.25);
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration-color: rgba(255, 255, 255, 0.55);
+  }
+}

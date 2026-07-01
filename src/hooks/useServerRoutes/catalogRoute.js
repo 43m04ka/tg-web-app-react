@@ -2,8 +2,10 @@ import {API_BASE_URL} from "./baseUrl";
 
 export function catalogRoute(){
 
-    const getCatalogList = async (setResult) => {
-        await fetch(`${API_BASE_URL}/api/catalog/allCatalogs?time=${Date.now()}`, {
+    const getCatalogList = async (setResult, options) => {
+        const params = new URLSearchParams({time: Date.now()});
+        if (options?.includeStatus) params.append('includeStatus', 'true');
+        await fetch(`${API_BASE_URL}/api/catalog/allCatalogs?${params}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

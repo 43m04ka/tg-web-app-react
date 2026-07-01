@@ -8,6 +8,8 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 vkBridge.send("VKWebAppInit");
 
 
+
+
 root.render(
   <React.StrictMode>
       <BrowserRouter>

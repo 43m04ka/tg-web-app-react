@@ -1,0 +1,119 @@
+@import "src/app/styles/mainStyle";
+
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.selectPlace {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+
+  > button {
+    flex: 1;
+    height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    transition: 0.2s ease-in-out;
+    cursor: pointer;
+
+    > div {
+      @extend %font-medium;
+      font-size: 15px;
+      line-height: 20px;
+      color: white;
+    }
+  }
+}
+
+.activeButton {
+  box-shadow: 0 4px 16px rgba(80, 161, 85, 0.25);
+  background: rgba(80, 161, 85, 0.2);
+  border-color: #50a155 !important;
+}
+
+.noActiveButton {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.contentBlock {
+  margin: 14px 0 0;
+}
+
+.formBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.codesRow {
+  display: flex;
+  gap: 8px;
+}
+
+.input {
+  width: 100%;
+  height: 44px;
+  margin: 4px 0;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1.5px solid transparent;
+  outline: none;
+  @extend %font-bold;
+  font-size: 15px;
+  line-height: 44px;
+  text-align: center;
+  color: #1a1a1a;
+  caret-color: #1a1a1a;
+  background: #f0f0f0;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &::placeholder {
+    color: #999;
+    font-weight: normal;
+  }
+}
+
+.codeInput {
+  @extend .input;
+  margin: 2px 0;
+  font-size: 14px;
+}
+
+.input:focus,
+.codeInput:focus {
+  border-color: #4f8ae7;
+  box-shadow: 0 0 0 3px rgba(79, 138, 231, 0.15);
+  background: #fff;
+}
+
+.label {
+  @extend %font-medium;
+  margin: 8px 0 2px;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 13px;
+  line-height: 18px;
+  text-align: center;
+  white-space: pre-wrap;
+  letter-spacing: 0.1px;
+}
+
+.linkLabel {
+  @extend %font-medium;
+  color: #559fff;
+  font-size: 13px;
+  line-height: 20px;
+  text-align: center;
+  margin-top: 4px;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}

@@ -1,0 +1,71 @@
+.list {
+  @for $i from 1 through 50 {
+    > div:nth-child(#{$i}) {
+      animation-delay: 0.1s * $i;
+    }
+  }
+
+  > div {
+    opacity: 0;
+    animation: appearanceBlock 0.4s forwards ease-in-out;
+  }
+}
+
+.desktopSection {
+  padding: 8px 0 48px 0;
+  flex: 1;
+}
+
+.desktopTitle {
+  font-family: 'SF PRO Display', serif;
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 34px;
+  letter-spacing: -0.3px;
+  color: white;
+  margin: 0 0 30px 20px;
+  animation: appearanceBlock 0.4s ease-out forwards;
+}
+
+.desktopGrid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  justify-content: stretch;
+  opacity: 0;
+  animation: appearanceBlock 0.5s ease-out 0.1s forwards;
+}
+
+.desktopCard {
+  display: flex;
+  justify-content: center;
+}
+
+.listPanel {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  gap: 12px;
+  align-items: start;
+  box-sizing: border-box;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, max(148px, calc((100% - 36px) / 4))), 1fr)
+  );
+}
+
+.panelCardWrap {
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+
+@keyframes appearanceBlock {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

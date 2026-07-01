@@ -1,0 +1,17 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\pages",
+    "\\src\\pages\\AdminPanel",
+    "\\src\\pages\\AdminPanel\\Tabs",
+    "\\src\\pages\\AdminPanel\\Tabs\\Search",
+    "\\src\\pages\\DanyaDr",
+    "\\src\\pages\\DanyaDr\\images",
+    "\\src\\pages\\Product",
+    "\\src\\pages\\Product\\Elements",
+    "\\src\\pages\\Product\\Elements\\BackgroundImage"
+  ],
+  "SelectedNode": "\\build.cmd",
+  "PreviewInSolutionExplorer": false
+}

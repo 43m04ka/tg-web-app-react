@@ -1,0 +1,82 @@
+import React, {useEffect, useState} from 'react';
+import {useServer} from "./useServer";
+import style from "./History.module.scss";
+import Order from "./Order";
+
+const History = () => {
+
+    const [historyList, setHistoryList] = React.useState([]);
+    const {getHistoryList} = useServer()
+
+    const [infoTabOpen, setInfoTabOpen] = useState(false);
+    const [orderId, setOrderId] = React.useState(-1);
+    const [searchValue, setSearchValue] = useState('');
+
+    useEffect(()=>{
+        getHistoryList(setHistoryList, '').then()
+    }, [])
+
+    const handleSearch = async (value) => {
+        setSearchValue(value);
+        await getHistoryList(setHistoryList, value);
+    };
+
+    return (
+        <div className={style['mainContainer']}>
+            <div className={style['header']}>
+                <div className={style['headerTitle']}>История заказов</div>
+                <div className={style['headerControls']}>
+                    <input className={style['inputFind']} placeholder={'Поиск {32 или 2025.8.24}'}
+                           value={searchValue}
+                           onChange={async (event) => {
+                               await handleSearch(event.target.value);
+                           }}/>
+                </div>
+            </div>
+
+            <div className={style['tableWrapMain']}>
+                <table className={style['table']}>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Сумма</th>
+                        <th>Дата</th>
+                        <th>ID пользователя</th>
+                        <th>Действие</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {historyList.map((item) => (
+                        <tr key={item.id}>
+                            <td>{item.id}</td>
+                            <td>{item.summa}</td>
+                            <td>{(new Date(item.createdAt)).toLocaleString()}</td>
+                            <td>{item.userDatumId}</td>
+                            <td>
+                                <button className={style['actionButton']} onClick={() => {
+                                    setInfoTabOpen(true)
+                                    setOrderId(item.id)
+                                }}>
+                                    Подробнее
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+                    {historyList.length === 0 ? (
+                        <tr>
+                            <td className={style['emptyCell']} colSpan={5}>Заказы не найдены</td>
+                        </tr>
+                    ) : ''}
+                    </tbody>
+                </table>
+            </div>
+
+            {infoTabOpen ? <Order onClose={() => {
+                setInfoTabOpen(false);
+            }} orderId={orderId}/> : ''}
+        </div>);
+
+};
+
+export default History;
+

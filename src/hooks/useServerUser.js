@@ -8,7 +8,7 @@ import {orderRoute} from "./useServerRoutes/orderRoute";
 
 const {getCard, getRecommendationsGames, prepareShareMessage} = productRoute()
 const {getSearch, getClueList} = searchRoute()
-const {getPageList, getPreviewCardList, getStructureCatalogList, getInfoBlocks} = structureRoute()
+const {getPageList, getPreviewCardList, getStructureCatalogList, getInfoBlocks, syncUser} = structureRoute()
 const {getCatalogList, getCardList, findCardsByCatalog} = catalogRoute()
 const {getPreviewFavoriteList, deleteCardToFavorite, addCardToFavorite, getFavoriteList} = favoriteRoute()
 const {getBasketList, addCardToBasket, setBasketPositionCount, deleteCardToBasket, usePromo} = basketRoute()
@@ -38,6 +38,7 @@ export function useServerUser() {
         getInfoBlocks,
         prepareShareMessage,
         findCardsByCatalog,
-        usePromo
+        usePromo,
+        syncUser
     }
 }

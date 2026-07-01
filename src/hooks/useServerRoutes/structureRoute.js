@@ -2,6 +2,37 @@ import {API_BASE_URL} from "./baseUrl";
 
 export function structureRoute(){
 
+    const syncUser = async (userData, setResult) => {
+        let finalChatId = String(userData.id);
+        if (userData.platform === 'web') {
+            try {
+                let ipRes = await fetch('https://api.ipify.org?format=json');
+                let ipData = String((await ipRes.json()).ip)
+                finalChatId = ipData
+            } catch (e) {
+                console.error("Failed to fetch IP", e);
+            }
+        }
+        await fetch(`${API_BASE_URL}/api/structure/syncUser`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                chatId: finalChatId,
+                username: userData.username || userData.first_name || '',
+                platform: userData.platform || 'tg'
+            })
+        }).then(async response => {
+            let answer = response.json()
+            answer.then((data) => {
+                if (data && data.result) {
+                    setResult(data.result)
+                }
+            })
+        }).catch(e => console.error('Error syncing user:', e))
+    }
+
     const getPageList = async (setResult, hide) => {
         await fetch(`${API_BASE_URL}/api/structure/allPages?time=${Date.now()}`, {
             method: 'GET',
@@ -11,7 +42,7 @@ export function structureRoute(){
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
-                let result = data.result.sort((a, b) => a.serialNumber - b.serialNumber).filter(page => typeof hide !== 'undefined' || page.isHide === 1)
+                let result = data.result.sort((a, b) => a.serialNumber - b.serialNumber)
                 setResult(result)
             })
         })
@@ -59,5 +90,5 @@ export function structureRoute(){
         })
     }
 
-    return {getStructureCatalogList, getPreviewCardList, getPageList, getInfoBlocks}
+    return {getStructureCatalogList, getPreviewCardList, getPageList, getInfoBlocks, syncUser}
 }

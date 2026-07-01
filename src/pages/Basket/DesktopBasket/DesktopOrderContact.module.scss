@@ -1,0 +1,41 @@
+@import "src/app/styles/mainStyle";
+
+.usernameInput {
+  margin-top: 8px;
+  height: 44px;
+  @extend %font-bold;
+  font-size: 15px;
+  line-height: 44px;
+  background: #f0f0f0;
+  text-align: center;
+  border: 1.5px solid transparent;
+  outline: none;
+  padding: 0 14px;
+  width: 100%;
+  border-radius: 12px;
+  caret-color: #1a1a1a;
+  color: #1a1a1a;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+
+  &::placeholder {
+    color: #999;
+    font-weight: normal;
+    font-size: 13px;
+  }
+
+  &:focus {
+    border-color: #4f8ae7;
+    box-shadow: 0 0 0 3px rgba(79, 138, 231, 0.15);
+    background: #fff;
+  }
+}
+
+.usernameLabel {
+  @extend %font-medium;
+  font-size: 13px;
+  line-height: 18px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 10px 0 2px 0;
+  letter-spacing: 0.1px;
+}

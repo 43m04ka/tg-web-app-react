@@ -1,0 +1,97 @@
+﻿@import "../../AdminPanel.module";
+
+.body {
+  margin: 12px 0;
+  position: relative;
+
+  > button {
+    @extend %text;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid rgba(79, 95, 130, 0.4);
+    border-radius: 8px;
+    width: 100%;
+    padding: 10px 12px;
+    background: rgba(19, 21, 29, 0.6);
+    color: #e4e8f2;
+    height: 44px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba(79, 95, 130, 0.6);
+      background: rgba(19, 21, 29, 0.8);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $theme-color;
+      box-shadow: 0 0 0 3px rgba($theme-color, 0.1);
+    }
+
+    > p {
+      margin: 0;
+      font-size: 14px;
+      flex: 1;
+      text-align: left;
+    }
+  }
+
+  > div {
+    position: absolute;
+    width: 100%;
+    z-index: 500;
+    top: 100%;
+    margin-top: 4px;
+
+    > ul {
+      background: rgba(19, 21, 29, 0.95);
+      border: 1px solid rgba(79, 95, 130, 0.4);
+      border-radius: 8px;
+      padding: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      overflow-y: auto;
+      height: max-content;
+      max-height: 260px;
+      list-style: none;
+      margin: 0;
+
+      > div {
+        @extend %text;
+        padding: 8px 12px;
+        cursor: pointer;
+        border-radius: 6px;
+        color: #e4e8f2;
+        font-size: 14px;
+        transition: all 0.15s ease;
+
+        &:hover {
+          background: rgba(79, 95, 130, 0.2);
+          color: $theme-color;
+        }
+      }
+    }
+  }
+}
+
+.background-arrow {
+  background-image: url("../../../../shared/assets/icons/arrow.png");
+  background-size: cover;
+  transition-property: rotate;
+  transition-duration: 0.2s;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+
+  &-active {
+    rotate: 180deg;
+  }
+}
+
+.buttonOptionSeparator {
+  cursor: default;
+  margin: 4px 0;
+  border-bottom: 1px solid rgba(79, 95, 130, 0.2);
+}

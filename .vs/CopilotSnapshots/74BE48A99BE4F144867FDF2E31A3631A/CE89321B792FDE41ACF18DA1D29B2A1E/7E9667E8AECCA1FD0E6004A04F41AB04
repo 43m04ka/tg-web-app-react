@@ -1,0 +1,101 @@
+﻿import React, {useState} from 'react';
+import {useServer} from "../../hooks/useServer";
+import {useNavigate} from "react-router-dom";
+import useData from "./useData";
+import style from './AP_Authentication.module.scss';
+
+const ApAuthentication = () => {
+    const {authentication} = useServer();
+    const navigate = useNavigate();
+    const {setAuthenticationData} = useData()
+
+    const [login, setLogin] = useState('')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
+
+    const isAuth = (result) => {
+        if(result) {
+            navigate('/admin-panel');
+            setAuthenticationData({login:login, password:password})
+        } else {
+            setError('Неверный логин или пароль')
+            setIsLoading(false)
+        }
+    }
+
+    const handleLogin = async () => {
+        if (!login.trim() || !password.trim()) {
+            setError('Пожалуйста, заполните все поля')
+            return
+        }
+        setError('')
+        setIsLoading(true)
+        await authentication({login:login, password:password}, isAuth)
+    }
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            handleLogin()
+        }
+    }
+
+    return (
+        <div className={style['container']}>
+            <div className={style['card']}>
+                <div className={style['title']}>Администратор</div>
+
+                {error && (
+                    <div className={style['error']}>
+                        <span>⚠</span>
+                        <span>{error}</span>
+                    </div>
+                )}
+
+                <div className={style['formGroup']}>
+                    <label className={style['label']}>Логин</label>
+                    <input
+                        type="text"
+                        className={style['input']}
+                        placeholder="Введите логин"
+                        value={login}
+                        onChange={(event) => {
+                            setLogin(event.target.value)
+                            setError('')
+                        }}
+                        onKeyPress={handleKeyPress}
+                        disabled={isLoading}
+                    />
+                </div>
+
+                <div className={style['formGroup']}>
+                    <label className={style['label']}>Пароль</label>
+                    <input
+                        type="password"
+                        className={style['input']}
+                        placeholder="Введите пароль"
+                        value={password}
+                        onChange={(event) => {
+                            setPassword(event.target.value)
+                            setError('')
+                        }}
+                        onKeyPress={handleKeyPress}
+                        disabled={isLoading}
+                    />
+                </div>
+
+                <div className={style['buttonGroup']}>
+                    <button
+                        className={`${style['button']} ${style['buttonPrimary']} ${isLoading ? style['loading'] : ''}`}
+                        onClick={handleLogin}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? 'Загрузка...' : 'Войти'}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default ApAuthentication;

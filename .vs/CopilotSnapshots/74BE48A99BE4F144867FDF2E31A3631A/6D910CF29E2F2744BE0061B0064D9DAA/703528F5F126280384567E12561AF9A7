@@ -1,0 +1,125 @@
+﻿import React, {useState} from 'react';
+import style from '../Structure.module.scss'
+import useData from "../../../useData";
+import {useServer} from "../useServer";
+import PopUpWindow from "../../../Elements/PopUpWindow/PopUpWindow";
+import InputLabel from "../../../Elements/Input/InputLabel";
+import useGlobalData from "../../../../../hooks/useGlobalData";
+import SwitchLabel from "../../../Elements/SwitchLabel/SwitchLabel";
+import DropBox from "../../../Elements/DropBox/DropBox";
+
+const EditPageData = ({onClose, updatePageList, id}) => {
+
+    const platformOptions = [
+        {name: 'vk-xbox'},
+        {name: 'vk-ps'},
+        {name: 'tg'},
+        {name: 'web'}
+    ];
+
+    const {pageList} = useGlobalData();
+    let pageData = {platform: 'tg', isHide: 1}
+    pageList.map((item) => {
+        if(item.id === id){
+            pageData = item;
+        }
+    })
+    const [infoLabel, setInfoLabel] = useState('*Поля обязательные для заполнения')
+    const [updatePageJson, setUpdatePageJson] = useState({})
+
+    const {authenticationData} = useData();
+    const {updatePageData, createPage} = useServer()
+    const selectedPlatform = updatePageJson.platform || pageData.platform || 'tg'
+    const selectedPlatformIndex = Math.max(0, platformOptions.findIndex(item => item.name === selectedPlatform))
+
+    return (
+        <PopUpWindow title={id === -1 ? 'Создать страницу' : 'Редактировать страницу'}>
+            <div>
+                <InputLabel label={'Имя'} defaultValue={pageData.name}
+                            onChange={(e) => {
+                                let newJson = updatePageJson
+                                newJson['name'] = e.target.value;
+                                setUpdatePageJson(newJson);
+                            }}/>
+                <InputLabel label={'Ссылка'} defaultValue={pageData.link}
+                            onChange={(e) => {
+                                let newJson = updatePageJson
+                                newJson['link'] = e.target.value;
+                                setUpdatePageJson(newJson);
+                            }}/>
+                <InputLabel label={'Изображение в переключателе'} defaultValue={pageData.url}
+                            onChange={(e) => {
+                                let newJson = updatePageJson
+                                newJson['url'] = e.target.value;
+                                setUpdatePageJson(newJson);
+                            }}/>
+                <InputLabel label={'Изображение в баре'} defaultValue={pageData.urlBar}
+                            onChange={(e) => {
+                                let newJson = updatePageJson
+                                newJson['urlBar'] = e.target.value;
+                                setUpdatePageJson(newJson);
+                            }}/>
+                <InputLabel label={'Порядковый номер'} defaultValue={pageData.serialNumber}
+                            onChange={(e) => {
+                                let newJson = updatePageJson
+                                newJson['serialNumber'] = e.target.value;
+                                setUpdatePageJson(newJson);
+                            }}/>
+                <InputLabel label={'Цвет'} defaultValue={pageData.color}
+                            onChange={(e) => {
+                                let newJson = updatePageJson
+                                newJson['color'] = e.target.value;
+                                setUpdatePageJson(newJson);
+                            }}/>
+                <InputLabel label={'Заголовок в сообщении'} defaultValue={pageData.titleForMessage}
+                            onChange={(e) => {
+                                let newJson = updatePageJson
+                                newJson['titleForMessage'] = e.target.value;
+                                setUpdatePageJson(newJson);
+                            }}/>
+                <div className={style['infoLabel']}>Платформа</div>
+                <DropBox label={platformOptions} onChange={(value) => {
+                    let newJson = updatePageJson
+                    newJson['platform'] = platformOptions[value].name;
+                    setUpdatePageJson(newJson);
+                }} defaultIndex={selectedPlatformIndex}/>
+                <SwitchLabel label={'Отображение страницы в боте'} defaultValue={pageData.isHide}
+                            onChange={(e) => {
+                                let newJson = updatePageJson
+                                newJson['isHide'] = e.target.checked ? 1 : 0;
+                                setUpdatePageJson(newJson);
+                            }}/>
+            </div>
+            <div className={style['infoLabel']}>
+                {infoLabel}
+            </div>
+            <div className={style['buttonPlace']}>
+                <div className={style['buttonAccept']} onClick={async () => {
+                    if (id === -1) {
+                        const createPageJson = {
+                            ...updatePageJson,
+                            platform: updatePageJson.platform || pageData.platform || 'tg'
+                        }
+                        await createPage(() => {}, authenticationData, createPageJson)
+                    } else {
+                        await updatePageData(authenticationData, id, updatePageJson)
+                    }
+                    await updatePageList()
+                    onClose();
+                }}>
+                    <div/>
+                    <p>Сохранить</p>
+                </div>
+
+                <div className={style['buttonCancel']} onClick={() => {
+                    onClose();
+                }}>
+                    <div/>
+                    <p>Отмена</p>
+                </div>
+            </div>
+        </PopUpWindow>
+    );
+};
+
+export default EditPageData;

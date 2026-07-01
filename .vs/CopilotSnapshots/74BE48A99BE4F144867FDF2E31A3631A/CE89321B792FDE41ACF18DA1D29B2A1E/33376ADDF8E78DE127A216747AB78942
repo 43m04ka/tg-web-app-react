@@ -1,0 +1,60 @@
+﻿import React, {useState} from 'react';
+import style from '../Basket.module.scss';
+import { useTelegram } from '../../../hooks/useTelegram';
+import styleButton from './ButtonBuy.module.scss'
+
+const OrderContact = ({
+    username,
+    setUsername,
+    inputRef
+}) => {
+    const {isVk, isTg, isWeb, vkMessagesAllowed, requestVkMessagesPermission, user} = useTelegram();
+    const [vkPermissionLoading, setVkPermissionLoading] = useState(false);
+
+    if (isVk) {
+        return (<>
+            <div className={style['usernameLabel']}>
+                {vkMessagesAllowed
+                    ? 'Разрешение на сообщения из VK получено'
+                    : 'Разрешите сообщения от сообщества, чтобы мы могли связаться с Вами после оформления заказа'}
+            </div>
+            {!vkMessagesAllowed ? <button className={styleButton['buttonBuy']} style={{ background: '#50A355'}} onClick={async () => {
+                setVkPermissionLoading(true)
+                await requestVkMessagesPermission()
+                setVkPermissionLoading(false)
+            }}>
+                {vkPermissionLoading ? 'Проверяем...' : 'Разрешить сообщения VK'}
+            </button> : ''}
+        </>);
+    }
+
+    if (isTg && typeof user.username === 'undefined') {
+        return (<>
+            <div className={style['usernameLabel']}>
+                Введите Ваш никнейм в Telegram, чтобы мы могли связаться с Вами после оформления заказа
+            </div>
+            <input className={style['usernameInput']} ref={inputRef}
+                   placeholder={'Пример — gwstore_admin'} value={username}
+                   onChange={e => {
+                       setUsername(e.target.value.replace(/[^a-zA-Z0-9]/g, ''));
+                   }}/>
+        </>);
+    }
+
+    if (isWeb) {
+        return (<>
+            <div className={style['usernameLabel']}>
+                Введите удобный контакт: VK, Telegram, email или номер телефона
+            </div>
+            <input className={style['usernameInput']} ref={inputRef}
+                   placeholder={'Пример — @username, mail@example.com, +79990000000'} value={username}
+                   onChange={e => {
+                       setUsername(e.target.value);
+                   }}/>
+        </>);
+    }
+
+    return null;
+};
+
+export default OrderContact;

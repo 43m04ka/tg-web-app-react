@@ -1,0 +1,8 @@
+﻿@echo off
+cd /d C:\Users\User\source\repos\43m04ka\tg-web-app-react
+echo Installing dependencies...
+call npm install --legacy-peer-deps
+echo.
+echo Starting development server...
+call npm start
+pause

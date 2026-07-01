@@ -1,10 +1,12 @@
 import {API_BASE_URL} from "./baseUrl";
+import useGlobalData from "../useGlobalData";
 
 export function favoriteRoute(){
 
 
     const getPreviewFavoriteList = async (setResult, userId) => {
-        fetch(`${API_BASE_URL}/api/favorite/previewFavoriteProducts/${userId}?time=${Date.now()}`, {
+        const actualUserId = useGlobalData.getState().internalUserId || userId;
+        fetch(`${API_BASE_URL}/api/favorite/previewFavoriteProducts/${actualUserId}?time=${Date.now()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -18,10 +20,11 @@ export function favoriteRoute(){
     }
 
     const deleteCardToFavorite = async (setResult, userId, cardId) => {
+        const actualUserId = useGlobalData.getState().internalUserId || userId;
         fetch(`${API_BASE_URL}/api/favorite/deleteProduct`, {
             method: 'POST', headers: {
                 'Content-Type': 'application/json',
-            }, body: JSON.stringify({cardId: cardId, userId: userId}),
+            }, body: JSON.stringify({cardId: cardId, userId: actualUserId}),
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
@@ -32,10 +35,11 @@ export function favoriteRoute(){
 
 
     const addCardToFavorite = async (setResult, userId, cardId) => {
+        const actualUserId = useGlobalData.getState().internalUserId || userId;
         fetch(`${API_BASE_URL}/api/favorite/addProduct`, {
             method: 'POST', headers: {
                 'Content-Type': 'application/json',
-            }, body: JSON.stringify({cardId: cardId, userId: userId}),
+            }, body: JSON.stringify({cardId: cardId, userId: actualUserId}),
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
@@ -45,7 +49,8 @@ export function favoriteRoute(){
     }
 
     const getFavoriteList = async (setResult, userId) => {
-        fetch(`${API_BASE_URL}/api/favorite/allFavoriteProducts/${userId}?time=${Date.now()}`, {
+        const actualUserId = useGlobalData.getState().internalUserId || userId;
+        fetch(`${API_BASE_URL}/api/favorite/allFavoriteProducts/${actualUserId}?time=${Date.now()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

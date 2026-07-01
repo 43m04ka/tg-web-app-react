@@ -1,13 +1,33 @@
 import {API_BASE_URL} from "./baseUrl";
+import useGlobalData from "../useGlobalData";
 
 export function orderRoute(){
 
-    const createOrder = async (paymentData, accData, user, page, promo, setResult) => {
+    const createOrder = async (paymentData, accData, user, page, promo, sourceData, setResult) => {
+        const actualUserId = useGlobalData.getState().internalUserId || user.id;
+        const updatedUser = { ...user, id: actualUserId };
+        const orderSource = sourceData?.source || 'chrome';
+        const basketCardIds = useGlobalData.getState().basket.map(card => card.id);
+
+        const bodyData = {
+            paymentMethod: paymentData,
+            accountData: accData,
+            user: updatedUser,
+            pageId: page,
+            promoCode: promo,
+            platform: orderSource,
+            productIds: basketCardIds
+        };
+
+        if (orderSource === 'vk' && sourceData?.vkGroupId) {
+            bodyData.vkGroupId = sourceData.vkGroupId;
+        }
+
         fetch(`${API_BASE_URL}/api/order/create`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            }, body: JSON.stringify({paymentData: paymentData, accData: accData, user: user, page: page, promo: promo}),
+            }, body: JSON.stringify(bodyData),
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
@@ -18,7 +38,8 @@ export function orderRoute(){
 
 
     const getHistoryList = async (setResult, chatId) => {
-        fetch(`${API_BASE_URL}/api/order/history?time=${Date.now()}&chatId=${chatId}`, {
+        const actualUserId = useGlobalData.getState().internalUserId || chatId;
+        fetch(`${API_BASE_URL}/api/order/history?time=${Date.now()}&userId=${actualUserId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

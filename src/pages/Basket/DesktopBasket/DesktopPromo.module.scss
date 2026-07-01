@@ -1,0 +1,67 @@
+@import "src/app/styles/mainStyle";
+
+.mainContainer {
+  background: #f0f0f0;
+  border-radius: 12px;
+  display: flex;
+  opacity: 0;
+  flex-direction: row;
+  margin: 12px 0 0 0;
+  border: 1.5px solid transparent;
+  animation: animationOpacity 0.4s forwards;
+  overflow: hidden;
+  transition: border-color 0.2s;
+
+  &:focus-within {
+    border-color: #4f8ae7;
+    box-shadow: 0 0 0 3px rgba(79, 138, 231, 0.12);
+  }
+
+  > input {
+    font-family: 'SF PRO Display', serif;
+    font-weight: 700;
+    background: none;
+    text-align: center;
+    font-size: 15px;
+    border: none;
+    outline: none;
+    padding: 0 14px;
+    width: 50%;
+    caret-color: #1a1a1a;
+    color: #1a1a1a;
+    height: 46px;
+
+    &::placeholder {
+      color: #999;
+      font-weight: normal;
+    }
+  }
+
+  > button {
+    transition-property: background, transform;
+    transition-duration: 0.2s;
+    width: 50%;
+    height: 46px;
+    border-radius: 10px;
+    cursor: pointer;
+
+    &:active {
+      transform: scale(0.97);
+    }
+
+    > p {
+      font-family: 'SF PRO Display', serif;
+      font-weight: 700;
+      color: white;
+      font-size: 15px;
+      margin: 0 auto;
+      width: max-content;
+      line-height: 46px;
+    }
+  }
+}
+
+@keyframes animationOpacity {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}

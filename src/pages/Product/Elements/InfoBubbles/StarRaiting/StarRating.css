@@ -1,0 +1,90 @@
+.rating-wrapper {
+    display: flex;
+    align-items: center;
+    color: #242424;
+    font-family: 'SF PRO Display', sans-serif;
+    font-size: 2.7vw;
+    gap: 2vw;
+    padding: 0 2vw;
+}
+
+.rating-value {
+    font-weight: bold;
+}
+
+.stars-row {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin: 0 !important;
+    width: max-content !important;
+    line-height: 1;
+}
+
+.star-container {
+    position: relative;
+    display: inline-block;
+    font-size: 2.8vw;
+    top: -0.25vw;
+    line-height: 1;
+}
+
+.star-empty {
+    color: #3e3e3e;
+}
+
+.star-filled {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #FFD700;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: width 0.25s ease-out;
+    width: 0;
+}
+
+.rating-count {
+    color: #3e3e3e;
+}
+
+.rating-wrapper--desktop {
+    gap: 10px;
+    padding: 0;
+    align-items: center;
+    font-size: 18px;
+    color: #6c6c6c;
+    line-height: 1;
+}
+
+.rating-wrapper--desktop .rating-value {
+    display: block;
+    font-size: 18px;
+    color: #8e8e8e;
+    line-height: 1;
+}
+
+.rating-wrapper--desktop .stars-row {
+    align-items: center;
+    position: relative;
+    top: -1px;
+}
+
+.rating-wrapper--desktop .star-container {
+    display: inline-flex;
+    align-items: center;
+    font-size: 22px;
+    top: 0;
+    line-height: 1;
+}
+
+.rating-wrapper--desktop .star-empty {
+    color: #3a3a3a;
+}
+
+.rating-wrapper--desktop .rating-count {
+    display: block;
+    font-size: 18px;
+    color: #6c6c6c;
+    line-height: 1;
+}

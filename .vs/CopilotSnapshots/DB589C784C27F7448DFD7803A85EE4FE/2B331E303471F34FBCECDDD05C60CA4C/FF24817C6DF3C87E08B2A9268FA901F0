@@ -1,0 +1,302 @@
+﻿import React, {useState} from 'react';
+import {useServer} from "../../useServer";
+import useData from "../../../../useData";
+import style from "../../Structure.module.scss";
+import List from "../../../../Elements/List/List";
+import CreateHead from "./CreateHead";
+import EditDataCatalog from "../EditDataCatalog/EditDataCatalog";
+
+const Head = ({catalogHeadList, page, onReload, copiedItem, setCopiedItem}) => {
+
+    const [selectList, setSelectList] = useState([]);
+    const [catalogId, setCatalogId] = useState(-1);
+    const [createTabOpen, setCreateTabOpen] = useState(false);
+    const [editTabOpen, setEditTabOpen] = useState(false);
+    const [searchValue, setSearchValue] = useState('');
+    const [filteredList, setFilteredList] = useState(catalogHeadList || []);
+    const [copyData, setCopyData] = useState({})
+    const [draggedItem, setDraggedItem] = useState(null);
+
+    const {deleteStructureCatalog, updateCatalogData} = useServer()
+    const {authenticationData} = useData();
+
+    React.useEffect(() => {
+        if (catalogHeadList) {
+            const filtered = catalogHeadList.filter(item =>
+                item.path?.toLowerCase().includes(searchValue.toLowerCase()) ||
+                item.url?.toLowerCase().includes(searchValue.toLowerCase()) ||
+                item.serialNumber?.toString().includes(searchValue)
+            );
+            setFilteredList(filtered);
+        }
+    }, [searchValue, catalogHeadList]);
+
+    const handleDragStart = (e, item) => {
+        setDraggedItem(item);
+        e.dataTransfer.effectAllowed = 'move';
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+    };
+
+    const handleDrop = async (e, targetItem) => {
+        e.preventDefault();
+
+        if (!draggedItem || draggedItem.id === targetItem.id) {
+            setDraggedItem(null);
+            return;
+        }
+
+        const draggedIndex = catalogHeadList.findIndex(item => item.id === draggedItem.id);
+        const targetIndex = catalogHeadList.findIndex(item => item.id === targetItem.id);
+
+        if (draggedIndex === -1 || targetIndex === -1) {
+            setDraggedItem(null);
+            return;
+        }
+
+        // Обновляем порядковые номера
+        const newList = [...catalogHeadList];
+        const [movedItem] = newList.splice(draggedIndex, 1);
+        newList.splice(targetIndex, 0, movedItem);
+
+        // Переассайним порядковые номера
+        const updates = newList.map((item, index) => ({
+            id: item.id,
+            serialNumber: index + 1
+        }));
+
+        // Обновляем на сервере
+        for (let update of updates) {
+            await updateCatalogData(
+                () => {},
+                authenticationData,
+                update.id,
+                { serialNumber: update.serialNumber }
+            );
+        }
+
+        setDraggedItem(null);
+        onReload();
+    };
+
+    const handleEdit = (id) => {
+        setCatalogId(id);
+        setEditTabOpen(true);
+    };
+
+    const handleCopy = (id) => {
+        const itemToCopy = catalogHeadList.find(item => item.id === id);
+        setCopiedItem({
+            ...itemToCopy,
+            group: 'head',
+            sourcePage: page
+        });
+        setCopyData(itemToCopy);
+    };
+
+    const handlePaste = async () => {
+        if (!copiedItem || copiedItem.group !== 'head') return;
+
+        const newItem = {
+            type: copiedItem.type,
+            path: copiedItem.path,
+            url: copiedItem.url,
+            serialNumber: copiedItem.serialNumber,
+            structurePageId: page,
+            group: 'head'
+        };
+
+        const {createStructureCatalog} = useServer();
+        await createStructureCatalog(authenticationData, newItem);
+        setCopiedItem(null);
+        onReload();
+    };
+
+    const handleDelete = async (id) => {
+        await deleteStructureCatalog(authenticationData, id);
+        await onReload();
+    };
+
+    const handleExport = async (catalogId) => {
+        try {
+            const response = await fetch(`/catalog/export/${catalogId}`);
+            if (!response.ok) {
+                alert('Ошибка при экспорте: ' + response.statusText);
+                return;
+            }
+
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `cards_${catalogId}.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            alert('Ошибка при экспорте: ' + error.message);
+        }
+    };
+
+    const returnOptionList = (option, id) => {
+        switch (option) {
+            case 'delete':
+                handleDelete(id);
+                break;
+            case 'copy':
+                handleCopy(id);
+                break;
+            case 'edit':
+                handleEdit(id);
+                break;
+            default:
+                break;
+        }
+    }
+
+    return (
+        <div className={style['catalogContainer']}>
+            <div className={style['catalogHeader']}>
+                <div className={style['catalogHeaderControls']}>
+                    <input
+                        className={style['inputFind']}
+                        placeholder={'Поиск по пути, изображению или номеру'}
+                        value={searchValue}
+                        onChange={(event) => {
+                            setSearchValue(event.target.value);
+                        }}
+                    />
+                    <div className={style['buttonGroup']}>
+                        <button 
+                            className={style['button']} 
+                            onClick={() => {
+                                setCopyData({});
+                                setCreateTabOpen(true);
+                            }}
+                        >
+                            <p>+ Создать</p>
+                        </button>
+                        {copiedItem && copiedItem.group === 'head' && (
+                            <button
+                                className={`${style['button']} ${style['pasteButtonSmall']}`}
+                                onClick={handlePaste}
+                            >
+                                <p>📋 Вставить</p>
+                            </button>
+                        )}
+                        <button
+                            className={style['button']}
+                            onClick={onReload}
+                        >
+                            <p>⟳ Обновить</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div className={style['tableWrapMain']}>
+                <table className={style['table']}>
+                    <thead>
+                        <tr>
+                            <th>Тип</th>
+                            <th>Путь</th>
+                            <th>Изображение</th>
+                            <th>Порядковый №</th>
+                            <th>Действие</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredList && filteredList.map((item) => (
+                            <tr 
+                                key={item.id}
+                                draggable
+                                onDragStart={(e) => handleDragStart(e, item)}
+                                onDragOver={handleDragOver}
+                                onDrop={(e) => handleDrop(e, item)}
+                                className={draggedItem?.id === item.id ? style['dragging'] : ''}
+                            >
+                                <td>☰ {item['type'].includes('slider') ? 'Слайдер' : 'Иное'}</td>
+                                <td>{item.path}</td>
+                                <td>
+                                    {item.url && (
+                                        <div style={{
+                                            maxWidth: '60px',
+                                            height: '30px',
+                                            backgroundColor: '#2a2f3a',
+                                            borderRadius: '4px',
+                                            backgroundImage: `url(${item.url})`,
+                                            backgroundSize: 'contain',
+                                            backgroundRepeat: 'no-repeat',
+                                            backgroundPosition: 'center',
+                                        }}></div>
+                                    )}
+                                </td>
+                                <td>{item.serialNumber}</td>
+                                <td onClick={(e) => e.stopPropagation()}>
+                                    <div className={style['actionButtons']}>
+                                        <button 
+                                            className={style['actionButton']}
+                                            onClick={() => handleEdit(item.id)}
+                                        >
+                                            Редактировать
+                                        </button>
+                                        <button 
+                                            className={style['actionButton']}
+                                            onClick={() => handleCopy(item.id)}
+                                        >
+                                            Копировать
+                                        </button>
+                                        <button
+                                            className={`${style['actionButton']} ${style['exportButton']}`}
+                                            onClick={() => handleExport(item.id)}
+                                            title="Скачать товары этого каталога в Excel"
+                                        >
+                                            Экспорт
+                                        </button>
+                                        <button 
+                                            className={`${style['actionButton']} ${style['deleteButton']}`}
+                                            onClick={() => handleDelete(item.id)}
+                                        >
+                                            Удалить
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                        {filteredList && filteredList.length === 0 ? (
+                            <tr>
+                                <td className={style['emptyCell']} colSpan={5}>Элементы не найдены</td>
+                            </tr>
+                        ) : ''}
+                    </tbody>
+                </table>
+            </div>
+
+            {createTabOpen ? <CreateHead 
+                onClose={() => {
+                    setCreateTabOpen(false);
+                    setCopyData({});
+                }} 
+                onReload={onReload} 
+                page={page}
+                copyData={copyData}
+            /> : ''}
+
+            {editTabOpen ? <EditDataCatalog 
+                onClose={() => {
+                    setEditTabOpen(false);
+                    setCatalogId(-1);
+                }} 
+                catalogId={catalogId} 
+                onReload={onReload} 
+                catalogList={catalogHeadList}
+            /> : ''}
+        </div>
+    );
+};
+
+export default Head;

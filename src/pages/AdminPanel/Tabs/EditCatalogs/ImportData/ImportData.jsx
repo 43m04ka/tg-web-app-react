@@ -1,0 +1,250 @@
+import React, {useState} from 'react';
+import ExcelReader from "../../../Blocks/ExcelReader";
+import useData from "../../../useData";
+import PopUpWindow from "../../../Elements/PopUpWindow/PopUpWindow";
+import style from "../../HistoryOrders/History.module.scss";
+
+const IMPORT_URL = 'https://gwstorebot.ru/api/product/import';
+
+const ImportData = ({onClose, onReload, catalogList}) => {
+
+    const {authenticationData} = useData();
+
+    const [onLoad, setOnLoad] = useState(false)
+    const [importStatus, setImportStatus] = useState(null)
+    const [errorList, setErrorList] = useState([])
+    const [file, setFile] = useState(null)
+    const [selectedCatalogId, setSelectedCatalogId] = useState(null)
+    const [searchInput, setSearchInput] = useState('')
+    const [showCatalogList, setShowCatalogList] = useState(false)
+
+    const filteredCatalogs = catalogList?.filter(cat => 
+        cat.path.toLowerCase().includes(searchInput.toLowerCase())
+    ) || []
+
+    const importProductsFromExcel = async (excelFile, catalogId) => {
+        const formData = new FormData();
+        formData.append('file', excelFile);
+
+        try {
+            setOnLoad(true)
+            const response = await fetch(`https://gwstorebot.ru/api/product/import?catalogId=${catalogId}`, {
+                method: 'POST',
+                body: formData
+            })
+
+            const result = await response.json()
+
+            if (response.ok) {
+                setImportStatus({
+                    message: result.message,
+                    successCount: result.successCount,
+                    errorCount: result.errorCount
+                })
+
+                if (result.errors && result.errors.length > 0) {
+                    setErrorList(result.errors)
+                }
+            } else {
+                let errorMessage = result.message || 'Ошибка при импорте';
+                if (response.status === 413) {
+                    errorMessage = 'Файл слишком большой. Максимум 50 МБ.';
+                }
+                setImportStatus({
+                    message: errorMessage,
+                    successCount: result.successCount || 0,
+                    errorCount: result.errorCount || 0
+                })
+                setErrorList(result.errors || [])
+            }
+        } catch (error) {
+            console.error('Import error:', error)
+            setImportStatus({
+                message: 'Ошибка сети при импорте: ' + error.message,
+                successCount: 0,
+                errorCount: 0
+            })
+        } finally {
+            setOnLoad(false)
+        }
+    }
+
+    const handleImportClick = async () => {
+        if (!file) {
+            alert('Пожалуйста, выберите файл')
+            return
+        }
+        if (!selectedCatalogId) {
+            alert('Пожалуйста, выберите каталог')
+            return
+        }
+        await importProductsFromExcel(file, selectedCatalogId)
+    }
+
+    const selectedCatalog = catalogList?.find(cat => cat.id === selectedCatalogId)
+
+    if (onLoad) {
+        return (<div className={'text-element'} style={{
+            fontSize: '20px',
+            marginTop: '30px',
+            marginLeft: '30px',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+        }}>
+            Импорт товаров в процессе...
+        </div>)
+    }
+
+    if (importStatus) {
+        return (<PopUpWindow title={`Результат импорта`}>
+            <div>
+                <div className={style['infoLabel']} style={{fontSize: '16px', marginBottom: '10px'}}>
+                    {importStatus.message}
+                </div>
+                <div style={{marginBottom: '10px'}}>
+                    <div style={{color: 'green', marginBottom: '5px'}}>
+                        ✓ Успешно загружено: <strong>{importStatus.successCount}</strong>
+                    </div>
+                    <div style={{color: 'red'}}>
+                        ✗ Ошибок: <strong>{importStatus.errorCount}</strong>
+                    </div>
+                </div>
+
+                {errorList.length > 0 && (
+                    <div style={{
+                        maxHeight: '200px',
+                        overflowY: 'auto',
+                        border: '1px solid #ddd',
+                        padding: '10px',
+                        marginBottom: '15px',
+                        borderRadius: '4px'
+                    }}>
+                        <div style={{fontWeight: 'bold', marginBottom: '10px'}}>Ошибки:</div>
+                        {errorList.map((error, index) => (
+                            <div key={index} style={{fontSize: '12px', marginBottom: '5px', color: '#666'}}>
+                                <strong>Строка {error.row}:</strong> {error.error}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+            <div className={style['buttonPlace']}>
+                <div className={style['buttonAccept']}
+                     onClick={() => {
+                         onReload();
+                         onClose();
+                     }}>
+                    <div/>
+                    <p>Закрыть</p>
+                </div>
+            </div>
+        </PopUpWindow>);
+    }
+
+    return (<PopUpWindow title={`Импортировать товары`}>
+        <div>
+            <div className={style['infoLabel']} style={{marginBottom: '10px'}}>Выберите каталог:</div>
+
+            <div style={{position: 'relative', marginBottom: '15px'}}>
+                <input
+                    type="text"
+                    placeholder="Поиск каталога..."
+                    value={searchInput}
+                    onChange={(e) => {
+                        setSearchInput(e.target.value)
+                        setShowCatalogList(true)
+                    }}
+                    onFocus={() => setShowCatalogList(true)}
+                    style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        border: '1px solid #555',
+                        borderRadius: '4px',
+                        backgroundColor: '#2a2a2a',
+                        color: '#fff',
+                        boxSizing: 'border-box',
+                        fontSize: '14px'
+                    }}
+                />
+
+                {showCatalogList && (
+                    <div style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        right: 0,
+                        backgroundColor: '#2a2a2a',
+                        border: '1px solid #555',
+                        borderRadius: '4px',
+                        maxHeight: '200px',
+                        overflowY: 'auto',
+                        marginTop: '2px',
+                        zIndex: 1000
+                    }}>
+                        {filteredCatalogs.length > 0 ? (
+                            filteredCatalogs.map(cat => (
+                                <div
+                                    key={cat.id}
+                                    onClick={() => {
+                                        setSelectedCatalogId(cat.id)
+                                        setSearchInput(cat.path)
+                                        setShowCatalogList(false)
+                                    }}
+                                    style={{
+                                        padding: '10px 12px',
+                                        borderBottom: '1px solid #444',
+                                        cursor: 'pointer',
+                                        backgroundColor: selectedCatalogId === cat.id ? '#3a3a3a' : '#2a2a2a',
+                                        color: '#fff'
+                                    }}
+                                    onMouseEnter={(e) => e.target.style.backgroundColor = '#3a3a3a'}
+                                    onMouseLeave={(e) => e.target.style.backgroundColor = selectedCatalogId === cat.id ? '#3a3a3a' : '#2a2a2a'}
+                                >
+                                    {cat.path}
+                                </div>
+                            ))
+                        ) : (
+                            <div style={{padding: '10px 12px', color: '#999'}}>Каталоги не найдены</div>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            {selectedCatalog && (
+                <div style={{
+                    padding: '8px 12px',
+                    backgroundColor: '#1a3a1a',
+                    border: '1px solid #4caf50',
+                    borderRadius: '4px',
+                    marginBottom: '15px',
+                    color: '#4caf50',
+                    fontSize: '14px'
+                }}>
+                    ✓ Выбран: <strong>{selectedCatalog.path}</strong>
+                </div>
+            )}
+
+            <div className={style['infoLabel']} style={{marginBottom: '10px'}}>Выберите файл Excel для импорта:</div>
+            
+            <ExcelReader setButtonTable={(fileData) => setFile(fileData.file || fileData)} />
+        </div>
+        <div className={style['buttonPlace']}>
+            <div className={style['buttonAccept']}
+                 onClick={handleImportClick}>
+                <div/>
+                <p>Импортировать</p>
+            </div>
+
+            <div className={style['buttonCancel']}
+                 onClick={() => {
+                     onClose()
+                 }}>
+                <div/>
+                <p>Отмена</p>
+            </div>
+        </div>
+    </PopUpWindow>);
+};
+
+export default ImportData;

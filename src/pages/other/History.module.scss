@@ -1,0 +1,104 @@
+@import "src/app/styles/mainStyle";
+
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.title {
+  font-family: 'SF PRO Display', serif;
+  font-size: 4.7vw;
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  padding: 2vw 0 1.5vw;
+}
+
+.list {
+  flex: 1;
+  overflow-y: scroll;
+  padding: 0 3vw 4vw;
+}
+
+.orderCard {
+  background: #1e1e1e;
+  border-radius: 3vw;
+  margin-top: 2.5vw;
+  overflow: hidden;
+}
+
+.orderHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3vw 4vw;
+}
+
+.orderNum {
+  font-family: 'SF PRO Display', serif;
+  font-size: 3.8vw;
+  font-weight: 700;
+  color: white;
+}
+
+.orderMeta {
+  font-family: 'SF PRO Display', serif;
+  font-size: 3vw;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.orderTotal {
+  font-family: 'SF PRO Display', serif;
+  font-size: 4vw;
+  font-weight: 700;
+  color: white;
+}
+
+.orderItems {
+  border-top: 0.3vw solid rgba(255, 255, 255, 0.06);
+  padding: 1.5vw 3vw 2.5vw;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 14vw 1fr;
+  gap: 3vw;
+  align-items: center;
+  padding: 2vw 0;
+}
+
+.itemImg {
+  width: 14vw;
+  height: 14vw;
+  border-radius: 2vw;
+  object-fit: cover;
+}
+
+.itemName {
+  font-family: 'SF PRO Display', serif;
+  font-size: 3.2vw;
+  font-weight: 600;
+  color: white;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 4vw;
+  margin: 0;
+}
+
+.itemPrice {
+  font-family: 'SF PRO Display', serif;
+  font-size: 3.5vw;
+  font-weight: 700;
+  color: white;
+  margin: 0.8vw 0 0;
+}
+
+.separator {
+  height: 0.3vw;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 0.5vw 0;
+}

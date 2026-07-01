@@ -1,0 +1,25 @@
+@import "src/app/styles/mainStyle";
+
+.card {
+  padding: 20px;
+  border-radius: 18px;
+  background: linear-gradient(150deg, #242424 0%, #1c1c1c 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.title {
+  @extend %font-bold;
+  margin: 0 0 18px;
+  color: #ffffff;
+  font-size: 24px;
+  letter-spacing: -0.01em;
+}
+
+.list {
+  width: 100%;
+  padding-bottom: 8px;
+}
+
+.item {
+  width: 200px;
+}

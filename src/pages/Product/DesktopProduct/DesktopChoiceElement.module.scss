@@ -1,0 +1,53 @@
+@import "src/app/styles/mainStyle";
+
+.card {
+  padding: 18px;
+  border-radius: 18px;
+  background: linear-gradient(150deg, #242424 0%, #1c1c1c 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.title {
+  @extend %font-bold;
+  margin: 0 0 14px;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.item,
+.active {
+  @extend %font-bold;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 10px 16px;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  font-size: 14px;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.16);
+    color: #ffffff;
+  }
+}
+
+.activeDefault {
+  background: rgba(79, 138, 231, 0.18);
+  border-color: rgba(79, 138, 231, 0.5);
+  color: #ffffff;
+}
+
+.activeXbox {
+  background: rgba(80, 163, 85, 0.18);
+  border-color: rgba(80, 163, 85, 0.5);
+  color: #ffffff;
+}

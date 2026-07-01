@@ -1,0 +1,115 @@
+﻿import React, {useEffect, useState} from 'react';
+import {useServer} from "../useServer";
+import style from '../Structure.module.scss';
+import useGlobalData from "../../../../../hooks/useGlobalData";
+import Head from "./Head/Head";
+import Body from "./Body/Body";
+
+
+const EditCatalogs = () => {
+
+    const {pageList} = useGlobalData()
+
+    const [page, setPage] = useState(-1);
+    const [catalogHeadList, setCatalogHeadList] = useState([])
+    const [catalogBodyList, setCatalogBodyList] = useState([])
+    const [activeTab, setActiveTab] = useState('head');
+
+    const {getStructureCatalogList} = useServer()
+
+    useEffect(() => {
+        if (page > 0) {
+            getStructureCatalogList(page, 'head', setCatalogHeadList).then()
+            getStructureCatalogList(page, 'body', setCatalogBodyList).then()
+        }
+    }, [page]);
+
+    const handlePageSelect = (pageId) => {
+        setPage(pageId);
+    };
+
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+    };
+
+    if (page <= 0) {
+        return (
+            <div className={style['mainContainer']}>
+                <div className={style['header']}>
+                    <div className={style['headerTitle']}>Структура каталогов</div>
+                </div>
+                <div className={style['pageSelector']}>
+                    <p>Выберите страницу:</p>
+                    <div className={style['pageButtonGroup']}>
+                        {pageList && pageList.map((p) => (
+                            <button
+                                key={p.id}
+                                className={style['pageButton']}
+                                onClick={() => handlePageSelect(p.id)}
+                            >
+                                {p.titleForMessage}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    const currentPageName = pageList?.find(p => p.id === page)?.titleForMessage || '';
+
+    return (
+        <div className={style['mainContainer']}>
+            <div className={style['header']}>
+                <div className={style['headerTitle']}>Структура каталогов: {currentPageName}</div>
+                <div className={style['headerControls']}>
+                    <button
+                        className={style['pageBackButton']}
+                        onClick={() => setPage(-1)}
+                    >
+                        ← Вернуться к выбору страницы
+                    </button>
+                </div>
+            </div>
+
+            <div className={style['tabsContainer']}>
+                <button
+                    className={`${style['tab']} ${activeTab === 'head' ? style['activeTab'] : ''}`}
+                    onClick={() => handleTabChange('head')}
+                >
+                    Карусель
+                </button>
+                <button
+                    className={`${style['tab']} ${activeTab === 'body' ? style['activeTab'] : ''}`}
+                    onClick={() => handleTabChange('body')}
+                >
+                    Основное содержимое
+                </button>
+            </div>
+
+            <div className={style['tabContent']}>
+                {activeTab === 'head' && (
+                    <Head
+                        catalogHeadList={catalogHeadList}
+                        page={page}
+                        onReload={() => {
+                            getStructureCatalogList(page, 'head', setCatalogHeadList).then()
+                        }}
+                    />
+                )}
+                {activeTab === 'body' && (
+                    <Body
+                        catalogBodyList={catalogBodyList}
+                        page={page}
+                        onReload={() => {
+                            getStructureCatalogList(page, 'body', setCatalogBodyList).then()
+                        }}
+                    />
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default EditCatalogs;
+

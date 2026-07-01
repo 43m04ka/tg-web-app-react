@@ -1,0 +1,86 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+
+
+.text-field_floating {
+  position: relative;
+  @extend %text;
+  margin: 12px 0;
+}
+
+.text-field_floating .text-field__input {
+  height: calc(3rem + 2px);
+  line-height: 1.25;
+  padding: 1rem 0.75rem;
+  background-color: rgba(19, 21, 29, 0.6) !important;
+  border: 1px solid rgba(79, 95, 130, 0.4) !important;
+  border-radius: 8px !important;
+  color: #e4e8f2;
+  transition: all 0.2s ease;
+
+  &:focus {
+    border-color: $theme-color !important;
+    background-color: rgba(19, 21, 29, 0.8) !important;
+    box-shadow: 0 0 0 3px rgba($theme-color, 0.1);
+  }
+
+  &:hover:not(:focus) {
+    border-color: rgba(79, 95, 130, 0.6);
+  }
+}
+
+.text-field_floating .text-field__label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  padding: 1rem .75rem;
+  pointer-events: none;
+  border: 1px solid transparent;
+  transform-origin: 0 0;
+  transition: opacity .15s ease-in-out, transform .15s ease-in-out;
+  color: #8e95a3;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.text-field_floating .text-field__input::-moz-placeholder {
+  color: transparent;
+}
+
+.text-field_floating .text-field__input::placeholder {
+  color: transparent;
+}
+
+.text-field_floating .text-field__input:focus,
+.text-field_floating .text-field__input:not(:placeholder-shown) {
+  padding-top: 1.625rem;
+  padding-bottom: .625rem;
+}
+
+.text-field_floating .text-field__input:focus~.text-field__label,
+.text-field_floating .text-field__input:not(:placeholder-shown)~.text-field__label {
+  transform: scale(.85) translateY(-.75rem) translateX(.15rem);
+  color: $theme-color;
+}
+
+.text-field__label {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: $secondary-color;
+}
+
+.text-field__input {
+  @extend %text;
+  display: block;
+  width: 100%;
+  height: calc(3rem + 2px);
+  padding: 0.375rem 0.75rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: $text-color;
+  background-color: $bg-color;
+  background-clip: padding-box;
+  border: 1px solid $secondary-color;
+  border-radius: 7px;
+  transition: border-color 0.5s ease-in-out, box-shadow 0.15s ease-in-out;
+}

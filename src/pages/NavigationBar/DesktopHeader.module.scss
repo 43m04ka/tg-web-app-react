@@ -1,0 +1,426 @@
+@import "src/app/styles/mainStyle";
+
+.header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10050;
+  background: #222222;
+  border-bottom: 1px solid #3c3c3c;
+  box-sizing: border-box;
+  overflow: visible;
+  font-family: 'SF PRO Display', serif;
+  font-variant: normal;
+}
+
+.inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 10px 24px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  font-family: inherit;
+  overflow: visible;
+}
+
+.left,
+.right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logoButton {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.logoImg {
+  height: 44px;
+  width: auto;
+  display: block;
+}
+
+.actionButton {
+  position: relative;
+  border: none;
+  background: transparent;
+  color: white;
+  opacity: 0.6;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  font-weight: normal;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  transition: opacity 0.15s, background 0.15s;
+}
+
+.actionButton:hover {
+  opacity: 1;
+  background: #2b2b2b;
+}
+
+.btnIcon {
+  width: 20px;
+  height: 20px;
+  display: block;
+  filter: invert(1);
+}
+
+.searchField {
+  position: relative;
+  min-width: 0;
+  width: 100%;
+  overflow: visible;
+  z-index: 3;
+}
+
+.searchRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: stretch;
+  min-height: 44px;
+  background: #2a2a2a;
+  border: 1px solid #4e4e4e;
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: 'SF PRO Display', serif;
+  font-variant: normal;
+}
+
+.searchInputWrap {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.searchInput {
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 14px;
+  font-family: 'SF PRO Display', serif;
+  font-weight: normal;
+  font-variant: normal;
+  padding: 0 6px 0 14px;
+  outline: none;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.searchClear {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  margin-right: 6px;
+  border: none;
+  border-radius: 50%;
+  background: #4d4d4d;
+  color: #f0f0f0;
+  font-family: 'SF PRO Display', serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background 0.15s, opacity 0.15s;
+  opacity: 0.92;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.searchClear:hover {
+  background: #5a5a5a;
+  opacity: 1;
+}
+
+.searchClearSvg {
+  display: block;
+}
+
+.searchInput::placeholder {
+  color: #b7b7b7;
+  font-family: 'SF PRO Display', serif;
+  font-weight: normal;
+  font-variant: normal;
+}
+
+.searchSubmit {
+  border: none;
+  background: #3a3a3a;
+  color: white;
+  font-size: 13px;
+  font-family: 'SF PRO Display', serif;
+  font-weight: normal;
+  font-variant: normal;
+  padding: 0 18px;
+  cursor: pointer;
+  border-left: 1px solid #4e4e4e;
+  min-height: 44px;
+  transition: background 0.15s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.searchSubmit:hover {
+  background: #4a4a4a;
+}
+
+.searchBackdrop {
+  z-index: 10040;
+  pointer-events: auto;
+  box-sizing: border-box;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.22);
+  isolation: isolate;
+}
+
+.searchPanelShell {
+  position: fixed;
+  z-index: 10120;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.18s ease,
+    transform 0.22s cubic-bezier(0.2, 0.85, 0.25, 1);
+  pointer-events: none;
+  box-sizing: border-box;
+  max-width: calc(100vw - 32px);
+}
+
+.searchPanelShellOpen {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.searchPanel {
+  position: relative;
+  left: auto;
+  right: auto;
+  top: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: #2a2a2a;
+  border: 1px solid #464646;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  max-height: min(92vh, calc(100dvh - 96px));
+  min-height: 220px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+  font-family: 'SF PRO Display', serif;
+  font-variant: normal;
+}
+
+.panelSection {
+  width: 100%;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.emptyNotFound {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  font-family: 'SF PRO Display', serif;
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
+}
+
+.emptySub {
+  margin: 0;
+  color: #b0b0b0;
+  font-size: 14px;
+  line-height: 1.45;
+  font-family: 'SF PRO Display', serif;
+  font-weight: normal;
+}
+
+.panelTitle {
+  color: #d4d4d4;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'SF PRO Display', serif;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+}
+
+.chipList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  border: none;
+  background: #3b3b3b;
+  color: #f2f2f2;
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 13px;
+  font-family: 'SF PRO Display', serif;
+  font-weight: normal;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.chip:hover {
+  background: #505050;
+}
+
+.active {
+  opacity: 1 !important;
+  background: #2f2f2f;
+}
+
+.iconWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.counter {
+  position: absolute;
+  top: -5px;
+  right: -7px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #e31c1c;
+  color: white;
+  font-family: 'SF PRO Display', serif;
+  font-weight: 700;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  box-sizing: border-box;
+  border: 1.5px solid #222222;
+  pointer-events: none;
+}
+
+/* Лоадер как на странице Search (три «прыгающие» точки) */
+.liveSearchLoader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 88px;
+  padding: 8px 0 16px;
+}
+
+.liveSearchLoaderInner {
+  position: relative;
+  width: 200px;
+  height: 60px;
+  transform: scale(0.42);
+  transform-origin: center center;
+}
+
+.liveSearchCircle {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  border-radius: 50%;
+  background-color: #fff;
+  left: 15%;
+  transform-origin: 50%;
+  animation: liveSearchCirclePop 0.5s alternate infinite ease;
+}
+
+@keyframes liveSearchCirclePop {
+  0% {
+    top: 60px;
+    height: 5px;
+    border-radius: 50px 50px 25px 25px;
+    transform: scaleX(1.7);
+  }
+
+  40% {
+    height: 20px;
+    border-radius: 50%;
+    transform: scaleX(1);
+  }
+
+  100% {
+    top: 0%;
+  }
+}
+
+.liveSearchLoaderInner .liveSearchCircle:nth-child(2) {
+  left: 45%;
+  animation-delay: -0.2s;
+}
+
+.liveSearchLoaderInner .liveSearchCircle:nth-child(3) {
+  left: auto;
+  right: 15%;
+  animation-delay: -0.3s;
+}
+
+.liveSearchShadow {
+  width: 20px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.9);
+  position: absolute;
+  top: 62px;
+  transform-origin: 50%;
+  z-index: -1;
+  left: 15%;
+  filter: blur(1px);
+  animation: liveSearchShadowBob 0.5s alternate infinite ease;
+}
+
+@keyframes liveSearchShadowBob {
+  0% {
+    transform: scaleX(1.5);
+  }
+
+  40% {
+    transform: scaleX(1);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scaleX(0.2);
+    opacity: 0.4;
+  }
+}
+
+.liveSearchLoaderInner .liveSearchShadow:nth-child(4) {
+  left: 45%;
+  animation-delay: -0.2s;
+}
+
+.liveSearchLoaderInner .liveSearchShadow:nth-child(5) {
+  left: auto;
+  right: 15%;
+  animation-delay: -0.3s;
+}

@@ -1,0 +1,196 @@
+﻿import React, { useState, useEffect } from 'react';
+import vkBridge from '@vkontakte/vk-bridge';
+
+const tg = window.Telegram?.WebApp || {
+    close: () => {},
+    expand: () => {},
+    MainButton: { isVisible: false, hide: () => {}, show: () => {} },
+    BackButton: { show: () => {}, hide: () => {} },
+    onEvent: () => {},
+    offEvent: () => {},
+    initDataUnsafe: {},
+    safeAreaInset: { top: 0, bottom: 0 },
+    contentSafeAreaInset: { top: 0, bottom: 0 }
+};
+
+let globalVkUser = null;
+let globalVkInsets = { top: 0, bottom: 0 };
+let globalVkMessagesAllowed = false;
+let globalVkGroupId = null;
+const VK_GROUP_ID_XBOX = 236197114;
+const VK_GROUP_ID_PS = 236197114;
+const isVk = vkBridge.isWebView() || vkBridge.isIframe() || window.location.search.includes('vk_');
+
+const isTg = !isVk && !!window.Telegram?.WebApp;
+
+if (isVk) {
+    const href = window.location.href.toLowerCase();
+
+    if (href.includes('app54461112')) {
+        globalVkGroupId = VK_GROUP_ID_XBOX;
+    } else {
+        globalVkGroupId = VK_GROUP_ID_PS;
+    }
+
+    vkBridge.subscribe((e) => {
+        if (e.detail.type === 'VKWebAppUpdateConfig') {
+            const data = e.detail.data;
+            if (data && data.safe_area) {
+                globalVkInsets = {
+                    top: data.safe_area.top || 0,
+                    bottom: data.safe_area.bottom || 0
+                };
+            }
+        }
+    });
+
+    vkBridge.send('VKWebAppGetUserInfo').then(data => {
+        globalVkUser = data;
+    }).catch(console.error);
+
+    vkBridge.send('VKWebAppSetViewSettings', {
+        status_bar_style: 'light',
+        action_bar_color: 'none'
+    });
+}
+
+export const getUser = () => {
+    return isVk 
+        ? (globalVkUser ? { id: globalVkUser.id, first_name: globalVkUser.first_name, last_name: globalVkUser.last_name, platform: 'vk' } : { id: 5106439090, first_name: 'Гость', platform: 'vk' })
+        : (isTg
+            ? (tg.initDataUnsafe?.user ? { ...tg.initDataUnsafe.user, platform: 'tg' } : { id: 5106439090, first_name: 'Гость', platform: 'tg' })
+            : { id: 5106439090, first_name: 'Гость', platform: 'web' });
+}
+
+export function useTelegram() {
+    const [vkUser, setVkUser] = useState(globalVkUser);
+    const [vkInsets, setVkInsets] = useState(globalVkInsets);
+    const [vkMessagesAllowed, setVkMessagesAllowed] = useState(globalVkMessagesAllowed);
+
+    useEffect(() => {
+        if (!isVk) return;
+
+        const handleConfigUpdate = (e) => {
+            if (e.detail.type === 'VKWebAppUpdateConfig') {
+                const data = e.detail.data;
+                if (data && data.safe_area) {
+                    setVkInsets({
+                        top: data.safe_area.top || 0,
+                        bottom: data.safe_area.bottom || 0
+                    });
+                }
+            }
+        };
+
+        vkBridge.subscribe(handleConfigUpdate);
+
+        if (!globalVkUser) {
+            vkBridge.send('VKWebAppGetUserInfo').then(data => {
+                globalVkUser = data;
+                setVkUser(data);
+
+                if (globalVkGroupId && data?.id) {
+                    vkBridge.send('VKWebAppIsMessagesFromGroupAllowed', {
+                        group_id: globalVkGroupId,
+                        user_id: data.id
+                    }).then((res) => {
+                        const isAllowed = !!res?.is_allowed;
+                        globalVkMessagesAllowed = isAllowed;
+                        setVkMessagesAllowed(isAllowed);
+                    }).catch(() => {});
+                }
+            }).catch(console.error);
+        } else {
+            setVkUser(globalVkUser);
+
+            if (globalVkGroupId && globalVkUser?.id) {
+                vkBridge.send('VKWebAppIsMessagesFromGroupAllowed', {
+                    group_id: globalVkGroupId,
+                    user_id: globalVkUser.id
+                }).then((res) => {
+                    const isAllowed = !!res?.is_allowed;
+                    globalVkMessagesAllowed = isAllowed;
+                    setVkMessagesAllowed(isAllowed);
+                }).catch(() => {});
+            }
+        }
+
+        return () => {
+            vkBridge.unsubscribe(handleConfigUpdate);
+        };
+    }, []);
+
+    const onClose = () => {
+        if (isVk) {
+            vkBridge.send('VKWebAppClose', { status: 'success' });
+        } else {
+            tg.close();
+        }
+    }
+
+    const onToggleButton = () => {
+        if (isVk) return;
+        if (tg.MainButton.isVisible) {
+            tg.MainButton.hide();
+        } else {
+            tg.MainButton.show();
+        }
+    }
+
+    const expand = () => {
+        if (isVk) return;
+        tg.expand();
+    }
+
+    const requestVkMessagesPermission = async () => {
+        if (!isVk || !globalVkGroupId) return false;
+
+        try {
+            const data = await vkBridge.send('VKWebAppAllowMessagesFromGroup', {
+                group_id: globalVkGroupId
+            });
+            const isAllowed = !!data?.result;
+            globalVkMessagesAllowed = isAllowed;
+            setVkMessagesAllowed(isAllowed);
+            return isAllowed;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    const user = isVk 
+        ? (vkUser ? { id: vkUser.id, first_name: vkUser.first_name, last_name: vkUser.last_name, platform: 'vk' } : { id: 5106439090, first_name: 'Гость', platform: 'vk' })
+        : (isTg
+            ? (tg.initDataUnsafe?.user ? { ...tg.initDataUnsafe.user, platform: 'tg' } : { id: 5106439090, first_name: 'Гость', platform: 'tg' })
+            : { id: 5106439090, first_name: 'Гость', platform: 'web' });
+
+    const safeAreaInset = isVk 
+        ? vkInsets 
+        : {
+            top: tg.safeAreaInset?.top,
+            bottom: tg.safeAreaInset?.bottom
+        };
+
+    const contentSafeAreaInset = isVk 
+        ? vkInsets 
+        : {
+            top: tg.contentSafeAreaInset?.top,
+            bottom: tg.contentSafeAreaInset?.bottom
+        };
+
+    return {
+        onClose, onToggleButton, expand, tg,
+        user,
+        isVk,
+        isTg,
+        isWeb: !isVk && !isTg,
+        vkGroupId: globalVkGroupId,
+        vkMessagesAllowed,
+        requestVkMessagesPermission,
+        queryId: tg.initDataUnsafe?.query_id,
+        safeAreaInset,
+        contentSafeAreaInset
+    }
+}
+
+//{id:5106439090, first_name:'tёma'},

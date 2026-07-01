@@ -1,0 +1,83 @@
+﻿import React from 'react';
+import style from './EditCards.module.scss';
+
+const CardTable = ({ cardList, cap, positionOptions, returnOption, setSelectList, selectList }) => {
+    const handleSelectAll = (event) => {
+        if (event.target.checked) {
+            const idList = cardList.map(item => item.id);
+            setSelectList(idList);
+        } else {
+            setSelectList([]);
+        }
+    };
+
+    const handleSelectItem = (event, itemId) => {
+        const elementIndex = selectList.indexOf(itemId);
+        if (event.target.checked && elementIndex === -1) {
+            setSelectList([...selectList, itemId]);
+        } else if (!event.target.checked && elementIndex !== -1) {
+            setSelectList([...selectList.slice(0, elementIndex), ...selectList.slice(elementIndex + 1, selectList.length)]);
+        }
+    };
+
+    return (
+        <table className={style['table']}>
+            <thead>
+                <tr>
+                    <th>
+                        <input 
+                            className={style['checkboxInput']} 
+                            type='checkbox'
+                            checked={selectList.length === cardList.length && selectList.length > 0}
+                            onChange={handleSelectAll}
+                        />
+                    </th>
+                    {cap.name.map((name, index) => (
+                        <th key={index}>{name}</th>
+                    ))}
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {cardList.length === 0 ? (
+                    <tr>
+                        <td colSpan={cap.name.length + 2} className={style['emptyCell']}>
+                            Карты не найдены
+                        </td>
+                    </tr>
+                ) : (
+                    cardList.map((item) => (
+                        <tr key={item.id}>
+                            <td>
+                                <input 
+                                    className={style['checkboxInput']} 
+                                    type='checkbox'
+                                    checked={selectList.includes(item.id)}
+                                    onChange={(event) => handleSelectItem(event, item.id)}
+                                />
+                            </td>
+                            {cap.key.map((key, index) => (
+                                <td key={index}>
+                                    {typeof key === 'function' ? key(item) : item[key]}
+                                </td>
+                            ))}
+                            <td>
+                                {positionOptions.name.map((name, index) => (
+                                    <button 
+                                        key={index}
+                                        className={style['actionButton']}
+                                        onClick={() => returnOption(positionOptions.key[index], item.id)}
+                                    >
+                                        {name}
+                                    </button>
+                                ))}
+                            </td>
+                        </tr>
+                    ))
+                )}
+            </tbody>
+        </table>
+    );
+};
+
+export default CardTable;

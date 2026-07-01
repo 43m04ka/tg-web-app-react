@@ -1,21 +1,32 @@
 import {create} from 'zustand'
 import {devtools} from "zustand/middleware";
 import {useServerUser} from "./useServerUser";
-import {useTelegram} from "./useTelegram";
+import {getBotType, getUser} from "./useTelegram";
 
 
 const {
     getPageList, getStructureCatalogList, getPreviewCardList, getCatalogList, getPreviewFavoriteList
 } = useServerUser()
 const {getBasketList} = useServerUser()
-const {user} = useTelegram()
 
-const useGlobalData = create(devtools(set => ({
+const filterVisiblePagesByPlatform = (pages) => {
+    const botType = getBotType();
+
+    return pages
+        .filter(page => page.isHide !== 1)
+        .filter(page => page.platform === botType)
+        .sort((a, b) => a.serialNumber - b.serialNumber);
+}
+
+const useGlobalData = create(devtools((set, get) => ({
+    internalUserId: null,
+    setInternalUserId: (id) => set(() => ({internalUserId: id})),
+
     pageList: null,
     updatePageList: (data) => {
         if (typeof data === 'undefined') {
             getPageList((result) => {
-                set(() => ({pageList: result}));
+                set(() => ({pageList: filterVisiblePagesByPlatform(result)}));
             })
         } else {
             if (data === true) {
@@ -23,7 +34,7 @@ const useGlobalData = create(devtools(set => ({
                     set(() => ({pageList: result}));
                 }, data)
             } else {
-                set(() => ({pageList: data.sort((a, b) => a.serialNumber - b.serialNumber).filter(page => page.isHide === 1)}));
+                set(() => ({pageList: filterVisiblePagesByPlatform(data)}));
             }
         }
     },
@@ -44,14 +55,32 @@ const useGlobalData = create(devtools(set => ({
             }
         })
         set(() => ({basket: cardList}))
-    }, user.id),
+    }, get().internalUserId || getUser().id),
+
+    addCardToBasketList: (cardData) => set((state) => {
+        const exists = state.basket.some(card => card.id === cardData.id);
+        if (exists) {
+            return state;
+        }
+        return {
+            basket: [...state.basket, { ...cardData, count: 1 }]
+        };
+    }),
+    removeCardFromBasketList: (cardId) => set((state) => ({
+        basket: state.basket.filter(card => card.id !== cardId)
+    })),
+    updateCardCountInBasketList: (cardId, count) => set((state) => ({
+        basket: state.basket.map(card => 
+            card.id === cardId ? { ...card, count } : card
+        )
+    })),
 
     catalogList: null,
     catalogStructureList: null,
     mainPageCards: null,
-    updateCatalogList: (data) => {
+    updateCatalogList: (data, options) => {
         if (typeof data === 'undefined') {
-            getCatalogList((result) => set(() => ({catalogList: result})))
+            getCatalogList((result) => set(() => ({catalogList: result})), options)
         } else {
             set(() => ({catalogList: data}));
         }
@@ -72,7 +101,7 @@ const useGlobalData = create(devtools(set => ({
     },
 
     previewFavoriteData: [],
-    updatePreviewFavoriteData: () => getPreviewFavoriteList((result) => set(() => ({previewFavoriteData: result})), user.id),
+    updatePreviewFavoriteData: () => getPreviewFavoriteList((result) => set(() => ({previewFavoriteData: result})), get().internalUserId || getUser().id),
 
     bufferCardsCatalog: [],
     setBufferCardsCatalog: (cards) => set(() => ({bufferCardsCatalog: cards})),

@@ -1,0 +1,114 @@
+﻿import React, { useState } from 'react';
+import useGlobalData from "../../../../../hooks/useGlobalData";
+import useData from "../../../useData";
+import PopUpWindow from "../../../Elements/PopUpWindow/PopUpWindow";
+import style from "../../HistoryOrders/History.module.scss";
+import { API_BASE_URL } from "../../../../../hooks/useServerRoutes/baseUrl";
+import DropBox from "../../../Elements/DropBox/DropBox";
+
+const ExportData = ({ onClose, onReload }) => {
+
+    const { authenticationData } = useData();
+    const { catalogList } = useGlobalData()
+
+    const [selectedCatalogId, setSelectedCatalogId] = useState(catalogList ? catalogList[0]?.id : null);
+    const [onLoad, setOnLoad] = useState(false)
+
+    const exportProductsAsExcel = async (catalogId) => {
+        try {
+            setOnLoad(true)
+            const response = await fetch(`${API_BASE_URL}/api/product/export`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ catalogId: catalogId })
+            })
+
+            if (response.ok) {
+                // Получаем blob из ответа
+                const blob = await response.blob();
+                
+                // Создаем временный URL и скачиваем файл
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `products_${Date.now()}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                onClose();
+            } else {
+                alert('Ошибка при экспорте товаров');
+            }
+        } catch (error) {
+            console.error('Export error:', error);
+            alert('Ошибка сети при экспорте');
+        } finally {
+            setOnLoad(false)
+        }
+    }
+
+    const handleExportClick = async () => {
+        if (!selectedCatalogId) {
+            alert('Пожалуйста, выберите каталог');
+            return
+        }
+        await exportProductsAsExcel(selectedCatalogId)
+    }
+
+    if (onLoad) {
+        return (<div className={'text-element'} style={{
+            fontSize: '20px',
+            marginTop: '30px',
+            marginLeft: '30px',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+        }}>
+            Подготовка файла для скачивания...
+        </div>)
+    }
+
+    if (catalogList !== null && catalogList.length > 0) {
+        return (<PopUpWindow title={`Экспортировать товары`}>
+            <div>
+                <div className={style['infoLabel']}>Выберите каталог для экспорта:</div>
+
+                <DropBox label={catalogList.map(catalog => {
+                    return {
+                        ...catalog,
+                        name: catalog.path
+                    };
+                })}
+                    onChange={(index) => setSelectedCatalogId(catalogList[index].id)} />
+
+                <div style={{fontSize: '12px', color: '#666', marginTop: '15px', padding: '10px', backgroundColor: '#f5f5f5', borderRadius: '4px'}}>
+                    <div><strong>Формат экспорта:</strong> Excel (.xlsx)</div>
+                    <div style={{marginTop: '5px'}}>Вложенные объекты будут экспортированы в плоском виде (profile.name, profile.age)</div>
+                </div>
+            </div>
+            <div className={style['buttonPlace']}>
+                <div className={style['buttonAccept']}
+                    onClick={handleExportClick}>
+                    <div />
+                    <p>Экспортировать</p>
+                </div>
+
+                <div className={style['buttonCancel']}
+                    onClick={() => {
+                        onClose()
+                    }}>
+                    <div />
+                    <p>Отмена</p>
+                </div>
+            </div>
+        </PopUpWindow>);
+    }
+
+    return null;
+};
+
+export default ExportData;

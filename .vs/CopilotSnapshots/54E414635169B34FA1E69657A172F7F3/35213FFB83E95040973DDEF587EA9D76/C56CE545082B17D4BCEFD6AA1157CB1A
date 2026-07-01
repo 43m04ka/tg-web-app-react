@@ -1,0 +1,139 @@
+﻿import style from './DanyaDr.module.scss';
+import React, { useState } from 'react';
+
+
+const QUIZ_DATA = [
+    {
+        question: "Где мы сделали наше самое первое селфи?",
+        options: ["В парке", "В универе", "На той странной вписке", "В Макдаке"],
+        correctAnswer: "В парке",
+        memoryNote: "Это было в 2019-м, мы тогда еще даже не знали имен друг друга толком!"
+    },
+    {
+        question: "Какая песня у нас ассоциируется с той поездкой на дачу?",
+        options: ["Life is Highway", "Третье сентября", "Потому что есть Алешка", "Gimme! Gimme! Gimme!"],
+        correctAnswer: "Gimme! Gimme! Gimme!",
+        memoryNote: "Мы слушали её на повторе все 3 часа в пробке."
+    },
+    {
+        question: "Сколько пицц мы съели за один присест в прошлый четверг?",
+        options: ["Одну", "Две", "Три", "Мы сбились со счета"],
+        correctAnswer: "Три",
+        memoryNote: "Рекорд побит, желудки в шоке, мы легенды."
+    }
+];
+
+const DanyaDr = () => {
+    const [currentStep, setCurrentStep] = useState(0);
+    const [score, setScore] = useState(0);
+    const [showResult, setShowResult] = useState(false);
+    const [selectedAnswer, setSelectedAnswer] = useState(null);
+    const [isConfirmed, setIsConfirmed] = useState(false);
+
+    const handleAnswerSelect = (option) => {
+        if (isConfirmed) return;
+        setSelectedAnswer(option);
+    };
+
+    const handleConfirm = () => {
+        if (!selectedAnswer) return;
+        if (selectedAnswer === QUIZ_DATA[currentStep].correctAnswer) {
+            setScore(score + 1);
+        }
+        setIsConfirmed(true);
+    };
+
+    const handleNext = () => {
+        const nextStep = currentStep + 1;
+        if (nextStep < QUIZ_DATA.length) {
+            setCurrentStep(nextStep);
+            setSelectedAnswer(null);
+            setIsConfirmed(false);
+        } else {
+            setShowResult(true);
+        }
+    };
+
+    if (showResult) {
+        return (
+            <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg text-center border-2 border-pink-200">
+                <h2 className="text-2xl font-bold mb-4">Квиз окончен! 🎉</h2>
+                <p className="text-lg mb-4">Ты набрал {score} из {QUIZ_DATA.length} баллов.</p>
+                <p className="italic text-gray-600">
+                    {score === QUIZ_DATA.length
+                        ? "Ты помнишь всё! Лучший друг года!"
+                        : "Ну, память уже не та, пора создавать новые моменты!"}
+                </p>
+                <button
+                    onClick={() => window.location.reload()}
+                    className="mt-6 px-4 py-2 bg-pink-500 text-white rounded-full hover:bg-pink-600 transition"
+                >
+                    Пройти еще раз
+                </button>
+            </div>
+        );
+    }
+
+    const currentQuestion = QUIZ_DATA[currentStep];
+
+    return (
+        <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg border-t-4 border-pink-400">
+            <div className="mb-6 text-sm text-gray-400 uppercase tracking-widest font-bold">
+                Вопрос {currentStep + 1} из {QUIZ_DATA.length}
+            </div>
+
+            <h3 className="text-xl font-semibold mb-6 text-gray-800">
+                {currentQuestion.question}
+            </h3>
+
+            <div className="space-y-3">
+                {currentQuestion.options.map((option) => {
+                    let bgColor = "bg-gray-50 border-gray-200";
+                    if (selectedAnswer === option) bgColor = "bg-blue-100 border-blue-400";
+                    if (isConfirmed) {
+                        if (option === currentQuestion.correctAnswer) bgColor = "bg-green-200 border-green-500";
+                        else if (selectedAnswer === option) bgColor = "bg-red-200 border-red-500";
+                    }
+
+                    return (
+                        <button
+                            key={option}
+                            onClick={() => handleAnswerSelect(option)}
+                            disabled={isConfirmed}
+                            className={`w-full p-4 text-left border-2 rounded-lg transition-all ${bgColor} hover:shadow-md`}
+                        >
+                            {option}
+                        </button>
+                    );
+                })}
+            </div>
+
+            {isConfirmed && (
+                <div className="mt-4 p-3 bg-yellow-50 rounded-md text-sm text-yellow-800 italic animate-fade-in">
+                    💡 {currentQuestion.memoryNote}
+                </div>
+            )}
+
+            <div className="mt-8 flex justify-end">
+                {!isConfirmed ? (
+                    <button
+                        onClick={handleConfirm}
+                        disabled={!selectedAnswer}
+                        className="px-6 py-2 bg-pink-500 text-white rounded-lg disabled:opacity-50 font-medium"
+                    >
+                        Ответить
+                    </button>
+                ) : (
+                    <button
+                        onClick={handleNext}
+                        className="px-6 py-2 bg-gray-800 text-white rounded-lg font-medium"
+                    >
+                        {currentStep + 1 === QUIZ_DATA.length ? "Результат" : "Дальше →"}
+                    </button>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default DanyaDr;

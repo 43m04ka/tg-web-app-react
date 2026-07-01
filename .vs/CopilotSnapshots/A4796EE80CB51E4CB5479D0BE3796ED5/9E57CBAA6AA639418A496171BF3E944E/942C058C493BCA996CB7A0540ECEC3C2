@@ -1,0 +1,229 @@
+﻿@import "src/pages/AdminPanel/AdminPanel.module";
+
+.mainContainer {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  padding: 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: 0 0 24px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 0;
+}
+
+.headerTitle {
+  @extend %text;
+  font-size: 28px;
+  font-weight: 700;
+  color: $text-color;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.flexRow {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.alignItemsCenter {
+  align-items: center;
+}
+
+.inputFind {
+  @extend %text;
+  display: flex;
+  width: 280px;
+  height: 40px;
+  padding: 0 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  font-size: 14px;
+  color: $text-color;
+  background-color: rgba(19, 21, 29, 0.6);
+  background-clip: padding-box;
+  border: 1px solid rgba(79, 95, 130, 0.4);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  align-items: center;
+
+  &:focus {
+    outline: none;
+    border-color: $theme-color;
+    background-color: rgba(19, 21, 29, 0.8);
+    box-shadow: 0 0 0 3px rgba($theme-color, 0.1);
+  }
+
+  &:hover:not(:focus) {
+    border-color: rgba(79, 95, 130, 0.6);
+  }
+
+  &::placeholder {
+    color: #5d6577;
+  }
+}
+
+.buttonUpload {
+  background: $theme-color;
+  color: white;
+  padding: 10px 20px;
+  height: auto;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-left: 0;
+
+  > div {
+    width: 18px;
+    height: 18px;
+  }
+
+  > p {
+    margin: 0;
+  }
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba($theme-color, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.tableWrapMain {
+  width: 100%;
+  overflow: auto;
+  max-height: calc(100vh - 200px);
+  min-height: 320px;
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 1px solid #2c2c2e;
+  border-radius: 14px;
+  background: #13151d;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+  table-layout: fixed;
+
+  th,
+  td {
+    @extend %text;
+    padding: 12px 14px;
+    border-bottom: 1px solid #242730;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+  }
+
+  thead th {
+    color: #8e95a3;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: #11131a;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  tbody tr {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:nth-child(even) {
+      background: rgba(79, 95, 130, 0.08);
+    }
+
+    &:hover {
+      background: rgba(91, 120, 227, 0.12);
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+.actionButton {
+  @extend %button;
+  padding: 6px 12px;
+  border-color: #2f3850;
+  background: transparent;
+  color: $theme-color;
+  border: 1px solid rgba($theme-color, 0.3);
+  border-radius: 6px;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+
+  &:hover {
+    background: rgba($theme-color, 0.1);
+    border-color: $theme-color;
+  }
+
+  &:active {
+    opacity: 0.8;
+  }
+
+  > p {
+    margin: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.actionsCell {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.deleteButton {
+  color: #ff6b6b !important;
+  border-color: rgba(255, 107, 107, 0.3) !important;
+
+  &:hover {
+    background: rgba(255, 107, 107, 0.1) !important;
+    border-color: #ff6b6b !important;
+  }
+}

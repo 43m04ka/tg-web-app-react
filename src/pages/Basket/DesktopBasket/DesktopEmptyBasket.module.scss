@@ -1,0 +1,70 @@
+@import "src/app/styles/mainStyle";
+
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background: #171717;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.content {
+  max-width: 1360px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+}
+
+.emptyBasket {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 56px 0 48px;
+}
+
+.duck {
+  display: flex;
+  width: 160px;
+  height: 160px;
+  margin: 0 auto;
+  background-size: cover;
+  background-color: transparent;
+  @extend %saidDuck;
+}
+
+.label {
+  font-family: 'SF PRO Display', serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 28px;
+  text-align: center;
+  color: white;
+  user-select: none;
+  margin-top: 20px;
+}
+
+.button {
+  @extend %font-bold;
+  display: block;
+  width: 280px;
+  height: 50px;
+  margin: 20px auto 0;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  background: #3a3a3a;
+  color: white;
+  font-size: 16px;
+  line-height: 50px;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #484848;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}

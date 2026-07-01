@@ -1,0 +1,267 @@
+﻿@import "src/pages/AdminPanel/AdminPanel.module";
+
+.mainContainer {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  padding: 40px 40px 20px 40px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: 0 0 24px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+.headerTitle {
+  @extend %text;
+  font-size: 28px;
+  font-weight: 700;
+  color: -color;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.flexRow {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  flex: 1;
+  max-width: 100%;
+}
+
+.alignItemsCenter {
+  align-items: center;
+}
+
+.inputFind {
+  @extend %text;
+  display: flex;
+  flex: 1;
+  height: 40px;
+  padding: 0 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  font-size: 14px;
+  color: -color;
+  background-color: rgba(19, 21, 29, 0.6);
+  background-clip: padding-box;
+  border: 1px solid rgba(79, 95, 130, 0.4);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  max-width: 300px;
+
+  &:focus {
+    outline: none;
+    border-color: -color;
+    background-color: rgba(19, 21, 29, 0.8);
+    box-shadow: 0 0 0 3px rgba(-color, 0.1);
+  }
+
+  &:hover:not(:focus) {
+    border-color: rgba(79, 95, 130, 0.6);
+  }
+
+  &::placeholder {
+    color: #5d6577;
+  }
+}
+
+.buttonUpload {
+  @extend %button;
+  background: -color;
+  color: white;
+  padding: 0 16px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  > div {
+    width: 20px;
+    height: 20px;
+    margin-right: 6px;
+  }
+
+  > p {
+    margin: 0;
+  }
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(-color, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.tableWrapMain {
+  width: 100%;
+  overflow: auto;
+  max-height: calc(100vh - 230px);
+  min-height: 320px;
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 1px solid #2c2c2e;
+  border-radius: 14px;
+  background: #13151d;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+  table-layout: fixed;
+
+  th,
+  td {
+    @extend %text;
+    padding: 12px 14px;
+    border-bottom: 1px solid #242730;
+    text-align: left;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  thead th {
+    color: #8e95a3;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: #11131a;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  tbody tr {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:nth-child(even) {
+      background: rgba(79, 95, 130, 0.08);
+    }
+
+    &:hover {
+      background: rgba(91, 120, 227, 0.12);
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+.actionButton {
+  @extend %button;
+  padding: 4px 10px;
+  border-color: #2f3850;
+  background: transparent;
+  color: -color;
+  border: 1px solid rgba(-color, 0.3);
+  border-radius: 6px;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(-color, 0.1);
+    border-color: -color;
+  }
+
+  &:active {
+    opacity: 0.8;
+  }
+
+  > p {
+    margin: 0;
+  }
+}
+
+.deleteButton {
+  color: #ff6b6b !important;
+  border-color: rgba(255, 107, 107, 0.3) !important;
+
+  &:hover {
+    background: rgba(255, 107, 107, 0.1) !important;
+    border-color: #ff6b6b !important;
+  }
+}
+
+.emptyCell {
+  color: #8e95a3 !important;
+  text-align: center !important;
+  padding: 20px !important;
+}
+
+.checkboxInput {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 1px solid rgba(79, 95, 130, 0.4);
+  border-radius: 0.25rem;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 0;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    border-color: $theme-color;
+  }
+
+  &:checked {
+    background-color: $theme-color;
+    border-color: $theme-color;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $theme-color;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.table td:first-child,
+.table th:first-child {
+  width: 50px;
+  padding: 12px 8px;
+  text-align: center;
+}
+
+.table td:last-child {
+  width: 120px;
+  text-align: center;
+  padding: 12px;
+}
+
+.table tbody td {
+  vertical-align: middle;
+}

@@ -1,0 +1,151 @@
+.maintenanceOverlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    background: #0f0f12; // Темный глубокий фон как в боте
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    padding: 24px;
+    box-sizing: border-box;
+  
+    .card {
+      max-width: 360px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+  
+    // Фирменная шапка с цветными акцентами
+    .headerText {
+      text-align: left; // Выравнивание по левому краю как на вашем скрине
+      width: 100%;
+      
+      .mainTitle {
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.3;
+        margin: 0 0 12px 0;
+        letter-spacing: -0.02em;
+        color: #ffffff;
+  
+        .psText {
+          color: #3b82f6; // Синий акцент для PlayStation
+        }
+  
+        .xboxText {
+          color: #22c55e; // Зеленый акцент для Xbox
+        }
+      }
+  
+      .description {
+        font-size: 14px;
+        color: #9ca3af;
+        line-height: 1.5;
+        margin: 0;
+        font-weight: 400;
+      }
+    }
+  
+    // Стилизованная плашка под тех. работы с мягким свечением
+    .infoBlock {
+      width: 100%;
+      background: linear-gradient(135deg, #1e1b4b 0%, #11111d 100%); // Глубокий индиго-градиент
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      border-radius: 20px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-sizing: border-box;
+  
+      .iconWrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 52px;
+        height: 52px;
+        background-color: rgba(99, 102, 241, 0.1);
+        border-radius: 14px;
+        color: #6366f1;
+        font-size: 24px;
+        flex-shrink: 0;
+        animation: pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+  
+      .infoText {
+        font-size: 13px;
+        color: #d1d5db;
+        line-height: 1.4;
+        text-align: left;
+      }
+    }
+  
+    // Контейнер под кнопки (сейчас тут одна кнопка)
+    .supportButtons {
+      width: 100%;
+  
+      // Стиль кнопки скопирован со стиля кнопки Steam на вашем скриншоте
+      .tgBtn {
+        display: flex;
+        align-items: center;
+        justify-content: space-between; // Текст слева, стрелочка/иконка справа
+        padding: 0 24px;
+        width: 100%;
+        height: 72px; // Высокая объемная плашка как для регионов/Steam
+        background: linear-gradient(90deg, #1d4ed8 0%, #0284c7 100%); // Сине-голубой градиент
+        border-radius: 20px; // Большое скругление углов
+        color: #ffffff;
+        text-decoration: none;
+        box-shadow: 0 4px 20px rgba(29, 78, 216, 0.15);
+        transition: opacity 0.2s ease-in-out, transform 0.1s ease-in-out;
+        box-sizing: border-box;
+  
+        &:active {
+          transform: scale(0.98);
+          opacity: 0.9;
+        }
+  
+        .btnContent {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 2px;
+  
+          .btnTitle {
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+          }
+  
+          .btnSub {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+          }
+        }
+  
+        .tgIcon {
+          font-size: 20px;
+          background: rgba(255, 255, 255, 0.1);
+          width: 36px;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+  
+  :local {
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 rgba(99, 102, 241, 0); }
+      50% { transform: scale(1.03); opacity: 0.9; box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }
+    }
+  }
+  

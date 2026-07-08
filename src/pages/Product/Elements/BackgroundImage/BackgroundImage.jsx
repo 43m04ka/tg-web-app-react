@@ -41,8 +41,8 @@ const BackgroundImage = ({productData, selectCardList}) => {
         if (newDate > new Date()) percent = newDate.toLocaleDateString('ru-RU');
     }
 
-    const price = `${productData.price.toLocaleString()} ₽`;
-    const oldPrice = productData.oldPrice ? `${productData.oldPrice.toLocaleString()} ₽` : '';
+    const price = `${String(Number(productData.price)).toLocaleString()} ₽`;
+    const oldPrice = productData.oldPrice && productData.oldPrice > 0 ? `${String(Number(productData.oldPrice)).toLocaleString()} ₽` : '';
 
     const bgImage = productData.backgroundUrl || productData.image;
     const isPreOrder = percent && !percent.includes('-');

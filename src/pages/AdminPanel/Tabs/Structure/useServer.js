@@ -31,10 +31,10 @@ export function useServer() {
     }
 
     const deletePageData = async (authenticationData, pageId) => {
-        await fetch(`${URL}/deletePageData`, {
+        await fetch(`${URL}/deletePage`, {
             method: 'POST',
             headers: adminAuthHeadersJson(),
-            body: JSON.stringify(withJsonAuth({authenticationData: authenticationData, pageId: pageId})),
+            body: JSON.stringify(withJsonAuth({authenticationData: authenticationData, id: pageId})),
         });
     };
 

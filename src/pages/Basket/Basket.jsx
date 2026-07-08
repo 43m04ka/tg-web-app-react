@@ -1,17 +1,18 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import style from './Basket.module.scss';
-import {useTelegram} from "../../hooks/useTelegram";
+import { useTelegram } from "../../hooks/useTelegram";
 import useGlobalData from "../../hooks/useGlobalData";
 import PositionBasket from "./Elements/PositionBasket";
 import AccountData from "./Elements/AccountData";
 import Promo from "./Elements/Promo";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Recommendations from "../../shared/ui/Recommendations/Recommendations";
 import Payment from "./Elements/Payment";
+import IndiaBasketBlock from "./BasketExchangeIndia/IndiaBasketBlock";
 import ButtonBuy from "./Elements/ButtonBuy";
 import OrderPage from "./Elements/OrderPage";
 import OrderContact from "./Elements/OrderContact";
-import {useServerUser} from "../../hooks/useServerUser";
+import { useServerUser } from "../../hooks/useServerUser";
 import DesktopBasket from "./DesktopBasket/DesktopBasket";
 
 const SIMULATE_ORDER = false;
@@ -26,12 +27,12 @@ const Basket = () => {
         return () => window.removeEventListener("resize", handler);
     }, []);
 
-    const {createOrder} = useServerUser()
+    const { createOrder } = useServerUser()
     const { user, tg, safeAreaInset, contentSafeAreaInset, isVk, isTg, isWeb, vkGroupId } = useTelegram()
-    const {pageId, catalogList, basket, updateBasket, pageList} = useGlobalData()
+    const { pageId, catalogList, basket, updateBasket, pageList } = useGlobalData()
     const navigate = useNavigate();
     const [accountData, setAccountData] = useState('')
-    const [promoData, setPromoData] = useState({percent: 0, name: ''})
+    const [promoData, setPromoData] = useState({ percent: 0, name: '' })
     const [promoIsVisible, setPromoIsVisible] = useState(false)
     const [orderData, setOrderData] = useState(null)
     const [username, setUsername] = useState('')
@@ -46,20 +47,49 @@ const Basket = () => {
 
     const pageType = getCurrentPageType();
 
+    const getBasketTotalPrice = () => {
+        if (!basket) return 0;
+
+        if (pageType === 'ps_india') {
+            const inrSum = basket
+                .filter(el => el.priceInOtherCurrency !== null && el.priceInOtherCurrency !== undefined)
+                .reduce((acc, el) => acc + (el.priceInOtherCurrency * el.count), 0);
+
+            const rubFromInr = Math.ceil(inrSum / 1000) * 1000 * 1.3;
+
+            const fixedRubSum = basket
+                .filter(el => el.priceInOtherCurrency === null || el.priceInOtherCurrency === undefined)
+                .reduce((acc, el) => {
+                    const price = el.similarCard !== null ? el.similarCard.price : el.price;
+                    return acc + (price * el.count);
+                }, 0);
+
+            return rubFromInr + fixedRubSum;
+        } else {
+            return basket.reduce((acc, el) => {
+                const price = el.similarCard !== null ? el.similarCard.price : el.price;
+                return acc + (price * el.count);
+            }, 0);
+        }
+    }
+
+    const totalRawPrice = getBasketTotalPrice();
+    const totalFinalPrice = totalRawPrice * (1 - promoData.percent / 100);
+
     const isBuyEnabled = isVk
         ? true
         : (isTg ? (typeof user.username !== 'undefined' || username !== '') : username.trim() !== '');
 
     const orderUsername = isWeb
-        ? username 
+        ? username
         :
         isVk
-        ? `https://vk.com/im/convo/${user.id} \n${user.first_name} ${user.last_name}`
-        : '@' + (user.username || username)
+            ? `https://vk.com/im/convo/${user.id} \n${user.first_name} ${user.last_name}`
+            : '@' + (user.username || username)
 
     const sourceData = isVk
-        ? {source: 'vk', vkGroupId: vkGroupId}
-        : (isTg ? {source: 'tg'} : {source: 'web'})
+        ? { source: 'vk', vkGroupId: vkGroupId }
+        : (isTg ? { source: 'tg' } : { source: 'web' })
 
     useEffect(() => {
         tg.BackButton.show();
@@ -86,14 +116,14 @@ const Basket = () => {
                 paddingBottom: String(contentSafeAreaInset.bottom + safeAreaInset.bottom + 20) + 'px',
             }}>
                 <div className={style['emptyBasket']}>
-                    <div/>
+                    <div />
                     <div>В корзине ничего нет</div>
-                    <button className={style['button']} style={{background: '#454545'}} onClick={() => {
-                        navigate(window.location.pathname.replace('/basket', ''));
+                    <button className={style['button']} style={{ background: '#454545' }} onClick={() => {
+                        navigate('/main/catalogs');
                     }}>Перейти к покупкам
                     </button>
                 </div>
-                <Recommendations from={'basket'}/>
+                <Recommendations from={'basket'} />
             </div>)
         } else if (basket.length > 0) {
             return (<div
@@ -102,27 +132,45 @@ const Basket = () => {
                     paddingTop: String(contentSafeAreaInset.top + safeAreaInset.top) + 'px',
                     paddingBottom: String(window.innerWidth * 0.15 + contentSafeAreaInset.bottom + safeAreaInset.bottom) + 'px'
                 }}>
-                <div className={style['basketBlock']}
-                     style={{height: String(0.33372 * window.innerWidth * basket.length + (basket.length - 1) + 0.143 * window.innerWidth) + 'px'}}>
-                    <p className={style['title']}>Ваша корзина:</p>
-                    {basket.map((item, index) => (<>
-                        <PositionBasket percent={promoData.percent} product={item} onReload={() => {
-                            updateBasket(catalogList, pageId)
-                        }}/>
-                        {index !== basket.length - 1 ? (
-                            <div className={style['separator']} style={{height: '1px', marginTop: '0'}}/>) : ''}
-                    </>))}
-                </div>
+                {pageType === 'ps_india' ? (
+                    <IndiaBasketBlock
+                        basket={basket}
+                        style={style}
+                        promoData={promoData}
+                        catalogList={catalogList}
+                        pageId={pageId}
+                        updateBasket={updateBasket}
+                    />
+                ) : (
+                    <div className={style['basketBlock']}
+                        style={{ height: String(0.33372 * window.innerWidth * basket.length + (basket.length - 1) + 0.143 * window.innerWidth) + 'px' }}>
+                        <p className={style['title']}>Ваша корзина:</p>
+                        {basket.map((item, index) => (
+                            <React.Fragment key={item.id || index}>
+                                <PositionBasket
+                                    percent={promoData.percent}
+                                    product={item}
+                                    onReload={() => {
+                                        updateBasket(catalogList, pageId)
+                                    }}
+                                />
+                                {index !== basket.length - 1 ? (
+                                    <div className={style['separator']} style={{ height: '1px', marginTop: '0' }} />
+                                ) : ''}
+                            </React.Fragment>
+                        ))}
+                    </div>
+                )}
 
                 {pageType !== 'other' && (
                     <div className={style['basketBlock']}>
                         <p className={style['title']}>Куда оформить заказ:</p>
-                        <AccountData returnAccountData={setAccountData} pageType={pageType}/>
+                        <AccountData returnAccountData={setAccountData} pageType={pageType} />
                     </div>
                 )}
 
-                <div className={style['basketBlock']} style={{marginBottom: '0'}}>
-                    <div style={{display: 'flex', flexDirection: 'row'}}>
+                <div className={style['basketBlock']} style={{ marginBottom: '0' }}>
+                    <div style={{ display: 'flex', flexDirection: 'row' }}>
                         <p className={style['title']}>Итого:</p>
                         {promoData.percent > 0 ? <p className={style['title']} style={{
                             margin: 'auto 1vw 0 auto',
@@ -131,23 +179,17 @@ const Basket = () => {
                             color: '#757373',
                             lineHeight: '7vw'
                         }}>
-                            {basket.map(el => {
-                                return el.similarCard !== null ? el.similarCard.price * el.count : el.price * el.count
-                            }).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}₽
+                            {totalRawPrice}₽
                         </p> : ''}
                         <p className={style['title']}
-                           style={{marginRight: '0', marginLeft: promoData.percent > 0 ? '0' : 'auto'}}>
-                            {basket.map(el => {
-                                return el.similarCard !== null ? el.similarCard.price * el.count : el.price * el.count
-                            }).reduce((accumulator, currentValue) => accumulator + currentValue, 0) * (1 - promoData.percent / 100)}₽
+                            style={{ marginRight: '0', marginLeft: promoData.percent > 0 ? '0' : 'auto' }}>
+                            {totalFinalPrice}₽
                         </p>
                     </div>
 
-                    <Payment setPaymentMethodString={setPaymentString} sumPrice={basket.map(el => {
-                        return el.similarCard !== null ? el.similarCard.price * el.count : el.price * el.count
-                    }).reduce((accumulator, currentValue) => accumulator + currentValue, 0) * (1 - promoData.percent / 100)}/>
+                    <Payment setPaymentMethodString={setPaymentString} sumPrice={totalFinalPrice} />
 
-                    <div className={style['separator']}/>
+                    <div className={style['separator']} />
 
                     <OrderContact
                         username={username}
@@ -156,8 +198,8 @@ const Basket = () => {
                     />
 
 
-                    <div style={{height: promoIsVisible ? '9vw' : '3vw', transition: 'all 0.3s'}}>
-                        {promoIsVisible ? <Promo setPromoData={setPromoData}/> :
+                    <div style={{ height: promoIsVisible ? '9vw' : '3vw', transition: 'all 0.3s' }}>
+                        {promoIsVisible ? <Promo setPromoData={setPromoData} /> :
                             <div className={style['promoLabel']} onClick={() => {
                                 setPromoIsVisible(true)
                             }}>У меня есть промокод</div>}
@@ -179,7 +221,8 @@ const Basket = () => {
                             }, 1500);
                             return;
                         }
-                        navigate('/'+pageList.filter(item => item.id === pageId)[0].link + '/basket')
+                        
+                        navigate('/main/basket')
 
                         createOrder(paymentString, accountData, {
                             id: user.id, username: orderUsername
@@ -187,21 +230,21 @@ const Basket = () => {
                             setOrderData(res)
                             onLoaded()
                         })).then()
-                    }} inputUsernameRef={inputRef} isEnabled={isBuyEnabled}/>
+                    }} inputUsernameRef={inputRef} isEnabled={isBuyEnabled} />
 
                     <div className={style['labelBuy']}>
-                        Нажимая на кнопку, Вы соглашаетесь с {}
+                        Нажимая на кнопку, Вы соглашаетесь с { }
                         <a href={'https://gwstore.su/pk'}>
                             Условиями обработки персональных данных
                         </a>
-                        , а также с {}
+                        , а также с { }
                         <a href={'https://gwstore.su/privacy'}>
                             Пользовательским соглашением
                         </a>
                     </div>
                 </div>
-                <Recommendations from={'basket'}/>
-                {orderData !== null ? <OrderPage orderData={orderData}/> : ''}
+                <Recommendations from={'basket'} />
+                {orderData !== null ? <OrderPage orderData={orderData} /> : ''}
             </div>);
         }
     }

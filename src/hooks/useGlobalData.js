@@ -13,9 +13,7 @@ const filterVisiblePagesByPlatform = (pages) => {
     const botType = getBotType();
 
     return pages
-        .filter(page => page.isHide !== 1)
-        .filter(page => page.platform === botType)
-        .sort((a, b) => a.serialNumber - b.serialNumber);
+        .filter(page => page.isHidden !== 1)
 }
 
 const useGlobalData = create(devtools((set, get) => ({

@@ -90,7 +90,7 @@ const EditPages = ({}) => {
                         pageData = item;
                     }
                 })
-                updatePageData(authenticationData, filteredList[0]?.id, {isHide: (pageData.isHide === 1 ? 0 : 1)}).then(()=>{updatePageList(true)})
+                updatePageData(authenticationData, filteredList[0]?.id, {isHidden: (pageData.isHidden === 1 ? 0 : 1)}).then(()=>{updatePageList(true)})
                 break;
             default:
                 break;
@@ -159,29 +159,19 @@ const EditPages = ({}) => {
                             <th>Платформа</th>
                             <th>Тип</th>
                             <th>Путь</th>
-                            <th>Цвет</th>
                             <th>Статус</th>
                             <th>Действие</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {((filteredList && filteredList).sort((a, b) => a.platform.localeCompare(b.platform))).map((page) => (
+                        {((filteredList && filteredList).sort((a, b) => a.botType.localeCompare(b.botType))).map((page) => (
                             <tr key={page.id} onClick={() => handleRowClick(page.id)}>
                                 <td>{page.id}</td>
                                 <td>{page.name}</td>
-                                <td>{getPlatformName(page.platform)}</td>
+                                <td>{getPlatformName(page.botType)}</td>
                                 <td>{getTypeName(page.type)}</td>
                                 <td>{page.link}</td>
-                                <td>
-                                    <div style={{
-                                        width: '24px',
-                                        height: '24px',
-                                        backgroundColor: page.color,
-                                        borderRadius: '4px',
-                                        border: '1px solid #444'
-                                    }}></div>
-                                </td>
-                                <td>{page.isHide === 1 ? 'Скрыта' : 'Отображена'}</td>
+                                <td>{page.isHidden === 1 ? 'Скрыта' : 'Отображена'}</td>
                                 <td onClick={(e) => e.stopPropagation()}>
                                     <button 
                                         className={style['actionButton']} 

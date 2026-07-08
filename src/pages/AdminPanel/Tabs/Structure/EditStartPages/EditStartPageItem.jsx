@@ -29,17 +29,18 @@ const EditStartPageItem = ({ item, platform, onClose, onSaved }) => {
 
     const [type, setType] = useState(item?.type || 'title');
     const [text, setText] = useState(item.text || '');
+    const [title, setTitle] = useState(item.title || '');
     const [icon, setIcon] = useState(item.icon);
     const [color, setColor] = useState(item.color);
     const [pattern, setPattern] = useState(item.pattern);
-    const [iconBar, setIconBar] = useState(item.icon_bar);
     const [url, setUrl] = useState(item.url || '');
     const [structurePageId, setStructurePageId] = useState(item?.structurePageId || null);
     const [infoLabel, setInfoLabel] = useState('');
     const [busy, setBusy] = useState(false);
 
+
     const platformPages = useMemo(
-        () => (pageList || []).filter((page) => page.platform === platform && page.isHide !== 1),
+        () => (pageList || []).filter((page) => page.botType === platform && page.isHidden !== 1),
         [pageList, platform],
     );
 
@@ -69,10 +70,11 @@ const EditStartPageItem = ({ item, platform, onClose, onSaved }) => {
             platform,
             type,
             url,
-            iconBar,
             icon: icon,
             pattern: pattern,
             text: text,
+            title:title,
+            color:color,
             serialNumber: item?.serialNumber ?? 0,
         };
 
@@ -94,12 +96,12 @@ const EditStartPageItem = ({ item, platform, onClose, onSaved }) => {
                 await updateStartPage(authenticationData, item.id, {
                     type,
                     icon: icon,
-                    icon_bar: iconBar,
                     url: url,
                     icon: icon,
                     pattern: pattern,
                     color: color,
                     text: text,
+                    title: title,
                     ...(type === 'page' ? { structurePageId } : {}),
                 });
             }
@@ -203,13 +205,17 @@ const EditStartPageItem = ({ item, platform, onClose, onSaved }) => {
                                     onChange={(index) => setStructurePageId(pageOptions[index]?.key ?? null)}
                                 />
                                 <InputLabel
+                                    label="Заголовок"
+                                    defaultValue={title || ''}
+                                    onChange={(event) => setTitle(event.target.value)}
+                                />
+                                <InputLabel
                                     label="Текст под заголовком"
                                     defaultValue={text || ''}
                                     onChange={(event) => setText(event.target.value)}
                                 />
                                 <DropImage setValue={setPattern} icon={pattern} label={'Паттерн'} />
                                 <DropImage setValue={setIcon} icon={icon} label={'Иконка'} />
-                                <DropImage setValue={setIconBar} icon={iconBar} label={'Иконка бара'} />
                                 <div className={style['colorInputGroup']}>
                                     <label className={style['colorLabel']}>Цвет</label>
                                     <input

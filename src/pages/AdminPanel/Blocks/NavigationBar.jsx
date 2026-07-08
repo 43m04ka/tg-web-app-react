@@ -6,6 +6,7 @@ import useData from '../useData';
 import DictionaryList from './ProcessBlock/DictionaryList';
 import useDictionaryItems from './ProcessBlock/useDictionaryItems';
 import {hasAdminBearer} from '../adminAuth';
+import MaintenanceToggle from './MaintenanceToggle/MaintenanceToggle';
 
 const refreshIconSvg = (
     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
@@ -148,6 +149,7 @@ const NavigationBar = ({routeData}) => {
             </div>
 
             <div className={styles['actionsColumn']}>
+                <MaintenanceToggle/>
                 <button
                     type="button"
                     className={styles['actionBtn']}

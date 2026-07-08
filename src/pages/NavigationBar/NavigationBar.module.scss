@@ -128,7 +128,7 @@
 // We pass the button count via a CSS custom property set inline on .container.
 .productCounter {
   position: absolute;
-  margin-left: calc(100% / var(--nav-btn-count) * 2.5 + 1.5vw);
+  margin-left: calc(100% / var(--nav-btn-count) * 3.5);
   margin-top: 2.5%;
   @extend %font-medium;
   font-size: 3vw;

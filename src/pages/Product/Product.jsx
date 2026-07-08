@@ -191,9 +191,7 @@ const Product = () => {
                             let params = new URLSearchParams(window.location.search);
                             let valueOfKey = params.get('from');
 
-                            navigate('/' + pageList.map(page => {
-                                return pageId === page.id ? page.link : null
-                            }).filter(page => page !== null)[0] + (valueOfKey !== 'basket' ? '/basket?from=product' : '/basket'))
+                            navigate(valueOfKey !== 'basket' ? '/main/basket?from=product' : '/main/basket')
                         } else {
                             setTimeout(()=>{
                                 setCardInBasket(true)

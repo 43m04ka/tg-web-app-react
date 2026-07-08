@@ -37,7 +37,7 @@ const PlatformCard = ({
                     />
                 </div>
                 <div className={style.cardContent}>
-                    <span className={style.cardTitle}>{item.name}</span>
+                    <span className={style.cardTitle}>{item.title}</span>
                     <span className={style.cardSubtitle}>
                         {item.text}
                     </span>

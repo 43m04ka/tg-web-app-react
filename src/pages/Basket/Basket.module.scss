@@ -28,6 +28,16 @@
   color: white;
 }
 
+.subTitle {
+  font-family: 'SF PRO Display', serif;
+  font-variant: normal;
+  font-weight: 700;
+  font-size: 4vw;
+  line-height: 8.5vw;
+  color: #d1d1d1;
+  text-align: center;
+}
+
 
 .label {
   @extend %font-medium;

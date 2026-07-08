@@ -60,7 +60,8 @@ const MainPage = ({page}) => {
         };
     }, [])
 
-    return (<div className={style.mainDivision}>
+
+    return (<div className={style.mainDivision} style={{paddingBottom: String(safeAreaInset.bottom + contentSafeAreaInset.bottom) + 'px'}}>
         <div style={{opacity: opacityTab}} className={style.bodyContainer}>
             <Routes>
                 <Route path="catalogs" element={<Catalogs/>}/>
@@ -70,7 +71,7 @@ const MainPage = ({page}) => {
                 <Route path="more" element={<MoreInfo/>}/>
             </Routes>
         </div>
-        <div className={style.barSlot}>
+        <div className={style.barSlot} style={{bottom: String(safeAreaInset.bottom + contentSafeAreaInset.bottom) + 'px'}}>
             {isDesktop ? (
                 <DesktopHeader setZIndexTab={setZIndexTab} setOpacityTab={setOpacityTab}/>
             ) : (

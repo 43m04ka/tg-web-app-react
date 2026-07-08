@@ -1,8 +1,8 @@
 import './App.css';
 
-import React, {useEffect, useRef} from "react";
-import {useTelegram} from "../hooks/useTelegram";
-import {Route, Routes, useNavigate} from "react-router-dom";
+import React, { useEffect, useRef } from "react";
+import { useTelegram } from "../hooks/useTelegram";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import Catalog from "../pages/Catalog/Catalog";
 import MainPage from "../pages/MainPage/MainPage";
 import ErrorPage from "../pages/other/ErrorPage";
@@ -11,12 +11,13 @@ import History from "../pages/other/History";
 import Favorites from "../pages/other/Favorites";
 import AP_Authentication from "../pages/AdminPanel/AP_Authentication";
 import useGlobalData from "../hooks/useGlobalData";
-import {useServerUser} from "../hooks/useServerUser";
+import { useServerUser } from "../hooks/useServerUser";
 import Product from "../pages/Product/Product";
 import CustomBackButton from "../shared/ui/CustomBackButton/CustomBackButton";
 import DanyaDr from "../pages/DanyaDr/DanyaDr";
 import style from './App.module.scss'
 import SelectPlatform from '../pages/SelectPlatform/SelectPlatform';
+import MaintenancePage from "../pages/MaintenancePage/MaintenancePage";
 
 const normalizeInitialState = (rawInitialData) => {
     const data = rawInitialData || {};
@@ -62,9 +63,9 @@ try {
 }
 
 function App() {
-    const {tg, user, isVk, isVkUserLoaded} = useTelegram();
+    const { tg, user, isVk, isVkUserLoaded } = useTelegram();
     const navigate = useNavigate();
-    const {syncUser} = useServerUser();
+    const { syncUser } = useServerUser();
     const lastSyncedUserKeyRef = useRef('');
 
     const {
@@ -86,17 +87,31 @@ function App() {
 
 
     const [isLoaded, setIsLoaded] = React.useState(true);
+    const [isMaintenance, setIsMaintenance] = React.useState(false);
 
     useEffect(() => {
         try {
             tg.disableVerticalSwipes();
             tg.lockOrientation();
             tg.isClosingConfirmationEnabled = true;
-            tg.requestFullscreen();
+            if(window.innerWidth / window.innerHeight < 1){
+                tg.requestFullscreen();
+            }
             tg.ready();
         } catch (e) {
         }
     }, [])
+
+    useEffect(() => {
+        fetch('https://gwstorebot.ru/api/admin/settings/public?time=' + Date.now())
+            .then(res => res.json())
+            .then(data => {
+                if (data?.settings.maintenance_mode.value === true) {
+                    setIsMaintenance(true);
+                }
+            })
+            .catch(err => console.error('[App] Ошибка проверки тех. режима:', err));
+    }, []);
 
     useEffect(() => {
         updatePageList(initialState.pages)
@@ -132,6 +147,24 @@ function App() {
         }, 150)
     }
 
+    const urlParams = new URLSearchParams(window.location.search);
+        
+        if (urlParams.get('dev') === '1') {
+            sessionStorage.setItem('maintenance_bypass', 'true');
+        }
+
+        const hasBypassKey = 
+            urlParams.get('bypass') === 'true' || 
+            sessionStorage.getItem('maintenance_bypass') === 'true';
+
+        const isTryingToAccessAdmin = 
+            window.location.pathname.startsWith('/admin') || 
+            window.location.pathname.startsWith('/admin-panel');
+
+        if (isMaintenance && !isTryingToAccessAdmin && !hasBypassKey) {
+            return <MaintenancePage />;
+        }
+
     if (!isLoaded) {
         if (window.location.pathname === '/') {
             const tgParam = tg.initDataUnsafe.start_param;
@@ -148,27 +181,28 @@ function App() {
                 navigate('/selectPlatform')
             }
         }
-        return (<div className={style['App']} style={{height: String(window.innerHeight) + 'px'}}>
+
+        return (<div className={style['App']} style={{ height: String(window.innerHeight) + 'px' }}>
             <CustomBackButton />
             <Routes>
-                <Route path={'/main/*'} element={<MainPage/>}/>
-                <Route path={'/favorites'} element={<Favorites/>}/>
-                <Route path={"/selectPlatform"} element={<SelectPlatform/>}/>
-                <Route path={'/catalog/*'} element={<Catalog/>}/>
-                <Route path={'/card/*'} element={<Product/>}/>
-                <Route path={'/choice-catalog/*'} element={<Product/>}/>
-                <Route path={'/admin-panel/*'} element={<AdminPanel/>}/>
-                <Route path={'/admin'} element={<AP_Authentication/>}/>
-                <Route path={'/history'} element={<History/>}/>
-                <Route path={'/danya_dr'} element={<DanyaDr/>}/>
-                <Route path="*" element={<ErrorPage/>}/>
+                <Route path={'/main/*'} element={<MainPage />} />
+                <Route path={'/favorites'} element={<Favorites />} />
+                <Route path={"/selectPlatform"} element={<SelectPlatform />} />
+                <Route path={'/catalog/*'} element={<Catalog />} />
+                <Route path={'/card/*'} element={<Product />} />
+                <Route path={'/choice-catalog/*'} element={<Product />} />
+                <Route path={'/admin-panel/*'} element={<AdminPanel />} />
+                <Route path={'/admin'} element={<AP_Authentication />} />
+                <Route path={'/history'} element={<History />} />
+                <Route path={'/danya_dr'} element={<DanyaDr />} />
+                <Route path="*" element={<ErrorPage />} />
             </Routes>
         </div>);
     } else {
         return (<div className={style["container"]}>
             <div className={style['fillContainer']}>
                 <div
-                    style={{scale: (catalogList !== null && pageList !== null && mainPageCards !== null ? '12' : '0')}}/>
+                    style={{ scale: (catalogList !== null && pageList !== null && mainPageCards !== null ? '12' : '0') }} />
             </div>
         </div>);
     }

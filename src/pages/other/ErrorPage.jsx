@@ -1,8 +1,9 @@
 import {useNavigate} from "react-router-dom";
 
+
 const ErrorPage = () => {
     const navigate = useNavigate();
-    navigate('/main')
+    navigate('/selectPlatform')
 };
 
 export default ErrorPage;

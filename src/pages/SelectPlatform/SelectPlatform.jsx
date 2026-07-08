@@ -15,6 +15,7 @@ const SelectPlatform = () => {
     const isDesktop = useIsDesktopMedia();
     const selectingRef = useRef(false);
 
+
     useEffect(() => {
         tg.BackButton.hide();
     }, [tg]);
@@ -23,6 +24,8 @@ const SelectPlatform = () => {
         if (selectingRef.current) {
             return;
         }
+
+        console.log(item)
 
         window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium');
 
@@ -42,8 +45,17 @@ const SelectPlatform = () => {
         return null;
     }
 
+    console.log(pageList)
+
     return (
-        <div className={style.container}style={{paddingTop: String(safeAreaInset.top + contentSafeAreaInset.top) + 'px'}}>
+        <div className={style.container}style={{paddingTop: String(safeAreaInset.top + contentSafeAreaInset.top + window.innerWidth * 0.05) + 'px', 
+            paddingBottom: String(safeAreaInset.top + contentSafeAreaInset.top + window.innerWidth * 0.05) + 'px'
+        }}>
+            <h className={style.introText}>
+                Геймворд — ваш сервис для покупки игр и подписок для 
+                <a> PlayStation</a> и 
+                <a> Xbox</a>
+            </h>
             {(startPageList.sort((a, b) => a.serialNumber - b.serialNumber)).map((item, index) => {
                 if(item.platform === botType){
                     if(item.type === 'page'){

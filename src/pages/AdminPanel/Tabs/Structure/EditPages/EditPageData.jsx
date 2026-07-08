@@ -21,6 +21,7 @@ const EditPageData = ({ onClose, updatePageList, id }) => {
     const typeOptions = [
         { key: 'ps', name: 'Playstation' },
         { key: 'xbox', name: 'Xbox' },
+        { key: 'ps_india', name: 'Playstation Индия' },
         { key: 'other', name: 'Без полей' }
     ];
 
@@ -50,8 +51,7 @@ const EditPageData = ({ onClose, updatePageList, id }) => {
         }));
     }
 
-    const [icon1, setIcon1] = useState(pageData.url)
-    const [icon2, setIcon2] = useState(pageData.urlBar)
+    const [icon2, setIcon2] = useState(pageData.barIcon)
 
     return (
         <PopUpWindow title={id === -1 ? 'Создать страницу' : 'Редактировать страницу'} onClose={onClose}>
@@ -61,33 +61,15 @@ const EditPageData = ({ onClose, updatePageList, id }) => {
                         onChange={(e) => handleInputChange('name', e.target.value)} />
                     <InputLabel label={'Ссылка'} defaultValue={pageData.link}
                         onChange={(e) => handleInputChange('link', e.target.value)} />
-                    <DropImage label={'Изображение в переключателе'} icon={icon1}
-                        setValue={(e) => {
-                            handleInputChange('url', e)
-                            setIcon1(e)
-                        }} />
                     <DropImage label={'Изображение в баре'} icon={icon2}
                         setValue={(e) => {
-                            handleInputChange('urlBar', e)
+                            handleInputChange('barIcon', e)
                             setIcon2(e)
                         }} />
 
-                    <div className={style['colorInputGroup']}>
-                        <label className={style['colorLabel']}>Цвет</label>
-                        <input
-                            className={style['colorInput']}
-                            type="color"
-                            defaultValue={pageData.color || '#5B78E3'}
-                            onChange={(e) => handleInputChange('color', e.target.value)}
-                        />
-                    </div>
-
-                    <InputLabel label={'Заголовок в сообщении'} defaultValue={pageData.titleForMessage}
-                        onChange={(e) => handleInputChange('titleForMessage', e.target.value)} />
-
                     <div className={style['dropboxLabel']}>Платформа</div>
                     <DropBox label={platformOptions} onChange={(value) => {
-                        handleInputChange('platform', platformOptions[value].key);
+                        handleInputChange('botType', platformOptions[value].key);
                     }} defaultIndex={selectedPlatformIndex} />
 
                     <div className={style['dropboxLabel']}>Тип</div>

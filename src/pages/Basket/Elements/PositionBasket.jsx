@@ -6,7 +6,7 @@ import useGlobalData from "../../../hooks/useGlobalData";
 import {useNavigate} from "react-router-dom";
 import {useServerUser} from "../../../hooks/useServerUser";
 
-const PositionBasket = ({product, percent}) => {
+const PositionBasket = ({product, percent, otherCurrency}) => {
     const {addCardToFavorite, deleteCardToFavorite, deleteCardToBasket, setBasketPositionCount} = useServerUser();
     const {user} = useTelegram();
     const {updatePreviewFavoriteData, previewFavoriteData, pageId, catalogList, updateBasket} = useGlobalData();
@@ -14,6 +14,8 @@ const PositionBasket = ({product, percent}) => {
 
     const [counter, setCounter] = useState(product.count);
     const [cardInFavorite, setCardInFavorite] = useState(previewFavoriteData.includes(product.id));
+
+    const isInr = product.priceInOtherCurrency !== null && product.priceInOtherCurrency !== undefined && otherCurrency;
 
     useEffect(() => {
         if (product.count !== counter) {
@@ -30,13 +32,6 @@ const PositionBasket = ({product, percent}) => {
     if (product.oldPrice !== null) {
         type = 1
         oldPrice = product.oldPrice * product.count
-    } else if (product.similarCard !== null) {
-        type = 0
-        price = product.similarCard?.price * product.count
-        if (typeof product.similarCard.oldPrice !== 'undefined' && typeof product.similarCard.oldPrice !== 'undefined') {
-            type = 1
-            oldPrice = product.similarCard?.oldPrice * product.count
-        }
     }
 
     if (percent > 0) {
@@ -44,6 +39,14 @@ const PositionBasket = ({product, percent}) => {
         oldPrice = price
         price = price - price * percent / 100
     }
+
+    if(isInr){
+        oldPrice = ''
+        type = 0
+        price = Number(product.priceInOtherCurrency)
+    }
+
+    const currencySign = isInr ? ' Rs' : ' ₽';
 
     return (<div className={style['container']}>
         <div onClick={() => {
@@ -105,8 +108,8 @@ const PositionBasket = ({product, percent}) => {
 
             </div>
             <div className={style['pricePlace']}>
-                <p className={style['priceOld']}>{oldPrice !== '' ? (oldPrice).toLocaleString() + ' ₽' : ''}</p>
-                <p className={style[type === 0 ? 'priceDefault' : 'priceDiscount']}>{(price).toLocaleString() + ' ₽'}</p>
+                <p className={style['priceOld']}>{oldPrice !== '' ? (oldPrice).toLocaleString() + currencySign : ''}</p>
+                <p className={style[type === 0 ? 'priceDefault' : 'priceDiscount']}>{(price).toLocaleString() + currencySign}</p>
             </div>
         </div>
     </div>);

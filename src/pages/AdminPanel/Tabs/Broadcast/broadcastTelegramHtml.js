@@ -50,6 +50,14 @@ const serializeNode = (node) => {
             }
             return inner;
         }
+        case 'img': {
+            const emojiId = node.getAttribute('data-tg-emoji-id');
+            const fallback = node.getAttribute('alt') || '💙';
+            if (emojiId) {
+                return `<tg-emoji emoji-id="${escapeAttr(emojiId)}">${escapeTelegramHtmlText(fallback)}</tg-emoji>`;
+            }
+            return '';
+        }
         case 'div':
         case 'p':
         case 'h1':

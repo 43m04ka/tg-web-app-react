@@ -1,6 +1,6 @@
-import React, {useEffect, useRef} from 'react';
+import React, { useEffect, useRef } from 'react';
 import style from './Broadcast.module.scss';
-import {COMMON_EMOJI} from './broadcastConstants';
+import { CUSTOM_EMOJI_LIST } from './broadcastConstants';
 
 const preventBlur = (e) => {
     e.preventDefault();
@@ -79,23 +79,37 @@ const BroadcastFormatToolbar = ({
                     className={`${style['toolBtn']} ${emojiOpen ? style['toolBtnActive'] : ''}`}
                     onMouseDown={preventBlur}
                     onClick={() => setEmojiOpen((v) => !v)}
-                    title="Эмодзи"
+                    title="Кастомные Эмодзи"
                 >
                     🙂
                 </button>
                 {emojiOpen ? (
                     <div className={style['emojiPanel']}>
-                        {COMMON_EMOJI.map((em) => (
-                            <button
-                                key={em}
-                                type="button"
-                                className={style['emojiCell']}
-                                onMouseDown={preventBlur}
-                                onClick={() => insertEmoji(em)}
-                            >
-                                {em}
-                            </button>
-                        ))}
+                        {CUSTOM_EMOJI_LIST.map((em) => {
+                            const emojiStaticUrl = `/static/emojis/${em.id}.webp`;
+
+                            return (
+                                <button
+                                    key={em.id}
+                                    type="button"
+                                    className={style['emojiCell']}
+                                    onMouseDown={preventBlur}
+                                    onClick={() => insertEmoji(em)}
+                                    title={`ID: ${em.id}`}
+                                >
+                                    <img
+                                        src={emojiStaticUrl}
+                                        alt={em.fallback}
+                                        className={style['emojiImg']}
+                                        onError={(e) => {
+                                            e.target.style.display = 'none';
+                                            e.target.nextSibling.style.display = 'inline';
+                                        }}
+                                    />
+                                    <span style={{ display: 'none' }}>{em.fallback}</span>
+                                </button>
+                            );
+                        })}
                     </div>
                 ) : null}
             </div>

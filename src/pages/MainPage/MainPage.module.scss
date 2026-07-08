@@ -10,17 +10,18 @@
   -webkit-animation: animOpacity 300ms ease-in-out forwards;
   display: grid;
   grid-template-rows: 1fr 14vw;
+  background-color: #1E1E24;
 }
 
 .bodyContainer{
   overflow-y: scroll;
   transition: opacity 150ms ease-in-out;
+  background-color: #171717;
 }
 
 .barSlot {
   position: absolute;
   width: 100vw;
-  bottom: 0;
   left: 0;
   transition-property: opacity;
   transition-duration: 0.3s;

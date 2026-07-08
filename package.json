@@ -24,10 +24,11 @@
   "scripts": {
     "start": "set HOST=0.0.0.0&&react-scripts start",
     "build": "react-scripts build",
-    "deploy": "npm run build && scp -r ./build/* root@79.174.84.244:/var/www/gwstorebot/frontend/",
+    "deploy": "npm run build && wrangler deploy",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "analyze": "source-map-explorer 'build/static/js/*.js'"
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "preview": "npm run build && wrangler dev"
   },
   "browserslist": {
     "production": [
@@ -42,6 +43,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "wrangler": "^4.106.0"
   }
 }

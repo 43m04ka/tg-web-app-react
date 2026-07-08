@@ -10,7 +10,7 @@ const AccountData = ({returnAccountData, pageType}) => {
     const {isVk} = useTelegram()
 
     const updateAccountData = () => {
-        if (pageType === 'ps') {
+        if (pageType === 'ps' || pageType === 'ps_india' ) {
             if (selectNewAccount) {
                 returnAccountData('Нет своего аккаунта PSN.')
             } else {
@@ -39,13 +39,13 @@ const AccountData = ({returnAccountData, pageType}) => {
 
 
     let menuDesigns = null
-    if ((pageType === 'ps') && selectNewAccount) {
+    if (((pageType === 'ps' || pageType === 'ps_india') ) && selectNewAccount) {
         menuDesigns = (
             <div className={style['label']}>
                 Мы оформим заказ на новый аккаунт PSN и передадим Вам его в полном доступе.<br/> Аккаунт будет
                 принадлежать только Вам.<br/> Это бесплатно.
             </div>)
-    } else if ((pageType === 'ps')) {
+    } else if (((pageType === 'ps' || pageType === 'ps_india'))) {
         menuDesigns = (<div style={{
             display: 'flex',
             flexDirection: 'column',
@@ -118,8 +118,8 @@ const AccountData = ({returnAccountData, pageType}) => {
 
     return (
         <div className={style['mainContainer']} style={{
-            minHeight: (selectNewAccount ? '24.5vw' : (pageType === 'ps' ? '64.97vw' : '85.42vw')),
-            height: (selectNewAccount ? '31.5vw' : (pageType === 'ps' ? '64.97vw' : '85.42vw'))
+            minHeight: (selectNewAccount ? '24.5vw' : ((pageType === 'ps' || pageType === 'ps_india') ? '64.97vw' : '85.42vw')),
+            height: (selectNewAccount ? '31.5vw' : ((pageType === 'ps' || pageType === 'ps_india') ? '64.97vw' : '85.42vw'))
         }}>
             <div className={style['selectPlace']}>
                     <button className={style[!selectNewAccount ? 'activeButton' : 'noActiveButton']}

@@ -129,6 +129,7 @@ const EditStartPages = () => {
         ? (editItem.id ? editItem : {...editItem, type: createType || editItem.type})
         : null;
 
+
     return (
         <div className={style.mainContainer}>
             <div className={style.childContainer}>

@@ -24,25 +24,38 @@ const CatalogItem = ({product, isClicked, from, embedInGrid}) => {
     }
 
     let percent = ''
-    let price = String(product.price).toLocaleString() + ' ₽'
+    let price = String(Number(product.price)).toLocaleString() + ' ₽'
 
-    if (product.oldPrice !== null) {
+    if (product.oldPrice !== null && Number(product.oldPrice !== 0)) {
         percent = '−' + Math.ceil((1 - product.price / product.oldPrice) * 100) + '%'
-    } else if (product.similarCard !== null) {
-        price = String(product.similarCard?.price).toLocaleString() + ' ₽'
-
-        if (typeof product.similarCard.oldPrice !== 'undefined' && product.similarCard.oldPrice !== null) {
-            percent = '−' + Math.ceil((1 - product.similarCard?.price / product.similarCard?.oldPrice) * 100) + '%'
-        }
     }
 
-    if (product.releaseDate !== null && !Number.isNaN(Number(product.releaseDate)) && product.releaseDate.trim() !== "" || (new Date(product.releaseDate)).getFullYear() < 1980) {
+    let validDateExcel = product.releaseDate !== null && !Number.isNaN(Number(product.releaseDate)) && product.releaseDate.trim() !== ""
+
+    const date = new Date(product.releaseDate);
+    const isValidDate = !isNaN(date.getTime());
+
+    if(product.releaseDate !== null){
+        console.log(String(!Number.isNaN(Number(product.releaseDate))) + String(product.releaseDate.trim() !== "") + product.releaseDate)
+    }
+
+    if (validDateExcel || (new Date(product.releaseDate)).getFullYear() < 1980) {
         let a = (new Date(product.releaseDate)) * 24 * 60 * 60 * 1000
         let currentDate = new Date('1899-12-30T00:00:00.000Z')
         let newDate = new Date(a + currentDate.getTime());
 
         if (newDate > ((new Date()))) {
             percent = newDate.toLocaleDateString('ru-RU')
+        }
+    }else if(isValidDate && date > new Date(product.updatedAt)){
+        percent = new Intl.DateTimeFormat('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: '2-digit'
+        }).format(date);
+
+        if (date < ((new Date())) && date > new Date(product.updatedAt)) {
+            percent = 'В продаже'
         }
     }
 

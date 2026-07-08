@@ -1,0 +1,177 @@
+$bg-input: var(--bg-input, #2f3136);
+$border-color: var(--border, #202225);
+$text-white: #ffffff;
+$text-muted: #aaaaaa;
+$color-danger: #ff4d4d;
+$color-success: #28a745;
+$color-primary: #007bff;
+$color-cancel: #4f545c;
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  align-items: center;
+
+  h3 {
+    color: $text-white;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .catalogName {
+    color: $color-primary;
+  }
+
+  .closeIcon {
+    cursor: pointer;
+    color: $text-muted;
+    font-size: 22px;
+    line-height: 1;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: $text-white;
+    }
+  }
+}
+
+.loadingText {
+  color: $text-white;
+  padding: 30px 0;
+  text-align: center;
+  font-size: 14px;
+}
+
+.priceTable {
+  width: 100%;
+  margin-bottom: 15px;
+  border-collapse: collapse;
+
+  thead {
+    tr {
+      th {
+        color: $text-muted;
+        text-align: left;
+        padding: 8px 10px;
+        font-size: 13px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      &:hover {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      td {
+        padding: 6px 8px;
+
+        input[type="number"],
+        select {
+          width: 100%;
+          padding: 10px 12px;
+          background: $bg-input;
+          border: 1px solid $border-color;
+          color: $text-white;
+          border-radius: 6px;
+          box-sizing: border-box;
+          font-size: 14px;
+          outline: none;
+          font-family: inherit;
+          transition: border-color 0.2s ease;
+
+          &:focus {
+            border-color: $color-primary;
+          }
+        }
+
+        select {
+          cursor: pointer;
+          appearance: none;
+          background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='%23aaa'><path d='M0 0l5 5 5-5z'/></svg>");
+          background-repeat: no-repeat;
+          background-position: right 12px center;
+          padding-right: 30px;
+        }
+      }
+
+      .deleteCell {
+        text-align: center;
+        cursor: pointer;
+        color: $color-danger;
+        font-size: 16px;
+        user-select: none;
+        padding: 0 10px;
+        transition: color 0.2s ease;
+
+        &:hover {
+          color: lighten($color-danger, 15%);
+        }
+      }
+    }
+  }
+}
+
+.addBtn {
+  background: transparent;
+  border: 1px dashed rgba($color-success, 0.5);
+  color: $color-success;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%;
+  margin-bottom: 24px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba($color-success, 0.08);
+    border-color: $color-success;
+  }
+}
+
+.actionsRow {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+
+  button {
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .cancelBtn {
+    background: $color-cancel;
+    color: $text-white;
+
+    &:hover:not(:disabled) {
+      background: lighten($color-cancel, 5%);
+    }
+  }
+
+  .submitBtn {
+    background: $color-success;
+    color: $text-white;
+
+    &:hover:not(:disabled) {
+      background: lighten($color-success, 5%);
+    }
+  }
+}

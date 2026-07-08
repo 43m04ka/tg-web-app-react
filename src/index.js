@@ -17,36 +17,32 @@ root.render(
   </React.StrictMode>
 );
 
-function loadTelegramScript(timeout = 3000) {
-  return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = 'https://telegram.org';
-      
-      const timer = setTimeout(() => {
-          script.src = ''; 
-          script.remove();
-          reject(new Error('Превышено время ожидания загрузки Telegram API'));
-      }, timeout);
 
-      script.onload = () => {
-          clearTimeout(timer);
-          resolve(window.Telegram);
-      };
-      
-      script.onerror = () => {
-          clearTimeout(timer);
-          reject(new Error('Не удалось загрузить скрипт'));
-      };
+function loadTelegramScript() {
+    return new Promise((resolve, reject) => {
+        console.log('[DEBUG 1] Вызов loadTelegramScript. Проверяем наличие объекта:', !!window.Telegram);
+        
+        if (window.Telegram?.WebApp) {
+            console.log('[DEBUG 1] Telegram уже был в окне, ресолвим.');
+            return resolve(window.Telegram);
+        }
 
-      document.head.appendChild(script);
-  });
+        const script = document.createElement('script');
+        
+        script.onload = () => {
+            console.log('[DEBUG 1] Локальный скрипт УСПЕШНО загружен в DOM. window.Telegram:', !!window.Telegram);
+            resolve(window.Telegram);
+        };
+        
+        script.onerror = (err) => {
+            console.error('[DEBUG 1] ❌ КРИТИЧЕСКАЯ ОШИБКА загрузки файла /telegram-web-app.js с сервера!', err);
+            reject(new Error('Не удалось загрузить локальный скрипт Telegram'));
+        };
+        
+        script.src = '/telegram-web-app.js'; 
+        document.head.appendChild(script);
+        console.log('[DEBUG 1] Тег script добавлен в head, ждем загрузки файла...');
+    });
 }
 
-loadTelegramScript(3000)
-  .then(() => {
-      console.log('Telegram API готов к работе');
-      window.Telegram.WebApp.ready(); 
-  })
-  .catch(err => {
-      console.error(err.message);
-  });
+loadTelegramScript();

@@ -62,13 +62,13 @@ const EditCatalogs = () => {
                 <div className={style['pageSelector']}>
                     <p>Выберите страницу:</p>
                     <div className={style['pageButtonGroup']}>
-                        {pageList && pageList.map((p) => (
+                        {pageList && pageList.sort((a, b) => a.botType.localeCompare(b.botType)).map((p) => (
                             <button
                                 key={p.id}
                                 className={style['pageButton']}
                                 onClick={() => handlePageSelect(p.id)}
                             >
-                                {p.titleForMessage}
+                                {p.name + ' / ' +  p.botType}
                             </button>
                         ))}
                     </div>

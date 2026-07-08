@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {useServer} from "./useServer";
+import React, { useEffect, useState } from 'react';
+import { useServer } from "./useServer";
 import CardList from "./CardList";
 import useGlobalData from "../../../../hooks/useGlobalData";
 import useData from "../../useData";
@@ -8,29 +8,29 @@ import PopUpWindow from "../../Elements/PopUpWindow/PopUpWindow";
 import InputLabel from "../../Elements/Input/InputLabel";
 import DropBox from "../../Elements/DropBox/DropBox";
 import ImportData from "./ImportData/ImportData";
+import RecalculateModalContent from './Elements/RecalculatePriceTab';
 
-const ParsePopup = ({catalog, onClose}) => {
-    const [platform, setPlatform] = useState('ps');
+const ParsePopup = ({ catalog, onClose, page }) => {
     const [mode, setMode] = useState('catalog');
     const [formData, setFormData] = useState({
-        catalogUrl: '', countPages: 1, isShallow: false, promoDate: '', links: ''
+        catalogUrl: '', countPages: 1, isShallow: false, promoDate: '', links: '', parceAddons: false
     });
     const [loading, setLoading] = useState(false);
-    const [status, setStatus] = useState({text: '', type: ''});
+    const [status, setStatus] = useState({ text: '', type: '' });
 
     const handleChange = (field, value) => {
-        setFormData(prev => ({...prev, [field]: value}));
+        setFormData(prev => ({ ...prev, [field]: value }));
     };
 
     const handleStart = async () => {
         setLoading(true);
-        setStatus({text: '', type: ''});
+        setStatus({ text: '', type: '' });
 
         try {
             let endpoint, payload;
 
             if (mode === 'catalog') {
-                endpoint = platform === 'ps'
+                endpoint = page.type.includes('ps')
                     ? 'https://gwstorebot.ru/api/parsing/start-parse-ps'
                     : 'https://gwstorebot.ru/api/parsing/start-parse-xbdeals';
                 payload = {
@@ -38,30 +38,32 @@ const ParsePopup = ({catalog, onClose}) => {
                     bdPath: catalog.path,
                     countPages: Number(formData.countPages),
                     isShallow: formData.isShallow,
+                    platform : page.platform,
+                    parceAddons: formData.parceAddons,
                     endDataPromotion: formData.promoDate ? new Date(formData.promoDate).getTime() : null
                 };
             } else {
-                endpoint = platform === 'ps'
+                endpoint = page.type.includes('ps')
                     ? 'https://gwstorebot.ru/api/parsing/parse-links-ps'
                     : 'https://gwstorebot.ru/api/parsing/parse-links-xbdeals';
                 const links = formData.links.split('\n').map(l => l.trim()).filter(Boolean);
-                payload = {links, bdPath: catalog.path};
+                payload = { links, bdPath: catalog.path };
             }
 
             const response = await fetch(endpoint, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             const result = await response.json();
             if (response.ok) {
-                setStatus({text: `✅ ${result.message || 'Парсинг запущен'}`, type: 'success'});
+                setStatus({ text: `✅ ${result.message || 'Парсинг запущен'}`, type: 'success' });
             } else {
-                setStatus({text: `❌ ${result.error || 'Ошибка сервера'}`, type: 'error'});
+                setStatus({ text: `❌ ${result.error || 'Ошибка сервера'}`, type: 'error' });
             }
         } catch (err) {
-            setStatus({text: '❌ Ошибка сети', type: 'error'});
+            setStatus({ text: '❌ Ошибка сети', type: 'error' });
         } finally {
             setLoading(false);
         }
@@ -71,18 +73,9 @@ const ParsePopup = ({catalog, onClose}) => {
         <PopUpWindow title={`Парсинг → ${catalog.path}`} onClose={onClose}>
             <div className={style['formGroup']}>
                 <div className={style['formField']}>
-                    <span className={style['formLabel']}>Платформа</span>
-                    <select className={style['formSelect']} value={platform}
-                            onChange={e => setPlatform(e.target.value)}>
-                        <option value="ps">PlayStation</option>
-                        <option value="xbox">Xbox</option>
-                    </select>
-                </div>
-
-                <div className={style['formField']}>
                     <span className={style['formLabel']}>Режим</span>
                     <select className={style['formSelect']} value={mode}
-                            onChange={e => setMode(e.target.value)}>
+                        onChange={e => setMode(e.target.value)}>
                         <option value="catalog">По каталогу (страницы)</option>
                         <option value="links">По ссылкам</option>
                     </select>
@@ -93,41 +86,56 @@ const ParsePopup = ({catalog, onClose}) => {
                         <div className={style['formField']}>
                             <span className={style['formLabel']}>URL каталога (без номера страницы)</span>
                             <input className={style['formInput']} type="text"
-                                   placeholder={platform === 'ps'
-                                       ? 'https://store.playstation.com/en-tr/category/...'
-                                       : 'https://xbdeals.net/...'}
-                                   value={formData.catalogUrl}
-                                   onChange={e => handleChange('catalogUrl', e.target.value)}/>
+                                placeholder={page.type.includes('ps')
+                                    ? 'https://store.playstation.com/en-tr/category/...'
+                                    : 'https://xbdeals.net/...'}
+                                value={formData.catalogUrl}
+                                onChange={e => handleChange('catalogUrl', e.target.value)} />
                         </div>
                         <div className={style['formField']}>
                             <span className={style['formLabel']}>Кол-во страниц</span>
                             <input className={style['formInput']} type="number" min="1"
-                                   value={formData.countPages}
-                                   onChange={e => handleChange('countPages', e.target.value)}/>
+                                value={formData.countPages}
+                                onChange={e => handleChange('countPages', e.target.value)} />
                         </div>
                         <div className={style['formField']}>
                             <span className={style['formLabel']}>Дата окончания акции</span>
                             <input className={style['formInput']} type="date"
-                                   value={formData.promoDate}
-                                   onChange={e => handleChange('promoDate', e.target.value)}
-                                   style={{colorScheme: 'dark'}}/>
+                                value={formData.promoDate}
+                                onChange={e => handleChange('promoDate', e.target.value)}
+                                style={{ colorScheme: 'dark' }} />
                         </div>
                         <div className={style['checkboxRow']}>
                             <input type="checkbox" id="parse-shallow"
-                                   checked={formData.isShallow}
-                                   onChange={e => handleChange('isShallow', e.target.checked)}/>
+                                checked={formData.isShallow}
+                                onChange={e => handleChange('isShallow', e.target.checked)} />
                             <label htmlFor="parse-shallow">Поверхностный парсинг</label>
+                        </div>
+                        <div className={style['checkboxRow']}>
+                            <input type="checkbox" id="parse-addons"
+                                checked={formData.parceAddons}
+                                onChange={e => handleChange('parceAddons', e.target.checked)} />
+                            <label htmlFor="parse-addons">Парсить аддоны</label>
                         </div>
                     </>
                 ) : (
                     <div className={style['formField']}>
                         <span className={style['formLabel']}>Ссылки (каждая с новой строки)</span>
                         <textarea className={style['formTextarea']} rows={5}
-                                  placeholder={platform === 'ps'
-                                      ? 'https://store.playstation.com/en-tr/product/EP1004-...'
-                                      : 'https://www.xbox.com/en-US/games/store/.../XXXXX'}
-                                  value={formData.links}
-                                  onChange={e => handleChange('links', e.target.value)}/>
+                            placeholder={page.type.includes('ps')
+                                ? 'https://store.playstation.com/en-tr/product/EP1004-...'
+                                : 'https://www.xbox.com/en-US/games/store/.../XXXXX'}
+                            value={formData.links}
+                            onChange={e => handleChange('links', e.target.value)} />
+                        <div className={style['checkboxRow']}>
+                            <input
+                                type="checkbox"
+                                id="parse-addons-links"
+                                checked={formData.parceAddons}
+                                onChange={(e) => handleChange('parceAddons', e.target.checked)}
+                            />
+                            <label htmlFor="parse-addons-links">Парсить аддоны</label>
+                        </div>
                     </div>
                 )}
             </div>
@@ -138,9 +146,9 @@ const ParsePopup = ({catalog, onClose}) => {
 
             <div className={style['buttonPlace']}>
                 <div className={style['buttonAccept']}
-                     onClick={loading ? undefined : handleStart}
-                     style={loading ? {opacity: 0.5, cursor: 'not-allowed'} : {}}>
-                    <div/>
+                    onClick={loading ? undefined : handleStart}
+                    style={loading ? { opacity: 0.5, cursor: 'not-allowed' } : {}}>
+                    <div />
                     <p>{loading ? 'Запуск...' : 'Запустить парсинг'}</p>
                 </div>
             </div>
@@ -149,9 +157,9 @@ const ParsePopup = ({catalog, onClose}) => {
 };
 
 const EditDirectories = () => {
-    const {createCatalog, deleteCatalog, changeSaleStatusCatalog} = useServer();
-    const {authenticationData} = useData();
-    const {catalogList, pageList, updateCatalogList, updatePageList} = useGlobalData();
+    const { createCatalog, deleteCatalog, changeSaleStatusCatalog } = useServer();
+    const { authenticationData } = useData();
+    const { catalogList, pageList, updateCatalogList, updatePageList } = useGlobalData();
 
     const [searchValue, setSearchValue] = useState('');
     const [filteredList, setFilteredList] = useState([]);
@@ -159,6 +167,7 @@ const EditDirectories = () => {
     const [createTabOpen, setCreateTabOpen] = useState(false);
     const [openListCards, setOpenListCards] = useState(false);
     const [importOpen, setImportOpen] = useState(false);
+    const [recalculateOpen, setRecalculateOpen] = useState(false);
     const [selectedCatalogId, setSelectedCatalogId] = useState(-1);
     const [parseCatalog, setParseCatalog] = useState(null);
     const [newCatalogData, setNewCatalogData] = useState({
@@ -167,7 +176,7 @@ const EditDirectories = () => {
 
     useEffect(() => {
         updatePageList(true);
-        updateCatalogList(undefined, {includeStatus: true});
+        updateCatalogList(undefined, { includeStatus: true });
     }, []);
 
     useEffect(() => {
@@ -187,22 +196,22 @@ const EditDirectories = () => {
     }, [searchValue, catalogList, page]);
 
     const getPageName = (structurePageId) => {
-        const page = pageList?.find(p => p.id === structurePageId);
-        return page ? page.name : '—';
+        const pageItem = pageList?.find(p => p.id === structurePageId);
+        return pageItem ? pageItem.name : '—';
     };
 
     const handleDelete = async (id) => {
-        await deleteCatalog(() => {}, authenticationData, id);
-        setTimeout(() => updateCatalogList(undefined, {includeStatus: true}), 150);
+        await deleteCatalog(() => { }, authenticationData, id);
+        setTimeout(() => updateCatalogList(undefined, { includeStatus: true }), 150);
     };
 
     const handleSaleStatus = async (id, status) => {
-        await changeSaleStatusCatalog(() => {}, authenticationData, id, status);
-        setTimeout(() => updateCatalogList(undefined, {includeStatus: true}), 150);
+        await changeSaleStatusCatalog(() => { }, authenticationData, id, status);
+        setTimeout(() => updateCatalogList(undefined, { includeStatus: true }), 150);
     };
 
     const handleReload = () => {
-        updateCatalogList(undefined, {includeStatus: true});
+        updateCatalogList(undefined, { includeStatus: true });
     };
 
     const handleExport = async (catalogId) => {
@@ -230,11 +239,16 @@ const EditDirectories = () => {
     const handleCreate = async () => {
         const catalogData = {
             ...newCatalogData,
-            structurePageId: page // Берем ID из выбранного таба
+            structurePageId: page
         };
-        await createCatalog(() => {}, authenticationData, catalogData);
-        setTimeout(() => updateCatalogList(undefined, {includeStatus: true}), 150);
+        await createCatalog(() => { }, authenticationData, catalogData);
+        setTimeout(() => updateCatalogList(undefined, { includeStatus: true }), 150);
         setCreateTabOpen(false);
+    };
+
+    const recalculatePrice = (id) => {
+        setRecalculateOpen(true);
+        setSelectedCatalogId(id);
     };
 
     return (
@@ -263,13 +277,13 @@ const EditDirectories = () => {
             </div>
 
             <div className={style['tabsContainer']}>
-                {pageList && pageList.map(p => (
+                {pageList && [...pageList].sort((a, b) => a.botType.localeCompare(b.botType)).map(p => (
                     <button
                         key={p.id}
                         className={`${style['tab']} ${page === p.id ? style['activeTab'] : ''}`}
                         onClick={() => setPage(p.id)}
                     >
-                        {p.name}
+                        {p.name + ' / ' + p.botType}
                     </button>
                 ))}
             </div>
@@ -277,106 +291,117 @@ const EditDirectories = () => {
             <div className={style['tableWrapMain']}>
                 <table className={style['table']}>
                     <thead>
-                    <tr>
-                        <th>Путь</th>
-                        <th>Страница</th>
-                        <th>Статус</th>
-                        <th>Действия</th>
-                    </tr>
+                        <tr>
+                            <th>Путь</th>
+                            <th>Страница</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    {filteredList && filteredList.map(item => (
-                        <tr key={item.id}>
-                            <td>{item.path}</td>
-                            <td>{getPageName(item.structurePageId)}</td>
-                            <td>
-                                <span className={
-                                    item.onSale === 2 ? style['statusOn']
-                                        : item.onSale === 1 ? style['statusPartial']
-                                            : style['statusOff']
-                                }>
-                                    {item.onSale === 2 ? 'В продаже'
-                                        : item.onSale === 1 ? 'Частично'
-                                            : 'Не в продаже'}
-                                </span>
-                            </td>
-                            <td onClick={e => e.stopPropagation()}>
-                                <div className={style['actionButtons']}>
-                                    <button className={style['actionButton']}
+                        {filteredList && filteredList.map(item => (
+                            <tr key={item.id}>
+                                <td>{item.path}</td>
+                                <td>{getPageName(item.structurePageId)}</td>
+                                <td>
+                                    <span className={
+                                        item.onSale === 2 ? style['statusOn']
+                                            : item.onSale === 1 ? style['statusPartial']
+                                                : style['statusOff']
+                                    }>
+                                        {item.onSale === 2 ? 'В продаже'
+                                            : item.onSale === 1 ? 'Частично'
+                                                : 'Не в продаже'}
+                                    </span>
+                                </td>
+                                <td onClick={e => e.stopPropagation()}>
+                                    <div className={style['actionButtons']}>
+                                        <button className={style['actionButton']}
                                             onClick={() => {
                                                 setSelectedCatalogId(item.id);
                                                 setOpenListCards(true);
                                             }}>
-                                        Карты
-                                    </button>
-                                    <button
-                                        className={`${style['actionButton']} ${style['parseButton']}`}
-                                        onClick={() => setParseCatalog(item)}>
-                                        Парсить
-                                    </button>
-                                    <button
-                                        className={`${style['actionButton']} ${style['exportButton']}`}
-                                        onClick={() => handleExport(item.id)}>
-                                        Экспорт
-                                    </button>
-                                    {item.onSale > 0 ? (
-                                        <button className={`${style['actionButton']} ${style['deleteButton']}`}
+                                            Карты
+                                        </button>
+                                        <button
+                                            className={`${style['actionButton']} ${style['parseButton']}`}
+                                            onClick={() => setParseCatalog(item)}>
+                                            Парсить
+                                        </button>
+                                        <button
+                                            className={`${style['actionButton']} ${style['exportButton']}`}
+                                            onClick={() => handleExport(item.id)}>
+                                            Экспорт
+                                        </button>
+                                        <button
+                                            className={`${style['actionButton']} ${style['parseButton']}`}
+                                            onClick={() => recalculatePrice(item.id)}>
+                                            Пересчитать цены
+                                        </button>
+                                        {item.onSale > 0 ? (
+                                            <button className={`${style['actionButton']} ${style['deleteButton']}`}
                                                 onClick={() => handleSaleStatus(item.id, false)}>
-                                            Снять
-                                        </button>
-                                    ) : (
-                                        <button className={style['actionButton']}
+                                                Снять
+                                            </button>
+                                        ) : (
+                                            <button className={style['actionButton']}
                                                 onClick={() => handleSaleStatus(item.id, true)}>
-                                            В продажу
+                                                В продажу
+                                            </button>
+                                        )}
+                                        <button
+                                            className={`${style['actionButton']} ${style['deleteButton']}`}
+                                            onClick={() => handleDelete(item.id)}>
+                                            Удалить
                                         </button>
-                                    )}
-                                    <button
-                                        className={`${style['actionButton']} ${style['deleteButton']}`}
-                                        onClick={() => handleDelete(item.id)}>
-                                        Удалить
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
-                    {filteredList && filteredList.length === 0 && (
-                        <tr>
-                            <td className={style['emptyCell']} colSpan={4}>Каталоги не найдены</td>
-                        </tr>
-                    )}
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                        {filteredList && filteredList.length === 0 && (
+                            <tr>
+                                <td className={style['emptyCell']} colSpan={4}>Каталоги не найдены</td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>
 
             {selectedCatalogId !== -1 && openListCards && (
                 <CardList catalogId={selectedCatalogId}
-                          onReload={() => updateCatalogList()}
-                          onClose={() => setOpenListCards(false)}/>
+                    onReload={() => updateCatalogList()}
+                    onClose={() => setOpenListCards(false)} />
             )}
 
             {createTabOpen && (
                 <PopUpWindow title="Создать каталог" onClose={() => setCreateTabOpen(false)}>
                     <div>
                         <InputLabel placeholder="xbox_new" label="Путь до каталога"
-                                    onChange={e => {
-                                        setNewCatalogData(prev => ({...prev, path: e.target.value}));
-                                    }}/>
+                            onChange={e => {
+                                setNewCatalogData(prev => ({ ...prev, path: e.target.value }));
+                            }} />
                     </div>
                     <div className={style['buttonPlace']}>
                         <div className={style['buttonAccept']} onClick={handleCreate}>
-                            <div/>
+                            <div />
                             <p>Создать</p>
                         </div>
                     </div>
                 </PopUpWindow>
             )}
 
+            {recalculateOpen && (
+                <PopUpWindow title="Пересчёт цен" onClose={() => setRecalculateOpen(false)}>
+                    <RecalculateModalContent catalogId={selectedCatalogId} catalogsList={catalogList} />
+                </PopUpWindow>
+            )}
+            {console.log(pageList.find(pageEl => pageEl.id === page))}
             {parseCatalog && (
-                <ParsePopup catalog={parseCatalog} onClose={() => setParseCatalog(null)}/>
+                <ParsePopup catalog={parseCatalog} page={pageList.find(pageEl => pageEl.id === page)} onClose={() => setParseCatalog(null)} />
             )}
 
             {importOpen && (
-                <ImportData 
+                <ImportData
                     onClose={() => setImportOpen(false)}
                     onReload={() => handleReload()}
                     catalogList={catalogList}

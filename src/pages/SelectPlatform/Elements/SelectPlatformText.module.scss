@@ -1,14 +1,14 @@
 @import "../../../app/styles/mainStyle";
 
 .header {
-  margin-bottom: 5px;
+  margin-bottom: 2.5cqi;
 }
 
 .topRow {
   display: flex;
   align-items: center;
-  gap: 2vw;
-  margin-top: 25px;
+  gap: 3cqi;
+  margin-top: 5cqi;
 }
 
 .iconWrap {
@@ -33,7 +33,7 @@
   margin: 0;
   min-width: 0;
   color: #fffffc;
-  font-size: 5.4vw;
+  font-size: 4.5cqi;
   line-height: 1;
   letter-spacing: -0.02em;
 }

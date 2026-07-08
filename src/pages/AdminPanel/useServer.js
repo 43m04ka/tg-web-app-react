@@ -179,11 +179,45 @@ export function useServer() {
         })
     }
 
+    const getSystemSettings = async (setResult) => {
+        fetch(`${URL}/settings/public?time=${Date.now()}`, {
+            method: 'GET',
+            headers: adminAuthHeadersJson(), 
+        }).then(async response => {
+            let answer = response.json();
+            answer.then((data) => {
+                setResult(data);
+            });
+        }).catch(err => console.error('[useServer getSettings]', err));
+    };
+    
+
+    const updateSystemSetting = async (setResult, authenticationData, key, value, type) => {
+        await fetch(`${URL}/settings/update`, {
+            method: 'POST',
+            headers: adminAuthHeadersJson(),
+
+            body: JSON.stringify(withJsonAuth({
+                authenticationData: authenticationData, 
+                key: key,
+                value: value,
+                type: type
+            })),
+        }).then(async response => {
+            let answer = response.json();
+            answer.then((data) => {
+                setResult(data);
+            });
+        }).catch(err => console.error('[useServer updateSetting]', err));
+    };
+
     return {
         getCardList, getCard, getCatalogList,
         updateCatalogData,
         updateCardData, updateAssociations, refreshStructureData,
         deleteCard,
         searchForName, setExchangeIndiaCatalog,
-        getAssociationsStatus, getCatalogIcons}
+        getAssociationsStatus, getCatalogIcons,
+        updateSystemSetting, getSystemSettings
+    }
 }

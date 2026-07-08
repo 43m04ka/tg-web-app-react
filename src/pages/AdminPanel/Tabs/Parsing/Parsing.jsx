@@ -3,7 +3,7 @@ import s from './parsing_styles.module.css';
 
 const ParserCard = ({title, type, apiEndpoint, placeholder}) => {
     const [formData, setFormData] = useState({
-        catalogId: '', bdPath: '', countPages: 1, promoDate: '', isShallow: false
+        catalogId: '', bdPath: '', countPages: 1, promoDate: '', isShallow: false, parceAddons: false
     });
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState({text: '', type: ''});
@@ -83,6 +83,15 @@ const ParserCard = ({title, type, apiEndpoint, placeholder}) => {
                 onChange={(e) => handleChange('isShallow', e.target.checked)}
             />
             <label htmlFor={`shallow-${type}`}>Поверхностный парсинг</label>
+        </div>
+        <div className={s['checkbox-field']}>
+            <input
+                type="checkbox"
+                id={`shallow-${type}`}
+                checked={formData.parceAddons}
+                onChange={(e) => handleChange('isShallow', e.target.checked)}
+            />
+            <label htmlFor={`shallow-${type}`}>Парсить аддоны</label>
         </div>
         <button
             className={`${s[`${type}-btn`]} ${s.mainBtn}`}
@@ -190,7 +199,7 @@ const PriceGrid = ({type}) => {
 
 const ParserSingleCard = ({title, type, apiEndpoint, placeholder}) => {
     const [formData, setFormData] = useState({
-        productUrl: '', catalogId: ''
+        productUrl: '', catalogId: '', isShallow: false
     });
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState({text: '', type: ''});
@@ -208,7 +217,7 @@ const ParserSingleCard = ({title, type, apiEndpoint, placeholder}) => {
                 .split('\n')
                 .map(l => l.trim())
                 .filter(Boolean);
-            const payload = {links, bdPath: formData.catalogId};
+            const payload = {links, bdPath: formData.catalogId, parceAddons};
 
             const response = await fetch(apiEndpoint, {
                 method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
@@ -247,6 +256,15 @@ const ParserSingleCard = ({title, type, apiEndpoint, placeholder}) => {
                 value={formData.catalogId}
                 onChange={(e) => handleChange('catalogId', e.target.value)}
             />
+        </div>
+        <div className={s['checkbox-field']}>
+            <input
+                type="checkbox"
+                id={`shallow-${type}`}
+                checked={formData.parceAddons}
+                onChange={(e) => handleChange('parceAddons', e.target.checked)}
+            />
+            <label htmlFor={`shallow-${type}`}>Парсить аддоны</label>
         </div>
         <button
             className={`${s[`${type}-btn`]} ${s.mainBtn}`}

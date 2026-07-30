@@ -82,6 +82,31 @@
       }
     }
   
+    .untilRow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+
+      .untilLabel {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 12px;
+        color: #a1a1aa;
+        white-space: nowrap;
+      }
+
+      .untilInput {
+        flex: 1;
+        min-width: 0;
+        background: #13151d;
+        border: 1px solid #2f2f6e;
+        border-radius: 6px;
+        color: #e4e4e7;
+        font-size: 12px;
+        padding: 4px 6px;
+      }
+    }
+
     .statusRow {
       font-size: 12px;
       display: flex;

@@ -7,14 +7,23 @@ Date.prototype.addDays = function (days) {
     return date;
 };
 
-const Payment = ({sumPrice, setPaymentMethodString}) => {
+const Payment = ({sumPrice, setPaymentMethodString, setPaymentMethod, setSelectedPayment}) => {
 
     const [selected, setSelected] = React.useState(0);
     const [infoLabel, setInfoLabel] = React.useState('');
 
     if (sumPrice < 2000 && selected !== 0) {
         setSelected(0);
+        setSelectedPayment(0);
     }
+
+    const handlePaymentChange = (index, methodString, methodEnum) => {
+        setSelected(index);
+        setSelectedPayment(index);
+        setPaymentMethodString(methodString);
+        setPaymentMethod?.(methodEnum);
+        setInfoLabel('');
+    };
 
     const options = {month: 'long', day: 'numeric'}
     const date = new Date();
@@ -26,9 +35,7 @@ const Payment = ({sumPrice, setPaymentMethodString}) => {
         <div className={style['buttons']}>
             <button className={style[selected === 0 ? 'activeButton' : 'noActiveButton']}
                     onClick={() => {
-                        setSelected(0)
-                        setPaymentMethodString('Способ оплаты: СБП')
-                        setInfoLabel('')
+                        handlePaymentChange(0, 'Способ оплаты: СБП', 'sbp')
                     }}>
                 <div/>
                 <p>
@@ -40,9 +47,7 @@ const Payment = ({sumPrice, setPaymentMethodString}) => {
                         if (sumPrice < 2000) {
                             setInfoLabel('Яндекс Сплит доступен при покупке от 2000 руб')
                         } else {
-                            setSelected(1)
-                            setPaymentMethodString('Способ оплаты: Яндекс Сплит')
-                            setInfoLabel('')
+                            handlePaymentChange(1, 'Способ оплаты: Яндекс Сплит', 'split')
                         }
                     }}>
                 <div/>
@@ -55,9 +60,7 @@ const Payment = ({sumPrice, setPaymentMethodString}) => {
                         if (sumPrice < 2000) {
                             setInfoLabel('Оплата Долями доступна при покупке от 2000 руб')
                         } else {
-                            setSelected(2)
-                            setPaymentMethodString('Способ оплаты: Долями')
-                            setInfoLabel('')
+                            handlePaymentChange(2, 'Способ оплаты: Долями', 'dolyami')
                         }
                     }}>
                 <div/>

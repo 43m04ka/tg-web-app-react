@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTelegram } from '../../hooks/useTelegram';
-import { useServerUser } from '../../hooks/useServerUser';
+import React, {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useTelegram} from '../../hooks/useTelegram';
+import {useServerUser} from '../../hooks/useServerUser';
 import Recommendations from '../../shared/ui/Recommendations/Recommendations';
 import DesktopHistory from './DesktopHistory/DesktopHistory';
 import style from './History.module.scss';
 import basketStyle from '../Basket/Basket.module.scss';
+import {usePlatformUser} from "../../hooks/usePlatformUser";
+import {useAppInsets} from "../../hooks/useAppInsets";
+import {getOrderStatusInfo} from "../../utils/orderStatus";
 
 const History = () => {
     const [isDesktop] = useState(() => window.innerWidth >= 768);
@@ -18,7 +21,9 @@ const History = () => {
 /* ── Mobile version ──────────────────────────────────────── */
 const MobileHistory = () => {
     const navigate = useNavigate();
-    const { tg, user, safeAreaInset, contentSafeAreaInset } = useTelegram();
+    const { tg } = useTelegram();
+const { safeAreaInset, contentSafeAreaInset, isKeyboardOpen } = useAppInsets();
+    const { user } = usePlatformUser();
     const { getHistoryList } = useServerUser();
     const [historyData, setHistoryData] = useState(null);
 
@@ -72,37 +77,47 @@ const MobileHistory = () => {
 };
 
 /* ── Mobile order card ───────────────────────────────────── */
-const MobileOrderCard = ({ order }) => (
-    <div className={style.orderCard}>
-        <div className={style.orderHeader}>
-            <div>
-                <div className={style.orderNum}>Заказ №{order.id}</div>
-                <div className={style.orderMeta}>
-                    {String(order.date).replaceAll('/', '.')}
+const MobileOrderCard = ({ order }) => {
+    const statusInfo = getOrderStatusInfo(order.status);
+    const positions = order.positions || [];
+
+    return (
+        <div className={style.orderCard}>
+            <div className={style.orderHeader}>
+                <div>
+                    <div className={style.orderNum}>
+                        Заказ №{order.id}{order.pageTitle ? ` · ${order.pageTitle}` : ''}
+                    </div>
+                    <div className={style.orderMeta}>
+                        {order.createdAt ? new Date(order.createdAt).toLocaleDateString('ru-RU') : ''}
+                    </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                    <div className={style.orderTotal}>{order.total} ₽</div>
+                    <div className={`${style.statusBadge} ${style[`status_${statusInfo.group}`]}`}>
+                        {statusInfo.label}
+                    </div>
                 </div>
             </div>
-            <div className={style.orderTotal}>{order.summa} ₽</div>
-        </div>
-        <div className={style.orderItems}>
-            {order.body.map((item, i) => (
-                <React.Fragment key={i}>
-                    {i > 0 && <div className={style.separator} />}
-                    <div className={style.item}>
-                        <img src={item.body.image} alt={item.body.name} className={style.itemImg} />
-                        <div>
-                            <p className={style.itemName}>
-                                {item.body.name}
-                                {item.body.choiceColumn
-                                    ? ` — ${item.body.choiceColumn} ${item.body.choiceRow}`
-                                    : ''}
-                            </p>
-                            <p className={style.itemPrice}>{item.body.price} ₽</p>
+            <div className={style.orderItems}>
+                {positions.map((item, i) => (
+                    <React.Fragment key={item.id ?? i}>
+                        {i > 0 && <div className={style.separator} />}
+                        <div className={style.item}>
+                            <div>
+                                <p className={style.itemName}>
+                                    {item.name}
+                                    {item.meta?.choiceRow ? ` — ${item.meta.choiceRow}` : ''}
+                                    {item.quantity > 1 ? ` × ${item.quantity}` : ''}
+                                </p>
+                                <p className={style.itemPrice}>{item.sum} ₽</p>
+                            </div>
                         </div>
-                    </div>
-                </React.Fragment>
-            ))}
+                    </React.Fragment>
+                ))}
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 export default History;

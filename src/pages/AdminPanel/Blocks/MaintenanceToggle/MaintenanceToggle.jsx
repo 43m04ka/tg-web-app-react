@@ -1,12 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { useServer } from '../../useServer';
+import React, {useEffect, useState} from 'react';
+import {useServer} from '../../useServer';
 import styles from './MaintenanceToggle.module.scss';
 
+// datetime-local ожидает "YYYY-MM-DDTHH:mm" в локальном времени, без таймзоны
+const isoToLocalInputValue = (iso) => {
+  if (!iso) return '';
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return '';
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};
+
+const localInputValueToIso = (value) => {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toISOString();
+};
 
 export default function MaintenanceToggle({ authenticationData }) {
   const { getSystemSettings, updateSystemSetting } = useServer();
-  
+
   const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [maintenanceUntil, setMaintenanceUntil] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -27,6 +43,7 @@ export default function MaintenanceToggle({ authenticationData }) {
       } else {
         const status = loadResult?.settings?.maintenance_mode?.value ?? false;
         setMaintenanceMode(status);
+        setMaintenanceUntil(loadResult?.settings?.maintenance_mode_until?.value || '');
       }
       setLoading(false);
     }
@@ -41,13 +58,22 @@ export default function MaintenanceToggle({ authenticationData }) {
     updateSystemSetting(setUpdateResult, authenticationData, 'maintenance_mode', nextState, 'boolean');
   };
 
+  const handleUntilChange = (event) => {
+    setMaintenanceUntil(localInputValueToIso(event.target.value));
+  };
+
+  const handleUntilBlur = () => {
+    setError(null);
+    updateSystemSetting(() => {}, authenticationData, 'maintenance_mode_until', maintenanceUntil, 'string');
+  };
+
 
   useEffect(() => {
     if (updateResult) {
       if (updateResult.error) {
         setError(updateResult.error);
       } else if (updateResult.success) {
-      
+
         setMaintenanceMode(prev => !prev);
       }
       setLoading(false);
@@ -70,7 +96,18 @@ export default function MaintenanceToggle({ authenticationData }) {
           <span className={`${styles.switchDot} ${maintenanceMode ? styles.active : ''}`} />
         </button>
       </div>
-      
+
+      <div className={styles.untilRow}>
+        <span className={styles.untilLabel}>Окончание работ:</span>
+        <input
+          type="datetime-local"
+          className={styles.untilInput}
+          value={isoToLocalInputValue(maintenanceUntil)}
+          onChange={handleUntilChange}
+          onBlur={handleUntilBlur}
+        />
+      </div>
+
       <div className={styles.statusRow}>
         <span className={`${styles.indicatorDot} ${maintenanceMode ? styles.active : ''}`} />
         <span className={`${styles.statusText} ${maintenanceMode ? styles.active : ''}`}>

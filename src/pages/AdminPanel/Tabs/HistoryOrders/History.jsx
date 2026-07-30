@@ -2,6 +2,18 @@ import React, {useEffect, useState} from 'react';
 import {useServer} from "./useServer";
 import style from "./History.module.scss";
 import Order from "./Order";
+import {getOrderStatusInfo} from "../../../../utils/orderStatus";
+
+const TYPE_LABELS = {
+    catalog: 'Каталог',
+    steam_topup: 'Steam',
+};
+
+const PAYMENT_METHOD_LABELS = {
+    sbp: 'СБП',
+    split: 'Сплит',
+    dolyami: 'Долями',
+};
 
 const History = () => {
 
@@ -39,32 +51,51 @@ const History = () => {
                     <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Тип</th>
+                        <th>Статус</th>
                         <th>Сумма</th>
+                        <th>Скидка</th>
+                        <th>Оплата</th>
+                        <th>Контакт</th>
                         <th>Дата</th>
-                        <th>ID пользователя</th>
                         <th>Действие</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {historyList.map((item) => (
-                        <tr key={item.id}>
-                            <td>{item.id}</td>
-                            <td>{item.summa}</td>
-                            <td>{(new Date(item.createdAt)).toLocaleString()}</td>
-                            <td>{item.userDatumId}</td>
-                            <td>
-                                <button className={style['actionButton']} onClick={() => {
-                                    setInfoTabOpen(true)
-                                    setOrderId(item.id)
-                                }}>
-                                    Подробнее
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
+                    {historyList.map((item) => {
+                        const statusInfo = getOrderStatusInfo(item.status);
+                        return (
+                            <tr key={item.id} onClick={() => {
+                                setInfoTabOpen(true)
+                                setOrderId(item.id)
+                            }}>
+                                <td>{item.id}</td>
+                                <td>{TYPE_LABELS[item.type] || item.type}</td>
+                                <td>
+                                    <span className={`${style['statusBadge']} ${style[`status_${statusInfo.group}`]}`}>
+                                        {statusInfo.label}
+                                    </span>
+                                </td>
+                                <td>{item.total} ₽</td>
+                                <td>{item.discount ? `${item.discount} ₽` : '—'}</td>
+                                <td>{PAYMENT_METHOD_LABELS[item.paymentMethod] || item.paymentMethod}</td>
+                                <td>{item.contact || '—'}</td>
+                                <td>{item.createdAt ? (new Date(item.createdAt)).toLocaleString() : ''}</td>
+                                <td>
+                                    <button className={style['actionButton']} onClick={(event) => {
+                                        event.stopPropagation();
+                                        setInfoTabOpen(true)
+                                        setOrderId(item.id)
+                                    }}>
+                                        Подробнее
+                                    </button>
+                                </td>
+                            </tr>
+                        );
+                    })}
                     {historyList.length === 0 ? (
                         <tr>
-                            <td className={style['emptyCell']} colSpan={5}>Заказы не найдены</td>
+                            <td className={style['emptyCell']} colSpan={9}>Заказы не найдены</td>
                         </tr>
                     ) : ''}
                     </tbody>

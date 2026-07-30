@@ -5,6 +5,7 @@ import {favoriteRoute} from "./useServerRoutes/favoriteRoute";
 import {basketRoute} from "./useServerRoutes/basketRoute";
 import {catalogRoute} from "./useServerRoutes/catalogRoute";
 import {orderRoute} from "./useServerRoutes/orderRoute";
+import {steamRoute} from "./useServerRoutes/steamRoute";
 
 const {getCard, getRecommendationsGames, prepareShareMessage} = productRoute()
 const {getSearch, getClueList} = searchRoute()
@@ -12,7 +13,8 @@ const {getPageList, getPreviewCardList, getStructureCatalogList, getInfoBlocks, 
 const {getCatalogList, getCardList, findCardsByCatalog} = catalogRoute()
 const {getPreviewFavoriteList, deleteCardToFavorite, addCardToFavorite, getFavoriteList} = favoriteRoute()
 const {getBasketList, addCardToBasket, setBasketPositionCount, deleteCardToBasket, usePromo} = basketRoute()
-const {createOrder, getHistoryList} = orderRoute()
+const {createOrder, getHistoryList, checkPaymentStatus} = orderRoute()
+const {getSteamQuote, createSteamOrder} = steamRoute()
 
 export function useServerUser() {
     return {
@@ -34,6 +36,9 @@ export function useServerUser() {
         getCardList,
         createOrder,
         getHistoryList,
+        checkPaymentStatus,
+        getSteamQuote,
+        createSteamOrder,
         getFavoriteList,
         getInfoBlocks,
         prepareShareMessage,

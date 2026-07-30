@@ -1,7 +1,44 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import style from './MaintenancePage.module.scss';
 
-export default function MaintenancePage() {
+const formatRemaining = (until) => {
+  if (!until) return null;
+
+  const target = new Date(until).getTime();
+  if (Number.isNaN(target)) return null;
+
+  const diffMs = target - Date.now();
+  if (diffMs <= 0) return null;
+
+  const totalMinutes = Math.round(diffMs / 60000);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  const dateLabel = new Date(until).toLocaleString('ru-RU', {
+    day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit',
+  });
+
+  let remainingLabel = '';
+  if (hours > 0) remainingLabel += `${hours} ч `;
+  if (minutes > 0 || hours === 0) remainingLabel += `${minutes} мин`;
+
+  return `Ожидаем завершения работ примерно к ${dateLabel} (осталось ~${remainingLabel.trim()})`;
+};
+
+export default function MaintenancePage({ until }) {
+  const [remainingText, setRemainingText] = useState(() => formatRemaining(until));
+
+  useEffect(() => {
+    setRemainingText(formatRemaining(until));
+    if (!until) return;
+
+    const interval = setInterval(() => {
+      setRemainingText(formatRemaining(until));
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [until]);
+
   return (
     <div className={style.maintenanceOverlay} style={{ height: String(window.innerHeight) + 'px' }}>
       <div className={style.card}>
@@ -23,6 +60,7 @@ export default function MaintenancePage() {
           </div>
           <div className={style.infoText}>
             Производится техническое обслуживание. Все функции каталога станут доступны в ближайшее время.
+            {remainingText ? <><br/>{remainingText}</> : ''}
           </div>
         </div>
 

@@ -85,19 +85,32 @@
 }
 
 .item {
-  display: grid;
-  grid-template-columns: 68px 1fr;
-  gap: 14px;
-  align-items: center;
+  display: block;
   padding: 10px 0;
 }
 
-.itemImg {
-  width: 68px;
-  height: 68px;
-  border-radius: 8px;
-  object-fit: cover;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+.statusBadge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-family: 'SF PRO Display', serif;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status_done {
+  background: rgba(76, 217, 100, 0.15);
+  color: #4cd964;
+}
+
+.status_progress {
+  background: rgba(255, 204, 0, 0.15);
+  color: #ffcc00;
+}
+
+.status_canceled {
+  background: rgba(255, 59, 48, 0.15);
+  color: #ff3b30;
 }
 
 .itemInfo {

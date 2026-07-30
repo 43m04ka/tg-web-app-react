@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import style from './DesktopHistoryOrder.module.scss';
+import {getOrderStatusInfo} from "../../../utils/orderStatus";
 
 function countWord(n) {
     if (n % 10 === 1 && n % 100 !== 11) return '';
@@ -9,19 +10,26 @@ function countWord(n) {
 
 const DesktopHistoryOrder = ({ order }) => {
     const [expanded, setExpanded] = useState(false);
-    const dateStr = String(order.date).replaceAll('/', '.');
+    const dateStr = order.createdAt ? new Date(order.createdAt).toLocaleDateString('ru-RU') : '';
+    const statusInfo = getOrderStatusInfo(order.status);
+    const positions = order.positions || [];
 
     return (
         <div className={style.card}>
             <div className={style.header} onClick={() => setExpanded(v => !v)}>
                 <div className={style.headerLeft}>
-                    <span className={style.orderNum}>Заказ №{order.id}</span>
+                    <span className={style.orderNum}>
+                        Заказ №{order.id}{order.pageTitle ? ` · ${order.pageTitle}` : ''}
+                    </span>
                     <span className={style.date}>{dateStr}</span>
+                    <span className={`${style.statusBadge} ${style[`status_${statusInfo.group}`]}`}>
+                        {statusInfo.label}
+                    </span>
                 </div>
                 <div className={style.headerRight}>
-                    <span className={style.total}>{order.summa} ₽</span>
+                    <span className={style.total}>{order.total} ₽</span>
                     <span className={style.itemCount}>
-                        {order.body.length} товар{countWord(order.body.length)}
+                        {positions.length} товар{countWord(positions.length)}
                     </span>
                     <svg
                         className={`${style.chevron} ${expanded ? style.chevronOpen : ''}`}
@@ -35,23 +43,17 @@ const DesktopHistoryOrder = ({ order }) => {
 
             {expanded && (
                 <div className={style.items}>
-                    {order.body.map((item, i) => (
-                        <React.Fragment key={i}>
+                    {positions.map((item, i) => (
+                        <React.Fragment key={item.id ?? i}>
                             {i > 0 && <div className={style.separator} />}
                             <div className={style.item}>
-                                <img
-                                    src={item.body.image}
-                                    alt={item.body.name}
-                                    className={style.itemImg}
-                                />
                                 <div className={style.itemInfo}>
                                     <p className={style.itemName}>
-                                        {item.body.name}
-                                        {item.body.choiceColumn
-                                            ? ` — ${item.body.choiceColumn} ${item.body.choiceRow}`
-                                            : ''}
+                                        {item.name}
+                                        {item.meta?.choiceRow ? ` — ${item.meta.choiceRow}` : ''}
+                                        {item.quantity > 1 ? ` × ${item.quantity}` : ''}
                                     </p>
-                                    <p className={style.itemPrice}>{item.body.price} ₽</p>
+                                    <p className={style.itemPrice}>{item.sum} ₽</p>
                                 </div>
                             </div>
                         </React.Fragment>

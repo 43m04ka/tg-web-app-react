@@ -1,23 +1,28 @@
 import './App.css';
 
-import React, { useEffect, useRef } from "react";
-import { useTelegram } from "../hooks/useTelegram";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import React, {useEffect, useRef} from "react";
+import {useTelegram} from "../hooks/useTelegram";
+import {Route, Routes, useNavigate} from "react-router-dom";
 import Catalog from "../pages/Catalog/Catalog";
 import MainPage from "../pages/MainPage/MainPage";
 import ErrorPage from "../pages/other/ErrorPage";
 import AdminPanel from "../pages/AdminPanel/AdminPanel";
 import History from "../pages/other/History";
 import Favorites from "../pages/other/Favorites";
+import PaymentSuccess from "../pages/Payment/PaymentSuccess";
+import PaymentFail from "../pages/Payment/PaymentFail";
 import AP_Authentication from "../pages/AdminPanel/AP_Authentication";
 import useGlobalData from "../hooks/useGlobalData";
-import { useServerUser } from "../hooks/useServerUser";
+import {useServerUser} from "../hooks/useServerUser";
 import Product from "../pages/Product/Product";
 import CustomBackButton from "../shared/ui/CustomBackButton/CustomBackButton";
 import DanyaDr from "../pages/DanyaDr/DanyaDr";
 import style from './App.module.scss'
 import SelectPlatform from '../pages/SelectPlatform/SelectPlatform';
 import MaintenancePage from "../pages/MaintenancePage/MaintenancePage";
+import {usePlatform} from "../hooks/utils/usePlatform";
+import {usePlatformUser} from "../hooks/usePlatformUser";
+import {API_BASE_URL} from "../hooks/useServerRoutes/baseUrl";
 
 const normalizeInitialState = (rawInitialData) => {
     const data = rawInitialData || {};
@@ -36,7 +41,8 @@ const normalizeInitialState = (rawInitialData) => {
         structureBlocks: pickValue('structureBlocks', 'allStructureBlocks'),
         mainPageProducts: pickValue('mainPageProducts'),
         allCatalogs: pickValue('allCatalogs', 'catalogs'),
-        startPages: pickValue('startPages', 'allStartPages')
+        startPages: pickValue('startPages', 'allStartPages'),
+        maintenanceMode: pickValue('maintenanceMode') || {enabled: false, until: null}
     };
 };
 
@@ -63,7 +69,9 @@ try {
 }
 
 function App() {
-    const { tg, user, isVk, isVkUserLoaded } = useTelegram();
+    const { tg } = useTelegram();
+    const { user, isVkUserLoaded } = usePlatformUser();
+    const { isVk,  } = usePlatform();
     const navigate = useNavigate();
     const { syncUser } = useServerUser();
     const lastSyncedUserKeyRef = useRef('');
@@ -81,13 +89,14 @@ function App() {
         startPageList,
         updatePreviewFavoriteData,
         updateBasket,
-        setPageId,
-        setInternalUserId
+        setInternalUserId,
+        setPageId
     } = useGlobalData();
 
 
     const [isLoaded, setIsLoaded] = React.useState(true);
-    const [isMaintenance, setIsMaintenance] = React.useState(false);
+    const [isMaintenance, setIsMaintenance] = React.useState(!!initialState.maintenanceMode.enabled);
+    const [maintenanceUntil, setMaintenanceUntil] = React.useState(initialState.maintenanceMode.until || null);
 
     useEffect(() => {
         try {
@@ -103,12 +112,13 @@ function App() {
     }, [])
 
     useEffect(() => {
-        fetch('https://gwstorebot.ru/api/admin/settings/public?time=' + Date.now())
+        fetch(`${API_BASE_URL}/api/admin/settings/public?time=` + Date.now())
             .then(res => res.json())
             .then(data => {
-                if (data?.settings.maintenance_mode.value === true) {
-                    setIsMaintenance(true);
+                if (typeof data?.settings?.maintenance_mode?.value === 'boolean') {
+                    setIsMaintenance(data.settings.maintenance_mode.value);
                 }
+                setMaintenanceUntil(data?.settings?.maintenance_mode_until?.value || null);
             })
             .catch(err => console.error('[App] Ошибка проверки тех. режима:', err));
     }, []);
@@ -162,23 +172,42 @@ function App() {
             window.location.pathname.startsWith('/admin-panel');
 
         if (isMaintenance && !isTryingToAccessAdmin && !hasBypassKey) {
-            return <MaintenancePage />;
+            return <MaintenancePage until={maintenanceUntil} />;
         }
 
     if (!isLoaded) {
-        if (window.location.pathname === '/') {
+        const isPaymentPage = window.location.pathname.startsWith('/payment');
+        if (window.location.pathname === '/' && !isPaymentPage) {
             const tgParam = tg.initDataUnsafe.start_param;
             const urlParam = new URLSearchParams(window.location.search).get('startapp');
             const param = typeof tgParam !== 'undefined' ? String(tgParam) : (urlParam || null);
             if (param !== null) {
-                navigate(pageList[0]['link']);
                 if (param.startsWith('catalog_')) {
-                    navigate('/catalog/' + param.slice('catalog_'.length));
+                    const catalogName = param.slice('catalog_'.length);
+                    const catalog = catalogList.find(c => c.path === catalogName);
+                    if (catalog) {
+                        setPageId(catalog.structurePageId);
+                        navigate('/main/catalogs');
+                        setTimeout(() => {
+                            navigate('/catalog/' + catalogName);
+                        }, 100);
+                    } else {
+                        if (pageId === -1) {
+                            navigate('/main/selectPlatform', { replace: true });
+                        } else {
+                            navigate('main/catalogs');
+                        }
+                    }
                 } else {
+                    navigate(pageList[0]['link']);
                     navigate('/card/' + param);
                 }
             } else {
-                navigate('/selectPlatform')
+                if (pageId === -1) {
+                    navigate('/main/selectPlatform', { replace: true });
+                }else {
+                    navigate('main/catalogs')
+                }
             }
         }
 
@@ -194,6 +223,8 @@ function App() {
                 <Route path={'/admin-panel/*'} element={<AdminPanel />} />
                 <Route path={'/admin'} element={<AP_Authentication />} />
                 <Route path={'/history'} element={<History />} />
+                <Route path={'/payment/success'} element={<PaymentSuccess />} />
+                <Route path={'/payment/fail'} element={<PaymentFail />} />
                 <Route path={'/danya_dr'} element={<DanyaDr />} />
                 <Route path="*" element={<ErrorPage />} />
             </Routes>

@@ -238,3 +238,56 @@
   text-align: center !important;
   padding: 20px !important;
 }
+
+.statusBadge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status_done {
+  background: rgba(76, 217, 100, 0.15);
+  color: #4cd964;
+}
+
+.status_progress {
+  background: rgba(255, 204, 0, 0.15);
+  color: #ffcc00;
+}
+
+.status_canceled {
+  background: rgba(255, 59, 48, 0.15);
+  color: #ff3b30;
+}
+
+.orderInfoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 20px;
+  margin-bottom: 16px;
+}
+
+.orderInfoRow {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.orderInfoLabel {
+  @extend %text;
+  font-size: 11px;
+  color: #8e95a3;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.orderInfoValue {
+  @extend %text;
+  font-size: 14px;
+  color: $text-color;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

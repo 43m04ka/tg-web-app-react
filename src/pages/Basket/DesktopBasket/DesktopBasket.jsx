@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import style from './DesktopBasket.module.scss';
-import { useTelegram } from '../../../hooks/useTelegram';
+import {useTelegram} from '../../../hooks/useTelegram';
 import useGlobalData from '../../../hooks/useGlobalData';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import Recommendations from '../../../shared/ui/Recommendations/Recommendations';
-import { useServerUser } from '../../../hooks/useServerUser';
+import {useServerUser} from '../../../hooks/useServerUser';
 import DesktopPositionBasket from './DesktopPositionBasket';
 import DesktopAccountData from './DesktopAccountData';
 import DesktopPayment from './DesktopPayment';
@@ -13,27 +13,64 @@ import DesktopButtonBuy from './DesktopButtonBuy';
 import DesktopOrderPage from './DesktopOrderPage';
 import DesktopOrderContact from './DesktopOrderContact';
 import DesktopEmptyBasket from './DesktopEmptyBasket';
+import {usePlatform} from "../../../hooks/utils/usePlatform";
+import {usePlatformUser} from "../../../hooks/usePlatformUser";
+import IndiaBasketBlock from '../BasketExchangeIndia/IndiaBasketBlock';
+import PaymentWaiting from '../../../components/PaymentWaiting';
+import PaymentSuccessDetails from '../../../components/PaymentSuccessDetails';
+import PaymentFailDetails from '../../../components/PaymentFailDetails';
+import OrderAccepted from '../../../components/OrderAccepted'; // Импорт логики Индии
 
 const SIMULATE_ORDER = false;
 
 const DesktopBasket = () => {
-    const { createOrder } = useServerUser();
-    const { user, tg, isVk, isTg, isWeb, vkGroupId } = useTelegram();
-    const { pageId, catalogList, basket, updateBasket, pageList, bufferCardsRecommendations } = useGlobalData();
+    const { createOrder, checkPaymentStatus, getHistoryList } = useServerUser();
+    const { tg, vkGroupId } = useTelegram();
+    const { user } = usePlatformUser();
+    const { isVk, isTg, isWeb } = usePlatform();
+    const { pageId, basket, pageList, bufferCardsRecommendations, catalogList, updateBasket } = useGlobalData();
     const navigate = useNavigate();
-    const [accountData, setAccountData] = useState('');
+
+    const [accountData, setAccountData] = useState('—');
     const [promoData, setPromoData] = useState({ percent: 0, name: '' });
     const [promoIsVisible, setPromoIsVisible] = useState(false);
     const [orderData, setOrderData] = useState(null);
+    const [orderError, setOrderError] = useState('');
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const inputRef = useRef(null);
     const [paymentString, setPaymentString] = useState('Способ оплаты: СБП');
+    const [paymentMethod, setPaymentMethod] = useState('sbp');
+    const [paymentScreen, setPaymentScreen] = useState(null);
+    const [paymentStatus, setPaymentStatus] = useState(null);
+    const [selectedPayment, setSelectedPayment] = useState(0);
 
     const pageType = (!pageList || pageId === -1) ? null : (pageList.find(p => p.id === pageId)?.type || null);
 
+    // Логика расчета цены, учитывающая Индию
+    const getBasketTotalPrice = () => {
+        if (!basket) return 0;
+        if (pageType === 'ps_india') {
+            const inrSum = basket
+                .filter(el => el.priceInOtherCurrency !== null && el.priceInOtherCurrency !== undefined)
+                .reduce((acc, el) => acc + (el.priceInOtherCurrency * el.count), 0);
+            const rubFromInr = Math.ceil(inrSum / 1000) * 1000 * 1.3;
+            const fixedRubSum = basket
+                .filter(el => el.priceInOtherCurrency === null || el.priceInOtherCurrency === undefined)
+                .reduce((acc, el) => acc + ((el.similarCard ? el.similarCard.price : el.price) * el.count), 0);
+            return rubFromInr + fixedRubSum;
+        } else {
+            return basket.reduce((acc, el) => acc + ((el.similarCard ? el.similarCard.price : el.price) * el.count), 0);
+        }
+    };
+
+    const sumPrice = getBasketTotalPrice();
+    const totalPrice = sumPrice * (1 - promoData.percent / 100);
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isBuyEnabled = isVk
-        ? true
-        : (isTg ? (typeof user.username !== 'undefined' || username !== '') : username.trim() !== '');
+        ? (selectedPayment === 0 ? emailRegex.test(email.trim()) : true)
+        : (isTg ? ((typeof user.username !== 'undefined' || username !== '') && (selectedPayment === 0 ? emailRegex.test(email.trim()) : true)) : (username.trim() !== '' && (selectedPayment === 0 ? emailRegex.test(email.trim()) : true)));
 
     const orderUsername = isWeb
         ? username
@@ -49,105 +86,217 @@ const DesktopBasket = () => {
         tg.BackButton.show();
         const onBack = () => navigate(-1);
         tg.onEvent('backButtonClicked', onBack);
-        return () => {
-            tg.offEvent('backButtonClicked', onBack);
-        };
+        return () => tg.offEvent('backButtonClicked', onBack);
     }, [navigate, tg]);
 
-    if (basket === null) return null;
+    const { internalUserId } = useGlobalData();
 
-    if (basket.length === 0 && orderData === null) {
-        return <DesktopEmptyBasket />;
+    const pollIntervalRef = useRef(null);
+
+    useEffect(() => {
+        return () => {
+            if (pollIntervalRef.current) {
+                clearInterval(pollIntervalRef.current);
+            }
+        };
+    }, []);
+
+    const watchOrder = (orderId, { openPaymentUrl } = {}) => {
+        if (pollIntervalRef.current) {
+            clearInterval(pollIntervalRef.current);
+        }
+        if (openPaymentUrl) {
+            window.open(openPaymentUrl, '_blank');
+        }
+        setPaymentScreen('waiting');
+        pollIntervalRef.current = setInterval(async () => {
+            const statusData = await checkPaymentStatus(orderId);
+            setPaymentStatus(statusData);
+
+            if (statusData.status === 'paid') {
+                clearInterval(pollIntervalRef.current);
+                setPaymentScreen('success');
+            } else if (statusData.status === 'payment_failed') {
+                clearInterval(pollIntervalRef.current);
+                setPaymentScreen('fail');
+            }
+        }, 5000);
+    };
+
+    useEffect(() => {
+        const checkPendingOrders = async () => {
+            if (!internalUserId) return;
+
+            try {
+                const orders = await new Promise((resolve) => {
+                    getHistoryList(resolve, internalUserId);
+                });
+
+                if (orders && orders.length > 0) {
+                    const today = new Date().toDateString();
+
+                    const pendingOrder = orders.find(order => {
+                        const isPending = order.type === 'catalog' && order.status === 'awaiting_payment';
+                        const orderDate = order.createdAt ? new Date(order.createdAt).toDateString() : null;
+                        const isToday = orderDate === today;
+
+                        return isPending && isToday;
+                    });
+
+                    if (pendingOrder) {
+                        setOrderData({
+                            orderId: pendingOrder.id,
+                            status: pendingOrder.status,
+                            paymentMethod: pendingOrder.paymentMethod,
+                            total: pendingOrder.total,
+                            paymentUrl: pendingOrder.paymentUrl,
+                        });
+                        watchOrder(pendingOrder.id);
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking pending orders:', error);
+            }
+        };
+
+        checkPendingOrders();
+    }, [internalUserId]);
+
+    const handleClosePayment = () => {
+        setPaymentScreen(null);
+        setOrderData(null);
+        setPaymentStatus(null);
+    };
+
+    const handleRetryPayment = () => {
+        setPaymentScreen(null);
+        setOrderData(null);
+        setPaymentStatus(null);
+    };
+
+    // Рендеринг экранов оплаты
+    if (paymentScreen === 'waiting') {
+        return <PaymentWaiting paymentUrl={orderData?.paymentUrl} />;
     }
 
-    // When basket is empty but orderData is set, the order page overlay covers everything —
-    // so we fall through to render the DesktopOrderPage (position: fixed) instead of returning null.
+    if (paymentScreen === 'accepted') {
+        return <OrderAccepted orderData={orderData} onClose={handleClosePayment} />;
+    }
 
-    const sumPrice = basket.length > 0
-        ? basket.map(el => (el.similarCard !== null ? el.similarCard.price * el.count : el.price * el.count))
-               .reduce((acc, val) => acc + val, 0)
-        : 0;
+    if (paymentScreen === 'success') {
+        return <PaymentSuccessDetails orderData={orderData} onClose={handleClosePayment} />;
+    }
 
-    const totalPrice = sumPrice * (1 - promoData.percent / 100);
+    if (paymentScreen === 'fail') {
+        return <PaymentFailDetails orderData={orderData} onClose={handleClosePayment} onRetry={handleRetryPayment} />;
+    }
+
+    if (basket === null) return null;
+    if (basket.length === 0 && orderData === null) return <DesktopEmptyBasket />;
 
     return (
         <div className={style.mainContainer}>
             <div className={style.contentWrapper}>
-                <div className={style.basketBlock}>
-                    <p className={style.title}>Ваша корзина:</p>
-                    {basket.map((item, index) => (
-                        <React.Fragment key={item.id}>
-                            <DesktopPositionBasket percent={promoData.percent} product={item} />
-                            {index !== basket.length - 1 && <div className={style.separator} />}
-                        </React.Fragment>
-                    ))}
-                </div>
+                    {pageType === 'ps_india' ? (
+                        <IndiaBasketBlock
+                            basket={basket}
+                            style={style}
+                            desktop={true}
+                            promoData={promoData}
+                            catalogList={catalogList}
+                            pageId={pageId}
+                            updateBasket={updateBasket}
+                        />
+                    ) : (
+                        <div className={style.basketBlock}>
+                            <p className={style.title}>Ваша корзина:</p>
+                        basket.map((item, index) => (
+                            <React.Fragment key={item.id}>
+                                <DesktopPositionBasket percent={promoData.percent} product={item} />
+                                {index !== basket.length - 1 && <div className={style.separator} />}
+                            </React.Fragment>
+                        ))
+                        </div>)}
+
+
                 {pageType !== null && pageType !== 'other' && (
                     <div className={style.basketBlock}>
                         <p className={style.title}>Куда оформить заказ:</p>
                         <DesktopAccountData returnAccountData={setAccountData} pageType={pageType} />
                     </div>
                 )}
+
                 <div className={style.basketBlock}>
-                        <div style={{ display: 'flex', flexDirection: 'row' }}>
-                            <p className={style.title}>Итого:</p>
-                            {promoData.percent > 0 && (
-                                <p className={style.oldPrice}>{sumPrice}₽</p>
-                            )}
-                            <p className={style.title}
-                               style={{ marginRight: '0', marginLeft: promoData.percent > 0 ? '0' : 'auto' }}>
-                                {totalPrice}₽
-                            </p>
-                        </div>
+                    <div style={{ display: 'flex', flexDirection: 'row' }}>
+                        <p className={style.title}>Итого:</p>
+                        {promoData.percent > 0 && <p className={style.oldPrice}>{sumPrice}₽</p>}
+                        <p className={style.title} style={{ marginRight: '0', marginLeft: promoData.percent > 0 ? '0' : 'auto' }}>
+                            {totalPrice}₽
+                        </p>
+                    </div>
 
-                        <DesktopPayment setPaymentMethodString={setPaymentString} sumPrice={totalPrice} />
+                    <DesktopPayment setPaymentMethodString={setPaymentString} setPaymentMethod={setPaymentMethod} sumPrice={totalPrice} setSelectedPayment={setSelectedPayment} />
+                    <div className={style.separator} />
+                    <DesktopOrderContact username={username} setUsername={setUsername} inputRef={inputRef} email={email} setEmail={setEmail} showEmailField={selectedPayment === 0} />
 
-                        <div className={style.separator} />
+                    <div style={{ height: promoIsVisible ? '46px' : '36px', transition: 'all 0.3s' }}>
+                        {promoIsVisible ? (
+                            <DesktopPromo setPromoData={setPromoData} />
+                        ) : (
+                            <div className={style.promoLabel} onClick={() => setPromoIsVisible(true)}>
+                                У меня есть промокод
+                            </div>
+                        )}
+                    </div>
 
-                        <DesktopOrderContact username={username} setUsername={setUsername} inputRef={inputRef} />
+                    {orderError ? <p className={style.errorText}>{orderError}</p> : ''}
 
-                        <div style={{ height: promoIsVisible ? '46px' : '36px', transition: 'all 0.3s' }}>
-                            {promoIsVisible ? (
-                                <DesktopPromo setPromoData={setPromoData} />
-                            ) : (
-                                <div className={style.promoLabel} onClick={() => setPromoIsVisible(true)}>
-                                    У меня есть промокод
-                                </div>
-                            )}
-                        </div>
+                    <DesktopButtonBuy
+                        onBuy={(onLoaded) => {
+                            if (SIMULATE_ORDER) {
+                                setTimeout(() => {
+                                    setOrderData({ number: 1234, list: basket, summa: totalPrice, message: null });
+                                    onLoaded();
+                                }, 1500);
+                                return;
+                            }
 
-                        <DesktopButtonBuy
-                            onBuy={(onLoaded) => {
-                                if (SIMULATE_ORDER) {
-                                    setTimeout(() => {
-                                        setOrderData({
-                                            number: Math.floor(Math.random() * 9000) + 1000,
-                                            list: basket,
-                                            summa: totalPrice,
-                                            message: null,
-                                        });
-                                        onLoaded();
-                                    }, 1500);
+                            setOrderError('');
+
+                            createOrder({
+                                pageId,
+                                contact: orderUsername,
+                                username: user.username || username,
+                                accountData,
+                                email: email.trim() || undefined,
+                                paymentMethod,
+                                promoCode: promoData.name,
+                                platform: sourceData.source,
+                                vkGroupId: sourceData.vkGroupId,
+                            }, (res) => {
+                                onLoaded();
+
+                                if (!res.ok) {
+                                    setOrderError(res.error || 'Не удалось оформить заказ');
                                     return;
                                 }
-                                navigate('/' + pageList.filter(item => item.id === pageId)[0].link + '/basket');
-                                createOrder(paymentString, accountData, {
-                                    id: user.id, username: orderUsername
-                                }, pageId, promoData.name, sourceData, (res) => {
-                                    setOrderData(res);
-                                    onLoaded();
-                                }).then();
-                            }}
-                            inputUsernameRef={inputRef}
-                            isEnabled={isBuyEnabled}
-                        />
 
-                        <div className={style.labelBuy}>
-                            Нажимая на кнопку, Вы соглашаетесь с{' '}
-                            <a href={'https://gwstore.su/pk'}>Условиями обработки персональных данных</a>
-                            , а также с{' '}
-                            <a href={'https://gwstore.su/privacy'}>Пользовательским соглашением</a>
-                        </div>
+                                setOrderData(res);
+
+                                if (res.paymentUrl) {
+                                    watchOrder(res.orderId, { openPaymentUrl: res.paymentUrl });
+                                } else {
+                                    setPaymentScreen('accepted');
+                                }
+                            });
+                        }}
+                        inputUsernameRef={inputRef}
+                        isEnabled={isBuyEnabled}
+                    />
+
+                    <div className={style.labelBuy}>
+                        Нажимая на кнопку, Вы соглашаетесь с <a href={'https://gwstore.su/pk'}>Условиями обработки персональных данных</a>, а также с <a href={'https://gwstore.su/privacy'}>Пользовательским соглашением</a>
+                    </div>
                 </div>
             </div>
             <Recommendations from={'basket'} desktop data={bufferCardsRecommendations} />

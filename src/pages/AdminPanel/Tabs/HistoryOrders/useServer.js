@@ -16,7 +16,7 @@ export function useServer() {
         })
     }
 
-    const getOrderData = async (setResult, setUserData, orderId) => {
+    const getOrderData = async (setResult, setUserData, setOrder, orderId) => {
         fetch(`${URL}/getOrderData?time=${Date.now()}&orderId=${orderId}`, {
             method: 'GET',
             headers: {
@@ -27,6 +27,7 @@ export function useServer() {
             answer.then((data) => {
                 setResult(data.result || [])
                 setUserData(data.user || {})
+                setOrder(data.order || {})
             })
         })
     }

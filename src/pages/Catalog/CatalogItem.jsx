@@ -22,6 +22,9 @@ const CatalogItem = ({product, isClicked, from, embedInGrid}) => {
     if(product.type === 'CODE'){
         typeLabel = 'Код'
     }
+    if(product.type === 'COMPLECT'){
+        typeLabel = 'Комплект'
+    }
 
     let percent = ''
     let price = String(Number(product.price)).toLocaleString() + ' ₽'

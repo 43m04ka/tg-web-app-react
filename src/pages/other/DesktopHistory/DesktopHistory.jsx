@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTelegram } from '../../../hooks/useTelegram';
-import { useServerUser } from '../../../hooks/useServerUser';
+import React, {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useTelegram} from '../../../hooks/useTelegram';
+import {useServerUser} from '../../../hooks/useServerUser';
 import useGlobalData from '../../../hooks/useGlobalData';
 import Recommendations from '../../../shared/ui/Recommendations/Recommendations';
 import DesktopHistoryOrder from './DesktopHistoryOrder';
 import style from './DesktopHistory.module.scss';
+import {usePlatformUser} from "../../../hooks/usePlatformUser";
 
 function countWord(n) {
     if (n % 10 === 1 && n % 100 !== 11) return '';
@@ -14,7 +15,8 @@ function countWord(n) {
 }
 
 const DesktopHistory = () => {
-    const { tg, user } = useTelegram();
+    const { tg } = useTelegram();
+    const { user } = usePlatformUser();
     const navigate = useNavigate();
     const { getHistoryList } = useServerUser();
     const { bufferCardsRecommendations } = useGlobalData();

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import style from './DesktopFavoriteItem.module.scss';
 
 /** OLE Automation date (days since 1899-12-30) → localized string */

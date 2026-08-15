@@ -1,0 +1,17 @@
+/* Тот же кастомный шрифт, что и в пользовательской части.
+   Подключается из AdminPanel.jsx, чтобы админка не зависела от стилей клиента. */
+@font-face {
+    src: url('../../../shared/assets/fonts/SF-Pro-Display-Medium.ttf') format('truetype');
+    font-family: 'SF PRO Display';
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    src: url('../../../shared/assets/fonts/SF-Pro-Display-Bold.ttf') format('truetype');
+    font-family: 'SF PRO Display';
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}

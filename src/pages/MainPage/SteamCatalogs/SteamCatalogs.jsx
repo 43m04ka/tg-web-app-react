@@ -4,6 +4,7 @@ import {useServerUser} from '../../../hooks/useServerUser';
 import useGlobalData from '../../../hooks/useGlobalData';
 import {useTelegram} from '../../../hooks/useTelegram';
 import {usePlatformUser} from '../../../hooks/usePlatformUser';
+import {usePlatform} from '../../../hooks/utils/usePlatform';
 import PaymentWaiting from '../../../components/PaymentWaiting';
 import PaymentSuccessDetails from '../../../components/PaymentSuccessDetails';
 import PaymentFailDetails from '../../../components/PaymentFailDetails';
@@ -23,8 +24,9 @@ const InfoIcon = () => (
     </svg>
 );
 
-const MIN_AMOUNT = 25;
+const MIN_AMOUNT = 100;
 const MAX_AMOUNT = 50000;
+const POLL_TIMEOUT_MS = 15 * 60 * 1000;
 
 const SteamAccount = () => {
     const [login, setLogin] = useState('');
@@ -37,13 +39,16 @@ const SteamAccount = () => {
     const [orderError, setOrderError] = useState('');
     const [paymentStatus, setPaymentStatus] = useState(null);
     const [paymentScreen, setPaymentScreen] = useState(null);
+    const [paymentStalled, setPaymentStalled] = useState(false);
     const [loginError, setLoginError] = useState('');
     const [emailError, setEmailError] = useState('');
 
-    const {createSteamOrder, getSteamQuote, checkPaymentStatus, getHistoryList} = useServerUser();
+    const {createSteamOrder, getSteamQuote, checkPaymentStatus, getHistoryList, cancelPayment} = useServerUser();
     const { internalUserId } = useGlobalData();
     const { tg } = useTelegram();
     const { user } = usePlatformUser();
+    const { isVk, isTg } = usePlatform();
+    const platform = isVk ? 'vk' : (isTg ? 'tg' : 'web');
 
     const presetAmounts = ['200', '500', '1000', '5000'];
     const amountNumber = parseFloat(amount) || 0;
@@ -71,7 +76,7 @@ const SteamAccount = () => {
             if (cancelled) return;
             if (result?.error) {
                 setQuote(null);
-                setQuoteError(result.error);
+                setQuoteError('Непредвиденная ошибка');
             } else {
                 setQuote(result);
                 setQuoteError('');
@@ -126,22 +131,47 @@ const SteamAccount = () => {
         }
     };
 
-    const watchOrder = (orderId, paymentUrl) => {
+    const watchOrder = (orderId, paymentUrl, { openPaymentUrl = true } = {}) => {
         if (pollIntervalRef.current) {
             clearInterval(pollIntervalRef.current);
         }
-        window.open(paymentUrl, '_blank');
+        if (openPaymentUrl) {
+            window.open(paymentUrl, '_blank');
+        }
         setPaymentScreen('waiting');
+        setPaymentStalled(false);
+
+        // Зачисление в Steam идёт после оплаты и обычно занимает минуты, но при сбое выдачи
+        // заказ остаётся в `paid` — поэтому ждём ограниченное время, а не бесконечно
+        const startedAt = Date.now();
+        let lastStatus = null;
+        let lastPayoutStatus = null;
+
         pollIntervalRef.current = setInterval(async () => {
             const statusData = await checkPaymentStatus(orderId);
-            setPaymentStatus(statusData);
+            if (statusData?.status) {
+                setPaymentStatus(statusData);
+                lastStatus = statusData.status;
+                lastPayoutStatus = statusData.payoutStatus;
+            }
 
-            if (statusData.status === 'paid') {
+            if (lastStatus === 'completed' && lastPayoutStatus === 'success') {
                 clearInterval(pollIntervalRef.current);
                 setPaymentScreen('success');
-            } else if (statusData.status === 'payment_failed') {
+            } else if (lastStatus === 'payment_failed') {
                 clearInterval(pollIntervalRef.current);
                 setPaymentScreen('fail');
+            } else if (lastStatus === 'canceled') {
+                clearInterval(pollIntervalRef.current);
+                handleClosePayment();
+            } else if (lastPayoutStatus === 'error') {
+                // Выдача сорвалась — деньги получены, дальше разбирается менеджер,
+                // крутить спиннер бесконечно незачем
+                clearInterval(pollIntervalRef.current);
+                setPaymentStalled(true);
+            } else if (Date.now() - startedAt > POLL_TIMEOUT_MS) {
+                clearInterval(pollIntervalRef.current);
+                setPaymentStalled(true);
             }
         }, 5000);
     };
@@ -170,9 +200,10 @@ const SteamAccount = () => {
 
         setLoading(true);
         setOrderError('');
+        setLoginError('');
 
         await createSteamOrder({
-            platform: 'tg',
+            platform,
             contact: login,
             username: user.username,
             steamLogin: login,
@@ -182,8 +213,21 @@ const SteamAccount = () => {
             setLoading(false);
 
             if (!res.ok) {
-                setOrderError(res.error || 'Не удалось оформить заказ');
-                tg.showAlert(res.error || 'Не удалось оформить заказ');
+                // Пользовательские ошибки сервер шлёт на русском и готовыми к показу как есть;
+                // служебные (например, про сам platform) — на английском, их покупателю не показываем
+                const serverError = typeof res.error === 'string' ? res.error : '';
+                const isUserFacing = /[а-яё]/i.test(serverError);
+
+                if (isUserFacing && /логин/i.test(serverError)) {
+                    // Касса не нашла аккаунт Steam — показываем прямо под полем ввода
+                    setLoginError(serverError);
+                } else if (isUserFacing) {
+                    tg.showAlert(serverError);
+                    setOrderError(serverError);
+                } else {
+                    setOrderError('Непредвиденная ошибка');
+                    tg.showAlert('Непредвиденная ошибка');
+                }
                 return;
             }
 
@@ -199,12 +243,44 @@ const SteamAccount = () => {
         setPaymentScreen(null);
         setOrderResult(null);
         setPaymentStatus(null);
+        setPaymentStalled(false);
     };
 
     const handleRetryPayment = () => {
         setPaymentScreen(null);
         setOrderResult(null);
         setPaymentStatus(null);
+        setPaymentStalled(false);
+    };
+
+    // Возвращает текст для показа пользователю, если отменить не удалось; иначе ничего
+    const handleCancelPayment = async () => {
+        const orderId = orderResult?.orderId;
+        if (!orderId) return;
+
+        const res = await cancelPayment(orderId);
+
+        if (res.ok) {
+            if (pollIntervalRef.current) {
+                clearInterval(pollIntervalRef.current);
+            }
+            handleClosePayment();
+            return;
+        }
+
+        // Гонка с подтверждением кассы: заказ уже оплачен, пока жали «Отменить»
+        if (res.httpStatus === 409 && (res.status === 'paid' || res.status === 'completed')) {
+            setPaymentStatus({status: res.status});
+            if (res.status === 'completed') {
+                if (pollIntervalRef.current) {
+                    clearInterval(pollIntervalRef.current);
+                }
+                setPaymentScreen('success');
+            }
+            return;
+        }
+
+        return res.error || 'Не удалось отменить оплату';
     };
 
     useEffect(() => {
@@ -220,7 +296,8 @@ const SteamAccount = () => {
                     const today = new Date().toDateString();
 
                     const pendingSteamOrder = orders.find(order => {
-                        const isPending = order.type === 'steam_topup' && order.status === 'awaiting_payment';
+                        const isPending = order.type === 'steam_topup'
+                            && (order.status === 'awaiting_payment' || order.status === 'paid');
                         const orderDate = order.createdAt ? new Date(order.createdAt).toDateString() : null;
                         const isToday = orderDate === today;
 
@@ -235,7 +312,13 @@ const SteamAccount = () => {
                             total: pendingSteamOrder.total,
                             paymentUrl: pendingSteamOrder.paymentUrl,
                         });
-                        watchOrder(pendingSteamOrder.id, pendingSteamOrder.paymentUrl);
+                        setPaymentStatus({status: pendingSteamOrder.status});
+                        if (pendingSteamOrder.steamLogin) {
+                            setLogin(pendingSteamOrder.steamLogin);
+                        }
+                        watchOrder(pendingSteamOrder.id, pendingSteamOrder.paymentUrl, {
+                            openPaymentUrl: pendingSteamOrder.status !== 'paid',
+                        });
                     }
                 }
             } catch (error) {
@@ -248,11 +331,33 @@ const SteamAccount = () => {
 
     // Рендеринг экранов оплаты
     if (paymentScreen === 'waiting') {
-        return <PaymentWaiting paymentUrl={orderResult?.paymentUrl} />;
+        return (
+            <PaymentWaiting
+                paymentUrl={orderResult?.paymentUrl}
+                status={paymentStatus?.status}
+                payoutStatus={paymentStatus?.payoutStatus}
+                stalled={paymentStalled}
+                orderData={orderResult}
+                extraRows={login ? [{label: 'Steam аккаунт', value: login}] : []}
+                onCancel={orderResult?.orderId ? handleCancelPayment : undefined}
+            />
+        );
     }
 
     if (paymentScreen === 'success') {
-        return <PaymentSuccessDetails orderData={orderResult} extraRows={[{label: 'Steam аккаунт', value: login}]} onClose={handleClosePayment} />;
+        const isCompleted = paymentStatus?.status === 'completed';
+        return (
+            <PaymentSuccessDetails
+                orderData={orderResult}
+                extraRows={[{label: 'Steam аккаунт', value: login}]}
+                onClose={handleClosePayment}
+                title={isCompleted ? 'Готово!' : 'Оплата успешна!'}
+                statusText={isCompleted ? 'Зачислено на баланс Steam' : 'Оплачено, зачисляем'}
+                message={isCompleted
+                    ? 'Баланс Steam пополнен. Спасибо за заказ!'
+                    : 'Оплата получена, пополнение уже в работе. Если баланс не изменится в ближайшее время, напишите менеджеру.'}
+            />
+        );
     }
 
     if (paymentScreen === 'fail') {
@@ -306,10 +411,10 @@ const SteamAccount = () => {
                                     value={amount}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    placeholder="25"
+                                    placeholder="100"
                                 />
                                 <span className={style.inputBuffer} aria-hidden="true">
-                                    {amount || '25'}
+                                    {amount || '100'}
                                 </span>
                                 <span className={style.currencySymbol}>₽</span>
                             </div>
@@ -332,9 +437,9 @@ const SteamAccount = () => {
                 <div className={style['card']}>
                     <div className={style['sectionTitle']}>К оплате</div>
                     <div className={style['totalSum']}>{quote ? `${quote.total} ₽` : '—'}</div>
-                    {quote?.calc?.commissionPercent ? (
+                    {quote?.topupAmount ? (
                         <div className={style['errorText']} style={{color: '#8E8E93'}}>
-                            Комиссия {quote.calc.commissionPercent}%
+                            На баланс Steam зачислится {quote.topupAmount} ₽
                         </div>
                     ) : ''}
                     {quoteError ? <div className={style['errorText']}>{quoteError}</div> : ''}

@@ -10,7 +10,7 @@ const CreateInfoBlock = ({onClose, setPromoList}) => {
     const [inputNameCreate, setInputNameCreate] = useState('')
     const [inputBodyCreate, setInputBodyCreate] = useState('')
     const [inputPathCreate, setInputPathCreate] = useState('')
-    const [infoLabel, setInfoLabel] = useState('*Поля обязательные для заполнения')
+    const [infoLabel] = useState('*Поля обязательные для заполнения')
 
     const {authenticationData} = useData();
     const {getInfoBlock, createInfoBlock} = useServer()

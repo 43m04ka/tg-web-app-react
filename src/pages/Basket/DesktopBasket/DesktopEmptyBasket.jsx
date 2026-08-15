@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import Recommendations from "../../../shared/ui/Recommendations/Recommendations";
 import useGlobalData from "../../../hooks/useGlobalData";
 import style from "./DesktopEmptyBasket.module.scss";

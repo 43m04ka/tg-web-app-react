@@ -1,11 +1,13 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import HomeBlock from "../other/HomeBlock";
 import useGlobalData from "../../hooks/useGlobalData";
 import {useTelegram} from "../../hooks/useTelegram";
+import {useAppInsets} from "../../hooks/useAppInsets";
 
 const CatalogListBody = () => {
-    const { tg, safeAreaInset, contentSafeAreaInset } = useTelegram()
-    const {catalogStructureList, pageId, mainPageCards, catalogList, updateBasket} = useGlobalData()
+
+    const { safeAreaInset, contentSafeAreaInset, isKeyboardOpen } = useAppInsets();
+    const {catalogStructureList, pageId, mainPageCards, catalogList} = useGlobalData()
 
     if (catalogStructureList !== null && mainPageCards !== null && catalogList !== null) {
 
@@ -49,7 +51,7 @@ const CatalogListBody = () => {
                     borderRadius: '7px'
                 }}/>
                 <div className={"scroll-container"} style={{alignItems: 'center', overflow: "hidden"}}>
-                    {[1, 2, 3].map(item => (
+                    {[1, 2, 3].map(() => (
                             <div style={{marginRight: '5px'}}>
                                 <div className={'list-element'}>
                                     <div className={'box-home-block-element'}>

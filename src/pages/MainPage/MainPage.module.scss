@@ -10,28 +10,44 @@
   -webkit-animation: animOpacity 300ms ease-in-out forwards;
   display: grid;
   grid-template-rows: 1fr 14vw;
-  background-color: #1E1E24;
+  background-color: transparent;
+
+  @media (min-width: 768px) {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
-.bodyContainer{
+.bodyContainer {
   overflow-y: scroll;
   transition: opacity 150ms ease-in-out;
-  background-color: #171717;
+  background-color: transparent;
+
+  @media (min-width: 768px) {
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box; /* Это критически важно, чтобы padding не ломал высоту */
+    padding-top: 80px; /* Высота твоей ПК-шапки */
+    padding-bottom: 20px;
+  }
 }
 
 .barSlot {
   position: absolute;
   width: 100vw;
   left: 0;
-  transition-property: opacity;
-  transition-duration: 0.3s;
-  transition-timing-function: ease-in-out;
+  transition: opacity 0.3s ease-in-out;
 
   @media (min-width: 768px) {
     top: 0;
     bottom: auto;
     z-index: 10100;
     overflow: visible;
+    pointer-events: none;
+  }
+
+  > * {
+    pointer-events: auto;
   }
 }
 

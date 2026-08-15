@@ -24,7 +24,7 @@ import OrderAccepted from '../../../components/OrderAccepted'; // Импорт �
 const SIMULATE_ORDER = false;
 
 const DesktopBasket = () => {
-    const { createOrder, checkPaymentStatus, getHistoryList } = useServerUser();
+    const { createOrder, checkPaymentStatus, getHistoryList, cancelPayment } = useServerUser();
     const { tg, vkGroupId } = useTelegram();
     const { user } = usePlatformUser();
     const { isVk, isTg, isWeb } = usePlatform();
@@ -119,6 +119,11 @@ const DesktopBasket = () => {
             } else if (statusData.status === 'payment_failed') {
                 clearInterval(pollIntervalRef.current);
                 setPaymentScreen('fail');
+            } else if (statusData.status === 'canceled') {
+                clearInterval(pollIntervalRef.current);
+                setPaymentScreen(null);
+                setOrderData(null);
+                setPaymentStatus(null);
             }
         }, 5000);
     };
@@ -174,9 +179,43 @@ const DesktopBasket = () => {
         setPaymentStatus(null);
     };
 
+    // Возвращает текст для показа пользователю, если отменить не удалось; иначе ничего
+    const handleCancelPayment = async () => {
+        const orderId = orderData?.orderId;
+        if (!orderId) return;
+
+        const res = await cancelPayment(orderId);
+
+        if (res.ok) {
+            if (pollIntervalRef.current) {
+                clearInterval(pollIntervalRef.current);
+            }
+            handleClosePayment();
+            return;
+        }
+
+        // Гонка с подтверждением кассы: заказ уже оплачен, пока жали «Отменить»
+        if (res.httpStatus === 409 && (res.status === 'paid' || res.status === 'completed')) {
+            if (pollIntervalRef.current) {
+                clearInterval(pollIntervalRef.current);
+            }
+            setPaymentStatus({status: res.status});
+            setPaymentScreen('success');
+            return;
+        }
+
+        return res.error || 'Не удалось отменить оплату';
+    };
+
     // Рендеринг экранов оплаты
     if (paymentScreen === 'waiting') {
-        return <PaymentWaiting paymentUrl={orderData?.paymentUrl} />;
+        return (
+            <PaymentWaiting
+                paymentUrl={orderData?.paymentUrl}
+                status={paymentStatus?.status}
+                onCancel={orderData?.orderId ? handleCancelPayment : undefined}
+            />
+        );
     }
 
     if (paymentScreen === 'accepted') {
@@ -210,12 +249,12 @@ const DesktopBasket = () => {
                     ) : (
                         <div className={style.basketBlock}>
                             <p className={style.title}>Ваша корзина:</p>
-                        basket.map((item, index) => (
-                            <React.Fragment key={item.id}>
-                                <DesktopPositionBasket percent={promoData.percent} product={item} />
-                                {index !== basket.length - 1 && <div className={style.separator} />}
-                            </React.Fragment>
-                        ))
+                            {basket.map((item, index) => (
+                                <React.Fragment key={item.id}>
+                                    <DesktopPositionBasket percent={promoData.percent} product={item} />
+                                    {index !== basket.length - 1 && <div className={style.separator} />}
+                                </React.Fragment>
+                            ))}
                         </div>)}
 
 
@@ -235,7 +274,7 @@ const DesktopBasket = () => {
                         </p>
                     </div>
 
-                    <DesktopPayment setPaymentMethodString={setPaymentString} setPaymentMethod={setPaymentMethod} sumPrice={totalPrice} setSelectedPayment={setSelectedPayment} />
+                    <DesktopPayment setPaymentMethodString={setPaymentString} setPaymentMethod={setPaymentMethod} sumPrice={totalPrice} setSelectedPayment={setSelectedPayment} selectedPayment={selectedPayment} />
                     <div className={style.separator} />
                     <DesktopOrderContact username={username} setUsername={setUsername} inputRef={inputRef} email={email} setEmail={setEmail} showEmailField={selectedPayment === 0} />
 
@@ -277,7 +316,7 @@ const DesktopBasket = () => {
                                 onLoaded();
 
                                 if (!res.ok) {
-                                    setOrderError(res.error || 'Не удалось оформить заказ');
+                                    setOrderError('Непредвиденная ошибка');
                                     return;
                                 }
 

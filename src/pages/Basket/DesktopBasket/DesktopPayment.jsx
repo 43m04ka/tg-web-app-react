@@ -7,17 +7,20 @@ const addDays = (date, days) => {
     return nextDate;
 };
 
-const DesktopPayment = ({sumPrice, setPaymentMethodString, setPaymentMethod, setSelectedPayment}) => {
-    const [selected, setSelected] = React.useState(0);
+// Выбранный способ живёт в корзине — см. комментарий в Elements/Payment.jsx
+const DesktopPayment = ({sumPrice, setPaymentMethodString, setPaymentMethod, setSelectedPayment, selectedPayment = 0}) => {
+    const selected = selectedPayment;
     const [infoLabel, setInfoLabel] = React.useState("");
 
-    if (sumPrice < 2000 && selected !== 0) {
-        setSelected(0);
-        setSelectedPayment(0);
-    }
+    React.useEffect(() => {
+        if (sumPrice < 2000 && selected !== 0) {
+            setSelectedPayment(0);
+            setPaymentMethodString("Способ оплаты: СБП");
+            setPaymentMethod?.("sbp");
+        }
+    }, [sumPrice, selected, setSelectedPayment, setPaymentMethodString, setPaymentMethod]);
 
     const handlePaymentChange = (index, methodString, methodEnum) => {
-        setSelected(index);
         setSelectedPayment(index);
         setPaymentMethodString(methodString);
         setPaymentMethod?.(methodEnum);

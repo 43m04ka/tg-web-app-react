@@ -1,8 +1,9 @@
 import React from 'react';
 import PositionBasket from "../Elements/PositionBasket";
+import DesktopPositionBasket from "../DesktopBasket/DesktopPositionBasket";
 
 
-const IndiaBasketBlock = ({ basket, promoData, catalogList, pageId, updateBasket, style }) => {
+const IndiaBasketBlock = ({ basket, promoData, catalogList, pageId, updateBasket, style, desktop }) => {
     // 1. Фильтруем товары по категориям
     const indiaItems = basket.filter(item => item.priceInOtherCurrency !== null && item.priceInOtherCurrency !== undefined);
     const rubItems = basket.filter(item => item.priceInOtherCurrency === null || item.priceInOtherCurrency === undefined);
@@ -20,12 +21,18 @@ const IndiaBasketBlock = ({ basket, promoData, catalogList, pageId, updateBasket
             {/* 1. Индийские товары в рупиях */}
             {indiaItems.map((item, index) => (
                 <React.Fragment key={item.id || index}>
-                    <PositionBasket
+                    {desktop === true ? <DesktopPositionBasket
                         percent={promoData.percent}
                         product={item}
                         otherCurrency={true}
                         onReload={() => updateBasket(catalogList, pageId)}
-                    />
+                    /> : <PositionBasket
+                        percent={promoData.percent}
+                        product={item}
+                        otherCurrency={true}
+                        onReload={() => updateBasket(catalogList, pageId)}
+                    />}
+
                     {index !== indiaItems.length - 1 && (
                         <div className={style['separator']} style={{ height: '1px', marginTop: '0' }} />
                     )}
@@ -87,15 +94,19 @@ const IndiaBasketBlock = ({ basket, promoData, catalogList, pageId, updateBasket
                 </div>
             )}
 
-            <p className={style['title']}>Подписки:</p>
+            {rubItems > 0 ?? <p className={style['title']}>Подписки:</p>}
 
             {rubItems.map((item, index) => (
                 <React.Fragment key={item.id || index}>
-                    <PositionBasket
+                    {desktop === true ? <DesktopPositionBasket
                         percent={promoData.percent}
                         product={item}
                         onReload={() => updateBasket(catalogList, pageId)}
-                    />
+                    /> : <PositionBasket
+                        percent={promoData.percent}
+                        product={item}
+                        onReload={() => updateBasket(catalogList, pageId)}
+                    />}
                     {index !== rubItems.length - 1 && (
                         <div className={style['separator']} style={{ height: '1px', marginTop: '0' }} />
                     )}

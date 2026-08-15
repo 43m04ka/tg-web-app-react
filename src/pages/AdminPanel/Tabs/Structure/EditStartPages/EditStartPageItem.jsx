@@ -1,17 +1,12 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import PopUpWindow from '../../../Elements/PopUpWindow/PopUpWindow';
 import InputLabel from '../../../Elements/Input/InputLabel';
 import DropBox from '../../../Elements/DropBox/DropBox';
 import useData from '../../../useData';
 import useGlobalData from '../../../../../hooks/useGlobalData';
-import { useServer } from '../useServer';
+import {useServer} from '../useServer';
 import style from './EditStartPageItem.module.scss';
-import {
-    START_PAGE_DEFAULTS,
-    decodeStartPageContent,
-    encodeStartPageContent,
-    fileToDataUrl,
-} from './startPageContent';
+import {START_PAGE_DEFAULTS,} from './startPageContent';
 import DropImage from '../../../Elements/DropImage/DropImage';
 
 const TYPE_LABELS = {
@@ -26,7 +21,6 @@ const EditStartPageItem = ({ item, platform, onClose, onSaved }) => {
     const { authenticationData } = useData();
     const { pageList } = useGlobalData();
     const { createStartPage, updateStartPage, deleteStartPage } = useServer();
-
     const [type, setType] = useState(item?.type || 'title');
     const [text, setText] = useState(item.text || '');
     const [title, setTitle] = useState(item.title || '');
@@ -39,14 +33,16 @@ const EditStartPageItem = ({ item, platform, onClose, onSaved }) => {
     const [busy, setBusy] = useState(false);
 
 
-    const platformPages = useMemo(
-        () => (pageList || []).filter((page) => page.botType === platform && page.isHidden !== 1),
-        [pageList, platform],
+    // Страницы больше не привязаны к боту — к карточке можно привязать любую видимую страницу,
+    // привязка остаётся только у самой стартовой страницы (payload.platform)
+    const availablePages = useMemo(
+        () => (pageList || []).filter((page) => page.isHidden !== 1),
+        [pageList],
     );
 
     const pageOptions = useMemo(
-        () => platformPages.map((page) => ({ key: page.id, name: `${page.name} (#${page.id})` })),
-        [platformPages],
+        () => availablePages.map((page) => ({ key: page.id, name: `${page.name} (#${page.id})` })),
+        [availablePages],
     );
 
     const selectedPageIndex = Math.max(
@@ -55,11 +51,11 @@ const EditStartPageItem = ({ item, platform, onClose, onSaved }) => {
     );
 
     useEffect(() => {
-        if (type !== 'page' || structurePageId || !platformPages.length) {
+        if (type !== 'page' || structurePageId || !availablePages.length) {
             return;
         }
-        setStructurePageId(platformPages[0].id);
-    }, [type, structurePageId, platformPages]);
+        setStructurePageId(availablePages[0].id);
+    }, [type, structurePageId, availablePages]);
 
 
     const handleSave = async () => {
@@ -95,7 +91,6 @@ const EditStartPageItem = ({ item, platform, onClose, onSaved }) => {
             } else {
                 await updateStartPage(authenticationData, item.id, {
                     type,
-                    icon: icon,
                     url: url,
                     icon: icon,
                     pattern: pattern,
@@ -227,7 +222,7 @@ const EditStartPageItem = ({ item, platform, onClose, onSaved }) => {
                                 </div>
                             </>
                         ) : (
-                            <div className={style.emptyPages}>Нет страниц для выбранной платформы</div>
+                            <div className={style.emptyPages}>Нет доступных страниц</div>
                         )}
                     </>
                 )}

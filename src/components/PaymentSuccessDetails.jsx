@@ -1,8 +1,17 @@
 import React from 'react';
 import style from './PaymentSuccessDetails.module.scss';
 import AnimatedGradientBackground from './AnimatedGradientBackground';
+import { openSupport } from './supportLink';
 
-const PaymentSuccessDetails = ({ orderData, extraRows = [], onClose }) => {
+const PaymentSuccessDetails = ({
+    orderData,
+    extraRows = [],
+    onClose,
+    title = 'Оплата успешна!',
+    statusText = 'Оплачено',
+    message = 'Спасибо за ваш заказ. Менеджер скоро свяжется с вами.',
+    showSupport = true,
+}) => {
     return (
         <div className={style['container']}>
             <AnimatedGradientBackground />
@@ -13,7 +22,7 @@ const PaymentSuccessDetails = ({ orderData, extraRows = [], onClose }) => {
                         <path d="M25 40L35 50L55 30" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                 </div>
-                <h1 className={style['title']}>Оплата успешна!</h1>
+                <h1 className={style['title']}>{title}</h1>
 
                 {orderData && (
                     <div className={style['orderDetails']}>
@@ -33,20 +42,26 @@ const PaymentSuccessDetails = ({ orderData, extraRows = [], onClose }) => {
                         ))}
                         <div className={style['orderDetailRow']}>
                             <span className={style['orderDetailLabel']}>Статус:</span>
-                            <span className={style['orderDetailValue']}>Оплачено</span>
+                            <span className={style['orderDetailValue']}>{statusText}</span>
                         </div>
                     </div>
                 )}
 
-                <p className={style['message']}>
-                    Спасибо за ваш заказ. Менеджер скоро свяжется с вами.
-                </p>
+                <p className={style['message']}>{message}</p>
                 <button
                     className={style['button']}
                     onClick={onClose}
                 >
                     Вернуться в каталог
                 </button>
+                {showSupport && (
+                    <button
+                        className={style['buttonSecondary']}
+                        onClick={openSupport}
+                    >
+                        Связаться с менеджером
+                    </button>
+                )}
             </div>
         </div>
     );

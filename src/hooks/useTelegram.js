@@ -1,74 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import {useEffect, useState} from 'react';
 import vkBridge from '@vkontakte/vk-bridge';
+import {isTg as isTelegramBrowser, getTelegramObject as getTg} from './utils/isTg';
 
-const isVk = vkBridge.isWebView() || vkBridge.isIframe() || window.location.pathname.includes('vk.com');
-
-export const checkIsVk = () => vkBridge.isWebView() || vkBridge.isIframe() || window.location.pathname.includes('vk.com');
-
-export function isTelegramBrowser() {
-    const ua = navigator.userAgent || navigator.vendor || window.opera;
-    const hasTgObject = !!(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData);
-    
-    // Жёсткий лог условий
-    console.log('[DEBUG 2] Проверка isTelegramBrowser:', {
-        '1. Регулярка по UA (/Telegram/i)': /Telegram/i.test(ua),
-        '2. Регулярка по TRS (/TRS/i)': /TRS/i.test(ua),
-        '3. Наличие объекта window.Telegram': !!window.Telegram,
-        '4. Наличие WebApp': !!window.Telegram?.WebApp,
-        '5. Наличие initData (Обязательно для ТГ)': !!window.Telegram?.WebApp?.initData,
-        'Итоговый вердикт (hasTgObject)': hasTgObject,
-        'Полный UserAgent клиента': ua
-    });
-
-    return /Telegram/i.test(ua) || /TRS/i.test(ua) || hasTgObject;
-}
-
-
-const isTg = isTelegramBrowser();
-
-const mockListeners = {};
-const notifyMock = (evt) => {
-    if (mockListeners[evt]) mockListeners[evt].forEach(cb => cb());
-};
-
-
-const defaultTgMock = {
-    close: () => {},
-    expand: () => {},
-    MainButton: { isVisible: false, hide: () => {}, show: () => {} },
-    BackButton: { 
-        isVisible: false,
-        show: function() { this.isVisible = true; notifyMock('backButtonChange'); }, 
-        hide: function() { this.isVisible = false; notifyMock('backButtonChange'); } 
-    },
-    onEvent: (evt, clb) => {
-        if (!mockListeners[evt]) mockListeners[evt] = new Set();
-        mockListeners[evt].add(clb);
-    },
-    offEvent: (evt, clb) => {
-        if (mockListeners[evt]) mockListeners[evt].delete(clb);
-    },
-    initDataUnsafe: {},
-    safeAreaInset: { top: 0, bottom: 0 },
-    contentSafeAreaInset: { top: 0, bottom: 0 }
-};
-
-const tg = (isTg && window.Telegram?.WebApp) ? window.Telegram.WebApp : defaultTgMock;
-
-export const clickMockBackButton = () => notifyMock('backButtonClicked');
-export const useMockBackButton = () => {
-    const [isVisible, setIsVisible] = useState(tg.BackButton?.isVisible || false);
-    useEffect(() => {
-        const updater = () => setIsVisible(tg.BackButton.isVisible);
-        if (!mockListeners['backButtonChange']) mockListeners['backButtonChange'] = new Set();
-        mockListeners['backButtonChange'].add(updater);
-        updater();
-        return () => {
-            if (mockListeners['backButtonChange']) mockListeners['backButtonChange'].delete(updater);
-        }
-    }, []);
-    return isVisible;
-};
+const checkIsVk = () => vkBridge.isWebView() || vkBridge.isIframe() || window.location.pathname.includes('vk.com');
 
 const vkState = {
     user: null,
@@ -78,18 +12,6 @@ const vkState = {
     initPromise: null,
     bridgeSubscribed: false,
     listeners: new Set()
-};
-
-export const getBotType = () => {
-    if (isVk) {
-        return String(vkState.groupId) === '217049080' ? 'vk-xbox' : 'vk-ps';
-    }
-
-    if (isTg) {
-        return 'tg';
-    }
-
-    return 'web';
 };
 
 const getVkGroupId = () => {
@@ -104,17 +26,11 @@ const notify = () => {
 
 const updateVkState = (partial) => {
     Object.assign(vkState, partial);
-    console.log('[useTelegram] vkState updated:', {
-        user: vkState.user,
-        insets: vkState.insets,
-        groupId: vkState.groupId,
-        initialized: vkState.initialized
-    });
     notify();
 };
 
 const initVk = async () => {
-    if (!isVk || vkState.initialized) return;
+    if (!checkIsVk() || vkState.initialized) return;
     if (vkState.initPromise) return vkState.initPromise;
 
     vkState.initPromise = (async () => {
@@ -138,10 +54,7 @@ const initVk = async () => {
             vkState.bridgeSubscribed = true;
         }
 
-        vkBridge.send('VKWebAppSetViewSettings', {
-            status_bar_style: 'light',
-            action_bar_color: 'none'
-        }).catch(() => {});
+        vkBridge.send('VKWebAppSetViewSettings', { status_bar_style: 'light', action_bar_color: 'none' }).catch(() => {});
 
         try {
             await vkBridge.send('VKWebAppInit').catch(() => {});
@@ -155,31 +68,26 @@ const initVk = async () => {
         vkState.initialized = initSuccess;
         vkState.initPromise = null;
 
-        if (!initSuccess) {
-            setTimeout(() => initVk(), 5000);
-        }
+        if (!initSuccess) setTimeout(() => initVk(), 5000);
     })();
 
     return vkState.initPromise;
 };
 
-if (isVk) {
-    initVk();
-}
+if (checkIsVk()) initVk();
 
 export const getUser = () => {
-    if (isVk) {
-        if (!vkState.initialized && !vkState.initPromise) {
-            initVk();
-        }
+    if (checkIsVk()) {
+        if (!vkState.initialized && !vkState.initPromise) initVk();
         return vkState.user
             ? { id: vkState.user.id, first_name: vkState.user.first_name, last_name: vkState.user.last_name, platform: 'vk' }
             : { id: 5106439090, first_name: 'Гость', platform: 'vk' };
     }
 
-    if (isTg) {
-        return tg.initDataUnsafe?.user
-            ? { ...tg.initDataUnsafe.user, platform: 'tg' }
+    if (isTelegramBrowser()) {
+        const currentTg = getTg();
+        return currentTg.initDataUnsafe?.user
+            ? { ...currentTg.initDataUnsafe.user, platform: 'tg' }
             : { id: 5106439090, first_name: 'Гость', platform: 'tg' };
     }
 
@@ -187,118 +95,67 @@ export const getUser = () => {
 };
 
 export function useTelegram() {
-    // Вычисляем платформы динамически на каждом рендере хука
-    const isVkActive = checkIsVk();
-    const isTgActive = isTelegramBrowser();
-
-    console.log('[DEBUG 3] Рендер хука useTelegram. Текущий статус TG:', isTgActive);
+    const [platformState, setPlatformState] = useState({
+        isVkActive: checkIsVk(),
+        isTgActive: isTelegramBrowser()
+    });
 
     const [snapshot, setSnapshot] = useState({
-        user: vkState.user,
         insets: vkState.insets,
         groupId: vkState.groupId
     });
 
-    // Динамически берем либо реальный WebApp, либо мок, если открыли в браузере
-    const currentTg = (isTgActive && window.Telegram?.WebApp) ? window.Telegram.WebApp : defaultTgMock;
-
+    // Регулярная проверка платформы каждые 2 секунды
     useEffect(() => {
-        // Если это Телеграм — принудительно раскрываем на максимум
-        if (isTgActive && window.Telegram?.WebApp) {
-            window.Telegram.WebApp.expand();
-        }
-
-        if (!isVkActive) return;
-
-        const onChange = () => {
-            setSnapshot({
-                user: vkState.user,
-                insets: vkState.insets,
-                groupId: vkState.groupId
+        const checkPlatforms = () => {
+            const currentVk = checkIsVk();
+            const currentTg = isTelegramBrowser();
+            
+            setPlatformState(prev => {
+                if (prev.isVkActive !== currentVk || prev.isTgActive !== currentTg) {
+                    return { isVkActive: currentVk, isTgActive: currentTg };
+                }
+                return prev;
             });
         };
 
-        vkState.listeners.add(onChange);
-        initVk();
+        const interval = setInterval(checkPlatforms, 2000);
+        return () => clearInterval(interval);
+    }, []);
 
-        return () => {
-            vkState.listeners.delete(onChange);
-        };
-    }, [isVkActive, isTgActive]); // Следим за изменением состояния платформ
+    const { isVkActive, isTgActive } = platformState;
+    const currentTg = getTg();
 
-    const onClose = () => {
+    useEffect(() => {
+        if (isTgActive && window.Telegram?.WebApp) {
+            try { window.Telegram.WebApp.expand(); } catch (e) {}
+        }
+
         if (isVkActive) {
-            vkBridge.send('VKWebAppClose', { status: 'success' });
-        } else {
-            currentTg.close();
+            const onChange = () => {
+                setSnapshot({
+                    insets: vkState.insets,
+                    groupId: vkState.groupId
+                });
+            };
+            vkState.listeners.add(onChange);
+            initVk();
+
+            return () => {
+                vkState.listeners.delete(onChange);
+            };
         }
-    };
-
-    const onToggleButton = () => {
-        if (isVkActive) return;
-        if (currentTg.MainButton.isVisible) {
-            currentTg.MainButton.hide();
-        } else {
-            currentTg.MainButton.show();
-        }
-    };
-
-    const expand = () => {
-        if (isVkActive) return;
-        currentTg.expand();
-    };
-
-    // Динамическое определение юзера
-    let activeUser = { id: 5106439090, first_name: 'Гость', platform: 'web' };
-    if (isVkActive) {
-        activeUser = snapshot.user
-            ? { id: snapshot.user.id, first_name: snapshot.user.first_name, last_name: snapshot.user.last_name, platform: 'vk' }
-            : { id: 5106439090, first_name: 'Гость', platform: 'vk' };
-    } else if (isTgActive) {
-        activeUser = currentTg.initDataUnsafe?.user
-            ? { ...currentTg.initDataUnsafe.user, platform: 'tg' }
-            : { id: 5106439090, first_name: 'Гость', platform: 'tg' };
-    }
+    }, [isVkActive, isTgActive]);
 
     const isWebMode = !isVkActive && !isTgActive;
-    const isMockBackButtonVisible = useMockBackButton();
-    const mockTopInset = isMockBackButtonVisible && (isVkActive || isWebMode) ? 45 : 0;
-
-    const safeAreaInset = isVkActive || isWebMode
-        ? { top: (snapshot.insets?.top || 0) + mockTopInset, bottom: snapshot.insets?.bottom || 0 }
-        : {
-            top: currentTg.safeAreaInset?.top || 0,
-            bottom: currentTg.safeAreaInset?.bottom || 0
-        };
 
     const contentSafeAreaInset = isVkActive || isWebMode
         ? { top: snapshot.insets?.top || 0, bottom: snapshot.insets?.bottom || 0 }
-        : {
-            top: currentTg.contentSafeAreaInset?.top || 0,
-            bottom: currentTg.contentSafeAreaInset?.bottom || 0
-        };
-
-    // Динамическое вычисление типа бота
-    const botType = isVkActive 
-        ? (String(snapshot.groupId) === '217049080' ? 'vk-xbox' : 'vk-ps') 
-        : (isTgActive ? 'tg' : 'web');
-
-    console.log('[DEBUG 3] Хук отдает данные в UI. Выбран botType:', botType);
-
+        : { top: currentTg.contentSafeAreaInset?.top || 0, bottom: currentTg.contentSafeAreaInset?.bottom || 0 };
 
     return {
-        onClose, onToggleButton, expand, tg: currentTg,
-        user: activeUser,
-        isVk: isVkActive,
-        isVkUserLoaded: !isVkActive || !!snapshot.user,
-        isTg: isTgActive,
-        isWeb: isWebMode,
-        botType,
+        tg: currentTg,
         vkGroupId: snapshot.groupId,
-        queryId: currentTg.initDataUnsafe?.query_id,
-        safeAreaInset,
         contentSafeAreaInset
     };
 }
-
-//{id:5106439090, first_name:'tёma'},

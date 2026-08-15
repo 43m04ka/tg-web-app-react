@@ -7,7 +7,7 @@ const DesktopAccountData = ({returnAccountData, pageType}) => {
     const [inputData, setInputData] = useState(['Не указано', 'Не указано', 'Не указано', 'Не указано', 'Не указано']);
 
     const updateAccountData = () => {
-        if (pageType === 'ps') {
+        if (pageType === 'ps' || pageType === 'ps_india') {
             if (selectNewAccount) {
                 returnAccountData('Нет своего аккаунта PSN.');
             } else {
@@ -36,14 +36,14 @@ const DesktopAccountData = ({returnAccountData, pageType}) => {
     }, [selectNewAccount, pageType, inputData]);
 
     const menuDesigns = useMemo(() => {
-        if (pageType === 'ps' && selectNewAccount) {
+        if ((pageType === 'ps' || pageType === 'ps_india') && selectNewAccount) {
             return (
                 <div className={style.label}>
                     Мы оформим заказ на новый аккаунт PSN и передадим Вам его в полном доступе.<br/> Аккаунт будет принадлежать только Вам.<br/> Это бесплатно.
                 </div>
             );
         }
-        if (pageType === 'ps') {
+        if (pageType === 'ps' || pageType === 'ps_india') {
             return (
                 <div className={style.formBlock}>
                     <div className={style.label}>Введите данные от аккаунта PSN:</div>

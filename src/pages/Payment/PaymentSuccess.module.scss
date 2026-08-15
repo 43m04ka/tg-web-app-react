@@ -1,0 +1,222 @@
+@import "src/app/styles/mainStyle";
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background: #171717;
+}
+
+.card {
+    background: #1E1E24;
+    border-radius: 20px;
+    padding: 32px 24px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.icon {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: center;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 12px;
+    @extend %font-bold;
+}
+
+.invoiceId {
+    font-size: 16px;
+    color: #a0a0a0;
+    margin-bottom: 20px;
+    line-height: 1.4;
+    @extend %font-medium;
+}
+
+.message {
+    font-size: 16px;
+    color: #c8c8c8;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    @extend %font-medium;
+}
+
+.subMessage {
+    font-size: 14px;
+    color: #888888;
+    margin-bottom: 24px;
+    line-height: 1.5;
+    @extend %font-medium;
+}
+
+.button {
+    width: 100%;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 12px;
+    transition: transform 0.2s;
+    @extend %font-bold;
+
+    &:hover {
+        transform: scale(1.02);
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+.buttonSecondary {
+    width: 100%;
+    padding: 14px 16px;
+    background: transparent;
+    color: #764ba2;
+    border: 2px solid #764ba2;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    @extend %font-bold;
+
+    &:hover {
+        background: #764ba2;
+        color: white;
+    }
+}
+
+.wrapper {
+  scale: 0.5;
+  width: 200px;
+  height: 60px;
+  display: flex;
+  margin: 30vh auto;
+  z-index: 1;
+}
+
+.circle {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  border-radius: 50%;
+  background-color: #fff;
+  left: 15%;
+  transform-origin: 50%;
+  animation: circle7124 .5s alternate infinite ease;
+}
+
+@keyframes circle7124 {
+  0% {
+    top: 60px;
+    height: 5px;
+    border-radius: 50px 50px 25px 25px;
+    transform: scaleX(1.7);
+  }
+
+  40% {
+    height: 20px;
+    border-radius: 50%;
+    transform: scaleX(1);
+  }
+
+  100% {
+    top: 0%;
+  }
+}
+
+.circle:nth-child(2) {
+  left: 45%;
+  animation-delay: -0.2s;
+}
+
+.circle:nth-child(3) {
+  left: auto;
+  right: 15%;
+  animation-delay: -0.3s;
+}
+
+.shadow {
+  width: 20px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.9);
+  position: absolute;
+  top: 62px;
+  transform-origin: 50%;
+  z-index: -1;
+  left: 15%;
+  filter: blur(1px);
+  animation: shadow046 .5s alternate infinite ease;
+}
+
+@keyframes shadow046 {
+  0% {
+    transform: scaleX(1.5);
+  }
+
+  40% {
+    transform: scaleX(1);
+  }
+
+  100% {
+    transform: scaleX(0.5);
+  }
+}
+
+.shadow:nth-child(2) {
+  left: 45%;
+  animation-delay: -0.2s;
+}
+
+.shadow:nth-child(3) {
+  left: auto;
+  right: 15%;
+  animation-delay: -0.3s;
+}
+
+.orderDetails {
+    margin-top: 24px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: #2a2a35;
+    border-radius: 12px;
+    text-align: left;
+}
+
+.orderDetailRow {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 14px;
+    
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.orderDetailLabel {
+    color: #a0a0a0;
+    font-weight: 500;
+    line-height: 1.4;
+    @extend %font-medium;
+}
+
+.orderDetailValue {
+    color: #ffffff;
+    font-weight: 600;
+    @extend %font-bold;
+}

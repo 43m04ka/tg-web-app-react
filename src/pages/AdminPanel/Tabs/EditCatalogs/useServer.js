@@ -1,4 +1,4 @@
-import {ADMIN_API_URL, adminAuthHeadersJson, withJsonAuth} from '../../adminAuth';
+import {ADMIN_API_URL, API_BASE_URL, adminAuthHeadersJson, withJsonAuth} from '../../adminAuth';
 
 const URL = ADMIN_API_URL;
 
@@ -33,7 +33,7 @@ export function useServer() {
     }
 
     const changeSaleStatusCatalog = async (setResult, authenticationData, catalogId, changeTo) => {
-        await fetch('https://gwstorebot.ru/api/catalog/changeSaleStatusCatalog', {
+        await fetch(`${API_BASE_URL}/api/catalog/changeSaleStatusCatalog`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

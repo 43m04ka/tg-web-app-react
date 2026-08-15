@@ -110,20 +110,7 @@ export function useServer() {
         })
     }
 
-    const getCatalogs = async (pageId, group, setResult) => {
-        await fetch(URL + '/getCatalogs', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({pageId:pageId, group:group})
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result.sort((a, b) => a.serialNumber - b.serialNumber))
-            })
-        })
-    }
+
 
 
     const deletePage = async (id) => {

@@ -1,15 +1,14 @@
 import React from 'react';
 import style from "./NamePlace.module.scss";
-import {useServer} from "../useServer";
 import useGlobalData from "../../../hooks/useGlobalData";
-import {useTelegram} from "../../../hooks/useTelegram";
 import {useServerUser} from "../../../hooks/useServerUser";
+import {usePlatformUser} from "../../../hooks/usePlatformUser";
 
 const NamePlace = ({setCardInFavorite, cardInFavorite, productData}) => {
 
     const {addCardToFavorite, deleteCardToFavorite} = useServerUser()
     const {updatePreviewFavoriteData} = useGlobalData()
-    const {user} = useTelegram()
+    const { user } = usePlatformUser();
 
     let year = null
 

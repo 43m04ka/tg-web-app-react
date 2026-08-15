@@ -20,6 +20,17 @@ const DesktopHeader = ({setOpacityTab, setZIndexTab}) => {
     const location = useLocation();
     const headerRef = useRef(null);
 
+    const getCurrentPageType = () => {
+        if (!pageList || pageId === -1) return null;
+        const currentPage = pageList.find(p => p.id === pageId);
+        return currentPage?.type || null;
+    }
+
+    const pageType = getCurrentPageType();
+
+    const [isAnimating, setIsAnimating] = useState(false);
+    const [pendingNavigation, setPendingNavigation] = useState(null);
+
     const [clueList, setClueList] = useState([]);
     const [panelRecommendations, setPanelRecommendations] = useState(null);
 
@@ -41,11 +52,18 @@ const DesktopHeader = ({setOpacityTab, setZIndexTab}) => {
 
     const {activeTab, visibleButtons, onButtonClick} = useDesktopHeaderNavigation({
         pageList, pageId, updateBasket, catalogList, setOpacityTab, setZIndexTab, navigate, location,
+        isAnimating, pendingNavigation, setIsAnimating, setPendingNavigation, pageType,
     });
 
     useEffect(() => {
         getClueList((res) => setClueList(res || []));
     }, []);
+
+    useEffect(() => {
+        // Сбрасываем анимацию при изменении pageId
+        setIsAnimating(false);
+        setPendingNavigation(null);
+    }, [pageId]);
 
     useEffect(() => {
         getRecommendationsGames((res) => {
@@ -59,6 +77,11 @@ const DesktopHeader = ({setOpacityTab, setZIndexTab}) => {
         () => clueList.filter((item) => item.structurePageId === pageId).slice(0, 12),
         [clueList, pageId],
     );
+
+    // Определяем текущий pageType для подсчета видимых кнопок
+    const currentDisplayPageType = (isAnimating && pendingNavigation && pendingNavigation.targetPageType) 
+        ? pendingNavigation.targetPageType 
+        : pageType;
 
     const leftButtons = visibleButtons.filter((b) => b.id === 'home' || b.id === 'platform');
     const rightButtons = visibleButtons.filter((b) => b.id === 'basket' || b.id === 'more');
@@ -83,7 +106,12 @@ const DesktopHeader = ({setOpacityTab, setZIndexTab}) => {
                                     <img src={logoIcon} alt="logo" className={style['logoImg']} />
                                 </button>
                             ) : (
-                                <button key={button.id} type="button" className={`${style['actionButton']} ${activeTab === button.id ? style['active'] : ''}`} onClick={() => onButtonClick(button)}>
+                                <button 
+                                    key={button.id} 
+                                    type="button" 
+                                    className={`${style['actionButton']} ${activeTab === button.id ? style['active'] : ''} ${currentDisplayPageType === 'steam' && (button.id === 'search' || button.id === 'basket') ? style['navButtonHidden'] : style['navButtonVisible']}`} 
+                                    onClick={() => onButtonClick(button)}
+                                >
                                     {button.label}
                                 </button>
                             ),
@@ -92,7 +120,12 @@ const DesktopHeader = ({setOpacityTab, setZIndexTab}) => {
                     <DesktopHeaderSearchSection search={search} clues={filteredClues} products={panelRecommendations || []} />
                     <div className={style['right']}>
                         {rightButtons.map((button) => (
-                            <button key={button.id} type="button" className={`${style['actionButton']} ${activeTab === button.id ? style['active'] : ''}`} onClick={() => onButtonClick(button)}>
+                            <button 
+                                key={button.id} 
+                                type="button" 
+                                className={`${style['actionButton']} ${activeTab === button.id ? style['active'] : ''} ${currentDisplayPageType === 'steam' && (button.id === 'search' || button.id === 'basket') ? style['navButtonHidden'] : style['navButtonVisible']}`} 
+                                onClick={() => onButtonClick(button)}
+                            >
                                 <span className={style['iconWrap']}>
                                     <img src={iconMap[button.id]} alt="" className={style['btnIcon']} />
                                     {button.id === 'basket' && basket !== null && basket.length !== 0 && (

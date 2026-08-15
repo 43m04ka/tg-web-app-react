@@ -1,7 +1,10 @@
+// noinspection JSUnusedLocalSymbols
+
 import React, {useCallback, useEffect, useRef} from 'react';
 import {Link, useNavigate} from "react-router-dom";
 import {useTelegram} from "../../hooks/useTelegram";
 import useGlobalData from "../../hooks/useGlobalData";
+import {useAppInsets} from "../../hooks/useAppInsets";
 
 let lastListRes = []
 let lastText = ''
@@ -12,7 +15,8 @@ const Search_old = ({height}) => {
     const [textInput, setTextInput] = React.useState('');
     const textRef = useRef();
     const scrollRef = useRef();
-    const { tg, safeAreaInset, contentSafeAreaInset } = useTelegram();
+    const { tg, vkGroupId } = useTelegram();
+const { safeAreaInset, contentSafeAreaInset, isKeyboardOpen } = useAppInsets();
     const {pageId} = useGlobalData()
     const navigate = useNavigate();
 

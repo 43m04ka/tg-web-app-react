@@ -4,12 +4,13 @@ import ExcelReader from "../../../Blocks/ExcelReader";
 import useData from "../../../useData";
 import PopUpWindow from "../../../Elements/PopUpWindow/PopUpWindow";
 import style from "../../HistoryOrders/History.module.scss";
+import {API_BASE_URL} from "../../../../../hooks/useServerRoutes/baseUrl";
 
-const IMPORT_URL = 'https://gwstorebot.ru/api/product/import';
+const IMPORT_URL = `${API_BASE_URL}/api/product/import`;
 
 const UploadData = ({onClose, onReload}) => {
 
-    const {authenticationData} = useData();
+
     const {catalogList} = useGlobalData()
 
     const [onLoad, setOnLoad] = useState(false)

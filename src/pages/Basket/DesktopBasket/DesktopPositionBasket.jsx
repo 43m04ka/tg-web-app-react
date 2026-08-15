@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import style from './DesktopPositionBasket.module.scss';
-import { useTelegram } from '../../../hooks/useTelegram';
 import useGlobalData from '../../../hooks/useGlobalData';
-import { useNavigate } from 'react-router-dom';
-import { useServerUser } from '../../../hooks/useServerUser';
+import {useNavigate} from 'react-router-dom';
+import {useServerUser} from '../../../hooks/useServerUser';
+import {usePlatformUser} from "../../../hooks/usePlatformUser";
 
-const DesktopPositionBasket = ({ product, percent }) => {
+const DesktopPositionBasket = ({ product, percent, otherCurrency }) => {
     const { addCardToFavorite, deleteCardToFavorite, deleteCardToBasket, setBasketPositionCount } = useServerUser();
-    const { user } = useTelegram();
+    const { user } = usePlatformUser();
     const { updatePreviewFavoriteData, previewFavoriteData, pageId, catalogList, updateBasket } = useGlobalData();
     const navigate = useNavigate();
 
     const [counter, setCounter] = useState(product.count);
     const [cardInFavorite, setCardInFavorite] = useState(previewFavoriteData.includes(product.id));
+
+    // Механика определения валюты (как в PositionBasket)
+    const isInr = product.priceInOtherCurrency !== null && product.priceInOtherCurrency !== undefined && otherCurrency;
 
     useEffect(() => {
         if (product.count !== counter) {
@@ -26,13 +29,14 @@ const DesktopPositionBasket = ({ product, percent }) => {
     let type = 0;
     let price = product.price * product.count;
 
+    // Логика расчета
     if (product.oldPrice !== null) {
         type = 1;
         oldPrice = product.oldPrice * product.count;
     } else if (product.similarCard !== null) {
         type = 0;
         price = product.similarCard?.price * product.count;
-        if (typeof product.similarCard.oldPrice !== 'undefined' && typeof product.similarCard.oldPrice !== 'undefined') {
+        if (typeof product.similarCard.oldPrice !== 'undefined' && product.similarCard.oldPrice !== null) {
             type = 1;
             oldPrice = product.similarCard?.oldPrice * product.count;
         }
@@ -43,6 +47,15 @@ const DesktopPositionBasket = ({ product, percent }) => {
         oldPrice = price;
         price = price - (price * percent) / 100;
     }
+
+    // Перезаписываем логику, если товар в INR
+    if (isInr) {
+        oldPrice = '';
+        type = 0;
+        price = Number(product.priceInOtherCurrency);
+    }
+
+    const currencySign = isInr ? ' Rs' : ' ₽';
 
     return (
         <div className={style.container}>
@@ -97,8 +110,8 @@ const DesktopPositionBasket = ({ product, percent }) => {
                     </div>
                 </div>
                 <div className={style.pricePlace}>
-                    <p className={style.priceOld}>{oldPrice !== '' ? oldPrice.toLocaleString() + ' ₽' : ''}</p>
-                    <p className={style[type === 0 ? 'priceDefault' : 'priceDiscount']}>{price.toLocaleString() + ' ₽'}</p>
+                    <p className={style.priceOld}>{oldPrice !== '' ? oldPrice.toLocaleString() + currencySign : ''}</p>
+                    <p className={style[type === 0 ? 'priceDefault' : 'priceDiscount']}>{price.toLocaleString() + currencySign}</p>
                 </div>
             </div>
         </div>

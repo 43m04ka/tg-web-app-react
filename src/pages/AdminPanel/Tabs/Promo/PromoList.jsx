@@ -3,7 +3,7 @@ import style from "../../AdminPanel.module.scss";
 
 const PromoList = ({promoList, setPromoId}) => {
 
-    const [selectedId, setSelectedId] = React.useState(-1);
+    const [, setSelectedId] = React.useState(-1);
 
     return (
         <div className={style['listScrollY']}>

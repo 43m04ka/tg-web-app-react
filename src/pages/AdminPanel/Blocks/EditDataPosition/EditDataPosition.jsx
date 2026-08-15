@@ -3,14 +3,13 @@ import InputLabel from "../../Elements/Input/InputLabel";
 import style from './EditDataPosition.module.scss'
 import SwitchLabel from "../../Elements/SwitchLabel/SwitchLabel";
 import ButtonLabel from "../../Elements/ButtonLabel";
-import Button from "../../Elements/ButtonLabel";
 import DropBox from "../../Elements/DropBox/DropBox";
 
 const EditDataPosition = ({structure, setNewData, currentData}) => {
 
     const [json, setJson] = React.useState(currentData);
 
-    const [updateTrigger, setUpdateTrigger] = React.useState(0);
+    const [, setUpdateTrigger] = React.useState(0);
 
     const forceRerender = () => {
         setUpdateTrigger(prevValue => prevValue + 1);

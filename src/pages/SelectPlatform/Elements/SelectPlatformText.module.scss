@@ -50,30 +50,42 @@
 
 @media (min-width: 768px) {
   .header {
-    margin-bottom: 28px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 40px auto 20px auto; /* Центрируем и отбиваем от предыдущих блоков */
   }
 
   .topRow {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
     gap: 16px;
+    margin-top: 10px;
+    height: 50px;
   }
 
   .iconWrap {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
   }
 
   .icon {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
+    background-size: contain;
+    background-position: center;
   }
 
   .title {
-    font-size: 30px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
   }
 
   .hint {
-    margin-top: 12px;
     font-size: 15px;
   }
 }

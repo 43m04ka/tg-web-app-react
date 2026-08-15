@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import style from "./OrderPage.module.scss";
 import {useNavigate} from "react-router-dom";
 import {useTelegram} from "../../../hooks/useTelegram";
+import {usePlatform} from "../../../hooks/utils/usePlatform";
+import {useAppInsets} from "../../../hooks/useAppInsets";
 
 
 const copyToClipboard = async (text) => {
@@ -21,10 +23,15 @@ const copyToClipboard = async (text) => {
     }
 };
 
-const OrderPage = ({orderData}) => {
+// variant: 'created' — заказ оформлен, оплату примет менеджер;
+//          'paid' — заказ уже оплачен через кассу
+const OrderPage = ({orderData, variant = 'created', onClose}) => {
 
     const {number, list, summa, message} = orderData
-    const { tg, safeAreaInset, contentSafeAreaInset, isVk, vkGroupId} = useTelegram()
+    const isPaid = variant === 'paid'
+    const {vkGroupId} = useTelegram()
+    const { safeAreaInset, contentSafeAreaInset } = useAppInsets();
+    const { isVk } = usePlatform();
 
     const [stage, setStage] = useState(0);
     const [openingChat, setOpeningChat] = useState(false);
@@ -69,7 +76,7 @@ const OrderPage = ({orderData}) => {
              paddingBottom: String(window.innerWidth * 0.15 + contentSafeAreaInset.bottom + safeAreaInset.bottom) + 'px',
          }}>
              <div>
-                 <div className={style['title']}>{'Заказ №' + String(number) + ' успешно ' + (isVk ? 'сформирован' : 'оформлен') + '!'}</div>
+                 <div className={style['title']}>{'Заказ №' + String(number) + ' успешно ' + (isPaid ? 'оплачен' : (isVk ? 'сформирован' : 'оформлен')) + '!'}</div>
                 <div className={style['miniTitle']} style={{marginBottom:'3vw'}}>Состав заказа:
                 </div>
                 <div style={{maxHeight: String(window.innerWidth * 0.80)  + 'px', overflowY:'scroll'}}>
@@ -96,7 +103,7 @@ const OrderPage = ({orderData}) => {
                 </div>
             </div>
 
-            {isVk ? (
+            {isVk && !isPaid ? (
                 <div>
                     <div className={style['label']} style={{backgroundColor: 'rgba(0, 122, 255, 0.1)', padding: '2vw', borderRadius: '2vw', border: '1px solid rgba(0, 122, 255, 0.3)', marginBottom: '2vw'}}>
                         ✓ Данные заказа скопированы в буфер обмена
@@ -116,9 +123,15 @@ const OrderPage = ({orderData}) => {
             ) : (
                 <div>
                     <div className={style['label']}>
-                        Для оплаты и активации заказа с Вами свяжется наш менеджер @gwstore_admin.
-                        <br/>Рабочее время с 10:00 до 22:00 по МСК.
-                        <br/>Вы можете задать вопрос по заказу по кнопке ниже.
+                        {isPaid ? (<>
+                            Оплата получена. Для активации заказа с Вами свяжется наш менеджер @gwstore_admin.
+                            <br/>Рабочее время с 10:00 до 22:00 по МСК.
+                            <br/>Вы можете задать вопрос по заказу по кнопке ниже.
+                        </>) : (<>
+                            Для оплаты и активации заказа с Вами свяжется наш менеджер @gwstore_admin.
+                            <br/>Рабочее время с 10:00 до 22:00 по МСК.
+                            <br/>Вы можете задать вопрос по заказу по кнопке ниже.
+                        </>)}
                     </div>
                     <button onClick={() => {
                         window.open('https://t.me/gwstore_admin')
@@ -129,6 +142,7 @@ const OrderPage = ({orderData}) => {
             )}
 
             <div className={style['mainMenuButton']} onClick={() => {
+                onClose?.()
                 navigate('/')
             }}>
                 <p>Вернуться на главную</p>

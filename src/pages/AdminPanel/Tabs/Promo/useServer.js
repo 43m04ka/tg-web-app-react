@@ -1,6 +1,6 @@
-import {adminAuthHeadersJson, withJsonAuth} from '../../adminAuth';
+import {ADMIN_API_URL, adminAuthHeadersJson, withJsonAuth} from '../../adminAuth';
 
-const URL = '/api/admin';
+const URL = ADMIN_API_URL;
 
 export function useServer() {
 

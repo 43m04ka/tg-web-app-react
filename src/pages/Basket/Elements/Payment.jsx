@@ -7,18 +7,24 @@ Date.prototype.addDays = function (days) {
     return date;
 };
 
-const Payment = ({sumPrice, setPaymentMethodString, setPaymentMethod, setSelectedPayment}) => {
+// Выбранный способ живёт в корзине: раньше он дублировался локальным состоянием,
+// и подсветка кнопки расходилась с тем, чем реально оплачивается заказ
+const Payment = ({sumPrice, setPaymentMethodString, setPaymentMethod, setSelectedPayment, selectedPayment = 0}) => {
 
-    const [selected, setSelected] = React.useState(0);
+    const selected = selectedPayment;
     const [infoLabel, setInfoLabel] = React.useState('');
 
-    if (sumPrice < 2000 && selected !== 0) {
-        setSelected(0);
-        setSelectedPayment(0);
-    }
+    // Сумма могла упасть ниже порога уже после выбора рассрочки — возвращаем СБП.
+    // В эффекте, а не в теле рендера: обновлять состояние родителя во время рендера нельзя
+    React.useEffect(() => {
+        if (sumPrice < 2000 && selected !== 0) {
+            setSelectedPayment(0);
+            setPaymentMethodString('Способ оплаты: СБП');
+            setPaymentMethod?.('sbp');
+        }
+    }, [sumPrice, selected, setSelectedPayment, setPaymentMethodString, setPaymentMethod]);
 
     const handlePaymentChange = (index, methodString, methodEnum) => {
-        setSelected(index);
         setSelectedPayment(index);
         setPaymentMethodString(methodString);
         setPaymentMethod?.(methodEnum);

@@ -1,0 +1,276 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+
+// Итоги задач — строки списка, а не вложенные «коробки»: форму держат разделители,
+// цвет уровня несёт тонкая полоска слева, а не заливка карточки.
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 270px;
+  max-height: 300px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  color: var(--text);
+}
+
+// Внутри виджета скроллом занимается сам виджет — свой не нужен.
+.container.embedded {
+  width: 100%;
+  max-height: none;
+  overflow: visible;
+}
+
+.emptyHint {
+  margin: 0;
+  padding: var(--sp-1) 0;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.errorInline {
+  font-size: var(--fs-md);
+  color: var(--danger);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-3) 0;
+}
+
+.card + .card {
+  border-top: 1px solid var(--border);
+}
+
+.card:first-child {
+  padding-top: 0;
+}
+
+.card:last-child {
+  padding-bottom: 0;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+}
+
+// Единственный носитель уровня: 2px полоска в цвет статуса.
+.levelMark {
+  flex-shrink: 0;
+  width: 2px;
+  align-self: stretch;
+  min-height: 26px;
+  border-radius: var(--r-pill);
+  background: var(--text-muted);
+}
+
+.info .levelMark {
+  background: var(--success);
+}
+
+.warning .levelMark {
+  background: var(--warning);
+}
+
+.error .levelMark {
+  background: var(--danger);
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.name {
+  font-size: var(--fs-base);
+  font-weight: 700;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.closeBtn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color var(--t-fast), background-color var(--t-fast), border-color var(--t-fast);
+
+  &:hover {
+    background: var(--surface-hover);
+    border-color: var(--border);
+    color: var(--text);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.summary {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.detailsToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition: color var(--t-fast);
+
+  &:hover {
+    color: var(--accent);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-radius: var(--r-sm);
+  }
+}
+
+.chevron {
+  display: inline-flex;
+  transition: transform var(--t-base);
+}
+
+.detailsToggle.open .chevron {
+  transform: rotate(180deg);
+}
+
+// Расширенная информация: список позиций, не доехавших до базы.
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  max-height: 260px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-left: var(--sp-3);
+  border-left: 1px solid var(--border);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: var(--r-pill);
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+.detailRow {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.detailHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.kindTag {
+  flex-shrink: 0;
+  padding: 1px var(--sp-1);
+  border-radius: var(--r-sm);
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.kind_skipped {
+  border-color: rgba(var(--warning-rgb), 0.45);
+  background: rgba(var(--warning-rgb), 0.12);
+  color: var(--warning);
+}
+
+.kind_failed,
+.kind_page {
+  border-color: rgba(var(--danger-rgb), 0.45);
+  background: rgba(var(--danger-rgb), 0.12);
+  color: var(--danger);
+}
+
+.detailName {
+  font-size: var(--fs-sm);
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+a.detailName {
+  color: var(--accent);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-radius: var(--r-sm);
+  }
+}
+
+.detailReason {
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.detailId {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

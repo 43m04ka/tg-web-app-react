@@ -1,5 +1,30 @@
 import {API_BASE_URL} from "./baseUrl";
 
+// Ответы структуры иногда обрываются на середине (ERR_CONTENT_LENGTH_MISMATCH) —
+// тогда fetch/json бросает, промис остаётся необработанным и данные молча теряются.
+// Один повтор закрывает почти все такие обрывы, а необработанных промисов больше нет.
+const fetchJsonResult = async (url, {retries = 1} = {}) => {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            return data?.result ?? null;
+        } catch (error) {
+            if (attempt === retries) {
+                console.error(`Ошибка запроса ${url}:`, error);
+                return null;
+            }
+        }
+    }
+    return null;
+}
+
 export function structureRoute(){
 
     const syncUser = async (userData, setResult) => {
@@ -33,76 +58,36 @@ export function structureRoute(){
         }).catch(e => console.error('Error syncing user:', e))
     }
 
-    const getPageList = async (setResult, hide) => {
-        await fetch(`${API_BASE_URL}/api/structure/allPages?time=${Date.now()}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                let result = data.result.sort((a, b) => a.serialNumber - b.serialNumber)
-                setResult(result)
-            })
-        })
+    const bySerialNumber = (list) =>
+        Array.isArray(list) ? [...list].sort((a, b) => a.serialNumber - b.serialNumber) : null
+
+    const getPageList = async (setResult) => {
+        const result = await fetchJsonResult(`${API_BASE_URL}/api/structure/allPages?time=${Date.now()}`)
+        const sorted = bySerialNumber(result)
+        if (sorted) setResult(sorted)
     }
 
     const getStartPageList = async (setResult) => {
-        await fetch(`${API_BASE_URL}/api/structure/allStartPages?time=${Date.now()}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                let result = data.result.sort((a, b) => a.serialNumber - b.serialNumber)
-                setResult(result)
-            })
-        })
+        const result = await fetchJsonResult(`${API_BASE_URL}/api/structure/allStartPages?time=${Date.now()}`)
+        const sorted = bySerialNumber(result)
+        if (sorted) setResult(sorted)
     }
 
 
     const getStructureCatalogList = async (setResult) => {
-        await fetch(`${API_BASE_URL}/api/structure/allStructureBlocks?time=${Date.now()}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
+        const result = await fetchJsonResult(`${API_BASE_URL}/api/structure/allStructureBlocks?time=${Date.now()}`)
+        if (result !== null) setResult(result)
     }
 
     const getPreviewCardList = async (setResult) => {
-        await fetch(`${API_BASE_URL}/api/structure/mainPageProducts?time=${Date.now()}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result.sort((a, b) => a.serialNumber - b.serialNumber))
-            })
-        })
+        const result = await fetchJsonResult(`${API_BASE_URL}/api/structure/mainPageProducts?time=${Date.now()}`)
+        const sorted = bySerialNumber(result)
+        if (sorted) setResult(sorted)
     }
 
     const getInfoBlocks = async (setResult) => {
-        await fetch(`${API_BASE_URL}/api/structure/infoBlocks?time${new Date()}`, {
-            method: 'GET', headers: {
-                'Content-Type': 'application/json',
-            }
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
+        const result = await fetchJsonResult(`${API_BASE_URL}/api/structure/infoBlocks?time=${Date.now()}`)
+        if (result !== null) setResult(result)
     }
 
     return {getStructureCatalogList, getPreviewCardList, getPageList, getStartPageList, getInfoBlocks, syncUser}

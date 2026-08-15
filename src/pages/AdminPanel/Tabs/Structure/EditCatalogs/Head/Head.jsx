@@ -2,13 +2,12 @@ import React, {useState} from 'react';
 import {useServer} from "../../useServer";
 import useData from "../../../../useData";
 import style from "../../Structure.module.scss";
-import List from "../../../../Elements/List/List";
 import CreateHead from "./CreateHead";
 import EditDataCatalog from "../EditDataCatalog/EditDataCatalog";
 
 const Head = ({catalogHeadList, page, onReload, copiedItem, setCopiedItem}) => {
 
-    const [selectList, setSelectList] = useState([]);
+
     const [catalogId, setCatalogId] = useState(-1);
     const [createTabOpen, setCreateTabOpen] = useState(false);
     const [editTabOpen, setEditTabOpen] = useState(false);
@@ -120,21 +119,7 @@ const Head = ({catalogHeadList, page, onReload, copiedItem, setCopiedItem}) => {
         await onReload();
     };
 
-    const returnOptionList = (option, id) => {
-        switch (option) {
-            case 'delete':
-                handleDelete(id);
-                break;
-            case 'copy':
-                handleCopy(id);
-                break;
-            case 'edit':
-                handleEdit(id);
-                break;
-            default:
-                break;
-        }
-    }
+
 
     return (
         <div className={style['catalogContainer']}>

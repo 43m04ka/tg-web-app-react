@@ -7,11 +7,11 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 
-import {Autoplay, Pagination, Controller, EffectCoverflow} from 'swiper/modules';
+import {Autoplay, Controller, EffectCoverflow, Pagination} from 'swiper/modules';
 import {useNavigate} from "react-router-dom";
 import useGlobalData from "../../hooks/useGlobalData";
-import {useTelegram} from "../../hooks/useTelegram";
 import layout from './CatalogListHead.module.scss';
+import {useAppInsets} from "../../hooks/useAppInsets";
 
 const DESKTOP_BREAK = 768;
 const DESKTOP_CONTENT_MAX = 1400;
@@ -77,8 +77,8 @@ function useHeadSwiperLayout(vw) {
 
 const CatalogListHead = () => {
     const {catalogStructureList, pageId} = useGlobalData();
-    const {safeAreaInset, contentSafeAreaInset} = useTelegram();
     const vw = useViewportWidth();
+    const { safeAreaInset, contentSafeAreaInset, isKeyboardOpen } = useAppInsets();
     const {isDesktop, slideWidth, slideHeight, swiperStyle, wrapClass, slidesPerView, spaceBetween} =
         useHeadSwiperLayout(vw);
     const [, setNumber] = useState(0);

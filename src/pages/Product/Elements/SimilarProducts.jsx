@@ -8,7 +8,7 @@ const SimilarProducts = ({minRating, productData}) => {
     const [products, setProducts] = useState(null);
     const {getCardList, getSearch} = useServerUser()
 
-    const setNewCardData = (data, number) => {
+    const setNewCardData = (data) => {
         setProducts(data.cardList.filter(item => item.id !== productData.id && !(item.serviceId in productData.conceptProducts)))
     }
 

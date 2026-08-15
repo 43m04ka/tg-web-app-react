@@ -9,8 +9,10 @@ import 'swiper/css/pagination';
 import NameBlock from "./NameBlock";
 import {useServerUser} from "../../hooks/useServerUser";
 import {useIsDesktopMedia} from "../../hooks/useIsDesktopMedia";
+import {usePlatform} from "../../hooks/utils/usePlatform";
+import {useAppInsets} from "../../hooks/useAppInsets";
 
-const URL = 'https://2ae04a56-b56e-4cc1-b14a-e7bf1761ebd5.selcdn.net'
+
 
 const buttonList = [[{
     name: 'Избранное',
@@ -94,7 +96,10 @@ const buttonList = [[{
 }],]
 
 const MoreInfo = () => {
-    const { tg, safeAreaInset, contentSafeAreaInset, botType } = useTelegram();
+    const { tg} = useTelegram();
+    const { safeAreaInset, contentSafeAreaInset, isKeyboardOpen } = useAppInsets();
+
+    const { botType } = usePlatform();
     const navigate = useNavigate();
     const {getInfoBlocks} = useServerUser()
     const [info, setInfo] = useState([]);
@@ -108,10 +113,16 @@ const MoreInfo = () => {
             };
         }
         return {
-            paddingBottom: String(window.innerWidth * 0.20 + contentSafeAreaInset.bottom + safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px',
+            paddingBottom: String(
+                window.innerWidth * 0.20
+                + contentSafeAreaInset.bottom + safeAreaInset.bottom
+                // запас под нижний бар: при открытой клавиатуре бар скрыт, запас не нужен
+                + (isKeyboardOpen ? 0 : window.innerWidth * 0.20)
+                + 10
+            ) + 'px',
             paddingTop: String(contentSafeAreaInset.top + safeAreaInset.top + 10) + 'px',
         };
-    }, [isDesktop, contentSafeAreaInset.bottom, contentSafeAreaInset.top, safeAreaInset.bottom, safeAreaInset.top]);
+    }, [isDesktop, isKeyboardOpen, contentSafeAreaInset.bottom, contentSafeAreaInset.top, safeAreaInset.bottom, safeAreaInset.top]);
 
     const isButtonVisibleForBot = (button) => {
         if (!button.bots) return true;

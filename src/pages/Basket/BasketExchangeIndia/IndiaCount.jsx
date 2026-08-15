@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import useGlobalData from "../../../hooks/useGlobalData";
+import React, {useEffect} from 'react';
 import IndiaCountElement from "./IndiaCountElement";
 
 const IndiaCount = ({ basketList, setSum, onReload }) => {

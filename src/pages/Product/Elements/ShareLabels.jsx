@@ -1,7 +1,13 @@
+// noinspection JSUnusedLocalSymbols
+
 import React, {useState} from 'react';
 import style from "../Product.module.scss";
 import {useTelegram} from "../../../hooks/useTelegram";
 import {useServerUser} from "../../../hooks/useServerUser";
+import {usePlatform} from "../../../hooks/utils/usePlatform";
+import {usePlatformUser} from "../../../hooks/usePlatformUser";
+import {useAppInsets} from "../../../hooks/useAppInsets";
+import {shareProduct} from "../../../shared/lib/shareProduct";
 
 const EMPTY_STRING_VALUES = new Set([
     'null', 'none', 'undefined', 'n/a', 'na', '-', 'nan', 'infinity', '-infinity',
@@ -70,7 +76,10 @@ const getPromotionSource = (productData) => {
 
 const ShareLabels = ({productData, parameters}) => {
 
-    const { tg, user, isTg, safeAreaInset, contentSafeAreaInset } = useTelegram()
+    const { tg, vkGroupId } = useTelegram();
+const { safeAreaInset, contentSafeAreaInset, isKeyboardOpen } = useAppInsets()
+    const { user, isVkUserLoaded } = usePlatformUser();
+    const { isTg } = usePlatform();
     const {prepareShareMessage} = useServerUser()
     const [copied, setCopied] = useState(false);
 
@@ -109,10 +118,13 @@ const ShareLabels = ({productData, parameters}) => {
     return (<div>
         <div className={style['shareLabel']}
              onClick={async () => {
-                 await prepareShareMessage((messageId) => {
-                     tg.shareMessage(messageId)
-                     window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('soft');
-                 }, productData.id, user.id)
+                 await shareProduct({
+                     tg,
+                     prepareShareMessage,
+                     productId: productData.id,
+                     userId: user.id,
+                     fallbackText: textMessage
+                 })
              }}>
             <div className={style['shareLabelShare']}/>
             <p>Поделиться карточкой</p>

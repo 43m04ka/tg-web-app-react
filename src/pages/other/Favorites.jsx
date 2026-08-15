@@ -1,5 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
+import {useTelegram} from '../../hooks/useTelegram';
+import {useServerUser} from '../../hooks/useServerUser';
+import useGlobalData from '../../hooks/useGlobalData';
+import Recommendations from '../../shared/ui/Recommendations/Recommendations';
+import DesktopFavorites from './DesktopFavorites/DesktopFavorites';
+import style from './Favorites.module.scss';
+import basketStyle from '../Basket/Basket.module.scss';
+import {usePlatformUser} from "../../hooks/usePlatformUser";
+import {useAppInsets} from "../../hooks/useAppInsets";
 
 function formatDate(value) {
     if (!value || value === null) return null;
@@ -11,13 +20,6 @@ function formatDate(value) {
     const d = new Date(value);
     return !isNaN(d.getTime()) ? d.toLocaleDateString('ru-RU') : String(value);
 }
-import { useTelegram } from '../../hooks/useTelegram';
-import { useServerUser } from '../../hooks/useServerUser';
-import useGlobalData from '../../hooks/useGlobalData';
-import Recommendations from '../../shared/ui/Recommendations/Recommendations';
-import DesktopFavorites from './DesktopFavorites/DesktopFavorites';
-import style from './Favorites.module.scss';
-import basketStyle from '../Basket/Basket.module.scss';
 
 const Favorites = () => {
     const [isDesktop] = useState(() => window.innerWidth >= 768);
@@ -29,7 +31,9 @@ const Favorites = () => {
 
 /* ── Mobile version ──────────────────────────────────────── */
 const MobileFavorites = () => {
-    const { tg, user, safeAreaInset, contentSafeAreaInset } = useTelegram();
+    const { tg } = useTelegram();
+const { safeAreaInset, contentSafeAreaInset, isKeyboardOpen } = useAppInsets();
+    const { user } = usePlatformUser();
     const navigate = useNavigate();
     const { getFavoriteList, deleteCardToFavorite } = useServerUser();
     const { updatePreviewFavoriteData } = useGlobalData();

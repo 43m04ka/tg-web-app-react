@@ -4,7 +4,7 @@ import CatalogItem from "../../Catalog/CatalogItem";
 
 const Description = ({parameters, productData}) => {
 
-    const [textHidden, setTextHidden] = useState(true);
+    const [textHidden] = useState(true);
     const [mode, setMode] = useState(1);
     const [height, setHeight] = useState(0);
     const refText = createRef();

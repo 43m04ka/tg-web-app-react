@@ -1,4 +1,4 @@
-import {ADMIN_API_URL, adminAuthHeadersJson, withJsonAuth} from './adminAuth';
+import {ADMIN_API_URL, API_BASE_URL, adminAuthHeadersJson, withJsonAuth} from './adminAuth';
 
 const URL = ADMIN_API_URL;
 
@@ -19,7 +19,7 @@ export function useServer() {
     }
 
     const getCard = async (setResult, id) => {
-        fetch(`https://gwstorebot.ru/api/product/${id}?time=${Date.now()}`, {
+        fetch(`${API_BASE_URL}/api/product/${id}?time=${Date.now()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import style from './DesktopOrderPage.module.scss';
-import { useNavigate } from 'react-router-dom';
-import { useTelegram } from '../../../hooks/useTelegram';
+import {useNavigate} from 'react-router-dom';
+import {useTelegram} from '../../../hooks/useTelegram';
 import logoIcon from '../../../shared/assets/icons/golo.png';
+import {usePlatform} from "../../../hooks/utils/usePlatform";
 
 const copyToClipboard = async (text) => {
     try {
@@ -19,7 +20,8 @@ const copyToClipboard = async (text) => {
 
 const DesktopOrderPage = ({ orderData }) => {
     const { number, list, summa, message } = orderData;
-    const { isVk, vkGroupId } = useTelegram();
+    const { vkGroupId } = useTelegram();
+    const { isVk } = usePlatform();
     const [stage, setStage] = useState(0);
     const [openingChat, setOpeningChat] = useState(false);
     const navigate = useNavigate();

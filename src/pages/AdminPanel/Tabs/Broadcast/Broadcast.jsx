@@ -45,6 +45,8 @@ const Broadcast = () => {
             <BroadcastMessageEditor
                 authenticationData={authenticationData}
                 limits={stats?.limits}
+                broadcastState={stats?.state}
+                onSendComplete={loadStats}
             />
         </div>
     );

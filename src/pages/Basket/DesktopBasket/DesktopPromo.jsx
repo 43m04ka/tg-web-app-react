@@ -1,6 +1,6 @@
 import React from 'react';
 import style from './DesktopPromo.module.scss';
-import { useServerUser } from '../../../hooks/useServerUser';
+import {useServerUser} from '../../../hooks/useServerUser';
 
 const DesktopPromo = ({ setPromoData }) => {
     const [inputValue, setInputValue] = React.useState('');

@@ -1,7 +1,7 @@
 import {create} from 'zustand'
 import {devtools} from "zustand/middleware";
 import {useServerUser} from "./useServerUser";
-import {getBotType, getUser} from "./useTelegram";
+import {getUser} from "./useTelegram";
 
 
 const {
@@ -9,12 +9,8 @@ const {
 } = useServerUser()
 const {getBasketList} = useServerUser()
 
-const filterVisiblePagesByPlatform = (pages) => {
-    const botType = getBotType();
-
-    return pages
-        .filter(page => page.isHidden !== 1)
-}
+// Страницы не привязаны к боту — отсеиваем только скрытые
+const filterVisiblePages = (pages) => pages.filter(page => page.isHidden !== 1)
 
 const useGlobalData = create(devtools((set, get) => ({
     internalUserId: null,
@@ -24,7 +20,7 @@ const useGlobalData = create(devtools((set, get) => ({
     updatePageList: (data) => {
         if (typeof data === 'undefined') {
             getPageList((result) => {
-                set(() => ({pageList: filterVisiblePagesByPlatform(result)}));
+                set(() => ({pageList: filterVisiblePages(result)}));
             })
         } else {
             if (data === true) {
@@ -32,16 +28,21 @@ const useGlobalData = create(devtools((set, get) => ({
                     set(() => ({pageList: result}));
                 }, data)
             } else {
-                set(() => ({pageList: filterVisiblePagesByPlatform(data)}));
+                set(() => ({pageList: filterVisiblePages(data)}));
             }
         }
     },
 
     startPageList: [],
     updateStartPageList: (data) => {
-        if (typeof data === 'undefined') {
+        // Стартовые страницы приходят с index.html. Если сервер их не вложил
+        // (или вложил пустыми) — только тогда идём в сеть, иначе стартовый экран
+        // ждал бы лишний запрос там, где данные уже есть
+        if (!Array.isArray(data) || data.length === 0) {
             getStartPageList((result) => {
-                set(() => ({startPageList: result}));
+                if (Array.isArray(result) && result.length > 0) {
+                    set(() => ({startPageList: result}));
+                }
             })
         } else {
             set(() => ({startPageList: data}));

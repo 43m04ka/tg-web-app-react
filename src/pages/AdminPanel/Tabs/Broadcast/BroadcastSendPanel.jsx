@@ -5,17 +5,30 @@ import {serializeEditorElementToTelegramHtml} from './broadcastTelegramHtml';
 import {validateKeyboardForSend} from './broadcastKeyboardPayload';
 import {hasAdminBearer} from '../../adminAuth';
 
+// Значение <input type="datetime-local"> — локальное время без зоны;
+// шлём epoch ms, чтобы не гадать со смещением
+const toEpochMs = (localValue) => {
+    const ms = new Date(localValue).getTime();
+    return Number.isNaN(ms) ? null : String(ms);
+};
+
 const BroadcastSendPanel = ({
     authenticationData,
     limits,
     richEditorRef,
     draft,
+    broadcastState,
     onSendComplete,
 }) => {
     const [mode, setMode] = useState('test');
     const [disableWebPagePreview, setDisableWebPagePreview] = useState(false);
     const [sending, setSending] = useState(false);
     const [status, setStatus] = useState(null);
+    const [scheduledAtLocal, setScheduledAtLocal] = useState('');
+
+    // Рассылка одна на всю систему: пока идёт или запланирована, новую создать нельзя
+    const busyStatus = broadcastState?.status;
+    const isBusy = busyStatus === 'running' || busyStatus === 'scheduled';
 
     const maxFileBytes = limits?.maxFileBytes ?? 50 * 1024 * 1024;
 
@@ -57,6 +70,15 @@ const BroadcastSendPanel = ({
         }
         const inlineKeyboardJson = kbCheck.rows ? JSON.stringify(kbCheck.rows) : '';
 
+        let scheduledAt = null;
+        if (scheduledAtLocal) {
+            scheduledAt = toEpochMs(scheduledAtLocal);
+            if (!scheduledAt) {
+                setStatus({type: 'err', text: 'Некорректные дата и время запуска'});
+                return;
+            }
+        }
+
         setSending(true);
         setStatus(null);
         try {
@@ -66,12 +88,17 @@ const BroadcastSendPanel = ({
                 mediaFile: file || null,
                 disableWebPagePreview,
                 inlineKeyboardJson,
+                scheduledAt,
             });
 
             if (httpStatus === 202 && (data?.accepted === true || data?.accepted === undefined)) {
                 setStatus({
                     type: 'ok',
-                    text: data.message || 'Запрос принят (202), рассылка в фоне.',
+                    text:
+                        data.message ||
+                        (data.scheduled
+                            ? 'Рассылка запланирована.'
+                            : 'Запрос принят (202), рассылка в фоне.'),
                 });
                 onSendComplete?.(data);
                 return;
@@ -81,7 +108,12 @@ const BroadcastSendPanel = ({
                 return;
             }
             if (httpStatus === 409) {
-                setStatus({type: 'err', text: 'Уже выполняется другая рассылка (409)'});
+                // Текст сервера объясняет, что именно мешает — показываем как есть
+                setStatus({
+                    type: 'err',
+                    text: data?.error || 'Уже выполняется или запланирована другая рассылка (409)',
+                });
+                onSendComplete?.(data);
                 return;
             }
             if (httpStatus === 413) {
@@ -132,9 +164,52 @@ const BroadcastSendPanel = ({
                 />
                 Без превью ссылок (disableWebPagePreview)
             </label>
+            <div className={style['sendRow']}>
+                <span className={style['sendLabel']}>Запуск</span>
+                <input
+                    type="datetime-local"
+                    className={style['scheduleInput']}
+                    value={scheduledAtLocal}
+                    onChange={(e) => setScheduledAtLocal(e.target.value)}
+                    disabled={isBusy}
+                />
+                {scheduledAtLocal ? (
+                    <button
+                        type="button"
+                        className={style['scheduleClear']}
+                        onClick={() => setScheduledAtLocal('')}
+                    >
+                        Сбросить
+                    </button>
+                ) : null}
+            </div>
+            <p className={style['scheduleHint']}>
+                Пусто — рассылка стартует сразу. Отложить можно максимум на 30 дней; при перезапуске
+                сервера расписание сбрасывается, поэтому не планируйте далеко вперёд.
+            </p>
+            {isBusy ? (
+                <p className={style['sendStatusErr']}>
+                    {busyStatus === 'running'
+                        ? 'Рассылка уже идёт. Отменить её можно в списке задач.'
+                        : `Рассылка запланирована${
+                              broadcastState?.runAt
+                                  ? ` на ${new Date(broadcastState.runAt).toLocaleString('ru-RU')}`
+                                  : ''
+                          }. Отмените её в списке задач, чтобы создать новую.`}
+                </p>
+            ) : null}
             <div className={style['sendActions']}>
-                <button type="button" className={style['sendButton']} onClick={handleSend} disabled={sending}>
-                    {sending ? 'Отправка…' : 'Запустить рассылку'}
+                <button
+                    type="button"
+                    className={style['sendButton']}
+                    onClick={handleSend}
+                    disabled={sending || isBusy}
+                >
+                    {sending
+                        ? 'Отправка…'
+                        : scheduledAtLocal
+                          ? 'Запланировать рассылку'
+                          : 'Запустить рассылку'}
                 </button>
             </div>
             {status ? (

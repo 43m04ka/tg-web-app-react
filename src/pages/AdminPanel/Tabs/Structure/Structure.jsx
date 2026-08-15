@@ -1,3 +1,5 @@
+// noinspection JSUnusedLocalSymbols
+
 import React, {useState} from 'react';
 import EditPages from "./EditPages/EditPages";
 import style from './Structure.module.scss'

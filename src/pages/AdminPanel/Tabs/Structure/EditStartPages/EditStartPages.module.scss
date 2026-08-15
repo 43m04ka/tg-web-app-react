@@ -21,6 +21,7 @@
 }
 
 .header {
+  padding-right: var(--dock-safe);
   display: flex;
   flex-direction: column;
   justify-content: space-between;

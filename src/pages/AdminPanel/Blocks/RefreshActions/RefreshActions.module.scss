@@ -1,0 +1,131 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+
+.list {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+// Простые строки без вложенных «коробок» — разделены тонкой линией.
+.actionRow {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  // Подсветка не расползается до краёв блока: у неё свои поля внутри строки.
+  padding: var(--sp-2) var(--sp-3);
+  margin: 0;
+  border-radius: var(--r-md);
+  border: none;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: color var(--t-fast), background-color var(--t-fast);
+
+  // Разделитель рисуем псевдоэлементом, чтобы не обрезать скругление подсветки.
+  & + .actionRow::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: var(--sp-3);
+    right: var(--sp-3);
+    height: 1px;
+    background: var(--border);
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--surface-hover);
+
+    .actionTitle {
+      color: var(--accent);
+    }
+
+    .actionIcon {
+      color: var(--accent);
+    }
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-radius: var(--r-sm);
+  }
+
+  &:disabled {
+    background: transparent;
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.actionBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.actionTitle {
+  font-size: var(--fs-base);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.25;
+  transition: color var(--t-fast);
+}
+
+.actionHint {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.actionIcon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: color var(--t-fast);
+}
+
+.actionIconBusy svg {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.toast {
+  position: fixed;
+  bottom: var(--sp-5);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2100;
+  max-width: 420px;
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--r-md);
+  font-size: var(--fs-md);
+  box-shadow: var(--shadow-md);
+}
+
+.toast_ok {
+  background: var(--surface-alt);
+  border: 1px solid rgba(var(--success-rgb), 0.45);
+  color: var(--success);
+}
+
+.toast_err {
+  background: var(--surface-alt);
+  border: 1px solid rgba(var(--danger-rgb), 0.45);
+  color: var(--danger);
+}

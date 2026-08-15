@@ -10,23 +10,13 @@ import EditStartPages from "../EditStartPages/EditStartPages";
 const EditPages = ({}) => {
     const [activeSection, setActiveSection] = useState('pages');
 
-    const platformOptions = [
-        { key: 'vk-xbox', name: 'Сообщество Xbox',},
-        { key: 'vk-ps', name: 'Сообщество Playstation',},
-        { key: 'tg', name: 'Бот телеграмм',},
-        { key: 'web', name: 'Браузерная версия',}
-    ];
-
     const typeOptions = [
         { key: 'ps', name: 'Playstation' },
         { key: 'xbox', name: 'Xbox' },
+        { key: 'ps_india', name: 'Playstation Индия' },
+        { key: 'steam', name: 'Steam' },
         { key: 'other', name: 'Без полей' }
     ];
-
-    const getPlatformName = (platformKey) => {
-        const option = platformOptions.find(opt => opt.key === platformKey);
-        return option ? option.name : platformKey;
-    };
 
     const getTypeName = (typeKey) => {
         const option = typeOptions.find(opt => opt.key === typeKey);
@@ -156,7 +146,6 @@ const EditPages = ({}) => {
                         <tr>
                             <th>ID</th>
                             <th>Название</th>
-                            <th>Платформа</th>
                             <th>Тип</th>
                             <th>Путь</th>
                             <th>Статус</th>
@@ -164,11 +153,10 @@ const EditPages = ({}) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {((filteredList && filteredList).sort((a, b) => a.botType.localeCompare(b.botType))).map((page) => (
+                        {[...(filteredList || [])].sort((a, b) => a.name.localeCompare(b.name)).map((page) => (
                             <tr key={page.id} onClick={() => handleRowClick(page.id)}>
                                 <td>{page.id}</td>
                                 <td>{page.name}</td>
-                                <td>{getPlatformName(page.botType)}</td>
                                 <td>{getTypeName(page.type)}</td>
                                 <td>{page.link}</td>
                                 <td>{page.isHidden === 1 ? 'Скрыта' : 'Отображена'}</td>
@@ -184,7 +172,7 @@ const EditPages = ({}) => {
                         ))}
                         {filteredList && filteredList.length === 0 ? (
                             <tr>
-                                <td className={style['emptyCell']} colSpan={7}>Страницы не найдены</td>
+                                <td className={style['emptyCell']} colSpan={6}>Страницы не найдены</td>
                             </tr>
                         ) : ''}
                     </tbody>

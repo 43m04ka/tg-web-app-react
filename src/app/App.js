@@ -41,31 +41,36 @@ const normalizeInitialState = (rawInitialData) => {
         structureBlocks: pickValue('structureBlocks', 'allStructureBlocks'),
         mainPageProducts: pickValue('mainPageProducts'),
         allCatalogs: pickValue('allCatalogs', 'catalogs'),
-        startPages: pickValue('startPages', 'allStartPages'),
+        startPages: pickValue('startPages', 'allStartPages', 'startPageList', 'startPagesList'),
         maintenanceMode: pickValue('maintenanceMode') || {enabled: false, until: null}
     };
 };
 
 let initialState = normalizeInitialState({});
 
-try {
-    const rawInitialData = window.__INITIAL_DATA__;
-    const parsedInitialData =
-        typeof rawInitialData === 'string'
-            ? JSON.parse(rawInitialData)
-            : (rawInitialData || {});
+// В проде этот плейсхолдер подменяется бэкендом на реальный JSON перед отдачей index.html.
+// В локальной разработке (npm start раздаёт public/index.html как есть) он остаётся
+// нетронутым — это ожидаемо, а не ошибка, поэтому просто уходим на фоллбэк-запрос к API.
+const rawInitialData = window.__INITIAL_DATA__;
+if (rawInitialData !== '__JSON_DATA_PLACEHOLDER__') {
+    try {
+        const parsedInitialData =
+            typeof rawInitialData === 'string'
+                ? JSON.parse(rawInitialData)
+                : (rawInitialData || {});
 
-    initialState = normalizeInitialState(parsedInitialData);
+        initialState = normalizeInitialState(parsedInitialData);
 
-    console.log('[App] initial data loaded:', {
-        pages: Array.isArray(initialState.pages) ? initialState.pages.length : 'undefined',
-        startPages: Array.isArray(initialState.startPages) ? initialState.startPages.length : 'undefined',
-        structureBlocks: Array.isArray(initialState.structureBlocks) ? initialState.structureBlocks.length : 'undefined',
-        mainPageProducts: Array.isArray(initialState.mainPageProducts) ? initialState.mainPageProducts.length : 'undefined',
-        allCatalogs: Array.isArray(initialState.allCatalogs) ? initialState.allCatalogs.length : 'undefined'
-    });
-} catch (e) {
-    console.error('Error parsing initial state:', e);
+        console.log('[App] initial data loaded:', {
+            pages: Array.isArray(initialState.pages) ? initialState.pages.length : 'undefined',
+            startPages: Array.isArray(initialState.startPages) ? initialState.startPages.length : 'undefined',
+            structureBlocks: Array.isArray(initialState.structureBlocks) ? initialState.structureBlocks.length : 'undefined',
+            mainPageProducts: Array.isArray(initialState.mainPageProducts) ? initialState.mainPageProducts.length : 'undefined',
+            allCatalogs: Array.isArray(initialState.allCatalogs) ? initialState.allCatalogs.length : 'undefined'
+        });
+    } catch (e) {
+        console.error('Error parsing initial state:', e);
+    }
 }
 
 function App() {
@@ -151,11 +156,20 @@ function App() {
         }
     }, [pageId])
 
-    if (catalogList !== null && pageList !== null && mainPageCards !== null && startPageList !== null && isLoaded) {
-        setTimeout(() => {
-            setIsLoaded(false)
-        }, 150)
-    }
+    // Раньше этот setTimeout стоял прямо в теле компонента: таймер ставился заново на
+    // каждый рендер и никогда не отменялся, так что к моменту снятия лоадера их
+    // накапливалась пачка. В эффекте таймер один и корректно чистится.
+    useEffect(() => {
+        if (catalogList === null || pageList === null || mainPageCards === null || startPageList === null) return;
+        if (!isLoaded) return;
+
+        // startPageList по умолчанию пустой массив, а не null, поэтому раньше лоадер
+        // снимался до прихода стартовых страниц и экран выбора платформы показывался
+        // с одним заголовком. Ждём данные, но не дольше 4 с — их может не быть вовсе.
+        const hasStartPages = Array.isArray(startPageList) && startPageList.length > 0;
+        const timerId = setTimeout(() => setIsLoaded(false), hasStartPages ? 150 : 4000);
+        return () => clearTimeout(timerId);
+    }, [catalogList, pageList, mainPageCards, startPageList, isLoaded])
 
     const urlParams = new URLSearchParams(window.location.search);
         

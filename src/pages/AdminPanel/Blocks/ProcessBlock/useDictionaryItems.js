@@ -1,6 +1,7 @@
-import {useState, useEffect, useCallback, useRef} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
+import {API_BASE_URL} from '../../../../hooks/useServerRoutes/baseUrl';
 
-const PARSING_API = 'https://gwstorebot.ru/api/parsing';
+const PARSING_API = `${API_BASE_URL}/api/parsing`;
 
 /**
  * @param {object} [options]
@@ -24,6 +25,10 @@ const useDictionaryItems = (options = {}) => {
             const response = await fetch(`${PARSING_API}/processList?time=${Date.now()}`);
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
+
+            // Оценку оставшегося времени считает сервер: у него есть момент старта
+            // и очередь источника, а история в памяти вкладки терялась при каждой
+            // перезагрузке страницы и не знала про ждущие запуска задачи.
             setError(null);
             setItems(data);
         } catch (err) {
@@ -74,7 +79,20 @@ const useDictionaryItems = (options = {}) => {
         }
     };
 
-    return {items, loading, error, updateNotificationStatus};
+    const cancelProcess = async (id) => {
+        try {
+            const response = await fetch(`${PARSING_API}/cancelProcess/${id}`, {
+                method: 'POST',
+            });
+
+            if (!response.ok) throw new Error(`Failed to cancel process`);
+            await fetchData();
+        } catch (err) {
+            console.error('Ошибка при отмене процесса:', err);
+        }
+    };
+
+    return {items, loading, error, updateNotificationStatus, cancelProcess};
 };
 
 export default useDictionaryItems;

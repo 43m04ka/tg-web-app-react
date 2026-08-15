@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import style from './Promo.module.scss'
 import {useServerUser} from "../../../hooks/useServerUser";
 

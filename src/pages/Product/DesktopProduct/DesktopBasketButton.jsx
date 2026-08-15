@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
-import {useTelegram} from "../../../hooks/useTelegram";
 import useGlobalData from "../../../hooks/useGlobalData";
 import {useServerUser} from "../../../hooks/useServerUser";
 import style from "./DesktopBasketButton.module.scss";
+import {usePlatformUser} from "../../../hooks/usePlatformUser";
 
 const DesktopBasketButton = ({productData, cardInBasket, setCardInBasket}) => {
     const navigate = useNavigate();
-    const {user} = useTelegram();
+    const { user} = usePlatformUser();
     const {addCardToBasket, setBasketPositionCount, deleteCardToBasket} = useServerUser();
     const {
         pageId,
@@ -31,7 +31,7 @@ const DesktopBasketButton = ({productData, cardInBasket, setCardInBasket}) => {
         const params = new URLSearchParams(window.location.search);
         const from = params.get('from');
         const pageLink = pageList.find((page) => page.id === pageId)?.link;
-        navigate(`/${pageLink}${from !== 'basket' ? '/basket?from=product' : '/basket'}`);
+        navigate(`/main${from !== 'basket' ? '/basket?from=product' : '/basket'}`);
     };
 
     const handleMainClick = async () => {

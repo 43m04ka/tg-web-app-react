@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
 const CopyButton = ({ url, label = "Ссылка" }) => {
     const [isCopied, setIsCopied] = useState(false);

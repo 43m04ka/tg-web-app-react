@@ -19,7 +19,7 @@ const Search = () => {
     const [inputName, setInputName] = useState("");
     const [searchValue, setSearchValue] = useState('');
     const [filteredList, setFilteredList] = useState([]);
-    const [activeTab, setActiveTab] = useState('all');
+
 
     // Выбираем первую страницу по умолчанию
     useEffect(() => {

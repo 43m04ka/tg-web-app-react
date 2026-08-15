@@ -1,13 +1,13 @@
 import React, {useEffect} from 'react';
 
 import style from './AccountData.module.scss';
-import {useTelegram} from "../../../hooks/useTelegram";
+import {usePlatform} from "../../../hooks/utils/usePlatform";
 
 const AccountData = ({returnAccountData, pageType}) => {
 
     const [selectNewAccount, setSelectNewAccount] = React.useState(true);
     const [inputData, setInputData] = React.useState(['Не указано', 'Не указано', 'Не указано', 'Не указано', 'Не указано']);
-    const {isVk} = useTelegram()
+
 
     const updateAccountData = () => {
         if (pageType === 'ps' || pageType === 'ps_india' ) {

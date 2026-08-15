@@ -1,6 +1,6 @@
 import React, {useEffect, useId, useRef, useState} from 'react';
 import style from './Broadcast.module.scss';
-import {emptyDraft, nextId, isVideoFile} from './broadcastConstants';
+import {emptyDraft, isVideoFile, nextId} from './broadcastConstants';
 import BroadcastMediaDropzone from './BroadcastMediaDropzone';
 import BroadcastRichEditor from './BroadcastRichEditor';
 import BroadcastInlineKeyboardEditor from './BroadcastInlineKeyboardEditor';
@@ -15,7 +15,14 @@ const normalizeInitialMedia = (m) => {
 /**
  * Форма рассылки: один медиафайл, HTML-текст, отправка на /broadcast/tg/send.
  */
-const BroadcastMessageEditor = ({initialDraft, onDraftChange, authenticationData, limits}) => {
+const BroadcastMessageEditor = ({
+    initialDraft,
+    onDraftChange,
+    authenticationData,
+    limits,
+    broadcastState,
+    onSendComplete,
+}) => {
     const inputId = useId();
     const richEditorRef = useRef(null);
     const [draft, setDraft] = useState(() => initialDraft || emptyDraft());
@@ -124,6 +131,8 @@ const BroadcastMessageEditor = ({initialDraft, onDraftChange, authenticationData
                 limits={limits}
                 richEditorRef={richEditorRef}
                 draft={draft}
+                broadcastState={broadcastState}
+                onSendComplete={onSendComplete}
             />
         </div>
     );

@@ -1,7 +1,5 @@
 import React, {useEffect} from 'react';
 import AP_SelectInputLabel from "./AP_SelectInputLabel";
-import {useServer} from "../../../../useServer";
-import useData from "../../../../useData";
 import InputLabel from "../../../../Elements/Input/InputLabel";
 
 const ApCreateNewCatalog = ({data, setResult}) => {
@@ -17,7 +15,7 @@ const ApCreateNewCatalog = ({data, setResult}) => {
                 setResultJson(newJson)
             }
         }
-    })
+    }, [data])
 
     return (
         <div>

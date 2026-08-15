@@ -1,16 +1,48 @@
-import React from 'react';
+// noinspection JSUnusedLocalSymbols
+
+import React, {useState} from 'react';
 import style from '../Basket.module.scss';
-import { useTelegram } from '../../../hooks/useTelegram';
+import {usePlatform} from "../../../hooks/utils/usePlatform";
+import {usePlatformUser} from "../../../hooks/usePlatformUser";
 
 const OrderContact = ({
     username,
     setUsername,
-    inputRef
+    inputRef,
+    email,
+    setEmail,
+    showEmailField = true
 }) => {
-    const {isVk, isTg, isWeb, user} = useTelegram();
+    const [emailError, setEmailError] = useState('');
+    const { user } = usePlatformUser();
+    const { isVk, isTg, isWeb, botType } = usePlatform();
+
+    const handleEmailChange = (e) => {
+        const value = e.target.value;
+        setEmail(value);
+    };
+
+    const handleEmailBlur = () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (email && !emailRegex.test(email.trim())) {
+            setEmailError('некорректный Email');
+        } else {
+            setEmailError('');
+        }
+    };
 
     if (isVk) {
-        return null;
+        if (!showEmailField) return null;
+        return (<>
+            <div className={style['usernameLabel']}>Чек оплаты поступит на Ваш Email:</div>
+            <input className={style['usernameInput']}
+                   placeholder={'mail@example.com'} value={email}
+                   onChange={handleEmailChange}
+                   onBlur={handleEmailBlur}
+                   style={{borderColor: emailError ? '#ff0000' : ''}}
+            />
+            {emailError && <div className={style['errorText']}>{emailError}</div>}
+        </>);
     }
 
     if (isTg && typeof user.username === 'undefined') {
@@ -23,19 +55,51 @@ const OrderContact = ({
                    onChange={e => {
                        setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''));
                    }}/>
+            {showEmailField && <>
+                <div className={style['usernameLabel']} style={{marginTop: '12px'}}>Чек оплаты поступит на Ваш Email:</div>
+                <input className={style['usernameInput']}
+                       placeholder={'mail@example.com'} value={email}
+                       onChange={handleEmailChange}
+                       style={{borderColor: emailError ? '#ff0000' : ''}}
+                />
+                {emailError && <div className={style['errorText']}>{emailError}</div>}
+            </>}
+        </>);
+    }
+
+    if (isTg) {
+        if (!showEmailField) return null;
+        return (<>
+            <div className={style['usernameLabel']}>Чек оплаты поступит на Ваш Email:</div>
+            <input className={style['usernameInput']}
+                   placeholder={'mail@example.com'} value={email}
+                   onChange={handleEmailChange}
+                   onBlur={handleEmailBlur}
+                   style={{borderColor: emailError ? '#ff0000' : ''}}
+            />
+            {emailError && <div className={style['errorText']}>{emailError}</div>}
         </>);
     }
 
     if (isWeb) {
         return (<>
             <div className={style['usernameLabel']}>
-                Введите удобный контакт: VK, Telegram, email или номер телефона
+                Введите удобный контакт: VK, Telegram или номер телефона
             </div>
             <input className={style['usernameInput']} ref={inputRef}
-                   placeholder={'Пример — @username, mail@example.com, +79990000000'} value={username}
+                   placeholder={'Пример — @username, +79990000000'} value={username}
                    onChange={e => {
                        setUsername(e.target.value);
                    }}/>
+            {showEmailField && <>
+                <div className={style['usernameLabel']} style={{marginTop: '12px'}}>Чек оплаты поступит на Ваш Email:</div>
+                <input className={style['usernameInput']}
+                       placeholder={'mail@example.com'} value={email}
+                       onChange={handleEmailChange}
+                       style={{borderColor: emailError ? '#ff0000' : ''}}
+                />
+                {emailError && <div className={style['errorText']}>{emailError}</div>}
+            </>}
         </>);
     }
 

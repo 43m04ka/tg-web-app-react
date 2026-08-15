@@ -3,9 +3,14 @@ import {useTelegram} from "../../../hooks/useTelegram";
 import {useServerUser} from "../../../hooks/useServerUser";
 import {getShareText} from "./productDesktopUtils";
 import style from "./DesktopShareLabels.module.scss";
+import {usePlatform} from "../../../hooks/utils/usePlatform";
+import {usePlatformUser} from "../../../hooks/usePlatformUser";
+import {shareProduct} from "../../../shared/lib/shareProduct";
 
 const DesktopShareLabels = ({productData, parameters}) => {
-    const {tg, user, isTg} = useTelegram();
+    const {tg} = useTelegram();
+    const { user } = usePlatformUser();
+    const { isTg } = usePlatform();
     const {prepareShareMessage} = useServerUser();
     const [copied, setCopied] = useState(false);
 
@@ -24,7 +29,13 @@ const DesktopShareLabels = ({productData, parameters}) => {
         <section className={style.card}>
             <div className={style.actions}>
                 {isTg && (
-                    <button onClick={() => prepareShareMessage((messageId) => tg.shareMessage(messageId), productData.id, user.id)}>
+                    <button onClick={() => shareProduct({
+                        tg,
+                        prepareShareMessage,
+                        productId: productData.id,
+                        userId: user.id,
+                        fallbackText: getShareText(productData, parameters, isTg)
+                    })}>
                         Поделиться карточкой
                     </button>
                 )}

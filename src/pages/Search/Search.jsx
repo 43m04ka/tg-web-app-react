@@ -8,6 +8,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import Sorting from "../../shared/ui/Filter/Sorting";
 import Filter from "../../shared/ui/Filter/Filter";
 import {useServerUser} from "../../hooks/useServerUser";
+import {useAppInsets} from "../../hooks/useAppInsets";
 
 let timerId = -1
 
@@ -20,7 +21,8 @@ let lastTime = new Date()
 
 
 const Search = () => {
-    const { tg, safeAreaInset, contentSafeAreaInset } = useTelegram()
+    const { tg } = useTelegram();
+    const {safeAreaInset, contentSafeAreaInset, width, isKeyboardOpen } = useAppInsets()
     const {pageId, setBarIsVisible} = useGlobalData()
     const location = useLocation();
     const inputRef = useRef(null)
@@ -37,7 +39,7 @@ const Search = () => {
     const [inputValue, setInputValue] = useState(initialQuery || lastText)
     const [cardList, setCardList] = useState(lastListRes)
     const [isInputFocused, setIsInputFocused] = useState(false);
-    const [icon, setIcon] = useState('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAACjUlEQVR4nO3dR24UQRSH8bciCAEmR2PSFRBwJ0AI7mLBCZAQG4JkjmDA5OBAnDmDkYDNh0qalkwS4GlPvffq/5N65U2Xv03PTNVrMxEREREREREREZkI4DxwdXSdq30/zQJ2Avf41d3yt9r312KMef7sMbC79n02AZgCHvB3T4A9te83Nf49hqJMKMZD/t9TRekZsAt4tI4Ya6Psrb2OFBg/RueZoowJ2Ac8pz9vgIO11xU5xoseYyjKegH7NyhGZxE4VHudkWK83MAYiuIwRmcJOFx73S4BB4BXTJ6iOIrRWVaUH2O8pr5l4Ii1rDx+OonRWWk2CnAUeIs/H4Hj1hJg2mmM9qKMYrzDv0/ACcsMOBYkRv4ooxjviWcAnLRMAsdYG+WUZQDMAB+Ibxg+SqIY8aOUx8bR42M2Q+C0BfzWttx4VsOyRosCuEV+Ny0CYAfwjfy+AtvNu/LMTjtmzDtgE7BKfp+BzRYBcI38Zi3xHtxo5sMdeQC2AheBOWAhyTUHXAC21P7/ioiIiIiIRPlgeBm47+AD3UJPV1nLpbI2a/RcoFfla6EpiwK4Tn6zFkFDX7+vlrWad2WnH+2YNu/Kz5qjnzez+wJsswjKBgDyu2FRNLANaFDO0VskCXctpti9mC3KMGyMRDvfU+6Ajx5lkPWMSKTTU02coopyvjB/jEAncJs8iev1jHp7MX6a4lCGiXmz0vI0B43W8EbDZxxyMJ5pSeOZ6k+T6yiGoyiLmrtYfyJpRzEczOztaHavg6nWHcUYc3/XAv3R/PdxoWH8qd4d0tHrKvqGXujiD3rlUcg3tHX0prZJQa/Ncxvlzm9i3A43ZSET4CxwZXSdqX0/IiIiIiIiIiIi1ojv9aD4fOfUvPQAAAAASUVORK5CYII=')
+    const [, setIcon] = useState('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAACjUlEQVR4nO3dR24UQRSH8bciCAEmR2PSFRBwJ0AI7mLBCZAQG4JkjmDA5OBAnDmDkYDNh0qalkwS4GlPvffq/5N65U2Xv03PTNVrMxEREREREREREZkI4DxwdXSdq30/zQJ2Avf41d3yt9r312KMef7sMbC79n02AZgCHvB3T4A9te83Nf49hqJMKMZD/t9TRekZsAt4tI4Ya6Psrb2OFBg/RueZoowJ2Ac8pz9vgIO11xU5xoseYyjKegH7NyhGZxE4VHudkWK83MAYiuIwRmcJOFx73S4BB4BXTJ6iOIrRWVaUH2O8pr5l4Ii1rDx+OonRWWk2CnAUeIs/H4Hj1hJg2mmM9qKMYrzDv0/ACcsMOBYkRv4ooxjviWcAnLRMAsdYG+WUZQDMAB+Ibxg+SqIY8aOUx8bR42M2Q+C0BfzWttx4VsOyRosCuEV+Ny0CYAfwjfy+AtvNu/LMTjtmzDtgE7BKfp+BzRYBcI38Zi3xHtxo5sMdeQC2AheBOWAhyTUHXAC21P7/ioiIiIiIRPlgeBm47+AD3UJPV1nLpbI2a/RcoFfla6EpiwK4Tn6zFkFDX7+vlrWad2WnH+2YNu/Kz5qjnzez+wJsswjKBgDyu2FRNLANaFDO0VskCXctpti9mC3KMGyMRDvfU+6Ajx5lkPWMSKTTU02coopyvjB/jEAncJs8iev1jHp7MX6a4lCGiXmz0vI0B43W8EbDZxxyMJ5pSeOZ6k+T6yiGoyiLmrtYfyJpRzEczOztaHavg6nWHcUYc3/XAv3R/PdxoWH8qd4d0tHrKvqGXujiD3rlUcg3tHX0prZJQa/Ncxvlzm9i3A43ZSET4CxwZXSdqX0/IiIiIiIiIiIi1ojv9aD4fOfUvPQAAAAASUVORK5CYII=')
 
     useEffect(() => {
         lastListRes = cardList
@@ -58,6 +60,9 @@ const Search = () => {
         tg.onEvent('backButtonClicked', onBack)
         return () => {
             tg.offEvent('backButtonClicked', onBack)
+            // Поиск живёт внутри MainPage, и при переходе по нижнему бару MainPage не
+            // перемонтируется — без этого кнопка «назад» оставалась висеть на главной
+            tg.BackButton.hide();
         }
     }, []);
 
@@ -159,7 +164,13 @@ const Search = () => {
                      lastScroll = (event.target.scrollTop);
                  }}
                  ref={scrollRef}
-                 style={{paddingBottom: String(window.innerWidth * 0.1 + contentSafeAreaInset.bottom + safeAreaInset.bottom + (window.screen.availHeight - window.innerHeight - (window.screen.availHeight - window.innerHeight > 0) ? window.innerWidth * 0.20 : 0) + 10) + 'px'}}>
+                 style={{paddingBottom: String(
+                     width * 0.1
+                     + contentSafeAreaInset.bottom + safeAreaInset.bottom
+                     // запас под нижний бар: при открытой клавиатуре бар скрыт, запас не нужен
+                     + (isKeyboardOpen ? 0 : width * 0.20)
+                     + 10
+                 ) + 'px'}}>
                 <div className={style['listGrid']}>
                     {cardList.map(item => {
                         return (<div style={{marginLeft: '6vw'}}>

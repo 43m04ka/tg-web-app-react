@@ -12,6 +12,7 @@
 
 /* Контейнер Dashboard */
 .dashboard {
+    padding-right: var(--dock-safe);
     flex: 1;
     min-height: 0;
     overflow-y: auto;
@@ -143,7 +144,8 @@ input[type="date"] {
 
 .add-btn {
     background: transparent;
-    border: 1px dashed var(--border);
+    /* Пунктир по правилам styles/_dashed.scss (файл — обычный CSS, миксин не подключить) */
+    border: 1px dashed var(--border-dashed);
     color: var(--text-dim);
     margin: 10px 0;
     padding: 10px;

@@ -1,10 +1,10 @@
 import React from 'react';
-import {useTelegram} from "../../hooks/useTelegram";
 import style from './MoreInfo.module.scss'
+import {usePlatformUser} from "../../hooks/usePlatformUser";
 
 const NameBlock = () => {
 
-    const {user} = useTelegram()
+    const { user } = usePlatformUser();
 
     if (user.first_name !== 'undefined') {
         return (

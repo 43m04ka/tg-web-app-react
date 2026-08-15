@@ -7,7 +7,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 
 
-import {Autoplay, Pagination, Controller, EffectCoverflow} from 'swiper/modules';
+import {Autoplay, Controller, EffectCoverflow, Pagination} from 'swiper/modules';
 import useGlobalData from "../../hooks/useGlobalData";
 
 

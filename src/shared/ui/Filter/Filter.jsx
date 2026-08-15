@@ -2,11 +2,13 @@ import React from 'react';
 import style from './SortingFilter.module.scss'
 import useGlobalData from "../../../hooks/useGlobalData";
 import {useTelegram} from "../../../hooks/useTelegram";
+import {useAppInsets} from "../../../hooks/useAppInsets";
 
 
 const Filter = ({onClose, json, setJson}) => {
 
-    const { tg, safeAreaInset, contentSafeAreaInset } = useTelegram()
+
+const { isKeyboardOpen } = useAppInsets()
     const {pageId} = useGlobalData()
 
     let parameters = [
@@ -151,7 +153,7 @@ const Filter = ({onClose, json, setJson}) => {
 
                 <button onClick={() => {
                     let newJson = json
-                    parameters.map((param, index) => {
+                    parameters.map((param) => {
                         newJson[param.type] = []
                     })
                     setLocalJson(newJson)

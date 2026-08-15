@@ -3,12 +3,13 @@ import ExcelReader from "../../../Blocks/ExcelReader";
 import useData from "../../../useData";
 import PopUpWindow from "../../../Elements/PopUpWindow/PopUpWindow";
 import style from "../../HistoryOrders/History.module.scss";
+import {API_BASE_URL} from "../../../../../hooks/useServerRoutes/baseUrl";
 
-const IMPORT_URL = 'https://gwstorebot.ru/api/product/import';
+
 
 const ImportData = ({onClose, onReload, catalogList}) => {
 
-    const {authenticationData} = useData();
+
 
     const [onLoad, setOnLoad] = useState(false)
     const [importStatus, setImportStatus] = useState(null)
@@ -28,7 +29,7 @@ const ImportData = ({onClose, onReload, catalogList}) => {
 
         try {
             setOnLoad(true)
-            const response = await fetch(`https://gwstorebot.ru/api/product/import?catalogId=${catalogId}`, {
+            const response = await fetch(`${API_BASE_URL}/api/product/import?catalogId=${catalogId}`, {
                 method: 'POST',
                 body: formData
             })

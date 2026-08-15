@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, {useEffect, useRef} from 'react';
 import style from './Broadcast.module.scss';
-import { CUSTOM_EMOJI_LIST } from './broadcastConstants';
+import {CUSTOM_EMOJI_LIST} from './broadcastConstants';
 
 const preventBlur = (e) => {
     e.preventDefault();

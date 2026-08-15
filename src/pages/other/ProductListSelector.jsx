@@ -2,9 +2,9 @@ import React, {useCallback, useEffect} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
 import {useNavigate} from "react-router-dom";
 import {useServer} from "../../hooks/useServer";
-import mainPage from "../../MainPage";
 import useGlobalData from "../../hooks/useGlobalData";
 import {useServerUser} from "../../hooks/useServerUser";
+import {usePlatformUser} from "../../hooks/usePlatformUser";
 
 const ProductListSelector = () => {
     const [selectChoiceColumn, setSelectChoiceColumn] = React.useState(0);
@@ -14,7 +14,8 @@ const ProductListSelector = () => {
     const [buttonText, setButtonText] = React.useState('Добавить в корзину');
     const [scrollLeft, setScrollLeft] = React.useState(0);
     const [cardList, setCardList] = React.useState([]);
-    const {tg, user} = useTelegram();
+    const {tg} = useTelegram();
+    const { user } = usePlatformUser();
     const navigate = useNavigate();
     const {findCardsByCatalog} = useServer()
     const {addCardToBasket} = useServerUser()
@@ -50,7 +51,7 @@ const ProductListSelector = () => {
 
     if (cardList.length > 0) {
 
-        let dataOld = cardList.sort((a, b) => b.serialNumber - a.serialNumber);
+        cardList.sort((a, b) => b.serialNumber - a.serialNumber);
 
         let data = []
         let index = 0
@@ -223,7 +224,7 @@ const ProductListSelector = () => {
 
         if (data[0].body.length > 3) {
             let cordchoiceRow = selectChoiceRow * ((window.innerWidth - 20) / 3) - scrollLeft
-            const windowWidth = window.innerWidth
+
             scrollerchoiceRow = (<div style={{overflowX: 'hidden'}}>
                 <div style={{
                     display: 'grid',

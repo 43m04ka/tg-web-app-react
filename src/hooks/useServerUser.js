@@ -13,7 +13,7 @@ const {getPageList, getPreviewCardList, getStructureCatalogList, getInfoBlocks, 
 const {getCatalogList, getCardList, findCardsByCatalog} = catalogRoute()
 const {getPreviewFavoriteList, deleteCardToFavorite, addCardToFavorite, getFavoriteList} = favoriteRoute()
 const {getBasketList, addCardToBasket, setBasketPositionCount, deleteCardToBasket, usePromo} = basketRoute()
-const {createOrder, getHistoryList, checkPaymentStatus} = orderRoute()
+const {createOrder, getHistoryList, checkPaymentStatus, cancelPayment} = orderRoute()
 const {getSteamQuote, createSteamOrder} = steamRoute()
 
 export function useServerUser() {
@@ -37,6 +37,7 @@ export function useServerUser() {
         createOrder,
         getHistoryList,
         checkPaymentStatus,
+        cancelPayment,
         getSteamQuote,
         createSteamOrder,
         getFavoriteList,

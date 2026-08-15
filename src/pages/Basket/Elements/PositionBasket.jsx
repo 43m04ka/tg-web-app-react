@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import style from './PositionBasket.module.scss';
-import {useServer} from "../useServer";
-import {useTelegram} from "../../../hooks/useTelegram";
 import useGlobalData from "../../../hooks/useGlobalData";
 import {useNavigate} from "react-router-dom";
 import {useServerUser} from "../../../hooks/useServerUser";
+import {usePlatformUser} from "../../../hooks/usePlatformUser";
 
 const PositionBasket = ({product, percent, otherCurrency}) => {
     const {addCardToFavorite, deleteCardToFavorite, deleteCardToBasket, setBasketPositionCount} = useServerUser();
-    const {user} = useTelegram();
+    const { user } = usePlatformUser();
     const {updatePreviewFavoriteData, previewFavoriteData, pageId, catalogList, updateBasket} = useGlobalData();
     const navigate = useNavigate();
 

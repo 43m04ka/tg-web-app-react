@@ -1,6 +1,7 @@
 import React from 'react';
 import style from './SortingFilter.module.scss'
 import {useTelegram} from "../../../hooks/useTelegram";
+import {useAppInsets} from "../../../hooks/useAppInsets";
 
 
 const parameters = [
@@ -32,7 +33,8 @@ const parameters = [
 
 const Sorting = ({onClose, json, setJson, setIcon}) => {
 
-    const { tg, safeAreaInset, contentSafeAreaInset } = useTelegram()
+
+const { isKeyboardOpen } = useAppInsets()
 
     const [selected, setSelected] = React.useState(parameters.map((el, index) => {
         return el.parameter === json.sorting ? index : null

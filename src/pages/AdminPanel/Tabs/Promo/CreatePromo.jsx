@@ -11,7 +11,7 @@ const CreatePromo = ({onClose, setPromoList}) => {
     const [inputPercentCreate, setInputPercentCreate] = useState(null)
     const [inputPersonalNumCreate, setInputPersonalNumCreate] = useState(null)
     const [inputGlobalNumCreate, setInputGlobalNumCreate] = useState(null)
-    const [infoLabel, setInfoLabel] = useState('*Поля обязательные для заполнения')
+    const [infoLabel] = useState('*Поля обязательные для заполнения')
 
     const {authenticationData} = useData();
     const {getPromoList, createPromo} = useServer()

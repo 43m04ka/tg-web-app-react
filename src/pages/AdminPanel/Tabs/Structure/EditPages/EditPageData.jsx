@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import style from './EditPageData.module.scss'
 import useData from "../../../useData";
-import { useServer } from "../useServer";
+import {useServer} from "../useServer";
 import PopUpWindow from "../../../Elements/PopUpWindow/PopUpWindow";
 import InputLabel from "../../../Elements/Input/InputLabel";
 import useGlobalData from "../../../../../hooks/useGlobalData";
@@ -11,36 +11,27 @@ import DropImage from '../../../Elements/DropImage/DropImage';
 
 const EditPageData = ({ onClose, updatePageList, id }) => {
 
-    const platformOptions = [
-        { key: 'vk-xbox', name: 'Сообщество Xbox', },
-        { key: 'vk-ps', name: 'Сообщество Playstation', },
-        { key: 'tg', name: 'Бот телеграмм', },
-        { key: 'web', name: 'Браузерная версия', }
-    ];
-
     const typeOptions = [
         { key: 'ps', name: 'Playstation' },
         { key: 'xbox', name: 'Xbox' },
         { key: 'ps_india', name: 'Playstation Индия' },
+        { key: 'steam', name: 'Steam' },
         { key: 'other', name: 'Без полей' }
     ];
 
     const { pageList } = useGlobalData();
-    let pageData = { platform: 'tg', isHide: 1 }
+    let pageData = { isHide: 1 }
     pageList.map((item) => {
         if (item.id === id) {
             pageData = item;
         }
     })
-    const [infoLabel, setInfoLabel] = useState('*Поля обязательные для заполнения')
+    const [infoLabel] = useState('*Поля обязательные для заполнения')
     const [updatePageJson, setUpdatePageJson] = useState({})
 
 
     const { authenticationData } = useData();
     const { updatePageData, createPage, deletePageData } = useServer()
-    const selectedPlatform = updatePageJson.platform || pageData.platform || 'tg'
-    const selectedPlatformIndex = Math.max(0, platformOptions.findIndex(item => item.key === selectedPlatform))
-
     const selectedType = updatePageJson.type || pageData.type || 'other'
     const selectedTypeIndex = Math.max(0, typeOptions.findIndex(item => item.key === selectedType))
 
@@ -66,11 +57,6 @@ const EditPageData = ({ onClose, updatePageList, id }) => {
                             handleInputChange('barIcon', e)
                             setIcon2(e)
                         }} />
-
-                    <div className={style['dropboxLabel']}>Платформа</div>
-                    <DropBox label={platformOptions} onChange={(value) => {
-                        handleInputChange('botType', platformOptions[value].key);
-                    }} defaultIndex={selectedPlatformIndex} />
 
                     <div className={style['dropboxLabel']}>Тип</div>
                     <DropBox label={typeOptions} onChange={(value) => {
@@ -101,11 +87,7 @@ const EditPageData = ({ onClose, updatePageList, id }) => {
                     )}
                     <div className={style['buttonAccept']} onClick={async () => {
                         if (id === -1) {
-                            const createPageJson = {
-                                ...updatePageJson,
-                                platform: updatePageJson.platform || pageData.platform || 'tg'
-                            }
-                            await createPage(() => { }, authenticationData, createPageJson)
+                            await createPage(() => { }, authenticationData, updatePageJson)
                         } else {
                             await updatePageData(authenticationData, id, updatePageJson)
                         }

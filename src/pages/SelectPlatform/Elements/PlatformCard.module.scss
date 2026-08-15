@@ -34,7 +34,7 @@
   transition: all 0.15s ease;
   border-color: rgba(255, 255, 255, 0.82);
   box-shadow:
-    0 0 5px 2px rgba(255, 255, 255, 0.8),
+    0 0 5px 2px rgba(255, 255, 255, 0.8);
 }
 
 .cardBg {
@@ -217,42 +217,89 @@
 
 @media (min-width: 768px) {
   .card {
-    border-radius: 22px;
+    border-radius: 16px;
+    margin: 0 auto 16px auto; /* Центрируем карточки */
+    width: 100%;
+    max-width: 1000px; /* Ширина вровень с заголовками */
   }
 
   .cardBody {
-    min-height: 128px;
+    min-height: 150px; /* Делаем плашки выше, убираем "сплющенность" */
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .cardImageWrap {
-    width: 148px;
-    padding-left: 10px;
+    width: 150px; /* Фиксированная зона под флаг слева */
+    padding-left: 0;
+    display: flex;
+    justify-content: center; /* Центрируем флаг внутри этой зоны */
+    align-items: center;
   }
 
   .cardImage {
-    width: 120px;
-    height: 120px;
-    margin-bottom: -6px;
+    width: 100px; /* Адекватный размер флага */
+    height: 100px;
+    margin: 0;
+    border-radius: 4px;
   }
 
   .cardContent {
-    gap: 8px;
-    padding: 24px 28px 24px 4px;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 6px;
+    padding: 0 32px 0 0; /* Отступ текста от правого края */
   }
 
   .cardTitle {
-    font-size: 26px;
+    font-size: 25px;
+    margin: 0;
   }
 
   .cardSubtitle {
-    font-size: 15px;
+    font-size: 14px;
+    margin: 0;
   }
 
   .cardBadge {
-    top: 14px;
+    top: 50%;
+    transform: translateY(-50%);
     right: 16px;
     padding: 6px 12px;
     font-size: 12px;
+  }
+
+  .linkImageWrap {
+    width: 150px;
+    height: auto;
+    padding-left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .linkImage {
+    width: 120px;
+    height: 120px;
+    margin: 0;
+    transform: none;
+  }
+
+  .linkContent {
+    position: static;
+    height: 95px;
+    margin-left: 0;
+    flex: 1;
+    padding: 0 32px 0 0;
+    justify-items: right;
+  }
+
+  .cardTitleLink {
+    font-size: 25px;
+    margin-right: 0 !important;
   }
 }
 

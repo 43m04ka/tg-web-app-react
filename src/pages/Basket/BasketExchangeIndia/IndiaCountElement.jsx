@@ -1,13 +1,13 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 import {useServer} from "../useServer";
-import {useTelegram} from "../../../hooks/useTelegram";
 import useGlobalData from "../../../hooks/useGlobalData";
+import {usePlatformUser} from "../../../hooks/usePlatformUser";
 
 const IndiaCountElement = ({product, onReload}) => {
     const item = product;
 
-    const {user} = useTelegram();
+    const { user } = usePlatformUser();
     const {deleteCardToBasket} = useServer()
     const {updatePreviewBasketData} = useGlobalData()
 

@@ -1,4 +1,6 @@
 // WebView
+// noinspection JSUnusedLocalSymbols
+
 (function () {
     var eventHandlers = {};
   
@@ -156,7 +158,7 @@
       else {
         callback({notAvailable: true});
       }
-    };
+    }
   
     function receiveEvent(eventType, eventData) {
       console.log('[Telegram.WebView] < receiveEvent', eventType, eventData);
@@ -186,7 +188,7 @@
       if (index === -1) {
         eventHandlers[eventType].push(callback);
       }
-    };
+    }
   
     function offEvent(eventType, callback) {
       if (eventHandlers[eventType] === undefined) {
@@ -197,7 +199,7 @@
         return;
       }
       eventHandlers[eventType].splice(index, 1);
-    };
+    }
   
     function openProtoUrl(url) {
       if (!url.match(/^(web\+)?tgb?:\/\/./)) {
@@ -433,11 +435,11 @@
   
     function onWebViewEvent(eventType, callback) {
       WebView.onEvent('webview:' + eventType, callback);
-    };
+    }
   
     function offWebViewEvent(eventType, callback) {
       WebView.offEvent('webview:' + eventType, callback);
-    };
+    }
   
     function setCssProperty(name, value) {
       var root = document.documentElement;
@@ -2659,7 +2661,7 @@
         callback: callback
       };
       WebView.postEvent('web_app_invoke_custom_method', false, req_params);
-    };
+    }
   
     if (!window.Telegram) {
       window.Telegram = {};

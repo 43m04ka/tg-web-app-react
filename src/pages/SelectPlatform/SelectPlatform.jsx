@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import style from './SelectPlatform.module.scss';
 import useGlobalData from '../../hooks/useGlobalData';
 import {useNavigate} from 'react-router-dom';
@@ -7,18 +7,32 @@ import {useIsDesktopMedia} from '../../hooks/useIsDesktopMedia';
 import PlatformCard from './Elements/PlatformCard';
 import SelectPlatformHeader from './Elements/SelectPlatformText';
 import SelectPlatformLink from './Elements/SelectPlatformLink';
+import {usePlatform} from "../../hooks/utils/usePlatform";
+import {useAppInsets} from "../../hooks/useAppInsets";
 
 const SelectPlatform = () => {
-    const {pageList, pageId, setPageId, updateBasket, catalogList, setBarIsVisible, startPageList} = useGlobalData();
+    const {pageList, pageId, setPageId, updateBasket, catalogList, setBarIsVisible, startPageList, updateStartPageList} = useGlobalData();
     const navigate = useNavigate();
-    const {tg, safeAreaInset, contentSafeAreaInset, botType} = useTelegram();
-    const isDesktop = useIsDesktopMedia();
+    const { tg } = useTelegram();
+const { safeAreaInset, contentSafeAreaInset, isKeyboardOpen } = useAppInsets();
+
+    const { botType } = usePlatform();
+    useIsDesktopMedia();
     const selectingRef = useRef(false);
 
 
     useEffect(() => {
         tg.BackButton.hide();
     }, [tg]);
+
+    // Данных может не быть, если сервер не вложил их в index.html, а фоновый
+    // запрос оборвался — без этого экран остаётся с одним заголовком
+    const retriedRef = useRef(false);
+    useEffect(() => {
+        if (startPageList.length > 0 || retriedRef.current) return;
+        retriedRef.current = true;
+        updateStartPageList();
+    }, [startPageList, updateStartPageList]);
 
     const handleSelect = useCallback((item) => {
         if (selectingRef.current) {
@@ -56,7 +70,7 @@ const SelectPlatform = () => {
                 <a> PlayStation</a> и 
                 <a> Xbox</a>
             </h>
-            {(startPageList.sort((a, b) => a.serialNumber - b.serialNumber)).map((item, index) => {
+            {([...startPageList].sort((a, b) => a.serialNumber - b.serialNumber)).map((item, index) => {
                 if(item.platform === botType){
                     if(item.type === 'page'){
                         return(<PlatformCard

@@ -1,12 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTelegram } from '../../../hooks/useTelegram';
+import React, {useEffect, useRef, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useTelegram} from '../../../hooks/useTelegram';
 import useGlobalData from '../../../hooks/useGlobalData';
-import { useServerUser } from '../../../hooks/useServerUser';
+import {useServerUser} from '../../../hooks/useServerUser';
 import CatalogItem from '../CatalogItem';
 import Sorting from '../../../shared/ui/Filter/Sorting';
 import Filter from '../../../shared/ui/Filter/Filter';
 import style from './DesktopCatalog.module.scss';
+import {usePlatform} from "../../../hooks/utils/usePlatform";
 
 let dt_lastScroll = 0;
 let dt_listNumber = 1;
@@ -18,14 +19,15 @@ let dt_lastJson = { sorting: 'default', platform: [], language: [], numberPlayer
 
 const DesktopCatalog = () => {
     const navigate = useNavigate();
-    const { tg, isTg } = useTelegram(); // isTg used for share URL
+    const { tg} = useTelegram();
+    const {  isTg } = usePlatform();
     const { catalogList, catalogStructureList, setBufferCardsCatalog } = useGlobalData();
     const { getCardList } = useServerUser();
 
     const [sortWindowOpen, setSortWindowOpen] = useState(false);
     const [filterWindowOpen, setFilterWindowOpen] = useState(false);
     const [json, setJson] = useState(dt_lastJson);
-    const [icon, setIcon] = useState(null);
+    const [, setIcon] = useState(null);
     const [cardList, setCardList] = useState(dt_lastCardList);
     const [copied, setCopied] = useState(false);
     const scrollRef = useRef();

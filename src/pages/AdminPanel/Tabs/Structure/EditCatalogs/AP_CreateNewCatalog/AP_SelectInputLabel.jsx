@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import AP_SelectInputLabel from './AP_SelectInputLabel';
 import InputLabel from "../../../../Elements/Input/InputLabel";
 import DropBox from "../../../../Elements/DropBox/DropBox";
@@ -6,6 +6,39 @@ import DropBox from "../../../../Elements/DropBox/DropBox";
 const ApSelectInputLabel = ({data, resultJson, setResultJson}) => {
 
     const [selectButton, setSelectButton] = React.useState(0)
+
+    // Автоматически выбираем правильный вариант на основе текущих данных
+    useEffect(() => {
+        if (typeof data[0].name !== 'undefined' && resultJson) {
+            // Ищем вариант, который соответствует текущему типу в resultJson
+            for (let i = 0; i < data.length; i++) {
+                const option = data[i];
+                if (option.select && Array.isArray(option.select)) {
+                    // Проверяем, совпадают ли значения с текущими данными
+                    let match = true;
+                    for (let field of option.select) {
+                        if (field.value !== undefined && resultJson[field.argument] !== field.value) {
+                            match = false;
+                            break;
+                        }
+                        // Для полей с defaultValue проверяем совпадение
+                        if (field.defaultValue !== undefined && resultJson[field.argument] !== field.defaultValue) {
+                            // Особая проверка для path с тегами
+                            if (field.tag && resultJson[field.argument] && resultJson[field.argument].includes(field.tag)) {
+                                continue;
+                            }
+                            match = false;
+                            break;
+                        }
+                    }
+                    if (match) {
+                        setSelectButton(i);
+                        break;
+                    }
+                }
+            }
+        }
+    }, [data, resultJson]);
 
     let inputLabelElement = (<div/>)
 
@@ -23,7 +56,7 @@ const ApSelectInputLabel = ({data, resultJson, setResultJson}) => {
 
     }else{
         buttonElement = (<div>
-            {data.map((item, index) => {
+            {data.map((item) => {
             if (Array.isArray(item)) {
                 return <AP_SelectInputLabel data={item} resultJson={resultJson} setResultJson={setResultJson}/>
             } else if (typeof item === 'object' && !Array.isArray(item) && item !== null && typeof item.value === 'undefined') {

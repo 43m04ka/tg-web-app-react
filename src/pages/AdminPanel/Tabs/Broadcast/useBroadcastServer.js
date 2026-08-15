@@ -1,10 +1,4 @@
-import {
-    ADMIN_API_URL,
-    adminAuthHeadersJson,
-    adminBearerHeaders,
-    hasAdminBearer,
-    withJsonAuth,
-} from '../../adminAuth';
+import {ADMIN_API_URL, adminAuthHeadersJson, adminBearerHeaders, hasAdminBearer, withJsonAuth,} from '../../adminAuth';
 
 /**
  * POST /api/admin/broadcast/tg/stats
@@ -56,6 +50,10 @@ export const postBroadcastSend = async (authenticationData, payload) => {
     }
     if (payload.inlineKeyboardJson != null && payload.inlineKeyboardJson !== '') {
         form.append('inlineKeyboard', payload.inlineKeyboardJson);
+    }
+    // Необязательное: пустое значение = старт сразу
+    if (payload.scheduledAt) {
+        form.append('scheduledAt', payload.scheduledAt);
     }
 
     const res = await fetch(`${ADMIN_API_URL}/broadcast/tg/send`, {

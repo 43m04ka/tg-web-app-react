@@ -1,36 +1,32 @@
 .maintenanceContainer {
     width: 100%;
-    padding: 10px 16px; 
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     user-select: none;
-    background-color: #1e1e44;
-    border: 1px solid #2f2f6e;
-    border-radius: 10px;
-  
+
     .toggleRow {
       display: flex;
       align-items: center;
-      justify-content: space-between; 
+      justify-content: space-between;
       width: 100%;
-  
+
       .labelBlock {
         display: flex;
         flex-direction: column;
-  
+
         .title {
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          color: #e4e4e7; 
+          font-family: var(--font-ui);
+          color: var(--text);
           font-size: 14px;
-          font-weight: 500;
+          font-weight: 700;
           letter-spacing: -0.01em;
         }
   
         .errorMsg {
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          font-family: var(--font-ui);
           font-size: 11px;
-          color: #ef4444;
+          color: var(--danger);
           font-weight: 400;
           margin-top: 2px;
         }
@@ -48,15 +44,16 @@
         border-radius: 9999px;
         border: none;
         padding: 0 3px; 
-        transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        background-color: #3f3f46; 
-  
+        transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
+        background-color: var(--border);
+
         &:focus {
           outline: none;
         }
-  
+
         &.active {
-          background-color: #dc2626; 
+          background-color: var(--danger);
+          box-shadow: 0 0 0 3px rgba(var(--danger-rgb), 0.18);
         }
   
         &.disabled {
@@ -89,19 +86,19 @@
       margin-top: 4px;
 
       .untilLabel {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: var(--font-ui);
         font-size: 12px;
-        color: #a1a1aa;
+        color: var(--text-muted);
         white-space: nowrap;
       }
 
       .untilInput {
         flex: 1;
         min-width: 0;
-        background: #13151d;
-        border: 1px solid #2f2f6e;
-        border-radius: 6px;
-        color: #e4e4e7;
+        background: var(--surface-alt);
+        border: 1px solid var(--border);
+        border-radius: var(--r-sm);
+        color: var(--text);
         font-size: 12px;
         padding: 4px 6px;
       }
@@ -119,22 +116,22 @@
         height: 6px;
         width: 6px;
         border-radius: 50%;
-        background-color: #10b981;
+        background-color: var(--success);
   
         &.active {
-          background-color: #ef4444;
+          background-color: var(--danger);
           animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
       }
   
       .statusText {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: #10b981; 
+        font-family: var(--font-ui);
+        color: var(--success); 
         line-height: 1;
         transform: translateY(-1px);
   
         &.active {
-          color: #f87171;
+          color: var(--danger);
         }
       }
     }

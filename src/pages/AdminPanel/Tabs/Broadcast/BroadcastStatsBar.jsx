@@ -1,6 +1,15 @@
 import React from 'react';
 import style from './Broadcast.module.scss';
 
+const stateText = (state) => {
+    if (state?.status === 'running') return 'Рассылка идёт сейчас';
+    if (state?.status === 'scheduled') {
+        const at = state.runAt ? new Date(state.runAt).toLocaleString('ru-RU') : '';
+        return `Рассылка запланирована${at ? ` на ${at}` : ''} — отменить можно в списке задач`;
+    }
+    return null;
+};
+
 const BroadcastStatsBar = ({stats, error, onReload, loading}) => (
     <div className={style['statsBar']}>
         <div className={style['statsBarHeader']}>
@@ -10,6 +19,9 @@ const BroadcastStatsBar = ({stats, error, onReload, loading}) => (
             </button>
         </div>
         {error ? <p className={style['statsError']}>{error}</p> : null}
+        {stateText(stats?.state) ? (
+            <p className={style['statsState']}>{stateText(stats.state)}</p>
+        ) : null}
         {stats && !error ? (
             <div className={style['statsGrid']}>
                 <div className={style['statsItem']}>

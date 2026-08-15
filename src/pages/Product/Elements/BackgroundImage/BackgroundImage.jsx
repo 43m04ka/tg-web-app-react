@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import style from './BackgroundImage.module.scss'
-import StarRating from "../InfoBubbles/StarRaiting/StarRating";
 
-const BackgroundImage = ({productData, selectCardList}) => {
+const BackgroundImage = ({productData}) => {
 
     const [imageLoaded, setImageLoaded] = useState(false);
     const [isLoadedLogo, setIsLoadedLogo] = useState(false);

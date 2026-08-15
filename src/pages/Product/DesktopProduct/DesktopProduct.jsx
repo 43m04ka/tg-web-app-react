@@ -11,7 +11,7 @@ import DesktopDescriptionImages from "./DesktopDescriptionImages";
 import DesktopDescription from "./DesktopDescription";
 import DesktopSimilarProducts from "./DesktopSimilarProducts";
 import DesktopShareLabels from "./DesktopShareLabels";
-import {getSalePromotion} from "./productDesktopUtils";
+import {getSubscriptionSale} from "./productDesktopUtils";
 import style from "./DesktopProduct.module.scss";
 
 const DesktopProduct = ({
@@ -28,7 +28,7 @@ const DesktopProduct = ({
     parameters,
 }) => {
     const navigate = useNavigate();
-    const salePromotion = getSalePromotion(productData);
+    const salePromotion = getSubscriptionSale(productData);
     const isXbox = productData.name.toLowerCase().includes('gpu');
 
     return (
@@ -82,9 +82,13 @@ const DesktopProduct = ({
                         />
 
                         {salePromotion && (
-                            <button className={style.salePromotion} onClick={() => navigate(salePromotion.route)}>
-                                {salePromotion.label}
-                            </button>
+                            salePromotion.route ? (
+                                <button className={style.salePromotion} onClick={() => navigate(salePromotion.route)}>
+                                    {salePromotion.label}
+                                </button>
+                            ) : (
+                                <p className={style.salePromotion}>{salePromotion.label}</p>
+                            )
                         )}
                     </div>
                 </div>

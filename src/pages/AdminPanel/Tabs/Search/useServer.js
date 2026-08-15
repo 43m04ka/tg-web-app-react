@@ -1,7 +1,7 @@
-import {adminAuthHeadersJson, withJsonAuth} from '../../adminAuth';
+import {API_BASE_URL, ADMIN_API_URL, adminAuthHeadersJson, withJsonAuth} from '../../adminAuth';
 
-const URL = '/api/admin';
-const URL_SEARCH = '/api/search';
+const URL = ADMIN_API_URL;
+const URL_SEARCH = `${API_BASE_URL}/api/search`;
 
 export function useServer() {
 

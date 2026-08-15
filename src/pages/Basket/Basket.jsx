@@ -34,7 +34,7 @@ const Basket = () => {
         return () => window.removeEventListener("resize", handler);
     }, []);
 
-    const { createOrder, checkPaymentStatus, getHistoryList } = useServerUser()
+    const { createOrder, checkPaymentStatus, getHistoryList, cancelPayment } = useServerUser()
     const {tg, vkGroupId } = useTelegram()
     const { safeAreaInset, contentSafeAreaInset, isKeyboardOpen } = useAppInsets();
     const { user} = usePlatformUser();
@@ -45,6 +45,9 @@ const Basket = () => {
     const [promoData, setPromoData] = useState({ percent: 0, name: '' })
     const [promoIsVisible, setPromoIsVisible] = useState(false)
     const [orderData, setOrderData] = useState(null)
+    // Состав заказа на момент оформления: после оплаты корзина уже не та,
+    // а экран успеха показывает именно то, что купили
+    const [orderSnapshot, setOrderSnapshot] = useState(null)
     const [orderError, setOrderError] = useState('')
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
@@ -114,6 +117,9 @@ const Basket = () => {
         tg.onEvent('backButtonClicked', onBack);
         return () => {
             tg.offEvent('backButtonClicked', onBack);
+            // Корзина живёт внутри MainPage, и при переходе по нижнему бару MainPage не
+            // перемонтируется — без этого кнопка «назад» оставалась висеть на главной
+            tg.BackButton.hide();
         };
     }, [navigate, tg]);
 
@@ -147,6 +153,12 @@ const Basket = () => {
             } else if (statusData.status === 'payment_failed') {
                 clearInterval(pollIntervalRef.current);
                 setPaymentScreen('fail');
+            } else if (statusData.status === 'canceled') {
+                clearInterval(pollIntervalRef.current);
+                setPaymentScreen(null);
+                setOrderData(null);
+                setPaymentStatus(null);
+                setOrderSnapshot(null);
             }
         }, 5000);
     };
@@ -194,17 +206,53 @@ const Basket = () => {
         setPaymentScreen(null);
         setOrderData(null);
         setPaymentStatus(null);
+        setOrderSnapshot(null);
     };
 
     const handleRetryPayment = () => {
         setPaymentScreen(null);
         setOrderData(null);
         setPaymentStatus(null);
+        setOrderSnapshot(null);
+    };
+
+    // Возвращает текст для показа пользователю, если отменить не удалось; иначе ничего
+    const handleCancelPayment = async () => {
+        const orderId = orderData?.orderId;
+        if (!orderId) return;
+
+        const res = await cancelPayment(orderId);
+
+        if (res.ok) {
+            if (pollIntervalRef.current) {
+                clearInterval(pollIntervalRef.current);
+            }
+            handleClosePayment();
+            return;
+        }
+
+        // Гонка с подтверждением кассы: заказ уже оплачен, пока жали «Отменить»
+        if (res.httpStatus === 409 && (res.status === 'paid' || res.status === 'completed')) {
+            if (pollIntervalRef.current) {
+                clearInterval(pollIntervalRef.current);
+            }
+            setPaymentStatus({status: res.status});
+            setPaymentScreen('success');
+            return;
+        }
+
+        return res.error || 'Не удалось отменить оплату';
     };
 
     // Рендеринг экранов оплаты
     if (paymentScreen === 'waiting') {
-        return <PaymentWaiting paymentUrl={orderData?.paymentUrl} />;
+        return (
+            <PaymentWaiting
+                paymentUrl={orderData?.paymentUrl}
+                status={paymentStatus?.status}
+                onCancel={orderData?.orderId ? handleCancelPayment : undefined}
+            />
+        );
     }
 
     if (paymentScreen === 'accepted') {
@@ -212,6 +260,11 @@ const Basket = () => {
     }
 
     if (paymentScreen === 'success') {
+        // В боте возвращаем прежний экран с анимацией лого и составом заказа;
+        // без снимка состава (например, заказ подхвачен из истории) — короткая сводка
+        if (isTg && orderSnapshot) {
+            return <OrderPage orderData={orderSnapshot} variant="paid" onClose={handleClosePayment} />;
+        }
         return <PaymentSuccessDetails orderData={orderData} onClose={handleClosePayment} />;
     }
 
@@ -249,7 +302,9 @@ const Basket = () => {
                 className={style['mainContainer']}
                 style={{
                     paddingTop: String(contentSafeAreaInset.top + safeAreaInset.top) + 'px',
-                    paddingBottom: String(window.innerWidth * 0.15 + contentSafeAreaInset.bottom + safeAreaInset.bottom) + 'px'
+                    // запас под нижний бар: при открытой клавиатуре бар скрыт, запас не нужен —
+                    // иначе под формой заказа висит мёртвая полоса в 15vw
+                    paddingBottom: String((isKeyboardOpen ? 0 : window.innerWidth * 0.15) + contentSafeAreaInset.bottom + safeAreaInset.bottom) + 'px'
                 }}>
                 {pageType === 'ps_india' ? (
                     <IndiaBasketBlock
@@ -306,7 +361,7 @@ const Basket = () => {
                         </p>
                     </div>
 
-                    <Payment setPaymentMethodString={setPaymentString} setPaymentMethod={setPaymentMethod} sumPrice={totalFinalPrice} setSelectedPayment={setSelectedPayment} />
+                    <Payment setPaymentMethodString={setPaymentString} setPaymentMethod={setPaymentMethod} sumPrice={totalFinalPrice} setSelectedPayment={setSelectedPayment} selectedPayment={selectedPayment} />
 
                     <div className={style['separator']} />
 
@@ -335,7 +390,7 @@ const Basket = () => {
                                 .map(el => el.similarCard !== null ? el.similarCard.price * el.count : el.price * el.count)
                                 .reduce((acc, val) => acc + val, 0);
                             setTimeout(() => {
-                                setOrderData({
+                                setOrderSnapshot({
                                     number: Math.floor(Math.random() * 9000) + 1000,
                                     list: basket,
                                     summa: sumPrice * (1 - promoData.percent / 100),
@@ -362,12 +417,18 @@ const Basket = () => {
                             onLoaded()
 
                             if (!res.ok) {
-                                setOrderError(res.error || 'Не удалось оформить заказ');
+                                setOrderError('Непредвиденная ошибка');
                                 return;
                             }
 
                             navigate('/main/basket')
                             setOrderData(res)
+                            setOrderSnapshot({
+                                number: res.orderId,
+                                list: basket,
+                                summa: totalFinalPrice,
+                                message: null,
+                            })
 
                             if (res.paymentUrl) {
                                 watchOrder(res.orderId, { openPaymentUrl: res.paymentUrl });
@@ -389,7 +450,7 @@ const Basket = () => {
                     </div>
                 </div>
                 <Recommendations from={'basket'} />
-                {orderData !== null ? <OrderPage orderData={orderData} /> : ''}
+                {orderSnapshot !== null ? <OrderPage orderData={orderSnapshot} /> : ''}
             </div>);
         }
     }

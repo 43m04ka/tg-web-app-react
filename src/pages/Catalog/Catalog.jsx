@@ -11,9 +11,11 @@ import Filter from "../../shared/ui/Filter/Filter";
 import {useIsDesktopMedia} from "../../hooks/useIsDesktopMedia";
 import DesktopCatalog from "./DesktopCatalog/DesktopCatalog";
 import ShareCatalogButton from "./ShareCatalogButton/ShareCatalogButton";
+import {usePlatform} from "../../hooks/utils/usePlatform";
+import {useAppInsets} from "../../hooks/useAppInsets";
 
 let lastScroll = 0
-let scrollCtrl = 0
+
 let listNumber = 1
 let lastCardList = null
 let lastPath = ''
@@ -25,7 +27,9 @@ const Catalog = () => {
     const isDesktop = useIsDesktopMedia();
 
     const navigate = useNavigate();
-    const { tg, isTg, safeAreaInset, contentSafeAreaInset } = useTelegram()
+    const { tg } = useTelegram()
+    const { safeAreaInset, contentSafeAreaInset, isKeyboardOpen } = useAppInsets();
+    const {isTg } = usePlatform();
     const {catalogList, catalogStructureList, setBufferCardsCatalog} = useGlobalData()
     const {getCardList} = useServerUser()
     const [height, setHeight] = useState(0);
@@ -110,11 +114,7 @@ const Catalog = () => {
             return (<div className={style['mainDivision']} style={{paddingTop: String(contentSafeAreaInset.top + safeAreaInset.top) + 'px',}}>
                 <div className={style['titleRow']}>
                     <div className={style['title']}>
-                        {catalogStructureList.map(catalog => {
-                            if (catalog.path === lastPath && typeof catalog.name !== 'undefined') {
-                                return catalog.name
-                            }
-                        })}
+                        {catalogStructureList.find(catalog => catalog.path === lastPath && typeof catalog.name !== 'undefined').name}
                     </div>
                     <ShareCatalogButton catalogPath={catalog?.path || lastPath} isTg={isTg}/>
                 </div>

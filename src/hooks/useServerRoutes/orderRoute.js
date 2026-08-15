@@ -65,5 +65,26 @@ export function orderRoute(){
         }
     }
 
-    return {createOrder, getHistoryList, checkPaymentStatus}
+    // POST /api/payment/cancel — пользователь передумал платить.
+    // 409 не ошибка интеграции, а гонка с подтверждением кассы: в ответе приходит
+    // фактический статус заказа, его и показываем.
+    const cancelPayment = async (orderId) => {
+        const actualUserId = useGlobalData.getState().internalUserId;
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/payment/cancel`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({orderId, userId: actualUserId}),
+            });
+            const data = await response.json();
+            return {...data, ok: response.ok, httpStatus: response.status};
+        } catch (error) {
+            console.error('Error canceling payment:', error);
+            return {ok: false, error: error.message};
+        }
+    }
+
+    return {createOrder, getHistoryList, checkPaymentStatus, cancelPayment}
 }

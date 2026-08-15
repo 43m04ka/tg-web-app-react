@@ -1,10 +1,29 @@
-import useGlobalData from "../../hooks/useGlobalData";
 import CatalogListBody from "../MainScreen/CatalogListBody";
 import CatalogListHead from "../MainScreen/CatalogListHead";
+import SteamAccount from "../MainPage/SteamCatalogs/SteamCatalogs";
+import useGlobalData from "../../hooks/useGlobalData";
+import AnimatedGradientBackground from "../../components/AnimatedGradientBackground";
 
 const Catalogs = () => {
+    const {pageId, pageList} = useGlobalData();
+
+    const getCurrentPageType = () => {
+        if (!pageList || pageId === -1) return null;
+        const currentPage = pageList.find(p => p.id === pageId);
+        return currentPage?.type || null;
+    }
+
+    const pageType = getCurrentPageType();
+
+    if (pageType === 'steam') {
+        return (<>
+            <AnimatedGradientBackground />
+            <SteamAccount />
+        </>);
+    }
 
     return (<>
+        <AnimatedGradientBackground />
         <CatalogListHead/>
         <CatalogListBody/>
     </>)

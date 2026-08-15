@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTelegram } from '../../../hooks/useTelegram';
-import { useServerUser } from '../../../hooks/useServerUser';
+import React, {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useServerUser} from '../../../hooks/useServerUser';
 import useGlobalData from '../../../hooks/useGlobalData';
 import Recommendations from '../../../shared/ui/Recommendations/Recommendations';
 import DesktopFavoriteItem from './DesktopFavoriteItem';
 import style from './DesktopFavorites.module.scss';
+import {usePlatformUser} from "../../../hooks/usePlatformUser";
 
 function countWord(n) {
     if (n % 10 === 1 && n % 100 !== 11) return '';
@@ -14,7 +14,7 @@ function countWord(n) {
 }
 
 const DesktopFavorites = () => {
-    const { user } = useTelegram();
+    const { user } = usePlatformUser();
     const navigate = useNavigate();
     const { getFavoriteList, deleteCardToFavorite } = useServerUser();
     const { updatePreviewFavoriteData, bufferCardsRecommendations } = useGlobalData();

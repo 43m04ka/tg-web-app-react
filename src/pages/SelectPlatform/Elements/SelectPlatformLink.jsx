@@ -1,6 +1,6 @@
 import React from 'react';
 import style from './PlatformCard.module.scss';
-import { getPlatformCardStyle } from './platformCardColors';
+import {getPlatformCardStyle} from './platformCardColors';
 
 const SelectPlatformLink = ({
     item,

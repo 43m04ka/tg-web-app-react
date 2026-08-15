@@ -1,6 +1,7 @@
 import React from 'react';
 import style from './PaymentFailDetails.module.scss';
 import AnimatedGradientBackground from './AnimatedGradientBackground';
+import { openSupport } from './supportLink';
 
 const PaymentFailDetails = ({ orderData, extraRows = [], onClose, onRetry }) => {
     return (
@@ -52,9 +53,9 @@ const PaymentFailDetails = ({ orderData, extraRows = [], onClose, onRetry }) => 
                 </button>
                 <button
                     className={style['buttonSecondary']}
-                    onClick={() => window.open('https://t.me/gwstore_admin')}
+                    onClick={openSupport}
                 >
-                    Связаться с поддержкой
+                    Связаться с менеджером
                 </button>
             </div>
         </div>

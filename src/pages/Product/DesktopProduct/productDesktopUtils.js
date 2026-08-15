@@ -95,14 +95,26 @@ export const getPriceData = (productData) => {
 export const shouldRenderLogo = (productData) =>
     Boolean(productData.logoUrl) && productData.backgroundUrl !== productData.logoUrl;
 
-export const getSalePromotion = (productData) => {
-    const value = productData.additionalParameter;
-    if (!value) return null;
-    if (value.includes('Save') && value.includes('ps-plus')) return {route: '/choice-catalog/ps_psplus', label: 'Дополнительная скидка с PS Plus'};
-    if (value.includes('Extra')) return {route: '/choice-catalog/ps_psplus', label: 'Бесплатно с PS Plus Extra'};
-    if (value.includes('Deluxe')) return {route: '/choice-catalog/ps_psplus', label: 'Бесплатно с PS Plus Deluxe'};
-    if (value.includes('Included')) return {route: '/choice-catalog/ps_eaplay', label: 'Бесплатно с EA Play'};
-    return null;
+const SUBSCRIPTION_BRANDING_META = {
+    PS_PLUS: {route: '/choice-catalog/ps_psplus', saleType: 'logoPS'},
+    EAPlay: {route: '/choice-catalog/ps_eaplay', saleType: 'logoEA'},
+    EAAccess: {route: '/choice-catalog/ps_eaplay', saleType: 'logoEA'},
+};
+
+export const getSubscriptionSale = (productData) => {
+    const offers = productData.subscriptionOffers;
+    if (!offers || !offers.length) return null;
+
+    const now = Date.now();
+    const offer = offers.find((o) => !o.endTime || o.endTime > now);
+    if (!offer) return null;
+
+    const meta = SUBSCRIPTION_BRANDING_META[offer.branding] || {route: null, saleType: null};
+    const label = offer.priceRub === null
+        ? (offer.tier || offer.branding)
+        : `${offer.tier ?? offer.branding} — ${offer.priceRub} ₽${offer.discountText ? ` (${offer.discountText})` : ''}`;
+
+    return {route: meta.route, label, saleType: meta.saleType};
 };
 
 export const getBubbleItems = (productData) => {
@@ -125,9 +137,7 @@ export const getBubbleItems = (productData) => {
     }
 
     if (productData.language) {
-        if (productData.voice && (productData.language === 'На русском языке' || (productData.language.includes('Русский') && productData.voice.includes('Русский')))) {
-            bubbles.push({label: 'Русский текст и озвучка', icon: russian, invert: false});
-        } else if (productData.language === 'Русские субтитры (текст)' || productData.language.includes('Русский')) {
+        if (productData.language === 'Русские субтитры (текст)' || productData.language.includes('Русский')) {
             bubbles.push({label: 'Русский текст', icon: russian, invert: false});
         } else {
             bubbles.push({label: 'На английском', icon: englishFlagIcon, invert: false});

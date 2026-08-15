@@ -1,0 +1,136 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+
+// Специфика карточки товара: очистка полей, превью картинок, строки списков.
+// Базовые контролы и раскладка — в Elements/FormLayout.
+
+.inputWrap {
+  position: relative;
+  display: block;
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+}
+
+// Крестик очистки: поле получает отступ справа под него.
+.clearable {
+  padding-right: 28px;
+}
+
+.clearBtn {
+  position: absolute;
+  top: 8px;
+  right: var(--sp-2);
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  opacity: 0.75;
+  transition: background-color var(--t-fast), color var(--t-fast), opacity var(--t-fast);
+
+  &:hover {
+    background: var(--surface-hover);
+    color: var(--danger);
+    opacity: 1;
+  }
+}
+
+.preview {
+  max-height: 140px;
+  width: auto;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  object-fit: contain;
+  background: var(--surface-alt);
+}
+
+.previewSmall {
+  flex-shrink: 0;
+  height: 32px;
+  width: 32px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  object-fit: cover;
+  background: var(--surface-alt);
+}
+
+.readonly {
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  color: var(--text);
+}
+
+.listEmpty {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.listRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+// Подписочное предложение — плотная карточка: сервис сверху, поля сеткой под ним.
+.offer {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface-alt);
+}
+
+.offerHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.offerService {
+  max-width: 220px;
+}
+
+.offerGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--sp-2);
+}
+
+.offerField {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.offerLabel {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.listRemove {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+}

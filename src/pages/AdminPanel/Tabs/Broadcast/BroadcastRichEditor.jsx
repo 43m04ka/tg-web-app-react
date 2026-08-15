@@ -40,7 +40,7 @@ const BroadcastRichEditor = forwardRef(function BroadcastRichEditor(
                     tgEmoji.style.verticalAlign = 'middle';
                     
                     link.parentNode.replaceChild(tgEmoji, link);
-                    return;
+
                 }
             } catch (e) {
             }

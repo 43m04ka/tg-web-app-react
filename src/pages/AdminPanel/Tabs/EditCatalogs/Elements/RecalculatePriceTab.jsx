@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import s from './RecalculatePriceTab.module.scss';
+import f, {Group, Sheet} from '../../../Elements/FormLayout/FormLayout';
 import useGlobalData from '../../../../../hooks/useGlobalData';
+import {API_BASE_URL} from '../../../../../hooks/useServerRoutes/baseUrl';
 
-export default function RecalculateModalContent({ catalogId, catalogsList}) {
+export default function RecalculateModalContent({ catalogId, catalogsList, runRef, onLoadingChange}) {
     const [rules, setRules] = useState([]);
     const [loading, setLoading] = useState(false);
     const [fetchingRules, setFetchingRules] = useState(true);
@@ -10,13 +12,15 @@ export default function RecalculateModalContent({ catalogId, catalogsList}) {
 
     // Ищем каталог в уже имеющемся массиве прямо на клиенте
     const currentCatalog = (catalogsList || []).find(c => c.id === catalogId);
-    const catalogPath = currentCatalog ? currentCatalog.path : '';
+
     
-    const platform = pageList.find(page => page.id === currentCatalog.structurePageId).type;
+    // Каталог или страница могли исчезнуть, пока вкладка была открыта, — не роняем экран.
+    const platform = pageList?.find(page => page.id === currentCatalog?.structurePageId)?.type || null;
 
     useEffect(() => {
+        if (!platform) return;
         setFetchingRules(true);
-        fetch(`https://gwstorebot.ru/api/parsing/price-rules/${platform}`)
+        fetch(`${API_BASE_URL}/api/parsing/price-rules/${platform}`)
             .then(res => res.ok ? res.json() : [])
             .then(data => {
                 setRules(data.length ? data : [{ min: 0, max: 100, type: 'MULTIPLIER', value: 1, ...(platform === 'xbox' && { commission: 0 }) }]);
@@ -37,10 +41,12 @@ export default function RecalculateModalContent({ catalogId, catalogsList}) {
 
     const deleteRow = (idx) => setRules(rules.filter((_, i) => i !== idx));
 
+    // Кнопку запуска рисует вкладка в своей нижней полосе — отдаём ей обработчик.
     const handleRecalculate = async () => {
         setLoading(true);
+        onLoadingChange?.(true);
         try {
-            const res = await fetch('https://gwstorebot.ru/api/catalog/recalculate', {
+            const res = await fetch(`${API_BASE_URL}/api/catalog/recalculate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ catalogId, rules })
@@ -55,15 +61,18 @@ export default function RecalculateModalContent({ catalogId, catalogsList}) {
             alert('Ошибка сети при пересчете цен');
         } finally {
             setLoading(false);
+            onLoadingChange?.(false);
         }
     };
 
+    if (runRef) runRef.current = handleRecalculate;
+
     return (
-        <>
+        <Sheet>
             {fetchingRules ? (
                 <div className={s.loadingText}>Загрузка правил из БД...</div>
             ) : (
-                <div>
+                <Group title="Интервалы цен">
                     <table className={s.priceTable}>
                         <thead>
                             <tr>
@@ -94,17 +103,11 @@ export default function RecalculateModalContent({ catalogId, catalogsList}) {
                         </tbody>
                     </table>
 
-                    <button className={s.addBtn} onClick={addRow}>
+                    <button className={f.addBtn} onClick={addRow}>
                         + Добавить интервал
                     </button>
-                    
-                    <div className={s.actionsRow}>
-                        <button className={s.submitBtn} onClick={handleRecalculate} disabled={loading}>
-                          {loading ? 'Пересчет...' : 'Запустить пересчет позиций'}
-                        </button>
-                    </div>
-                </div>
+                </Group>
             )}
-        </>
+        </Sheet>
     );
 }

@@ -1,15 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect} from 'react';
 import style from './NavigationBar.module.scss'
-import { useNavigate } from "react-router-dom";
-import { useTelegram } from "../../hooks/useTelegram";
+import {useNavigate} from "react-router-dom";
+import {useTelegram} from "../../hooks/useTelegram";
 import useGlobalData from "../../hooks/useGlobalData";
+import {useAppInsets} from "../../hooks/useAppInsets";
 
-const NavigationBar = ({ setOpacityTab }) => {
+const NavigationBar = ({setOpacityTab}) => {
 
-    const { tg, safeAreaInset, contentSafeAreaInset } = useTelegram()
-    const { pageId, pageList, updateBasket, basket, catalogList } = useGlobalData()
+
+    const {isKeyboardOpen} = useAppInsets()
+    const {pageId, pageList, updateBasket, basket, catalogList} = useGlobalData()
 
     const navigate = useNavigate()
+
+    const getCurrentPageType = () => {
+        if (!pageList || pageId === -1) return null;
+        const currentPage = pageList.find(p => p.id === pageId);
+        return currentPage?.type || null;
+    }
+
+    const pageType = getCurrentPageType();
 
     let buttons = [{
         label: 'Платформа', icon: pageList.map((item) => {
@@ -35,6 +45,13 @@ const NavigationBar = ({ setOpacityTab }) => {
 
 
     const [activeTab, setActiveTab] = React.useState(0);
+    const [isAnimating, setIsAnimating] = React.useState(false);
+    const [pendingNavigation, setPendingNavigation] = React.useState(null);
+    const navigationTimerRef = React.useRef(null);
+
+    useEffect(() => () => {
+        if (navigationTimerRef.current) clearTimeout(navigationTimerRef.current);
+    }, [])
 
     useEffect(() => {
         buttons.map((button, index) => {
@@ -46,51 +63,98 @@ const NavigationBar = ({ setOpacityTab }) => {
         })
     }, [window.location.pathname])
 
+    useEffect(() => {
+        // Сбрасываем анимацию при изменении pageId
+        setIsAnimating(false);
+        setPendingNavigation(null);
+    }, [pageId])
+
     const onButtonClick = (button, index) => {
         let params = new URLSearchParams(window.location.search);
-        let valueOfKey = params.get('from');
+        params.get('from');
         const basePath = '/' + window.location.pathname.split('/').filter(Boolean)[0];
-        const shouldNavigate = activeTab !== index
-            || (button.path !== '' && !window.location.pathname.includes(button.path));
+        const shouldNavigate = activeTab !== index || (button.path !== '' && !window.location.pathname.includes(button.path));
 
-        if (shouldNavigate) {
-            if (!window.location.pathname.includes(button.path)) {
-                setOpacityTab(0)
+        // Проверяем, нужно ли скрывать/показывать кнопки
+        const targetPage = pageList.find(p => basePath + '/' + button.path === '/' + p.link);
+        const targetPageType = targetPage?.type || null;
+        const needsAnimation = (pageType === 'steam' && targetPageType !== 'steam') ||
+                             (pageType !== 'steam' && targetPageType === 'steam');
 
-                setTimeout(() => {
-                    navigate(basePath + '/' + button.path)
-                }, 150)
+        if (shouldNavigate && !window.location.pathname.includes(button.path)) {
+            // Переход отложен, чтобы успела проиграть анимация затухания. Но раньше
+            // таймер не отменялся: быстрые тапы по разным вкладкам ставили несколько
+            // переходов подряд, и в итоге открывалась не та вкладка, что нажали
+            // последней. Плюс таймер мог сработать уже после размонтирования.
+            if (navigationTimerRef.current) clearTimeout(navigationTimerRef.current);
+
+            if (needsAnimation) {
+                // Сразу скрываем контент и запускаем анимацию кнопок
+                setOpacityTab(0);
+                setIsAnimating(true);
+                setPendingNavigation({ basePath, button, targetPageType });
+
+                // Ждем завершения анимации кнопок (300ms), затем навигация
+                navigationTimerRef.current = setTimeout(() => {
+                    navigationTimerRef.current = null;
+                    navigate(basePath + '/' + button.path);
+                    setIsAnimating(false);
+                    setPendingNavigation(null);
+                }, 300);
+            } else {
+                setOpacityTab(0);
+                navigationTimerRef.current = setTimeout(() => {
+                    navigationTimerRef.current = null;
+                    navigate(basePath + '/' + button.path);
+                }, 150);
             }
         }
-        setActiveTab(index)
+        setActiveTab(index);
     }
 
-    const visibleButtons = pageList.length <= 1 ? buttons.filter(b => b.path !== 'selectPlatform') : buttons;
+    // Определяем текущий pageType для подсчета видимых кнопок
+    const currentDisplayPageType = (isAnimating && pendingNavigation && pendingNavigation.targetPageType)
+        ? pendingNavigation.targetPageType
+        : pageType;
 
-    return (<div className={style['container']}
-        style={{'--nav-btn-count': visibleButtons.length }}>
-        {visibleButtons.map((button) => {
-            const originalIndex = buttons.indexOf(button);
-            return (
-                <button key={originalIndex} className={style['activeTab-' + (activeTab === originalIndex)]}
-                    onTouchStart={(e) => {
-                        e.preventDefault();
-                        onButtonClick(button, originalIndex);
-                    }}
-                    onClick={() => onButtonClick(button, originalIndex)}>
-                    <div style={{ backgroundImage: `url(${button.icon})` }} className={style['button-' + button.icon]} />
-                </button>
-            )
+    const actualVisibleCount = buttons.filter(b => !(currentDisplayPageType === 'steam' && (b.path === 'search' || b.path === 'basket'))).length;
+
+    return <div className={style['container']}
+                style={{'--nav-btn-count': actualVisibleCount}}>
+        {buttons.map((button, originalIndex) => {
+            
+            // Определяем, нужно ли скрывать кнопку
+            let isHidden = pageType === 'steam' && (button.path === 'search' || button.path === 'basket');
+            
+            // Если идет анимация, используем целевой pageType из pendingNavigation
+            if (isAnimating && pendingNavigation && pendingNavigation.targetPageType) {
+                isHidden = pendingNavigation.targetPageType === 'steam' && (button.path === 'search' || button.path === 'basket');
+            }
+            
+            return <button
+                key={originalIndex}
+                className={`${style['activeTab-' + (activeTab === originalIndex)]} ${style['nav-button']} ${isHidden ? style['hidden'] : ''}`}
+                onPointerDown={(e) => {
+                    e.preventDefault();
+                    onButtonClick(button, originalIndex);
+                }} onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    onButtonClick(button, originalIndex);
+                }
+            }}
+            >
+                <div
+                    style={{backgroundImage: `url(${button.icon})`}}
+                    className={style['button-' + button.icon]}
+                />
+            </button>
         })}
-        {
-            basket !== null && basket.length !== 0 ? <div className={style['productCounter']}>
-                <div>
-                    {basket.length}
-                </div>
-            </div> : ''
-        }
-    </div>)
-        ;
+        {basket !== null && basket.length !== 0 ? <div className={style['productCounter']}>
+            <div>
+                {basket.length}
+            </div>
+        </div> : ''}
+    </div>;
 };
 
 export default NavigationBar;

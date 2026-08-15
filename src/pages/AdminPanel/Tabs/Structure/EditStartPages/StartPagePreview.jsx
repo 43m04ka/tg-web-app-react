@@ -1,7 +1,6 @@
 import React from 'react';
 import PlatformCard from '../../../../SelectPlatform/Elements/PlatformCard';
 import SelectPlatformText from '../../../../SelectPlatform/Elements/SelectPlatformText';
-import { decodeStartPageContent } from './startPageContent';
 import style from './StartPagePreview.module.scss';
 import SelectPlatformLink from '../../../../SelectPlatform/Elements/SelectPlatformLink';
 

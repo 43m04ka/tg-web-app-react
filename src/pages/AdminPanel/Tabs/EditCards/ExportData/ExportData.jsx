@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import useGlobalData from "../../../../../hooks/useGlobalData";
 import useData from "../../../useData";
 import PopUpWindow from "../../../Elements/PopUpWindow/PopUpWindow";
 import style from "../../HistoryOrders/History.module.scss";
 import DropBox from "../../../Elements/DropBox/DropBox";
+import {API_BASE_URL} from "../../../../../hooks/useServerRoutes/baseUrl";
 
-const EXPORT_URL = 'https://gwstorebot.ru/api/product/export';
+const EXPORT_URL = `${API_BASE_URL}/api/product/export`;
 
-const ExportData = ({ onClose, onReload }) => {
+const ExportData = ({ onClose }) => {
 
-    const { authenticationData } = useData();
+
     const { catalogList } = useGlobalData()
 
     const [selectedCatalogId, setSelectedCatalogId] = useState(catalogList ? catalogList[0]?.id : null);

@@ -31,9 +31,7 @@ const InfoBubbles = ({productData}) => {
     }
 
     if (productData.language !== null) {
-        if (productData.voice !== null && (productData.language === 'На русском языке' || (productData.language.includes('Русский') && productData.voice.includes('Русский')))) {
-            bubbles = [...bubbles, {label: 'Русский текст и озвучка', icon: russian}]
-        } else if (productData.language === 'Русские субтитры (текст)' || productData.language.includes('Русский')) {
+        if (productData.language === 'Русские субтитры (текст)' || productData.language.includes('Русский')) {
             bubbles = [...bubbles, {label: 'Русский текст', icon: russian}]
         } else if (productData.language === 'Без перевода' || productData.type !== 'DONATION') {
             bubbles = [...bubbles, {label: 'На английском', icon: english}]

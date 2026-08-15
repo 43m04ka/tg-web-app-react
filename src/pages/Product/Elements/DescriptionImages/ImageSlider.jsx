@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import style from "../../Product.module.scss";
 
-const ImageSlider = ({src, setSelectedId, onBack, i}) => {
+const ImageSlider = ({src, setSelectedId, i}) => {
 
     const [imageLoaded, setImageLoaded] = useState(false);
 

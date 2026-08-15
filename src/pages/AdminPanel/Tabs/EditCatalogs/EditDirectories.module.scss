@@ -1,200 +1,368 @@
 @import "src/pages/AdminPanel/AdminPanel.module";
+@import "src/pages/AdminPanel/styles/dashed";
 
-.mainContainer {
+.screen {
   flex: 1;
   min-height: 0;
-  width: 100%;
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  padding: 40px;
-  overflow: hidden;
 }
 
 .header {
-  padding: 0 0 24px 0;
+  flex-shrink: 0;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin: 0 0 var(--sp-4);
+  padding: 0;
+}
+
+.headerTop {
+  // Отступ под докобар держит строка вкладок сверху — здесь он уже не нужен.
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  gap: 24px;
-  margin-bottom: 20px;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
 }
 
-.headerTitle {
-  @extend %text;
-  font-size: 28px;
-  font-weight: 700;
-  color: $text-color;
+.titleBlock {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+}
+
+.title {
   margin: 0;
-  white-space: nowrap;
+  font-family: var(--font-ui);
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
 }
 
-.headerControls {
+.counter {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.toolbar {
   display: flex;
-  flex-direction: row;
-  gap: 12px;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.searchField {
+  position: relative;
+  display: flex;
   align-items: center;
   flex: 1;
-  max-width: 700px;
+  min-width: 240px;
+  max-width: 360px;
 }
 
-.inputFind {
-  @extend %text;
-  display: flex;
-  flex: 1;
-  height: 40px;
-  padding: 0 14px;
-  font-weight: 400;
-  line-height: 1.5;
-  font-size: 14px;
-  color: $text-color;
-  background-color: rgba(19, 21, 29, 0.6);
-  background-clip: padding-box;
-  border: 1px solid rgba(79, 95, 130, 0.4);
-  border-radius: 10px;
-  transition: all 0.2s ease;
+.searchIcon {
+  position: absolute;
+  left: var(--sp-3);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
   box-sizing: border-box;
+  height: 36px;
+  padding: 0 var(--sp-8) 0 34px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
 
   &:focus {
     outline: none;
-    border-color: $theme-color;
-    background-color: rgba(19, 21, 29, 0.8);
-    box-shadow: 0 0 0 3px rgba($theme-color, 0.1);
-  }
-
-  &:hover:not(:focus) {
-    border-color: rgba(79, 95, 130, 0.6);
-  }
-
-  &::placeholder {
-    color: #5d6577;
+    border-color: var(--accent);
+    box-shadow: var(--focus-ring);
   }
 }
 
-.buttonGroup {
-  display: flex;
-  gap: 10px;
-}
-
-.button {
-  @extend %button;
-  background: $theme-color;
-  padding: 0 16px;
-  height: 40px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-weight: 600;
-  font-size: 13px;
-  color: white;
+.searchClear {
+  position: absolute;
+  right: var(--sp-2);
+  width: 22px;
+  height: 22px;
   border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
   cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
 
   &:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba($theme-color, 0.3);
+    background: var(--surface-hover);
+    color: var(--text);
+  }
+}
+
+// Страницы витрины — фильтр списка, а не навигация: те же сегменты, что и в «Товарах».
+.pageTabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.pageTab {
+  position: relative;
+  flex-shrink: 0;
+  height: 30px;
+  padding: 0 var(--sp-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--text);
   }
 
-  &:active {
-    transform: translateY(0);
+}
+
+.pageTabLabel {
+  display: block;
+}
+
+// Начертание активного таба не меняем — иначе ширина скачет при переключении.
+.pageTabActive {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+// Полоса действий над выбором: в покое — подсказка, при выборе подсвечивается.
+.actionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  transition: background-color var(--t-base), border-color var(--t-base);
+}
+
+.actionBarActive {
+  background: var(--surface-alt);
+  border-color: var(--border);
+}
+
+.selectionInfo {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+}
+
+.actionGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+.actionDivider {
+  width: 1px;
+  height: 18px;
+  border-radius: var(--r-pill);
+  background: var(--border-strong);
+}
+
+.actionBtn {
+  height: 30px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition: background-color var(--t-fast), border-color var(--t-fast), color var(--t-fast);
+
+  &:hover:not(:disabled) {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  // Неактивная кнопка — только контур и приглушённый текст, без серой плитки.
+  &:disabled {
+    border-color: var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Создание каталога — единственное «созидающее» действие в шапке, поэтому цветное
+// и с плюсом: остальные кнопки шапки остаются нейтральными.
+.actionBtnCreate {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  border-color: transparent;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+
+  &:hover:not(:disabled) {
+    background: var(--accent);
+    color: var(--accent-contrast);
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.actionBtnPrimary {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 700;
+
+  &:hover:not(:disabled) {
+    background: var(--accent-hover);
+    border-color: transparent;
+    color: var(--accent-contrast);
   }
 
   &:disabled {
-    opacity: 0.5;
+    border-color: var(--border);
+    background: transparent;
+    color: var(--text-muted);
+  }
+}
+
+.actionBtnDanger {
+  &:hover:not(:disabled) {
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+}
+
+.actionBtnGhost {
+  height: 30px;
+  padding: 0 var(--sp-3);
+  border: none;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: var(--surface-hover);
+    color: var(--text);
+  }
+
+  &:disabled {
+    opacity: 0.4;
     cursor: not-allowed;
   }
-
-  > p {
-    margin: 0;
-  }
 }
 
-.tabsContainer {
-  display: flex;
-  gap: 0;
-  border-bottom: 1px solid #2c2c2e;
-  margin-bottom: 20px;
-  overflow-x: auto;
-}
-
-.tab {
-  @extend %button;
-  padding: 12px 20px;
-  background: transparent;
-  border: none;
-  color: #8e95a3;
-  font-weight: 500;
-  font-size: 14px;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-
-  &:hover {
-    color: $text-color;
-  }
-
-  &.activeTab {
-    color: $theme-color;
-    border-bottom-color: $theme-color;
-  }
-}
-
-.tableWrapMain {
+// Область списка: сюда же выезжают панели, поэтому нужен свой контекст позиционирования.
+.workArea {
+  position: relative;
   flex: 1;
   min-height: 0;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.tableWrap {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
   overflow: auto;
-  min-width: 0;
-  border: 1px solid #2c2c2e;
-  border-radius: 14px;
-  background: #13151d;
+  border-radius: var(--r-lg);
+  @include dashed-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: var(--r-pill);
+  }
 }
 
 .table {
   width: 100%;
+  margin: 0;
   border-collapse: collapse;
-  min-width: 700px;
-  table-layout: auto;
-
-  th,
-  td {
-    @extend %text;
-    padding: 12px 14px;
-    border-bottom: 1px solid #242730;
-    text-align: left;
-    white-space: normal;
-    word-break: break-word;
-  }
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
 
   thead th {
-    color: #8e95a3;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    background: #11131a;
     position: sticky;
     top: 0;
     z-index: 1;
+    padding: var(--sp-2) var(--sp-3);
+    text-align: left;
+    font-size: var(--fs-sm);
+    font-weight: 400;
+    color: var(--text-muted);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: var(--sp-2) var(--sp-3);
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
   }
 
   tbody tr {
     cursor: pointer;
-    transition: background-color 0.2s ease;
-
-    &:nth-child(even) {
-      background: rgba(79, 95, 130, 0.08);
-    }
+    transition: background-color var(--t-fast);
 
     &:hover {
-      background: rgba(91, 120, 227, 0.12);
+      background: var(--surface-hover);
     }
 
     &:last-child td {
@@ -203,243 +371,63 @@
   }
 }
 
-.actionButtons {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
+.rowSelected {
+  background: var(--accent-soft);
 }
 
-.actionButton {
-  @extend %button;
-  padding: 4px 10px;
-  background: transparent;
-  color: $theme-color;
-  border: 1px solid rgba($theme-color, 0.3);
-  border-radius: 6px;
-  white-space: nowrap;
-  font-size: 12px;
-  font-weight: 600;
+.checkCol {
+  width: 36px;
+}
+
+.checkbox {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--accent);
   cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: rgba($theme-color, 0.1);
-    border-color: $theme-color;
-  }
-
-  &:active {
-    opacity: 0.8;
-  }
-
-  > p {
-    margin: 0;
-  }
 }
 
-.deleteButton {
-  color: #ff6b6b;
-  border-color: rgba(255, 107, 107, 0.3);
-
-  &:hover {
-    background: rgba(255, 107, 107, 0.1);
-    border-color: #ff6b6b;
-  }
+.pathCell {
+  color: var(--text);
+  font-weight: 700;
 }
 
-.parseButton {
-  color: #22a54a;
-  border-color: rgba(34, 165, 74, 0.3);
-
-  &:hover {
-    background: rgba(34, 165, 74, 0.1);
-    border-color: #22a54a;
-  }
+.pageCol {
+  width: 220px;
 }
 
-.statusOn {
-  color: #22a54a;
-  font-weight: 600;
+.statusCol {
+  width: 140px;
 }
 
-.statusPartial {
-  color: #f0ad4e;
-  font-weight: 600;
+.badgeOn,
+.badgePartial,
+.badgeOff {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--sp-2);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
 }
 
-.statusOff {
-  color: #ff6b6b;
-  font-weight: 600;
+.badgeOn {
+  background: rgba(var(--success-rgb), 0.12);
+  color: var(--success);
+}
+
+.badgePartial {
+  background: rgba(var(--warning-rgb), 0.12);
+  color: var(--warning);
+}
+
+.badgeOff {
+  background: var(--surface-hover);
+  color: var(--text-muted);
 }
 
 .emptyCell {
-  color: #8e95a3 !important;
-  text-align: center !important;
-  padding: 20px !important;
-}
-
-/* Форма внутри PopUp */
-.formGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.formField {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.formLabel {
-  @extend %text;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #8e95a3;
-}
-
-.formInput, .formSelect {
-  @extend %text;
-  height: 40px;
-  padding: 0 14px;
-  font-size: 14px;
-  color: $text-color;
-  background-color: rgba(19, 21, 29, 0.6);
-  border: 1px solid rgba(79, 95, 130, 0.4);
-  border-radius: 10px;
-  transition: all 0.2s ease;
-  box-sizing: border-box;
-
-  &:focus {
-    outline: none;
-    border-color: $theme-color;
-    background-color: rgba(19, 21, 29, 0.8);
-    box-shadow: 0 0 0 3px rgba($theme-color, 0.1);
-  }
-}
-
-.formSelect {
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3e%3cpath fill='%238e95a3' d='M6 8L1 3h10z'/%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  padding-right: 36px;
-}
-
-.formTextarea {
-  @extend %text;
-  padding: 10px 14px;
-  font-size: 14px;
-  color: $text-color;
-  background-color: rgba(19, 21, 29, 0.6);
-  border: 1px solid rgba(79, 95, 130, 0.4);
-  border-radius: 10px;
-  transition: all 0.2s ease;
-  box-sizing: border-box;
-  resize: vertical;
-  min-height: 80px;
-  font-family: inherit;
-
-  &:focus {
-    outline: none;
-    border-color: $theme-color;
-    background-color: rgba(19, 21, 29, 0.8);
-    box-shadow: 0 0 0 3px rgba($theme-color, 0.1);
-  }
-}
-
-.checkboxRow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-    accent-color: $theme-color;
-  }
-
-  label {
-    @extend %text;
-    font-size: 14px;
-    color: $text-color;
-    cursor: pointer;
-  }
-}
-
-.buttonPlace {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(79, 95, 130, 0.2);
-  gap: 12px;
-}
-
-.buttonAccept {
-  @extend %button;
-  background: $theme-color !important;
-  padding: 8px 20px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
-  }
-
-  > div {
-    width: 16px;
-    height: 16px;
-    background-size: cover;
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAACXBIWXMAAAsTAAALEwEAmpwYAAABBUlEQVR4nO3UzyoFURwH8GElyr+6PImFYkM2kpUH8ABeQdnJRmHHjh0PYWNlKSlSSimylgX3fjS5aYxj3MOZsrjf5Zzf/D7nd5o5WdbNfwiWsY1GncgkXr3nAQt1IP249DnP6E0Nbfmaw9TIFJol5BHjKZEBXAemWUqG5MFuADnIUgZzaJWQO4ymRIZwG5hmPqbJCNbz/6KiZj+A7MUgwzhtv/iE2UDNYgC5wWAMdFxqkGMzhfUG7ks1rWJNp9BJYLcfGI4C6ztRSLvRGM6/wTYDz6/y6ycaKhzPmZ/TxPSvkEhs409Ih9gF+pJAFdgLJpIhFR/IWnKkdOWsYgU9tUHdZIG8AXfnYXxwGVtiAAAAAElFTkSuQmCC');
-  }
-
-  > p {
-    margin: 0;
-    font-size: 14px;
-  }
-}
-
-.buttonCancel {
-  @extend %button;
-  > div {
-    width: 16px;
-    height: 16px;
-    background-size: cover;
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAtUlEQVR4nO2WSwqEMBBEvYSi9z9OXI0Lj/NkUJDJwv6kBmHGgqy0eN1tUqbrHv2lgAGYjzU0+IvbD/TAi1MrMAWgOT97pbUWT+VHp+93a5Us2IRfQN3gvhoV1tgcntEER+EyaAQuhzq/22I8Cx/DDxldaTttgOugAbgeGgC7E+4bo9bAyW2uNjh3HCcc4ZCJ10tFEkkGJxGDEjg3/hbnKNQBL9mrizuRmvzslZfQZU3of/Qb2gDIApP3EFwGCQAAAABJRU5ErkJggg==');
-  }
-
-  > p {
-    margin: 0;
-    font-size: 14px;
-  }
-}
-
-.statusMessage {
-  margin-top: 12px;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-
-  &.success {
-    background: rgba(34, 165, 74, 0.1);
-    color: #22a54a;
-    border: 1px solid rgba(34, 165, 74, 0.3);
-  }
-
-  &.error {
-    background: rgba(255, 107, 107, 0.1);
-    color: #ff6b6b;
-    border: 1px solid rgba(255, 107, 107, 0.3);
-  }
+  padding: var(--sp-6) var(--sp-3) !important;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--fs-md);
 }

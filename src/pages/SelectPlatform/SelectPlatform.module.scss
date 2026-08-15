@@ -1,7 +1,6 @@
 @import "../../app/styles/mainStyle";
 
 .container {
-  overflow-y: scroll;
   width: 100%;
   min-width: 100wh;
   height: 100%;
@@ -25,18 +24,6 @@
   gap: 3.6vw;
 }
 
-@media (min-width: 768px) {
-  .inner {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 0;
-  }
-
-  .cards {
-    gap: 18px;
-  }
-}
-
 .introText {
   font-size: 7cqi;
   line-height: 110%;
@@ -50,5 +37,21 @@
   }
   >a:nth-child(2) {
     color: rgb(66, 212, 92);
+  }
+}
+
+
+@media (min-width: 768px) {
+  .container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 60px 20px;
+  }
+
+  .introText {
+    width: 100%;
+    font-size: 44px;
+    line-height: 1.2;
   }
 }

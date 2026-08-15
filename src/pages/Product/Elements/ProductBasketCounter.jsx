@@ -1,12 +1,14 @@
+// noinspection JSUnusedLocalSymbols
+
 import React, {useEffect, useState} from 'react';
 import style from '../Product.module.scss'
-import {useTelegram} from "../../../hooks/useTelegram";
 import useGlobalData from "../../../hooks/useGlobalData";
 import {useServerUser} from "../../../hooks/useServerUser";
+import {usePlatformUser} from "../../../hooks/usePlatformUser";
 
 const ProductBasketCounter = ({idPos, setCardInBasket}) => {
 
-    const {user} = useTelegram();
+    const { user, isVkUserLoaded } = usePlatformUser();
 
     const {pageId, basket, catalogList, updateBasket, removeCardFromBasketList, updateCardCountInBasketList} = useGlobalData()
     const {setBasketPositionCount, deleteCardToBasket} = useServerUser()

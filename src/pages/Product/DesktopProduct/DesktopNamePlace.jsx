@@ -1,14 +1,14 @@
 import React from 'react';
 import {useServerUser} from "../../../hooks/useServerUser";
 import useGlobalData from "../../../hooks/useGlobalData";
-import {useTelegram} from "../../../hooks/useTelegram";
 import {getInfoLabelArray, getPriceData} from "./productDesktopUtils";
 import style from "./DesktopNamePlace.module.scss";
+import {usePlatformUser} from "../../../hooks/usePlatformUser";
 
 const DesktopNamePlace = ({productData, cardInFavorite, setCardInFavorite}) => {
     const {addCardToFavorite, deleteCardToFavorite} = useServerUser();
     const {updatePreviewFavoriteData} = useGlobalData();
-    const {user} = useTelegram();
+    const { user} = usePlatformUser();
     const labels = getInfoLabelArray(productData).join(' • ');
     const {price} = getPriceData(productData);
 

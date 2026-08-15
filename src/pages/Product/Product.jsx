@@ -17,6 +17,9 @@ import SimilarProducts from "./Elements/SimilarProducts";
 import {useServerUser} from "../../hooks/useServerUser";
 import {useIsDesktopMedia} from "../../hooks/useIsDesktopMedia";
 import DesktopProduct from "./DesktopProduct/DesktopProduct";
+import {usePlatformUser} from "../../hooks/usePlatformUser";
+import {useAppInsets} from "../../hooks/useAppInsets";
+import {getSubscriptionSale} from "./DesktopProduct/productDesktopUtils";
 
 const parameters = [{label: 'Платформа', key: 'platform', type: 'bubble'}, {
     label: 'Регион активации', key: 'regionActivate', type: 'parameter'
@@ -50,7 +53,9 @@ const parameters = [{label: 'Платформа', key: 'platform', type: 'bubble
 
 const Product = () => {
     const isDesktop = useIsDesktopMedia();
-    const { tg, user, safeAreaInset, contentSafeAreaInset } = useTelegram();
+    const { tg } = useTelegram();
+const { safeAreaInset, contentSafeAreaInset, isKeyboardOpen } = useAppInsets();
+    const { user } = usePlatformUser();
     const navigate = useNavigate();
 
     const {addCardToBasket, getCard, findCardsByCatalog} = useServerUser()
@@ -58,15 +63,13 @@ const Product = () => {
     const {
         previewFavoriteData,
         pageId,
-        pageList,
         basket,
         catalogList,
         updateBasket,
         bufferCardsCatalog,
         bufferCardsRecommendations,
         mainPageCards,
-        addCardToBasketList,
-        removeCardFromBasketList
+        addCardToBasketList
     } = useGlobalData()
 
     let cardId = Number((window.location.pathname).replace('/card/', ''))
@@ -125,27 +128,9 @@ const Product = () => {
     if (productData !== null) {
 
 
-        let saleType = null
-        let saleLabel = ''
-
-        if (productData.additionalParameter !== null) {
-            if (productData.additionalParameter.includes('Save') && productData.additionalParameter.includes('ps-plus')) {
-                saleType = 'logoPS'
-                saleLabel = 'ДОПОЛНИТЕЛЬНАЯ \n СКИДКА С PS PLUS'
-            }
-            if (productData.additionalParameter.includes('Extra')) {
-                saleType = 'logoPS'
-                saleLabel = 'БЕСПЛАТНО \n С PS PLUS EXTRA'
-            }
-            if (productData.additionalParameter.includes('Deluxe')) {
-                saleType = 'logoPS'
-                saleLabel = 'БЕСПЛАТНО \n С PS PLUS DELUXE'
-            }
-            if (productData.additionalParameter.includes('Included')) {
-                saleType = 'logoEA'
-                saleLabel = 'БЕСПЛАТНО \n С EA PLAY'
-            }
-        }
+        const subscriptionSale = getSubscriptionSale(productData);
+        const saleType = subscriptionSale?.saleType || null
+        const saleLabel = subscriptionSale?.label || ''
 
 
         if (isDesktop) {
@@ -195,7 +180,7 @@ const Product = () => {
                         } else {
                             setTimeout(()=>{
                                 setCardInBasket(true)
-                            }, 50)
+                            }, 25)
                             addCardToBasketList(productData)
                             await addCardToBasket(async () => {
                                 await updateBasket(catalogList, pageId)
@@ -237,7 +222,7 @@ const Product = () => {
                 {saleType !== null ?
                     <div style={{borderColor: '#171717'}} className={style['sale'] + ' ' + style['bg-' + saleType]}
                          onClick={() => {
-                             navigate(saleType === 'logoPS' ? '/choice-catalog/ps_psplus' : '/choice-catalog/ps_eaplay')
+                             navigate(subscriptionSale.route)
                          }}>
                         <div className={style[saleType]}/>
                         <div className={style[saleType]}/>

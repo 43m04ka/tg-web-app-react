@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
 import {useTelegram} from "../../hooks/useTelegram";
 import FilterCheckBox from "./FilterCheckBox";
+import {useAppInsets} from "../../hooks/useAppInsets";
 
 const Filter = ({height, elementKeys, onRequestFilter}) => {
-    const { tg, safeAreaInset, contentSafeAreaInset } = useTelegram();
+
+const { safeAreaInset, contentSafeAreaInset, isKeyboardOpen } = useAppInsets();
     const [jsonFilter, setJsonFilter] = useState({
         platform: [],
         price: {min: 0, max: 50000, sort: null},

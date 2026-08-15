@@ -230,16 +230,8 @@ const Roulette = () => {
                         {gameArray.map(element => {
 
                             if (element === 6) {
-                                let style = {
-                                    height: String(sizeValue) + 'px',
-                                    width: String(sizeValue) + 'px',
-                                    transitionProperty: 'height, width',
-                                    transitionDuration: '0.4s',
-                                    background: 'url("' + b[element] + '")',
-                                    backgroundSize: 'cover',
-                                    marginRight: '10px',
-                                    borderRadius: '7px',
-                                }
+                                String(sizeValue) + 'px';
+                                String(sizeValue) + 'px';
                                 return (
                                     <div style={{
                                         height: '100px',

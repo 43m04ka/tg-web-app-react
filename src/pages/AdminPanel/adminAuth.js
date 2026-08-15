@@ -1,6 +1,7 @@
 import {API_BASE_URL} from '../../hooks/useServerRoutes/baseUrl';
 import useData from './useData';
 
+export {API_BASE_URL};
 export const ADMIN_API_URL = `${API_BASE_URL}/api/admin`;
 
 export const adminBearerHeaders = () => {

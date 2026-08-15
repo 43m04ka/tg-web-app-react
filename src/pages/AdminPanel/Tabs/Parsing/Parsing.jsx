@@ -1,136 +1,47 @@
 import React, {useEffect, useState} from 'react';
 import s from './parsing_styles.module.css';
+import {API_BASE_URL} from '../../../../hooks/useServerRoutes/baseUrl';
 
-const ParserCard = ({title, type, apiEndpoint, placeholder}) => {
-    const [formData, setFormData] = useState({
-        catalogId: '', bdPath: '', countPages: 1, promoDate: '', isShallow: false, parceAddons: false
-    });
-    const [loading, setLoading] = useState(false);
-    const [status, setStatus] = useState({text: '', type: ''});
-
-    const handleChange = (field, value) => {
-        setFormData(prev => ({...prev, [field]: value}));
-    };
-
-    const handleStart = async () => {
-        setLoading(true);
-        setStatus({text: '', type: ''});
-
-        try {
-            const payload = {
-                ...formData, endDataPromotion: formData.promoDate ? new Date(formData.promoDate).getTime() : null
-            };
-
-            const response = await fetch(apiEndpoint, {
-                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
-            });
-
-            const result = await response.json();
-            if (response.ok) {
-                setStatus({text: `✅ ${result.message || 'Готово'}`, type: 'success'});
-            } else {
-                setStatus({text: `❌ Ошибка: ${result.error || 'Сервер отклонил запрос'}`, type: 'error'});
-            }
-        } catch (err) {
-            setStatus({text: '❌ Ошибка сети', type: 'error'});
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return (<div className={s.card}>
-        <h2 className={s[`${type}-title`]}>{title}</h2>
-        <div className={s.field}>
-            <label>URL каталога(без указателя страницы)</label>
-            <input
-                type="text"
-                placeholder={placeholder}
-                value={formData.catalogId}
-                onChange={(e) => handleChange('catalogId', e.target.value)}
-            />
-        </div>
-        <div className={s.field}>
-            <label>Путь к базе (bdPath)</label>
-            <input
-                type="text"
-                placeholder="Напр: ps_games"
-                value={formData.bdPath}
-                onChange={(e) => handleChange('bdPath', e.target.value)}
-            />
-        </div>
-        <div className={s.field}>
-            <label>Кол-во страниц</label>
-            <input
-                type="number"
-                min="1"
-                value={formData.countPages}
-                onChange={(e) => handleChange('countPages', e.target.value)}
-            />
-        </div>
-        <div className={s.field}>
-            <label>Дата окончания акции</label>
-            <input
-                type="date"
-                value={formData.promoDate}
-                onChange={(e) => handleChange('promoDate', e.target.value)}
-            />
-        </div>
-        <div className={s['checkbox-field']}>
-            <input
-                type="checkbox"
-                id={`shallow-${type}`}
-                checked={formData.isShallow}
-                onChange={(e) => handleChange('isShallow', e.target.checked)}
-            />
-            <label htmlFor={`shallow-${type}`}>Поверхностный парсинг</label>
-        </div>
-        <div className={s['checkbox-field']}>
-            <input
-                type="checkbox"
-                id={`shallow-${type}`}
-                checked={formData.parceAddons}
-                onChange={(e) => handleChange('isShallow', e.target.checked)}
-            />
-            <label htmlFor={`shallow-${type}`}>Парсить аддоны</label>
-        </div>
-        <button
-            className={`${s[`${type}-btn`]} ${s.mainBtn}`}
-            onClick={handleStart}
-            disabled={loading}
-        >
-            {loading ? 'В процессе...' : `Запустить ${type.toUpperCase()} парсинг`}
-        </button>
-        {status.text && (<div className={`${s.status} ${s[status.type]}`} style={{display: 'block'}}>
-            {status.text}
-        </div>)}
-
-        <PriceGrid type={type}/>
-    </div>);
-};
-
-const PriceGrid = ({type}) => {
+const PriceGrid = ({ type, title, color }) => {
     const [rules, setRules] = useState([]);
     const [saving, setSaving] = useState(false);
+    
+    // Синхронизация параметров с ключами вашего бэкенда (ps, xbox, india)
     const platform = type === 'xb' ? 'xbox' : type;
 
     useEffect(() => {
-        fetch('https://gwstorebot.ru/api/parsing/price-rules/'+platform)
+        fetch(`${API_BASE_URL}/api/parsing/price-rules/${platform}`)
             .then(res => res.ok ? res.json() : [])
-            .then(data => setRules(data.length ? data : (type === 'xb' ? [{
-                min: 0, max: 100, type: 'MULTIPLIER', value: 1, commission: 0
-            }] : [{
-                min: 0, max: 100, type: 'MULTIPLIER', value: 1
-            }])))
-            .catch(() => console.error("Ошибка загрузки цен"));
-    }, []);
+            .then(data => {
+                if (data.length) {
+                    // Присваиваем временные id для стабильного рендеринга строк в React
+                    setRules(data.map((r, i) => ({ ...r, id: r.id || i })));
+                } else {
+                    // Дефолтная строка, если база пустая
+                    setRules([{
+                        id: Date.now(),
+                        min: 0,
+                        max: 100,
+                        type: 'MULTIPLIER',
+                        value: 1,
+                        ...(type === 'xb' && { commission: 0 })
+                    }]);
+                }
+            })
+            .catch(() => console.error(`Ошибка загрузки цен для платформы: ${platform}`));
+    }, [platform, type]);
 
     const addRow = () => {
         const lastMax = rules.length > 0 ? rules[rules.length - 1].max : 0;
-        setRules([...rules, (type === 'xb' ? {
-            min: 0, max: 100, type: 'MULTIPLIER', value: 1, commission: 0
-        } : {
-            min: 0, max: 100, type: 'MULTIPLIER', value: 1
-        })]);
+        const newRow = {
+            id: Date.now() + Math.random(),
+            min: lastMax ? lastMax + 1 : 0, // Автоматический расчет следующего шага
+            max: lastMax ? lastMax + 100 : 100,
+            type: 'MULTIPLIER',
+            value: 1,
+            ...(type === 'xb' && { commission: 0 })
+        };
+        setRules([...rules, newRow]);
     };
 
     const updateRule = (idx, field, val) => {
@@ -144,166 +55,85 @@ const PriceGrid = ({type}) => {
     const handleSave = async () => {
         setSaving(true);
         try {
-            const res = await fetch('https://gwstorebot.ru/api/parsing/price-rules/'+platform, {
-                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({rules})
+            // Очищаем id и принудительно проставляем комиссию 0, если её нет (для защиты от NOT NULL в бэке индии)
+            const cleanRules = rules.map(({ id, ...rest }) => ({
+                ...rest,
+                commission: rest.commission !== undefined ? rest.commission : 0
+            }));
+            
+            const res = await fetch(`${API_BASE_URL}/api/parsing/price-rules/${platform}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rules: cleanRules })
             });
-            if (res.ok) alert('Сетка сохранена!');
+
+            if (res.ok) alert(`Сетка "${title}" успешно сохранена!`);
+            else alert('Ошибка при сохранении на сервере');
         } catch (e) {
-            alert('Ошибка при сохранении');
+            alert('Ошибка сети при отправке запроса');
         } finally {
             setSaving(false);
         }
     };
 
-    return (<div>
-        <h2 className={s['xb-title']} style={{color: '#28a745'}}>Сетка цен</h2>
-        <table className={s['price-table']}>
-            <thead>
-            <tr>
-                <th>Мин</th>
-                <th>Макс</th>
-                <th>Тип</th>
-                <th>Знач</th>
-                {type === 'xb' && <th>Комиссия</th>}
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            {rules.map((r, i) => (<tr key={i}>
-                <td><input type="number" value={r.min} onChange={e => updateRule(i, 'min', e.target.value)}/>
-                </td>
-                <td><input type="number" value={r.max} onChange={e => updateRule(i, 'max', e.target.value)}/>
-                </td>
-                <td>
-                    <select value={r.type} onChange={e => updateRule(i, 'type', e.target.value)}>
-                        <option value="MULTIPLIER">*</option>
-                        <option value="FIXED">Fix</option>
-                    </select>
-                </td>
-                <td><input type="number" value={r.value}
-                           onChange={e => updateRule(i, 'value', e.target.value)}/></td>
-                {type === 'xb' && <td><input type="number" value={r.commission}
-                                              onChange={e => updateRule(i, 'commission', e.target.value)}/></td>}
-                <td style={{textAlign: 'center', cursor: 'pointer', color: '#ff4d4d'}}
-                    onClick={() => deleteRow(i)}>✕
-                </td>
-            </tr>))}
-            </tbody>
-        </table>
-        <button className={s['add-btn']} onClick={addRow}>+ Добавить интервал</button>
-        <button className={s['xb-btn']} onClick={handleSave} disabled={saving}>
-            {saving ? 'Сохранение...' : 'Сохранить настройки цен'}
-        </button>
-    </div>);
+    return (
+        <div className={s.card} style={{ marginBottom: '24px' }}>
+            <h2 className={s['xb-title']} style={{ color: color || '#28a745' }}>{title}</h2>
+            <table className={s['price-table']}>
+                <thead>
+                    <tr>
+                        <th>Мин</th>
+                        <th>Макс</th>
+                        <th>Тип</th>
+                        <th>Знач</th>
+                        {type === 'xb' && <th>Комиссия</th>}
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {rules.map((r, i) => (
+                        <tr key={r.id || i}>
+                            <td>
+                                <input type="number" value={r.min} onChange={e => updateRule(i, 'min', e.target.value)} />
+                            </td>
+                            <td>
+                                <input type="number" value={r.max} onChange={e => updateRule(i, 'max', e.target.value)} />
+                            </td>
+                            <td>
+                                <select value={r.type} onChange={e => updateRule(i, 'type', e.target.value)}>
+                                    <option value="MULTIPLIER">*</option>
+                                    <option value="FIXED">Fix</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" step="any" value={r.value} onChange={e => updateRule(i, 'value', e.target.value)} />
+                            </td>
+                            {type === 'xb' && (
+                                <td>
+                                    <input type="number" value={r.commission || 0} onChange={e => updateRule(i, 'commission', e.target.value)} />
+                                </td>
+                            )}
+                            <td style={{ textAlign: 'center', cursor: 'pointer', color: '#ff4d4d' }} onClick={() => deleteRow(i)}>
+                                ✕
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            <button className={s['add-btn']} onClick={addRow}>+ Добавить интервал</button>
+            <button className={`${s['xb-btn']} ${s.mainBtn}`} onClick={handleSave} disabled={saving}>
+                {saving ? 'Сохранение...' : `Сохранить настройки цен`}
+            </button>
+        </div>
+    );
 };
 
-const ParserSingleCard = ({title, type, apiEndpoint, placeholder}) => {
-    const [formData, setFormData] = useState({
-        productUrl: '', catalogId: '', isShallow: false
-    });
-    const [loading, setLoading] = useState(false);
-    const [status, setStatus] = useState({text: '', type: ''});
-
-    const handleChange = (field, value) => {
-        setFormData(prev => ({...prev, [field]: value}));
-    };
-
-    const handleStart = async () => {
-        setLoading(true);
-        setStatus({text: '', type: ''});
-
-        try {
-            const links = formData.productUrl
-                .split('\n')
-                .map(l => l.trim())
-                .filter(Boolean);
-            const payload = {links, bdPath: formData.catalogId, parceAddons};
-
-            const response = await fetch(apiEndpoint, {
-                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
-            });
-
-            const result = await response.json();
-            if (response.ok) {
-                setStatus({text: `✅ ${result.message || 'Готово'}`, type: 'success'});
-            } else {
-                setStatus({text: `❌ Ошибка: ${result.error || 'Сервер отклонил запрос'}`, type: 'error'});
-            }
-        } catch (err) {
-            setStatus({text: '❌ Ошибка сети', type: 'error'});
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return (<div className={s.card}>
-        <h2 className={s[`${type}-title`]}>{title}</h2>
-        <div className={s.field}>
-            <label>Ссылки (каждая с новой строки)</label>
-            <textarea
-                rows={4}
-                placeholder={placeholder}
-                value={formData.productUrl}
-                onChange={(e) => handleChange('productUrl', e.target.value)}
-                style={{width:'100%',padding:'11px 12px',background:'var(--bg-input)',border:'1px solid var(--border)',color:'#fff',borderRadius:'6px',boxSizing:'border-box',fontSize:'14px',outline:'none',resize:'vertical',fontFamily:'inherit'}}
-            />
+export default function PriceManagement() {
+    return (
+        <div className={s.dashboard} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '20px', padding: '20px' }}>
+            <PriceGrid type="ps" title="Сетка цен Playstation" color="#0070d1" />
+            <PriceGrid type="xb" title="Сетка цен Xbox" color="#28a745" />
+            <PriceGrid type="india" title="Сетка цен India (PS)" color="#ff9933" />
         </div>
-        <div className={s.field}>
-            <label>Путь каталога (bdPath)</label>
-            <input
-                type="text"
-                placeholder="Напр: test_path"
-                value={formData.catalogId}
-                onChange={(e) => handleChange('catalogId', e.target.value)}
-            />
-        </div>
-        <div className={s['checkbox-field']}>
-            <input
-                type="checkbox"
-                id={`shallow-${type}`}
-                checked={formData.parceAddons}
-                onChange={(e) => handleChange('parceAddons', e.target.checked)}
-            />
-            <label htmlFor={`shallow-${type}`}>Парсить аддоны</label>
-        </div>
-        <button
-            className={`${s[`${type}-btn`]} ${s.mainBtn}`}
-            onClick={handleStart}
-            disabled={loading}
-        >
-            {loading ? 'В процессе...' : `Парсить позицию ${type.toUpperCase()}`}
-        </button>
-        {status.text && (<div className={`${s.status} ${s[status.type]}`} style={{display: 'block'}}>
-            {status.text}
-        </div>)}
-    </div>);
-};
-
-export default function Parsing() {
-    return (<div className={s.dashboard}>
-        <ParserCard
-            title="Парсер Playstation"
-            type="ps"
-            apiEndpoint="https://gwstorebot.ru/api/parsing/start-parse-ps"
-            placeholder="https://store.playstation.com/en-tr/category/3f772501-f6f8-49b7-abac-874a88ca4897"
-        />
-        <ParserCard
-            title="Парсер XBDeals"
-            type="xb"
-            apiEndpoint="https://gwstorebot.ru/api/parsing/start-parse-xbdeals"
-            placeholder="https://xbdeals.net..."
-        />
-        <ParserSingleCard
-            title="Парсер по ссылкам Playstation"
-            type="ps-single"
-            apiEndpoint="https://gwstorebot.ru/api/parsing/parse-links-ps"
-            placeholder="https://store.playstation.com/en-tr/product/EP1004-..."
-        />
-        <ParserSingleCard
-            title="Парсер по ссылкам Xbox"
-            type="xb-single"
-            apiEndpoint="https://gwstorebot.ru/api/parsing/parse-links-xbdeals"
-            placeholder="https://www.xbox.com/en-US/games/store/.../XXXXX"
-        />
-    </div>);
+    );
 }

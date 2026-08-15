@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import style from './DesktopButtonBuy.module.scss';
 
 const DesktopButtonBuy = ({ onBuy, inputUsernameRef, isEnabled }) => {

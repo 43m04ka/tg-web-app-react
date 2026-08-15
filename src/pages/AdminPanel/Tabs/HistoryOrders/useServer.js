@@ -1,4 +1,6 @@
-const URL = '/api/admin'
+import {ADMIN_API_URL} from '../../adminAuth';
+
+const URL = ADMIN_API_URL
 
 export function useServer() {
 

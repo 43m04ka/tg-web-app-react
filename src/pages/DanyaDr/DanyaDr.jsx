@@ -1,5 +1,5 @@
 import style from './DanyaDr.module.scss';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import s from './DanyaDrStyles.module.scss';
 
 

@@ -4,7 +4,6 @@ import useData from '../../../useData';
 import {useServer} from '../useServer';
 import StartPagePreview from './StartPagePreview';
 import EditStartPageItem from './EditStartPageItem';
-import {START_PAGE_DEFAULTS, encodeStartPageContent} from './startPageContent';
 import style from './EditStartPages.module.scss';
 
 const PLATFORMS = [

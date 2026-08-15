@@ -1,7 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {useLocation} from 'react-router-dom';
-import {useTelegram, clickMockBackButton, useMockBackButton} from '../../../hooks/useTelegram';
+import {useTelegram} from '../../../hooks/useTelegram';
+import {clickMockBackButton} from '../../../hooks/utils/isTg';
+import {useMockBackButton} from '../../../hooks/useMockBackButton';
 import style from './CustomBackButton.module.scss';
+import {usePlatform} from "../../../hooks/utils/usePlatform";
 
 const RESERVED_TOP_SEGMENTS = new Set([
     'favorites', 'catalog', 'card', 'choice-catalog', 'admin-panel', 'admin', 'history', 'danya_dr'
@@ -17,7 +20,8 @@ const HEADER_INNER_PAD_Y = 10;
 const HEADER_ROW_MIN = 56;
 
 const CustomBackButton = () => {
-    const {isVk, isWeb, tg, contentSafeAreaInset} = useTelegram();
+    const {tg, contentSafeAreaInset} = useTelegram();
+    const { isVk, isWeb} = usePlatform();
     const isVisible = useMockBackButton();
     const location = useLocation();
     const [isDesktop, setIsDesktop] = useState(

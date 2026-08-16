@@ -14,9 +14,12 @@ const CardTable = ({
     onToggleSelect,
     onToggleSelectAll,
     onOpenCard,
+    catalogById,
+    typeLabels = {},
     emptyText = 'Товары не найдены',
 }) => {
     const allSelected = cardList.length > 0 && selectedIds.length === cardList.length;
+    const columns = 6;
 
     return (
         <table className={style['table']}>
@@ -32,7 +35,10 @@ const CardTable = ({
                         />
                     </th>
                     <th>Название</th>
-                    <th className={style['numCol']}>ID</th>
+                    {/* Каталог и тип — то, по чему список фильтруется, поэтому они
+                        должны быть видны в строке, а не только в выпадающих списках */}
+                    <th className={style['catalogCol']}>Каталог</th>
+                    <th className={style['typeCol']}>Тип</th>
                     <th className={style['numCol']}>Цена</th>
                     <th className={style['statusCol']}>Статус</th>
                 </tr>
@@ -40,15 +46,17 @@ const CardTable = ({
             <tbody>
                 {loading ? (
                     <tr>
-                        <td colSpan={5} className={style['emptyCell']}>Загрузка…</td>
+                        <td colSpan={columns} className={style['emptyCell']}>Загрузка…</td>
                     </tr>
                 ) : cardList.length === 0 ? (
                     <tr>
-                        <td colSpan={5} className={style['emptyCell']}>{emptyText}</td>
+                        <td colSpan={columns} className={style['emptyCell']}>{emptyText}</td>
                     </tr>
                 ) : (
                     cardList.map((item) => {
                         const selected = selectedIds.includes(item.id);
+                        const catalog = catalogById?.get(item.catalogId);
+
                         return (
                             <tr
                                 key={item.id}
@@ -68,9 +76,23 @@ const CardTable = ({
                                 </td>
                                 <td className={style['nameCell']}>
                                     <span className={style['name']}>{item.name}</span>
-                                    {item.platform ? <span className={style['platform']}>{item.platform}</span> : null}
+                                    <span className={style['rowMeta']}>
+                                        <span className={style['mono']}>ID {item.id}</span>
+                                        {item.platform ? <span className={style['platform']}>{item.platform}</span> : null}
+                                    </span>
                                 </td>
-                                <td className={`${style['numCol']} ${style['mono']}`}>{item.id}</td>
+                                <td className={style['catalogCol']}>
+                                    {/* Каталога может не быть в справочнике: товар остался
+                                        от удалённого каталога — показываем хотя бы его id */}
+                                    <span className={style['catalogPath']}>
+                                        {catalog?.path || (item.catalogId ? `ID ${item.catalogId}` : '—')}
+                                    </span>
+                                </td>
+                                <td className={style['typeCol']}>
+                                    <span className={style['typeText']}>
+                                        {item.typeLabel || typeLabels[item.type] || item.type || '—'}
+                                    </span>
+                                </td>
                                 <td className={style['numCol']}>
                                     <span className={style['price']}>{formatPrice(item.price)}</span>
                                     {item.oldPrice ? (

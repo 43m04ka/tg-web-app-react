@@ -1,13 +1,17 @@
 @import "src/pages/AdminPanel/AdminPanel.module";
 @import "src/pages/AdminPanel/styles/dashed";
 
+// Главная занимает ровно экран и не прокручивается целиком: списки внутри виджетов
+// растут непредсказуемо (шесть параллельных парсов — обычное дело), и при странице,
+// которая тянется вниз, нижний блок уезжал за край окна.
+// Прокрутка живёт внутри каждого виджета (.widgetBody), а не у страницы.
 .container {
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
   gap: var(--sp-5);
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .title {
@@ -20,18 +24,26 @@
 }
 
 // Раскладка задана вручную: места блоков фиксированы, поэтому при догрузке
-// данных ничего не переставляется. Строки — фиксированной высоты «с запасом».
+// данных ничего не переставляется.
 .widgetGrid {
+  flex: 1;
+  min-height: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(320px, 1fr));
-  // Верхняя строка держит две строки действий «Обслуживания» с запасом,
-  // чтобы вторая не упиралась в край блока и не появлялась прокрутка.
-  grid-template-rows: 260px 300px;
+  // Верхняя строка — три компактных виджета настроек: у каждого фиксированный
+  // набор полей, который не растёт, поэтому высота у неё по содержимому.
+  //
+  // Нижние две строки отданы блокам с непредсказуемым числом записей:
+  // «Итоги задач» — 2x2, «Фоновые процессы» — 1x2. Они делят между собой всё,
+  // что осталось от высоты экрана: жёсткие пиксели здесь либо не влезали
+  // в короткое окно, либо оставляли пустоту в высоком.
+  grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
   // «Итоги задач» занимают две колонки: в расширенной части лежат причины и ссылки,
   // и в одну узкую колонку они превращаются в лапшу из переносов
   grid-template-areas:
-    'status maintenance processes'
-    'steam  notices     notices';
+    'status  maintenance steam'
+    'notices notices     processes'
+    'notices notices     processes';
   gap: var(--sp-5);
   max-width: 1280px;
 }
@@ -56,21 +68,46 @@
   grid-area: notices;
 }
 
+// Ниже этой ширины блоков больше, чем строк на экране: страница снова прокручивается
+// целиком, а высоты становятся фиксированными — иначе строки схлопнутся в ничто.
 @media (max-width: 1180px) {
+  .container {
+    overflow-y: auto;
+  }
+
   .widgetGrid {
+    flex: none;
     grid-template-columns: repeat(2, minmax(300px, 1fr));
-    grid-template-rows: 260px 300px 300px;
+    // Колонок всего две, и обе нужны «Итогам» — поэтому здесь тянется вниз
+    // только этот блок, а «Процессы» встают в строку с настройками
+    grid-template-rows: auto 290px 290px 290px;
     grid-template-areas:
       'status  maintenance'
       'steam   processes'
+      'notices notices'
       'notices notices';
+  }
+}
+
+// Низкое окно: делить остаток экрана уже нечего — две нижние строки ужались бы
+// до пары строк текста. Возвращаем странице прокрутку и фиксируем высоты.
+@media (min-width: 1181px) and (max-height: 760px) {
+  .container {
+    overflow-y: auto;
+  }
+
+  .widgetGrid {
+    flex: none;
+    grid-template-rows: auto 290px 290px;
   }
 }
 
 @media (max-width: 780px) {
   .widgetGrid {
+    flex: none;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: repeat(5, minmax(220px, auto));
+    // Списочные блоки внизу и заметно выше настроек: числа записей в них не знаем
+    grid-template-rows: repeat(3, minmax(220px, auto)) repeat(2, minmax(360px, auto));
     grid-template-areas:
       'status'
       'steam'

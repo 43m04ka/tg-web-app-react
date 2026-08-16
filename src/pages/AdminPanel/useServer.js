@@ -99,6 +99,70 @@ export function useServer() {
 
 
 
+    /**
+     * Сквозной список товаров: фильтры и постраничность считает сервер.
+     *
+     * Отдельно от searchForName: тот отдаёт максимум 20 совпадений по имени, и фильтровать
+     * их на клиенте бессмысленно — отбор нужен по всей таблице, а не по верхушке выдачи.
+     */
+    const getProducts = async ({search, catalogId, onSale, type, page, pageSize} = {}) => {
+        const params = new URLSearchParams();
+
+        // Пустое значение не отправляем: на сервере это «фильтр не задан»
+        if (search) params.set('search', search);
+        if (catalogId) params.set('catalogId', String(catalogId));
+        if (onSale === true || onSale === false) params.set('onSale', String(onSale));
+        if (type) params.set('type', type);
+        if (page) params.set('page', String(page));
+        if (pageSize) params.set('pageSize', String(pageSize));
+        params.set('time', String(Date.now()));
+
+        const response = await fetch(`${URL}/products?${params.toString()}`, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+        });
+
+        if (!response.ok) throw new Error('Не удалось загрузить список товаров');
+        return response.json();
+    };
+
+    /** Какие типы товаров вообще встречаются — для выпадающего фильтра */
+    const getProductFacets = async () => {
+        const response = await fetch(`${URL}/products/facets?time=${Date.now()}`, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+        });
+
+        if (!response.ok) throw new Error('Не удалось загрузить фильтры');
+        return response.json();
+    };
+
+    /** Массовое изменение одним запросом вместо цикла по выделенным строкам */
+    const bulkUpdateCards = async (authenticationData, ids, updateData) => {
+        const response = await fetch(`${URL}/products/bulk-update`, {
+            method: 'POST',
+            headers: adminAuthHeadersJson(),
+            body: JSON.stringify(withJsonAuth({authenticationData, ids, updateData})),
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error || 'Не удалось изменить товары');
+        return data;
+    };
+
+    /** Массовое удаление одним запросом */
+    const bulkDeleteCards = async (authenticationData, ids) => {
+        const response = await fetch(`${URL}/products/bulk-delete`, {
+            method: 'POST',
+            headers: adminAuthHeadersJson(),
+            body: JSON.stringify(withJsonAuth({authenticationData, ids})),
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error || 'Не удалось удалить товары');
+        return data;
+    };
+
     const searchForName = async (setResult, searchString) => {
         await fetch(`${URL}/searchForName?searchString=${searchString}&time=${Date.now()}`, {
             method: 'GET',
@@ -140,6 +204,42 @@ export function useServer() {
             /* ignore */
         }
         return {ok: res.ok, status: res.status, data};
+    };
+
+    /** Когда запланировано отложенное обновление ассоциаций (или null) */
+    const getAssociationsSchedule = async () => {
+        const response = await fetch(`${URL}/associations/schedule?time=${Date.now()}`, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+        });
+
+        if (!response.ok) throw new Error('Не удалось получить расписание');
+        return response.json();
+    };
+
+    /** @param {number} runAt момент запуска, epoch ms */
+    const scheduleAssociations = async (authenticationData, runAt) => {
+        const response = await fetch(`${URL}/associations/schedule`, {
+            method: 'POST',
+            headers: adminAuthHeadersJson(),
+            body: JSON.stringify(withJsonAuth({authenticationData, runAt})),
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error || 'Не удалось запланировать обновление');
+        return data;
+    };
+
+    const cancelAssociationsSchedule = async (authenticationData) => {
+        const response = await fetch(`${URL}/associations/schedule/cancel`, {
+            method: 'POST',
+            headers: adminAuthHeadersJson(),
+            body: JSON.stringify(withJsonAuth({authenticationData})),
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error || 'Не удалось снять задачу');
+        return data;
     };
 
     const setExchangeIndiaCatalog = async (authenticationData, catalogId) => {
@@ -213,8 +313,11 @@ export function useServer() {
 
     return {
         getCardList, getCard, getCatalogList,
+        getProducts, getProductFacets,
         updateCatalogData,
         updateCardData, updateAssociations, refreshStructureData,
+        getAssociationsSchedule, scheduleAssociations, cancelAssociationsSchedule,
+        bulkUpdateCards, bulkDeleteCards,
         deleteCard,
         searchForName, setExchangeIndiaCatalog,
         getAssociationsStatus, getCatalogIcons,

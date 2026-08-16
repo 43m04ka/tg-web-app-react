@@ -4,112 +4,201 @@ import {useServer} from "../../useServer";
 import style from "./EditCards.module.scss";
 import CardTable from "./CardTable";
 import useData from "../../useData";
+import useGlobalData from "../../../../hooks/useGlobalData";
 import WorkTabs, {useWorkTabs} from "../../Elements/WorkTabs/WorkTabs";
+import {useFeedback} from "../../Elements/Feedback/Feedback";
 import buildSuggestions from "./EditData/buildSuggestions";
 
+// СПИСОК ТОВАРОВ
+// --------------
+// Отбор целиком считает сервер (/admin/products): фильтры по каталогу, статусу и типу
+// плюс постраничность. Раньше экран умел только поиск по имени, сервер возвращал не более
+// двадцати совпадений, и фильтр по статусу применялся к этим двадцати строкам на клиенте —
+// то есть отвечал на вопрос «сколько снятых среди случайной верхушки выдачи».
+// До первого введённого символа список вообще не загружался.
+
 const STATUS_FILTERS = [
-    {key: 'all', label: 'Все'},
-    {key: 'onSale', label: 'В продаже'},
-    {key: 'off', label: 'Сняты'},
+    {key: 'all', label: 'Все', value: undefined},
+    {key: 'onSale', label: 'В продаже', value: true},
+    {key: 'off', label: 'Сняты', value: false},
 ];
 
-const CardsList = ({onCountChange}) => {
-    const {searchForName, updateCardData, deleteCard} = useServer();
-    const {authenticationData} = useData();
-    const {openTab, closeTab, closeTabsWhere, updateTab} = useWorkTabs();
+// Подписи типов те же, что в форме карточки. Витрина хранит код, человеку нужен текст.
+const TYPE_LABELS = {
+    GAME: 'Игра',
+    SUBSCRIPTION: 'Подписка',
+    CODE: 'Код',
+    ADD_ON: 'DLC',
+    COMPLECT: 'Комплект',
+    DONATION: 'Донат',
+    OTHER: 'Другое',
+};
 
-    const [cardList, setCardList] = useState([]);
+const PAGE_SIZE = 50;
+
+const CardsList = ({onCountChange}) => {
+    // useServer() собирает новые замыкания на каждый рендер. Положить их в зависимости
+    // загрузки нельзя: эффект перезапускал бы сам себя до бесконечности — держим
+    // последнюю версию в ref и зовём через него.
+    const server = useServer();
+    const serverRef = useRef(server);
+    serverRef.current = server;
+
+    const {authenticationData} = useData();
+    const {catalogList, updateCatalogList} = useGlobalData();
+    const {openTab, closeTab, closeTabsWhere, updateTab} = useWorkTabs();
+    const {showToast, confirm} = useFeedback();
+
+    const [items, setItems] = useState([]);
+    const [total, setTotal] = useState(0);
+    const [pages, setPages] = useState(1);
+    const [page, setPage] = useState(1);
+
     const [searchInputValue, setSearchInputValue] = useState('');
+    const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
-    const [loading, setLoading] = useState(false);
+    const [catalogFilter, setCatalogFilter] = useState('');
+    const [typeFilter, setTypeFilter] = useState('');
+    const [typeFacets, setTypeFacets] = useState([]);
+
+    const [loading, setLoading] = useState(true);
     const [busy, setBusy] = useState(false);
+    const [error, setError] = useState('');
     const [selectedIds, setSelectedIds] = useState([]);
 
     const debounceRef = useRef(null);
     const requestRef = useRef(0);
 
-    // Пустой запрос — это не «покажи всё», а «нечего искать»: запрос не уходит,
-    // список пустой. Ответы нумеруем, чтобы медленный старый запрос не перебил свежий.
-    const load = useCallback(async (rawQuery) => {
-        const query = rawQuery.trim();
+    const statusValue = STATUS_FILTERS.find((filter) => filter.key === statusFilter)?.value;
+
+    // Каталоги нужны и для фильтра, и для подписи каталога в строке таблицы
+    useEffect(() => {
+        if (!catalogList) updateCatalogList();
+    }, [catalogList, updateCatalogList]);
+
+    useEffect(() => {
+        serverRef.current.getProductFacets()
+            .then((data) => setTypeFacets(Array.isArray(data?.types) ? data.types : []))
+            // Фильтр по типу — удобство, а не обязательная часть экрана:
+            // не смогли получить список типов — просто не показываем его
+            .catch(() => setTypeFacets([]));
+    }, []);
+
+    const catalogById = useMemo(() => {
+        const map = new Map();
+        (catalogList || []).forEach((catalog) => map.set(catalog.id, catalog));
+        return map;
+    }, [catalogList]);
+
+    // Ответы нумеруем: медленный старый запрос не должен перебить свежий
+    const load = useCallback(async () => {
         const requestId = ++requestRef.current;
-
-        if (!query) {
-            setLoading(false);
-            setCardList([]);
-            return;
-        }
-
         setLoading(true);
-        await searchForName((result) => {
+        setError('');
+
+        try {
+            const data = await serverRef.current.getProducts({
+                search,
+                catalogId: catalogFilter || undefined,
+                onSale: statusValue,
+                type: typeFilter || undefined,
+                page,
+                pageSize: PAGE_SIZE,
+            });
+
             if (requestId !== requestRef.current) return;
-            setCardList(Array.isArray(result) ? result : []);
-            setLoading(false);
-        }, query);
-    }, [searchForName]);
+
+            setItems(Array.isArray(data?.items) ? data.items : []);
+            setTotal(Number(data?.total) || 0);
+            setPages(Math.max(1, Number(data?.pages) || 1));
+        } catch (err) {
+            if (requestId !== requestRef.current) return;
+            setItems([]);
+            setTotal(0);
+            setPages(1);
+            setError(err.message || 'Не удалось загрузить список');
+        } finally {
+            if (requestId === requestRef.current) setLoading(false);
+        }
+    }, [search, catalogFilter, statusValue, typeFilter, page]);
+
+    useEffect(() => {
+        load();
+    }, [load]);
+
+    // Смена любого фильтра возвращает на первую страницу: иначе после сужения выборки
+    // экран оставался на странице 7, которой в новой выдаче уже нет
+    const resetToFirstPage = () => setPage(1);
 
     const onSearchChange = (value) => {
         setSearchInputValue(value);
         clearTimeout(debounceRef.current);
 
-        // Очистили поле — сбрасываем сразу, ждать нечего.
+        // Очистили поле — показываем всё сразу, ждать нечего
         if (!value.trim()) {
-            load('');
+            setSearch('');
+            resetToFirstPage();
             return;
         }
-        debounceRef.current = setTimeout(() => load(value), 350);
+
+        debounceRef.current = setTimeout(() => {
+            setSearch(value.trim());
+            resetToFirstPage();
+        }, 350);
     };
 
     useEffect(() => () => clearTimeout(debounceRef.current), []);
 
-    const visibleList = useMemo(() => {
-        if (statusFilter === 'onSale') return cardList.filter((item) => item.onSale);
-        if (statusFilter === 'off') return cardList.filter((item) => !item.onSale);
-        return cardList;
-    }, [cardList, statusFilter]);
-
-    // Выделение живёт только для видимых строк: сменили фильтр — лишнее отпало.
+    // Выделение живёт только для видимых строк: ушли со страницы или сменили фильтр —
+    // выбор снимается, иначе массовое действие уедет по товарам, которых не видно
     useEffect(() => {
-        setSelectedIds((prev) => prev.filter((id) => visibleList.some((item) => item.id === id)));
-    }, [visibleList]);
+        setSelectedIds((prev) => prev.filter((id) => items.some((item) => item.id === id)));
+    }, [items]);
 
-    // Список живёт своей жизнью, пока открыты вкладки: карточка, выпавшая из выдачи
-    // (сменили поиск, фильтр, сняли с продажи, удалили), закрывается принудительно,
-    // а переименованная — обновляет подпись своей вкладки.
-    const hasQuery = Boolean(searchInputValue.trim());
+    // Переименованный товар обновляет подпись своей вкладки.
+    //
+    // Закрывать вкладки по отсутствию в выдаче нельзя: список постраничный и фильтруемый,
+    // и «нет на текущей странице» не значит «удалён». Иначе переход на вторую страницу
+    // закрывал бы карточку, которую в этот момент редактируют. Вкладки закрываются только
+    // после реального удаления — см. handleDelete.
+    useEffect(() => {
+        if (loading) return;
+        items.forEach((item) => updateTab(`card-${item.id}`, {title: item.name}));
+    }, [items, loading, updateTab]);
+
+    const rangeText = useMemo(() => {
+        if (loading) return 'Загрузка…';
+        if (!total) return 'ничего не найдено';
+
+        const from = (page - 1) * PAGE_SIZE + 1;
+        const to = Math.min(total, page * PAGE_SIZE);
+        return `${from}–${to} из ${total}`;
+    }, [loading, total, page]);
 
     useEffect(() => {
-        if (loading || !hasQuery) return;
-        closeTabsWhere((tab) => tab.entity === 'card'
-            && !visibleList.some((item) => item.id === tab.entityId));
-        visibleList.forEach((item) => updateTab(`card-${item.id}`, {title: item.name}));
-    }, [visibleList, loading, hasQuery, closeTabsWhere, updateTab]);
+        onCountChange(rangeText);
+    }, [rangeText, onCountChange]);
 
-    useEffect(() => {
-        if (!hasQuery) {
-            onCountChange('поиск по названию');
-            return;
-        }
-        onCountChange(loading ? 'Загрузка…' : `${visibleList.length} из ${cardList.length}`);
-    }, [hasQuery, loading, visibleList.length, cardList.length, onCountChange]);
-
-    // Вкладки редактирования не должны замыкаться на текущий запрос поиска.
+    // Вкладка редактирования не должна замыкаться на текущие фильтры
     const reloadRef = useRef(() => {});
-    reloadRef.current = () => load(searchInputValue);
+    reloadRef.current = () => load();
     const reload = useCallback(() => reloadRef.current(), []);
 
     // Вид и подвид — свободные строки, но набор значений на практике ограничен:
-    // подсказываем то, что уже встречается в выдаче.
+    // подсказываем то, что уже встречается в выдаче
     const suggestionsRef = useRef({});
-    suggestionsRef.current = buildSuggestions(cardList);
+    suggestionsRef.current = buildSuggestions(items);
 
-    const openCard = (card) => {
+    const openCard = useCallback((card) => {
         if (!card) return;
+
         const id = `card-${card.id}`;
+        const catalog = catalogById.get(card.catalogId);
+
         openTab({
             id,
             title: card.name,
-            subtitle: `ID ${card.id}${card.platform ? ` · ${card.platform}` : ''}`,
+            subtitle: `ID ${card.id}${catalog?.path ? ` · ${catalog.path}` : ''}`,
             entity: 'card',
             entityId: card.id,
             content: (
@@ -121,17 +210,58 @@ const CardsList = ({onCountChange}) => {
                 />
             ),
         });
+    }, [openTab, closeTab, reload, catalogById]);
+
+    const changeStatus = async (nextOnSale) => {
+        if (!selectedIds.length) return;
+
+        setBusy(true);
+        try {
+            // Один запрос на всю выборку: раньше здесь был цикл по выделенным строкам,
+            // и полсотни товаров превращались в полсотни запросов подряд
+            const result = await serverRef.current.bulkUpdateCards(authenticationData, selectedIds, {onSale: nextOnSale});
+            showToast(
+                `${nextOnSale ? 'В продажу' : 'Снято с продажи'}: ${result.updated ?? selectedIds.length}`,
+                'success',
+            );
+            setSelectedIds([]);
+            await load();
+        } catch (err) {
+            showToast(err.message || 'Не удалось изменить товары', 'error');
+        } finally {
+            setBusy(false);
+        }
     };
 
-    const changeStatus = async (ids, nextOnSale) => {
-        if (!ids.length) return;
+    const handleDelete = async () => {
+        if (!selectedIds.length) return;
+
+        const agreed = await confirm({
+            title: 'Удалить товары?',
+            text: `Будет удалено: ${selectedIds.length}. Действие необратимо.`,
+            confirmLabel: 'Удалить',
+            danger: true,
+        });
+        if (!agreed) return;
+
+        const removedIds = selectedIds;
+
         setBusy(true);
-        for (const id of ids) {
-            await updateCardData(() => {}, authenticationData, id, {onSale: nextOnSale});
+        try {
+            const result = await serverRef.current.bulkDeleteCards(authenticationData, removedIds);
+            showToast(`Удалено товаров: ${result.deleted ?? removedIds.length}`, 'success');
+
+            // Единственный случай, когда вкладку закрывают за пользователя: товара больше нет,
+            // и форма редактирования вела бы в никуда
+            closeTabsWhere((tab) => tab.entity === 'card' && removedIds.includes(tab.entityId));
+
+            setSelectedIds([]);
+            await load();
+        } catch (err) {
+            showToast(err.message || 'Не удалось удалить товары', 'error');
+        } finally {
+            setBusy(false);
         }
-        await load(searchInputValue);
-        setSelectedIds([]);
-        setBusy(false);
     };
 
     const toggleSelect = (id) => {
@@ -139,47 +269,33 @@ const CardsList = ({onCountChange}) => {
     };
 
     const toggleSelectAll = () => {
-        setSelectedIds((prev) => (prev.length === visibleList.length ? [] : visibleList.map((item) => item.id)));
+        setSelectedIds((prev) => (prev.length === items.length ? [] : items.map((item) => item.id)));
     };
 
-    const handleDelete = async () => {
-        if (!selectedIds.length) return;
-        const confirmed = window.confirm(
-            `Удалить ${selectedIds.length} товар(ов)? Действие необратимо.`,
-        );
-        if (!confirmed) return;
-
-        setBusy(true);
-        for (const id of selectedIds) {
-            await deleteCard(() => {}, authenticationData, id);
-        }
-        await load(searchInputValue);
-        setSelectedIds([]);
-        setBusy(false);
+    const resetFilters = () => {
+        setSearchInputValue('');
+        setSearch('');
+        setStatusFilter('all');
+        setCatalogFilter('');
+        setTypeFilter('');
+        resetToFirstPage();
     };
 
     const hasSelection = selectedIds.length > 0;
-    const selectedOnSaleCount = visibleList
-        .filter((item) => selectedIds.includes(item.id) && item.onSale)
-        .length;
-    const mixedSelection = hasSelection
-        && selectedOnSaleCount > 0
-        && selectedOnSaleCount < selectedIds.length;
+    const selectedOnSaleCount = items.filter((item) => selectedIds.includes(item.id) && item.onSale).length;
+    const mixedSelection = hasSelection && selectedOnSaleCount > 0 && selectedOnSaleCount < selectedIds.length;
     const singleSelected = selectedIds.length === 1
-        ? visibleList.find((item) => item.id === selectedIds[0])
+        ? items.find((item) => item.id === selectedIds[0])
         : null;
+
+    const filtersActive = Boolean(search || catalogFilter || typeFilter || statusFilter !== 'all');
 
     return (
         <div className={style['screen']}>
             <header className={style['header']}>
                 <div className={style['headerTop']}>
                     <h1 className={style['title']}>Товары</h1>
-                    <span className={style['counter']}>
-                        {!hasQuery
-                            ? 'введите название'
-                            : loading ? 'Загрузка…' : `${visibleList.length} из ${cardList.length}`}
-                    </span>
-                    <span className={style['counterHint']}>сервер отдаёт не более 20 совпадений</span>
+                    <span className={style['counter']}>{rangeText}</span>
                 </div>
 
                 <div className={style['toolbar']}>
@@ -203,24 +319,59 @@ const CardsList = ({onCountChange}) => {
                         ) : null}
                     </div>
 
+                    <select className={style['filterSelect']}
+                            value={catalogFilter}
+                            onChange={(event) => {
+                                setCatalogFilter(event.target.value);
+                                resetToFirstPage();
+                            }}>
+                        <option value="">Все каталоги</option>
+                        {(catalogList || []).map((catalog) => (
+                            <option key={catalog.id} value={catalog.id}>{catalog.path}</option>
+                        ))}
+                    </select>
+
+                    <select className={style['filterSelect']}
+                            value={typeFilter}
+                            onChange={(event) => {
+                                setTypeFilter(event.target.value);
+                                resetToFirstPage();
+                            }}>
+                        <option value="">Все типы</option>
+                        {typeFacets.map((facet) => (
+                            <option key={facet.value} value={facet.value}>
+                                {`${TYPE_LABELS[facet.value] || facet.value} (${facet.count})`}
+                            </option>
+                        ))}
+                    </select>
+
                     <div className={style['segmented']}>
                         {STATUS_FILTERS.map((filter) => (
                             <button
                                 key={filter.key}
                                 type="button"
                                 className={`${style['segment']} ${statusFilter === filter.key ? style['segmentActive'] : ''}`}
-                                onClick={() => setStatusFilter(filter.key)}
+                                onClick={() => {
+                                    setStatusFilter(filter.key);
+                                    resetToFirstPage();
+                                }}
                             >
                                 {filter.label}
                             </button>
                         ))}
                     </div>
+
+                    {filtersActive ? (
+                        <button type="button" className={style['actionBtnGhost']} onClick={resetFilters}>
+                            Сбросить фильтры
+                        </button>
+                    ) : null}
                 </div>
 
                 {/* Основные действия — всегда на виду над списком, а не всплывающей полосой снизу. */}
                 <div className={style['actionBar']}>
                     <span className={style['selectionInfo']}>
-                        {selectedIds.length > 0 ? `Выбрано: ${selectedIds.length}` : 'Ничего не выбрано'}
+                        {hasSelection ? `Выбрано: ${selectedIds.length}` : 'Ничего не выбрано'}
                         {mixedSelection ? <em className={style['selectionNote']}> · в выборке есть и снятые, и в продаже</em> : null}
                     </span>
                     <div className={style['actionGroup']}>
@@ -232,12 +383,12 @@ const CardsList = ({onCountChange}) => {
                         </button>
                         <button type="button" className={style['actionBtn']}
                                 disabled={!hasSelection || busy}
-                                onClick={() => changeStatus(selectedIds, true)}>
+                                onClick={() => changeStatus(true)}>
                             В продажу
                         </button>
                         <button type="button" className={style['actionBtn']}
                                 disabled={!hasSelection || busy}
-                                onClick={() => changeStatus(selectedIds, false)}>
+                                onClick={() => changeStatus(false)}>
                             Снять с продажи
                         </button>
                         <button type="button" className={`${style['actionBtn']} ${style['actionBtnDanger']}`}
@@ -252,21 +403,40 @@ const CardsList = ({onCountChange}) => {
                         </button>
                     </div>
                 </div>
-
             </header>
 
             <div className={style['workArea']}>
                 <div className={style['tableWrap']}>
                     <CardTable
-                        cardList={visibleList}
+                        cardList={items}
                         loading={loading}
                         selectedIds={selectedIds}
                         onToggleSelect={toggleSelect}
                         onToggleSelectAll={toggleSelectAll}
                         onOpenCard={openCard}
-                        emptyText={hasQuery ? 'Товары не найдены' : 'Введите название товара в поиск'}
+                        catalogById={catalogById}
+                        typeLabels={TYPE_LABELS}
+                        emptyText={error || (filtersActive ? 'Под фильтры ничего не подошло' : 'Товаров пока нет')}
                     />
                 </div>
+
+                {/* Страницы показываем всегда, когда их больше одной: без этого
+                    выдача молча обрывалась на первых пятидесяти строках */}
+                {pages > 1 ? (
+                    <div className={style['pager']}>
+                        <button type="button" className={style['actionBtn']}
+                                disabled={page <= 1 || loading}
+                                onClick={() => setPage((prev) => Math.max(1, prev - 1))}>
+                            Назад
+                        </button>
+                        <span className={style['pagerInfo']}>Страница {page} из {pages}</span>
+                        <button type="button" className={style['actionBtn']}
+                                disabled={page >= pages || loading}
+                                onClick={() => setPage((prev) => Math.min(pages, prev + 1))}>
+                            Вперёд
+                        </button>
+                    </div>
+                ) : null}
             </div>
         </div>
     );

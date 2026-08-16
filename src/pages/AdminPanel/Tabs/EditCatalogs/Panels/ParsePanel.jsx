@@ -120,6 +120,19 @@ const XBOX_CATALOG_PRESETS = [
 
 const emptyXboxFilters = () => ({PlayWith: [], Price: [], IncludedInSubscription: [], Genre: []});
 
+// Чем ограничиваем парс каталога Xbox
+const XBOX_LIMIT_MODES = [
+    {key: 'all', label: 'Весь каталог'},
+    {key: 'pages', label: 'Страницами'},
+    {key: 'items', label: 'Позициями'},
+];
+
+const XBOX_LIMIT_HINTS = {
+    all: 'Пока каталог не кончится, по 25 товаров на страницу',
+    pages: 'По 25 товаров на страницу — сколько из них попадёт в каталог, заранее неизвестно',
+    items: 'Считаются только позиции, реально попавшие в каталог. Бесплатные игры витрина отдаёт с ценой 0 и в счёт не идут',
+};
+
 const ModeSwitch = ({value, onChange}) => (
     <div className={f.segmented}>
         <button type="button"
@@ -148,13 +161,14 @@ const ParsePanel = ({catalog, page, onClose}) => {
 
     const [mode, setMode] = useState('catalog');
     const [formData, setFormData] = useState({
-        catalogUrl: '', countPages: '', isShallow: false, promoDate: '', links: '',
+        catalogUrl: '', countPages: '', countItems: '', isShallow: false, promoDate: '', links: '',
         parceAddons: false, safeMode: false,
         filterTypes: [], filterPlatforms: [], sortName: 'default', sortAscending: false,
         xboxFilters: emptyXboxFilters(), xboxSort: XBOX_DEFAULT_SORT,
     });
     // Число страниц витрина теперь сообщает сама на обеих площадках
     const [pagesMode, setPagesMode] = useState('auto');
+    const [xboxLimitMode, setXboxLimitMode] = useState('all');
     const [promoMode, setPromoMode] = useState(isPs ? 'auto' : 'manual');
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState({text: '', type: ''});
@@ -208,7 +222,14 @@ const ParsePanel = ({catalog, page, onClose}) => {
                 payload = {
                     catalogId: formData.catalogUrl,
                     bdPath: catalog.path,
-                    countPages: pagesMode === 'auto' ? 0 : Number(formData.countPages) || 0,
+                    // У PS лимит только страницами, у Xbox их три: весь каталог,
+                    // страницы или количество реально сохранённых позиций
+                    countPages: isPs
+                        ? (pagesMode === 'auto' ? 0 : Number(formData.countPages) || 0)
+                        : (xboxLimitMode === 'pages' ? Number(formData.countPages) || 0 : 0),
+                    countItems: !isPs && xboxLimitMode === 'items'
+                        ? Number(formData.countItems) || 0
+                        : 0,
                     isShallow: formData.isShallow,
                     platform: page.type,
                     parceAddons: formData.parceAddons,
@@ -326,20 +347,53 @@ const ParsePanel = ({catalog, page, onClose}) => {
                                        onChange={(e) => handleChange('catalogUrl', e.target.value)} />
                             </Row>
 
-                            <Row label="Количество страниц"
-                                 hint={pagesMode === 'auto'
-                                     ? (isPs ? 'Вся категория целиком' : 'Весь каталог целиком, по 25 товаров на страницу')
-                                     : null}>
-                                <ModeSwitch value={pagesMode} onChange={(nextMode) => {
-                                    setPagesMode(nextMode);
-                                    if (nextMode === 'manual' && !formData.countPages) handleChange('countPages', 1);
-                                }} />
-                                {pagesMode === 'manual' ? (
-                                    <input className={f.input} type="number" min="1"
-                                           value={formData.countPages}
-                                           onChange={(e) => handleChange('countPages', e.target.value)} />
-                                ) : null}
-                            </Row>
+                            {isPs ? (
+                                <Row label="Количество страниц"
+                                     hint={pagesMode === 'auto' ? 'Вся категория целиком' : null}>
+                                    <ModeSwitch value={pagesMode} onChange={(nextMode) => {
+                                        setPagesMode(nextMode);
+                                        if (nextMode === 'manual' && !formData.countPages) handleChange('countPages', 1);
+                                    }} />
+                                    {pagesMode === 'manual' ? (
+                                        <input className={f.input} type="number" min="1"
+                                               value={formData.countPages}
+                                               onChange={(e) => handleChange('countPages', e.target.value)} />
+                                    ) : null}
+                                </Row>
+                            ) : (
+                                /* Считать страницы бессмысленно, когда каталог отсортирован
+                                   по популярности: в топе много бесплатных игр, витрина
+                                   отдаёт им цену 0, и в каталог они не попадают. «250 позиций»
+                                   даёт 250 позиций, сколько бы страниц на это ни ушло. */
+                                <Row label="Сколько парсить" wide
+                                     hint={XBOX_LIMIT_HINTS[xboxLimitMode]}>
+                                    <div className={f.segmented}>
+                                        {XBOX_LIMIT_MODES.map((mode) => (
+                                            <button type="button" key={mode.key}
+                                                    className={`${f.segment} ${xboxLimitMode === mode.key ? f.segmentActive : ''}`}
+                                                    onClick={() => {
+                                                        setXboxLimitMode(mode.key);
+                                                        if (mode.key === 'pages' && !formData.countPages) handleChange('countPages', 1);
+                                                        if (mode.key === 'items' && !formData.countItems) handleChange('countItems', 100);
+                                                    }}>
+                                                {mode.label}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    {xboxLimitMode === 'pages' ? (
+                                        <input className={f.input} type="number" min="1"
+                                               value={formData.countPages}
+                                               onChange={(e) => handleChange('countPages', e.target.value)} />
+                                    ) : null}
+
+                                    {xboxLimitMode === 'items' ? (
+                                        <input className={f.input} type="number" min="1"
+                                               value={formData.countItems}
+                                               onChange={(e) => handleChange('countItems', e.target.value)} />
+                                    ) : null}
+                                </Row>
+                            )}
                         </Group>
 
                         {isPs ? (

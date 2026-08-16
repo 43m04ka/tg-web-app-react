@@ -20,6 +20,7 @@ import Broadcast from "./Tabs/Broadcast/Broadcast";
 import Dashboard from "./Tabs/Dashboard/Dashboard";
 import useGlobalData from "../../hooks/useGlobalData";
 import useAdminTheme from "./useAdminTheme";
+import {FeedbackProvider} from "./Elements/Feedback/Feedback";
 
 // Меню намеренно без иконок — текстовая навигация в духе панелей управления хостингом.
 const routeGroups = [
@@ -73,22 +74,26 @@ const AdminPanel = () => {
 
     return (
         <div className={styles['themeRoot']} data-theme={theme}>
-            <div className={styles['main-division']}>
-                <AdminDock theme={theme} onToggleTheme={toggleTheme}/>
-                <div className={styles['body']}>
-                    <AdminSidebar routeGroups={routeGroups}/>
-                    <div className={styles['content']}>
-                        <div className={styles['contentOutlet']}>
-                            <Routes>
-                                <Route index element={<Dashboard/>} />
-                                {routeGroups.flatMap((group) => group.items).map((route, index) => (
-                                    <Route path={route.path} key={index} element={route.element} />
-                                ))}
-                            </Routes>
+            {/* Тосты и подтверждения — общие на всю панель: сообщение об итоге действия
+                должно пережить закрытие вкладки, из которой его показали */}
+            <FeedbackProvider>
+                <div className={styles['main-division']}>
+                    <AdminDock theme={theme} onToggleTheme={toggleTheme}/>
+                    <div className={styles['body']}>
+                        <AdminSidebar routeGroups={routeGroups}/>
+                        <div className={styles['content']}>
+                            <div className={styles['contentOutlet']}>
+                                <Routes>
+                                    <Route index element={<Dashboard/>} />
+                                    {routeGroups.flatMap((group) => group.items).map((route, index) => (
+                                        <Route path={route.path} key={index} element={route.element} />
+                                    ))}
+                                </Routes>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </FeedbackProvider>
         </div>
     )
 };

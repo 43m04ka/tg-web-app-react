@@ -1,0 +1,170 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+
+// Тосты и подтверждения — слои поверх контента, поэтому у них есть тень.
+// Плоскость остаётся правилом для самого интерфейса (см. дизайн-систему).
+
+.toastStack {
+  position: fixed;
+  // Левее докобара: он живёт в правом верхнем углу и перекрыл бы тосты
+  right: var(--sp-4);
+  bottom: var(--sp-4);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-2);
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  max-width: 420px;
+  padding: var(--sp-3) var(--sp-3) var(--sp-3) var(--sp-4);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--border-strong);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  color: var(--text);
+}
+
+// Статус несёт полоска слева, а не заливка: заливка спорила бы с акцентом.
+.toast_success {
+  border-left-color: var(--success);
+}
+
+.toast_error {
+  border-left-color: var(--danger);
+}
+
+.toast_warning {
+  border-left-color: var(--warning);
+}
+
+.toast_info {
+  border-left-color: var(--accent);
+}
+
+.toastText {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.toastClose {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--surface-hover);
+    color: var(--text);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.confirmOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+}
+
+.confirmBox {
+  width: 100%;
+  max-width: 420px;
+  padding: var(--sp-5);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+}
+
+.confirmTitle {
+  margin: 0 0 var(--sp-2);
+  font-family: var(--font-ui);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.confirmText {
+  margin: 0 0 var(--sp-5);
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.confirmActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+}
+
+.confirmBtn {
+  height: 34px;
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+
+  &:hover {
+    background: var(--surface-hover);
+    color: var(--text);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.confirmBtnPrimary {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 700;
+
+  &:hover {
+    background: var(--accent-hover);
+    color: var(--accent-contrast);
+  }
+}
+
+.confirmBtnDanger {
+  border-color: rgba(var(--danger-rgb), 0.45);
+  background: rgba(var(--danger-rgb), 0.12);
+  color: var(--danger);
+  font-weight: 700;
+
+  &:hover {
+    background: rgba(var(--danger-rgb), 0.2);
+    color: var(--danger);
+  }
+}

@@ -70,7 +70,7 @@ const History = () => {
                                 setOrderId(item.id)
                             }}>
                                 <td>{item.id}</td>
-                                <td>{TYPE_LABELS[item.type] || item.type}</td>
+                                <td>{item.pageTitle || TYPE_LABELS[item.type] || item.type}</td>
                                 <td>
                                     <span className={`${style['statusBadge']} ${style[`status_${statusInfo.group}`]}`}>
                                         {statusInfo.label}

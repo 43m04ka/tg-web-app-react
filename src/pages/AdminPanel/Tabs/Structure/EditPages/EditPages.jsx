@@ -1,192 +1,267 @@
-import React, {useEffect, useState} from 'react';
-import {useServer} from "../useServer";
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import useGlobalData from "../../../../../hooks/useGlobalData";
-import useData from "../../../useData";
 import style from "./EditPages.module.scss";
-import structureStyle from "../Structure.module.scss";
-import EditPageData from "./EditPageData";
-import EditStartPages from "../EditStartPages/EditStartPages";
+import PageForm from "./PageForm";
+import StructurePanel from "./StructurePanel";
+import WorkTabs, {useWorkTabs} from "../../../Elements/WorkTabs/WorkTabs";
+import {BOT_OPTIONS, typeName, botName} from "./pageOptions";
 
-const EditPages = ({}) => {
-    const [activeSection, setActiveSection] = useState('pages');
+// СТРАНИЦЫ ВИТРИНЫ
+// ----------------
+// Экран разделён надвое: слева сами страницы, справа — оформление выбранной.
+// Раньше это были два раздела меню («Страницы» и «Структура»), и в каждом страница
+// выбиралась заново, своим способом: в одном таблицей, в другом списком кнопок,
+// который появлялся только после нажатия «вернуться к выбору страницы».
 
-    const typeOptions = [
-        { key: 'ps', name: 'Playstation' },
-        { key: 'xbox', name: 'Xbox' },
-        { key: 'ps_india', name: 'Playstation Индия' },
-        { key: 'steam', name: 'Steam' },
-        { key: 'other', name: 'Без полей' }
-    ];
+const STATUS_FILTERS = [
+    {key: 'all', label: 'Все'},
+    {key: 'visible', label: 'Отображены'},
+    {key: 'hidden', label: 'Скрыты'},
+];
 
-    const getTypeName = (typeKey) => {
-        const option = typeOptions.find(opt => opt.key === typeKey);
-        return option ? option.name : typeKey;
-    };
+const PagesList = ({onCountChange}) => {
+    const {pageList, updatePageList} = useGlobalData();
+    const {openTab, closeTab, updateTab} = useWorkTabs();
 
-    const [listButtonData, setListButtonData] = useState([
-        {name: 'Создать', status: true, key: 'create'},
-        {name: 'Обновить', status: true, key: 'reload'},
-        {name: 'Изменить', status: false, key: 'edit'},
-        {name: 'Скрыть / Отобразить', status: false, key: 'changeStatus'},
-    ])
+    const [search, setSearch] = useState('');
+    const [botFilter, setBotFilter] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [selectedId, setSelectedId] = useState(null);
 
-    const {pageList, updatePageList} = useGlobalData()
-    const {authenticationData} = useData()
-    const {updatePageData} = useServer()
-    const [pageId, setPageId] = useState(-1)
-    const [editTabOpen, setEditTabOpen] = useState(false);
-    const [searchValue, setSearchValue] = useState('');
-    const [filteredList, setFilteredList] = useState([]);
+    // Список приходит из общего стора; true — админский режим, со скрытыми страницами
+    const reload = useCallback(() => updatePageList(true), [updatePageList]);
 
     useEffect(() => {
-        updatePageList(true)
-    }, []);
+        reload();
+    }, [reload]);
+
+    const visibleList = useMemo(() => {
+        const query = search.trim().toLowerCase();
+
+        return [...(pageList || [])]
+            .filter((page) => {
+                if (botFilter && page.botType !== botFilter) return false;
+                if (statusFilter === 'hidden' && page.isHidden !== 1) return false;
+                if (statusFilter === 'visible' && page.isHidden === 1) return false;
+
+                if (!query) return true;
+                return String(page.name || '').toLowerCase().includes(query)
+                    || String(page.link || '').toLowerCase().includes(query)
+                    || String(page.id).includes(query);
+            })
+            // Порядок в боте задаётся serialNumber — список показывает его же,
+            // чтобы «первая страница» в админке и в боте означали одно и то же
+            .sort((a, b) => (a.serialNumber ?? 0) - (b.serialNumber ?? 0)
+                || String(a.name || '').localeCompare(String(b.name || '')));
+    }, [pageList, search, botFilter, statusFilter]);
+
+    const selectedPage = useMemo(
+        () => (pageList || []).find((page) => page.id === selectedId) || null,
+        [pageList, selectedId],
+    );
+
+    // Страницу удалили или отфильтровали — правая половина не должна остаться
+    // с оформлением того, чего на экране больше нет
+    useEffect(() => {
+        if (selectedId === null) return;
+        if (!visibleList.some((page) => page.id === selectedId)) setSelectedId(null);
+    }, [visibleList, selectedId]);
 
     useEffect(() => {
-        if (pageList) {
-            const filtered = pageList.filter(page =>
-                page.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-                page.id.toString().includes(searchValue) ||
-                page.link.toLowerCase().includes(searchValue.toLowerCase())
-            );
-            setFilteredList(filtered);
+        if (!pageList) {
+            onCountChange('Загрузка…');
+            return;
         }
-    }, [searchValue, pageList]);
+        onCountChange(`${visibleList.length} из ${pageList.length}`);
+    }, [pageList, visibleList.length, onCountChange]);
 
-    if (listButtonData[1].status !== true || listButtonData[2].status !== false) {
-        let newValue = [...listButtonData]
-        newValue[1].status = true;
-        newValue[2].status = false;
-        setListButtonData(newValue);
-    }
+    const openPage = useCallback((page) => {
+        const id = page ? `page-${page.id}` : 'page-new';
 
-    const returnOptionsButtonLine = (option) => {
-        switch (option) {
-            case 'create':
-                setPageId(-1)
-                setEditTabOpen(true)
-                break;
-            case 'reload':
-                updatePageList(true)
-                break;
-            case 'edit':
-                setPageId(filteredList[0]?.id || -1)
-                setEditTabOpen(true)
-                break;
-            case 'changeStatus':
-                let pageData = {}
-                pageList.map((item) => {
-                    if(item.id === filteredList[0]?.id){
-                        pageData = item;
-                    }
-                })
-                updatePageData(authenticationData, filteredList[0]?.id, {isHidden: (pageData.isHidden === 1 ? 0 : 1)}).then(()=>{updatePageList(true)})
-                break;
-            default:
-                break;
-        }
-    }
+        openTab({
+            id,
+            title: page ? page.name || `Страница ${page.id}` : 'Новая страница',
+            subtitle: page ? `${typeName(page.type)} · ${botName(page.botType)}` : 'Создание',
+            entity: 'page',
+            entityId: page?.id ?? -1,
+            content: (
+                <PageForm
+                    pageId={page?.id ?? -1}
+                    onClose={() => closeTab(id)}
+                    onSaved={reload}
+                />
+            ),
+        });
+    }, [openTab, closeTab, reload]);
 
-    const handleRowClick = (id) => {
-        setPageId(id)
-        setEditTabOpen(true)
-    }
+    // Переименование страницы обновляет подпись открытой вкладки
+    useEffect(() => {
+        (pageList || []).forEach((page) => updateTab(`page-${page.id}`, {
+            title: page.name || `Страница ${page.id}`,
+            subtitle: `${typeName(page.type)} · ${botName(page.botType)}`,
+        }));
+    }, [pageList, updateTab]);
+
+    const filtersActive = Boolean(search || botFilter || statusFilter !== 'all');
 
     return (
-        <div className={style['mainContainer']}>
-            <div className={structureStyle['tabsContainer']}>
-                <button
-                    type="button"
-                    className={`${structureStyle['tab']} ${activeSection === 'pages' ? structureStyle['activeTab'] : ''}`}
-                    onClick={() => setActiveSection('pages')}
-                >
-                    Страницы
-                </button>
-                <button
-                    type="button"
-                    className={`${structureStyle['tab']} ${activeSection === 'start' ? structureStyle['activeTab'] : ''}`}
-                    onClick={() => setActiveSection('start')}
-                >
-                    Первая страница
-                </button>
-            </div>
+        <div className={style['screen']}>
+            <header className={style['header']}>
+                <h1 className={style['title']}>Страницы</h1>
+                <span className={style['counter']}>
+                    {pageList ? `${visibleList.length} из ${pageList.length}` : 'Загрузка…'}
+                </span>
+                <span className={style['headerHint']}>
+                    Слева — страницы, справа — оформление выбранной
+                </span>
+            </header>
 
-            {activeSection === 'start' ? (
-                <EditStartPages />
-            ) : (
-                <>
-            <div className={style['header']}>
-                <div className={style['headerTitle']}>Структура</div>
-                <div className={style['headerControls']}>
-                    <input 
-                        className={style['inputFind']} 
-                        placeholder={'Поиск по названию, ID или пути'}
-                        value={searchValue}
-                        onChange={(event) => {
-                            setSearchValue(event.target.value);
-                        }}
-                    />
-                    <div className={style['buttonGroup']}>
-                        <button className={style['button']} onClick={() => returnOptionsButtonLine('create')}>
-                            <p>+ Создать</p>
+            <div className={style['split']}>
+                <section className={style['pane']}>
+                    <div className={style['toolbar']}>
+                        <div className={style['searchField']}>
+                            <svg className={style['searchIcon']} viewBox="0 0 24 24" width="16" height="16"
+                                 fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                                <circle cx="11" cy="11" r="7"/>
+                                <path d="m20 20-3.5-3.5" strokeLinecap="round"/>
+                            </svg>
+                            <input className={style['searchInput']}
+                                   placeholder="Поиск по названию, ссылке или ID"
+                                   value={search}
+                                   onChange={(event) => setSearch(event.target.value)}/>
+                            {search ? (
+                                <button type="button" className={style['searchClear']}
+                                        onClick={() => setSearch('')} aria-label="Очистить">
+                                    ✕
+                                </button>
+                            ) : null}
+                        </div>
+
+                        <button type="button" className={`${style['btn']} ${style['btnPrimary']}`}
+                                onClick={() => openPage(null)}>
+                            Создать
                         </button>
-                        <button 
-                            className={style['button']} 
-                            onClick={() => returnOptionsButtonLine('reload')}
-                        >
-                            <p>⟳ Обновить</p>
+                        <button type="button" className={style['btn']}
+                                disabled={!selectedPage}
+                                title={selectedPage ? undefined : 'Сначала выберите страницу'}
+                                onClick={() => openPage(selectedPage)}>
+                            Редактировать
+                        </button>
+                        <button type="button" className={style['btn']} onClick={reload}>
+                            Обновить
                         </button>
                     </div>
-                </div>
-            </div>
 
-            <div className={style['tableWrapMain']}>
-                <table className={style['table']}>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Название</th>
-                            <th>Тип</th>
-                            <th>Путь</th>
-                            <th>Статус</th>
-                            <th>Действие</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {[...(filteredList || [])].sort((a, b) => a.name.localeCompare(b.name)).map((page) => (
-                            <tr key={page.id} onClick={() => handleRowClick(page.id)}>
-                                <td>{page.id}</td>
-                                <td>{page.name}</td>
-                                <td>{getTypeName(page.type)}</td>
-                                <td>{page.link}</td>
-                                <td>{page.isHidden === 1 ? 'Скрыта' : 'Отображена'}</td>
-                                <td onClick={(e) => e.stopPropagation()}>
-                                    <button 
-                                        className={style['actionButton']} 
-                                        onClick={() => handleRowClick(page.id)}
-                                    >
-                                        Редактировать
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                        {filteredList && filteredList.length === 0 ? (
-                            <tr>
-                                <td className={style['emptyCell']} colSpan={6}>Страницы не найдены</td>
-                            </tr>
-                        ) : ''}
-                    </tbody>
-                </table>
-            </div>
+                    {/* Фильтры отдельной строкой: в половине экрана они не помещаются
+                        рядом с поиском и кнопками и ломались бы в три ряда */}
+                    <div className={style['toolbar']}>
+                        <select className={style['filterSelect']} value={botFilter}
+                                onChange={(event) => setBotFilter(event.target.value)}>
+                            <option value="">Все площадки</option>
+                            {BOT_OPTIONS.map((option) => (
+                                <option key={option.key} value={option.key}>{option.name}</option>
+                            ))}
+                        </select>
 
-            {editTabOpen ? <EditPageData onClose={() => {
-                setEditTabOpen(false);
-                setPageId(-1)
-            }} updatePageList={()=>updatePageList(true)} id={pageId}/> : ''}
-                </>
-            )}
+                        <div className={style['segmented']}>
+                            {STATUS_FILTERS.map((filter) => (
+                                <button key={filter.key} type="button"
+                                        className={`${style['segment']} ${statusFilter === filter.key ? style['segmentActive'] : ''}`}
+                                        onClick={() => setStatusFilter(filter.key)}>
+                                    {filter.label}
+                                </button>
+                            ))}
+                        </div>
+
+                        {filtersActive ? (
+                            <button type="button" className={style['btnGhost']}
+                                    onClick={() => {
+                                        setSearch('');
+                                        setBotFilter('');
+                                        setStatusFilter('all');
+                                    }}>
+                                Сбросить
+                            </button>
+                        ) : null}
+                    </div>
+
+                    <div className={style['tableWrap']}>
+                        <table className={style['table']}>
+                            <thead>
+                                <tr>
+                                    <th className={style['orderCol']}>№</th>
+                                    <th>Название</th>
+                                    <th className={style['typeCol']}>Тип</th>
+                                    <th className={style['botCol']}>Площадка</th>
+                                    <th className={style['statusCol']}>Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {!pageList ? (
+                                    <tr><td colSpan={5} className={style['emptyCell']}>Загрузка…</td></tr>
+                                ) : visibleList.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={5} className={style['emptyCell']}>
+                                            {filtersActive ? 'Под фильтры ничего не подошло' : 'Страниц пока нет'}
+                                        </td>
+                                    </tr>
+                                ) : visibleList.map((page) => (
+                                    <tr key={page.id}
+                                        className={page.id === selectedId ? style['rowSelected'] : ''}
+                                        onClick={() => setSelectedId(page.id)}
+                                        onDoubleClick={() => openPage(page)}>
+                                        <td className={`${style['orderCol']} ${style['mono']}`}>{page.serialNumber ?? '—'}</td>
+                                        <td className={style['nameCell']}>
+                                            <span className={style['nameRow']}>
+                                                {page.barIcon ? (
+                                                    <img className={style['barIcon']} src={page.barIcon} alt=""/>
+                                                ) : <span className={style['barIconEmpty']} aria-hidden/>}
+                                                <span className={style['name']}>{page.name || `Страница ${page.id}`}</span>
+                                            </span>
+                                            <span className={style['rowMeta']}>
+                                                <span className={style['mono']}>ID {page.id}</span>
+                                                {page.link ? <span className={style['link']}>{page.link}</span> : null}
+                                            </span>
+                                        </td>
+                                        <td className={style['typeCol']}>{typeName(page.type)}</td>
+                                        <td className={style['botCol']}>{botName(page.botType)}</td>
+                                        <td className={style['statusCol']}>
+                                            <span className={page.isHidden === 1 ? style['badgeOff'] : style['badgeOn']}>
+                                                {page.isHidden === 1 ? 'Скрыта' : 'Отображена'}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section className={style['pane']}>
+                    <div className={style['paneHead']}>
+                        <span className={style['paneTitle']}>Оформление</span>
+                        <span className={style['paneSubtitle']}>
+                            {selectedPage
+                                ? `${selectedPage.name || `Страница ${selectedPage.id}`} · ${typeName(selectedPage.type)}`
+                                : 'страница не выбрана'}
+                        </span>
+                    </div>
+
+                    <StructurePanel page={selectedPage}/>
+                </section>
+            </div>
         </div>
-    )
+    );
+};
+
+const EditPages = () => {
+    const [subtitle, setSubtitle] = useState('');
+
+    return (
+        <WorkTabs rootTitle="Страницы" rootSubtitle={subtitle}>
+            <PagesList onCountChange={setSubtitle}/>
+        </WorkTabs>
+    );
 };
 
 export default EditPages;

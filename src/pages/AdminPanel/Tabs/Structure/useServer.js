@@ -4,38 +4,49 @@ const URL = ADMIN_API_URL;
 
 export function useServer() {
 
+    // Отказ сервера эти три ручки раньше проглатывали молча: ответ не проверялся вовсе,
+    // поэтому форма одинаково показывала успех и когда страница сохранилась,
+    // и когда сервер ответил «нет доступа».
+    const throwIfFailed = async (response, fallback) => {
+        if (response.ok) return;
+
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || fallback);
+    };
+
     const createPage = async (setResult, authenticationData, pageData) => {
-        await fetch(URL + '/createPage', {
+        const response = await fetch(URL + '/createPage', {
             method: 'POST',
             headers: adminAuthHeadersJson(),
             body: JSON.stringify(withJsonAuth({authenticationData: authenticationData, pageData: pageData})),
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
+        });
+
+        await throwIfFailed(response, 'Не удалось создать страницу');
+
+        const data = await response.json().catch(() => ({}));
+        setResult?.(data.result);
     };
 
     const updatePageData = async (authenticationData, pageId, updateData) => {
-        await fetch(`${URL}/updatePageData`, {
+        const response = await fetch(`${URL}/updatePageData`, {
             method: 'POST',
             headers: adminAuthHeadersJson(),
             body: JSON.stringify(
                 withJsonAuth({authenticationData: authenticationData, pageId: pageId, updateData: updateData}),
             ),
-        }).then(async response => {
-            let answer = response.json()
-            answer.then()
-        })
+        });
+
+        await throwIfFailed(response, 'Не удалось сохранить страницу');
     }
 
     const deletePageData = async (authenticationData, pageId) => {
-        await fetch(`${URL}/deletePage`, {
+        const response = await fetch(`${URL}/deletePage`, {
             method: 'POST',
             headers: adminAuthHeadersJson(),
             body: JSON.stringify(withJsonAuth({authenticationData: authenticationData, id: pageId})),
         });
+
+        await throwIfFailed(response, 'Не удалось удалить страницу');
     };
 
     const getStructureCatalogList = async (pageId, group, setResult) => {
@@ -59,24 +70,28 @@ export function useServer() {
 
 
     const createStructureCatalog = async (authenticationData, catalogData) => {
-        await fetch(URL + '/createStructureCatalog', {
+        const response = await fetch(URL + '/createStructureCatalog', {
             method: 'POST',
             headers: adminAuthHeadersJson(),
             body: JSON.stringify(withJsonAuth({authenticationData: authenticationData, catalogData: catalogData})),
         });
+
+        await throwIfFailed(response, 'Не удалось создать блок');
     };
 
 
     const deleteStructureCatalog = async (authenticationData, catalogId) => {
-        await fetch(URL + '/deleteStructureCatalog', {
+        const response = await fetch(URL + '/deleteStructureCatalog', {
             method: 'POST',
             headers: adminAuthHeadersJson(),
             body: JSON.stringify(withJsonAuth({authenticationData: authenticationData, id: catalogId})),
         });
+
+        await throwIfFailed(response, 'Не удалось удалить блок');
     };
 
     const updateCatalogData = async (callback, authenticationData, catalogId, updateData) => {
-        await fetch(URL + '/updateStructureCatalog', {
+        const response = await fetch(URL + '/updateStructureCatalog', {
             method: 'POST',
             headers: adminAuthHeadersJson(),
             body: JSON.stringify(
@@ -86,12 +101,10 @@ export function useServer() {
                     updateData: updateData,
                 }),
             ),
-        }).then(async response => {
-            let answer = response.json()
-            answer.then(() => {
-                if (callback) callback()
-            })
-        })
+        });
+
+        await throwIfFailed(response, 'Не удалось сохранить блок');
+        if (callback) callback();
     }
 
     const getCatalogIcons = async (setIconsData) => {

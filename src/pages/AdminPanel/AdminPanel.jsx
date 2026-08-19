@@ -8,7 +8,8 @@ import "./styles/adminFonts.css";
 import styles from "./AdminPanel.module.scss";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import EditPages from "./Tabs/Structure/EditPages/EditPages";
-import EditCatalogs from "./Tabs/Structure/EditCatalogs/EditCatalogs";
+import EditStartPages from "./Tabs/Structure/EditStartPages/EditStartPages";
+import SoonScreen from "./Tabs/Soon/SoonScreen";
 import useData from "./useData";
 import History from "./Tabs/HistoryOrders/History";
 import Promo from "./Tabs/Promo/Promo";
@@ -23,16 +24,54 @@ import useAdminTheme from "./useAdminTheme";
 import {FeedbackProvider} from "./Elements/Feedback/Feedback";
 
 // Меню намеренно без иконок — текстовая навигация в духе панелей управления хостингом.
+//
+// Деление по тому, чем оперирует админ: товарные данные, внешний вид витрины, продажи,
+// всё остальное. Пути разделов не менялись даже там, где сменилась подпись, — закладки
+// и ссылки из чужих переписок должны продолжать работать.
 const routeGroups = [
     {
-        name: 'Каталог',
+        // Товарные данные и источники цен. Стоит первой, сразу под главной:
+        // это основная работа в панели.
+        name: 'Данные',
         items: [
             {name: 'Товары', path: 'edit-cards', element: <AP_EditCards/>},
             {name: 'Каталоги', path: 'edit-directories', element: <EditDirectories/>},
-            {name: 'Структура', path: 'structure', element: <EditCatalogs/>},
-            {name: 'Страницы', path: 'pages', element: <EditPages/>},
+            // Раздел назывался «Парсинг», хотя парсинг отсюда никогда не запускался:
+            // внутри три таблицы наценки. Путь оставлен прежним
+            {name: 'Сетки цен', path: 'parsing', element: <Parsing/>},
+            // Витрины, которые не собираются каталогами и блоками. Пока заготовки:
+            // на них ведут кнопки из правой половины «Страниц»
+            {
+                name: 'Steam', path: 'steam', element: (
+                    <SoonScreen
+                        title="Steam"
+                        subtitle="витрина пополнения баланса"
+                        description="Пополнение Steam не собирается каталогами и блоками — суммы и проценты считаются на сервере, а тарифы задаются на главной. Настройки самой витрины появятся здесь."
+                    />
+                ),
+            },
+            {
+                name: 'Сервисы', path: 'services', element: (
+                    <SoonScreen
+                        title="Сервисы"
+                        subtitle="витрина сервисов"
+                        description="Страницы типа «Сервисы» продаются как обычные товары, но карусель и тело сайта им не нужны. Настройки витрины появятся здесь."
+                    />
+                ),
+            },
+        ],
+    },
+    {
+        // Всё, что покупатель видит в боте: сами страницы, их оформление и стартовый экран.
+        // «Структура» отдельным разделом больше не нужна — карусель и тело страницы
+        // редактируются в правой половине «Страниц», рядом с самой страницей, поэтому
+        // раздел и называется «Страницы и главная».
+        name: 'Визуал',
+        items: [
+            {name: 'Страницы и главная', path: 'pages', element: <EditPages/>},
+            {name: 'Стартовый экран', path: 'start-menu', element: <EditStartPages/>},
             {name: 'Подсказки в поиске', path: 'search', element: <Search/>},
-            {name: 'Парсинг', path: 'parsing', element: <Parsing/>},
+            {name: 'Акции в "ещё"', path: 'more', element: <InfoBlock/>},
         ],
     },
     {
@@ -40,18 +79,12 @@ const routeGroups = [
         items: [
             {name: 'Заказы', path: 'history-orders', element: <History/>},
             {name: 'Промокоды', path: 'promo', element: <Promo/>},
-            {name: 'Акции в "ещё"', path: 'more', element: <InfoBlock/>},
         ],
     },
     {
-        name: 'Рассылки',
+        name: 'Прочее',
         items: [
             {name: 'Рассылка Tg', path: 'broadcast', element: <Broadcast/>},
-        ],
-    },
-    {
-        name: 'Система',
-        items: [
             {name: 'Хостинг', path: 'hosting', element: <AdminGallery/>},
         ],
     },

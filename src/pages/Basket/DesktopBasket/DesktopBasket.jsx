@@ -258,7 +258,10 @@ const DesktopBasket = () => {
                         </div>)}
 
 
-                {pageType !== null && pageType !== 'other' && (
+                {/* «Сервисы» не привязаны к игровой консоли: логин PSN или Xbox там просить
+                    не у чего. Оплата при этом обычная, как у ps/xbox, — особый режим есть
+                    только у ps_india и Steam. */}
+                {pageType !== null && pageType !== 'other' && pageType !== 'services' && (
                     <div className={style.basketBlock}>
                         <p className={style.title}>Куда оформить заказ:</p>
                         <DesktopAccountData returnAccountData={setAccountData} pageType={pageType} />

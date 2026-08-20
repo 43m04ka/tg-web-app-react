@@ -1,113 +1,184 @@
-import React, {useEffect, useState} from 'react';
-import {useServer} from "./useServer";
-import useData from "../../useData";
-import style from './InfoBlock.module.scss'
-import CreateInfoBlock from "./CreateInfoBlock";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import style from './InfoBlock.module.scss';
+import {useServer} from './useServer';
+import WorkTabs, {useWorkTabs} from '../../Elements/WorkTabs/WorkTabs';
+import {useFeedback} from '../../Elements/Feedback/Feedback';
+import InfoBlockForm from './InfoBlockForm';
 
-const InfoBlock = () => {
+// АКЦИИ В РАЗДЕЛЕ «ЕЩЁ»
+// ---------------------
+// Плоский список: у блока три поля, отдельная панель справа была бы пустой.
+// Строка открывает вкладку с формой — тем же способом, что «Заказы» и «Промокоды».
+
+const InfoBlockList = ({onCountChange}) => {
+    const server = useServer();
+    const serverRef = useRef(server);
+    serverRef.current = server;
+
+    const {openTab, closeTab, updateTab} = useWorkTabs();
+    const {showToast} = useFeedback();
 
     const [blockList, setBlockList] = useState(null);
-    const [createTabOpen, setCreateTabOpen] = useState(false);
-    const [searchValue, setSearchValue] = useState('');
-    const [filteredList, setFilteredList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState('');
 
-    const {authenticationData} = useData();
-    const {getInfoBlock, deleteInfoBlock} = useServer()
+    // Вкладка живёт дольше рендера, в котором её открыли: внутрь уходят только id
+    // и стабильные колбэки, сам блок форма достаёт из актуального списка через ref
+    const listRef = useRef([]);
+    listRef.current = blockList || [];
+
+    const load = useCallback(async () => {
+        setLoading(true);
+        try {
+            const result = await serverRef.current.getInfoBlockList();
+            setBlockList(result);
+        } catch (error) {
+            showToast(error.message || 'Не удалось загрузить список блоков', 'error');
+            setBlockList([]);
+        } finally {
+            setLoading(false);
+        }
+    }, [showToast]);
+
+    useEffect(() => { load(); }, [load]);
+
+    const visibleList = useMemo(() => {
+        const query = search.trim().toLowerCase();
+        const list = blockList || [];
+
+        if (!query) return list;
+
+        return list.filter((block) => String(block.name || '').toLowerCase().includes(query)
+            || String(block.body || '').toLowerCase().includes(query));
+    }, [blockList, search]);
 
     useEffect(() => {
-        if (blockList === null) {
-            getInfoBlock(setBlockList).then()
+        if (loading) {
+            onCountChange('Загрузка…');
+            return;
         }
-    }, [blockList]);
+        onCountChange(`${visibleList.length} из ${(blockList || []).length}`);
+    }, [loading, visibleList.length, blockList, onCountChange]);
 
+    const findBlock = useCallback(
+        (blockId) => listRef.current.find((block) => block.id === blockId) || null,
+        [],
+    );
+
+    const openBlock = useCallback((block) => {
+        const id = block ? `infoblock-${block.id}` : 'infoblock-new';
+
+        openTab({
+            id,
+            title: block ? block.name || `Блок ${block.id}` : 'Новый блок',
+            subtitle: block ? (block.path ? 'со ссылкой' : 'без ссылки') : 'Создание',
+            entity: 'infoblock',
+            entityId: block?.id ?? -1,
+            content: (
+                <InfoBlockForm
+                    blockId={block?.id ?? -1}
+                    findBlock={findBlock}
+                    onClose={() => closeTab(id)}
+                    onSaved={load}
+                />
+            ),
+        });
+    }, [openTab, closeTab, findBlock, load]);
+
+    // Переименование не закрывает вкладку, а обновляет её подпись
     useEffect(() => {
-        if (blockList) {
-            const filtered = blockList.filter(item =>
-                item.name?.toLowerCase().includes(searchValue.toLowerCase()) ||
-                item.body?.toLowerCase().includes(searchValue.toLowerCase())
-            );
-            setFilteredList(filtered);
-        }
-    }, [searchValue, blockList]);
-
-    const handleDelete = async (id) => {
-        await deleteInfoBlock(authenticationData, id);
-        await getInfoBlock(setBlockList);
-    };
-
-    const handleReload = async () => {
-        await getInfoBlock(setBlockList);
-    };
+        (blockList || []).forEach((block) => updateTab(`infoblock-${block.id}`, {
+            title: block.name || `Блок ${block.id}`,
+            subtitle: block.path ? 'со ссылкой' : 'без ссылки',
+        }));
+    }, [blockList, updateTab]);
 
     return (
-        <div className={style['mainContainer']}>
-            <div className={style['header']}>
-                <div className={style['headerTitle']}>Информационные блоки</div>
-                <div className={style['headerControls']}>
-                    <input 
-                        className={style['inputFind']} 
-                        placeholder={'Поиск по названию или содержимому'}
-                        value={searchValue}
-                        onChange={(event) => {
-                            setSearchValue(event.target.value);
-                        }}
-                    />
-                    <div className={style['buttonGroup']}>
-                        <button className={style['button']} onClick={() => setCreateTabOpen(true)}>
-                            <p>+ Создать</p>
-                        </button>
-                        <button 
-                            className={style['button']} 
-                            onClick={handleReload}
-                        >
-                            <p>⟳ Обновить</p>
-                        </button>
-                    </div>
+        <div className={style['screen']}>
+            <header className={style['header']}>
+                <div className={style['headerTop']}>
+                    <h1 className={style['title']}>Акции в «ещё»</h1>
+                    <span className={style['counter']}>
+                        {loading ? 'Загрузка…' : `${visibleList.length} из ${(blockList || []).length}`}
+                    </span>
                 </div>
-            </div>
 
-            <div className={style['tableWrapMain']}>
+                <div className={style['toolbar']}>
+                    <div className={style['searchField']}>
+                        <svg className={style['searchIcon']} viewBox="0 0 24 24" width="16" height="16"
+                             fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                            <circle cx="11" cy="11" r="7"/>
+                            <path d="m20 20-3.5-3.5" strokeLinecap="round"/>
+                        </svg>
+                        <input className={style['searchInput']}
+                               placeholder="Поиск по заголовку или описанию"
+                               value={search}
+                               onChange={(event) => setSearch(event.target.value)}/>
+                        {search ? (
+                            <button type="button" className={style['searchClear']}
+                                    onClick={() => setSearch('')} aria-label="Очистить">
+                                ✕
+                            </button>
+                        ) : null}
+                    </div>
+
+                    <button type="button" className={`${style['btn']} ${style['btnPrimary']}`}
+                            onClick={() => openBlock(null)}>
+                        Создать
+                    </button>
+                    <button type="button" className={style['btn']} onClick={load}>
+                        Обновить
+                    </button>
+                </div>
+            </header>
+
+            <div className={style['tableWrap']}>
                 <table className={style['table']}>
                     <thead>
                         <tr>
+                            <th className={style['idCol']}>ID</th>
                             <th>Заголовок</th>
-                            <th>Содержимое</th>
-                            <th>Действие</th>
+                            <th>Описание</th>
+                            <th className={style['linkCol']}>Ссылка</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredList && filteredList.map((item) => (
-                            <tr key={item.id}>
-                                <td>{item.name}</td>
-                                <td>{item.body?.substring(0, 50)}...</td>
-                                <td onClick={(e) => e.stopPropagation()}>
-                                    <div className={style['actionButtons']}>
-                                        <button 
-                                            className={`${style['actionButton']} ${style['deleteButton']}`}
-                                            onClick={() => handleDelete(item.id)}
-                                        >
-                                            Удалить
-                                        </button>
-                                    </div>
+                        {visibleList.length === 0 ? (
+                            <tr>
+                                <td className={style['emptyCell']} colSpan={4}>
+                                    {loading
+                                        ? 'Загрузка…'
+                                        : (search.trim() ? 'Под поиск ничего не подошло' : 'Блоков пока нет')}
+                                </td>
+                            </tr>
+                        ) : visibleList.map((block) => (
+                            <tr key={block.id} onClick={() => openBlock(block)}>
+                                <td className={style['mono']}>{block.id}</td>
+                                <td className={style['nameCell']}>{block.name || '—'}</td>
+                                <td className={style['bodyCell']}>{block.body || '—'}</td>
+                                <td className={style['linkCol']}>
+                                    {block.path ? (
+                                        <span className={style['link']}>{block.path}</span>
+                                    ) : (
+                                        <span className={style['badgeMuted']}>нет</span>
+                                    )}
                                 </td>
                             </tr>
                         ))}
-                        {filteredList && filteredList.length === 0 ? (
-                            <tr>
-                                <td className={style['emptyCell']} colSpan={4}>Блоки не найдены</td>
-                            </tr>
-                        ) : ''}
                     </tbody>
                 </table>
             </div>
-
-            {createTabOpen ? <CreateInfoBlock 
-                onClose={() => {
-                    setCreateTabOpen(false);
-                }} 
-                setBlockList={setBlockList}
-            /> : ''}
         </div>
+    );
+};
+
+const InfoBlock = () => {
+    const [subtitle, setSubtitle] = useState('');
+
+    return (
+        <WorkTabs rootTitle="Акции в «ещё»" rootSubtitle={subtitle}>
+            <InfoBlockList onCountChange={setSubtitle}/>
+        </WorkTabs>
     );
 };
 

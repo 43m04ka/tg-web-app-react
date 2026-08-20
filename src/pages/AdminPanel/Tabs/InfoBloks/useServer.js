@@ -5,52 +5,57 @@ const URL_STRUCTURE = `${API_BASE_URL}/api/structure`;
 
 export function useServer() {
 
-    const getInfoBlock = async (setResult) => {
-        fetch(`${URL_STRUCTURE}/infoBlocks?time${new Date()}`, {
+    // Раньше ни одна из этих функций не проверяла ответ сервера: и создание, и удаление
+    // одинаково молчали при отказе («нет доступа», ошибка базы), а список просто не менялся.
+    const throwIfFailed = async (response, fallback) => {
+        if (response.ok) return;
+
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || fallback);
+    };
+
+    // Список блоков отдаёт публичная ручка витрины — отдельной админской для них нет
+    const getInfoBlockList = async () => {
+        const response = await fetch(`${URL_STRUCTURE}/infoBlocks?time=${Date.now()}`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }).then(async response => {
-            let answer = response.json()
-            answer.then((data) => {
-                setResult(data.result)
-            })
-        })
-    }
+            headers: {'Content-Type': 'application/json'},
+        });
+
+        await throwIfFailed(response, 'Не удалось загрузить список блоков');
+
+        const data = await response.json().catch(() => ({}));
+        return data.result || [];
+    };
 
     const createInfoBlock = async (authenticationData, infoBlockData) => {
-        fetch(`${URL}/createInfoBlock`, {
+        const response = await fetch(`${URL}/createInfoBlock`, {
             method: 'POST',
             headers: adminAuthHeadersJson(),
-            body: JSON.stringify(
-                withJsonAuth({
-                    authenticationData: authenticationData,
-                    infoBlockData: infoBlockData,
-                }),
-            ),
-        }).then(async response => {
-            let answer = response.json()
-            answer.then()
-        })
-    }
+            body: JSON.stringify(withJsonAuth({authenticationData, infoBlockData})),
+        });
+
+        await throwIfFailed(response, 'Не удалось создать блок');
+    };
+
+    const updateInfoBlock = async (authenticationData, infoBlockId, updateData) => {
+        const response = await fetch(`${URL}/updateInfoBlock`, {
+            method: 'POST',
+            headers: adminAuthHeadersJson(),
+            body: JSON.stringify(withJsonAuth({authenticationData, id: infoBlockId, updateData})),
+        });
+
+        await throwIfFailed(response, 'Не удалось сохранить блок');
+    };
 
     const deleteInfoBlock = async (authenticationData, infoBlockId) => {
-        fetch(`${URL}/deleteInfoBlock`, {
+        const response = await fetch(`${URL}/deleteInfoBlock`, {
             method: 'POST',
             headers: adminAuthHeadersJson(),
-            body: JSON.stringify(
-                withJsonAuth({
-                    authenticationData: authenticationData,
-                    id: infoBlockId,
-                }),
-            ),
-        }).then(async response => {
-            let answer = response.json()
-            answer.then()
-        })
-    }
+            body: JSON.stringify(withJsonAuth({authenticationData, id: infoBlockId})),
+        });
 
-    return {getInfoBlock, createInfoBlock, deleteInfoBlock}
+        await throwIfFailed(response, 'Не удалось удалить блок');
+    };
 
+    return {getInfoBlockList, createInfoBlock, updateInfoBlock, deleteInfoBlock};
 }

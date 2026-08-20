@@ -125,15 +125,20 @@ export function useServer() {
         })
     }
 
-    const getStartPageList = async (setResult) => {
-        await fetch(`${URL}/getStartPageList`, {
+    // Эти четыре ручки отказ сервера тоже проглатывали: create/update/delete возвращали
+    // response.json() без проверки статуса, а список при ошибке молча становился пустым —
+    // «нет доступа» и «элементов нет» выглядели на экране одинаково
+    const getStartPageList = async () => {
+        const response = await fetch(`${URL}/getStartPageList`, {
             method: 'POST',
             headers: adminAuthHeadersJson(),
             body: JSON.stringify(withJsonAuth({})),
-        }).then(async (response) => {
-            const answer = await response.json();
-            setResult(answer.result || []);
-        }).catch(() => setResult([]));
+        });
+
+        await throwIfFailed(response, 'Не удалось загрузить стартовый экран');
+
+        const data = await response.json().catch(() => ({}));
+        return data.result || [];
     };
 
     const createStartPage = async (authenticationData, startPageData) => {
@@ -142,7 +147,8 @@ export function useServer() {
             headers: adminAuthHeadersJson(),
             body: JSON.stringify(withJsonAuth({authenticationData, startPageData})),
         });
-        return response.json();
+
+        await throwIfFailed(response, 'Не удалось создать элемент');
     };
 
     const updateStartPage = async (authenticationData, id, updateData) => {
@@ -151,7 +157,8 @@ export function useServer() {
             headers: adminAuthHeadersJson(),
             body: JSON.stringify(withJsonAuth({authenticationData, id, updateData})),
         });
-        return response.json();
+
+        await throwIfFailed(response, 'Не удалось сохранить элемент');
     };
 
     const deleteStartPage = async (authenticationData, id) => {
@@ -160,7 +167,8 @@ export function useServer() {
             headers: adminAuthHeadersJson(),
             body: JSON.stringify(withJsonAuth({authenticationData, id})),
         });
-        return response.json();
+
+        await throwIfFailed(response, 'Не удалось удалить элемент');
     };
 
     return {

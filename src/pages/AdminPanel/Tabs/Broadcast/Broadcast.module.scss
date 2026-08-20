@@ -1,32 +1,40 @@
 @import "src/pages/AdminPanel/AdminPanel.module";
 @import "src/pages/AdminPanel/styles/dashed";
 
-.mainContainer {
+.screen {
   flex: 1;
   min-height: 0;
   width: 100%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
+// padding: 0 обязателен — AdminPanel.module подключается через @import, и общий
+// .header из него иначе сдвинул бы шапку вправо. Отступ под докобар держит строка
+// вкладок сверху, здесь он уже не нужен.
 .header {
-  padding: 0 0 24px 0;
-  padding-right: var(--dock-safe);
+  flex-shrink: 0;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 24px;
-  margin-bottom: 8px;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin: 0 0 var(--sp-4);
+  padding: 0;
 }
 
-.headerTitle {
-  @extend %text;
-  font-size: 28px;
+.headerTop {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+}
+
+.title {
+  font-family: var(--font-ui);
+  font-size: var(--fs-xl);
   font-weight: 700;
-  color: $text-color;
+  letter-spacing: -0.01em;
+  color: var(--text);
   margin: 0;
 }
 
@@ -41,7 +49,7 @@
   @extend %text;
   font-size: 14px;
   font-weight: 600;
-  color: #c4cad6;
+  color: var(--text-secondary);
   margin: 0 0 8px 0;
 }
 
@@ -61,8 +69,8 @@
 
   &:hover,
   &.dragActive {
-    border-color: rgba($theme-color, 0.65);
-    background: rgba($theme-color, 0.06);
+    border-color: rgba(var(--accent-rgb), 0.65);
+    background: rgba(var(--accent-rgb), 0.06);
   }
 }
 
@@ -75,7 +83,7 @@
   gap: 12px;
   padding: 0 16px;
   font-size: 14px;
-  color: #8e95a3;
+  color: var(--text-muted);
   margin: 0;
   line-height: 1.4;
   max-width: 100%;
@@ -87,7 +95,7 @@
   display: block;
   overflow: visible;
   opacity: 0.85;
-  color: #8e95a3;
+  color: var(--text-muted);
 }
 
 .hiddenInput {
@@ -107,8 +115,8 @@
   height: 88px;
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid #2c2c2e;
-  background: #11131a;
+  border: 1px solid var(--border);
+  background: var(--surface);
 }
 
 .mediaThumb {
@@ -130,8 +138,8 @@
   line-height: 1.2;
   text-align: center;
   word-break: break-all;
-  color: #8e95a3;
-  background: #11131a;
+  color: var(--text-muted);
+  background: var(--surface);
 }
 
 .mediaVideoBadge {
@@ -178,8 +186,8 @@
 
 .editorInner {
   border-radius: 10px;
-  background: #13151d;
-  border: 1px solid #2c2c2e;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
   overflow: hidden;
 }
 
@@ -191,7 +199,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #6d7585;
+  color: var(--text-muted);
 }
 
 .editorArea {
@@ -208,7 +216,7 @@
 
   &:empty::before {
     content: attr(data-placeholder);
-    color: #5d6577;
+    color: var(--text-muted);
     pointer-events: none;
   }
 }
@@ -225,8 +233,8 @@
           bottom: 100%;
           left: 50%;
           transform: translateX(-50%);
-          background: #1e1e1e;
-          color: #fff;
+          background: var(--surface);
+          color: var(--text);
           padding: 2px 6px;
           font-size: 10px;
           border-radius: 4px;
@@ -242,8 +250,8 @@
   align-items: center;
   gap: 4px;
   padding: 8px 10px;
-  border-top: 1px solid #242730;
-  background: #11131a;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
 }
 
 .toolBtn {
@@ -254,7 +262,7 @@
   border: 1px solid transparent;
   border-radius: 8px;
   background: transparent;
-  color: #c4cad6;
+  color: var(--text-secondary);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -274,14 +282,14 @@
   }
 
   &.toolBtnActive {
-    background: rgba($theme-color, 0.22);
-    border-color: rgba($theme-color, 0.55);
-    color: $text-color;
-    box-shadow: 0 0 0 1px rgba($theme-color, 0.2);
+    background: rgba(var(--accent-rgb), 0.22);
+    border-color: rgba(var(--accent-rgb), 0.55);
+    color: var(--text);
+    box-shadow: 0 0 0 1px rgba(var(--accent-rgb), 0.2);
 
     &:hover {
-      background: rgba($theme-color, 0.3);
-      border-color: rgba($theme-color, 0.7);
+      background: rgba(var(--accent-rgb), 0.3);
+      border-color: rgba(var(--accent-rgb), 0.7);
     }
   }
 }
@@ -294,14 +302,14 @@
   justify-content: space-between;
   gap: 8px;
   padding: 6px 12px 10px 12px;
-  border-top: 1px solid #242730;
-  background: #11131a;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
 }
 
 .counterHint {
   @extend %text;
   font-size: 11px;
-  color: #6d7585;
+  color: var(--text-muted);
   line-height: 1.35;
   max-width: 72%;
 }
@@ -309,17 +317,17 @@
 .counter {
   @extend %text;
   font-size: 12px;
-  color: #8e95a3;
+  color: var(--text-muted);
   font-variant-numeric: tabular-nums;
   flex-shrink: 0;
 }
 
 .counterWarn {
-  color: #e6a23c;
+  color: var(--warning);
 }
 
 .counterErr {
-  color: #ff6b6b;
+  color: var(--danger);
 }
 
 .statsBar {
@@ -327,8 +335,8 @@
   margin-bottom: 20px;
   padding: 16px 18px;
   border-radius: 14px;
-  border: 1px solid #2c2c2e;
-  background: #13151d;
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
 }
 
 .statsBarHeader {
@@ -343,7 +351,7 @@
   @extend %text;
   font-size: 14px;
   font-weight: 700;
-  color: #c4cad6;
+  color: var(--text-secondary);
 }
 
 .statsReload {
@@ -352,14 +360,14 @@
   border-radius: 8px;
   border: 1px solid rgba(79, 95, 130, 0.4);
   background: rgba(19, 21, 29, 0.6);
-  color: #c4cad6;
+  color: var(--text-secondary);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
 
   &:hover:not(:disabled) {
-    border-color: rgba($theme-color, 0.45);
-    color: $text-color;
+    border-color: rgba(var(--accent-rgb), 0.45);
+    color: var(--text);
   }
 
   &:disabled {
@@ -372,14 +380,14 @@
   @extend %text;
   margin: 0 0 8px 0;
   font-size: 13px;
-  color: #ff6b6b;
+  color: var(--danger);
 }
 
 .statsState {
   @extend %text;
   margin: 0 0 8px 0;
   font-size: 13px;
-  color: #ffc46b;
+  color: var(--warning);
 }
 
 .statsGrid {
@@ -401,21 +409,21 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #6d7585;
+  color: var(--text-muted);
 }
 
 .statsValue {
   @extend %text;
   font-size: 18px;
   font-weight: 700;
-  color: $text-color;
+  color: var(--text);
 }
 
 .statsMeta {
   @extend %text;
   font-size: 12px;
   line-height: 1.45;
-  color: #8e95a3;
+  color: var(--text-muted);
 }
 
 .sendPanel {
@@ -439,7 +447,7 @@
   @extend %text;
   font-size: 13px;
   font-weight: 600;
-  color: #8e95a3;
+  color: var(--text-muted);
 }
 
 .radioLabel {
@@ -448,7 +456,7 @@
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #c4cad6;
+  color: var(--text-secondary);
   cursor: pointer;
 }
 
@@ -458,7 +466,7 @@
   align-items: center;
   gap: 10px;
   font-size: 14px;
-  color: #c4cad6;
+  color: var(--text-secondary);
   margin-bottom: 14px;
   cursor: pointer;
 }
@@ -467,9 +475,9 @@
   @extend %text;
   padding: 8px 10px;
   font-size: 14px;
-  color: #e7ebf3;
-  background: #1b1f27;
-  border: 1px solid #2c3340;
+  color: var(--text);
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
   border-radius: 8px;
   color-scheme: dark;
 
@@ -482,14 +490,14 @@
   @extend %text;
   padding: 6px 10px;
   font-size: 13px;
-  color: #8e95a3;
+  color: var(--text-muted);
   background: transparent;
-  border: 1px solid #2c3340;
+  border: 1px solid var(--border);
   border-radius: 8px;
   cursor: pointer;
 
   &:hover {
-    color: #e7ebf3;
+    color: var(--text);
   }
 }
 
@@ -497,7 +505,7 @@
   @extend %text;
   margin: 0 0 14px 0;
   font-size: 12px;
-  color: #8e95a3;
+  color: var(--text-muted);
   line-height: 1.4;
 }
 
@@ -511,8 +519,8 @@
   padding: 10px 20px;
   border-radius: 10px;
   border: none;
-  background: $theme-color;
-  color: #fff;
+  background: var(--accent);
+  color: var(--accent-contrast);
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
@@ -533,14 +541,14 @@
   @extend %text;
   margin: 12px 0 0 0;
   font-size: 13px;
-  color: #7dcea0;
+  color: var(--success);
 }
 
 .sendStatusErr {
   @extend %text;
   margin: 12px 0 0 0;
   font-size: 13px;
-  color: #ff6b6b;
+  color: var(--danger);
 }
 
 .emojiPopover {
@@ -552,8 +560,8 @@
   grid-template-columns: repeat(8, 1fr); /* По 5 эмодзи в ряд */
   gap: 8px;
   padding: 10px;
-  background: #1e2530; /* Цвет подложки вашей админки */
-  border: 1px solid #2a3444;
+  background: var(--surface-hover); /* Цвет подложки вашей админки */
+  border: 1px solid var(--border-strong);
   border-radius: 8px;
   max-height: 200px;
   overflow-y: auto;
@@ -578,7 +586,7 @@
   padding: 4px;
 
   &:hover {
-      background: #2a3444; /* Подсветка при наведении */
+      background: var(--border-strong); /* Подсветка при наведении */
   }
 }
 
@@ -599,14 +607,14 @@
   margin: 0 0 12px 0;
   font-size: 12px;
   line-height: 1.45;
-  color: #6d7585;
+  color: var(--text-muted);
 }
 
 .kbRow {
   margin-bottom: 14px;
   padding: 12px 14px;
   border-radius: 12px;
-  border: 1px solid #2c2c2e;
+  border: 1px solid var(--border);
   background: rgba(19, 21, 29, 0.55);
 }
 
@@ -624,7 +632,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #8e95a3;
+  color: var(--text-muted);
 }
 
 .kbRowRemove {
@@ -632,7 +640,7 @@
   padding: 4px 10px;
   font-size: 12px;
   font-weight: 600;
-  color: #ff6b6b;
+  color: var(--danger);
   background: transparent;
   border: 1px solid rgba(255, 107, 107, 0.35);
   border-radius: 8px;
@@ -647,8 +655,8 @@
   margin-bottom: 10px;
   padding: 10px;
   border-radius: 10px;
-  background: #11131a;
-  border: 1px solid #242730;
+  background: var(--surface);
+  border: 1px solid var(--border);
 }
 
 .kbButtonGrid {
@@ -663,7 +671,7 @@
   height: 38px;
   padding: 0 10px;
   font-size: 13px;
-  color: $text-color;
+  color: var(--text);
   background: rgba(19, 21, 29, 0.85);
   border: 1px solid rgba(79, 95, 130, 0.4);
   border-radius: 8px;
@@ -672,11 +680,11 @@
 
   &:focus {
     outline: none;
-    border-color: $theme-color;
+    border-color: var(--accent);
   }
 
   &::placeholder {
-    color: #5d6577;
+    color: var(--text-muted);
   }
 }
 
@@ -685,7 +693,7 @@
   height: 38px;
   padding: 0 8px;
   font-size: 13px;
-  color: $text-color;
+  color: var(--text);
   background: rgba(19, 21, 29, 0.85);
   border: 1px solid rgba(79, 95, 130, 0.4);
   border-radius: 8px;
@@ -693,7 +701,7 @@
 
   &:focus {
     outline: none;
-    border-color: $theme-color;
+    border-color: var(--accent);
   }
 }
 
@@ -703,15 +711,15 @@
   padding: 6px 12px;
   font-size: 12px;
   font-weight: 600;
-  color: #c4cad6;
+  color: var(--text-secondary);
   background: transparent;
   border: 1px solid rgba(79, 95, 130, 0.4);
   border-radius: 8px;
   cursor: pointer;
 
   &:hover:not(:disabled) {
-    border-color: rgba($theme-color, 0.45);
-    color: $text-color;
+    border-color: rgba(var(--accent-rgb), 0.45);
+    color: var(--text);
   }
 
   &:disabled {
@@ -726,14 +734,14 @@
   padding: 6px 12px;
   font-size: 13px;
   font-weight: 600;
-  color: $theme-color;
+  color: var(--accent);
   background: transparent;
   @include dashed-box(rgba(var(--accent-rgb), 0.35));
   border-radius: 8px;
   cursor: pointer;
 
   &:hover {
-    background: rgba($theme-color, 0.08);
+    background: rgba(var(--accent-rgb), 0.08);
   }
 }
 
@@ -743,14 +751,14 @@
   padding: 10px 16px;
   font-size: 14px;
   font-weight: 600;
-  color: #c4cad6;
+  color: var(--text-secondary);
   background: rgba(19, 21, 29, 0.6);
   border: 1px solid rgba(79, 95, 130, 0.35);
   border-radius: 10px;
   cursor: pointer;
 
   &:hover {
-    border-color: rgba($theme-color, 0.45);
-    color: $text-color;
+    border-color: rgba(var(--accent-rgb), 0.45);
+    color: var(--text);
   }
 }

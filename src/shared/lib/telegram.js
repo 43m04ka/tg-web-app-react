@@ -51,7 +51,7 @@ const supportsFullscreen = (tg) =>
     typeof tg.requestFullscreen === 'function' && (tg.isVersionAtLeast?.('8.0') ?? false);
 
 export const configureTelegramViewport = async () => {
-    await loadTelegramScript().catch(() => {});
+    await ensureTelegram();
 
     if (!isTg() || !window.Telegram?.WebApp) return;
 
@@ -88,4 +88,43 @@ export const loadTelegramScript = () => {
         script.onerror = () => reject(new Error('Telegram WebApp script failed to load'));
         document.head.appendChild(script);
     });
+};
+
+const READY_TIMEOUT_MS = 2500;
+
+let isReady = false;
+let readyPromise = null;
+const readyListeners = new Set();
+
+const markReady = () => {
+    if (isReady) return;
+    isReady = true;
+    readyListeners.forEach((cb) => cb());
+    readyListeners.clear();
+};
+
+export const isTelegramReady = () => isReady;
+
+export const subscribeTelegramReady = (cb) => {
+    if (isReady) {
+        cb();
+        return () => {};
+    }
+
+    readyListeners.add(cb);
+    return () => readyListeners.delete(cb);
+};
+
+export const ensureTelegram = () => {
+    if (!readyPromise) {
+        readyPromise = Promise.race([
+            loadTelegramScript().catch(() => null),
+            new Promise((resolve) => setTimeout(resolve, READY_TIMEOUT_MS))
+        ]).then(() => {
+            markReady();
+            return window.Telegram?.WebApp || null;
+        });
+    }
+
+    return readyPromise;
 };

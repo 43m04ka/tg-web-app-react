@@ -2,6 +2,7 @@ import {useEffect, useRef, useState} from 'react';
 import {usePlatformUser} from '../shared/hooks/usePlatformUser';
 import {usePlatform} from '../shared/hooks/usePlatform';
 import {configureTelegramViewport} from '../shared/lib/telegram';
+import {useTelegramReady} from '../shared/hooks/useTelegramReady';
 import {syncUser} from '../shared/api/structure';
 import {BOOTSTRAP_TIMEOUT_MS} from '../shared/config/env';
 import {useSessionStore} from '../store/useSessionStore';
@@ -12,6 +13,7 @@ const userKeyOf = (user) => `${user.platform}:${user.id}:${user.username || user
 export function useBootstrap() {
     const platform = usePlatform();
     const {user, isUserReady} = usePlatformUser();
+    const isPlatformResolved = useTelegramReady();
 
     const setUser = useSessionStore((state) => state.setUser);
     const setInternalUserId = useSessionStore((state) => state.setInternalUserId);
@@ -62,7 +64,7 @@ export function useBootstrap() {
     }, [user, isUserReady, setUser, setInternalUserId]);
 
     return {
-        isReady: (isStructureReady && isUserReady) || isTimedOut,
+        isReady: (isStructureReady && isUserReady && isPlatformResolved) || isTimedOut,
         isTimedOut
     };
 }

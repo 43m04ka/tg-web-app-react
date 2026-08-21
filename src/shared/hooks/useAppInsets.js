@@ -3,6 +3,7 @@ import { subscribeVkSafeArea } from '../lib/vk';
 import { usePlatform } from './usePlatform';
 import { getTelegramObject } from '../lib/telegram';
 import { useMockBackButton } from './useMockBackButton';
+import { useTelegramReady } from './useTelegramReady';
 
 const measureSystemInsets = () => {
     const div = document.createElement('div');
@@ -68,6 +69,7 @@ const isEditableTarget = (el) => {
 export function useAppInsets() {
     const { isVk, isTg, isWeb } = usePlatform();
     const isMockBackButtonVisible = useMockBackButton();
+    const isTelegramReady = useTelegramReady();
 
     const mockTopInset = isMockBackButtonVisible && (isVk || isWeb) ? 45 : 0;
 
@@ -80,7 +82,7 @@ export function useAppInsets() {
     });
 
     useEffect(() => {
-        const tg = getTelegramObject();
+        const tgForEvents = getTelegramObject();
         let currentVkInsets = { top: 0, bottom: 0 };
 
         let isFieldFocused = isEditableTarget(document.activeElement);
@@ -90,6 +92,7 @@ export function useAppInsets() {
         const calculateInsets = () => {
             const system = getSystemInsets();
             const vv = window.visualViewport;
+            const tg = getTelegramObject();
 
             const currentWidth = vv ? vv.width : window.innerWidth;
             const currentHeight = vv ? vv.height : window.innerHeight;
@@ -150,6 +153,8 @@ export function useAppInsets() {
         };
 
         updateInsets();
+
+        const settleTimers = [60, 200, 500, 1000].map((delay) => window.setTimeout(updateInsets, delay));
 
         const handleResize = () => {
             window.requestAnimationFrame(updateInsets);
@@ -219,8 +224,8 @@ export function useAppInsets() {
 
         const TG_EVENTS = ['viewportChanged', 'fullscreenChanged', 'safeAreaChanged', 'contentSafeAreaChanged'];
 
-        if (isTg && tg) {
-            TG_EVENTS.forEach((event) => tg.onEvent(event, handleTgViewportChanged));
+        if (isTg && tgForEvents) {
+            TG_EVENTS.forEach((event) => tgForEvents.onEvent(event, handleTgViewportChanged));
         }
 
         return () => {
@@ -234,12 +239,13 @@ export function useAppInsets() {
             document.removeEventListener('focusout', handleFocusOut);
             window.removeEventListener('orientationchange', handleOrientationChange);
             if (baselineRecalcTimer) window.clearTimeout(baselineRecalcTimer);
+            settleTimers.forEach((timerId) => window.clearTimeout(timerId));
             if (unsubscribeVk) unsubscribeVk();
-            if (isTg && tg) {
-                TG_EVENTS.forEach((event) => tg.offEvent(event, handleTgViewportChanged));
+            if (isTg && tgForEvents) {
+                TG_EVENTS.forEach((event) => tgForEvents.offEvent(event, handleTgViewportChanged));
             }
         };
-    }, [isVk, isTg, isWeb, mockTopInset]);
+    }, [isVk, isTg, isWeb, mockTopInset, isTelegramReady]);
 
     return insets;
 }

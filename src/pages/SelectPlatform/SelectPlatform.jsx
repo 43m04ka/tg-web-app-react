@@ -10,10 +10,10 @@ import PlatformCard from './PlatformCard';
 import PlatformLink from './PlatformLink';
 import style from './SelectPlatform.module.scss';
 
-const STAGGER_MS = 32;
-const STAGGER_CAP_MS = 240;
-const LEAVE_MS = 340;
-const ENTER_MS = 300;
+const STAGGER_MS = 22;
+const STAGGER_CAP_MS = 170;
+const LEAVE_MS = 240;
+const ENTER_MS = 210;
 
 const toGroups = (items) => {
     const groups = [];

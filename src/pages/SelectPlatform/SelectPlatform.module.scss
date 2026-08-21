@@ -56,7 +56,7 @@
 
 .screen.leaving {
   opacity: 0;
-  transition-delay: 160ms;
+  transition-delay: 110ms;
 }
 
 .title {
@@ -67,7 +67,7 @@
   font-weight: 700;
   letter-spacing: u(-0.3);
   color: oklch(0.97 0.004 264);
-  animation: rise 380ms var(--ease-out) backwards;
+  animation: rise 265ms var(--ease-out) backwards;
 }
 
 .ps {
@@ -91,7 +91,7 @@
 }
 
 .item.entering {
-  animation: rise 300ms var(--ease-out) backwards;
+  animation: rise 210ms var(--ease-out) backwards;
 }
 
 .item.picked {
@@ -168,7 +168,7 @@
 }
 
 .item.picked .cardActive {
-  animation: pickPulse 340ms var(--ease-out);
+  animation: pickPulse 240ms var(--ease-out);
 }
 
 .cardIcon {
@@ -227,10 +227,10 @@
   border-color: transparent;
   background: var(--card-ring);
   color: oklch(0.14 0.01 264);
-  animation: tickPop 300ms ease-out;
+  animation: tickPop 210ms ease-out;
 
   svg {
-    animation: tickDraw 260ms var(--ease-out) 80ms forwards;
+    animation: tickDraw 180ms var(--ease-out) 55ms forwards;
   }
 }
 

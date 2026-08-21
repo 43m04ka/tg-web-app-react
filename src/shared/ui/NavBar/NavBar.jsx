@@ -15,6 +15,11 @@ const SHORT_TITLES = {
     services: 'Сервисы'
 };
 
+const WIDEST_TITLE = Object.values(SHORT_TITLES).reduce(
+    (widest, title) => (title.length > widest.length ? title : widest),
+    ''
+);
+
 const TABS = [
     {path: '/main', label: 'Главная', Icon: HomeIcon, effect: 'home'},
     {path: '/search', label: 'Поиск', Icon: SearchIcon, effect: 'search'},
@@ -85,7 +90,10 @@ export default function NavBar() {
                         />
                     ) : null}
                     <span className={style.chipTitle}>
-                        {SHORT_TITLES[page?.type] || startPage?.title || page?.title || 'Витрина'}
+                        <span className={style.sizer} aria-hidden="true">{WIDEST_TITLE}</span>
+                        <span className={style.value}>
+                            {SHORT_TITLES[page?.type] || startPage?.title || page?.title || 'Витрина'}
+                        </span>
                     </span>
                     <ChevronIcon className={style.chevron}/>
                 </span>

@@ -139,10 +139,23 @@
 }
 
 .chipTitle {
+  display: grid;
   font-size: u(10.5);
   font-weight: 700;
   color: oklch(0.92 0.004 264);
   white-space: nowrap;
+}
+
+.chipTitle > * {
+  grid-area: 1 / 1;
+}
+
+.sizer {
+  visibility: hidden;
+}
+
+.value {
+  justify-self: center;
 }
 
 .chevron {

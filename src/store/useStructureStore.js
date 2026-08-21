@@ -10,7 +10,8 @@ import {
 } from '../shared/api/structure';
 
 const CACHE_KEY = 'structure';
-const CACHE_MAX_AGE_MS = 5 * 60 * 1000;
+const CACHE_KIND = 'local';
+const CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
 const visibleOnly = (pages) => (Array.isArray(pages) ? pages.filter((page) => page.isHidden !== 1) : null);
 
@@ -23,7 +24,7 @@ const SOURCES = [
 ];
 
 const seedFromKnownSources = () => {
-    const cached = readCache(CACHE_KEY, CACHE_MAX_AGE_MS) || {};
+    const cached = readCache(CACHE_KEY, CACHE_MAX_AGE_MS, CACHE_KIND) || {};
     const seed = {};
 
     SOURCES.forEach(({key, initial, transform}) => {
@@ -43,9 +44,11 @@ export const useStructureStore = create((set, get) => ({
 
     load: async (signal) => {
         if (get().status === 'loading') return;
-        set({status: 'loading', error: null});
 
-        const missing = SOURCES.filter(({key}) => !hasItems(get()[key]));
+        const isSeeded = (source) => hasItems(get()[source.key]);
+        const blocking = SOURCES.filter((source) => source.critical && !isSeeded(source));
+
+        set({status: blocking.length ? 'loading' : 'ready', error: null});
 
         const fetchOne = async ({key, load, transform}) => {
             const result = await load(signal);
@@ -53,25 +56,32 @@ export const useStructureStore = create((set, get) => ({
             if (hasItems(result)) set({[key]: transform ? transform(result) : result});
         };
 
-        const critical = missing.filter((source) => source.critical);
-        const background = Promise.all(missing.filter((source) => !source.critical).map(fetchOne));
+        const background = Promise.all(
+            SOURCES.filter((source) => !blocking.includes(source)).map(fetchOne)
+        );
 
-        await Promise.all(critical.map(fetchOne));
+        await Promise.all(blocking.map(fetchOne));
         if (signal?.aborted) return;
 
-        const missingCritical = SOURCES
-            .filter((source) => source.critical && !hasItems(get()[source.key]))
-            .map(({key}) => key);
+        if (blocking.length) {
+            const missingCritical = SOURCES
+                .filter((source) => source.critical && !hasItems(get()[source.key]))
+                .map(({key}) => key);
 
-        set({
-            status: missingCritical.length === SOURCES.filter((s) => s.critical).length ? 'error' : 'ready',
-            error: missingCritical.length ? `Не загружено: ${missingCritical.join(', ')}` : null
-        });
+            set({
+                status: missingCritical.length === SOURCES.filter((s) => s.critical).length ? 'error' : 'ready',
+                error: missingCritical.length ? `Не загружено: ${missingCritical.join(', ')}` : null
+            });
+        }
 
         await background;
         if (signal?.aborted) return;
 
-        writeCache(CACHE_KEY, SOURCES.reduce((acc, {key}) => ({...acc, [key]: get()[key]}), {}));
+        writeCache(
+            CACHE_KEY,
+            SOURCES.reduce((acc, {key}) => ({...acc, [key]: get()[key]}), {}),
+            CACHE_KIND
+        );
     }
 }));
 

@@ -34,43 +34,47 @@
   opacity: 1;
 }
 
-$fadeLength: 72;
-
 @function fadeColor($alpha) {
   @return unquote("oklch(0.21 0.02 264 / #{$alpha})");
 }
 
-@function fadeStop($alpha, $factor) {
-  @return fadeColor($alpha) calc(var(--fade-solid) + #{$factor * $fadeLength} * var(--u));
+@function fadeStop($alpha, $position) {
+  @return fadeColor($alpha) percentage($position);
 }
 
+.topSolid,
 .topFade {
   position: fixed;
-  top: 0;
   left: 0;
   right: 0;
   z-index: 3;
   pointer-events: none;
-  --fade-solid: 0px;
+}
+
+.topSolid {
+  top: 0;
+  background: fadeColor(1);
+}
+
+.topFade {
   background: linear-gradient(
                   to bottom,
-                  fadeColor(1) 0,
                   fadeStop(1, 0),
-                  fadeStop(0.9963, 0.06),
-                  fadeStop(0.9787, 0.12),
-                  fadeStop(0.9407, 0.18),
-                  fadeStop(0.8785, 0.24),
-                  fadeStop(0.7918, 0.3),
-                  fadeStop(0.6844, 0.36),
-                  fadeStop(0.5635, 0.42),
-                  fadeStop(0.4365, 0.48),
-                  fadeStop(0.3156, 0.54),
-                  fadeStop(0.2082, 0.6),
-                  fadeStop(0.1215, 0.66),
-                  fadeStop(0.0593, 0.72),
-                  fadeStop(0.0213, 0.78),
-                  fadeStop(0.0037, 0.84),
-                  fadeStop(0, 0.9),
+                  fadeStop(0.9963, 0.0625),
+                  fadeStop(0.9787, 0.125),
+                  fadeStop(0.9407, 0.1875),
+                  fadeStop(0.8785, 0.25),
+                  fadeStop(0.7918, 0.3125),
+                  fadeStop(0.6844, 0.375),
+                  fadeStop(0.5635, 0.4375),
+                  fadeStop(0.4365, 0.5),
+                  fadeStop(0.3156, 0.5625),
+                  fadeStop(0.2082, 0.625),
+                  fadeStop(0.1215, 0.6875),
+                  fadeStop(0.0593, 0.75),
+                  fadeStop(0.0213, 0.8125),
+                  fadeStop(0.0037, 0.875),
+                  fadeStop(0.0003, 0.9375),
                   fadeStop(0, 1)
   );
 }

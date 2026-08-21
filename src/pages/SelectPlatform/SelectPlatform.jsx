@@ -137,14 +137,21 @@ export default function SelectPlatform() {
             />
 
             {contentSafeAreaInset.top > 0 ? (
-                <div
-                    className={style.topFade}
-                    style={{
-                        '--fade-solid': `${contentSafeAreaInset.top}px`,
-                        height: `calc(${contentSafeAreaInset.top}px + 72 * var(--u))`
-                    }}
-                    aria-hidden="true"
-                />
+                <>
+                    <div
+                        className={style.topSolid}
+                        style={{height: `${safeAreaInset.top}px`}}
+                        aria-hidden="true"
+                    />
+                    <div
+                        className={style.topFade}
+                        style={{
+                            top: `${safeAreaInset.top}px`,
+                            height: `${Math.max(contentSafeAreaInset.top - safeAreaInset.top, 1)}px`
+                        }}
+                        aria-hidden="true"
+                    />
+                </>
             ) : null}
 
             <h1 className={style.title}>

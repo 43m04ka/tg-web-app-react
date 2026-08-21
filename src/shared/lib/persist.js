@@ -3,9 +3,9 @@ const VERSION = 1;
 
 const key = (name) => `${NAMESPACE}:${VERSION}:${name}`;
 
-const safeStorage = () => {
+const safeStorage = (kind = 'session') => {
     try {
-        const storage = window.sessionStorage;
+        const storage = kind === 'local' ? window.localStorage : window.sessionStorage;
         storage.getItem(key('probe'));
         return storage;
     } catch (e) {
@@ -13,8 +13,8 @@ const safeStorage = () => {
     }
 };
 
-export const readCache = (name, maxAgeMs = Infinity) => {
-    const storage = safeStorage();
+export const readCache = (name, maxAgeMs = Infinity, kind = 'session') => {
+    const storage = safeStorage(kind);
     if (!storage) return null;
 
     try {
@@ -33,8 +33,8 @@ export const readCache = (name, maxAgeMs = Infinity) => {
     }
 };
 
-export const writeCache = (name, value) => {
-    const storage = safeStorage();
+export const writeCache = (name, value, kind = 'session') => {
+    const storage = safeStorage(kind);
     if (!storage) return;
 
     try {
@@ -43,6 +43,6 @@ export const writeCache = (name, value) => {
     }
 };
 
-export const clearCache = (name) => {
-    safeStorage()?.removeItem(key(name));
+export const clearCache = (name, kind = 'session') => {
+    safeStorage(kind)?.removeItem(key(name));
 };

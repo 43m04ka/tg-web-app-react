@@ -4,7 +4,7 @@ import {useSessionStore} from '../../../store/useSessionStore';
 import {useStructureStore} from '../../../store/useStructureStore';
 import {useAppInsets} from '../../hooks/useAppInsets';
 import {getTelegramObject} from '../../lib/telegram';
-import {BasketIcon, HomeIcon, MoreIcon, SearchIcon} from './NavIcons';
+import {BasketIcon, ChevronIcon, HomeIcon, MoreIcon, SearchIcon} from './NavIcons';
 import style from './NavBar.module.scss';
 
 const SHORT_TITLES = {
@@ -87,6 +87,7 @@ export default function NavBar() {
                     <span className={style.chipTitle}>
                         {SHORT_TITLES[page?.type] || startPage?.title || page?.title || 'Витрина'}
                     </span>
+                    <ChevronIcon className={style.chevron}/>
                 </span>
                 <span className={style.label}>Платформа</span>
             </button>

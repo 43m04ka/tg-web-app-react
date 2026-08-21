@@ -118,10 +118,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: u(6);
-  width: 100%;
-  padding: u(5) u(12);
-  border-radius: u(12);
+  gap: u(5);
+  max-width: 100%;
+  padding: u(5) u(9);
+  border-radius: u(11);
   background: oklch(1 0 0 / 0.08);
   border: 1px solid oklch(1 0 0 / 0.1);
   transition: transform 320ms var(--ease-spring),
@@ -142,6 +142,18 @@
   font-weight: 700;
   color: oklch(0.92 0.004 264);
   white-space: nowrap;
+}
+
+.chevron {
+  width: u(8.5);
+  height: u(8.5);
+  flex: none;
+  color: oklch(0.65 0.01 264);
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.platform:active .chevron {
+  transform: translateY(u(1));
 }
 
 @keyframes barRise {

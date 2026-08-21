@@ -42,6 +42,21 @@ export function BasketIcon({className}) {
     );
 }
 
+export function ChevronIcon({className}) {
+    return (
+        <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+            <path
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m5.5 9.5 6.5 6 6.5-6"
+            />
+        </svg>
+    );
+}
+
 export function MoreIcon({className}) {
     return (
         <svg className={className} viewBox="0 0 24 24" aria-hidden="true">

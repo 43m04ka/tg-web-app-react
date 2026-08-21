@@ -1,8 +1,8 @@
 .screen {
   position: relative;
   min-height: 100%;
-  padding-left: var(--space-5);
-  padding-right: var(--space-5);
+  padding-left: 20px;
+  padding-right: 20px;
   display: flex;
   flex-direction: column;
   gap: 22px;
@@ -14,14 +14,20 @@
                   oklch(0.13 0.014 264) 50%,
                   oklch(0.11 0.012 264) 100%
   );
+  transition: opacity var(--duration-base) var(--ease-out);
+}
+
+.screen.leaving {
+  opacity: 0;
+  transition-delay: 160ms;
 }
 
 .glowTop,
 .glowSide {
   position: absolute;
   border-radius: 50%;
-  filter: blur(52px);
   pointer-events: none;
+  will-change: transform;
 }
 
 .glowTop {
@@ -30,6 +36,8 @@
   width: 260px;
   height: 260px;
   background: oklch(0.55 0.16 258 / 0.16);
+  filter: blur(50px);
+  animation: driftTop 18s ease-in-out infinite;
 }
 
 .glowSide {
@@ -38,16 +46,18 @@
   width: 220px;
   height: 220px;
   background: oklch(0.7 0.145 25 / 0.16);
+  filter: blur(55px);
+  animation: driftSide 22s ease-in-out infinite;
 }
 
 .title {
   position: relative;
   font-size: 24px;
   line-height: 1.34;
-  font-weight: var(--fw-bold);
+  font-weight: 700;
   letter-spacing: -0.3px;
-  color: var(--text);
-  animation: rise var(--duration-slow) var(--ease-out) backwards;
+  color: oklch(0.97 0.004 264);
+  animation: rise 520ms var(--ease-out) backwards;
 }
 
 .ps {
@@ -58,43 +68,51 @@
   color: oklch(0.78 0.18 148);
 }
 
-.stack {
+.group {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 11px;
 }
 
+.reveal {
+  animation: rise 460ms var(--ease-out) backwards;
+  transition: opacity 260ms var(--ease-out), transform 260ms var(--ease-out), filter 260ms var(--ease-out);
+}
+
+.reveal.dimmed {
+  opacity: 0.25;
+  transform: scale(0.97);
+  filter: saturate(0.6);
+}
+
+.reveal.picked {
+  z-index: 2;
+}
+
 .sectionHeader {
   display: flex;
   align-items: center;
   gap: 9px;
-  margin-top: var(--space-3);
 }
 
-.sectionHeader:first-child {
-  margin-top: 0;
-}
-
-.sectionBadge {
+.sectionIcon {
   width: 20px;
   height: 20px;
   flex: none;
-  border-radius: var(--radius-xs);
-  background: var(--surface-3) center / cover no-repeat;
-  border: 1px solid var(--border);
+  background: center / contain no-repeat;
 }
 
 .sectionTitle {
-  font-size: var(--fs-md);
-  font-weight: var(--fw-semibold);
-  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  color: oklch(0.85 0.006 264);
 }
 
 .hint {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
+  font-size: 12.5px;
   line-height: 1.45;
+  color: oklch(0.72 0.008 264 / 0.8);
 }
 
 .card,
@@ -102,24 +120,32 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 14px;
   width: 100%;
-  padding: 14px 16px;
-  border-radius: var(--radius-xl);
-  border: 2px solid transparent;
-  background: var(--card-gradient);
-  text-align: left;
   overflow: hidden;
-  opacity: 0.82;
-  animation: rise var(--duration-slow) var(--ease-out) backwards;
-  transition: transform var(--duration-base) var(--ease-out),
-              box-shadow var(--duration-base) var(--ease-out),
-              border-color var(--duration-base) var(--ease-out),
-              opacity var(--duration-base) var(--ease-out);
+  text-align: left;
+  background: var(--card-gradient);
+  transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1),
+              box-shadow 300ms ease,
+              border-color 300ms ease,
+              opacity 300ms ease;
 }
 
-.card:active:not(:disabled) {
-  transform: scale(0.985);
+.card {
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 20px;
+  border: 2px solid transparent;
+  opacity: 0.82;
+  cursor: pointer;
+}
+
+.card:hover {
+  opacity: 0.94;
+}
+
+.card:active {
+  transform: scale(0.982);
+  transition-duration: 90ms;
 }
 
 .cardActive {
@@ -129,12 +155,51 @@
   box-shadow: 0 16px 30px -18px var(--card-ring);
 }
 
+.cardActive:active {
+  transform: translateY(-2px) scale(1);
+}
+
+.picked .cardActive {
+  animation: pickPulse 340ms var(--ease-out);
+}
+
+.sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+                  180deg,
+                  oklch(1 0 0 / 0.07) 0%,
+                  oklch(1 0 0 / 0.02) 22%,
+                  transparent 46%
+  );
+}
+
 .pattern {
   position: absolute;
   inset: 0;
-  background: right center / auto 140% no-repeat;
-  opacity: 0.18;
   pointer-events: none;
+  mask-image: linear-gradient(to top, oklch(0 0 0) 20%, transparent 92%);
+  -webkit-mask-image: linear-gradient(to top, oklch(0 0 0) 20%, transparent 92%);
+
+  > span {
+    position: absolute;
+    inset: -100%;
+    background-repeat: repeat;
+    background-size: 190px 190px;
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  > span:nth-child(1) {
+    opacity: 0.1;
+    animation: driftForward 26s linear infinite;
+  }
+
+  > span:nth-child(2) {
+    opacity: 0.055;
+    animation: driftBackward 38s linear infinite;
+  }
 }
 
 .cardIcon {
@@ -157,12 +222,12 @@
 
 .cardTitle {
   font-size: 16px;
-  font-weight: var(--fw-bold);
-  color: var(--text);
+  font-weight: 700;
+  color: oklch(0.97 0.004 264);
 }
 
 .cardSubtitle {
-  font-size: var(--fs-sm);
+  font-size: 12.5px;
   color: oklch(0.72 0.008 264 / 0.8);
 }
 
@@ -176,48 +241,72 @@
   justify-content: center;
   border-radius: 50%;
   border: 1.5px solid oklch(1 0 0 / 0.18);
-  font-size: 12px;
-  font-weight: var(--fw-extrabold);
-  transition: opacity var(--duration-fast) var(--ease-out);
+  color: transparent;
+  transition: background-color 250ms var(--ease-out), border-color 250ms var(--ease-out), color 150ms linear;
+
+  svg {
+    width: 13px;
+    height: 13px;
+    stroke-dasharray: 24;
+    stroke-dashoffset: 24;
+  }
 }
 
 .tickActive {
   border-color: transparent;
   background: var(--card-ring);
   color: oklch(0.14 0.01 264);
-  animation: tick var(--duration-base) var(--ease-out);
+  animation: tickPop 300ms ease-out;
+
+  svg {
+    animation: tickDraw 260ms var(--ease-out) 80ms forwards;
+  }
 }
 
 .link {
+  gap: 13px;
   padding: 13px 15px;
   border-radius: 18px;
   border: 1px solid var(--card-badge);
-  opacity: 1;
 }
 
 .link:hover {
   border-color: var(--card-ring);
+  transform: translateY(-1px);
+}
+
+.link:active {
+  transform: scale(0.985);
+  transition-duration: 90ms;
 }
 
 .linkIcon {
+  position: relative;
   width: 40px;
   height: 40px;
   flex: none;
-  border-radius: var(--radius-md);
+  border-radius: 12px;
   background: var(--card-badge) center / cover no-repeat;
 }
 
 .linkText {
+  position: relative;
   flex: 1;
-  font-size: var(--fs-md);
-  font-weight: var(--fw-semibold);
+  font-size: 13.5px;
+  font-weight: 600;
   line-height: 1.35;
-  color: var(--text);
+  color: oklch(0.96 0.004 264);
 }
 
 .linkArrow {
+  position: relative;
   font-size: 14px;
   color: var(--card-ring);
+  transition: transform 240ms var(--ease-out);
+}
+
+.link:hover .linkArrow {
+  transform: translate(2px, -2px);
 }
 
 @keyframes rise {
@@ -231,7 +320,7 @@
   }
 }
 
-@keyframes tick {
+@keyframes tickPop {
   0% {
     transform: scale(0.6);
     opacity: 0.4;
@@ -242,5 +331,73 @@
   100% {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+@keyframes tickDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pickPulse {
+  0% {
+    box-shadow: 0 16px 30px -18px var(--card-ring), 0 0 0 0 var(--card-ring);
+  }
+  100% {
+    box-shadow: 0 16px 30px -18px var(--card-ring), 0 0 0 12px transparent;
+  }
+}
+
+@keyframes driftForward {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(190px, 190px, 0);
+  }
+}
+
+@keyframes driftBackward {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-190px, 190px, 0);
+  }
+}
+
+@keyframes driftTop {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(24px, 18px, 0) scale(1.08);
+  }
+}
+
+@keyframes driftSide {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-26px, -30px, 0) scale(1.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .title,
+  .glowTop,
+  .glowSide,
+  .pattern > span,
+  .tickActive,
+  .tickActive svg,
+  .picked .cardActive {
+    animation: none;
+  }
+
+  .tickActive svg {
+    stroke-dashoffset: 0;
   }
 }

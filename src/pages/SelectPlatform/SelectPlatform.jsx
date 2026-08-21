@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useStructureStore} from '../../store/useStructureStore';
 import {useSessionStore} from '../../store/useSessionStore';
@@ -7,10 +7,27 @@ import {useAppInsets} from '../../shared/hooks/useAppInsets';
 import {getTelegramObject} from '../../shared/lib/telegram';
 import PlatformCard from './PlatformCard';
 import PlatformLink from './PlatformLink';
-import SectionHeader from './SectionHeader';
 import style from './SelectPlatform.module.scss';
 
-const SELECT_DELAY_MS = 260;
+const STAGGER_MS = 55;
+const STAGGER_CAP_MS = 520;
+const LEAVE_MS = 340;
+
+const toGroups = (items) => {
+    const groups = [];
+    let current = null;
+
+    items.forEach((item) => {
+        if (item.type === 'title' || !current) {
+            current = {header: item.type === 'title' ? item : null, key: item.id, children: []};
+            groups.push(current);
+            if (item.type === 'title') return;
+        }
+        current.children.push(item);
+    });
+
+    return groups;
+};
 
 export default function SelectPlatform() {
     const navigate = useNavigate();
@@ -22,26 +39,68 @@ export default function SelectPlatform() {
     const pageId = useSessionStore((state) => state.pageId);
     const setPageId = useSessionStore((state) => state.setPageId);
 
+    const [pickedId, setPickedId] = useState(null);
+
     useEffect(() => {
         getTelegramObject().BackButton?.hide();
     }, []);
 
-    const items = useMemo(() => {
+    const groups = useMemo(() => {
         if (!Array.isArray(startPages)) return [];
-        return [...startPages]
+
+        const visible = [...startPages]
             .filter((item) => item.platform === botType)
             .sort((a, b) => a.serialNumber - b.serialNumber);
+
+        return toGroups(visible);
     }, [startPages, botType]);
 
     const handleSelect = useCallback((item) => {
+        if (pickedId !== null) return;
+
         window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium');
+        setPickedId(item.id);
         setPageId(item.structurePageId);
-        setTimeout(() => navigate('/main'), SELECT_DELAY_MS);
-    }, [navigate, setPageId]);
+        setTimeout(() => navigate('/main'), LEAVE_MS);
+    }, [navigate, pickedId, setPageId]);
+
+    let order = 0;
+    const nextDelay = () => Math.min(order++ * STAGGER_MS, STAGGER_CAP_MS);
+
+    const renderChild = (item) => {
+        const isPicked = pickedId === item.id;
+        const isDimmed = pickedId !== null && !isPicked;
+        const className = [style.reveal, isPicked ? style.picked : '', isDimmed ? style.dimmed : ''].join(' ');
+
+        let content;
+
+        if (item.type === 'page') {
+            const page = pages?.find((candidate) => candidate.id === item.structurePageId);
+            if (!page) return null;
+
+            content = (
+                <PlatformCard
+                    item={{...page, ...item}}
+                    isActive={isPicked || item.structurePageId === pageId}
+                    onSelect={() => handleSelect(item)}
+                />
+            );
+        } else if (item.type === 'link') {
+            content = <PlatformLink item={item}/>;
+        } else {
+            content = <p className={style.hint}>{item.text}</p>;
+        }
+
+        return (
+            <div key={item.id} className={className} style={{animationDelay: `${nextDelay()}ms`}}>
+                {content}
+            </div>
+        );
+    };
 
     return (
         <div
-            className={style.screen}
+            className={`${style.screen} ${pickedId !== null ? style.leaving : ''}`}
             style={{paddingTop: safeAreaInset.top + 44, paddingBottom: safeAreaInset.bottom + 32}}
         >
             <div className={style.glowTop} aria-hidden="true"/>
@@ -52,30 +111,26 @@ export default function SelectPlatform() {
                 <span className={style.xbox}>Xbox</span>
             </h1>
 
-            <div className={style.stack}>
-                {items.map((item, index) => {
-                    if (item.type === 'page') {
-                        const page = pages?.find((candidate) => candidate.id === item.structurePageId);
-                        if (!page) return null;
+            {groups.map((group) => (
+                <section key={group.key} className={style.group}>
+                    {group.header ? (
+                        <div className={style.reveal} style={{animationDelay: `${nextDelay()}ms`}}>
+                            <div className={style.sectionHeader}>
+                                {group.header.icon ? (
+                                    <span
+                                        className={style.sectionIcon}
+                                        style={{backgroundImage: `url(${group.header.icon})`}}
+                                        aria-hidden="true"
+                                    />
+                                ) : null}
+                                <span className={style.sectionTitle}>{group.header.text}</span>
+                            </div>
+                        </div>
+                    ) : null}
 
-                        return (
-                            <PlatformCard
-                                key={item.id}
-                                item={{...page, ...item}}
-                                isActive={item.structurePageId === pageId}
-                                delay={index * 60}
-                                onSelect={() => handleSelect(item)}
-                            />
-                        );
-                    }
-
-                    if (item.type === 'link') {
-                        return <PlatformLink key={item.id} item={item} delay={index * 60}/>;
-                    }
-
-                    return <SectionHeader key={item.id} item={item}/>;
-                })}
-            </div>
+                    {group.children.map(renderChild)}
+                </section>
+            ))}
         </div>
     );
 }

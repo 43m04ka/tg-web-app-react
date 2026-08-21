@@ -1,0 +1,28 @@
+import React from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useSessionStore} from '../../store/useSessionStore';
+import {useStructureStore} from '../../store/useStructureStore';
+import {useAppInsets} from '../../shared/hooks/useAppInsets';
+import style from './Main.module.scss';
+
+export default function Main() {
+    const navigate = useNavigate();
+    const {safeAreaInset} = useAppInsets();
+
+    const pageId = useSessionStore((state) => state.pageId);
+    const pages = useStructureStore((state) => state.pages);
+    const page = pages?.find((candidate) => candidate.id === pageId);
+
+    return (
+        <div className={style.screen} style={{paddingTop: safeAreaInset.top + 44, paddingBottom: safeAreaInset.bottom + 32}}>
+            <div className={style.badge}>Раздел в разработке</div>
+            <h1 className={style.title}>{page?.title || 'Каталог'}</h1>
+            <p className={style.text}>
+                Витрина выбрана. Каталог, карточка товара и корзина появятся здесь на следующих этапах редизайна.
+            </p>
+            <button type="button" className={style.button} onClick={() => navigate('/')}>
+                Сменить витрину
+            </button>
+        </div>
+    );
+}

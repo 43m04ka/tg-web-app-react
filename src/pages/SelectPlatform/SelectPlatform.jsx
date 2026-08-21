@@ -1,94 +1,81 @@
-import React, {useCallback, useEffect, useRef} from 'react';
-import style from './SelectPlatform.module.scss';
-import useGlobalData from '../../hooks/useGlobalData';
+import React, {useCallback, useEffect, useMemo} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {useTelegram} from '../../hooks/useTelegram';
-import {useIsDesktopMedia} from '../../hooks/useIsDesktopMedia';
-import PlatformCard from './Elements/PlatformCard';
-import SelectPlatformHeader from './Elements/SelectPlatformText';
-import SelectPlatformLink from './Elements/SelectPlatformLink';
-import {usePlatform} from "../../hooks/utils/usePlatform";
-import {useAppInsets} from "../../hooks/useAppInsets";
+import {useStructureStore} from '../../store/useStructureStore';
+import {useSessionStore} from '../../store/useSessionStore';
+import {usePlatform} from '../../shared/hooks/usePlatform';
+import {useAppInsets} from '../../shared/hooks/useAppInsets';
+import {getTelegramObject} from '../../shared/lib/telegram';
+import PlatformCard from './PlatformCard';
+import PlatformLink from './PlatformLink';
+import SectionHeader from './SectionHeader';
+import style from './SelectPlatform.module.scss';
 
-const SelectPlatform = () => {
-    const {pageList, pageId, setPageId, updateBasket, catalogList, setBarIsVisible, startPageList, updateStartPageList} = useGlobalData();
+const SELECT_DELAY_MS = 260;
+
+export default function SelectPlatform() {
     const navigate = useNavigate();
-    const { tg } = useTelegram();
-const { safeAreaInset, contentSafeAreaInset, isKeyboardOpen } = useAppInsets();
+    const {botType} = usePlatform();
+    const {safeAreaInset} = useAppInsets();
 
-    const { botType } = usePlatform();
-    useIsDesktopMedia();
-    const selectingRef = useRef(false);
-
+    const startPages = useStructureStore((state) => state.startPages);
+    const pages = useStructureStore((state) => state.pages);
+    const pageId = useSessionStore((state) => state.pageId);
+    const setPageId = useSessionStore((state) => state.setPageId);
 
     useEffect(() => {
-        tg.BackButton.hide();
-    }, [tg]);
+        getTelegramObject().BackButton?.hide();
+    }, []);
 
-    // Данных может не быть, если сервер не вложил их в index.html, а фоновый
-    // запрос оборвался — без этого экран остаётся с одним заголовком
-    const retriedRef = useRef(false);
-    useEffect(() => {
-        if (startPageList.length > 0 || retriedRef.current) return;
-        retriedRef.current = true;
-        updateStartPageList();
-    }, [startPageList, updateStartPageList]);
+    const items = useMemo(() => {
+        if (!Array.isArray(startPages)) return [];
+        return [...startPages]
+            .filter((item) => item.platform === botType)
+            .sort((a, b) => a.serialNumber - b.serialNumber);
+    }, [startPages, botType]);
 
     const handleSelect = useCallback((item) => {
-        if (selectingRef.current) {
-            return;
-        }
-
-        console.log(item)
-
         window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium');
-
-        if (item.id !== pageId) {
-            setPageId(item.id);
-            updateBasket(catalogList, item.id);
-        }
-
-        setTimeout(()=>{
-            setBarIsVisible(true);
-            navigate('/main/catalogs');  
-        }, 300)
-    }, [catalogList, pageId, setPageId, updateBasket]);
-
-
-    if (!pageList?.length) {
-        return null;
-    }
-
-    console.log(pageList)
+        setPageId(item.structurePageId);
+        setTimeout(() => navigate('/main'), SELECT_DELAY_MS);
+    }, [navigate, setPageId]);
 
     return (
-        <div className={style.container}style={{paddingTop: String(safeAreaInset.top + contentSafeAreaInset.top + window.innerWidth * 0.05) + 'px', 
-            paddingBottom: String(safeAreaInset.top + contentSafeAreaInset.top + window.innerWidth * 0.05) + 'px'
-        }}>
-            <h className={style.introText}>
-                Геймворд — ваш сервис для покупки игр и подписок для 
-                <a> PlayStation</a> и 
-                <a> Xbox</a>
-            </h>
-            {([...startPageList].sort((a, b) => a.serialNumber - b.serialNumber)).map((item, index) => {
-                if(item.platform === botType){
-                    if(item.type === 'page'){
-                        return(<PlatformCard
-                            key={item.id}
-                            item={{...pageList.find(user => user.id === item.structurePageId), ...item}}
-                            isActive={item.structurePageId === pageId}
-                            animationDelay={`${index * 0.08}s`}
-                            onSelect={() => handleSelect(pageList.find(user => user.id === item.structurePageId))}
-                        />)
-                    }else if(item.type === 'link'){
-                        return(<SelectPlatformLink item={item} animationDelay={'0s'}/>)
-                    }else{
-                        return(<SelectPlatformHeader data={item}/>)
+        <div
+            className={style.screen}
+            style={{paddingTop: safeAreaInset.top + 44, paddingBottom: safeAreaInset.bottom + 32}}
+        >
+            <div className={style.glowTop} aria-hidden="true"/>
+            <div className={style.glowSide} aria-hidden="true"/>
+
+            <h1 className={style.title}>
+                Ваш сервис для покупки игр и подписок для <span className={style.ps}>PlayStation</span> и{' '}
+                <span className={style.xbox}>Xbox</span>
+            </h1>
+
+            <div className={style.stack}>
+                {items.map((item, index) => {
+                    if (item.type === 'page') {
+                        const page = pages?.find((candidate) => candidate.id === item.structurePageId);
+                        if (!page) return null;
+
+                        return (
+                            <PlatformCard
+                                key={item.id}
+                                item={{...page, ...item}}
+                                isActive={item.structurePageId === pageId}
+                                delay={index * 60}
+                                onSelect={() => handleSelect(item)}
+                            />
+                        );
                     }
-                }
-            })}
+
+                    if (item.type === 'link') {
+                        return <PlatformLink key={item.id} item={item} delay={index * 60}/>;
+                    }
+
+                    return <SectionHeader key={item.id} item={item}/>;
+                })}
+            </div>
         </div>
     );
-};
-
-export default SelectPlatform;
+}

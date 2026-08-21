@@ -100,15 +100,12 @@ export default function SelectPlatform() {
 
     return (
         <div
-            className={`${style.screen} ${pickedId !== null ? style.leaving : ''}`}
+            className={style.screen}
             style={{
                 paddingTop: `calc(${safeAreaInset.top}px + 44 * var(--u))`,
                 paddingBottom: `calc(${safeAreaInset.bottom}px + 32 * var(--u))`
             }}
         >
-            <div className={style.glowTop} aria-hidden="true"/>
-            <div className={style.glowSide} aria-hidden="true"/>
-
             <h1 className={style.title}>
                 Ваш сервис для покупки игр и подписок для <span className={style.ps}>PlayStation</span> и{' '}
                 <span className={style.xbox}>Xbox</span>

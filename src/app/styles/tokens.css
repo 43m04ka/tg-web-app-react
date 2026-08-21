@@ -77,6 +77,10 @@
     --safe-top: 0px;
     --safe-bottom: 0px;
     --app-height: 100dvh;
+
+    --design-width: 402;
+    --viewport: min(100vw, 460px);
+    --u: calc(var(--viewport) / var(--design-width));
 }
 
 @media (prefers-reduced-motion: reduce) {

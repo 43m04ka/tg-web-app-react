@@ -6,7 +6,14 @@
   animation: appear var(--duration-base) var(--ease-out) backwards;
 }
 
-.app > * {
+.content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.content > * {
   flex: 1;
   min-height: 0;
 }

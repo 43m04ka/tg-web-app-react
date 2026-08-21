@@ -132,7 +132,7 @@ export default function SelectPlatform() {
             className={`${style.screen} ${pickedId !== null ? style.leaving : ''}`}
             style={{
                 paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`,
-                paddingBottom: `calc(${safeAreaInset.bottom}px + 32 * var(--u))`
+                paddingBottom: `calc(${pageId === null ? safeAreaInset.bottom : 0}px + 32 * var(--u))`
             }}
         >
             <div

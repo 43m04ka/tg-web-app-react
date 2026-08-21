@@ -7,7 +7,7 @@ import style from './Main.module.scss';
 
 export default function Main() {
     const navigate = useNavigate();
-    const {safeAreaInset, contentSafeAreaInset} = useAppInsets();
+    const {contentSafeAreaInset} = useAppInsets();
 
     const pageId = useSessionStore((state) => state.pageId);
     const pages = useStructureStore((state) => state.pages);
@@ -17,8 +17,7 @@ export default function Main() {
         <div
             className={style.screen}
             style={{
-                paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`,
-                paddingBottom: `calc(${safeAreaInset.bottom}px + 32 * var(--u))`
+                paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`
             }}
         >
             <div className={style.badge}>Раздел в разработке</div>

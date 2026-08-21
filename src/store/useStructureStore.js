@@ -9,8 +9,8 @@ import {
     fetchStructureBlocks
 } from '../shared/api/structure';
 
-const CACHE_KEY = 'structure';
-const CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+const ICONS_CACHE_KEY = 'startPageIcons';
+const ICONS_MAX_AGE_MS = 60 * 60 * 1000;
 
 const visibleOnly = (pages) => (Array.isArray(pages) ? pages.filter((page) => page.isHidden !== 1) : null);
 
@@ -61,22 +61,14 @@ export const useStructureStore = create((set, get) => ({
 const missingCriticalKeys = (get) =>
     SOURCES.filter((source) => source.critical && !hasItems(get()[source.key])).map(({key}) => key);
 
-const seedFromCache = async (set, get) => {
-    const cached = await readBigCache(CACHE_KEY, CACHE_MAX_AGE_MS);
-    if (!cached) return;
+const withCachedIcons = (items, icons) =>
+    items.map((item) => (item.icon || !icons[item.id] ? item : {...item, icon: icons[item.id]}));
 
-    const patch = {};
-    SOURCES.forEach(({key}) => {
-        if (!hasItems(get()[key]) && hasItems(cached[key])) patch[key] = cached[key];
-    });
-
-    if (Object.keys(patch).length) set(patch);
-};
+const collectIcons = (items) =>
+    items.reduce((acc, item) => (item.icon ? {...acc, [item.id]: item.icon} : acc), {});
 
 async function runLoad(set, get) {
-    if (missingCriticalKeys(get).length) {
-        await seedFromCache(set, get);
-    }
+    const iconsPromise = readBigCache(ICONS_CACHE_KEY, ICONS_MAX_AGE_MS);
 
     const blocking = SOURCES.filter((source) => source.critical && !hasItems(get()[source.key]));
 
@@ -84,7 +76,12 @@ async function runLoad(set, get) {
 
     const fetchOne = async ({key, load, transform}) => {
         const result = await load();
-        if (hasItems(result)) set({[key]: transform ? transform(result) : result});
+        if (!hasItems(result)) return;
+
+        let value = transform ? transform(result) : result;
+        if (key === 'startPages') value = withCachedIcons(value, (await iconsPromise) || {});
+
+        set({[key]: value});
     };
 
     const background = Promise.all(
@@ -103,9 +100,11 @@ async function runLoad(set, get) {
 
     await background;
 
-    if (missingCriticalKeys(get).length) return;
+    const startPages = get().startPages;
+    if (!hasItems(startPages)) return;
 
-    writeBigCache(CACHE_KEY, SOURCES.reduce((acc, {key}) => ({...acc, [key]: get()[key]}), {}));
+    const icons = collectIcons(startPages);
+    if (Object.keys(icons).length) writeBigCache(ICONS_CACHE_KEY, icons);
 }
 
 export const selectIsStructureReady = (state) => state.status === 'ready' || state.status === 'error';

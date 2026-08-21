@@ -71,7 +71,6 @@ const StartPageForm = ({item, platform, onClose, onSaved}) => {
         text: item?.text || '',
         title: item?.title || '',
         icon: item?.icon || '',
-        pattern: item?.pattern || '',
         color: item?.color || '#000000',
         url: item?.url || '',
         structurePageId: item?.structurePageId ?? null,
@@ -116,7 +115,6 @@ const StartPageForm = ({item, platform, onClose, onSaved}) => {
             text: values.text,
             title: values.title,
             icon: values.icon,
-            pattern: values.pattern,
             color: values.color,
             url: values.url.trim(),
             ...(type === 'page' ? {structurePageId: values.structurePageId} : {}),
@@ -259,11 +257,6 @@ const StartPageForm = ({item, platform, onClose, onSaved}) => {
                                     <ImageField value={values.icon}
                                                 onChange={(value) => handleChange('icon', value)}
                                                 emptyText="Нет иконки"/>
-                                </Row>
-                                <Row label="Паттерн" hint="Фоновая картинка карточки" top wide>
-                                    <ImageField value={values.pattern}
-                                                onChange={(value) => handleChange('pattern', value)}
-                                                emptyText="Нет паттерна"/>
                                 </Row>
                             </Group>
                         </>

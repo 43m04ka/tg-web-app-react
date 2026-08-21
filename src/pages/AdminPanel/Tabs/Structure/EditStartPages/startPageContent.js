@@ -2,7 +2,7 @@
 //
 // Раньше здесь же лежали decodeStartPageContent/encodeStartPageContent: текст и иконка
 // упаковывались в единственное legacy-поле img — то строкой, то data-URL, то JSON.
-// У модели давно есть отдельные text/title/icon/pattern/color/url, форма пишет в них
+// У модели давно есть отдельные text/title/icon/color/url, форма пишет в них
 // напрямую, и обе функции стали мёртвыми ещё до этого редизайна.
 
 export const START_PAGE_DEFAULTS = {

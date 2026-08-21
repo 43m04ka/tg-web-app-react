@@ -24,10 +24,6 @@ const PlatformCard = ({
             <div className={style.cardGlow} aria-hidden />
             <div className={style.cardSheen} aria-hidden />
 
-            <div className={style.pattern}>
-                <div style={{backgroundImage: `url(${item.pattern})`}}/>
-                <div style={{backgroundImage: `url(${item.pattern})`}}/>
-            </div>
 
             <div className={style.cardBody}>
                 <div className={style.cardImageWrap}>

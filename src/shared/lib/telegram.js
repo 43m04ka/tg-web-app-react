@@ -50,7 +50,12 @@ export const subscribeMockBackButton = (cb) => {
 const supportsFullscreen = (tg) =>
     typeof tg.requestFullscreen === 'function' && (tg.isVersionAtLeast?.('8.0') ?? false);
 
+let isViewportConfigured = false;
+
 export const configureTelegramViewport = async () => {
+    if (isViewportConfigured) return;
+    isViewportConfigured = true;
+
     await ensureTelegram();
 
     if (!isTg() || !window.Telegram?.WebApp) return;
@@ -64,9 +69,23 @@ export const configureTelegramViewport = async () => {
         tg.lockOrientation?.();
         tg.isClosingConfirmationEnabled = true;
 
-        if (supportsFullscreen(tg) && !tg.isFullscreen) {
-            tg.requestFullscreen();
-        }
+        if (!supportsFullscreen(tg)) return;
+
+        const requestFullscreen = () => {
+            if (tg.isFullscreen) return;
+            try {
+                tg.requestFullscreen();
+            } catch (e) {
+                console.error('[telegram] fullscreen:', e);
+            }
+        };
+
+        tg.onEvent?.('fullscreenFailed', (payload) => {
+            if (payload?.error === 'ALREADY_FULLSCREEN') return;
+            setTimeout(requestFullscreen, 400);
+        });
+
+        requestFullscreen();
     } catch (e) {
         console.error('[telegram] viewport setup:', e);
     }
@@ -92,7 +111,7 @@ export const loadTelegramScript = () => {
 
 const READY_TIMEOUT_MS = 2500;
 
-let isReady = false;
+let isReady = typeof window !== 'undefined' && !!window.Telegram?.WebApp;
 let readyPromise = null;
 const readyListeners = new Set();
 
@@ -116,6 +135,8 @@ export const subscribeTelegramReady = (cb) => {
 };
 
 export const ensureTelegram = () => {
+    if (isReady) return Promise.resolve(window.Telegram?.WebApp || null);
+
     if (!readyPromise) {
         readyPromise = Promise.race([
             loadTelegramScript().catch(() => null),

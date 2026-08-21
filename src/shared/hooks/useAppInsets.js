@@ -51,6 +51,9 @@ const scheduleSystemInsetsInvalidate = () => {
     systemInsetsCacheWidth = -1;
 };
 
+const TG_FULLSCREEN_MIN_TOP = 24;
+const TG_FULLSCREEN_MIN_CHROME = 46;
+
 const KEYBOARD_INPUT_TYPES = new Set([
     'text', 'search', 'email', 'tel', 'url', 'number', 'password'
 ]);
@@ -117,6 +120,11 @@ export function useAppInsets() {
                 top = tg.safeAreaInset?.top || system.top;
                 bottom = isKeyboard ? 0 : (tg.safeAreaInset?.bottom || system.bottom);
                 chromeTop = tg.contentSafeAreaInset?.top || 0;
+
+                if (tg.isFullscreen === true) {
+                    top = Math.max(top, TG_FULLSCREEN_MIN_TOP);
+                    chromeTop = Math.max(chromeTop, TG_FULLSCREEN_MIN_CHROME);
+                }
             }
 
             return {
@@ -154,7 +162,7 @@ export function useAppInsets() {
 
         updateInsets();
 
-        const settleTimers = [60, 200, 500, 1000].map((delay) => window.setTimeout(updateInsets, delay));
+        const settleTimers = [60, 200, 500, 1000, 1800].map((delay) => window.setTimeout(updateInsets, delay));
 
         const handleResize = () => {
             window.requestAnimationFrame(updateInsets);

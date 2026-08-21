@@ -17,10 +17,24 @@ const VK_XBOX_APP_ID = '54475556';
 const VK_XBOX_GROUP_ID = 217049080;
 const VK_PS_GROUP_ID = 85243268;
 
+const hasTgInitParams = () => {
+    if (window.location.hash.includes('tgWebApp')) return true;
+    try {
+        return !!sessionStorage.getItem('__telegram__initParams');
+    } catch (e) {
+        return false;
+    }
+};
+
 export const isTg = () => {
+    const webApp = window.Telegram?.WebApp;
+    if (webApp?.platform && webApp.platform !== 'unknown') return true;
+    if (webApp?.initData) return true;
+    if (window.TelegramWebviewProxy || window.TelegramWebviewProxyProto) return true;
+    if (hasTgInitParams()) return true;
+
     const ua = navigator.userAgent || navigator.vendor || window.opera;
-    const hasTgObject = !!window.Telegram?.WebApp?.initData;
-    return /Telegram/i.test(ua) || /TRS/i.test(ua) || hasTgObject;
+    return /Telegram/i.test(ua) || /TRS/i.test(ua);
 };
 
 export const isVk = () =>

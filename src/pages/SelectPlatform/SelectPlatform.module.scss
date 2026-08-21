@@ -178,7 +178,7 @@
 }
 
 .pattern {
-  --pattern-tile: #{u(360)};
+  --pattern-tile: #{u(720)};
 
   position: absolute;
   inset: 0;
@@ -188,21 +188,19 @@
 
   > span {
     position: absolute;
-    inset: -100%;
+    inset: 0;
     background-repeat: repeat;
     background-size: var(--pattern-tile) var(--pattern-tile);
-    will-change: transform;
-    backface-visibility: hidden;
   }
 
   > span:nth-child(1) {
     opacity: 0.11;
-    animation: driftForward 44s linear infinite;
+    animation: driftForward 60s linear infinite;
   }
 
   > span:nth-child(2) {
     opacity: 0.06;
-    animation: driftBackward 62s linear infinite;
+    animation: driftBackward 85s linear infinite;
   }
 }
 
@@ -357,19 +355,19 @@
 
 @keyframes driftForward {
   from {
-    transform: translate3d(0, 0, 0);
+    background-position: 0 0;
   }
   to {
-    transform: translate3d(var(--pattern-tile), var(--pattern-tile), 0);
+    background-position: var(--pattern-tile) var(--pattern-tile);
   }
 }
 
 @keyframes driftBackward {
   from {
-    transform: translate3d(0, 0, 0);
+    background-position: 0 0;
   }
   to {
-    transform: translate3d(calc(var(--pattern-tile) * -1), var(--pattern-tile), 0);
+    background-position: calc(var(--pattern-tile) * -1) var(--pattern-tile);
   }
 }
 

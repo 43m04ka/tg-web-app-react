@@ -42,7 +42,7 @@ export const accentStyle = (color) => {
 
     const hue = round(source.hue);
     const chroma = clamp(source.chroma, 0.05, 0.19);
-    const topLightness = round(clamp(0.32 + (source.lightness - 0.55) * 0.28, 0.28, 0.43));
+    const topLightness = round(clamp(0.3 + (source.lightness - 0.55) * 0.55, 0.28, 0.44));
 
     const oklch = (lightness, chromaFactor, alpha) =>
         `oklch(${lightness} ${round(chroma * chromaFactor)} ${hue}${alpha ? ` / ${alpha}` : ''})`;

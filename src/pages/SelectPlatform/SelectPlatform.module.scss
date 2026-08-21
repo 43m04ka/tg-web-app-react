@@ -17,10 +17,10 @@
 
 .glow {
   position: fixed;
-  top: u(150);
+  top: u(360);
   right: u(-110);
-  width: u(300);
-  height: u(300);
+  width: u(320);
+  height: u(320);
   border-radius: 50%;
   background-color: transparent;
   filter: blur(u(70));
@@ -41,7 +41,17 @@
   right: 0;
   z-index: 3;
   pointer-events: none;
-  background: linear-gradient(to bottom, oklch(0.21 0.02 264) 42%, oklch(0.21 0.02 264 / 0) 100%);
+  background: linear-gradient(
+                  to bottom,
+                  oklch(0.21 0.02 264) 0%,
+                  oklch(0.21 0.02 264) 38%,
+                  oklch(0.21 0.02 264 / 0.92) 52%,
+                  oklch(0.21 0.02 264 / 0.75) 64%,
+                  oklch(0.21 0.02 264 / 0.52) 74%,
+                  oklch(0.21 0.02 264 / 0.3) 84%,
+                  oklch(0.21 0.02 264 / 0.12) 92%,
+                  oklch(0.21 0.02 264 / 0) 100%
+  );
 }
 
 .screen.leaving {

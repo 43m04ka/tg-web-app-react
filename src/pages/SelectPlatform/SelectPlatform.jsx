@@ -139,7 +139,7 @@ export default function SelectPlatform() {
             {contentSafeAreaInset.top > 0 ? (
                 <div
                     className={style.topFade}
-                    style={{height: `calc(${contentSafeAreaInset.top}px + 10 * var(--u))`}}
+                    style={{height: `calc(${contentSafeAreaInset.top}px + 30 * var(--u))`}}
                     aria-hidden="true"
                 />
             ) : null}

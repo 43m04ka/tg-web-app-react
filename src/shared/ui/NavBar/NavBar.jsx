@@ -4,8 +4,16 @@ import {useSessionStore} from '../../../store/useSessionStore';
 import {useStructureStore} from '../../../store/useStructureStore';
 import {useAppInsets} from '../../hooks/useAppInsets';
 import {getTelegramObject} from '../../lib/telegram';
-import {BasketIcon, ChevronIcon, HomeIcon, MoreIcon, SearchIcon} from './NavIcons';
+import {BasketIcon, HomeIcon, MoreIcon, SearchIcon} from './NavIcons';
 import style from './NavBar.module.scss';
+
+const SHORT_TITLES = {
+    ps: 'Турция',
+    ps_india: 'Индия',
+    xbox: 'Xbox',
+    steam: 'Steam',
+    services: 'Сервисы'
+};
 
 const TABS = [
     {path: '/main', label: 'Главная', Icon: HomeIcon, effect: 'home'},
@@ -21,7 +29,11 @@ export default function NavBar() {
 
     const pageId = useSessionStore((state) => state.pageId);
     const pages = useStructureStore((state) => state.pages);
+    const startPages = useStructureStore((state) => state.startPages);
+
     const page = pages?.find((candidate) => candidate.id === pageId);
+    const startPage = startPages?.find((candidate) => candidate.structurePageId === pageId);
+    const icon = startPage?.icon || page?.barIcon;
 
     const go = useCallback((path) => {
         if (pathname === path) return;
@@ -65,15 +77,16 @@ export default function NavBar() {
                 onClick={() => go('/')}
             >
                 <span className={style.chip}>
-                    {page?.barIcon || page?.icon ? (
+                    {icon ? (
                         <span
                             className={style.chipIcon}
-                            style={{backgroundImage: `url(${page.barIcon || page.icon})`}}
+                            style={{backgroundImage: `url(${icon})`}}
                             aria-hidden="true"
                         />
                     ) : null}
-                    <span className={style.chipTitle}>{page?.title || 'Витрина'}</span>
-                    <ChevronIcon className={style.chevron}/>
+                    <span className={style.chipTitle}>
+                        {SHORT_TITLES[page?.type] || startPage?.title || page?.title || 'Витрина'}
+                    </span>
                 </span>
                 <span className={style.label}>Платформа</span>
             </button>

@@ -8,6 +8,7 @@ import Maintenance from '../pages/Maintenance/Maintenance';
 import BackButton from '../shared/ui/BackButton/BackButton';
 import NavBar from '../shared/ui/NavBar/NavBar';
 import Splash from '../shared/ui/Splash/Splash';
+import {useAccentTheme} from '../shared/hooks/useAccentTheme';
 import {useSessionStore} from '../store/useSessionStore';
 import style from './App.module.scss';
 
@@ -16,6 +17,8 @@ export default function App() {
     const {isMaintenance, maintenanceUntil} = useMaintenance();
     const {pathname} = useLocation();
     const pageId = useSessionStore((state) => state.pageId);
+
+    useAccentTheme();
 
     if (isMaintenance) return <Maintenance until={maintenanceUntil}/>;
 

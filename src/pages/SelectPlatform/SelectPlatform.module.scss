@@ -10,7 +10,6 @@
   gap: u(24);
   overflow-x: hidden;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
   background: linear-gradient(
                   180deg,
@@ -51,17 +50,20 @@
   gap: u(12);
 }
 
-.reveal {
-  animation: rise 460ms var(--ease-out) backwards;
+.item {
   transition: opacity 300ms var(--ease-out) 0s, filter 300ms var(--ease-out) 0s;
 }
 
-.reveal.dimmed {
+.item.entering {
+  animation: rise 460ms var(--ease-out) backwards;
+}
+
+.item.dimmed {
   opacity: 0.3;
   filter: saturate(0.5) brightness(0.7);
 }
 
-.reveal.picked {
+.item.picked {
   z-index: 2;
 }
 
@@ -134,7 +136,7 @@
   transform: translateY(u(-2)) scale(1);
 }
 
-.picked .cardActive {
+.item.picked .cardActive {
   animation: pickPulse 340ms var(--ease-out);
 }
 
@@ -288,11 +290,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal,
+  .item.entering,
   .title,
   .tickActive,
   .tickActive svg,
-  .picked .cardActive {
+  .item.picked .cardActive {
     animation: none;
   }
 

@@ -105,6 +105,7 @@ export function useAppInsets() {
 
             let top = system.top;
             let bottom = isKeyboard ? 0 : system.bottom;
+            let chromeTop = 0;
 
             if (isVk) {
                 top = currentVkInsets.top || system.top;
@@ -112,6 +113,7 @@ export function useAppInsets() {
             } else if (isTg && tg) {
                 top = tg.safeAreaInset?.top || system.top;
                 bottom = isKeyboard ? 0 : (tg.safeAreaInset?.bottom || system.bottom);
+                chromeTop = tg.contentSafeAreaInset?.top || 0;
             }
 
             return {
@@ -120,7 +122,7 @@ export function useAppInsets() {
                     bottom: bottom
                 },
                 contentSafeAreaInset: {
-                    top: top,
+                    top: top + chromeTop + mockTopInset,
                     bottom: bottom
                 },
                 isKeyboardOpen: isKeyboard,
@@ -215,8 +217,10 @@ export function useAppInsets() {
             });
         }
 
+        const TG_EVENTS = ['viewportChanged', 'fullscreenChanged', 'safeAreaChanged', 'contentSafeAreaChanged'];
+
         if (isTg && tg) {
-            tg.onEvent('viewportChanged', handleTgViewportChanged);
+            TG_EVENTS.forEach((event) => tg.onEvent(event, handleTgViewportChanged));
         }
 
         return () => {
@@ -232,7 +236,7 @@ export function useAppInsets() {
             if (baselineRecalcTimer) window.clearTimeout(baselineRecalcTimer);
             if (unsubscribeVk) unsubscribeVk();
             if (isTg && tg) {
-                tg.offEvent('viewportChanged', handleTgViewportChanged);
+                TG_EVENTS.forEach((event) => tg.offEvent(event, handleTgViewportChanged));
             }
         };
     }, [isVk, isTg, isWeb, mockTopInset]);

@@ -47,16 +47,28 @@ export const subscribeMockBackButton = (cb) => {
     return () => removeMockListener('backButtonChange', cb);
 };
 
-export const configureTelegramViewport = () => {
-    const tg = getTelegramObject();
+const supportsFullscreen = (tg) =>
+    typeof tg.requestFullscreen === 'function' && (tg.isVersionAtLeast?.('8.0') ?? false);
+
+export const configureTelegramViewport = async () => {
+    await loadTelegramScript().catch(() => {});
+
+    if (!isTg() || !window.Telegram?.WebApp) return;
+
+    const tg = window.Telegram.WebApp;
+
     try {
+        tg.ready?.();
+        tg.expand?.();
         tg.disableVerticalSwipes?.();
         tg.lockOrientation?.();
         tg.isClosingConfirmationEnabled = true;
-        if (window.innerWidth / window.innerHeight < 1) tg.requestFullscreen?.();
-        tg.expand?.();
-        tg.ready?.();
+
+        if (supportsFullscreen(tg) && !tg.isFullscreen) {
+            tg.requestFullscreen();
+        }
     } catch (e) {
+        console.error('[telegram] viewport setup:', e);
     }
 };
 

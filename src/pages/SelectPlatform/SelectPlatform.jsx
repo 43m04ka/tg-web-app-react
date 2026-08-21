@@ -12,6 +12,7 @@ import style from './SelectPlatform.module.scss';
 const STAGGER_MS = 55;
 const STAGGER_CAP_MS = 520;
 const LEAVE_MS = 340;
+const ENTER_MS = 460;
 
 const toGroups = (items) => {
     const groups = [];
@@ -32,7 +33,7 @@ const toGroups = (items) => {
 export default function SelectPlatform() {
     const navigate = useNavigate();
     const {botType} = usePlatform();
-    const {safeAreaInset} = useAppInsets();
+    const {safeAreaInset, contentSafeAreaInset} = useAppInsets();
 
     const startPages = useStructureStore((state) => state.startPages);
     const pages = useStructureStore((state) => state.pages);
@@ -40,9 +41,15 @@ export default function SelectPlatform() {
     const setPageId = useSessionStore((state) => state.setPageId);
 
     const [pickedId, setPickedId] = useState(null);
+    const [isEntering, setIsEntering] = useState(true);
 
     useEffect(() => {
         getTelegramObject().BackButton?.hide();
+    }, []);
+
+    useEffect(() => {
+        const timerId = setTimeout(() => setIsEntering(false), STAGGER_CAP_MS + ENTER_MS + 120);
+        return () => clearTimeout(timerId);
     }, []);
 
     const groups = useMemo(() => {
@@ -65,12 +72,20 @@ export default function SelectPlatform() {
     }, [navigate, pickedId, setPageId]);
 
     let order = 0;
-    const nextDelay = () => Math.min(order++ * STAGGER_MS, STAGGER_CAP_MS);
+    const revealProps = () => {
+        const delay = Math.min(order++ * STAGGER_MS, STAGGER_CAP_MS);
+        return isEntering ? {style: {animationDelay: `${delay}ms`}} : {};
+    };
 
     const renderChild = (item) => {
         const isPicked = pickedId === item.id;
         const isDimmed = pickedId !== null && !isPicked;
-        const className = [style.reveal, isPicked ? style.picked : '', isDimmed ? style.dimmed : ''].join(' ');
+        const className = [
+            style.item,
+            isEntering ? style.entering : '',
+            isPicked ? style.picked : '',
+            isDimmed ? style.dimmed : ''
+        ].join(' ');
 
         let content;
 
@@ -92,7 +107,7 @@ export default function SelectPlatform() {
         }
 
         return (
-            <div key={item.id} className={className} style={{animationDelay: `${nextDelay()}ms`}}>
+            <div key={item.id} className={className} {...revealProps()}>
                 {content}
             </div>
         );
@@ -102,7 +117,7 @@ export default function SelectPlatform() {
         <div
             className={`${style.screen} ${pickedId !== null ? style.leaving : ''}`}
             style={{
-                paddingTop: `calc(${safeAreaInset.top}px + 44 * var(--u))`,
+                paddingTop: `calc(${contentSafeAreaInset.top}px + 44 * var(--u))`,
                 paddingBottom: `calc(${safeAreaInset.bottom}px + 32 * var(--u))`
             }}
         >
@@ -114,7 +129,7 @@ export default function SelectPlatform() {
             {groups.map((group) => (
                 <section key={group.key} className={style.group}>
                     {group.header ? (
-                        <div className={style.reveal} style={{animationDelay: `${nextDelay()}ms`}}>
+                        <div className={`${style.item} ${isEntering ? style.entering : ''}`} {...revealProps()}>
                             <div className={style.sectionHeader}>
                                 {group.header.icon ? (
                                     <span

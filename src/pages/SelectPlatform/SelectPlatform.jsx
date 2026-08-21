@@ -100,7 +100,7 @@ export default function SelectPlatform() {
 
     return (
         <div
-            className={style.screen}
+            className={`${style.screen} ${pickedId !== null ? style.leaving : ''}`}
             style={{
                 paddingTop: `calc(${safeAreaInset.top}px + 44 * var(--u))`,
                 paddingBottom: `calc(${safeAreaInset.bottom}px + 32 * var(--u))`

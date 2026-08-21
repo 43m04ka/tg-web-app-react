@@ -11,7 +11,6 @@ export default function PlatformCard({item, isActive, onSelect}) {
             onClick={onSelect}
             aria-pressed={isActive}
         >
-            <span className={style.sheen} aria-hidden="true"/>
             <span className={style.cardIcon} style={item.icon ? {backgroundImage: `url(${item.icon})`} : undefined}/>
 
             <span className={style.cardBody}>

@@ -42,16 +42,17 @@ export const accentStyle = (color) => {
 
     const hue = round(source.hue);
     const chroma = clamp(source.chroma, 0.05, 0.19);
-    const topLightness = round(clamp(0.3 + (source.lightness - 0.55) * 0.55, 0.28, 0.44));
+    const topLightness = round(clamp(0.4 + (source.lightness - 0.55) * 0.55, 0.37, 0.55));
+    const bottomLightness = round(clamp(topLightness - 0.15, 0.21, 0.38));
 
     const oklch = (lightness, chromaFactor, alpha) =>
         `oklch(${lightness} ${round(chroma * chromaFactor)} ${hue}${alpha ? ` / ${alpha}` : ''})`;
 
     return {
-        '--card-gradient': `linear-gradient(120deg, ${oklch(topLightness, 0.62)} 0%, ${oklch(0.175, 0.2)} 100%)`,
-        '--card-ring': oklch(0.66, 0.85),
-        '--card-badge': oklch(0.32, 0.55),
-        '--card-border': oklch(0.62, 1, 0.25),
-        '--card-arrow': oklch(0.76, 0.62)
+        '--card-gradient': `linear-gradient(120deg, ${oklch(topLightness, 0.86)} 0%, ${oklch(bottomLightness, 0.3)} 100%)`,
+        '--card-ring': oklch(0.7, 0.9),
+        '--card-badge': oklch(0.36, 0.6),
+        '--card-border': oklch(0.66, 1, 0.32),
+        '--card-arrow': oklch(0.8, 0.7)
     };
 };

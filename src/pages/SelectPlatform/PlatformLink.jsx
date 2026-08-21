@@ -11,7 +11,6 @@ export default function PlatformLink({item}) {
             target="_blank"
             rel="noopener noreferrer"
         >
-            <span className={style.sheen} aria-hidden="true"/>
             <span className={style.linkIcon} style={item.icon ? {backgroundImage: `url(${item.icon})`} : undefined}/>
             <span className={style.linkText}>{item.text}</span>
             <span className={style.linkArrow} aria-hidden="true">↗</span>

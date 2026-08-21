@@ -34,9 +34,7 @@ export function useBootstrap() {
     }, [platform, setPlatform]);
 
     useEffect(() => {
-        const controller = new AbortController();
-        loadStructure(controller.signal);
-        return () => controller.abort();
+        loadStructure();
     }, [loadStructure]);
 
     useEffect(() => {

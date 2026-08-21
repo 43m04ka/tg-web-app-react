@@ -36,53 +36,63 @@ const seedFromKnownSources = () => {
     return seed;
 };
 
+let isFetching = false;
+
 export const useStructureStore = create((set, get) => ({
     ...seedFromKnownSources(),
 
     status: 'idle',
     error: null,
 
-    load: async (signal) => {
-        if (get().status === 'loading') return;
+    load: async () => {
+        if (isFetching) return;
+        isFetching = true;
 
-        const isSeeded = (source) => hasItems(get()[source.key]);
-        const blocking = SOURCES.filter((source) => source.critical && !isSeeded(source));
-
-        set({status: blocking.length ? 'loading' : 'ready', error: null});
-
-        const fetchOne = async ({key, load, transform}) => {
-            const result = await load(signal);
-            if (signal?.aborted) return;
-            if (hasItems(result)) set({[key]: transform ? transform(result) : result});
-        };
-
-        const background = Promise.all(
-            SOURCES.filter((source) => !blocking.includes(source)).map(fetchOne)
-        );
-
-        await Promise.all(blocking.map(fetchOne));
-        if (signal?.aborted) return;
-
-        if (blocking.length) {
-            const missingCritical = SOURCES
-                .filter((source) => source.critical && !hasItems(get()[source.key]))
-                .map(({key}) => key);
-
-            set({
-                status: missingCritical.length === SOURCES.filter((s) => s.critical).length ? 'error' : 'ready',
-                error: missingCritical.length ? `Не загружено: ${missingCritical.join(', ')}` : null
-            });
+        try {
+            await runLoad(set, get);
+        } finally {
+            isFetching = false;
         }
-
-        await background;
-        if (signal?.aborted) return;
-
-        writeCache(
-            CACHE_KEY,
-            SOURCES.reduce((acc, {key}) => ({...acc, [key]: get()[key]}), {}),
-            CACHE_KIND
-        );
     }
 }));
+
+async function runLoad(set, get) {
+    const isSeeded = (source) => hasItems(get()[source.key]);
+    const blocking = SOURCES.filter((source) => source.critical && !isSeeded(source));
+
+    set({status: blocking.length ? 'loading' : 'ready', error: null});
+
+    const fetchOne = async ({key, load, transform}) => {
+        const result = await load();
+        if (hasItems(result)) set({[key]: transform ? transform(result) : result});
+    };
+
+    const background = Promise.all(
+        SOURCES.filter((source) => !blocking.includes(source)).map(fetchOne)
+    );
+
+    await Promise.all(blocking.map(fetchOne));
+
+    const missingCritical = SOURCES
+        .filter((source) => source.critical && !hasItems(get()[source.key]))
+        .map(({key}) => key);
+
+    if (blocking.length) {
+        set({
+            status: missingCritical.length === SOURCES.filter((s) => s.critical).length ? 'error' : 'ready',
+            error: missingCritical.length ? `Не загружено: ${missingCritical.join(', ')}` : null
+        });
+    }
+
+    await background;
+
+    if (missingCritical.length) return;
+
+    writeCache(
+        CACHE_KEY,
+        SOURCES.reduce((acc, {key}) => ({...acc, [key]: get()[key]}), {}),
+        CACHE_KIND
+    );
+}
 
 export const selectIsStructureReady = (state) => state.status === 'ready' || state.status === 'error';

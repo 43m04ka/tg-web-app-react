@@ -10,6 +10,7 @@ import PlatformCard from './PlatformCard';
 import PlatformLink from './PlatformLink';
 import style from './SelectPlatform.module.scss';
 
+const MIN_FADE_PX = 24;
 const STAGGER_MS = 22;
 const STAGGER_CAP_MS = 170;
 const LEAVE_MS = 240;
@@ -82,6 +83,10 @@ export default function SelectPlatform() {
         setTimeout(() => navigate('/main'), LEAVE_MS);
     }, [navigate, pickedId, setPageId]);
 
+    const fadeZone = contentSafeAreaInset.top;
+    const fadeHeight = Math.max(fadeZone - safeAreaInset.top, Math.min(fadeZone, MIN_FADE_PX));
+    const solidHeight = Math.max(fadeZone - fadeHeight, 0);
+
     let order = 0;
     const revealProps = () => {
         const delay = Math.min(order++ * STAGGER_MS, STAGGER_CAP_MS);
@@ -136,19 +141,16 @@ export default function SelectPlatform() {
                 aria-hidden="true"
             />
 
-            {contentSafeAreaInset.top > 0 ? (
+            {fadeZone > 0 ? (
                 <>
                     <div
                         className={style.topSolid}
-                        style={{height: `${safeAreaInset.top}px`}}
+                        style={{height: `${solidHeight}px`}}
                         aria-hidden="true"
                     />
                     <div
                         className={style.topFade}
-                        style={{
-                            top: `${safeAreaInset.top}px`,
-                            height: `${Math.max(contentSafeAreaInset.top - safeAreaInset.top, 1)}px`
-                        }}
+                        style={{top: `${solidHeight}px`, height: `${fadeHeight}px`}}
                         aria-hidden="true"
                     />
                 </>

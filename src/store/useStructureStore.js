@@ -15,8 +15,8 @@ const CACHE_MAX_AGE_MS = 5 * 60 * 1000;
 const visibleOnly = (pages) => (Array.isArray(pages) ? pages.filter((page) => page.isHidden !== 1) : null);
 
 const SOURCES = [
-    {key: 'pages', initial: 'pages', load: fetchPages, transform: visibleOnly},
-    {key: 'startPages', initial: 'startPages', load: fetchStartPages},
+    {key: 'pages', initial: 'pages', load: fetchPages, transform: visibleOnly, critical: true},
+    {key: 'startPages', initial: 'startPages', load: fetchStartPages, critical: true},
     {key: 'structureBlocks', initial: 'structureBlocks', load: fetchStructureBlocks},
     {key: 'mainPageProducts', initial: 'mainPageProducts', load: fetchMainPageProducts},
     {key: 'catalogs', initial: 'catalogs', load: fetchCatalogs}
@@ -47,21 +47,29 @@ export const useStructureStore = create((set, get) => ({
 
         const missing = SOURCES.filter(({key}) => !hasItems(get()[key]));
 
-        await Promise.all(missing.map(async ({key, load, transform}) => {
+        const fetchOne = async ({key, load, transform}) => {
             const result = await load(signal);
             if (signal?.aborted) return;
             if (hasItems(result)) set({[key]: transform ? transform(result) : result});
-        }));
+        };
 
+        const critical = missing.filter((source) => source.critical);
+        const background = Promise.all(missing.filter((source) => !source.critical).map(fetchOne));
+
+        await Promise.all(critical.map(fetchOne));
         if (signal?.aborted) return;
 
-        const state = get();
-        const failed = SOURCES.filter(({key}) => !hasItems(state[key])).map(({key}) => key);
+        const missingCritical = SOURCES
+            .filter((source) => source.critical && !hasItems(get()[source.key]))
+            .map(({key}) => key);
 
         set({
-            status: failed.length === SOURCES.length ? 'error' : 'ready',
-            error: failed.length ? `Не загружено: ${failed.join(', ')}` : null
+            status: missingCritical.length === SOURCES.filter((s) => s.critical).length ? 'error' : 'ready',
+            error: missingCritical.length ? `Не загружено: ${missingCritical.join(', ')}` : null
         });
+
+        await background;
+        if (signal?.aborted) return;
 
         writeCache(CACHE_KEY, SOURCES.reduce((acc, {key}) => ({...acc, [key]: get()[key]}), {}));
     }

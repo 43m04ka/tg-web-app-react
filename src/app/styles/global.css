@@ -18,8 +18,7 @@ body {
 }
 
 body {
-    background: var(--bg-gradient);
-    background-color: var(--bg);
+    background: var(--bg);
     color: var(--text);
     font-family: var(--font-sans);
     font-size: var(--fs-md);

@@ -2,8 +2,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: var(--bg-gradient);
-  background-color: var(--bg);
+  background: var(--bg);
   animation: appear var(--duration-base) var(--ease-out) backwards;
 }
 

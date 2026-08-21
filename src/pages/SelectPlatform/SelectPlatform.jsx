@@ -5,14 +5,15 @@ import {useSessionStore} from '../../store/useSessionStore';
 import {usePlatform} from '../../shared/hooks/usePlatform';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
 import {getTelegramObject} from '../../shared/lib/telegram';
+import {glowStyle} from './accent';
 import PlatformCard from './PlatformCard';
 import PlatformLink from './PlatformLink';
 import style from './SelectPlatform.module.scss';
 
-const STAGGER_MS = 55;
-const STAGGER_CAP_MS = 520;
+const STAGGER_MS = 32;
+const STAGGER_CAP_MS = 240;
 const LEAVE_MS = 340;
-const ENTER_MS = 460;
+const ENTER_MS = 300;
 
 const toGroups = (items) => {
     const groups = [];
@@ -51,6 +52,16 @@ export default function SelectPlatform() {
         const timerId = setTimeout(() => setIsEntering(false), STAGGER_CAP_MS + ENTER_MS + 120);
         return () => clearTimeout(timerId);
     }, []);
+
+    const activeGlow = useMemo(() => {
+        if (!Array.isArray(startPages)) return {};
+
+        const active = startPages.find((item) =>
+            pickedId !== null ? item.id === pickedId : item.structurePageId === pageId
+        );
+
+        return active ? glowStyle(active.color) : {};
+    }, [startPages, pickedId, pageId]);
 
     const groups = useMemo(() => {
         if (!Array.isArray(startPages)) return [];
@@ -119,6 +130,20 @@ export default function SelectPlatform() {
                 paddingBottom: `calc(${safeAreaInset.bottom}px + 32 * var(--u))`
             }}
         >
+            <div
+                className={`${style.glow} ${activeGlow.backgroundColor ? style.glowVisible : ''}`}
+                style={activeGlow}
+                aria-hidden="true"
+            />
+
+            {contentSafeAreaInset.top > 0 ? (
+                <div
+                    className={style.topFade}
+                    style={{height: `calc(${contentSafeAreaInset.top}px + 10 * var(--u))`}}
+                    aria-hidden="true"
+                />
+            ) : null}
+
             <h1 className={style.title}>
                 Ваш сервис для покупки игр и подписок для <span className={style.ps}>PlayStation</span> и{' '}
                 <span className={style.xbox}>Xbox</span>

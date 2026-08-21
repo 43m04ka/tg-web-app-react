@@ -56,3 +56,14 @@ export const accentStyle = (color) => {
         '--card-arrow': oklch(0.8, 0.7)
     };
 };
+
+export const glowStyle = (color) => {
+    const source = toOklch(color);
+    if (!source) return {};
+
+    const chroma = clamp(source.chroma, 0.05, 0.19);
+
+    return {
+        backgroundColor: `oklch(0.62 ${round(chroma)} ${round(source.hue)} / 0.3)`
+    };
+};

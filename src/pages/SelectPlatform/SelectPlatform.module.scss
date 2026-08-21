@@ -11,7 +11,37 @@
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior-y: contain;
+  background: var(--bg-gradient);
   transition: opacity var(--duration-base) var(--ease-out);
+}
+
+.glow {
+  position: fixed;
+  top: u(150);
+  right: u(-110);
+  width: u(300);
+  height: u(300);
+  border-radius: 50%;
+  background-color: transparent;
+  filter: blur(u(70));
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 620ms var(--ease-out), background-color 620ms var(--ease-out);
+}
+
+.glowVisible {
+  opacity: 1;
+}
+
+.topFade {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(to bottom, oklch(0.21 0.02 264) 42%, oklch(0.21 0.02 264 / 0) 100%);
 }
 
 .screen.leaving {
@@ -21,12 +51,13 @@
 
 .title {
   position: relative;
+  z-index: 1;
   font-size: u(31);
   line-height: 1.26;
   font-weight: 700;
   letter-spacing: u(-0.3);
   color: oklch(0.97 0.004 264);
-  animation: rise 520ms var(--ease-out) backwards;
+  animation: rise 380ms var(--ease-out) backwards;
 }
 
 .ps {
@@ -39,6 +70,7 @@
 
 .group {
   position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   gap: u(12);
@@ -49,7 +81,7 @@
 }
 
 .item.entering {
-  animation: rise 460ms var(--ease-out) backwards;
+  animation: rise 300ms var(--ease-out) backwards;
 }
 
 .item.picked {

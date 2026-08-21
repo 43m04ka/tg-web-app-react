@@ -62,7 +62,7 @@ export function useBootstrap() {
     }, [user, isUserReady, setUser, setInternalUserId]);
 
     return {
-        isReady: (isStructureReady && isUserReady && isPlatformResolved) || isTimedOut,
+        isReady: isStructureReady && (isTimedOut || (isUserReady && isPlatformResolved)),
         isTimedOut
     };
 }

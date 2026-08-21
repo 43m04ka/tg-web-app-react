@@ -35,10 +35,9 @@ const webAppMock = {
     contentSafeAreaInset: {top: 0, bottom: 0}
 };
 
-export const getTelegramObject = () => {
-    const webApp = window.Telegram?.WebApp;
-    return isTg() && webApp ? webApp : webAppMock;
-};
+export const getWebApp = () => (isTg() ? window.Telegram?.WebApp || null : null);
+
+export const getTelegramObject = () => getWebApp() || webAppMock;
 
 export const clickMockBackButton = () => notifyMock('backButtonClicked');
 
@@ -47,48 +46,44 @@ export const subscribeMockBackButton = (cb) => {
     return () => removeMockListener('backButtonChange', cb);
 };
 
-const LOCAL_SDK_URL = '/telegram-web-app.js';
-const REMOTE_SDK_URL = 'https://telegram.org/js/telegram-web-app.js';
+const SDK_URL = '/telegram-web-app.js';
 const READY_TIMEOUT_MS = 2500;
 
 let sdkToken = typeof window !== 'undefined' && window.Telegram?.WebApp ? 1 : 0;
 let readyPromise = null;
 const sdkListeners = new Set();
 
-const bumpSdkToken = () => {
-    sdkToken += 1;
-    sdkListeners.forEach((cb) => cb(sdkToken));
-};
-
 export const getTelegramSdkToken = () => sdkToken;
-
-export const isTelegramReady = () => sdkToken > 0;
 
 export const subscribeTelegramSdk = (cb) => {
     sdkListeners.add(cb);
     return () => sdkListeners.delete(cb);
 };
 
-const loadScript = (src) =>
-    new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = src;
-        script.async = true;
-        script.onload = () => resolve(window.Telegram);
-        script.onerror = () => reject(new Error(`Script failed to load: ${src}`));
-        document.head.appendChild(script);
-    });
+const markSdkLoaded = () => {
+    if (sdkToken > 0) return;
+    sdkToken = 1;
+    sdkListeners.forEach((cb) => cb(sdkToken));
+};
 
 export const ensureTelegram = () => {
-    if (sdkToken > 0) return Promise.resolve(window.Telegram?.WebApp || null);
+    if (sdkToken > 0) return Promise.resolve(getWebApp());
 
     if (!readyPromise) {
+        const load = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = SDK_URL;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error('Telegram SDK failed to load'));
+            document.head.appendChild(script);
+        });
+
         readyPromise = Promise.race([
-            loadScript(LOCAL_SDK_URL).catch(() => null),
+            load.catch(() => null),
             new Promise((resolve) => setTimeout(resolve, READY_TIMEOUT_MS))
         ]).then(() => {
-            if (sdkToken === 0) bumpSdkToken();
-            return window.Telegram?.WebApp || null;
+            markSdkLoaded();
+            return getWebApp();
         });
     }
 
@@ -96,10 +91,8 @@ export const ensureTelegram = () => {
 };
 
 export const requestTelegramInsets = () => {
-    if (!isTg()) return;
-
     const webView = window.Telegram?.WebView;
-    if (typeof webView?.postEvent !== 'function') return;
+    if (!getWebApp() || typeof webView?.postEvent !== 'function') return;
 
     try {
         webView.postEvent('web_app_request_viewport');
@@ -112,9 +105,9 @@ export const requestTelegramInsets = () => {
 
 const lockScreenOrientation = () => {
     try {
-        const lock = window.screen?.orientation?.lock;
-        if (typeof lock === 'function') {
-            lock.call(window.screen.orientation, 'portrait-primary').catch(() => {});
+        const orientation = window.screen?.orientation;
+        if (typeof orientation?.lock === 'function') {
+            orientation.lock('portrait-primary').catch(() => {});
         }
     } catch (e) {
     }
@@ -123,10 +116,16 @@ const lockScreenOrientation = () => {
 const supportsFullscreen = (tg) =>
     typeof tg.requestFullscreen === 'function' && (tg.isVersionAtLeast?.('8.0') ?? false);
 
-const applyViewportSettings = () => {
-    if (!isTg() || !window.Telegram?.WebApp) return;
+let isViewportConfigured = false;
 
-    const tg = window.Telegram.WebApp;
+export const configureTelegramViewport = async () => {
+    if (isViewportConfigured) return;
+    isViewportConfigured = true;
+
+    await ensureTelegram();
+
+    const tg = getWebApp();
+    if (!tg) return;
 
     try {
         tg.ready?.();
@@ -143,43 +142,14 @@ const applyViewportSettings = () => {
         tg.onEvent?.('fullscreenFailed', (payload) => {
             if (payload?.error === 'ALREADY_FULLSCREEN') return;
             setTimeout(() => {
-                if (!window.Telegram?.WebApp?.isFullscreen) window.Telegram?.WebApp?.requestFullscreen();
+                const current = getWebApp();
+                if (current && !current.isFullscreen) current.requestFullscreen();
             }, 400);
         });
 
         tg.requestFullscreen();
     } catch (e) {
         console.error('[telegram] viewport setup:', e);
-    }
-};
-
-let isRefreshScheduled = false;
-
-const refreshTelegramSdk = () => {
-    if (isRefreshScheduled || !isTg()) return;
-    isRefreshScheduled = true;
-
-    loadScript(REMOTE_SDK_URL)
-        .then(() => {
-            bumpSdkToken();
-            applyViewportSettings();
-        })
-        .catch(() => {});
-};
-
-let isViewportConfigured = false;
-
-export const configureTelegramViewport = async () => {
-    if (isViewportConfigured) return;
-    isViewportConfigured = true;
-
-    await ensureTelegram();
-    applyViewportSettings();
-
-    if (document.readyState === 'complete') {
-        refreshTelegramSdk();
-    } else {
-        window.addEventListener('load', refreshTelegramSdk, {once: true});
     }
 };
 

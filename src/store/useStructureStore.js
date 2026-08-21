@@ -1,6 +1,6 @@
 import {create} from 'zustand';
 import {INITIAL_DATA, hasItems} from '../shared/lib/initialData';
-import {readCache, writeCache} from '../shared/lib/persist';
+import {readBigCache, writeBigCache} from '../shared/lib/bigCache';
 import {
     fetchCatalogs,
     fetchMainPageProducts,
@@ -10,27 +10,29 @@ import {
 } from '../shared/api/structure';
 
 const CACHE_KEY = 'structure';
-const CACHE_KIND = 'local';
 const CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
 const visibleOnly = (pages) => (Array.isArray(pages) ? pages.filter((page) => page.isHidden !== 1) : null);
 
+const withoutPattern = (items) =>
+    Array.isArray(items) ? items.map(({pattern, ...rest}) => rest) : null;
+
 const SOURCES = [
     {key: 'pages', initial: 'pages', load: fetchPages, transform: visibleOnly, critical: true},
-    {key: 'startPages', initial: 'startPages', load: fetchStartPages, critical: true},
+    {key: 'startPages', initial: 'startPages', load: fetchStartPages, transform: withoutPattern, critical: true},
     {key: 'structureBlocks', initial: 'structureBlocks', load: fetchStructureBlocks},
     {key: 'mainPageProducts', initial: 'mainPageProducts', load: fetchMainPageProducts},
     {key: 'catalogs', initial: 'catalogs', load: fetchCatalogs}
 ];
 
-const seedFromKnownSources = () => {
-    const cached = readCache(CACHE_KEY, CACHE_MAX_AGE_MS, CACHE_KIND) || {};
+const CRITICAL_COUNT = SOURCES.filter((source) => source.critical).length;
+
+const seedFromInjected = () => {
     const seed = {};
 
     SOURCES.forEach(({key, initial, transform}) => {
         const injected = INITIAL_DATA[initial];
-        const value = hasItems(injected) ? injected : cached[key];
-        seed[key] = hasItems(value) ? (transform ? transform(value) : value) : null;
+        seed[key] = hasItems(injected) ? (transform ? transform(injected) : injected) : null;
     });
 
     return seed;
@@ -39,7 +41,7 @@ const seedFromKnownSources = () => {
 let isFetching = false;
 
 export const useStructureStore = create((set, get) => ({
-    ...seedFromKnownSources(),
+    ...seedFromInjected(),
 
     status: 'idle',
     error: null,
@@ -56,9 +58,27 @@ export const useStructureStore = create((set, get) => ({
     }
 }));
 
+const missingCriticalKeys = (get) =>
+    SOURCES.filter((source) => source.critical && !hasItems(get()[source.key])).map(({key}) => key);
+
+const seedFromCache = async (set, get) => {
+    const cached = await readBigCache(CACHE_KEY, CACHE_MAX_AGE_MS);
+    if (!cached) return;
+
+    const patch = {};
+    SOURCES.forEach(({key}) => {
+        if (!hasItems(get()[key]) && hasItems(cached[key])) patch[key] = cached[key];
+    });
+
+    if (Object.keys(patch).length) set(patch);
+};
+
 async function runLoad(set, get) {
-    const isSeeded = (source) => hasItems(get()[source.key]);
-    const blocking = SOURCES.filter((source) => source.critical && !isSeeded(source));
+    if (missingCriticalKeys(get).length) {
+        await seedFromCache(set, get);
+    }
+
+    const blocking = SOURCES.filter((source) => source.critical && !hasItems(get()[source.key]));
 
     set({status: blocking.length ? 'loading' : 'ready', error: null});
 
@@ -73,26 +93,19 @@ async function runLoad(set, get) {
 
     await Promise.all(blocking.map(fetchOne));
 
-    const missingCritical = SOURCES
-        .filter((source) => source.critical && !hasItems(get()[source.key]))
-        .map(({key}) => key);
-
     if (blocking.length) {
+        const missing = missingCriticalKeys(get);
         set({
-            status: missingCritical.length === SOURCES.filter((s) => s.critical).length ? 'error' : 'ready',
-            error: missingCritical.length ? `Не загружено: ${missingCritical.join(', ')}` : null
+            status: missing.length === CRITICAL_COUNT ? 'error' : 'ready',
+            error: missing.length ? `Не загружено: ${missing.join(', ')}` : null
         });
     }
 
     await background;
 
-    if (missingCritical.length) return;
+    if (missingCriticalKeys(get).length) return;
 
-    writeCache(
-        CACHE_KEY,
-        SOURCES.reduce((acc, {key}) => ({...acc, [key]: get()[key]}), {}),
-        CACHE_KIND
-    );
+    writeBigCache(CACHE_KEY, SOURCES.reduce((acc, {key}) => ({...acc, [key]: get()[key]}), {}));
 }
 
 export const selectIsStructureReady = (state) => state.status === 'ready' || state.status === 'error';

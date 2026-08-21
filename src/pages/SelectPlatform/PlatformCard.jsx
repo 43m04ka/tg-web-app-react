@@ -1,6 +1,5 @@
 import React from 'react';
 import {accentStyle} from './accent';
-import CardPattern from './CardPattern';
 import style from './SelectPlatform.module.scss';
 
 export default function PlatformCard({item, isActive, onSelect}) {
@@ -13,8 +12,6 @@ export default function PlatformCard({item, isActive, onSelect}) {
             aria-pressed={isActive}
         >
             <span className={style.sheen} aria-hidden="true"/>
-            <CardPattern src={item.pattern}/>
-
             <span className={style.cardIcon} style={item.icon ? {backgroundImage: `url(${item.icon})`} : undefined}/>
 
             <span className={style.cardBody}>

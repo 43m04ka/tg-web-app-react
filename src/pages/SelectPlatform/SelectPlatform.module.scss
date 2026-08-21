@@ -177,33 +177,6 @@
   );
 }
 
-.pattern {
-  --pattern-tile: #{u(720)};
-
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  mask-image: linear-gradient(to top, oklch(0 0 0) 18%, transparent 96%);
-  -webkit-mask-image: linear-gradient(to top, oklch(0 0 0) 18%, transparent 96%);
-
-  > span {
-    position: absolute;
-    inset: 0;
-    background-repeat: repeat;
-    background-size: var(--pattern-tile) var(--pattern-tile);
-  }
-
-  > span:nth-child(1) {
-    opacity: 0.11;
-    animation: driftForward 60s linear infinite;
-  }
-
-  > span:nth-child(2) {
-    opacity: 0.06;
-    animation: driftBackward 85s linear infinite;
-  }
-}
-
 .cardIcon {
   position: relative;
   width: u(46);
@@ -353,24 +326,6 @@
   }
 }
 
-@keyframes driftForward {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: var(--pattern-tile) var(--pattern-tile);
-  }
-}
-
-@keyframes driftBackward {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: calc(var(--pattern-tile) * -1) var(--pattern-tile);
-  }
-}
-
 @keyframes driftTop {
   0%, 100% {
     transform: translate3d(0, 0, 0) scale(1);
@@ -394,7 +349,6 @@
   .title,
   .glowTop,
   .glowSide,
-  .pattern > span,
   .tickActive,
   .tickActive svg,
   .picked .cardActive {

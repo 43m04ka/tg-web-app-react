@@ -11,12 +11,6 @@
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior-y: contain;
-  background: linear-gradient(
-                  180deg,
-                  oklch(0.19 0.018 264) 0%,
-                  oklch(0.13 0.014 264) 50%,
-                  oklch(0.11 0.012 264) 100%
-  );
   transition: opacity var(--duration-base) var(--ease-out);
 }
 
@@ -27,8 +21,8 @@
 
 .title {
   position: relative;
-  font-size: u(28);
-  line-height: 1.28;
+  font-size: u(31);
+  line-height: 1.26;
   font-weight: 700;
   letter-spacing: u(-0.3);
   color: oklch(0.97 0.004 264);
@@ -56,11 +50,6 @@
 
 .item.entering {
   animation: rise 460ms var(--ease-out) backwards;
-}
-
-.item.dimmed {
-  opacity: 0.3;
-  filter: saturate(0.5) brightness(0.7);
 }
 
 .item.picked {

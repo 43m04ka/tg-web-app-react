@@ -79,12 +79,10 @@ export default function SelectPlatform() {
 
     const renderChild = (item) => {
         const isPicked = pickedId === item.id;
-        const isDimmed = pickedId !== null && !isPicked;
         const className = [
             style.item,
             isEntering ? style.entering : '',
-            isPicked ? style.picked : '',
-            isDimmed ? style.dimmed : ''
+            isPicked ? style.picked : ''
         ].join(' ');
 
         let content;
@@ -117,7 +115,7 @@ export default function SelectPlatform() {
         <div
             className={`${style.screen} ${pickedId !== null ? style.leaving : ''}`}
             style={{
-                paddingTop: `calc(${contentSafeAreaInset.top}px + 44 * var(--u))`,
+                paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`,
                 paddingBottom: `calc(${safeAreaInset.bottom}px + 32 * var(--u))`
             }}
         >

@@ -4,6 +4,8 @@ import {getTelegramObject} from '../../shared/lib/telegram';
 import {discountPercent, formatPrice, formatPromoDate} from './bannerFormat';
 import style from './BannerCarousel.module.scss';
 
+const SKELETONS = ['a', 'b'];
+
 const slideBackground = (data) => {
     if (data.image) {
         return {
@@ -72,7 +74,24 @@ export default function BannerCarousel({items}) {
         track.scrollTo({left: slide.offsetLeft - track.children[0].offsetLeft, behavior: 'smooth'});
     }, []);
 
-    if (!items?.length) return null;
+    // Пока баннеров нет — держим место серыми прямоугольниками и не сворачиваемся.
+    // Схлопнуть карусель значило бы дёрнуть вверх всё, что под ней, и дёрнуть обратно,
+    // когда данные придут.
+    if (!items?.length) {
+        return (
+            <section className={style.carousel} aria-label="Баннеры загружаются" aria-busy="true">
+                <div className={style.track}>
+                    {SKELETONS.map((key) => (
+                        <div key={key} className={`${style.slide} ${style.skeleton}`} aria-hidden="true"/>
+                    ))}
+                </div>
+
+                <div className={style.dots} aria-hidden="true">
+                    {SKELETONS.map((key) => <span key={key} className={style.dot}/>)}
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section className={style.carousel} aria-label="Баннеры">

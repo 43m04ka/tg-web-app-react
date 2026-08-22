@@ -41,8 +41,45 @@
   transition: transform var(--duration-base) var(--ease-out);
 }
 
-.slide:active {
+.slide:not(.skeleton):active {
   transform: scale(0.985);
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(150deg, oklch(0.26 0.012 264), oklch(0.21 0.01 264));
+  border: 1px solid oklch(1 0 0 / 0.05);
+}
+
+// Волна светится сильнее по центру и гаснет к краям: сплошная полоса выглядит
+// как заклеенный скотч, а мягкий градиент читается именно как блик.
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    oklch(1 0 0 / 0) 35%,
+    oklch(1 0 0 / 0.06) 46%,
+    oklch(1 0 0 / 0.13) 50%,
+    oklch(1 0 0 / 0.06) 54%,
+    oklch(1 0 0 / 0) 65%
+  );
+  transform: translateX(-100%);
+  animation: shimmer 1700ms var(--ease-out) infinite;
+}
+
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after {
+    animation: none;
+  }
 }
 
 .top {

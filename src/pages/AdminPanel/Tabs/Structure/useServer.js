@@ -171,6 +171,61 @@ export function useServer() {
         await throwIfFailed(response, 'Не удалось удалить элемент');
     };
 
+    const getBannerList = async () => {
+        const response = await fetch(`${URL}/getBannerList`, {
+            method: 'POST',
+            headers: adminAuthHeadersJson(),
+            body: JSON.stringify(withJsonAuth({})),
+        });
+
+        await throwIfFailed(response, 'Не удалось загрузить баннеры');
+
+        const data = await response.json().catch(() => ({}));
+        return data.result || [];
+    };
+
+    const createBanner = async (authenticationData, bannerData) => {
+        const response = await fetch(`${URL}/createBanner`, {
+            method: 'POST',
+            headers: adminAuthHeadersJson(),
+            body: JSON.stringify(withJsonAuth({authenticationData, bannerData})),
+        });
+
+        await throwIfFailed(response, 'Не удалось создать баннер');
+    };
+
+    const updateBanner = async (authenticationData, id, updateData) => {
+        const response = await fetch(`${URL}/updateBanner`, {
+            method: 'POST',
+            headers: adminAuthHeadersJson(),
+            body: JSON.stringify(withJsonAuth({authenticationData, id, updateData})),
+        });
+
+        await throwIfFailed(response, 'Не удалось сохранить баннер');
+    };
+
+    const deleteBanner = async (authenticationData, id) => {
+        const response = await fetch(`${URL}/deleteBanner`, {
+            method: 'POST',
+            headers: adminAuthHeadersJson(),
+            body: JSON.stringify(withJsonAuth({authenticationData, id})),
+        });
+
+        await throwIfFailed(response, 'Не удалось удалить баннер');
+    };
+
+    const searchBannerSources = async (query, signal) => {
+        const response = await fetch(`${URL}/bannerSources?query=${encodeURIComponent(query)}`, {
+            headers: adminAuthHeadersJson(),
+            signal,
+        });
+
+        await throwIfFailed(response, 'Не удалось найти товары');
+
+        const data = await response.json().catch(() => ({}));
+        return data.result || [];
+    };
+
     return {
         deletePageData,
         updatePageData,
@@ -184,6 +239,11 @@ export function useServer() {
         createStartPage,
         updateStartPage,
         deleteStartPage,
+        getBannerList,
+        createBanner,
+        updateBanner,
+        deleteBanner,
+        searchBannerSources,
     };
 
 }

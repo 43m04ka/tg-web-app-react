@@ -9,6 +9,7 @@ import styles from "./AdminPanel.module.scss";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import EditPages from "./Tabs/Structure/EditPages/EditPages";
 import EditStartPages from "./Tabs/Structure/EditStartPages/EditStartPages";
+import EditBanners from "./Tabs/Structure/EditBanners/EditBanners";
 import SoonScreen from "./Tabs/Soon/SoonScreen";
 import useData from "./useData";
 import History from "./Tabs/HistoryOrders/History";
@@ -70,6 +71,7 @@ const routeGroups = [
         items: [
             {name: 'Страницы и главная', path: 'pages', element: <EditPages/>},
             {name: 'Стартовый экран', path: 'start-menu', element: <EditStartPages/>},
+            {name: 'Баннеры главной', path: 'banners', element: <EditBanners/>},
             {name: 'Подсказки в поиске', path: 'search', element: <Search/>},
             {name: 'Акции в "ещё"', path: 'more', element: <InfoBlock/>},
         ],

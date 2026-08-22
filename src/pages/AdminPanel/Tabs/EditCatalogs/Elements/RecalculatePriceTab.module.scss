@@ -1,0 +1,70 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+
+// Правила цен: плотная таблица интервалов вместо крупной формы.
+
+.loadingText {
+  padding: var(--sp-5) 0;
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+}
+
+.priceTable {
+  width: 100%;
+  max-width: 640px;
+  border-collapse: collapse;
+  font-family: var(--font-ui);
+
+  thead th {
+    padding: 0 var(--sp-2) var(--sp-1);
+    text-align: left;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: var(--sp-1) var(--sp-2) var(--sp-1) 0;
+
+    input[type="number"],
+    select {
+      width: 100%;
+      box-sizing: border-box;
+      height: 30px;
+      padding: 0 var(--sp-2);
+      border-radius: var(--r-md);
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      color: var(--text);
+      font-family: var(--font-ui);
+      font-size: var(--fs-base);
+      outline: none;
+      transition: border-color var(--t-fast), box-shadow var(--t-fast);
+
+      &:focus {
+        border-color: var(--accent);
+        box-shadow: var(--focus-ring);
+      }
+    }
+
+    select {
+      cursor: pointer;
+    }
+  }
+
+  .deleteCell {
+    width: 28px;
+    text-align: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: var(--fs-md);
+    user-select: none;
+    transition: color var(--t-fast);
+
+    &:hover {
+      color: var(--danger);
+    }
+  }
+}

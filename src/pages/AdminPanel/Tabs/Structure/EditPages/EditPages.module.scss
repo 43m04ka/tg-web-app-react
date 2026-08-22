@@ -1,0 +1,530 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+@import "src/pages/AdminPanel/styles/dashed";
+
+.screen {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+// padding: 0 обязателен. AdminPanel.module подключается сюда через @import, а в нём
+// есть общий `.header { padding: var(--sp-6) var(--sp-8) }` — при совпадении имени
+// класса правила сливаются, и шапка уезжала на 32px вправо от таблицы.
+// Отступ под докобар держит строка вкладок сверху, здесь он уже не нужен.
+.header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  margin: 0 0 var(--sp-3);
+  padding: 0;
+}
+
+.headerHint {
+  margin-left: auto;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+// Экран делится надвое: слева страницы, справа оформление выбранной.
+.split {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(420px, 1fr) minmax(420px, 1fr);
+  gap: var(--sp-4);
+}
+
+.pane {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.paneHead {
+  flex-shrink: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  min-height: 32px;
+}
+
+.paneTitle {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.paneSubtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+// Экран узкий — половины встают друг под друга, иначе таблица и список блоков
+// сжимаются до нечитаемого.
+@media (max-width: 1280px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: minmax(320px, auto);
+    overflow-y: auto;
+  }
+}
+
+.title {
+  font-family: var(--font-ui);
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin: 0;
+}
+
+.counter {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.searchField {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 180px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: var(--sp-3);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  box-sizing: border-box;
+  height: 32px;
+  padding: 0 var(--sp-6) 0 32px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.searchClear {
+  position: absolute;
+  right: var(--sp-2);
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--surface-hover);
+    color: var(--text);
+  }
+}
+
+.filterSelect {
+  height: 32px;
+  flex: 1;
+  min-width: 130px;
+  max-width: 180px;
+  // Нативная стрелка браузера прижата к самому краю рамки. Рисуем свою — тем же
+  // приёмом, что и в FormLayout: два градиента на currentColor, поэтому она
+  // сама подхватывает цвет темы, без картинок и второго правила для светлой
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0 32px 0 var(--sp-3);
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 18px) 14px, calc(100% - 13px) 14px;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background-color: var(--surface-alt);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--border-strong);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+}
+
+// 28px + 2px обоймы с каждой стороны = 32px, вровень с поиском и фильтрами
+.segment {
+  height: 28px;
+  padding: 0 var(--sp-3);
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast);
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+// Начертание активного сегмента не меняем — иначе ширина скачет при переключении.
+.segmentActive {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+
+.btn {
+  height: 30px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition: background-color var(--t-fast), border-color var(--t-fast), color var(--t-fast);
+
+  &:hover:not(:disabled) {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  // Неактивная кнопка — только контур и приглушённый текст, без серой плитки.
+  &:disabled {
+    border-color: var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btnPrimary {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 700;
+
+  &:hover:not(:disabled) {
+    background: var(--accent-hover);
+    border-color: transparent;
+    color: var(--accent-contrast);
+  }
+
+  &:disabled {
+    border-color: var(--border);
+    background: transparent;
+    color: var(--text-muted);
+  }
+}
+
+.btnDanger {
+  border-color: rgba(var(--danger-rgb), 0.45);
+  background: rgba(var(--danger-rgb), 0.12);
+  color: var(--danger);
+
+  &:hover:not(:disabled) {
+    background: rgba(var(--danger-rgb), 0.2);
+    border-color: rgba(var(--danger-rgb), 0.6);
+    color: var(--danger);
+  }
+}
+
+.btnGhost {
+  height: 30px;
+  padding: 0 var(--sp-3);
+  border: none;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+.tableWrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  border-radius: var(--r-lg);
+  @include dashed-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: var(--r-pill);
+  }
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: var(--sp-2) var(--sp-3);
+    text-align: left;
+    font-size: var(--fs-sm);
+    font-weight: 400;
+    color: var(--text-muted);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: var(--sp-2) var(--sp-3);
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+    vertical-align: middle;
+  }
+
+  tbody tr {
+    cursor: pointer;
+    transition: background-color var(--t-fast);
+
+    &:hover {
+      background: var(--surface-hover);
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+// Выбранная строка правит содержимым правой половины, поэтому выделена заметно:
+// полоса акцентом слева, а не только подложка.
+.rowSelected {
+  background: var(--accent-soft);
+
+  td:first-child {
+    box-shadow: inset 2px 0 0 var(--accent);
+  }
+}
+
+.orderCol {
+  width: 48px;
+}
+
+.nameCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+// Иконка бара — единственная картинка страницы, и именно её видит покупатель.
+// В списке она отвечает на вопрос «а что вообще загружено».
+.barIcon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  border-radius: var(--r-sm);
+}
+
+.barIconEmpty {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--r-sm);
+  border: 1px dashed var(--border-dashed);
+}
+
+.name {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.rowMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.link {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.typeCol {
+  width: 150px;
+}
+
+.botCol {
+  width: 120px;
+}
+
+.statusCol {
+  width: 130px;
+}
+
+.badgeOn,
+.badgeOff {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--sp-2);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+}
+
+.badgeOn {
+  background: rgba(var(--success-rgb), 0.12);
+  color: var(--success);
+}
+
+.badgeOff {
+  background: var(--surface-hover);
+  color: var(--text-muted);
+}
+
+.emptyCell {
+  padding: var(--sp-6) var(--sp-3) !important;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--fs-md);
+}
+
+// ==== Форма страницы ====
+
+.formStatus {
+  margin-right: auto;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.formNote {
+  margin: 0;
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+}
+
+.iconField {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.iconPreview {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+}
+
+.iconEmpty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-md);
+  border: 1px dashed var(--border-dashed);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.iconUpload {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast);
+
+  &:hover {
+    background: var(--surface-hover);
+    color: var(--text);
+  }
+}

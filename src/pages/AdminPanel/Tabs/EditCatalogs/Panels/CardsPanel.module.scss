@@ -1,0 +1,224 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+@import "src/pages/AdminPanel/styles/dashed";
+
+.actionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--sp-3);
+}
+
+.selectionInfo {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+}
+
+.actionGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+.actionBtn {
+  height: 30px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition: background-color var(--t-fast), border-color var(--t-fast), color var(--t-fast);
+
+  &:hover:not(:disabled) {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.actionBtnPrimary {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 700;
+
+  &:hover:not(:disabled) {
+    background: var(--accent-hover);
+    border-color: transparent;
+    color: var(--accent-contrast);
+  }
+}
+
+.actionBtnDanger {
+  &:hover:not(:disabled) {
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+}
+
+.workArea {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tableWrap {
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  border-radius: var(--r-lg);
+  @include dashed-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: var(--r-pill);
+  }
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+
+  thead th {
+    padding: var(--sp-2) var(--sp-3);
+    text-align: left;
+    font-size: var(--fs-sm);
+    font-weight: 400;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: var(--sp-2) var(--sp-3);
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+
+  tbody tr {
+    cursor: pointer;
+    transition: background-color var(--t-fast);
+
+    &:hover {
+      background: var(--surface-hover);
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+.rowSelected {
+  background: var(--accent-soft);
+}
+
+.checkCol {
+  width: 36px;
+}
+
+.checkbox {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.nameCell {
+  color: var(--text);
+  font-weight: 700;
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.numCol {
+  width: 110px;
+  white-space: nowrap;
+}
+
+.statusCol {
+  width: 120px;
+}
+
+.badgeOn,
+.badgeOff {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--sp-2);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+}
+
+.badgeOn {
+  background: rgba(var(--success-rgb), 0.12);
+  color: var(--success);
+}
+
+.badgeOff {
+  background: var(--surface-hover);
+  color: var(--text-muted);
+}
+
+.emptyCell {
+  padding: var(--sp-6) var(--sp-3) !important;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--fs-md);
+}
+
+.pagination {
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.pageBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
+.pageInfo {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}

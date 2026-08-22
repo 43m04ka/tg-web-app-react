@@ -1,0 +1,77 @@
+import React from 'react';
+import styles from './DropBox.module.scss';
+
+const DropBox = ({label, onChange, defaultIndex = 0}) => {
+
+    const [state, setState] = React.useState(false);
+    const [value, setValue] = React.useState(defaultIndex);
+    const timeoutRef = React.useRef(null);
+
+    React.useEffect(() => {
+        if (!Array.isArray(label) || label.length === 0) return;
+
+        const normalizedIndex =
+            typeof defaultIndex === 'number' && defaultIndex >= 0 && defaultIndex < label.length
+                ? defaultIndex
+                : 0;
+
+        setValue(normalizedIndex);
+    }, [defaultIndex, label]);
+
+    const clickItem = (index) => {
+        setValue(index);
+        onChange(index);
+        setState(false);
+    }
+
+    const handleMouseLeave = () => {
+        timeoutRef.current = setTimeout(() => {
+            setState(false);
+        }, 100);
+    }
+
+    const handleMouseEnter = () => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+        }
+    }
+
+    React.useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, []);
+
+    if(label.length > 0) {
+        return (
+            <div 
+                className={styles['body']} 
+                onMouseLeave={handleMouseLeave}
+                onMouseEnter={handleMouseEnter}
+            >
+                <button type="text"
+                        onClick={() => {
+                            state ? setState(false) : setState(true);
+                        }}>
+                    <p>{label[value].name}</p>
+                    <div
+                        className={`${styles['background-arrow']} ${styles['background-arrow-' + (state ? 'active' : '')]}`}></div>
+                </button>
+                <div>
+                    {state ?
+                        <ul>
+                            {label.map((item, index) => (<>
+                                <div className={styles['button']} onClick={() => clickItem(index)}>{item.name}</div>
+                                {index < label.length - 1 ?
+                                    <div className={styles['buttonOptionSeparator']}/> : ''}</>))}
+                        </ul> : ''}
+                </div>
+            </div>
+        );
+    }
+};
+
+export default DropBox;

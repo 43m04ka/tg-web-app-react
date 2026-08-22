@@ -1,0 +1,193 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #0a0e1a 0%, #11151f 100%);
+  padding: 20px;
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(135deg, #0f1419 0%, #161d2a 100%);
+  border: 1px solid rgba(79, 95, 130, 0.4);
+  border-radius: 24px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+
+.title {
+  @extend %text;
+  font-size: 32px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 32px;
+  color: #e4e8f2;
+  letter-spacing: -0.02em;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  gap: 8px;
+}
+
+.label {
+  @extend %text;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #8e95a3;
+}
+
+.input {
+  @extend %text;
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 15px;
+  background: rgba(18, 26, 45, 0.5);
+  border: 1px solid rgba(79, 95, 130, 0.4);
+  border-radius: 12px;
+  color: #e4e8f2;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: #6b7280;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: rgba(0, 122, 255, 0.6);
+    background: rgba(18, 26, 45, 0.8);
+    box-shadow: inset 0 0 0 1px rgba(0, 122, 255, 0.2);
+  }
+
+  &:hover:not(:focus) {
+    border-color: rgba(79, 95, 130, 0.6);
+  }
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.backgroundMotion {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(0, 116, 255, 0.2) 0%, rgba(0, 90, 200, 0.08) 28%, transparent 58%);
+    opacity: 0.7;
+    animation: centerPulse 7.5s ease-in-out infinite;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(5, 12, 30, 0.28) 62%, rgba(2, 6, 18, 0.6) 100%);
+    opacity: 0.6;
+  }
+}
+
+.flowCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.92;
+  z-index: 1;
+}
+
+@keyframes centerPulse {
+  0% {
+    opacity: 0.48;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 0.72;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 0.48;
+    transform: scale(0.98);
+  }
+}
+
+.button {
+  flex: 1;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  @extend %text;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.buttonPrimary {
+  background: linear-gradient(135deg, #007aff 0%, #0051cc 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+.error {
+  background: rgba(255, 59, 48, 0.1);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: #ff453a;
+  font-size: 13px;
+  margin-bottom: 20px;
+  @extend %text;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.loading {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

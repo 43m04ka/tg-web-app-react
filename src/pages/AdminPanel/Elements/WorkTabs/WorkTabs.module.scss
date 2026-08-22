@@ -1,0 +1,171 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+
+.root {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+// Строка вкладок в верху рабочей области. Правый отступ — под плавающий докобар.
+.bar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: stretch;
+  gap: var(--sp-1);
+  padding-right: var(--dock-safe);
+  margin-bottom: var(--sp-5);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.tab {
+  position: relative;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  min-width: 190px;
+  max-width: 280px;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-4);
+  border-radius: var(--r-md) var(--r-md) 0 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--t-fast), color var(--t-fast);
+
+  // Тонкий разделитель между неактивными вкладками, как в браузере.
+  & + .tab::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 25%;
+    bottom: 25%;
+    width: 1px;
+    background: var(--border);
+  }
+
+  &:hover {
+    background: var(--surface-hover);
+    color: var(--text-secondary);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.tabActive,
+.tabActive:hover {
+  background: var(--surface);
+  color: var(--text);
+
+  // Активная вкладка срастается с содержимым: перекрываем линию строки снизу
+  // и гасим разделители у себя и у соседа справа.
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1px;
+    background: var(--surface);
+  }
+
+  &::before,
+  & + .tab::before {
+    display: none;
+  }
+}
+
+.tabText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tabTitle {
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tabSubtitle {
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Крестик проявляется на наведении и у активной вкладки — строка не пестрит.
+.tabClose {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  opacity: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast), opacity var(--t-fast);
+
+  .tab:hover &,
+  .tabActive & {
+    opacity: 1;
+  }
+
+  &:hover {
+    background: var(--surface-hover);
+    color: var(--danger);
+  }
+}
+
+.panes {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.pane {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+// Фоновые вкладки остаются смонтированными и сохраняют раскладку:
+// не теряются прокрутка, введённые данные и позиция в таблице.
+// visibility (а не display: none) заодно убирает их из фокуса и переходов по Tab.
+.paneHidden {
+  visibility: hidden;
+  pointer-events: none;
+
+  // Скрытая вкладка ничего не анимирует: иначе унаследованный переход
+  // растягивает смену visibility и вкладка «догорает» поверх активной.
+  &,
+  & * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

@@ -1,0 +1,306 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+@import "src/pages/AdminPanel/styles/dashed";
+
+// Компактная построчная форма для содержимого вкладок.
+// Вместо «коробок» и двухколоночной сетки — плотный список строк:
+// слева подпись, справа контрол. Так форма не разъезжается по высоте.
+
+.sheet {
+  width: 100%;
+  max-width: 880px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.groupTitle {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(150px, 210px) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-2) 0;
+  border-bottom: 1px solid var(--border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  @media (max-width: 720px) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-1);
+  }
+}
+
+// Строка с высоким контролом (textarea, список, превью) — подпись прижата к верху.
+.rowTop {
+  align-items: start;
+
+  .rowLabel {
+    padding-top: 7px;
+  }
+}
+
+.rowLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+  color: var(--text-secondary);
+}
+
+.rowHint {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+
+  code {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--text-secondary);
+  }
+}
+
+.rowControl {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  align-items: flex-start;
+}
+
+// Обычные поля не растягиваем на всю ширину листа — читается тяжело.
+.rowNarrow .rowControl {
+  max-width: 320px;
+}
+
+.control {
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 32px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.textarea {
+  height: auto;
+  padding: var(--sp-2) var(--sp-3);
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+}
+
+.select {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 28px;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 15px) 14px, calc(100% - 10px) 14px;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+}
+
+.segment {
+  height: 26px;
+  padding: 0 var(--sp-3);
+  border: none;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast);
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+.segmentActive {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.checkGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-4);
+}
+
+.checkRow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+  color: var(--text-secondary);
+  cursor: pointer;
+
+  input {
+    width: 15px;
+    height: 15px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+}
+
+.switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 36px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--border-strong);
+  cursor: pointer;
+  transition: background-color var(--t-fast);
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.switchOn {
+  background: var(--accent);
+}
+
+.switchDot {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  transition: transform var(--t-fast);
+
+  .switchOn & {
+    transform: translateX(16px);
+  }
+}
+
+.addBtn {
+  align-self: flex-start;
+  height: 28px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  @include dashed-action;
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+
+// Боковой рельс разделов: длинная форма не превращается в бесконечную ленту.
+.split {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  gap: var(--sp-6);
+  align-items: start;
+
+  @media (max-width: 720px) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-3);
+  }
+}
+
+.rail {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  @media (max-width: 720px) {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+.railItem {
+  height: 30px;
+  padding: 0 var(--sp-3);
+  display: flex;
+  align-items: center;
+  border: none;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast);
+
+  &:hover {
+    background: var(--surface-hover);
+    color: var(--text);
+  }
+}
+
+.railItemActive {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+}

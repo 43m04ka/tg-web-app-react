@@ -1,0 +1,558 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+@import "src/pages/AdminPanel/styles/dashed";
+
+.screen {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin: 0 0 var(--sp-4);
+  padding: 0;
+}
+
+.headerTop {
+  // Отступ под докобар держит строка вкладок сверху — здесь он уже не нужен.
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+}
+
+.title {
+  font-family: var(--font-ui);
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin: 0;
+}
+
+.counter {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.counterHint {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.searchField {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 240px;
+  max-width: 420px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: var(--sp-3);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  box-sizing: border-box;
+  height: 36px;
+  padding: 0 var(--sp-8) 0 34px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.searchClear {
+  position: absolute;
+  right: var(--sp-2);
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--surface-hover);
+    color: var(--text);
+  }
+}
+
+// Выпадающие фильтры (каталог, тип) — та же высота и рамка, что у поиска,
+// чтобы панель фильтров читалась одной строкой.
+.filterSelect {
+  height: 36px;
+  max-width: 220px;
+  // Нативная стрелка браузера прижата к самому краю рамки — рисуем свою
+  // тем же приёмом, что и в FormLayout (градиенты на currentColor)
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0 32px 0 var(--sp-3);
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 18px) 16px, calc(100% - 13px) 16px;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background-color: var(--surface-alt);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+  cursor: pointer;
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+
+  &:hover {
+    border-color: var(--border-strong);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: var(--focus-ring);
+  }
+}
+
+// Переключатель статуса — сегменты в одной обойме.
+.segmented {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+}
+
+.segment {
+  position: relative;
+  height: 30px;
+  padding: 0 var(--sp-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast);
+
+  &:hover {
+    color: var(--text);
+  }
+
+}
+
+// Начертание активного сегмента не меняем — иначе ширина скачет при переключении.
+.segmentActive {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.actionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  padding: var(--sp-1) 0;
+}
+
+.selectionInfo {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+}
+
+.selectionNote {
+  font-style: normal;
+  color: var(--warning);
+}
+
+.actionGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+.actionBtn {
+  height: 30px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition: background-color var(--t-fast), border-color var(--t-fast), color var(--t-fast);
+
+  &:hover:not(:disabled) {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  // Неактивная кнопка — только контур и приглушённый текст, без серой плитки.
+  &:disabled {
+    border-color: var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.actionBtnPrimary {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 700;
+
+  &:hover:not(:disabled) {
+    background: var(--accent-hover);
+    border-color: transparent;
+    color: var(--accent-contrast);
+  }
+
+  &:disabled {
+    border-color: var(--border);
+    background: transparent;
+    color: var(--text-muted);
+  }
+}
+
+.actionBtnDanger {
+  &:hover:not(:disabled) {
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+}
+
+.actionBtnGhost {
+  height: 30px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    color: var(--text);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+// Область списка: сюда же выезжают панели, поэтому нужен свой контекст позиционирования.
+.workArea {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.tableWrap {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  overflow: auto;
+  border-radius: var(--r-lg);
+  @include dashed-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: var(--r-pill);
+  }
+}
+
+.table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: var(--sp-2) var(--sp-3);
+    text-align: left;
+    font-size: var(--fs-sm);
+    font-weight: 400;
+    color: var(--text-muted);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: var(--sp-2) var(--sp-3);
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+    vertical-align: middle;
+  }
+
+  tbody tr {
+    cursor: pointer;
+    transition: background-color var(--t-fast);
+
+    &:hover {
+      background: var(--surface-hover);
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+.rowSelected {
+  background: var(--accent-soft);
+}
+
+.checkCol {
+  width: 36px;
+  padding-right: 0 !important;
+}
+
+.checkbox {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.nameCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.name {
+  color: var(--text);
+  font-weight: 700;
+}
+
+// ID переехал из своей колонки под название: колонок стало больше, а сам по себе
+// идентификатор нужен редко — как справка при обращении в поддержку.
+.rowMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.platform {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.catalogCol {
+  width: 200px;
+  max-width: 200px;
+}
+
+.catalogPath {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.typeCol {
+  width: 130px;
+}
+
+.typeText {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.numCol {
+  width: 120px;
+  white-space: nowrap;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.price {
+  color: var(--text);
+}
+
+.oldPrice {
+  margin-left: var(--sp-2);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.statusCol {
+  width: 120px;
+}
+
+.badgeOn,
+.badgeOff {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 2px var(--sp-2);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+}
+
+.badgeOn {
+  background: rgba(var(--success-rgb), 0.12);
+  color: var(--success);
+}
+
+.badgeOff {
+  background: var(--surface-hover);
+  color: var(--text-muted);
+}
+
+.emptyCell {
+  padding: var(--sp-6) var(--sp-3) !important;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--fs-md);
+}
+
+// Постраничность под списком: отдельной полосой, чтобы не спорить с панелью действий сверху.
+.pager {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding-top: var(--sp-3);
+}
+
+.pagerInfo {
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+// Форма редактирования в выезжающей панели.
+.formSection {
+  margin-bottom: var(--sp-5);
+}
+
+.formSectionTitle {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.similarHint {
+  margin: 0 0 var(--sp-4);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.panelStatus {
+  margin-right: auto;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.panelBtn {
+  height: 34px;
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--surface-hover);
+    color: var(--text);
+  }
+}
+
+.panelBtnPrimary {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 700;
+
+  &:hover {
+    background: var(--accent-hover);
+    color: var(--accent-contrast);
+  }
+}

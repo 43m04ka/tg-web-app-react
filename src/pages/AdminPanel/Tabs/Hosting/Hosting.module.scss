@@ -1,0 +1,366 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+@import "src/pages/AdminPanel/styles/dashed";
+
+.screen {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin: 0 0 var(--sp-4);
+  padding: 0;
+}
+
+.headerTop {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+}
+
+.title {
+  font-family: var(--font-ui);
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin: 0;
+}
+
+.counter {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.btn {
+  height: 30px;
+  padding: 0 var(--sp-3);
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition: background-color var(--t-fast), border-color var(--t-fast), color var(--t-fast);
+
+  &:hover:not(:disabled) {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  &:disabled {
+    border-color: var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btnPrimary {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 700;
+
+  &:hover:not(:disabled) {
+    background: var(--accent-hover);
+    border-color: transparent;
+    color: var(--accent-contrast);
+  }
+}
+
+// Загрузка файла — это <label> к скрытому input, поэтому кнопка не может быть disabled
+// сама по себе: гасим её классом
+.btnDisabled {
+  border-color: var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+// Поле новой папки и кнопка рядом — единая обойма, как сегменты переключателя
+.folderField {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 2px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+
+  &:focus-within {
+    border-color: var(--accent);
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.folderInput {
+  height: 26px;
+  width: 160px;
+  padding: 0 var(--sp-2);
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.folderBtn {
+  height: 26px;
+  padding: 0 var(--sp-3);
+  border: none;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast);
+
+  &:hover:not(:disabled) {
+    background: var(--surface-hover);
+    color: var(--text);
+  }
+
+  &:disabled {
+    color: var(--text-muted);
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Хлебные крошки: путь целиком моноширинный, каждый сегмент кликабелен
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.crumb {
+  padding: 2px var(--sp-2);
+  border: none;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--surface-hover);
+  }
+
+  &:disabled {
+    color: var(--text-muted);
+    cursor: default;
+
+    &:hover {
+      background: transparent;
+    }
+  }
+}
+
+.crumbSep {
+  color: var(--text-muted);
+}
+
+.gridWrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--sp-3);
+  border-radius: var(--r-lg);
+  @include dashed-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: var(--r-pill);
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: var(--sp-3);
+}
+
+// Карточка файла: без заливки и без подъёма на ховере — по дизайн-системе
+// приподнятыми остаются только слои поверх контента
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  transition: border-color var(--t-fast);
+
+  &:hover {
+    border-color: var(--border-strong);
+  }
+}
+
+.folderCard {
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.folderGlyph {
+  font-size: 40px;
+  line-height: 1;
+}
+
+.cardName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+  font-size: var(--fs-md);
+}
+
+.fileName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.thumb {
+  width: 100%;
+  height: 104px;
+  object-fit: cover;
+  border-radius: var(--r-md);
+  background: var(--surface-hover);
+}
+
+// Кнопка удаления живёт поверх карточки, поэтому получает подложку —
+// иначе на светлой картинке крестик не виден
+.removeBtn {
+  position: absolute;
+  top: var(--sp-2);
+  right: var(--sp-2);
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(var(--danger-rgb), 0.45);
+  border-radius: var(--r-pill);
+  background: rgba(var(--danger-rgb), 0.12);
+  color: var(--danger);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: background-color var(--t-fast);
+
+  &:hover {
+    background: rgba(var(--danger-rgb), 0.24);
+  }
+}
+
+.empty {
+  padding: var(--sp-8) var(--sp-3);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--fs-md);
+}
+
+.emptyGlyph {
+  font-size: 40px;
+  line-height: 1;
+  margin-bottom: var(--sp-2);
+}
+
+// ==== Кнопка «скопировать ссылку» ====
+
+.copyWrap {
+  position: relative;
+  width: 100%;
+}
+
+.copyBtn {
+  width: 100%;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--accent);
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition: background-color var(--t-fast), border-color var(--t-fast);
+
+  &:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-strong);
+  }
+}
+
+.copyToast {
+  position: absolute;
+  bottom: calc(100% + var(--sp-2));
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px var(--sp-2);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  color: var(--text);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
+}

@@ -1,0 +1,545 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+@import "src/pages/AdminPanel/styles/dashed";
+
+.panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+// Переключатель групп. Пока страница не выбрана, кнопки неактивны — это и есть
+// подсказка «сначала выберите страницу слева».
+.groupBar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.groupBtn {
+  height: 32px;
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+
+  &:hover:not(:disabled) {
+    border-color: var(--border-strong);
+    color: var(--text);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  &:disabled {
+    border-color: var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.groupBtnActive {
+  border-color: transparent;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.groupCount {
+  margin-left: auto;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.panelTools {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 160px;
+  height: 32px;
+  box-sizing: border-box;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.btn {
+  height: 30px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--t-fast), border-color var(--t-fast), color var(--t-fast);
+
+  &:hover:not(:disabled) {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  &:disabled {
+    border-color: var(--border);
+    color: var(--text-muted);
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btnPrimary {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 700;
+
+  &:hover:not(:disabled) {
+    background: var(--accent-hover);
+    border-color: transparent;
+    color: var(--accent-contrast);
+  }
+
+  &:disabled {
+    border-color: var(--border);
+    background: transparent;
+    color: var(--text-muted);
+  }
+}
+
+.btnDanger {
+  &:hover:not(:disabled) {
+    border-color: var(--danger);
+    background: rgba(var(--danger-rgb), 0.12);
+    color: var(--danger);
+  }
+}
+
+.ghostBtn {
+  height: 30px;
+  padding: 0 var(--sp-2);
+  border: none;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+// ==== Список блоков ====
+// Не таблица: у блока есть картинка и два-три осмысленных поля, а колонок в таблице
+// набиралось шесть, из которых половина пустовала в зависимости от типа.
+
+// Пунктирная рамка та же, что у заглушки «страница не выбрана», и остаётся на месте,
+// когда блоки появились: область не «схлопывается» в другой вид при первом добавлении.
+// Сами блоки внутри — строки, разделённые волосяной линией, а не вложенные коробки
+// (дизайн-система: внутрь блока ещё одну коробку не кладём).
+.blockList {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: var(--sp-2);
+  border-radius: var(--r-lg);
+  @include dashed-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: var(--r-pill);
+  }
+}
+
+.block {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2);
+  border-radius: var(--r-md);
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  cursor: grab;
+  transition: background-color var(--t-fast), box-shadow var(--t-fast);
+
+  &:hover {
+    background: var(--surface-hover);
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.blockDragging {
+  opacity: 0.5;
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.blockOrder {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 34px;
+}
+
+.blockNum {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.moveBtn {
+  width: 22px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: var(--surface-alt);
+    color: var(--accent);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+}
+
+.blockPreview {
+  flex-shrink: 0;
+  width: 64px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-md);
+  background: var(--surface-alt);
+  overflow: hidden;
+}
+
+.blockImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.blockIcon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.blockNoImage {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--r-md);
+}
+
+.blockBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.blockTitle {
+  color: var(--text);
+  font-weight: 700;
+  font-size: var(--fs-base);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.blockMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.blockKind {
+  flex-shrink: 0;
+  padding: 1px var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--surface-alt);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.blockTarget {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.blockActions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+// Пустой список и загрузка живут внутри той же пунктирной рамки — центрируем по ней
+.empty {
+  margin: auto;
+  padding: var(--sp-6) 0;
+  text-align: center;
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+}
+
+// ==== Заглушка, пока страница не выбрана ====
+
+.placeholder {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-6);
+  border-radius: var(--r-lg);
+  @include dashed-box;
+  text-align: center;
+}
+
+.placeholderTitle {
+  margin: 0;
+  font-size: var(--fs-md);
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.placeholderText {
+  margin: 0;
+  max-width: 340px;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+// Переход в раздел витрины отделяем от пояснения — это действие, а не часть текста
+.placeholder .btn {
+  margin-top: var(--sp-3);
+}
+
+// ==== Форма блока ====
+
+.form {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.formHead {
+  flex-shrink: 0;
+  padding-bottom: var(--sp-2);
+  margin-bottom: var(--sp-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.formTitle {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.formBody {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: var(--r-pill);
+  }
+}
+
+.formFooter {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--border);
+}
+
+// Вид блока выбирается кнопками, а не выпадающим списком: вариантов пять,
+// и от выбора зависит весь остальной набор полей — его лучше видеть целиком.
+.kindGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.kindBtn {
+  height: 30px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition: border-color var(--t-fast), color var(--t-fast), background-color var(--t-fast);
+
+  &:hover {
+    border-color: var(--border-strong);
+    color: var(--text);
+  }
+}
+
+.kindBtnActive {
+  border-color: transparent;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.imageField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.imagePreview {
+  max-width: 240px;
+  max-height: 110px;
+  object-fit: contain;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+}
+
+.iconField {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.iconPreview {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+}
+
+.iconEmpty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-md);
+  border: 1px dashed var(--border-dashed);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.uploadBtn {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+  font-size: var(--fs-md);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--surface-hover);
+    color: var(--text);
+  }
+}
+
+.colorField {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.colorPicker {
+  width: 34px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface-alt);
+  cursor: pointer;
+}

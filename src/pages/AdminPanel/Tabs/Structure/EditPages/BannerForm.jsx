@@ -1,12 +1,6 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import TabPane from '../../../Elements/WorkTabs/TabPane';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import f, {Group, Row, Sheet} from '../../../Elements/FormLayout/FormLayout';
-import s from '../EditStartPages/EditStartPages.module.scss';
-import b from './EditBanners.module.scss';
-import useData from '../../../useData';
-import useGlobalData from '../../../legacy/useGlobalData';
-import {useServer} from '../useServer';
-import {useFeedback} from '../../../Elements/Feedback/Feedback';
+import s from './StructurePanel.module.scss';
 import BannerPreview from './BannerPreview';
 import {
     DEFAULT_GRADIENT,
@@ -24,8 +18,8 @@ const readOverride = (data) => ({
     imageFit: data?.override?.imageFit || '',
 });
 
-// Из уже сохранённого баннера восстанавливаем карточку товара: список bannerSources
-// при открытии формы пуст, а превью должно работать сразу, без повторного поиска.
+// Из сохранённого баннера восстанавливаем карточку товара: поиск при открытии формы
+// пуст, а превью должно работать сразу, без повторного запроса.
 const sourceFromBanner = (item) => {
     const data = item?.data || {};
     if (item?.type !== 'product' || !data.productId) return null;
@@ -42,20 +36,15 @@ const sourceFromBanner = (item) => {
     };
 };
 
-const BannerForm = ({item, onClose, onSaved}) => {
+const BannerForm = ({item, pageId, searchSources, onSubmit, onCancel, showToast}) => {
     const isNew = !item?.id;
     const type = item?.type || 'product';
-
-    const {authenticationData} = useData();
-    const {pageList} = useGlobalData();
-    const {createBanner, updateBanner, deleteBanner, searchBannerSources} = useServer();
-    const {showToast, confirm} = useFeedback();
 
     const [values, setValues] = useState(() => {
         const data = item?.data || {};
 
         return {
-            pageId: item?.pageId ?? null,
+            everywhere: item?.pageId === null || item?.pageId === undefined ? !isNew : false,
             isHidden: item?.isHidden === 1,
             subtitle: data.subtitle || '',
             note: data.note || '',
@@ -74,8 +63,8 @@ const BannerForm = ({item, onClose, onSaved}) => {
     const [searching, setSearching] = useState(false);
     const [saving, setSaving] = useState(false);
 
-    const searchRef = useRef(searchBannerSources);
-    searchRef.current = searchBannerSources;
+    const searchRef = useRef(searchSources);
+    searchRef.current = searchSources;
 
     const setValue = (key, value) => setValues((prev) => ({...prev, [key]: value}));
     const setOverride = (key, value) =>
@@ -107,11 +96,6 @@ const BannerForm = ({item, onClose, onSaved}) => {
             clearTimeout(timerId);
         };
     }, [query, type, showToast]);
-
-    const availablePages = useMemo(
-        () => (pageList || []).filter((page) => page.isHidden !== 1),
-        [pageList],
-    );
 
     // То же, что соберёт сервер: ручные правки перекрывают данные товара
     const previewBanner = useMemo(() => {
@@ -146,16 +130,16 @@ const BannerForm = ({item, onClose, onSaved}) => {
         };
     }, [type, source, values]);
 
-    const buildPayload = () => {
+    const handleSubmit = async () => {
         if (type === 'product' && !source) {
             showToast('Выберите товар для баннера', 'error');
-            return null;
+            return;
         }
 
         const url = values.url.trim();
         if (url && !/^https?:\/\//i.test(url)) {
             showToast('URL должен начинаться с http:// или https://', 'error');
-            return null;
+            return;
         }
 
         const data = type === 'product'
@@ -170,114 +154,58 @@ const BannerForm = ({item, onClose, onSaved}) => {
                 gradient: values.gradient,
             };
 
-        return {
-            type,
-            pageId: values.pageId,
-            isHidden: values.isHidden ? 1 : 0,
-            serialNumber: item?.serialNumber ?? 0,
-            data,
-        };
-    };
-
-    const handleSave = async () => {
-        const payload = buildPayload();
-        if (!payload) return;
-
         setSaving(true);
         try {
-            if (isNew) {
-                await createBanner(authenticationData, payload);
-                showToast('Баннер добавлен', 'success');
-            } else {
-                await updateBanner(authenticationData, item.id, payload);
-                showToast('Баннер сохранён', 'success');
-            }
-
-            onSaved?.();
-            onClose();
-        } catch (error) {
-            showToast(error.message || 'Не удалось сохранить баннер', 'error');
+            await onSubmit({
+                type,
+                pageId: values.everywhere ? null : pageId,
+                isHidden: values.isHidden ? 1 : 0,
+                serialNumber: item?.serialNumber ?? 0,
+                data,
+            });
         } finally {
             setSaving(false);
         }
     };
-
-    const handleDelete = async () => {
-        const agreed = await confirm({
-            title: 'Удалить баннер?',
-            text: 'Баннер пропадёт из карусели сразу. Действие необратимо.',
-            confirmLabel: 'Удалить',
-            danger: true,
-        });
-        if (!agreed) return;
-
-        setSaving(true);
-        try {
-            await deleteBanner(authenticationData, item.id);
-            showToast('Баннер удалён', 'success');
-            onSaved?.();
-            onClose();
-        } catch (error) {
-            showToast(error.message || 'Не удалось удалить баннер', 'error');
-        } finally {
-            setSaving(false);
-        }
-    };
-
-    const pickSource = useCallback((product) => {
-        setSource(product);
-        setResults([]);
-        setQuery('');
-    }, []);
 
     return (
-        <TabPane
-            footer={(
-                <>
-                    <span className={s['formStatus']}>
-                        {isNew ? `Новый баннер: ${TYPE_LABELS[type]}` : TYPE_LABELS[type]}
-                    </span>
-                    {!isNew ? (
-                        <button type="button" className={`${s['btn']} ${s['btnDanger']}`}
-                                disabled={saving} onClick={handleDelete}>
-                            Удалить
-                        </button>
-                    ) : null}
-                    <button type="button" className={s['btn']} onClick={onClose}>Отмена</button>
-                    <button type="button" className={`${s['btn']} ${s['btnPrimary']}`}
-                            disabled={saving} onClick={handleSave}>
-                        {saving ? 'Сохранение…' : (isNew ? 'Добавить' : 'Сохранить')}
-                    </button>
-                </>
-            )}
-        >
-            <div className={b['formSplit']}>
+        <div className={s['form']}>
+            <div className={s['formHead']}>
+                <span className={s['formTitle']}>
+                    {isNew ? 'Новый баннер' : 'Баннер'} · {TYPE_LABELS[type].toLowerCase()}
+                </span>
+            </div>
+
+            <div className={s['formBody']}>
                 <Sheet>
                     {type === 'product' ? (
                         <Group title="Товар">
                             <Row label="Поиск" hint="Название игры, подписки или доната — от двух букв" top wide>
-                                <div className={b['search']}>
-                                    <input className={f.input} type="text"
-                                           placeholder="Grand Theft Auto"
+                                <div className={s['bannerSearch']}>
+                                    <input className={f.input} type="text" placeholder="Grand Theft Auto"
                                            value={query}
                                            onChange={(event) => setQuery(event.target.value)}/>
 
-                                    {searching ? <span className={b['searchNote']}>Ищем…</span> : null}
+                                    {searching ? <span className={s['bannerHint']}>Ищем…</span> : null}
 
                                     {results.length ? (
-                                        <ul className={b['results']}>
+                                        <ul className={s['bannerResults']}>
                                             {results.map((product) => (
                                                 <li key={product.id}>
-                                                    <button type="button" className={b['result']}
-                                                            onClick={() => pickSource(product)}>
-                                                        <span className={b['resultImage']}
+                                                    <button type="button" className={s['bannerResult']}
+                                                            onClick={() => {
+                                                                setSource(product);
+                                                                setResults([]);
+                                                                setQuery('');
+                                                            }}>
+                                                        <span className={s['bannerResultImage']}
                                                               style={{
                                                                   backgroundImage: product.image ? `url(${product.image})` : 'none',
                                                                   backgroundPosition: product.imageFit === 'coverTop' ? 'top center' : 'center',
                                                               }}/>
-                                                        <span className={b['resultBody']}>
-                                                            <span className={b['resultName']}>{product.name}</span>
-                                                            <span className={b['resultMeta']}>
+                                                        <span className={s['bannerResultBody']}>
+                                                            <span className={s['bannerResultName']}>{product.name}</span>
+                                                            <span className={s['bannerHint']}>
                                                                 {product.typeLabel ? `${product.typeLabel} · ` : ''}
                                                                 {formatPrice(product.price) || 'без цены'}
                                                                 {product.hasBanner ? ' · есть 4:3' : ' · обложка'}
@@ -293,39 +221,36 @@ const BannerForm = ({item, onClose, onSaved}) => {
 
                             <Row label="Выбран" top wide>
                                 {source ? (
-                                    <div className={b['picked']}>
-                                        <span className={b['pickedName']}>{source.name}</span>
-                                        <span className={b['pickedMeta']}>
+                                    <div className={s['bannerPicked']}>
+                                        <span className={s['bannerResultName']}>{source.name}</span>
+                                        <span className={s['bannerHint']}>
                                             ID {source.id} · {formatPrice(source.price) || 'без цены'}
                                             {source.oldPrice ? ` · было ${formatPrice(source.oldPrice)}` : ''}
                                             {source.promoEndDate ? ` · акция до ${formatPromoDate(source.promoEndDate)}` : ''}
                                         </span>
-                                        <span className={b['pickedMeta']}>
-                                            Картинка: {source.hasBanner
-                                                ? 'баннер 4:3 из карточки'
-                                                : 'баннера 4:3 нет — берём обложку и кадрируем по верхнему краю'}
+                                        <span className={s['bannerHint']}>
+                                            {source.hasBanner
+                                                ? 'Картинка: баннер 4:3 из карточки'
+                                                : 'Баннера 4:3 нет — берём обложку и кадрируем по верхнему краю'}
                                         </span>
                                     </div>
                                 ) : (
-                                    <span className={s['formNote']}>Товар не выбран</span>
+                                    <span className={s['bannerHint']}>Товар не выбран</span>
                                 )}
                             </Row>
                         </Group>
                     ) : (
                         <Group title="Содержимое">
                             <Row label="Заголовок" wide>
-                                <input className={f.input} type="text"
-                                       value={values.title}
+                                <input className={f.input} type="text" value={values.title}
                                        onChange={(event) => setValue('title', event.target.value)}/>
                             </Row>
                             <Row label="Картинка" hint="Ссылка. Пусто — рисуем градиент" wide>
-                                <input className={`${f.input} ${f.mono}`} type="text"
-                                       value={values.image}
+                                <input className={`${f.input} ${f.mono}`} type="text" value={values.image}
                                        onChange={(event) => setValue('image', event.target.value)}/>
                             </Row>
                             <Row label="Кадрирование">
-                                <select className={`${f.input} ${f.select}`}
-                                        value={values.imageFit}
+                                <select className={`${f.input} ${f.select}`} value={values.imageFit}
                                         onChange={(event) => setValue('imageFit', event.target.value)}>
                                     {Object.entries(IMAGE_FIT_LABELS).map(([key, label]) => (
                                         <option key={key} value={key}>{label}</option>
@@ -333,8 +258,7 @@ const BannerForm = ({item, onClose, onSaved}) => {
                                 </select>
                             </Row>
                             <Row label="Градиент" hint="CSS-значение фона, если картинки нет" wide>
-                                <input className={`${f.input} ${f.mono}`} type="text"
-                                       value={values.gradient}
+                                <input className={`${f.input} ${f.mono}`} type="text" value={values.gradient}
                                        onChange={(event) => setValue('gradient', event.target.value)}/>
                             </Row>
                         </Group>
@@ -342,18 +266,15 @@ const BannerForm = ({item, onClose, onSaved}) => {
 
                     <Group title="Подписи">
                         <Row label="Надпись сверху" hint="Мелкая строка над заголовком: «Предзаказ», «Скидка»" wide>
-                            <input className={f.input} type="text"
-                                   value={values.subtitle}
+                            <input className={f.input} type="text" value={values.subtitle}
                                    onChange={(event) => setValue('subtitle', event.target.value)}/>
                         </Row>
                         <Row label="Примечание" hint="Строка под ценой. У товара её заменяет дата акции" wide>
-                            <input className={f.input} type="text"
-                                   value={values.note}
+                            <input className={f.input} type="text" value={values.note}
                                    onChange={(event) => setValue('note', event.target.value)}/>
                         </Row>
                         <Row label="Ссылка" hint="Куда ведёт баннер. Пусто — открывается карточка товара" wide>
-                            <input className={`${f.input} ${f.mono}`} type="text"
-                                   placeholder="https://t.me/..."
+                            <input className={`${f.input} ${f.mono}`} type="text" placeholder="https://t.me/..."
                                    value={values.url}
                                    onChange={(event) => setValue('url', event.target.value)}/>
                         </Row>
@@ -368,13 +289,11 @@ const BannerForm = ({item, onClose, onSaved}) => {
                                        onChange={(event) => setOverride('title', event.target.value)}/>
                             </Row>
                             <Row label="Картинка" hint="Пусто — берём из карточки товара" wide>
-                                <input className={`${f.input} ${f.mono}`} type="text"
-                                       value={values.override.image}
+                                <input className={`${f.input} ${f.mono}`} type="text" value={values.override.image}
                                        onChange={(event) => setOverride('image', event.target.value)}/>
                             </Row>
                             <Row label="Кадрирование" hint="Пусто — как решит сервер по наличию баннера 4:3">
-                                <select className={`${f.input} ${f.select}`}
-                                        value={values.override.imageFit}
+                                <select className={`${f.input} ${f.select}`} value={values.override.imageFit}
                                         onChange={(event) => setOverride('imageFit', event.target.value)}>
                                     <option value="">Автоматически</option>
                                     {Object.entries(IMAGE_FIT_LABELS).map(([key, label]) => (
@@ -386,45 +305,38 @@ const BannerForm = ({item, onClose, onSaved}) => {
                     ) : null}
 
                     <Group title="Показ">
-                        <Row label="Витрина" hint="«Все витрины» — баннер виден везде">
-                            <select className={`${f.input} ${f.select}`}
-                                    value={values.pageId ?? ''}
-                                    onChange={(event) => setValue('pageId', event.target.value ? Number(event.target.value) : null)}>
-                                <option value="">Все витрины</option>
-                                {availablePages.map((page) => (
-                                    <option key={page.id} value={page.id}>{page.name} (#{page.id})</option>
-                                ))}
-                            </select>
+                        <Row label="На всех витринах" hint="Иначе баннер виден только на этой странице">
+                            <input type="checkbox" checked={values.everywhere}
+                                   onChange={(event) => setValue('everywhere', event.target.checked)}/>
                         </Row>
                         <Row label="Скрыт" hint="Останется в списке, но пропадёт из карусели">
-                            <input type="checkbox"
-                                   checked={values.isHidden}
+                            <input type="checkbox" checked={values.isHidden}
                                    onChange={(event) => setValue('isHidden', event.target.checked)}/>
                         </Row>
                     </Group>
 
-                    {!isNew ? (
-                        <Group title="Служебное">
-                            <Row label="ID">
-                                <span className={s['formValue']}>{item.id}</span>
-                            </Row>
-                            <Row label="Тип" hint="У существующего баннера не меняется: у типов разный набор полей">
-                                <span className={s['formValue']}>{TYPE_LABELS[type]}</span>
-                            </Row>
-                        </Group>
-                    ) : null}
+                    <Group title="Как увидит покупатель">
+                        <Row label="Превью" top wide>
+                            <div className={s['bannerPreview']}>
+                                <BannerPreview banner={previewBanner}/>
+                                <span className={s['bannerHint']}>
+                                    Цены и дата акции берутся из карточки товара при каждой отдаче —
+                                    после парсинга баннер пересохранять не нужно.
+                                </span>
+                            </div>
+                        </Row>
+                    </Group>
                 </Sheet>
-
-                <aside className={b['formPreview']}>
-                    <span className={b['previewTitle']}>Как увидит покупатель</span>
-                    <BannerPreview banner={previewBanner}/>
-                    <span className={b['previewHint']}>
-                        Цены и дата акции берутся из карточки товара при каждой отдаче — после парсинга
-                        баннер пересохранять не нужно.
-                    </span>
-                </aside>
             </div>
-        </TabPane>
+
+            <div className={s['formFooter']}>
+                <button type="button" className={s['btn']} onClick={onCancel} disabled={saving}>Отмена</button>
+                <button type="button" className={`${s['btn']} ${s['btnPrimary']}`}
+                        onClick={handleSubmit} disabled={saving}>
+                    {saving ? 'Сохранение…' : (isNew ? 'Создать' : 'Сохранить')}
+                </button>
+            </div>
+        </div>
     );
 };
 

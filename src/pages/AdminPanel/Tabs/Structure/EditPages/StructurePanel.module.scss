@@ -543,3 +543,82 @@
   background: var(--surface-alt);
   cursor: pointer;
 }
+
+// ── Баннеры ──────────────────────────────────────────────
+.bannerSearch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  width: 100%;
+}
+
+.bannerHint {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.bannerResults {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+
+.bannerResult {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.bannerResult:hover {
+  background: var(--surface-hover);
+}
+
+.bannerResultImage {
+  width: 48px;
+  height: 36px;
+  flex: none;
+  border-radius: var(--r-sm);
+  background-color: var(--surface-alt);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.bannerResultBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.bannerResultName {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bannerPicked {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.bannerPreview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  width: 100%;
+}

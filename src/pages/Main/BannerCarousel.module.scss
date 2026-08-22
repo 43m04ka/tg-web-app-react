@@ -29,13 +29,14 @@
   width: u(330);
   aspect-ratio: 4 / 3;
   box-sizing: border-box;
-  padding: u(18) u(20);
   border-radius: u(20);
   overflow: hidden;
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background-size: cover;
+  background-repeat: no-repeat;
   box-shadow: 0 u(18) u(34) oklch(0 0 0 / 0.45);
   transition: transform var(--duration-base) var(--ease-out);
 }
@@ -44,23 +45,12 @@
   transform: scale(0.985);
 }
 
-.glow {
-  position: absolute;
-  top: u(-70);
-  right: u(-50);
-  width: u(210);
-  height: u(210);
-  border-radius: 50%;
-  background: oklch(1 0 0 / 0.16);
-  filter: blur(u(38));
-  pointer-events: none;
-}
-
 .top {
-  position: relative;
   display: flex;
   flex-direction: column;
   gap: u(6);
+  padding: u(18) u(20) 0;
+  text-shadow: 0 u(1) u(10) oklch(0 0 0 / 0.55);
 }
 
 .kicker {
@@ -68,7 +58,7 @@
   font-weight: 800;
   letter-spacing: u(1.2);
   text-transform: uppercase;
-  color: oklch(0.99 0.01 90 / 0.9);
+  color: oklch(1 0 0 / 0.9);
 }
 
 .title {
@@ -78,14 +68,68 @@
   line-height: 1.12;
   letter-spacing: u(-0.4);
   color: oklch(1 0 0);
-  white-space: pre-line;
+}
+
+.bottom {
+  position: relative;
+}
+
+// Ценник ложится на кадр игры, где угодно может оказаться светлое пятно.
+// Размытие под блоком цен гасит фон, не пряча его под сплошной плашкой.
+.blur {
+  position: absolute;
+  inset: u(-24) 0 0;
+  backdrop-filter: blur(u(14));
+  -webkit-backdrop-filter: blur(u(14));
+  background: linear-gradient(to bottom, oklch(0 0 0 / 0) 0%, oklch(0 0 0 / 0.45) 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 55%, #000 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 55%, #000 100%);
+  pointer-events: none;
+}
+
+.bottomBody {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: u(5);
+  padding: u(10) u(20) u(18);
+}
+
+.prices {
+  display: flex;
+  align-items: center;
+  gap: u(9);
+}
+
+.price {
+  padding: u(6) u(12);
+  border-radius: u(11);
+  background: oklch(0.99 0 0 / 0.94);
+  font-size: u(12.5);
+  font-weight: 800;
+  color: oklch(0.2 0.01 264);
+}
+
+.oldPrice {
+  font-size: u(12);
+  font-weight: 600;
+  color: oklch(1 0 0 / 0.85);
+  text-decoration: line-through;
+}
+
+.badge {
+  padding: u(3) u(7);
+  border-radius: u(7);
+  background: var(--gold);
+  font-size: u(10);
+  font-weight: 800;
+  color: var(--gold-surface);
 }
 
 .note {
-  position: relative;
-  font-size: u(12.5);
+  font-size: u(11.5);
   font-weight: 600;
-  color: oklch(0.97 0 0 / 0.85);
+  color: oklch(1 0 0 / 0.85);
 }
 
 .dots {

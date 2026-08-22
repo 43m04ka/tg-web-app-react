@@ -15,6 +15,7 @@ const normalize = (raw) => {
         startPages: pick(data, 'startPages', 'allStartPages', 'startPageList', 'startPagesList'),
         structureBlocks: pick(data, 'structureBlocks', 'allStructureBlocks'),
         mainPageProducts: pick(data, 'mainPageProducts'),
+        banners: pick(data, 'banners'),
         catalogs: pick(data, 'allCatalogs', 'catalogs'),
         maintenance: pick(data, 'maintenanceMode') || {enabled: false, until: null}
     };

@@ -15,6 +15,9 @@ export const fetchStructureBlocks = (signal) =>
 export const fetchMainPageProducts = (signal) =>
     safeRequestResult('/api/structure/mainPageProducts', {signal, retries: 2}).then(bySerialNumber);
 
+export const fetchBanners = (signal) =>
+    safeRequestResult('/api/structure/banners', {signal, retries: 2});
+
 export const fetchInfoBlocks = (signal) =>
     safeRequestResult('/api/structure/infoBlocks', {signal, retries: 2});
 

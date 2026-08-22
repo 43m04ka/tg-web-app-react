@@ -1,6 +1,7 @@
 import {create} from 'zustand';
 import {INITIAL_DATA, hasItems} from '../shared/lib/initialData';
 import {
+    fetchBanners,
     fetchCatalogs,
     fetchMainPageProducts,
     fetchPages,
@@ -16,6 +17,7 @@ const withoutPattern = (items) =>
 const SOURCES = [
     {key: 'pages', initial: 'pages', load: fetchPages, transform: visibleOnly, critical: true},
     {key: 'startPages', initial: 'startPages', load: fetchStartPages, transform: withoutPattern, critical: true},
+    {key: 'banners', initial: 'banners', load: fetchBanners},
     {key: 'structureBlocks', initial: 'structureBlocks', load: fetchStructureBlocks},
     {key: 'mainPageProducts', initial: 'mainPageProducts', load: fetchMainPageProducts},
     {key: 'catalogs', initial: 'catalogs', load: fetchCatalogs}

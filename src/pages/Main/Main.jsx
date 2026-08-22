@@ -4,7 +4,7 @@ import {useSessionStore} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
 import BannerCarousel from './BannerCarousel';
-import {PLACEHOLDER_BANNERS} from './banners';
+import {selectPageBanners} from './bannerFormat';
 import style from './Main.module.scss';
 
 export default function Main() {
@@ -13,6 +13,7 @@ export default function Main() {
 
     const pageId = useSessionStore((state) => state.pageId);
     const pages = useStructureStore((state) => state.pages);
+    const banners = useStructureStore((state) => state.banners);
     const page = pages?.find((candidate) => candidate.id === pageId);
 
     return (
@@ -22,7 +23,7 @@ export default function Main() {
                 paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`
             }}
         >
-            <BannerCarousel items={PLACEHOLDER_BANNERS}/>
+            <BannerCarousel items={selectPageBanners(banners, pageId)}/>
 
             <div className={style.intro}>
                 <div className={style.badge}>Раздел в разработке</div>

@@ -1,0 +1,111 @@
+@import '../../app/styles/units';
+
+.carousel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: u(9);
+}
+
+.track {
+  display: flex;
+  gap: u(12);
+  padding: 0 u(20);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: u(20);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.slide {
+  position: relative;
+  flex: none;
+  width: u(330);
+  aspect-ratio: 4 / 3;
+  box-sizing: border-box;
+  padding: u(18) u(20);
+  border-radius: u(20);
+  overflow: hidden;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 u(18) u(34) oklch(0 0 0 / 0.45);
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.slide:active {
+  transform: scale(0.985);
+}
+
+.glow {
+  position: absolute;
+  top: u(-70);
+  right: u(-50);
+  width: u(210);
+  height: u(210);
+  border-radius: 50%;
+  background: oklch(1 0 0 / 0.16);
+  filter: blur(u(38));
+  pointer-events: none;
+}
+
+.top {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: u(6);
+}
+
+.kicker {
+  font-size: u(10.5);
+  font-weight: 800;
+  letter-spacing: u(1.2);
+  text-transform: uppercase;
+  color: oklch(0.99 0.01 90 / 0.9);
+}
+
+.title {
+  margin: 0;
+  font-size: u(26);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: u(-0.4);
+  color: oklch(1 0 0);
+  white-space: pre-line;
+}
+
+.note {
+  position: relative;
+  font-size: u(12.5);
+  font-weight: 600;
+  color: oklch(0.97 0 0 / 0.85);
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: u(5);
+}
+
+.dot {
+  width: u(4);
+  height: u(4);
+  padding: 0;
+  border: none;
+  border-radius: u(2);
+  background: oklch(1 0 0 / 0.25);
+  transition: width var(--duration-slow) var(--ease-out),
+              background-color var(--duration-slow) var(--ease-out);
+}
+
+.dotActive {
+  width: u(16);
+  background: var(--accent);
+}

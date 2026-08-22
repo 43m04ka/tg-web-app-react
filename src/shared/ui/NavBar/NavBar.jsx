@@ -3,7 +3,7 @@ import {useLocation, useNavigate} from 'react-router-dom';
 import {useSessionStore} from '../../../store/useSessionStore';
 import {useStructureStore} from '../../../store/useStructureStore';
 import {useAppInsets} from '../../hooks/useAppInsets';
-import {getTelegramObject} from '../../lib/telegram';
+import {hapticImpact} from '../../lib/haptic';
 import {BasketIcon, ChevronIcon, HomeIcon, MoreIcon, SearchIcon} from './NavIcons';
 import style from './NavBar.module.scss';
 
@@ -40,9 +40,10 @@ export default function NavBar() {
     const startPage = startPages?.find((candidate) => candidate.structurePageId === pageId);
     const icon = startPage?.icon || page?.barIcon;
 
+    const press = useCallback(() => hapticImpact('light'), []);
+
     const go = useCallback((path) => {
         if (pathname === path) return;
-        getTelegramObject().HapticFeedback?.selectionChanged?.();
         navigate(path);
     }, [navigate, pathname]);
 
@@ -60,6 +61,7 @@ export default function NavBar() {
                 type="button"
                 className={`${style.tab} ${isActive ? style.tabActive : ''}`}
                 data-effect={effect}
+                onPointerDown={press}
                 onClick={() => go(path)}
                 aria-current={isActive ? 'page' : undefined}
             >
@@ -79,6 +81,7 @@ export default function NavBar() {
             <button
                 type="button"
                 className={`${style.platform} ${pathname === '/' ? style.tabActive : ''}`}
+                onPointerDown={press}
                 onClick={() => go('/')}
             >
                 <span className={style.chip}>

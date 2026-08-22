@@ -3,6 +3,8 @@ import {useNavigate} from 'react-router-dom';
 import {useSessionStore} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
+import BannerCarousel from './BannerCarousel';
+import {PLACEHOLDER_BANNERS} from './banners';
 import style from './Main.module.scss';
 
 export default function Main() {
@@ -20,14 +22,18 @@ export default function Main() {
                 paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`
             }}
         >
-            <div className={style.badge}>Раздел в разработке</div>
-            <h1 className={style.title}>{page?.title || 'Каталог'}</h1>
-            <p className={style.text}>
-                Витрина выбрана. Каталог, карточка товара и корзина появятся здесь на следующих этапах редизайна.
-            </p>
-            <button type="button" className={style.button} onClick={() => navigate('/')}>
-                Сменить витрину
-            </button>
+            <BannerCarousel items={PLACEHOLDER_BANNERS}/>
+
+            <div className={style.intro}>
+                <div className={style.badge}>Раздел в разработке</div>
+                <h1 className={style.title}>{page?.title || 'Каталог'}</h1>
+                <p className={style.text}>
+                    Витрина выбрана. Каталог, карточка товара и корзина появятся здесь на следующих этапах редизайна.
+                </p>
+                <button type="button" className={style.button} onClick={() => navigate('/')}>
+                    Сменить витрину
+                </button>
+            </div>
         </div>
     );
 }

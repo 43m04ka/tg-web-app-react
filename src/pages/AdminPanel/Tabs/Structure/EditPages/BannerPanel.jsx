@@ -6,13 +6,13 @@ import {useFeedback} from '../../../Elements/Feedback/Feedback';
 import BannerForm from './BannerForm';
 import {BANNER_TYPES, TYPE_LABELS, formatPrice, formatPromoDate} from './bannerContent';
 
-// БАННЕРЫ СТРАНИЦЫ
-// ----------------
-// Третья группа правой половины «Страниц», рядом с каруселью и телом сайта.
-// Отдельного раздела меню у баннеров нет намеренно: их настраивают там же,
-// где выбрали витрину, а не выбирая её второй раз в другом месте.
+// КАРУСЕЛЬ СТРАНИЦЫ
+// -----------------
+// Первая группа правой половины «Страниц». Отдельного раздела меню у неё нет
+// намеренно: карусель настраивают там же, где выбрали витрину, а не выбирая
+// её второй раз в другом месте.
 //
-// В списке видны баннеры этой страницы и общие (pageId = null) — общие правятся
+// В списке видны слайды этой страницы и общие (pageId = null) — общие правятся
 // отсюда же, но помечены, чтобы никто не менял их, думая, что трогает только свою витрину.
 
 const BannerPanel = ({page}) => {
@@ -40,7 +40,7 @@ const BannerPanel = ({page}) => {
             const result = await serverRef.current.getBannerList();
             setAll(Array.isArray(result) ? result : []);
         } catch (error) {
-            showToast(error.message || 'Не удалось загрузить баннеры', 'error');
+            showToast(error.message || 'Не удалось загрузить карусель', 'error');
             setAll([]);
         } finally {
             setLoading(false);
@@ -109,24 +109,24 @@ const BannerPanel = ({page}) => {
         try {
             if (editing?.item?.id) {
                 await serverRef.current.updateBanner(authRef.current, editing.item.id, payload);
-                showToast('Баннер сохранён', 'success');
+                showToast('Слайд сохранён', 'success');
             } else {
                 await serverRef.current.createBanner(authRef.current, {
                     ...payload,
                     serialNumber: items.length,
                 });
-                showToast('Баннер создан', 'success');
+                showToast('Слайд создан', 'success');
             }
             setEditing(null);
             await load();
         } catch (error) {
-            showToast(error.message || 'Не удалось сохранить баннер', 'error');
+            showToast(error.message || 'Не удалось сохранить слайд', 'error');
         }
     };
 
     const handleDelete = async (banner) => {
         const agreed = await confirm({
-            title: 'Удалить баннер?',
+            title: 'Удалить слайд?',
             text: `«${banner.data?.title || TYPE_LABELS[banner.type]}» пропадёт из карусели сразу. Действие необратимо.`,
             confirmLabel: 'Удалить',
             danger: true,
@@ -136,10 +136,10 @@ const BannerPanel = ({page}) => {
         setBusy(true);
         try {
             await serverRef.current.deleteBanner(authRef.current, banner.id);
-            showToast('Баннер удалён', 'success');
+            showToast('Слайд удалён', 'success');
             await load();
         } catch (error) {
-            showToast(error.message || 'Не удалось удалить баннер', 'error');
+            showToast(error.message || 'Не удалось удалить слайд', 'error');
         } finally {
             setBusy(false);
         }
@@ -177,7 +177,7 @@ const BannerPanel = ({page}) => {
                     <p className={s['empty']}>Загрузка…</p>
                 ) : items.length === 0 ? (
                     <p className={s['empty']}>
-                        У этой витрины пока нет баннеров — добавьте первый кнопкой сверху
+                        В карусели этой витрины пока пусто — добавьте первый слайд кнопкой сверху
                     </p>
                 ) : items.map((banner, index) => {
                     const data = banner.data || {};

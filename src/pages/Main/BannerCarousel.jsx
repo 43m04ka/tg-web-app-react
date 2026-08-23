@@ -112,6 +112,8 @@ export default function BannerCarousel({items}) {
                             style={slideBackground(data)}
                             onClick={() => openBanner(data)}
                         >
+                            <div className={style.scrim} aria-hidden="true"/>
+
                             <div className={style.top}>
                                 {data.subtitle ? <span className={style.kicker}>{data.subtitle}</span> : null}
                                 <h2 className={style.title}>{data.title}</h2>
@@ -119,21 +121,18 @@ export default function BannerCarousel({items}) {
 
                             {hasBottom ? (
                                 <div className={style.bottom}>
-                                    <div className={style.blur} aria-hidden="true"/>
-                                    <div className={style.bottomBody}>
-                                        {price ? (
-                                            <div className={style.prices}>
-                                                <span className={style.price}>{price}</span>
-                                                {percent > 0 && oldPrice ? (
-                                                    <span className={style.oldPrice}>{oldPrice}</span>
-                                                ) : null}
-                                                {percent > 0 ? (
-                                                    <span className={style.badge}>−{percent}%</span>
-                                                ) : null}
-                                            </div>
-                                        ) : null}
-                                        {footnote ? <span className={style.note}>{footnote}</span> : null}
-                                    </div>
+                                    {price ? (
+                                        <div className={style.prices}>
+                                            <span className={style.price}>{price}</span>
+                                            {percent > 0 && oldPrice ? (
+                                                <span className={style.oldPrice}>{oldPrice}</span>
+                                            ) : null}
+                                            {percent > 0 ? (
+                                                <span className={style.badge}>−{percent}%</span>
+                                            ) : null}
+                                        </div>
+                                    ) : null}
+                                    {footnote ? <span className={style.note}>{footnote}</span> : null}
                                 </div>
                             ) : null}
                         </article>

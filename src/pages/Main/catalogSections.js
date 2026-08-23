@@ -2,7 +2,7 @@ const CATALOG_TYPES = ['ordinary', 'ordinary-choice'];
 
 // Путь блока исторически хранится то голым, то со старым префиксом роута.
 // Каталоги при этом лежат под голым путём, поэтому префикс срезаем.
-const cleanPath = (path) =>
+export const cleanPath = (path) =>
     String(path || '').replace('/catalog/', '').replace('/choice-catalog/', '');
 
 export const isCatalogBlock = (block) => CATALOG_TYPES.includes(block.type);

@@ -132,7 +132,7 @@ const BannerForm = ({item, pageId, searchSources, onSubmit, onCancel, showToast}
 
     const handleSubmit = async () => {
         if (type === 'product' && !source) {
-            showToast('Выберите товар для баннера', 'error');
+            showToast('Выберите товар для слайда', 'error');
             return;
         }
 
@@ -172,7 +172,7 @@ const BannerForm = ({item, pageId, searchSources, onSubmit, onCancel, showToast}
         <div className={s['form']}>
             <div className={s['formHead']}>
                 <span className={s['formTitle']}>
-                    {isNew ? 'Новый баннер' : 'Баннер'} · {TYPE_LABELS[type].toLowerCase()}
+                    {isNew ? 'Новый слайд' : 'Слайд карусели'} · {TYPE_LABELS[type].toLowerCase()}
                 </span>
             </div>
 
@@ -273,7 +273,7 @@ const BannerForm = ({item, pageId, searchSources, onSubmit, onCancel, showToast}
                             <input className={f.input} type="text" value={values.note}
                                    onChange={(event) => setValue('note', event.target.value)}/>
                         </Row>
-                        <Row label="Ссылка" hint="Куда ведёт баннер. Пусто — открывается карточка товара" wide>
+                        <Row label="Ссылка" hint="Куда ведёт слайд. Пусто — открывается карточка товара" wide>
                             <input className={`${f.input} ${f.mono}`} type="text" placeholder="https://t.me/..."
                                    value={values.url}
                                    onChange={(event) => setValue('url', event.target.value)}/>
@@ -305,7 +305,7 @@ const BannerForm = ({item, pageId, searchSources, onSubmit, onCancel, showToast}
                     ) : null}
 
                     <Group title="Показ">
-                        <Row label="На всех витринах" hint="Иначе баннер виден только на этой странице">
+                        <Row label="На всех витринах" hint="Иначе слайд виден только на этой витрине">
                             <input type="checkbox" checked={values.everywhere}
                                    onChange={(event) => setValue('everywhere', event.target.checked)}/>
                         </Row>
@@ -321,7 +321,7 @@ const BannerForm = ({item, pageId, searchSources, onSubmit, onCancel, showToast}
                                 <BannerPreview banner={previewBanner}/>
                                 <span className={s['bannerHint']}>
                                     Цены и дата акции берутся из карточки товара при каждой отдаче —
-                                    после парсинга баннер пересохранять не нужно.
+                                    после парсинга слайд пересохранять не нужно.
                                 </span>
                             </div>
                         </Row>

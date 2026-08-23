@@ -1,6 +1,6 @@
 import React from 'react';
 import ProductCard from './ProductCard';
-import {isBannerBlock} from './catalogSections';
+import {cleanPath, isBannerBlock} from './catalogSections';
 import style from './CatalogSection.module.scss';
 
 const PREVIEW_LIMIT = 6;
@@ -14,13 +14,16 @@ export default function CatalogSection({section, onOpenCatalog, onOpenProduct}) 
         return (
             <div
                 className={`${style.banner} ${clickable ? style.bannerClickable : ''}`}
-                style={block.backgroundColor && block.backgroundColor !== 'none'
-                    ? {background: block.backgroundColor}
-                    : undefined}
-                onClick={clickable ? () => onOpenCatalog(block.path) : undefined}
-            >
-                {block.url ? <img className={style.bannerImage} src={block.url} alt={block.name || ''}/> : null}
-            </div>
+                style={{
+                    ...(block.backgroundColor && block.backgroundColor !== 'none'
+                        ? {backgroundColor: block.backgroundColor}
+                        : null),
+                    ...(block.url ? {backgroundImage: `url(${block.url})`} : null)
+                }}
+                onClick={clickable ? () => onOpenCatalog(cleanPath(block.path)) : undefined}
+                role={clickable ? 'button' : undefined}
+                aria-label={clickable ? block.name || 'Баннер' : undefined}
+            />
         );
     }
 

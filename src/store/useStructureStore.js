@@ -3,6 +3,7 @@ import {INITIAL_DATA, hasItems} from '../shared/lib/initialData';
 import {
     fetchBanners,
     fetchCatalogs,
+    fetchInfoBlocks,
     fetchMainPageProducts,
     fetchPages,
     fetchStartPages,
@@ -20,7 +21,8 @@ const SOURCES = [
     {key: 'banners', initial: 'banners', load: fetchBanners},
     {key: 'structureBlocks', initial: 'structureBlocks', load: fetchStructureBlocks},
     {key: 'mainPageProducts', initial: 'mainPageProducts', load: fetchMainPageProducts},
-    {key: 'catalogs', initial: 'catalogs', load: fetchCatalogs}
+    {key: 'catalogs', initial: 'catalogs', load: fetchCatalogs},
+    {key: 'infoBlocks', initial: 'infoBlocks', load: fetchInfoBlocks}
 ];
 
 const CRITICAL_COUNT = SOURCES.filter((source) => source.critical).length;

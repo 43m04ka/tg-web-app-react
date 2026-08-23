@@ -9,23 +9,23 @@
 .head {
   display: flex;
   align-items: center;
-  gap: u(8);
+  gap: u(9);
   padding: 0 u(20);
 }
 
 .icon {
-  width: u(20);
-  height: u(20);
+  width: u(26);
+  height: u(26);
   flex: none;
-  border-radius: u(6);
+  border-radius: u(7);
   background: center / contain no-repeat;
 }
 
 .title {
   margin: 0;
-  font-size: u(17);
+  font-size: u(20);
   font-weight: 800;
-  letter-spacing: u(-0.3);
+  letter-spacing: u(-0.35);
   color: var(--text);
 }
 
@@ -154,19 +154,22 @@
   background: var(--surface-3);
 }
 
+// Баннер тела идёт во всю ширину и в тех же пропорциях, что в старом боте:
+// там это блок высотой 40vw без боковых отступов. Картинка кладётся фоном,
+// а не <img>: недогруженная ссылка тогда оставляет ровный прямоугольник,
+// а не схлопывает блок в ноль высоты.
 .banner {
-  margin: 0 u(20);
-  border-radius: u(18);
-  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 5 / 2;
+  background: var(--surface-1) center / cover no-repeat;
 }
 
 .bannerClickable {
   cursor: pointer;
 }
 
-.bannerImage {
-  width: 100%;
-  height: auto;
+.bannerClickable:active {
+  opacity: 0.92;
 }
 
 // ── Прелоадер ────────────────────────────────────────────

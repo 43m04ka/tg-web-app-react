@@ -82,54 +82,65 @@
   }
 }
 
-.top {
-  display: flex;
-  flex-direction: column;
-  gap: u(6);
-  padding: u(18) u(20) 0;
-  text-shadow: 0 u(1) u(10) oklch(0 0 0 / 0.55);
-}
-
-.kicker {
-  font-size: u(10.5);
-  font-weight: 800;
-  letter-spacing: u(1.2);
-  text-transform: uppercase;
-  color: oklch(1 0 0 / 0.9);
-}
-
-.title {
-  margin: 0;
-  font-size: u(26);
-  font-weight: 800;
-  line-height: 1.12;
-  letter-spacing: u(-0.4);
-  color: oklch(1 0 0);
-}
-
-.bottom {
-  position: relative;
-}
-
-// Ценник ложится на кадр игры, где угодно может оказаться светлое пятно.
-// Размытие под блоком цен гасит фон, не пряча его под сплошной плашкой.
-.blur {
+// Текст ложится на кадр игры, где под ним что угодно: небо, лицо, светлая надпись.
+// Раньше низ гасила полоса backdrop-filter — у неё был видимый край, и на светлых
+// кадрах она читалась как грязный прямоугольник. Здесь вместо неё две затемняющие
+// растяжки от краёв к центру: края темнеют, середина кадра остаётся нетронутой.
+.scrim {
   position: absolute;
-  inset: u(-24) 0 0;
-  backdrop-filter: blur(u(14));
-  -webkit-backdrop-filter: blur(u(14));
-  background: linear-gradient(to bottom, oklch(0 0 0 / 0) 0%, oklch(0 0 0 / 0.45) 100%);
-  mask-image: linear-gradient(to bottom, transparent 0%, #000 55%, #000 100%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 55%, #000 100%);
+  inset: 0;
   pointer-events: none;
+  background:
+    linear-gradient(to bottom,
+      oklch(0 0 0 / 0.78) 0%,
+      oklch(0 0 0 / 0.55) 18%,
+      oklch(0 0 0 / 0.18) 36%,
+      oklch(0 0 0 / 0) 52%),
+    linear-gradient(to top,
+      oklch(0 0 0 / 0.82) 0%,
+      oklch(0 0 0 / 0.5) 14%,
+      oklch(0 0 0 / 0.15) 30%,
+      oklch(0 0 0 / 0) 46%);
 }
 
-.bottomBody {
+.top {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: u(5);
-  padding: u(10) u(20) u(18);
+  padding: u(16) u(20) 0;
+}
+
+.kicker {
+  font-size: u(10);
+  font-weight: 800;
+  letter-spacing: u(1.4);
+  text-transform: uppercase;
+  color: oklch(1 0 0 / 0.82);
+}
+
+.title {
+  margin: 0;
+  font-size: u(21);
+  font-weight: 800;
+  line-height: 1.14;
+  letter-spacing: u(-0.3);
+  color: oklch(1 0 0);
+  text-shadow: 0 u(1) u(3) oklch(0 0 0 / 0.6);
+  // Три строки — потолок: у изданий вроде «Ultimate Edition» название длинное,
+  // а четвёртая строка уже налезает на ценник.
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.bottom {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: u(5);
+  padding: 0 u(20) u(16);
 }
 
 .prices {
@@ -166,7 +177,8 @@
 .note {
   font-size: u(11.5);
   font-weight: 600;
-  color: oklch(1 0 0 / 0.85);
+  color: oklch(1 0 0 / 0.82);
+  text-shadow: 0 u(1) u(2) oklch(0 0 0 / 0.5);
 }
 
 .dots {

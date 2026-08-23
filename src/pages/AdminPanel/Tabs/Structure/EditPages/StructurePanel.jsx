@@ -20,9 +20,9 @@ import {hasStructure, typeName, STRUCTURELESS_SECTIONS} from './pageOptions';
 // группами описывает structureKinds.js.
 
 const GROUPS = [
-    {key: 'head', label: 'Карусель', hint: 'Верхний слайдер страницы'},
-    {key: 'banners', label: 'Баннеры', hint: 'Карусель баннеров нового дизайна'},
-    {key: 'body', label: 'Тело сайта', hint: 'Основное содержимое под каруселью'},
+    {key: 'banners', label: 'Карусель', hint: 'Верхняя карусель страницы'},
+    {key: 'body', label: 'Тело сайта', hint: 'Каталоги и баннеры под каруселью'},
+    {key: 'head', label: 'Карусель старого бота', hint: 'Слайдер прежнего дизайна — пока жив старый бот'},
 ];
 
 // Баннеры лежат в своей таблице и к structureCatalogs отношения не имеют —
@@ -41,7 +41,7 @@ const StructurePanel = ({page}) => {
     const serverRef = useRef(null);
     serverRef.current = {getStructureCatalogList, createStructureCatalog, updateCatalogData, deleteStructureCatalog};
 
-    const [group, setGroup] = useState('head');
+    const [group, setGroup] = useState('banners');
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(false);
     const [busy, setBusy] = useState(false);

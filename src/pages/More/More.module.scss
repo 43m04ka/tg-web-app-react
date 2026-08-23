@@ -1,0 +1,193 @@
+@import '../../app/styles/units';
+
+.screen {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  display: flex;
+  flex-direction: column;
+  gap: u(18);
+  padding-left: u(20);
+  padding-right: u(20);
+  background: var(--bg-gradient);
+  animation: fade 225ms var(--ease-out) backwards;
+}
+
+.screen > * {
+  animation: rise 240ms var(--ease-out) backwards;
+}
+
+.screen > *:nth-child(1) {
+  animation-delay: 40ms;
+}
+
+.screen > *:nth-child(2) {
+  animation-delay: 75ms;
+}
+
+.screen > *:nth-child(3) {
+  animation-delay: 110ms;
+}
+
+.screen > *:nth-child(n + 4) {
+  animation-delay: 145ms;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen,
+  .screen > * {
+    animation: none;
+  }
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: u(14);
+}
+
+.avatar {
+  width: u(54);
+  height: u(54);
+  flex: none;
+  border-radius: u(18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(140deg, var(--accent), var(--accent-soft));
+  font-size: u(20);
+  font-weight: 800;
+  color: var(--accent-contrast);
+}
+
+.headBody {
+  display: flex;
+  flex-direction: column;
+  gap: u(2);
+  min-width: 0;
+}
+
+.hello {
+  font-size: u(19);
+  font-weight: 800;
+  letter-spacing: u(-0.3);
+  color: var(--text);
+}
+
+.helloNote {
+  font-size: u(12.5);
+  color: var(--text-muted);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: u(10);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: u(14);
+  font-weight: 800;
+  color: var(--text-secondary);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: u(20);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: u(13);
+  width: 100%;
+  padding: u(14) u(16);
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row:active {
+  background: var(--surface-2);
+}
+
+.rowIcon {
+  width: u(30);
+  height: u(30);
+  flex: none;
+  border-radius: u(10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // Цвета плиток унаследованы от старого бота — по ним пункты и запоминались.
+  // Заливка приглушена, чтобы десяток ярких квадратов не забивал экран.
+  background: color-mix(in oklab, var(--tone) 22%, transparent);
+  color: var(--tone);
+}
+
+.rowIcon svg {
+  width: u(17);
+  height: u(17);
+}
+
+.rowBody {
+  display: flex;
+  flex-direction: column;
+  gap: u(2);
+  flex: 1;
+  min-width: 0;
+}
+
+.rowLabel {
+  flex: 1;
+  font-size: u(14.5);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.rowNote {
+  font-size: u(12);
+  line-height: 1.35;
+  color: var(--text-muted);
+}
+
+.rowChevron {
+  width: u(14);
+  height: u(14);
+  flex: none;
+  color: var(--text-faint);
+}
+
+.rowArrow {
+  flex: none;
+  font-size: u(14);
+  color: var(--text-muted);
+}

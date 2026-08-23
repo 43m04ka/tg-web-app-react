@@ -2,6 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {Navigate, Route, Routes, useLocation} from 'react-router-dom';
 import SelectPlatform from '../pages/SelectPlatform/SelectPlatform';
 import Main from '../pages/Main/Main';
+import More from '../pages/More/More';
+import Favorites from '../pages/Account/Favorites';
+import OrderHistory from '../pages/Account/OrderHistory';
 import Stub from '../pages/Stub/Stub';
 import {useSessionStore} from '../store/useSessionStore';
 import style from './AppRoutes.module.scss';
@@ -67,14 +70,9 @@ export default function AppRoutes() {
                         </RequirePage>
                     }
                 />
-                <Route
-                    path="/more"
-                    element={
-                        <RequirePage>
-                            <Stub title="Ещё" text="Профиль, история заказов и избранное появятся на следующем этапе редизайна."/>
-                        </RequirePage>
-                    }
-                />
+                <Route path="/more" element={<RequirePage><More/></RequirePage>}/>
+                <Route path="/favorites" element={<RequirePage><Favorites/></RequirePage>}/>
+                <Route path="/history" element={<RequirePage><OrderHistory/></RequirePage>}/>
                 <Route path="*" element={<Navigate to="/" replace/>}/>
             </Routes>
         </div>

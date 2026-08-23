@@ -2,16 +2,22 @@
 // «paid» и «completed» для него — одно и то же «всё хорошо», а разница между ними
 // внутренняя (деньги пришли / админ выдал).
 export const STATUS_LABELS = {
-    new: {label: 'В обработке', tone: 'wait'},
-    awaiting_payment: {label: 'Ждёт оплаты', tone: 'wait'},
+    new: {label: 'В обработке', tone: 'info'},
+    awaiting_payment: {label: 'Ожидает оплаты', tone: 'wait'},
     paid: {label: 'Оплачен', tone: 'ok'},
-    completed: {label: 'Готов', tone: 'ok'},
+    completed: {label: 'Выполнен', tone: 'ok'},
     payment_failed: {label: 'Не оплачен', tone: 'fail'},
     canceled: {label: 'Отменён', tone: 'fail'},
     refunded: {label: 'Возврат', tone: 'fail'}
 };
 
-export const statusOf = (order) => STATUS_LABELS[order?.status] || {label: 'В обработке', tone: 'wait'};
+const OPEN_STATUSES = ['new', 'awaiting_payment', 'paid'];
+
+export const statusOf = (order) => STATUS_LABELS[order?.status] || {label: 'В обработке', tone: 'info'};
+
+export const isOpenOrder = (order) => OPEN_STATUSES.includes(order?.status);
+
+export const orderNumber = (order) => `№ ${order.id}`;
 
 export const formatMoney = (value) => {
     const number = Number(value);
@@ -25,21 +31,25 @@ export const formatOrderDate = (value) => {
 
     const date = new Date(parsed);
     const now = new Date();
-    const sameYear = date.getFullYear() === now.getFullYear();
+
+    if (date.toDateString() === now.toDateString()) return 'сегодня';
 
     return date.toLocaleDateString('ru-RU', {
         day: 'numeric',
         month: 'short',
-        ...(sameYear ? {} : {year: 'numeric'})
+        ...(date.getFullYear() === now.getFullYear() ? {} : {year: 'numeric'})
     });
 };
 
-export const orderTitle = (order) => {
-    if (order.type === 'steam_topup') return 'Пополнение Steam';
+// Вторая строка карточки. У позиций нет картинки товара, зато в meta лежит платформа —
+// её и показываем, добивая витриной и количеством позиций.
+export const positionMeta = (order) => {
+    if (order.type === 'steam_topup') {
+        return [order.steamLogin, 'зачисление 5–15 мин'].filter(Boolean).join(' · ');
+    }
 
     const positions = order.positions || [];
-    if (!positions.length) return `Заказ №${order.id}`;
-    if (positions.length === 1) return positions[0].name;
+    const extra = positions.length > 1 ? `${positions.length} позиции` : null;
 
-    return `${positions[0].name} и ещё ${positions.length - 1}`;
+    return [positions[0]?.meta?.platform, order.pageTitle, extra].filter(Boolean).join(' · ');
 };

@@ -4,6 +4,7 @@ import {useSessionStore} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
 import {hapticImpact} from '../../shared/lib/haptic';
+import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import BannerCarousel from './BannerCarousel';
 import CatalogSection from './CatalogSection';
 import CatalogSkeleton from './CatalogSkeleton';
@@ -57,7 +58,13 @@ export default function Main() {
             {sections === null ? (
                 <CatalogSkeleton/>
             ) : sections.length === 0 ? (
-                <p className={style.empty}>У этой витрины пока нет разделов</p>
+                <EmptyState
+                    icon="🗂"
+                    title="Здесь пока пусто"
+                    text="У этой витрины ещё не собраны разделы. Загляните позже или выберите другую."
+                    actionLabel="Сменить витрину"
+                    onAction={() => navigate('/')}
+                />
             ) : sections.map((section) => (
                 <CatalogSection
                     key={section.block.id}

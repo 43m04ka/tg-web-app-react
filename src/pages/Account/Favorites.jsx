@@ -2,13 +2,23 @@ import React, {useCallback, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
 import {hapticImpact} from '../../shared/lib/haptic';
+import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import {fetchFavorites, removeFavorite} from '../../shared/api/account';
 import {useAccountList} from './useAccountList';
+import PageHeader from './PageHeader';
 import {formatMoney} from './orderStatus';
 import {discountPercent, shortPlatform} from '../Main/catalogSections';
 import style from './Account.module.scss';
 
 const SKELETONS = ['a', 'b', 'c'];
+
+const plural = (count) => {
+    const tail = count % 10;
+    const hundred = count % 100;
+    if (tail === 1 && hundred !== 11) return 'товар';
+    if (tail >= 2 && tail <= 4 && (hundred < 12 || hundred > 14)) return 'товара';
+    return 'товаров';
+};
 
 export default function Favorites() {
     const navigate = useNavigate();
@@ -24,7 +34,7 @@ export default function Favorites() {
         setRemoving(product.id);
 
         // Убираем сразу: ждать ответа ради строки, которая заведомо исчезнет, незачем.
-        // Не получилось — возвращаем товар на место и перечитываем список.
+        // Не получилось — перечитываем список, товар вернётся на место.
         setItems((prev) => (prev || []).filter((item) => item.id !== product.id));
 
         try {
@@ -37,6 +47,8 @@ export default function Favorites() {
         }
     }, [userId, setItems, reload]);
 
+    const count = items?.length ?? 0;
+
     return (
         <div
             className={style.screen}
@@ -45,31 +57,41 @@ export default function Favorites() {
                 paddingBottom: `calc(${safeAreaInset.bottom}px + 24 * var(--u))`
             }}
         >
-            <h1 className={style.title}>Избранное</h1>
+            <PageHeader
+                title="Избранное"
+                note={items?.length ? `${count} ${plural(count)}` : null}
+            />
 
             {items === null ? (
                 <div className={style.list}>
                     {SKELETONS.map((key) => (
-                        <div key={key} className={`${style.skeletonRow} ${style.shimmer}`} aria-hidden="true"/>
+                        <div key={key} className={`${style.skeletonCard} ${style.shimmer}`} aria-hidden="true"/>
                     ))}
                 </div>
             ) : error ? (
-                <div className={style.empty}>
-                    <p className={style.emptyText}>Не удалось загрузить избранное</p>
-                    <button type="button" className={style.retry} onClick={reload}>Повторить</button>
-                </div>
-            ) : items.length === 0 ? (
-                <div className={style.empty}>
-                    <p className={style.emptyText}>В избранном пока пусто</p>
-                    <button type="button" className={style.retry} onClick={() => navigate('/main')}>
-                        Открыть главную
-                    </button>
-                </div>
+                <EmptyState
+                    tone="danger"
+                    icon="⚠"
+                    title="Не удалось загрузить"
+                    text="Проверьте связь и попробуйте ещё раз — избранное никуда не делось."
+                    actionLabel="Повторить"
+                    onAction={reload}
+                />
+            ) : count === 0 ? (
+                <EmptyState
+                    icon="♡"
+                    title="В избранном пусто"
+                    text="Нажимайте на сердечко у товара — он появится здесь, а мы сообщим, когда на него упадёт цена."
+                    actionLabel="Выбрать игру"
+                    onAction={() => navigate('/main')}
+                />
             ) : (
                 <div className={style.list}>
                     {items.map((product) => {
                         const percent = discountPercent(product.price, product.oldPrice);
-                        const platform = shortPlatform(product.platform);
+                        const meta = [shortPlatform(product.platform), product.typeLabel, product.regionActivate]
+                            .filter(Boolean)
+                            .join(' · ');
 
                         return (
                             <article key={product.id} className={style.favorite}>
@@ -79,25 +101,32 @@ export default function Favorites() {
                                     onClick={() => navigate(`/card/${product.id}`)}
                                 />
 
-                                <span className={style.favoriteBody} onClick={() => navigate(`/card/${product.id}`)}>
-                                    <span className={style.favoriteName}>{product.name}</span>
-                                    <span className={style.orderMeta}>
-                                        {[platform, product.typeLabel].filter(Boolean).join(' · ')}
+                                <span className={style.favoriteBody}>
+                                    <span className={style.favoriteTop}>
+                                        <span className={style.favoriteName}
+                                              onClick={() => navigate(`/card/${product.id}`)}>
+                                            {product.name}
+                                        </span>
+                                        <button type="button" className={style.heart}
+                                                disabled={removing === product.id}
+                                                aria-label="Убрать из избранного"
+                                                onClick={() => remove(product)}>
+                                            ♥
+                                        </button>
                                     </span>
+
+                                    {meta ? <span className={style.favoriteMeta}>{meta}</span> : null}
+
                                     <span className={style.favoritePrices}>
-                                        <span className={style.price}>{formatMoney(product.price)}</span>
+                                        <span className={style.priceRow}>
+                                            <span className={style.price}>{formatMoney(product.price)}</span>
+                                            {percent > 0 ? <span className={style.badge}>−{percent}%</span> : null}
+                                        </span>
                                         {percent > 0 ? (
                                             <span className={style.oldPrice}>{formatMoney(product.oldPrice)}</span>
                                         ) : null}
                                     </span>
                                 </span>
-
-                                <button type="button" className={style.remove}
-                                        disabled={removing === product.id}
-                                        aria-label="Убрать из избранного"
-                                        onClick={() => remove(product)}>
-                                    ✕
-                                </button>
                             </article>
                         );
                     })}

@@ -1,15 +1,34 @@
-import React from 'react';
+import React, {useMemo, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
+import {hapticImpact} from '../../shared/lib/haptic';
+import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import {fetchOrderHistory} from '../../shared/api/account';
 import {useAccountList} from './useAccountList';
-import {formatMoney, formatOrderDate, orderTitle, statusOf} from './orderStatus';
+import PageHeader from './PageHeader';
+import {formatMoney, formatOrderDate, isOpenOrder, orderNumber, positionMeta, statusOf} from './orderStatus';
 import style from './Account.module.scss';
 
 const SKELETONS = ['a', 'b', 'c'];
 
+const FILTERS = [
+    {key: 'all', label: 'Все'},
+    {key: 'open', label: 'В работе'},
+    {key: 'done', label: 'Выполнены'}
+];
+
 export default function OrderHistory() {
+    const navigate = useNavigate();
     const {contentSafeAreaInset, safeAreaInset} = useAppInsets();
     const {items, error, reload} = useAccountList(fetchOrderHistory);
+
+    const [filter, setFilter] = useState('all');
+
+    const visible = useMemo(() => {
+        if (!items) return null;
+        if (filter === 'all') return items;
+        return items.filter((order) => (filter === 'open' ? isOpenOrder(order) : !isOpenOrder(order)));
+    }, [items, filter]);
 
     return (
         <div
@@ -19,39 +38,95 @@ export default function OrderHistory() {
                 paddingBottom: `calc(${safeAreaInset.bottom}px + 24 * var(--u))`
             }}
         >
-            <h1 className={style.title}>Мои заказы</h1>
+            <PageHeader title="Мои заказы"/>
+
+            {items?.length ? (
+                <div className={style.filters}>
+                    {FILTERS.map((option) => (
+                        <button key={option.key} type="button"
+                                className={`${style.chip} ${filter === option.key ? style.chipActive : ''}`}
+                                onClick={() => {
+                                    hapticImpact('light');
+                                    setFilter(option.key);
+                                }}>
+                            {option.label}
+                        </button>
+                    ))}
+                </div>
+            ) : null}
 
             {items === null ? (
                 <div className={style.list}>
                     {SKELETONS.map((key) => (
-                        <div key={key} className={`${style.skeletonRow} ${style.shimmer}`} aria-hidden="true"/>
+                        <div key={key} className={`${style.skeletonCard} ${style.shimmer}`} aria-hidden="true"/>
                     ))}
                 </div>
             ) : error ? (
-                <div className={style.empty}>
-                    <p className={style.emptyText}>Не удалось загрузить заказы</p>
-                    <button type="button" className={style.retry} onClick={reload}>Повторить</button>
-                </div>
+                <EmptyState
+                    tone="danger"
+                    icon="⚠"
+                    title="Не удалось загрузить"
+                    text="Заказы на месте — не дошёл запрос. Попробуйте ещё раз."
+                    actionLabel="Повторить"
+                    onAction={reload}
+                />
             ) : items.length === 0 ? (
-                <div className={style.empty}>
-                    <p className={style.emptyText}>Заказов пока нет</p>
-                </div>
+                <EmptyState
+                    icon="🎮"
+                    title="Заказов пока нет"
+                    text="Здесь появятся ваши покупки: ключи, подписки и пополнения — все сразу после оплаты."
+                    actionLabel="Перейти к играм"
+                    onAction={() => navigate('/main')}
+                />
+            ) : visible.length === 0 ? (
+                <EmptyState
+                    icon="🔎"
+                    title={filter === 'open' ? 'Активных заказов нет' : 'Выполненных заказов нет'}
+                    text="Переключите фильтр, чтобы увидеть остальные."
+                    actionLabel="Показать все"
+                    onAction={() => setFilter('all')}
+                />
             ) : (
                 <div className={style.list}>
-                    {items.map((order) => {
+                    {visible.map((order) => {
                         const status = statusOf(order);
-                        const date = formatOrderDate(order.createdAt);
-                        const total = formatMoney(order.total);
+                        const positions = order.positions || [];
+                        const first = positions[0];
+                        const isSteam = order.type === 'steam_topup';
 
                         return (
                             <article key={order.id} className={style.order}>
-                                <span className={style.orderBody}>
-                                    <span className={style.orderTitle}>{orderTitle(order)}</span>
-                                    <span className={style.orderMeta}>
-                                        {[date, total].filter(Boolean).join(' · ')}
+                                <div className={style.orderHead}>
+                                    <span className={`${style.status} ${style[status.tone]}`}>{status.label}</span>
+                                    <span className={style.orderNumber}>
+                                        {orderNumber(order)} · {formatOrderDate(order.createdAt)}
                                     </span>
-                                </span>
-                                <span className={`${style.status} ${style[status.tone]}`}>{status.label}</span>
+                                </div>
+
+                                <div className={style.orderRow}>
+                                    <span className={`${style.orderCover} ${isSteam ? style.steamCover : ''}`}>
+                                        {isSteam ? 'S' : (first?.name || '?').slice(0, 1).toUpperCase()}
+                                    </span>
+
+                                    <span className={style.orderBody}>
+                                        <span className={style.orderTitle}>
+                                            {isSteam ? 'Пополнение Steam' : (first?.name || `Заказ ${orderNumber(order)}`)}
+                                        </span>
+                                        <span className={style.orderMeta}>{positionMeta(order)}</span>
+                                    </span>
+
+                                    <span className={style.orderTotal}>{formatMoney(order.total)}</span>
+                                </div>
+
+                                {status.tone === 'wait' && order.paymentUrl ? (
+                                    <button type="button" className={style.pay}
+                                            onClick={() => {
+                                                hapticImpact('medium');
+                                                window.open(order.paymentUrl, '_blank', 'noopener');
+                                            }}>
+                                        Оплатить {formatMoney(order.total)}
+                                    </button>
+                                ) : null}
                             </article>
                         );
                     })}

@@ -6,7 +6,7 @@
   overscroll-behavior-y: contain;
   display: flex;
   flex-direction: column;
-  gap: u(16);
+  gap: u(12);
   padding-left: u(20);
   padding-right: u(20);
   background: var(--bg-gradient);
@@ -23,6 +23,10 @@
 
 .screen > *:nth-child(2) {
   animation-delay: 80ms;
+}
+
+.screen > *:nth-child(3) {
+  animation-delay: 110ms;
 }
 
 @keyframes fade {
@@ -52,29 +56,248 @@
   }
 }
 
+// ── Шапка ────────────────────────────────────────────────
+.header {
+  display: flex;
+  align-items: center;
+  gap: u(12);
+}
+
+.back {
+  display: flex;
+  align-items: center;
+  gap: u(6);
+  flex: none;
+  padding: u(7) u(12) u(7) u(9);
+  border-radius: u(12);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: u(12.5);
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.back:active {
+  background: var(--surface-3);
+}
+
+.backChevron {
+  font-size: u(15);
+  line-height: 1;
+}
+
 .title {
   margin: 0;
-  font-size: u(23);
+  font-size: u(19);
   font-weight: 800;
   letter-spacing: u(-0.3);
   color: var(--text);
 }
 
+.note {
+  margin-left: auto;
+  font-size: u(12.5);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+// ── Фильтры ──────────────────────────────────────────────
+.filters {
+  display: flex;
+  gap: u(8);
+}
+
+.chip {
+  padding: u(8) u(14);
+  border-radius: u(13);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: u(12.5);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.chipActive {
+  background: var(--accent-surface);
+  border-color: var(--accent-soft);
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
 .list {
   display: flex;
   flex-direction: column;
-  gap: u(10);
+  gap: u(12);
 }
 
-.order,
+// ── Избранное ────────────────────────────────────────────
 .favorite {
   display: flex;
-  align-items: center;
   gap: u(12);
-  padding: u(13) u(14);
+  padding: u(12);
   border-radius: u(18);
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
+}
+
+.cover {
+  width: u(66);
+  height: u(86);
+  flex: none;
+  border-radius: u(12);
+  background: linear-gradient(150deg, oklch(0.3 0.03 264), oklch(0.19 0.015 264)) center / cover no-repeat;
+}
+
+.favoriteBody {
+  display: flex;
+  flex-direction: column;
+  gap: u(5);
+  flex: 1;
+  min-width: 0;
+}
+
+.favoriteTop {
+  display: flex;
+  align-items: flex-start;
+  gap: u(8);
+}
+
+.favoriteName {
+  flex: 1;
+  font-size: u(13.5);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.heart {
+  flex: none;
+  width: u(24);
+  height: u(24);
+  font-size: u(15);
+  line-height: 1;
+  color: oklch(0.7 0.16 25);
+}
+
+.favoriteMeta {
+  font-size: u(11.5);
+  color: var(--text-muted);
+}
+
+.favoritePrices {
+  display: flex;
+  flex-direction: column;
+  gap: u(1);
+  margin-top: u(2);
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: u(6);
+}
+
+.price {
+  font-size: u(14.5);
+  font-weight: 800;
+  color: var(--text);
+}
+
+.badge {
+  padding: u(2) u(5);
+  border-radius: u(5);
+  background: var(--gold);
+  font-size: u(9.5);
+  font-weight: 800;
+  color: var(--gold-surface);
+}
+
+.oldPrice {
+  font-size: u(11);
+  font-weight: 600;
+  color: var(--text-faint);
+  text-decoration: line-through;
+}
+
+// ── Заказы ───────────────────────────────────────────────
+.order {
+  display: flex;
+  flex-direction: column;
+  gap: u(11);
+  padding: u(14);
+  border-radius: u(20);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+}
+
+.orderHead {
+  display: flex;
+  align-items: center;
+  gap: u(9);
+}
+
+.status {
+  padding: u(4) u(9);
+  border-radius: u(9);
+  font-size: u(11);
+  font-weight: 800;
+}
+
+.ok {
+  background: var(--accent-surface);
+  color: var(--accent-text);
+}
+
+.wait {
+  background: oklch(0.85 0.16 90 / 0.18);
+  color: oklch(0.88 0.13 90);
+}
+
+.info {
+  background: oklch(0.62 0.19 258 / 0.18);
+  color: oklch(0.82 0.13 258);
+}
+
+.fail {
+  background: oklch(0.6 0.2 25 / 0.16);
+  color: oklch(0.78 0.16 25);
+}
+
+.orderNumber {
+  margin-left: auto;
+  font-size: u(11.5);
+  color: var(--text-muted);
+}
+
+.orderRow {
+  display: flex;
+  align-items: center;
+  gap: u(12);
+}
+
+// У позиций заказа нет картинки товара — сервер её не хранит. Вместо пустого
+// прямоугольника ставим первую букву названия, у Steam — его «S».
+.orderCover {
+  width: u(52);
+  height: u(66);
+  flex: none;
+  border-radius: u(11);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(150deg, oklch(0.32 0.04 280), oklch(0.19 0.02 264));
+  font-size: u(19);
+  font-weight: 800;
+  color: oklch(0.85 0.02 264);
+}
+
+.steamCover {
+  background: oklch(0.26 0.06 250);
+  color: oklch(0.85 0.08 250);
 }
 
 .orderBody {
@@ -89,7 +312,7 @@
   font-size: u(13.5);
   font-weight: 700;
   line-height: 1.3;
-  color: var(--text-secondary);
+  color: var(--text);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -101,116 +324,25 @@
   color: var(--text-muted);
 }
 
-.status {
+.orderTotal {
   flex: none;
-  padding: u(4) u(9);
-  border-radius: u(9);
-  font-size: u(11);
-  font-weight: 700;
-}
-
-.ok {
-  background: var(--accent-surface);
-  color: var(--accent-text);
-}
-
-.wait {
-  background: var(--surface-3);
-  color: var(--text-secondary);
-}
-
-.fail {
-  background: oklch(0.6 0.2 25 / 0.16);
-  color: oklch(0.78 0.16 25);
-}
-
-.cover {
-  width: u(46);
-  height: u(60);
-  flex: none;
-  border-radius: u(10);
-  background: var(--surface-2) center / cover no-repeat;
-}
-
-.favoriteBody {
-  display: flex;
-  flex-direction: column;
-  gap: u(3);
-  flex: 1;
-  min-width: 0;
-}
-
-.favoriteName {
-  font-size: u(13.5);
-  font-weight: 700;
-  line-height: 1.3;
-  color: var(--text-secondary);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.favoritePrices {
-  display: flex;
-  align-items: baseline;
-  gap: u(7);
-}
-
-.price {
   font-size: u(14);
   font-weight: 800;
   color: var(--text);
 }
 
-.oldPrice {
-  font-size: u(11.5);
-  font-weight: 600;
-  color: var(--text-faint);
-  text-decoration: line-through;
+.pay {
+  height: u(42);
+  border-radius: u(13);
+  background: linear-gradient(120deg, var(--accent), var(--accent-hover));
+  font-size: u(13.5);
+  font-weight: 800;
+  color: var(--accent-contrast);
 }
 
-.remove {
-  width: u(28);
-  height: u(28);
-  flex: none;
-  border-radius: u(9);
-  background: var(--surface-2);
-  font-size: u(12);
-  color: var(--text-muted);
-}
-
-.remove:active {
-  background: var(--surface-3);
-}
-
-.empty {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: u(12);
-  padding: u(28) 0;
-}
-
-.emptyText {
-  margin: 0;
-  font-size: var(--fs-md);
-  color: var(--text-muted);
-}
-
-.retry {
-  height: u(38);
-  padding: 0 u(16);
-  border-radius: u(12);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  font-size: u(13);
-  font-weight: 700;
-  color: var(--text-secondary);
-}
-
-.skeletonRow {
-  height: u(74);
+// ── Прелоадер ────────────────────────────────────────────
+.skeletonCard {
+  height: u(110);
   border-radius: u(18);
 }
 

@@ -1,8 +1,11 @@
 import React from 'react';
+import {useNavigate} from 'react-router-dom';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
+import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import style from './Stub.module.scss';
 
-export default function Stub({title, text}) {
+export default function Stub({title, text, icon = '🛠'}) {
+    const navigate = useNavigate();
     const {contentSafeAreaInset} = useAppInsets();
 
     return (
@@ -10,9 +13,13 @@ export default function Stub({title, text}) {
             className={style.screen}
             style={{paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`}}
         >
-            <div className={style.badge}>Раздел в разработке</div>
-            <h1 className={style.title}>{title}</h1>
-            <p className={style.text}>{text}</p>
+            <EmptyState
+                icon={icon}
+                title={title}
+                text={text}
+                actionLabel="На главную"
+                onAction={() => navigate('/main')}
+            />
         </div>
     );
 }

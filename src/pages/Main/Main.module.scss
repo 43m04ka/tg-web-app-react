@@ -1,12 +1,13 @@
+@import '../../app/styles/units';
+
 .screen {
   height: 100%;
   overflow-y: auto;
   overscroll-behavior-y: contain;
-  padding-bottom: var(--space-6);
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: var(--space-6);
+  gap: u(24);
   background: var(--bg-gradient);
   animation: fade 225ms var(--ease-out) backwards;
 }
@@ -29,6 +30,10 @@
 
 .screen > *:nth-child(4) {
   animation-delay: 145ms;
+}
+
+.screen > *:nth-child(n + 5) {
+  animation-delay: 180ms;
 }
 
 @keyframes fade {
@@ -58,48 +63,32 @@
   }
 }
 
-.intro {
+.search {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-4);
-  padding: 0 var(--space-5);
+  align-items: center;
+  justify-content: flex-start;
+  gap: u(10);
+  margin: 0 u(20);
+  padding: u(11) u(14);
+  border-radius: u(15);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
 }
 
-.badge {
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-full);
-  background: var(--accent-surface);
-  color: var(--accent-text);
-  font-size: var(--fs-2xs);
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+.searchIcon {
+  width: u(15);
+  height: u(15);
+  flex: none;
 }
 
-.title {
-  font-size: 24px;
-  font-weight: var(--fw-bold);
-  letter-spacing: -0.3px;
-  color: var(--text);
+.searchText {
+  font-size: u(14);
+  font-weight: 500;
 }
 
-.text {
+.empty {
+  padding: 0 u(20);
   font-size: var(--fs-md);
   color: var(--text-muted);
-  line-height: 1.5;
-}
-
-.button {
-  height: 46px;
-  padding: 0 var(--space-5);
-  border-radius: var(--radius-lg);
-  background: var(--accent);
-  color: var(--accent-contrast);
-  font-size: var(--fs-lg);
-  font-weight: var(--fw-bold);
-}
-
-.button:hover {
-  background: var(--accent-hover);
 }

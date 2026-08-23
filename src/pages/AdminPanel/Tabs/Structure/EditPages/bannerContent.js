@@ -26,14 +26,22 @@ export const discountPercent = (price, oldPrice) => {
     return Math.round((1 - now / before) * 100);
 };
 
-// Парсер кладёт дату акции строкой в разных видах: ISO, dd.mm.yyyy и просто мусор.
+// Парсер кладёт дату акции строкой с epoch-миллисекундами («1787785140000»),
+// но поле текстовое, так что в старых записях встречается и обычная дата.
 // Что не разобралось — показываем как есть, лишь бы админ видел исходное значение.
 export const formatPromoDate = (value) => {
     if (!value) return '';
 
-    const iso = Date.parse(value);
-    if (!Number.isNaN(iso)) {
-        return new Date(iso).toLocaleDateString('ru-RU', {day: '2-digit', month: '2-digit', year: '2-digit'});
+    const asNumber = Number(value);
+    const parsed = Number.isFinite(asNumber) && String(value).trim() !== ''
+        ? asNumber
+        : Date.parse(value);
+
+    if (Number.isFinite(parsed)) {
+        const date = new Date(parsed);
+        if (!Number.isNaN(date.getTime())) {
+            return date.toLocaleDateString('ru-RU', {day: '2-digit', month: '2-digit', year: '2-digit'});
+        }
     }
 
     return String(value);

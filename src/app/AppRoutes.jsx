@@ -36,6 +36,22 @@ export default function AppRoutes() {
                 <Route path="/" element={<SelectPlatform/>}/>
                 <Route path="/main" element={<RequirePage><Main/></RequirePage>}/>
                 <Route
+                    path="/catalog/*"
+                    element={
+                        <RequirePage>
+                            <Stub title="Каталог" text="Список товаров каталога появится на следующем этапе редизайна."/>
+                        </RequirePage>
+                    }
+                />
+                <Route
+                    path="/card/:id"
+                    element={
+                        <RequirePage>
+                            <Stub title="Карточка товара" text="Карточка товара появится на следующем этапе редизайна."/>
+                        </RequirePage>
+                    }
+                />
+                <Route
                     path="/search"
                     element={
                         <RequirePage>

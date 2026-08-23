@@ -1,40 +1,71 @@
-import React from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useSessionStore} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
+import {hapticImpact} from '../../shared/lib/haptic';
 import BannerCarousel from './BannerCarousel';
+import CatalogSection from './CatalogSection';
+import CatalogSkeleton from './CatalogSkeleton';
 import {selectPageBanners} from './bannerFormat';
+import {buildSections} from './catalogSections';
 import style from './Main.module.scss';
 
 export default function Main() {
     const navigate = useNavigate();
-    const {contentSafeAreaInset} = useAppInsets();
+    const {contentSafeAreaInset, safeAreaInset} = useAppInsets();
 
     const pageId = useSessionStore((state) => state.pageId);
-    const pages = useStructureStore((state) => state.pages);
     const banners = useStructureStore((state) => state.banners);
-    const page = pages?.find((candidate) => candidate.id === pageId);
+    const structureBlocks = useStructureStore((state) => state.structureBlocks);
+    const catalogs = useStructureStore((state) => state.catalogs);
+    const mainPageProducts = useStructureStore((state) => state.mainPageProducts);
+
+    const sections = useMemo(
+        () => buildSections({structureBlocks, catalogs, mainPageProducts, pageId}),
+        [structureBlocks, catalogs, mainPageProducts, pageId]
+    );
+
+    const openCatalog = useCallback((path) => {
+        hapticImpact('light');
+        navigate(`/catalog/${String(path || '').replace(/^\//, '')}`);
+    }, [navigate]);
+
+    const openProduct = useCallback((product) => {
+        hapticImpact('light');
+        navigate(`/card/${product.id}`);
+    }, [navigate]);
 
     return (
         <div
             className={style.screen}
             style={{
-                paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`
+                paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`,
+                paddingBottom: `calc(${safeAreaInset.bottom}px + 24 * var(--u))`
             }}
         >
+            <button type="button" className={style.search} onClick={() => navigate('/search')}>
+                <svg className={style.searchIcon} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="10.6" cy="10.6" r="6.7" stroke="currentColor" strokeWidth="1.9"/>
+                    <path d="m15.6 15.6 5 5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round"/>
+                </svg>
+                <span className={style.searchText}>Поиск игры, подписки, доната</span>
+            </button>
+
             <BannerCarousel items={selectPageBanners(banners, pageId)}/>
 
-            <div className={style.intro}>
-                <div className={style.badge}>Раздел в разработке</div>
-                <h1 className={style.title}>{page?.title || 'Каталог'}</h1>
-                <p className={style.text}>
-                    Витрина выбрана. Каталог, карточка товара и корзина появятся здесь на следующих этапах редизайна.
-                </p>
-                <button type="button" className={style.button} onClick={() => navigate('/')}>
-                    Сменить витрину
-                </button>
-            </div>
+            {sections === null ? (
+                <CatalogSkeleton/>
+            ) : sections.length === 0 ? (
+                <p className={style.empty}>У этой витрины пока нет разделов</p>
+            ) : sections.map((section) => (
+                <CatalogSection
+                    key={section.block.id}
+                    section={section}
+                    onOpenCatalog={openCatalog}
+                    onOpenProduct={openProduct}
+                />
+            ))}
         </div>
     );
 }

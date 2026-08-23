@@ -12,15 +12,26 @@ export const discountPercent = (price, oldPrice) => {
     return Math.round((1 - now / before) * 100);
 };
 
-// Дата акции приходит из парсера строкой в разных видах. Что не разобралось —
-// не показываем вовсе: на баннере строка вида «2026-11-19T00:00:00Z» выглядит браком.
+// Парсер кладёт дату акции строкой с epoch-миллисекундами («1787785140000»),
+// но поле текстовое, так что в старых записях встречается и обычная дата.
+// Что не разобралось — не показываем вовсе: сырая строка на баннере выглядит браком.
+export const toPromoDate = (value) => {
+    if (!value) return null;
+
+    const asNumber = Number(value);
+    const parsed = Number.isFinite(asNumber) && String(value).trim() !== ''
+        ? asNumber
+        : Date.parse(value);
+
+    if (!Number.isFinite(parsed)) return null;
+
+    const date = new Date(parsed);
+    return Number.isNaN(date.getTime()) ? null : date;
+};
+
 export const formatPromoDate = (value) => {
-    if (!value) return '';
-
-    const parsed = Date.parse(value);
-    if (Number.isNaN(parsed)) return '';
-
-    return new Date(parsed).toLocaleDateString('ru-RU', {day: '2-digit', month: '2-digit'});
+    const date = toPromoDate(value);
+    return date ? date.toLocaleDateString('ru-RU', {day: '2-digit', month: '2-digit'}) : '';
 };
 
 export const selectPageBanners = (banners, pageId) =>

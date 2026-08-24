@@ -66,24 +66,32 @@
 .back {
   display: flex;
   align-items: center;
-  gap: u(6);
+  justify-content: center;
+  gap: u(5);
   flex: none;
-  padding: u(7) u(12) u(7) u(9);
+  height: u(34);
+  padding: 0 u(13) 0 u(10);
   border-radius: u(12);
   background: var(--surface-2);
   border: 1px solid var(--border);
   font-size: u(12.5);
   font-weight: 700;
+  line-height: 1;
   color: var(--text-secondary);
+}
+
+.back svg {
+  width: u(14);
+  height: u(14);
+  flex: none;
+}
+
+.back span {
+  line-height: 1;
 }
 
 .back:active {
   background: var(--surface-3);
-}
-
-.backChevron {
-  font-size: u(15);
-  line-height: 1;
 }
 
 .title {
@@ -133,25 +141,32 @@
 // ── Избранное ────────────────────────────────────────────
 .favorite {
   display: flex;
-  gap: u(12);
+  align-items: stretch;
+  gap: u(13);
   padding: u(12);
-  border-radius: u(18);
+  border-radius: u(20);
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
+  transition: background-color var(--duration-base) var(--ease-out);
+}
+
+.favorite:active {
+  background: var(--surface-2);
 }
 
 .cover {
-  width: u(66);
-  height: u(86);
+  width: u(74);
+  height: u(98);
   flex: none;
-  border-radius: u(12);
+  border-radius: u(14);
   background: linear-gradient(150deg, oklch(0.3 0.03 264), oklch(0.19 0.015 264)) center / cover no-repeat;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
 }
 
 .favoriteBody {
   display: flex;
   flex-direction: column;
-  gap: u(5);
   flex: 1;
   min-width: 0;
 }
@@ -159,15 +174,16 @@
 .favoriteTop {
   display: flex;
   align-items: flex-start;
-  gap: u(8);
+  gap: u(6);
 }
 
 .favoriteName {
   flex: 1;
-  font-size: u(13.5);
+  font-size: u(14);
   font-weight: 700;
   line-height: 1.3;
   color: var(--text);
+  cursor: pointer;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -176,48 +192,64 @@
 
 .heart {
   flex: none;
-  width: u(24);
-  height: u(24);
-  font-size: u(15);
-  line-height: 1;
-  color: oklch(0.7 0.16 25);
+  width: u(38);
+  height: u(38);
+  margin: u(-6) u(-6) 0 0;
+  color: oklch(0.68 0.19 24);
+  transition: color var(--duration-base) var(--ease-out),
+              opacity var(--duration-base) var(--ease-out);
+}
+
+.heart svg {
+  width: u(22);
+  height: u(22);
+}
+
+.heart:disabled {
+  opacity: 0.4;
 }
 
 .favoriteMeta {
+  margin-top: u(3);
   font-size: u(11.5);
   color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .favoritePrices {
   display: flex;
-  flex-direction: column;
-  gap: u(1);
-  margin-top: u(2);
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: u(4) u(7);
+  margin-top: auto;
+  padding-top: u(8);
 }
 
 .priceRow {
   display: flex;
   align-items: baseline;
-  gap: u(6);
+  gap: u(7);
 }
 
 .price {
-  font-size: u(14.5);
+  font-size: u(16);
   font-weight: 800;
   color: var(--text);
 }
 
 .badge {
-  padding: u(2) u(5);
-  border-radius: u(5);
-  background: var(--gold);
-  font-size: u(9.5);
+  padding: u(3) u(6);
+  border-radius: u(7);
+  background: oklch(0.62 0.19 24);
+  font-size: u(10);
   font-weight: 800;
-  color: var(--gold-surface);
+  color: oklch(0.99 0.004 25);
 }
 
 .oldPrice {
-  font-size: u(11);
+  font-size: u(12);
   font-weight: 600;
   color: var(--text-faint);
   text-decoration: line-through;

@@ -12,7 +12,7 @@ import {getTelegramObject} from '../../shared/lib/telegram';
 import {shareText, productLink} from './productView';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import ProductCard from '../Main/ProductCard';
-import BackCircle from './BackCircle';
+import BackPill from '../../shared/ui/BackPill/BackPill';
 import ProductChips from './ProductChips';
 import ProductShare from './ProductShare';
 import {discountPercent} from '../Main/catalogSections';
@@ -28,6 +28,7 @@ import ProductSkeleton from './ProductSkeleton';
 import ProductVideo from './ProductVideo';
 import StarRating from './StarRating';
 import {useProduct, useRecommendations} from './useProduct';
+import {recallProduct} from './productCache';
 import {
     buildChips,
     buildSpecs,
@@ -56,7 +57,9 @@ export default function Product() {
     const mainPageProducts = useStructureStore((state) => state.mainPageProducts);
 
     const seed = useMemo(
-        () => (mainPageProducts || []).find((item) => item.id === productId) || null,
+        () => recallProduct(productId)
+            || (mainPageProducts || []).find((item) => item.id === productId)
+            || null,
         [mainPageProducts, productId]
     );
 
@@ -74,6 +77,7 @@ export default function Product() {
     const screenRef = useRef(null);
     const heroRef = useRef(null);
     const frameRef = useRef(0);
+    const keepScrollRef = useRef(false);
 
     const [selectedAddonIds, setSelectedAddonIds] = useState(() => new Set());
     const [isAdding, setIsAdding] = useState(false);
@@ -95,6 +99,12 @@ export default function Product() {
     useEffect(() => {
         setSelectedAddonIds(new Set());
         setIsVideoOpen(false);
+
+        if (keepScrollRef.current) {
+            keepScrollRef.current = false;
+            return;
+        }
+
         if (screenRef.current) screenRef.current.scrollTop = 0;
     }, [productId]);
 
@@ -157,6 +167,13 @@ export default function Product() {
         if (!next || next.id === productId) return;
         hapticImpact('light');
         navigate(`/card/${next.id}`);
+    }, [navigate, productId]);
+
+    const selectEdition = useCallback((next) => {
+        if (!next || next.id === productId) return;
+        hapticSelection();
+        keepScrollRef.current = true;
+        navigate(`/card/${next.id}`, {replace: true});
     }, [navigate, productId]);
 
     const toggleAddon = useCallback((addon) => {
@@ -224,8 +241,8 @@ export default function Product() {
 
     const topPadding = contentSafeAreaInset.top;
 
-    const floatingBack = (
-        <BackCircle
+    const floatingBack = hasNativeBack ? null : (
+        <BackPill
             className={style.floatingBack}
             style={{top: `calc(${topPadding}px + 10 * var(--u))`}}
             onClick={goBack}
@@ -292,7 +309,7 @@ export default function Product() {
 
                 <ProductChips chips={chips}/>
 
-                <ProductEditions editions={editions} activeId={productId} onSelect={openProduct}/>
+                <ProductEditions editions={editions} activeId={productId} onSelect={selectEdition}/>
 
                 <ProductAddons addons={addons} selectedIds={selectedAddonIds} onToggle={toggleAddon}/>
 

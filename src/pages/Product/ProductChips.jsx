@@ -37,11 +37,16 @@ export default function ProductChips({chips}) {
 
                 {isCollapsible ? (
                     <button type="button" className={`${style.chip} ${style.chipToggle}`} onClick={toggle}>
-                        {isOpen ? 'Свернуть' : `Ещё ${chips.length - VISIBLE_LIMIT}`}
-                        <span className={`${style.chipChevron} ${isOpen ? style.chipChevronUp : ''}`}
-                              aria-hidden="true">
-                            ⌄
-                        </span>
+                        <span>{isOpen ? 'Свернуть' : `Ещё ${chips.length - VISIBLE_LIMIT}`}</span>
+                        <svg
+                            className={`${style.chipChevron} ${isOpen ? style.chipChevronUp : ''}`}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            aria-hidden="true"
+                        >
+                            <path d="m6 9.5 6 6 6-6" stroke="currentColor" strokeWidth="2.4"
+                                  strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
                     </button>
                 ) : null}
             </div>

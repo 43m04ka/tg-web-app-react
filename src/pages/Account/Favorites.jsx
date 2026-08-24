@@ -115,7 +115,12 @@ export default function Favorites() {
                                                 disabled={removing === product.id}
                                                 aria-label="Убрать из избранного"
                                                 onClick={() => remove(product)}>
-                                            ♥
+                                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                                <path
+                                                    d="M12 20.4 4.6 13a4.8 4.8 0 0 1 6.8-6.8l.6.6.6-.6A4.8 4.8 0 0 1 19.4 13Z"
+                                                    fill="currentColor"
+                                                />
+                                            </svg>
                                         </button>
                                     </span>
 

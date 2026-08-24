@@ -1,5 +1,6 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {fetchProduct, fetchRecommendations} from '../../shared/api/product';
+import {rememberProduct} from './productCache';
 
 const RECOMMENDATION_LIMIT = 10;
 
@@ -33,6 +34,7 @@ export function useProduct(productId, seed) {
                     return;
                 }
 
+                rememberProduct(data);
                 setProduct(data);
             })
             .catch((loadError) => {

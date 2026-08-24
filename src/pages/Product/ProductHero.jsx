@@ -1,4 +1,5 @@
 import React, {forwardRef, useState} from 'react';
+import BackPill from '../../shared/ui/BackPill/BackPill';
 import {formatPrice} from '../Main/catalogSections';
 import {hasValue} from './productView';
 import style from './Product.module.scss';
@@ -29,15 +30,11 @@ const ProductHero = forwardRef(function ProductHero(
             <div className={style.heroShade} aria-hidden="true"/>
 
             {showBack ? (
-                <button
-                    type="button"
+                <BackPill
                     className={style.heroBack}
                     style={{top: `calc(${topInset}px + 10 * var(--u))`}}
                     onClick={onBack}
-                >
-                    <span className={style.heroBackChevron} aria-hidden="true">‹</span>
-                    <span>Назад</span>
-                </button>
+                />
             ) : null}
 
             {hasValue(product.videoUrl) ? (

@@ -81,7 +81,10 @@ export function useRecommendations(pageId, excludedIds) {
             if (controller.signal.aborted) return;
 
             const list = Array.isArray(result) ? result : [];
-            useProductStore.getState().rememberShelf(pageId, list);
+            const store = useProductStore.getState();
+
+            store.rememberShelf(pageId, list);
+            store.rememberPreviews(list);
             setItems(list);
         });
 

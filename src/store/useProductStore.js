@@ -2,7 +2,7 @@ import {create} from 'zustand';
 import {useSessionStore} from './useSessionStore';
 
 const FRESH_MS = 5 * 60 * 1000;
-const LIMIT = 60;
+const LIMIT = 200;
 
 const byPrice = (a, b) => Number(a.price) - Number(b.price);
 
@@ -10,12 +10,14 @@ const isUsable = (item) => Boolean(item && item.id);
 
 const entryOf = (product, isFull) => ({product, isFull, savedAt: Date.now()});
 
+// Превью весит копейки, а полная карточка — это сэкономленный запрос,
+// поэтому при переполнении первыми уходят превью, а не давно открытые товары.
 const prune = (entries) => {
     const ids = Object.keys(entries);
     if (ids.length <= LIMIT) return entries;
 
     const kept = ids
-        .sort((a, b) => entries[b].savedAt - entries[a].savedAt)
+        .sort((a, b) => (entries[b].isFull - entries[a].isFull) || (entries[b].savedAt - entries[a].savedAt))
         .slice(0, LIMIT);
 
     return kept.reduce((next, id) => {
@@ -85,6 +87,23 @@ export const useProductStore = create((set, get) => ({
     rememberPreview: (product) => {
         if (!isUsable(product) || get().entries[product.id]) return;
         set((state) => ({entries: prune({...state.entries, [product.id]: entryOf(product, false)})}));
+    },
+
+    rememberPreviews: (list) => {
+        if (!Array.isArray(list) || list.length === 0) return;
+
+        set((state) => {
+            const entries = {...state.entries};
+            let isChanged = false;
+
+            list.filter(isUsable).forEach((product) => {
+                if (entries[product.id]) return;
+                entries[product.id] = entryOf(product, false);
+                isChanged = true;
+            });
+
+            return isChanged ? {entries: prune(entries)} : state;
+        });
     },
 
     forget: (productId) => set((state) => {

@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
 import {useInfiniteList} from '../../shared/hooks/useInfiniteList';
@@ -6,6 +6,7 @@ import {hapticImpact} from '../../shared/lib/haptic';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import {fetchFavorites} from '../../shared/api/account';
 import {useFavoriteStore} from '../../store/useFavoriteStore';
+import {useProductStore} from '../../store/useProductStore';
 import {useAccountList} from './useAccountList';
 import PageHeader from './PageHeader';
 import {formatMoney} from './orderStatus';
@@ -28,8 +29,13 @@ export default function Favorites() {
     const {items, error, reload, userId, setItems} = useAccountList(fetchFavorites);
 
     const setFavorite = useFavoriteStore((state) => state.setFavorite);
+    const rememberPreviews = useProductStore((state) => state.rememberPreviews);
 
     const [removing, setRemoving] = useState(null);
+
+    useEffect(() => {
+        rememberPreviews(items);
+    }, [items, rememberPreviews]);
 
     const remove = useCallback(async (product) => {
         if (!userId) return;

@@ -1,27 +1,40 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {fetchProduct, fetchRecommendations} from '../../shared/api/product';
-import {rememberProduct} from './productCache';
+import {useProductStore, selectProductEntry} from '../../store/useProductStore';
 
 const RECOMMENDATION_LIMIT = 10;
 
-export function useProduct(productId, seed) {
-    const [product, setProduct] = useState(seed || null);
+export function useProduct(productId, preview) {
+    const entry = useProductStore(selectProductEntry(productId));
+    const remember = useProductStore((state) => state.remember);
+    const rememberPreview = useProductStore((state) => state.rememberPreview);
+
     const [error, setError] = useState(null);
     const [reloadToken, setReloadToken] = useState(0);
 
-    const seedRef = useRef(seed);
-    seedRef.current = seed;
+    const isForcedRef = useRef(false);
 
-    const reload = useCallback(() => setReloadToken((token) => token + 1), []);
+    const reload = useCallback(() => {
+        isForcedRef.current = true;
+        setReloadToken((token) => token + 1);
+    }, []);
 
     useEffect(() => {
-        setProduct(seedRef.current || null);
+        if (preview) rememberPreview(preview);
+    }, [preview, rememberPreview]);
+
+    useEffect(() => {
         setError(null);
 
         if (!Number.isFinite(productId)) {
             setError(new Error('Некорректная ссылка на товар'));
             return undefined;
         }
+
+        const isForced = isForcedRef.current;
+        isForcedRef.current = false;
+
+        if (!isForced && useProductStore.getState().isFresh(productId)) return undefined;
 
         const controller = new AbortController();
 
@@ -30,36 +43,46 @@ export function useProduct(productId, seed) {
                 if (controller.signal.aborted) return;
 
                 if (!data || !data.id) {
-                    setError(new Error('Товар не найден'));
+                    if (!useProductStore.getState().entries[productId]) {
+                        setError(new Error('Товар не найден'));
+                    }
                     return;
                 }
 
-                rememberProduct(data);
-                setProduct(data);
+                remember(data, true);
             })
             .catch((loadError) => {
                 if (controller.signal.aborted) return;
                 console.error('[product]', loadError.message);
-                if (!seedRef.current) setError(loadError);
+                if (!useProductStore.getState().entries[productId]) setError(loadError);
             });
 
         return () => controller.abort();
-    }, [productId, reloadToken]);
+    }, [productId, reloadToken, remember]);
 
-    return {product, error, reload};
+    return {product: entry?.product || preview || null, error, reload};
 }
 
 export function useRecommendations(pageId, excludedIds) {
-    const [items, setItems] = useState(null);
+    const [items, setItems] = useState(() => useProductStore.getState().recallShelf(pageId));
 
     useEffect(() => {
         if (pageId === null || pageId === undefined) return undefined;
+
+        const known = useProductStore.getState().recallShelf(pageId);
+        if (known) {
+            setItems(known);
+            return undefined;
+        }
 
         const controller = new AbortController();
 
         fetchRecommendations(pageId, controller.signal).then((result) => {
             if (controller.signal.aborted) return;
-            setItems(Array.isArray(result) ? result : []);
+
+            const list = Array.isArray(result) ? result : [];
+            useProductStore.getState().rememberShelf(pageId, list);
+            setItems(list);
         });
 
         return () => controller.abort();

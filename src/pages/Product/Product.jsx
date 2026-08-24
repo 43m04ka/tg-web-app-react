@@ -28,7 +28,6 @@ import ProductSkeleton from './ProductSkeleton';
 import ProductVideo from './ProductVideo';
 import StarRating from './StarRating';
 import {useProduct, useRecommendations} from './useProduct';
-import {recallProduct} from './productCache';
 import {
     buildChips,
     buildSpecs,
@@ -56,14 +55,12 @@ export default function Product() {
     const catalogs = useStructureStore((state) => state.catalogs);
     const mainPageProducts = useStructureStore((state) => state.mainPageProducts);
 
-    const seed = useMemo(
-        () => recallProduct(productId)
-            || (mainPageProducts || []).find((item) => item.id === productId)
-            || null,
+    const preview = useMemo(
+        () => (mainPageProducts || []).find((item) => item.id === productId) || null,
         [mainPageProducts, productId]
     );
 
-    const {product, error, reload} = useProduct(productId, seed);
+    const {product, error, reload} = useProduct(productId, preview);
 
     const loadCart = useCartStore((state) => state.load);
     const addToCart = useCartStore((state) => state.add);

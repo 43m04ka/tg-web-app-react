@@ -17,6 +17,8 @@ import style from './App.module.scss';
 const AdminAuth = lazy(() => import('../pages/AdminPanel/AP_Authentication'));
 const AdminPanel = lazy(() => import('../pages/AdminPanel/AdminPanel'));
 
+const hasOwnBottomBar = (pathname) => pathname.startsWith('/card/');
+
 export default function App() {
     const {isReady} = useBootstrap();
     const {isMaintenance, maintenanceUntil} = useMaintenance();
@@ -50,7 +52,7 @@ export default function App() {
             <main className={style.content}>
                 <AppRoutes/>
             </main>
-            {pathname === '/' && pageId === null ? null : <NavBar/>}
+            {(pathname === '/' && pageId === null) || hasOwnBottomBar(pathname) ? null : <NavBar/>}
         </div>
     );
 }

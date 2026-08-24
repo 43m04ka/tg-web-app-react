@@ -6,6 +6,9 @@ export const fetchOrderHistory = (userId, signal) =>
 export const fetchFavorites = (userId, signal) =>
     requestResult(`/api/favorite/allFavoriteProducts/${userId}`, {signal, retries: 1});
 
+export const fetchFavoriteIds = (userId, signal) =>
+    requestResult(`/api/favorite/previewFavoriteProducts/${userId}`, {signal, retries: 1});
+
 export const removeFavorite = (userId, cardId, signal) =>
     request('/api/favorite/deleteProduct', {
         method: 'POST',

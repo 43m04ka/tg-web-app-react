@@ -3,6 +3,7 @@ import {Navigate, Route, Routes, useLocation} from 'react-router-dom';
 import SelectPlatform from '../pages/SelectPlatform/SelectPlatform';
 import Main from '../pages/Main/Main';
 import More from '../pages/More/More';
+import Product from '../pages/Product/Product';
 import Favorites from '../pages/Account/Favorites';
 import OrderHistory from '../pages/Account/OrderHistory';
 import Stub from '../pages/Stub/Stub';
@@ -46,14 +47,7 @@ export default function AppRoutes() {
                         </RequirePage>
                     }
                 />
-                <Route
-                    path="/card/:id"
-                    element={
-                        <RequirePage>
-                            <Stub title="Карточка товара" text="Карточка товара появится на следующем этапе редизайна."/>
-                        </RequirePage>
-                    }
-                />
+                <Route path="/card/:id" element={<RequirePage><Product/></RequirePage>}/>
                 <Route
                     path="/search"
                     element={

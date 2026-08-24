@@ -4,7 +4,8 @@ import {useAppInsets} from '../../shared/hooks/useAppInsets';
 import {useInfiniteList} from '../../shared/hooks/useInfiniteList';
 import {hapticImpact} from '../../shared/lib/haptic';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
-import {fetchFavorites, removeFavorite} from '../../shared/api/account';
+import {fetchFavorites} from '../../shared/api/account';
+import {useFavoriteStore} from '../../store/useFavoriteStore';
 import {useAccountList} from './useAccountList';
 import PageHeader from './PageHeader';
 import {formatMoney} from './orderStatus';
@@ -26,6 +27,8 @@ export default function Favorites() {
     const {contentSafeAreaInset, safeAreaInset} = useAppInsets();
     const {items, error, reload, userId, setItems} = useAccountList(fetchFavorites);
 
+    const setFavorite = useFavoriteStore((state) => state.setFavorite);
+
     const [removing, setRemoving] = useState(null);
 
     const remove = useCallback(async (product) => {
@@ -39,14 +42,11 @@ export default function Favorites() {
         setItems((prev) => (prev || []).filter((item) => item.id !== product.id));
 
         try {
-            await removeFavorite(userId, product.id);
-        } catch (removeError) {
-            console.error('[favorites] remove:', removeError.message);
-            reload();
+            if (!await setFavorite(userId, product.id, false)) reload();
         } finally {
             setRemoving(null);
         }
-    }, [userId, setItems, reload]);
+    }, [userId, setItems, setFavorite, reload]);
 
     const count = items?.length ?? 0;
 

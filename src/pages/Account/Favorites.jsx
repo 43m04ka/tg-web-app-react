@@ -1,6 +1,7 @@
 import React, {useCallback, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
+import {useInfiniteList} from '../../shared/hooks/useInfiniteList';
 import {hapticImpact} from '../../shared/lib/haptic';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import {fetchFavorites, removeFavorite} from '../../shared/api/account';
@@ -49,8 +50,11 @@ export default function Favorites() {
 
     const count = items?.length ?? 0;
 
+    const {visible, hasMore, rootRef, sentinelRef} = useInfiniteList(items);
+
     return (
         <div
+            ref={rootRef}
             className={style.screen}
             style={{
                 paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`,
@@ -87,7 +91,7 @@ export default function Favorites() {
                 />
             ) : (
                 <div className={style.list}>
-                    {items.map((product) => {
+                    {visible.map((product) => {
                         const percent = discountPercent(product.price, product.oldPrice);
                         const meta = [shortPlatform(product.platform), product.typeLabel, product.regionActivate]
                             .filter(Boolean)
@@ -130,6 +134,10 @@ export default function Favorites() {
                             </article>
                         );
                     })}
+
+                    {hasMore ? (
+                        <div ref={sentinelRef} className={`${style.skeletonCard} ${style.shimmer}`} aria-hidden="true"/>
+                    ) : null}
                 </div>
             )}
         </div>

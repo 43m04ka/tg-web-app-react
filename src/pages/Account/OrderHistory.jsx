@@ -1,12 +1,23 @@
 import React, {useMemo, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
+import {useInfiniteList} from '../../shared/hooks/useInfiniteList';
 import {hapticImpact} from '../../shared/lib/haptic';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import {fetchOrderHistory} from '../../shared/api/account';
 import {useAccountList} from './useAccountList';
 import PageHeader from './PageHeader';
-import {formatMoney, formatOrderDate, isOpenOrder, orderNumber, positionMeta, statusOf} from './orderStatus';
+import {
+    formatMoney,
+    formatOrderDate,
+    isOpenOrder,
+    isSteamOrder,
+    orderCoverLetter,
+    orderNumber,
+    orderTitle,
+    positionMeta,
+    statusOf
+} from './orderStatus';
 import style from './Account.module.scss';
 
 const SKELETONS = ['a', 'b', 'c'];
@@ -24,14 +35,17 @@ export default function OrderHistory() {
 
     const [filter, setFilter] = useState('all');
 
-    const visible = useMemo(() => {
+    const filtered = useMemo(() => {
         if (!items) return null;
         if (filter === 'all') return items;
         return items.filter((order) => (filter === 'open' ? isOpenOrder(order) : !isOpenOrder(order)));
     }, [items, filter]);
 
+    const {visible, hasMore, rootRef, sentinelRef} = useInfiniteList(filtered);
+
     return (
         <div
+            ref={rootRef}
             className={style.screen}
             style={{
                 paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`,
@@ -78,7 +92,7 @@ export default function OrderHistory() {
                     actionLabel="Перейти к играм"
                     onAction={() => navigate('/main')}
                 />
-            ) : visible.length === 0 ? (
+            ) : filtered.length === 0 ? (
                 <EmptyState
                     icon="🔎"
                     title={filter === 'open' ? 'Активных заказов нет' : 'Выполненных заказов нет'}
@@ -90,9 +104,7 @@ export default function OrderHistory() {
                 <div className={style.list}>
                     {visible.map((order) => {
                         const status = statusOf(order);
-                        const positions = order.positions || [];
-                        const first = positions[0];
-                        const isSteam = order.type === 'steam_topup';
+                        const isSteam = isSteamOrder(order);
 
                         return (
                             <article key={order.id} className={style.order}>
@@ -105,13 +117,11 @@ export default function OrderHistory() {
 
                                 <div className={style.orderRow}>
                                     <span className={`${style.orderCover} ${isSteam ? style.steamCover : ''}`}>
-                                        {isSteam ? 'S' : (first?.name || '?').slice(0, 1).toUpperCase()}
+                                        {orderCoverLetter(order)}
                                     </span>
 
                                     <span className={style.orderBody}>
-                                        <span className={style.orderTitle}>
-                                            {isSteam ? 'Пополнение Steam' : (first?.name || `Заказ ${orderNumber(order)}`)}
-                                        </span>
+                                        <span className={style.orderTitle}>{orderTitle(order)}</span>
                                         <span className={style.orderMeta}>{positionMeta(order)}</span>
                                     </span>
 
@@ -130,6 +140,10 @@ export default function OrderHistory() {
                             </article>
                         );
                     })}
+
+                    {hasMore ? (
+                        <div ref={sentinelRef} className={`${style.skeletonCard} ${style.shimmer}`} aria-hidden="true"/>
+                    ) : null}
                 </div>
             )}
         </div>

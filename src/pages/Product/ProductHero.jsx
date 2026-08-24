@@ -1,4 +1,4 @@
-import React, {forwardRef, useState} from 'react';
+import React, {forwardRef, useEffect, useState} from 'react';
 import BackPill from '../../shared/ui/BackPill/BackPill';
 import {formatPrice} from '../Main/catalogSections';
 import {hasValue} from './productView';
@@ -10,6 +10,8 @@ const ProductHero = forwardRef(function ProductHero(
 ) {
     const cover = product.backgroundUrl || product.image;
     const [isLoaded, setIsLoaded] = useState(false);
+
+    useEffect(() => setIsLoaded(false), [cover]);
 
     return (
         <div className={style.hero}>

@@ -12,6 +12,12 @@ import style from './AppRoutes.module.scss';
 
 const LEAVE_MS = 150;
 
+const PHASE = {
+    IDLE: 'idle',
+    LEAVING: 'leaving',
+    ENTERING: 'entering'
+};
+
 function RequirePage({children}) {
     const pageId = useSessionStore((state) => state.pageId);
     return pageId === null ? <Navigate to="/" replace/> : children;
@@ -20,22 +26,40 @@ function RequirePage({children}) {
 export default function AppRoutes() {
     const location = useLocation();
     const [shown, setShown] = useState(location);
-    const [isLeaving, setIsLeaving] = useState(false);
+    const [phase, setPhase] = useState(PHASE.IDLE);
 
     useEffect(() => {
-        if (location.pathname === shown.pathname) return;
+        if (location.pathname === shown.pathname) return undefined;
 
-        setIsLeaving(true);
+        setPhase(PHASE.LEAVING);
+
         const timerId = setTimeout(() => {
             setShown(location);
-            setIsLeaving(false);
+            setPhase(PHASE.ENTERING);
         }, LEAVE_MS);
 
         return () => clearTimeout(timerId);
     }, [location, shown]);
 
+    // Новую страницу надо один раз показать браузеру погашенной, иначе снятие
+    // класса попадает в тот же кадр, что и подмена содержимого, перехода не
+    // возникает и страница появляется рывком.
+    useEffect(() => {
+        if (phase !== PHASE.ENTERING) return undefined;
+
+        let inner = 0;
+        const outer = requestAnimationFrame(() => {
+            inner = requestAnimationFrame(() => setPhase(PHASE.IDLE));
+        });
+
+        return () => {
+            cancelAnimationFrame(outer);
+            cancelAnimationFrame(inner);
+        };
+    }, [phase, shown]);
+
     return (
-        <div className={`${style.stage} ${isLeaving ? style.leaving : ''}`}>
+        <div className={`${style.stage} ${style[phase]}`}>
             <Routes location={shown}>
                 <Route path="/" element={<SelectPlatform/>}/>
                 <Route path="/main" element={<RequirePage><Main/></RequirePage>}/>

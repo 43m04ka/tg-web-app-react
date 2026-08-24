@@ -11,8 +11,17 @@
   min-height: 0;
 }
 
-.leaving {
+.leaving,
+.entering {
   opacity: 0;
+}
+
+.entering {
+  transition: none;
+}
+
+.idle {
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {

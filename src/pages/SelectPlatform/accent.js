@@ -2,6 +2,8 @@ import {clamp, round, toOklch} from '../../shared/lib/oklch';
 
 const DEFAULT_ACCENT = '#c0553f';
 
+const GRADIENT_DARKEN = 0.85;
+
 export const accentStyle = (color) => {
     const source = toOklch(color) || toOklch(DEFAULT_ACCENT);
 
@@ -13,8 +15,11 @@ export const accentStyle = (color) => {
     const oklch = (lightness, chromaFactor, alpha) =>
         `oklch(${lightness} ${round(chroma * chromaFactor)} ${hue}${alpha ? ` / ${alpha}` : ''})`;
 
+    const gradientTop = round(topLightness * GRADIENT_DARKEN);
+    const gradientBottom = round(bottomLightness * GRADIENT_DARKEN);
+
     return {
-        '--card-gradient': `linear-gradient(120deg, ${oklch(topLightness, 0.86)} 0%, ${oklch(bottomLightness, 0.3)} 100%)`,
+        '--card-gradient': `linear-gradient(120deg, ${oklch(gradientTop, 0.86)} 0%, ${oklch(gradientBottom, 0.3)} 100%)`,
         '--card-ring': oklch(0.7, 0.9),
         '--card-badge': oklch(0.36, 0.6),
         '--card-border': oklch(0.66, 1, 0.32),

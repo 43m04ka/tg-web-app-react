@@ -1,30 +1,68 @@
-import React, {forwardRef} from 'react';
-import BackCircle from './BackCircle';
+import React, {forwardRef, useState} from 'react';
+import {formatPrice} from '../Main/catalogSections';
 import {hasValue} from './productView';
 import style from './Product.module.scss';
 
 const ProductHero = forwardRef(function ProductHero(
-    {product, topInset, discount, isFavorite, onBack, onToggleFavorite, onPlay},
+    {product, topInset, showBack, discount, promoUntil, isFavorite, onBack, onPlay, onToggleFavorite},
     ref
 ) {
     const cover = product.backgroundUrl || product.image;
+    const [isLoaded, setIsLoaded] = useState(false);
 
     return (
         <div className={style.hero}>
-            <div
-                ref={ref}
-                className={style.heroImage}
-                style={cover ? {backgroundImage: `url(${cover})`} : undefined}
-                aria-hidden="true"
-            />
+            <div className={`${style.heroPlaceholder} ${isLoaded ? style.heroPlaceholderHidden : style.shimmer}`}
+                 aria-hidden="true"/>
+
+            {cover ? (
+                <img
+                    ref={ref}
+                    className={`${style.heroImage} ${isLoaded ? style.heroImageShown : ''}`}
+                    src={cover}
+                    alt=""
+                    onLoad={() => setIsLoaded(true)}
+                    onError={() => setIsLoaded(true)}
+                />
+            ) : null}
+
             <div className={style.heroShade} aria-hidden="true"/>
 
-            <div className={style.heroBar} style={{top: `calc(${topInset}px + 10 * var(--u))`}}>
-                <BackCircle className={style.heroAction} onClick={onBack}/>
+            {showBack ? (
+                <button
+                    type="button"
+                    className={style.heroBack}
+                    style={{top: `calc(${topInset}px + 10 * var(--u))`}}
+                    onClick={onBack}
+                >
+                    <span className={style.heroBackChevron} aria-hidden="true">‹</span>
+                    <span>Назад</span>
+                </button>
+            ) : null}
+
+            {hasValue(product.videoUrl) ? (
+                <button type="button" className={style.heroPlay} onClick={onPlay} aria-label="Смотреть трейлер">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M9 6.5 18 12l-9 5.5Z" fill="currentColor"/>
+                    </svg>
+                </button>
+            ) : null}
+
+            <div className={style.heroFoot}>
+                {discount > 0 ? (
+                    <div className={style.promo}>
+                        <span className={style.promoBadge}>−{discount}%</span>
+                        <span className={style.promoText}>
+                            {promoUntil
+                                ? `Скидка действует до ${promoUntil}`
+                                : `Выгода ${formatPrice(Number(product.oldPrice) - Number(product.price))}`}
+                        </span>
+                    </div>
+                ) : <span/>}
 
                 <button
                     type="button"
-                    className={`${style.heroAction} ${isFavorite ? style.heroActionActive : ''}`}
+                    className={`${style.heart} ${isFavorite ? style.heartActive : ''}`}
                     onClick={onToggleFavorite}
                     aria-pressed={isFavorite}
                     aria-label={isFavorite ? 'Убрать из избранного' : 'В избранное'}
@@ -39,21 +77,6 @@ const ProductHero = forwardRef(function ProductHero(
                         />
                     </svg>
                 </button>
-            </div>
-
-            {hasValue(product.videoUrl) ? (
-                <button type="button" className={style.heroPlay} onClick={onPlay} aria-label="Смотреть трейлер">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M9 6.5 18 12l-9 5.5Z" fill="currentColor"/>
-                    </svg>
-                </button>
-            ) : null}
-
-            <div className={style.heroTags}>
-                {discount > 0 ? <span className={style.heroDiscount}>🔥 −{discount}%</span> : null}
-                {hasValue(product.regionActivate) ? (
-                    <span className={style.heroTag}>Регион: {product.regionActivate}</span>
-                ) : null}
             </div>
         </div>
     );

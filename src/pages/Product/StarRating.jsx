@@ -3,14 +3,10 @@ import style from './Product.module.scss';
 
 const STARS = [0, 1, 2, 3, 4];
 
-const formatCount = (count) => {
-    const number = Number(count);
-    if (!Number.isFinite(number) || number <= 0) return null;
-    return number.toLocaleString('ru-RU');
-};
-
 export default function StarRating({rating}) {
     const average = Number(rating?.averageRating);
+    const total = Number(rating?.totalRatingsCount);
+
     const [isFilled, setIsFilled] = useState(false);
 
     useEffect(() => {
@@ -19,8 +15,9 @@ export default function StarRating({rating}) {
     }, []);
 
     if (!Number.isFinite(average) || average <= 0) return null;
+    if (!Number.isFinite(total) || total <= 0) return null;
 
-    const count = formatCount(rating?.totalRatingsCount);
+    const count = total.toLocaleString('ru-RU');
 
     return (
         <div className={style.rating}>
@@ -42,7 +39,7 @@ export default function StarRating({rating}) {
             </span>
 
             <span className={style.ratingValue}>{average.toFixed(1)}</span>
-            {count ? <span className={style.ratingCount}>· {count} оценок</span> : null}
+            <span className={style.ratingCount}>· {count} оценок</span>
         </div>
     );
 }

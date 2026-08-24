@@ -3,6 +3,28 @@ import {useCarouselTrack} from '../../shared/hooks/useCarouselTrack';
 import {hapticImpact} from '../../shared/lib/haptic';
 import style from './Product.module.scss';
 
+function Shot({url, index, onOpen}) {
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    return (
+        <button
+            type="button"
+            className={`${style.shot} ${isLoaded ? '' : style.shimmer}`}
+            onClick={() => onOpen(index)}
+            aria-label={`Скриншот ${index + 1}`}
+        >
+            <img
+                className={`${style.shotImage} ${isLoaded ? style.shotImageShown : ''}`}
+                src={url}
+                alt=""
+                loading="lazy"
+                onLoad={() => setIsLoaded(true)}
+                onError={() => setIsLoaded(true)}
+            />
+        </button>
+    );
+}
+
 export default function ProductGallery({images}) {
     const [openedIndex, setOpenedIndex] = useState(null);
     const {trackRef, active, handleScroll, scrollToSlide} = useCarouselTrack();
@@ -35,14 +57,7 @@ export default function ProductGallery({images}) {
 
             <div className={style.shots}>
                 {images.map((url, index) => (
-                    <button
-                        key={url}
-                        type="button"
-                        className={style.shot}
-                        style={{backgroundImage: `url(${url})`}}
-                        onClick={() => open(index)}
-                        aria-label={`Скриншот ${index + 1}`}
-                    />
+                    <Shot key={url} url={url} index={index} onOpen={open}/>
                 ))}
             </div>
 

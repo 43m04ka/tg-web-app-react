@@ -5,12 +5,16 @@ import {useStructureStore} from '../../store/useStructureStore';
 import {useCartStore, selectCartCount} from '../../store/useCartStore';
 import {useFavoriteStore, selectIsFavorite} from '../../store/useFavoriteStore';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
+import {usePlatform} from '../../shared/hooks/usePlatform';
 import {useBackButton} from '../../shared/hooks/useBackButton';
 import {hapticImpact, hapticSelection} from '../../shared/lib/haptic';
 import {getTelegramObject} from '../../shared/lib/telegram';
+import {shareText, productLink} from './productView';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import ProductCard from '../Main/ProductCard';
 import BackCircle from './BackCircle';
+import ProductChips from './ProductChips';
+import ProductShare from './ProductShare';
 import {discountPercent} from '../Main/catalogSections';
 import ProductHero from './ProductHero';
 import ProductEditions from './ProductEditions';
@@ -43,12 +47,19 @@ export default function Product() {
 
     const navigate = useNavigate();
     const {safeAreaInset, contentSafeAreaInset} = useAppInsets();
+    const {isTg} = usePlatform();
 
     const userId = useSessionStore(selectUserId);
     const pageId = useSessionStore((state) => state.pageId);
     const catalogs = useStructureStore((state) => state.catalogs);
+    const mainPageProducts = useStructureStore((state) => state.mainPageProducts);
 
-    const {product, error, reload} = useProduct(productId);
+    const seed = useMemo(
+        () => (mainPageProducts || []).find((item) => item.id === productId) || null,
+        [mainPageProducts, productId]
+    );
+
+    const {product, error, reload} = useProduct(productId, seed);
 
     const loadCart = useCartStore((state) => state.load);
     const addToCart = useCartStore((state) => state.add);
@@ -72,7 +83,7 @@ export default function Product() {
         else navigate('/main');
     }, [navigate]);
 
-    useBackButton(goBack);
+    const hasNativeBack = useBackButton(goBack);
 
     useEffect(() => {
         loadCart(userId);
@@ -81,7 +92,7 @@ export default function Product() {
 
     useEffect(() => {
         setSelectedAddonIds(new Set());
-        screenRef.current?.scrollTo({top: 0});
+        if (screenRef.current) screenRef.current.scrollTop = 0;
     }, [productId]);
 
     useEffect(() => () => cancelAnimationFrame(frameRef.current), []);
@@ -241,6 +252,7 @@ export default function Product() {
     const promoUntil = discount > 0 ? promotionLabel(product) : null;
     const chips = buildChips(product);
     const specs = buildSpecs(product);
+    const link = productLink(product, isTg);
 
     const total = Number(product.price) + selectedAddons.reduce((sum, addon) => sum + Number(addon.price), 0);
     const oldTotal = discount > 0
@@ -253,11 +265,13 @@ export default function Product() {
                 ref={heroRef}
                 product={product}
                 topInset={topPadding}
+                showBack={!hasNativeBack}
                 discount={discount}
+                promoUntil={promoUntil}
                 isFavorite={isFavorite}
                 onBack={goBack}
-                onToggleFavorite={handleFavorite}
                 onPlay={handlePlay}
+                onToggleFavorite={handleFavorite}
             />
 
             <div className={style.body}>
@@ -267,20 +281,7 @@ export default function Product() {
                     <StarRating rating={product.starRating}/>
                 </section>
 
-                {chips.length > 0 ? (
-                    <div className={style.chips}>
-                        {chips.map((chip, index) => (
-                            <span key={`${chip}-${index}`} className={style.chip}>{chip}</span>
-                        ))}
-                    </div>
-                ) : null}
-
-                {promoUntil ? (
-                    <div className={style.promo}>
-                        <span className={style.promoBadge}>−{discount}%</span>
-                        <span className={style.promoText}>Скидка действует до {promoUntil}</span>
-                    </div>
-                ) : null}
+                <ProductChips chips={chips}/>
 
                 <ProductEditions editions={editions} activeId={productId} onSelect={openProduct}/>
 
@@ -293,6 +294,13 @@ export default function Product() {
                 <ProductGallery images={product.descriptionImages}/>
 
                 <ProductSpecs specs={specs}/>
+
+                <ProductShare
+                    productId={product.id}
+                    userId={userId}
+                    text={shareText(product, specs, link)}
+                    link={link}
+                />
 
                 {recommendations?.length ? (
                     <section className={style.section}>

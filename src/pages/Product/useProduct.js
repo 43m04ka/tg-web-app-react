@@ -1,17 +1,20 @@
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {fetchProduct, fetchRecommendations} from '../../shared/api/product';
 
 const RECOMMENDATION_LIMIT = 10;
 
-export function useProduct(productId) {
-    const [product, setProduct] = useState(null);
+export function useProduct(productId, seed) {
+    const [product, setProduct] = useState(seed || null);
     const [error, setError] = useState(null);
     const [reloadToken, setReloadToken] = useState(0);
+
+    const seedRef = useRef(seed);
+    seedRef.current = seed;
 
     const reload = useCallback(() => setReloadToken((token) => token + 1), []);
 
     useEffect(() => {
-        setProduct(null);
+        setProduct(seedRef.current || null);
         setError(null);
 
         if (!Number.isFinite(productId)) {
@@ -35,7 +38,7 @@ export function useProduct(productId) {
             .catch((loadError) => {
                 if (controller.signal.aborted) return;
                 console.error('[product]', loadError.message);
-                setError(loadError);
+                if (!seedRef.current) setError(loadError);
             });
 
         return () => controller.abort();

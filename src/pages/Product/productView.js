@@ -1,10 +1,10 @@
 const EXCEL_EPOCH = Date.UTC(1899, 11, 30);
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-const SUBSCRIPTION_CATALOGS = {
-    PS_PLUS: 'psplus',
-    EA_ACCESS: 'eaplay',
-    EA_PLAY: 'eaplay'
+const SUBSCRIPTION_BRANDS = {
+    PS_PLUS: {catalogSuffix: 'psplus', brand: 'Ps'},
+    EA_ACCESS: {catalogSuffix: 'eaplay', brand: 'Ea'},
+    EA_PLAY: {catalogSuffix: 'eaplay', brand: 'Ea'}
 };
 
 export const hasValue = (value) => {
@@ -131,16 +131,40 @@ export const subscriptionOffer = (product) => {
     const title = offer.tier || offer.branding;
     if (!hasValue(title)) return null;
 
+    const meta = SUBSCRIPTION_BRANDS[offer.branding] || {catalogSuffix: null, brand: 'Ps'};
+
     return {
         title,
+        brand: meta.brand,
         note: offer.priceRub === null || offer.priceRub === undefined
             ? offer.discountText || null
             : [`${Number(offer.priceRub).toLocaleString('ru-RU')} ₽`, offer.discountText]
                 .filter(hasValue)
                 .join(' · '),
-        catalogSuffix: SUBSCRIPTION_CATALOGS[offer.branding] || null
+        catalogSuffix: meta.catalogSuffix
     };
 };
 
 export const isPurchasable = (product) =>
     Boolean(product?.onSale) && Number(product?.price) > 0;
+
+const BOT_APP_URL = 'https://t.me/gwstore_bot/app';
+
+export const productLink = (product, isTg) => (isTg
+    ? `${BOT_APP_URL}?startapp=${product.id}`
+    : `${window.location.origin}?startapp=${product.id}`);
+
+export const shareText = (product, specs, link) => {
+    const lines = [`${product.name} — ${Number(product.price).toLocaleString('ru-RU')} ₽`];
+
+    const until = promotionLabel(product);
+    if (until && hasValue(product.oldPrice)) {
+        lines.push(`скидка действует до ${until}`);
+    }
+
+    lines.push('');
+    specs.forEach((row) => lines.push(`${row.label}: ${row.value}`));
+    lines.push('', `Купить можно в приложении Геймворд — ${link}`);
+
+    return lines.join('\n');
+};

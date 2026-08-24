@@ -1,5 +1,6 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {hapticImpact, hapticSelection} from '../../shared/lib/haptic';
+import React from 'react';
+import {hapticImpact} from '../../shared/lib/haptic';
+import {useCarouselTrack} from '../../shared/hooks/useCarouselTrack';
 import {getTelegramObject} from '../../shared/lib/telegram';
 import {discountPercent, formatPrice, formatPromoDate} from './bannerFormat';
 import style from './BannerCarousel.module.scss';
@@ -30,49 +31,7 @@ const openBanner = (data) => {
 };
 
 export default function BannerCarousel({items}) {
-    const trackRef = useRef(null);
-    const activeRef = useRef(0);
-    const frameRef = useRef(0);
-    const [active, setActive] = useState(0);
-
-    const sync = useCallback(() => {
-        const track = trackRef.current;
-        const slides = track ? Array.from(track.children) : [];
-        if (!slides.length) return;
-
-        const origin = slides[0].offsetLeft;
-        let nearest = 0;
-        let best = Infinity;
-
-        slides.forEach((slide, index) => {
-            const distance = Math.abs(slide.offsetLeft - origin - track.scrollLeft);
-            if (distance < best) {
-                best = distance;
-                nearest = index;
-            }
-        });
-
-        if (nearest === activeRef.current) return;
-
-        activeRef.current = nearest;
-        setActive(nearest);
-        hapticSelection();
-    }, []);
-
-    const handleScroll = useCallback(() => {
-        cancelAnimationFrame(frameRef.current);
-        frameRef.current = requestAnimationFrame(sync);
-    }, [sync]);
-
-    useEffect(() => () => cancelAnimationFrame(frameRef.current), []);
-
-    const scrollToSlide = useCallback((index) => {
-        const track = trackRef.current;
-        const slide = track?.children[index];
-        if (!slide) return;
-
-        track.scrollTo({left: slide.offsetLeft - track.children[0].offsetLeft, behavior: 'smooth'});
-    }, []);
+    const {trackRef, active, handleScroll, scrollToSlide} = useCarouselTrack();
 
     // Пока баннеров нет — держим место серыми прямоугольниками и не сворачиваемся.
     // Схлопнуть карусель значило бы дёрнуть вверх всё, что под ней, и дёрнуть обратно,

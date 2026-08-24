@@ -47,20 +47,6 @@ export const CommunityIcon = (props) => (
     </svg>
 );
 
-export const DocIcon = (props) => (
-    <svg viewBox="0 0 24 24" {...props}>
-        <path d="M13.4 3.6H7A1.4 1.4 0 0 0 5.6 5v14A1.4 1.4 0 0 0 7 20.4h10a1.4 1.4 0 0 0 1.4-1.4V8.6z" {...stroke}/>
-        <path d="M13.4 3.6v5h5M8.8 13h6.4M8.8 16.4h4.4" {...stroke}/>
-    </svg>
-);
-
-export const ShieldIcon = (props) => (
-    <svg viewBox="0 0 24 24" {...props}>
-        <path d="M12 3.5 5.6 6v5.6c0 4 2.7 7.4 6.4 8.9 3.7-1.5 6.4-4.9 6.4-8.9V6z" {...stroke}/>
-        <path d="m9.3 12.2 1.9 1.9 3.5-3.9" {...stroke}/>
-    </svg>
-);
-
 export const GuideIcon = (props) => (
     <svg viewBox="0 0 24 24" {...props}>
         <path d="M4.6 5.4A16 16 0 0 1 12 7a16 16 0 0 1 7.4-1.6v12A16 16 0 0 0 12 19a16 16 0 0 0-7.4-1.6z" {...stroke}/>
@@ -71,5 +57,11 @@ export const GuideIcon = (props) => (
 export const ChevronIcon = (props) => (
     <svg viewBox="0 0 24 24" {...props}>
         <path d="m9.5 5.5 6.5 6.5-6.5 6.5" {...stroke} strokeWidth={2}/>
+    </svg>
+);
+
+export const ExternalIcon = (props) => (
+    <svg viewBox="0 0 24 24" {...props}>
+        <path d="M8.4 15.6 15.6 8.4M9.6 8.4h6v6" {...stroke} strokeWidth={2}/>
     </svg>
 );

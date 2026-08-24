@@ -1,20 +1,16 @@
 import {
     ChannelIcon,
     CommunityIcon,
-    DocIcon,
     GuideIcon,
     HeartIcon,
     OrdersIcon,
-    ShieldIcon,
     SupportIcon
 } from './MoreIcons';
 
-// Пункты и их адреса перенесены из старого бота (pages/MoreInfo). Там же был отбор
-// по площадке: в VK-сообществе PlayStation незачем показывать ссылку на него же,
-// а поддержка у каждой площадки своя.
 export const MENU_GROUPS = [
     {
-        key: 'account',
+        key: 'main',
+        kind: 'list',
         items: [
             {
                 key: 'favorites',
@@ -22,91 +18,47 @@ export const MENU_GROUPS = [
                 bots: ['vk-xbox', 'vk-ps', 'tg', 'web'],
                 to: '/favorites',
                 Icon: HeartIcon,
-                color: '#ec4444'
+                color: '#ff5a5a'
             },
             {
                 key: 'history',
-                name: 'История заказов',
+                name: 'Мои заказы',
                 bots: ['vk-xbox', 'vk-ps', 'tg', 'web'],
                 to: '/history',
                 Icon: OrdersIcon,
-                color: '#0382c9'
+                color: 'var(--accent)'
             },
             {
                 key: 'support-vk-ps',
-                name: 'Поддержка магазина',
+                name: 'Поддержка',
                 bots: ['vk-ps'],
                 url: 'https://vk.com/im/convo/-85243268?entrypoint=community_page&tab=all',
                 Icon: SupportIcon,
-                color: '#f43c4b'
+                color: '#5aa8ff'
             },
             {
                 key: 'support-vk-xbox',
-                name: 'Поддержка магазина',
+                name: 'Поддержка',
                 bots: ['vk-xbox'],
                 url: 'https://vk.com/im/convo/-217049080?entrypoint=community_page&tab=all',
                 Icon: SupportIcon,
-                color: '#f43c4b'
+                color: '#5aa8ff'
             },
             {
                 key: 'support-tg',
-                name: 'Поддержка магазина',
+                name: 'Поддержка',
                 bots: ['tg', 'web'],
                 url: 'https://t.me/gwstore_admin',
                 Icon: SupportIcon,
-                color: '#f43c4b'
-            }
-        ]
-    },
-    {
-        key: 'channels',
-        title: 'Наши каналы',
-        items: [
-            {
-                key: 'vk-xbox',
-                name: 'Сообщество Геймворд | Xbox',
-                bots: ['tg', 'vk-ps', 'web'],
-                url: 'https://vk.com/gwstore.xbox',
-                Icon: CommunityIcon,
-                color: '#0076fd'
+                color: '#5aa8ff'
             },
-            {
-                key: 'vk-ps',
-                name: 'Сообщество Геймворд | PlayStation',
-                bots: ['tg', 'vk-xbox', 'web'],
-                url: 'https://vk.com/gwstore.playstation',
-                Icon: CommunityIcon,
-                color: '#0076fc'
-            },
-            {
-                key: 'tg-xbox',
-                name: 'Канал Геймворд | Xbox',
-                bots: ['tg', 'web'],
-                url: 'https://t.me/gwstore_xbox',
-                Icon: ChannelIcon,
-                color: '#28a6e7'
-            },
-            {
-                key: 'tg-ps',
-                name: 'Канал Геймворд | PlayStation',
-                bots: ['tg', 'web'],
-                url: 'https://t.me/gwstore_playstation',
-                Icon: ChannelIcon,
-                color: '#28a7e8'
-            }
-        ]
-    },
-    {
-        key: 'docs',
-        title: 'Справка',
-        items: [
             {
                 key: 'faq-ps',
-                name: 'Инструкции для PlayStation',
+                name: 'Инструкции для PS4 / PS5',
                 bots: ['vk-ps', 'vk-xbox', 'tg', 'web'],
                 url: 'https://gwstore.su/faq_playstation',
                 Icon: GuideIcon,
-                color: '#3730a1'
+                color: '#4f8dfd'
             },
             {
                 key: 'faq-xbox',
@@ -114,23 +66,68 @@ export const MENU_GROUPS = [
                 bots: ['vk-xbox', 'vk-ps', 'tg', 'web'],
                 url: 'https://gwstore.su/faq_xbox',
                 Icon: GuideIcon,
-                color: '#18a24a'
+                color: '#2fbf5e'
+            }
+        ]
+    },
+    {
+        key: 'channels',
+        kind: 'tiles',
+        title: 'Наши каналы',
+        items: [
+            {
+                key: 'tg-ps',
+                name: 'Скидки и новости PlayStation',
+                note: 'Telegram',
+                bots: ['tg', 'web'],
+                url: 'https://t.me/gwstore_playstation',
+                Icon: ChannelIcon,
+                color: '#3d7dff'
             },
+            {
+                key: 'tg-xbox',
+                name: 'Скидки и новости Xbox',
+                note: 'Telegram',
+                bots: ['tg', 'web'],
+                url: 'https://t.me/gwstore_xbox',
+                Icon: ChannelIcon,
+                color: '#2fbf5e'
+            },
+            {
+                key: 'vk-ps',
+                name: 'Сообщество Геймворд | PlayStation',
+                note: 'ВКонтакте',
+                bots: ['tg', 'vk-xbox', 'web'],
+                url: 'https://vk.com/gwstore.playstation',
+                Icon: CommunityIcon,
+                color: '#3d7dff'
+            },
+            {
+                key: 'vk-xbox',
+                name: 'Сообщество Геймворд | Xbox',
+                note: 'ВКонтакте',
+                bots: ['tg', 'vk-ps', 'web'],
+                url: 'https://vk.com/gwstore.xbox',
+                Icon: CommunityIcon,
+                color: '#2fbf5e'
+            }
+        ]
+    },
+    {
+        key: 'legal',
+        kind: 'links',
+        items: [
             {
                 key: 'terms',
                 name: 'Пользовательское соглашение',
                 bots: ['vk-xbox', 'vk-ps', 'tg', 'web'],
-                url: 'https://gwstore.su/privacy',
-                Icon: DocIcon,
-                color: '#f7953f'
+                url: 'https://gwstore.su/privacy'
             },
             {
                 key: 'privacy',
                 name: 'Политика конфиденциальности',
                 bots: ['vk-xbox', 'vk-ps', 'tg', 'web'],
-                url: 'https://gwstore.su/pk',
-                Icon: ShieldIcon,
-                color: '#fd7f3b'
+                url: 'https://gwstore.su/pk'
             }
         ]
     }

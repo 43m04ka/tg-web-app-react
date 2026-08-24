@@ -19,6 +19,18 @@ export const isOpenOrder = (order) => OPEN_STATUSES.includes(order?.status);
 
 export const orderNumber = (order) => `№ ${order.id}`;
 
+export const isSteamOrder = (order) => order?.type === 'steam_topup';
+
+export const orderTitle = (order) => {
+    if (isSteamOrder(order)) return 'Пополнение Steam';
+    return order?.positions?.[0]?.name || `Заказ ${orderNumber(order)}`;
+};
+
+export const orderCoverLetter = (order) => {
+    if (isSteamOrder(order)) return 'S';
+    return (order?.positions?.[0]?.name || '?').slice(0, 1).toUpperCase();
+};
+
 export const formatMoney = (value) => {
     const number = Number(value);
     if (!Number.isFinite(number)) return '';

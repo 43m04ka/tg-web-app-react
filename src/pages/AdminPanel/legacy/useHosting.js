@@ -1,6 +1,7 @@
 import {useCallback, useState} from 'react';
+import {API_BASE_URL} from './baseUrl';
 
-const API_BASE = '/api/hosting';
+const API_BASE = `${API_BASE_URL}/api/hosting`;
 
 export const useHosting = () => {
     const [items, setItems] = useState([]);

@@ -17,13 +17,19 @@ export function useBootstrap() {
 
     const setUser = useSessionStore((state) => state.setUser);
     const setInternalUserId = useSessionStore((state) => state.setInternalUserId);
+    const setSyncFailed = useSessionStore((state) => state.setSyncFailed);
     const setPlatform = useSessionStore((state) => state.setPlatform);
+    const syncToken = useSessionStore((state) => state.syncToken);
 
     const loadStructure = useStructureStore((state) => state.load);
     const isStructureReady = useStructureStore(selectIsStructureReady);
 
     const [isTimedOut, setIsTimedOut] = useState(false);
-    const syncedKeyRef = useRef(null);
+
+    const userRef = useRef(user);
+    userRef.current = user;
+
+    const userKey = isUserReady && user ? userKeyOf(user) : null;
 
     useEffect(() => {
         configureTelegramViewport();
@@ -43,23 +49,28 @@ export function useBootstrap() {
     }, []);
 
     useEffect(() => {
-        if (!isUserReady || !user) return;
+        if (isUserReady && user) setUser(user);
+    }, [user, isUserReady, setUser]);
 
-        setUser(user);
-
-        const userKey = userKeyOf(user);
-        if (syncedKeyRef.current === userKey) return;
-        syncedKeyRef.current = userKey;
+    useEffect(() => {
+        if (!userKey) return undefined;
 
         const controller = new AbortController();
-        syncUser(user, controller.signal)
+
+        syncUser(userRef.current, controller.signal)
             .then((internalId) => {
-                if (internalId && !controller.signal.aborted) setInternalUserId(internalId);
+                if (controller.signal.aborted) return;
+                if (internalId) setInternalUserId(internalId);
+                else setSyncFailed();
             })
-            .catch((error) => console.error('[bootstrap] syncUser:', error.message));
+            .catch((error) => {
+                if (controller.signal.aborted) return;
+                console.error('[bootstrap] syncUser:', error.message);
+                setSyncFailed();
+            });
 
         return () => controller.abort();
-    }, [user, isUserReady, setUser, setInternalUserId]);
+    }, [userKey, syncToken, setInternalUserId, setSyncFailed]);
 
     return {
         isReady: isStructureReady && (isTimedOut || (isUserReady && isPlatformResolved)),

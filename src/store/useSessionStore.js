@@ -12,12 +12,17 @@ export const useSessionStore = create((set) => ({
 
     user: null,
     internalUserId: null,
-    isSynced: false,
+    syncFailed: false,
+    syncToken: 0,
     pageId: null,
 
     setPageId: (pageId) => set({pageId}),
     setUser: (user) => set({user}),
-    setInternalUserId: (internalUserId) => set({internalUserId, isSynced: true}),
+    setInternalUserId: (internalUserId) => set({internalUserId, syncFailed: false}),
+    setSyncFailed: () => set({syncFailed: true}),
+    resync: () => set((state) => (state.internalUserId
+        ? state
+        : {syncToken: state.syncToken + 1, syncFailed: false})),
     setPlatform: (next) => set({
         platform: next.platform,
         botType: next.botType,
@@ -27,4 +32,4 @@ export const useSessionStore = create((set) => ({
     })
 }));
 
-export const selectUserId = (state) => state.internalUserId || state.user?.id || null;
+export const selectUserId = (state) => state.internalUserId;

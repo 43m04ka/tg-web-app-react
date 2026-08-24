@@ -41,6 +41,7 @@ export const getVkUser = () => {
                     id: vkUser.id,
                     first_name: vkUser.first_name,
                     last_name: vkUser.last_name,
+                    photoUrl: vkUser.photo_200 || vkUser.photo_100 || null,
                     platform: 'vk'
                 };
                 return state.user;

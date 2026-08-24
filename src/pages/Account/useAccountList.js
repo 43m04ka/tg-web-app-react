@@ -1,10 +1,9 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {useSessionStore, selectUserId} from '../../store/useSessionStore';
 
-// Общая механика для истории заказов и избранного: оба экрана — это список,
-// который ждёт userId, умеет перезагружаться и различает «пусто» и «не смогли».
 export function useAccountList(load) {
     const userId = useSessionStore(selectUserId);
+    const syncFailed = useSessionStore((state) => state.syncFailed);
 
     const [items, setItems] = useState(null);
     const [error, setError] = useState(null);
@@ -13,10 +12,24 @@ export function useAccountList(load) {
     loadRef.current = load;
 
     const [reloadToken, setReloadToken] = useState(0);
-    const reload = useCallback(() => setReloadToken((token) => token + 1), []);
+
+    const reload = useCallback(() => {
+        useSessionStore.getState().resync();
+        setReloadToken((token) => token + 1);
+    }, []);
 
     useEffect(() => {
-        if (!userId) return undefined;
+        if (!userId) {
+            if (!syncFailed) {
+                setItems(null);
+                setError(null);
+                return undefined;
+            }
+
+            setError(new Error('Пользователь не определён'));
+            setItems([]);
+            return undefined;
+        }
 
         const controller = new AbortController();
         setError(null);
@@ -34,7 +47,7 @@ export function useAccountList(load) {
             });
 
         return () => controller.abort();
-    }, [userId, reloadToken]);
+    }, [userId, syncFailed, reloadToken]);
 
     return {items, error, reload, userId, setItems};
 }

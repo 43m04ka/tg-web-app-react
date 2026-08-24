@@ -722,6 +722,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: calc(var(--content-safe-top, 0px) + #{u(64)}) 0 calc(var(--safe-bottom, 0px) + #{u(24)});
   background: oklch(0.06 0.008 264 / 0.96);
   backdrop-filter: blur(u(12));
   -webkit-backdrop-filter: blur(u(12));
@@ -730,12 +731,15 @@
 
 .viewerClose {
   position: absolute;
-  top: calc(var(--safe-top) + #{u(14)});
+  top: calc(var(--content-safe-top, 0px) + #{u(14)});
   right: u(16);
-  width: u(36);
-  height: u(36);
+  z-index: 2;
+  width: u(38);
+  height: u(38);
   border-radius: 50%;
-  background: oklch(1 0 0 / 0.1);
+  background: oklch(1 0 0 / 0.12);
+  backdrop-filter: blur(u(10));
+  -webkit-backdrop-filter: blur(u(10));
   color: oklch(1 0 0);
 }
 
@@ -764,6 +768,40 @@
   width: 100%;
   border-radius: u(14);
   animation: pop var(--duration-slow) var(--ease-out);
+}
+
+.viewerVideo {
+  width: 100%;
+  max-height: 72vh;
+  align-self: center;
+  border-radius: u(14);
+  background: oklch(0 0 0);
+  animation: pop var(--duration-slow) var(--ease-out);
+}
+
+.viewerFallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: u(12);
+  padding: 0 u(32);
+  text-align: center;
+}
+
+.viewerFallbackText {
+  font-size: u(13.5);
+  font-weight: 600;
+  color: oklch(0.8 0.008 264);
+}
+
+.viewerFallbackAction {
+  height: u(44);
+  padding: 0 u(20);
+  border-radius: u(14);
+  background: oklch(1 0 0 / 0.12);
+  font-size: u(13.5);
+  font-weight: 700;
+  color: oklch(0.98 0.004 264);
 }
 
 .viewerDots {

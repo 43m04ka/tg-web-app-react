@@ -43,7 +43,10 @@ export function useCarouselTrack() {
         const slide = track?.children[index];
         if (!slide) return;
 
-        track.scrollTo({left: slide.offsetLeft - track.children[0].offsetLeft, behavior: 'smooth'});
+        const left = slide.offsetLeft - track.children[0].offsetLeft;
+
+        if (typeof track.scrollTo === 'function') track.scrollTo({left, behavior: 'smooth'});
+        else track.scrollLeft = left;
     }, []);
 
     return {trackRef, active, handleScroll, scrollToSlide};

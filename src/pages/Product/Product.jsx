@@ -25,6 +25,7 @@ import ProductGallery from './ProductGallery';
 import ProductSpecs from './ProductSpecs';
 import ProductBuyBar from './ProductBuyBar';
 import ProductSkeleton from './ProductSkeleton';
+import ProductVideo from './ProductVideo';
 import StarRating from './StarRating';
 import {useProduct, useRecommendations} from './useProduct';
 import {
@@ -76,6 +77,7 @@ export default function Product() {
 
     const [selectedAddonIds, setSelectedAddonIds] = useState(() => new Set());
     const [isAdding, setIsAdding] = useState(false);
+    const [isVideoOpen, setIsVideoOpen] = useState(false);
 
     const goBack = useCallback(() => {
         hapticImpact('light');
@@ -92,6 +94,7 @@ export default function Product() {
 
     useEffect(() => {
         setSelectedAddonIds(new Set());
+        setIsVideoOpen(false);
         if (screenRef.current) screenRef.current.scrollTop = 0;
     }, [productId]);
 
@@ -172,10 +175,16 @@ export default function Product() {
     }, [toggleFavorite, userId, productId]);
 
     const handlePlay = useCallback(() => {
+        if (!product?.videoUrl) return;
+        hapticImpact('light');
+        setIsVideoOpen(true);
+    }, [product]);
+
+    const openVideoOutside = useCallback(() => {
         const url = product?.videoUrl;
         if (!url) return;
 
-        hapticImpact('light');
+        setIsVideoOpen(false);
 
         const tg = getTelegramObject();
         if (typeof tg.openLink === 'function') tg.openLink(url);
@@ -325,6 +334,14 @@ export default function Product() {
                 onChangeCount={changeCount}
                 onOpenBasket={openBasket}
             />
+
+            {isVideoOpen ? (
+                <ProductVideo
+                    url={product.videoUrl}
+                    onClose={() => setIsVideoOpen(false)}
+                    onFallback={openVideoOutside}
+                />
+            ) : null}
         </div>
     );
 }

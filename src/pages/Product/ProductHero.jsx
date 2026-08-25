@@ -15,8 +15,7 @@ const ProductHero = forwardRef(function ProductHero(
 
     return (
         <div className={style.hero}>
-            <div className={`${style.heroPlaceholder} ${isLoaded ? style.heroPlaceholderHidden : style.shimmer}`}
-                 aria-hidden="true"/>
+            <div className={style.heroPlaceholder} aria-hidden="true"/>
 
             {cover ? (
                 <img

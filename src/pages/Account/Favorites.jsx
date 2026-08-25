@@ -109,7 +109,9 @@ export default function Favorites() {
                                     className={style.cover}
                                     style={product.image ? {backgroundImage: `url(${product.image})`} : undefined}
                                     onClick={() => navigate(`/card/${product.id}`)}
-                                />
+                                >
+                                    {percent > 0 ? <span className={style.badge}>−{percent}%</span> : null}
+                                </span>
 
                                 <span className={style.favoriteBody}>
                                     <span className={style.favoriteTop}>
@@ -133,10 +135,7 @@ export default function Favorites() {
                                     {meta ? <span className={style.favoriteMeta}>{meta}</span> : null}
 
                                     <span className={style.favoritePrices}>
-                                        <span className={style.priceRow}>
-                                            <span className={style.price}>{formatMoney(product.price)}</span>
-                                            {percent > 0 ? <span className={style.badge}>−{percent}%</span> : null}
-                                        </span>
+                                        <span className={style.price}>{formatMoney(product.price)}</span>
                                         {percent > 0 ? (
                                             <span className={style.oldPrice}>{formatMoney(product.oldPrice)}</span>
                                         ) : null}

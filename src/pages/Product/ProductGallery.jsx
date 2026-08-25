@@ -9,7 +9,7 @@ function Shot({url, index, onOpen}) {
     return (
         <button
             type="button"
-            className={`${style.shot} ${isLoaded ? '' : style.shimmer}`}
+            className={style.shot}
             onClick={() => onOpen(index)}
             aria-label={`Скриншот ${index + 1}`}
         >
@@ -63,12 +63,14 @@ export default function ProductGallery({images}) {
 
             {openedIndex !== null ? (
                 <div className={style.viewer} role="dialog" aria-modal="true">
-                    <button type="button" className={style.viewerClose} onClick={close} aria-label="Закрыть">
-                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" strokeWidth="2.2"
-                                  strokeLinecap="round"/>
-                        </svg>
-                    </button>
+                    <div className={style.viewerBar}>
+                        <button type="button" className={style.viewerClose} onClick={close} aria-label="Закрыть">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" strokeWidth="2.2"
+                                      strokeLinecap="round"/>
+                            </svg>
+                        </button>
+                    </div>
 
                     <div className={style.viewerTrack} ref={trackRef} onScroll={handleScroll}>
                         {images.map((url) => (

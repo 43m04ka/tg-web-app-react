@@ -103,6 +103,11 @@ const CardTable = ({
                                     <span className={item.onSale ? style['badgeOn'] : style['badgeOff']}>
                                         {item.onSale ? 'В продаже' : 'Снят'}
                                     </span>
+                                    {/* Скрытый товар продаётся как обычно — он просто не показывается
+                                        в списках. Это отдельное состояние, а не «снят с продажи» */}
+                                    {item.isHidden ? (
+                                        <span className={style['badgeHidden']}>Скрыт</span>
+                                    ) : null}
                                 </td>
                             </tr>
                         );

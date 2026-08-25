@@ -23,6 +23,14 @@ const STATUS_FILTERS = [
     {key: 'off', label: 'Сняты', value: false},
 ];
 
+// Скрытые из каталогов — это в основном дополнения, которые парсер уводит в хвост.
+// Отдельный фильтр нужен, чтобы их можно было найти: в самих каталогах витрины их нет.
+const VISIBILITY_FILTERS = [
+    {key: '', label: 'Видимость: все'},
+    {key: 'visible', label: 'Только видимые'},
+    {key: 'hidden', label: 'Только скрытые'},
+];
+
 // Подписи типов те же, что в форме карточки. Витрина хранит код, человеку нужен текст.
 const TYPE_LABELS = {
     GAME: 'Игра',
@@ -59,6 +67,7 @@ const CardsList = ({onCountChange}) => {
     const [statusFilter, setStatusFilter] = useState('all');
     const [catalogFilter, setCatalogFilter] = useState('');
     const [typeFilter, setTypeFilter] = useState('');
+    const [visibilityFilter, setVisibilityFilter] = useState('');
     const [typeFacets, setTypeFacets] = useState([]);
 
     const [loading, setLoading] = useState(true);
@@ -102,6 +111,7 @@ const CardsList = ({onCountChange}) => {
                 catalogId: catalogFilter || undefined,
                 onSale: statusValue,
                 type: typeFilter || undefined,
+                visibility: visibilityFilter || undefined,
                 page,
                 pageSize: PAGE_SIZE,
             });
@@ -120,7 +130,7 @@ const CardsList = ({onCountChange}) => {
         } finally {
             if (requestId === requestRef.current) setLoading(false);
         }
-    }, [search, catalogFilter, statusValue, typeFilter, page]);
+    }, [search, catalogFilter, statusValue, typeFilter, visibilityFilter, page]);
 
     useEffect(() => {
         load();
@@ -272,12 +282,36 @@ const CardsList = ({onCountChange}) => {
         setSelectedIds((prev) => (prev.length === items.length ? [] : items.map((item) => item.id)));
     };
 
+    const changeVisibility = async (nextHidden) => {
+        if (!selectedIds.length) return;
+
+        setBusy(true);
+        try {
+            const result = await serverRef.current.bulkUpdateCards(
+                authenticationData,
+                selectedIds,
+                {isHidden: nextHidden},
+            );
+            showToast(
+                `${nextHidden ? 'Скрыто из каталогов' : 'Возвращено в каталоги'}: ${result.updated ?? selectedIds.length}`,
+                'success',
+            );
+            setSelectedIds([]);
+            await load();
+        } catch (err) {
+            showToast(err.message || 'Не удалось изменить видимость', 'error');
+        } finally {
+            setBusy(false);
+        }
+    };
+
     const resetFilters = () => {
         setSearchInputValue('');
         setSearch('');
         setStatusFilter('all');
         setCatalogFilter('');
         setTypeFilter('');
+        setVisibilityFilter('');
         resetToFirstPage();
     };
 
@@ -288,7 +322,7 @@ const CardsList = ({onCountChange}) => {
         ? items.find((item) => item.id === selectedIds[0])
         : null;
 
-    const filtersActive = Boolean(search || catalogFilter || typeFilter || statusFilter !== 'all');
+    const filtersActive = Boolean(search || catalogFilter || typeFilter || visibilityFilter || statusFilter !== 'all');
 
     return (
         <div className={style['screen']}>
@@ -345,6 +379,17 @@ const CardsList = ({onCountChange}) => {
                         ))}
                     </select>
 
+                    <select className={style['filterSelect']}
+                            value={visibilityFilter}
+                            onChange={(event) => {
+                                setVisibilityFilter(event.target.value);
+                                resetToFirstPage();
+                            }}>
+                        {VISIBILITY_FILTERS.map((filter) => (
+                            <option key={filter.key} value={filter.key}>{filter.label}</option>
+                        ))}
+                    </select>
+
                     <div className={style['segmented']}>
                         {STATUS_FILTERS.map((filter) => (
                             <button
@@ -390,6 +435,17 @@ const CardsList = ({onCountChange}) => {
                                 disabled={!hasSelection || busy}
                                 onClick={() => changeStatus(false)}>
                             Снять с продажи
+                        </button>
+                        <button type="button" className={style['actionBtn']}
+                                disabled={!hasSelection || busy}
+                                title="Убрать из списков каталога, поиска и полок главной"
+                                onClick={() => changeVisibility(true)}>
+                            Скрыть из каталогов
+                        </button>
+                        <button type="button" className={style['actionBtn']}
+                                disabled={!hasSelection || busy}
+                                onClick={() => changeVisibility(false)}>
+                            Вернуть в каталоги
                         </button>
                         <button type="button" className={`${style['actionBtn']} ${style['actionBtnDanger']}`}
                                 disabled={!hasSelection || busy}

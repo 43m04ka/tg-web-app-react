@@ -136,3 +136,7 @@ export const MENU_GROUPS = [
 export const menuForBot = (botType) => MENU_GROUPS
     .map((group) => ({...group, items: group.items.filter((item) => item.bots.includes(botType))}))
     .filter((group) => group.items.length > 0);
+
+export const supportUrlForBot = (botType) => MENU_GROUPS
+    .flatMap((group) => group.items)
+    .find((item) => item.key.startsWith('support-') && item.bots.includes(botType))?.url || null;

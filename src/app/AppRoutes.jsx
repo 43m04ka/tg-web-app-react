@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {Navigate, Route, Routes, useLocation} from 'react-router-dom';
 import SelectPlatform from '../pages/SelectPlatform/SelectPlatform';
 import Main from '../pages/Main/Main';
+import Catalog from '../pages/Catalog/Catalog';
+import Search from '../pages/Search/Search';
 import More from '../pages/More/More';
 import Product from '../pages/Product/Product';
 import Favorites from '../pages/Account/Favorites';
@@ -63,23 +65,9 @@ export default function AppRoutes() {
             <Routes location={shown}>
                 <Route path="/" element={<SelectPlatform/>}/>
                 <Route path="/main" element={<RequirePage><Main/></RequirePage>}/>
-                <Route
-                    path="/catalog/*"
-                    element={
-                        <RequirePage>
-                            <Stub title="Каталог" text="Список товаров каталога появится на следующем этапе редизайна."/>
-                        </RequirePage>
-                    }
-                />
+                <Route path="/catalog/*" element={<RequirePage><Catalog/></RequirePage>}/>
                 <Route path="/card/:id" element={<RequirePage><Product/></RequirePage>}/>
-                <Route
-                    path="/search"
-                    element={
-                        <RequirePage>
-                            <Stub title="Поиск" text="Поиск по каталогу появится на следующем этапе редизайна."/>
-                        </RequirePage>
-                    }
-                />
+                <Route path="/search" element={<RequirePage><Search/></RequirePage>}/>
                 <Route
                     path="/basket"
                     element={

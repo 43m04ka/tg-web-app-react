@@ -455,7 +455,8 @@
 }
 
 .badgeOn,
-.badgeOff {
+.badgeOff,
+.badgeHidden {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);
@@ -463,6 +464,13 @@
   border-radius: var(--r-pill);
   font-size: var(--fs-sm);
   white-space: nowrap;
+}
+
+// Второй бейдж в той же ячейке: скрытие не отменяет продажу, состояния независимы
+.badgeHidden {
+  margin-left: var(--sp-1);
+  background: rgba(var(--warning-rgb), 0.14);
+  color: var(--warning);
 }
 
 .badgeOn {

@@ -224,6 +224,38 @@
   padding: u(6) u(20) 0;
   animation: rise 260ms var(--ease-out) backwards;
   animation-delay: 50ms;
+  transition: filter 260ms var(--ease-out), opacity 260ms var(--ease-out), transform 320ms var(--ease-out);
+}
+
+.contentBlurred {
+  filter: blur(u(7));
+  opacity: 0.42;
+  transform: scale(0.985);
+  pointer-events: none;
+}
+
+.veil {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  display: block;
+  width: 100%;
+  background: transparent;
+  cursor: default;
+  animation: veilIn 240ms var(--ease-out);
+}
+
+.veilDimmed {
+  background: oklch(0.09 0.01 264 / 0.5);
+}
+
+@keyframes veilIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .found {
@@ -594,7 +626,12 @@
   .header,
   .content,
   .section,
+  .veil,
   .chipRemovable {
     animation: none;
+  }
+
+  .content {
+    transition: none;
   }
 }

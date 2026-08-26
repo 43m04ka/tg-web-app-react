@@ -71,6 +71,7 @@ export default function Search() {
     const [isSheetOpen, setSheetOpen] = useState(false);
     const [{facets, price}, setFacetData] = useState(() => peekFacets({pageId}));
     const [recent, setRecent] = useState(() => loadRecentSearches());
+    const [isFieldFocused, setFieldFocused] = useState(false);
 
     const scope = useMemo(() => ({pageId}), [pageId]);
     const inputRef = useRef(null);
@@ -91,6 +92,16 @@ export default function Search() {
 
     const scrollRef = useScrollMemory(`search:${mode}`);
     const isHeaderHidden = useHidingHeader(scrollRef, {enabled: !isSheetOpen && !isKeyboardOpen});
+
+    const isVeiled = isFieldFocused && !isSheetOpen;
+    const isIdleVeiled = isVeiled && mode === 'idle';
+
+    const holdFocus = useCallback((event) => event.preventDefault(), []);
+
+    const dismissFocus = useCallback(() => {
+        inputRef.current?.blur();
+        setFieldFocused(false);
+    }, []);
 
     useEffect(() => {
         let isAlive = true;
@@ -213,6 +224,8 @@ export default function Search() {
                         type="search"
                         value={query}
                         onChange={(event) => setQuery(event.target.value)}
+                        onFocus={() => setFieldFocused(true)}
+                        onBlur={() => setFieldFocused(false)}
                         placeholder="Введите название игры или подписки"
                         autoComplete="off"
                         enterKeyHint="search"
@@ -259,9 +272,19 @@ export default function Search() {
                 ) : null}
             </div>
 
+            {isVeiled ? (
+                <button
+                    type="button"
+                    className={`${style.veil} ${isIdleVeiled ? style.veilDimmed : ''}`}
+                    aria-label="Свернуть клавиатуру"
+                    onPointerDown={holdFocus}
+                    onClick={dismissFocus}
+                />
+            ) : null}
+
             <div
                 key={mode}
-                className={style.content}
+                className={`${style.content} ${isIdleVeiled ? style.contentBlurred : ''}`}
                 style={{paddingBottom: `calc(${safeAreaInset.bottom}px + 24 * var(--u))`}}
             >
                 {mode === 'results' ? (

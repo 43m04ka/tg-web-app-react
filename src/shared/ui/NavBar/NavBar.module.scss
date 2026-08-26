@@ -20,7 +20,7 @@
               padding 340ms var(--ease-out);
 }
 
-.barHidden {
+@mixin bar-hidden {
   max-height: 0;
   padding-top: 0;
   padding-bottom: 0 !important;
@@ -28,7 +28,21 @@
   opacity: 0;
   border-top-color: transparent;
   pointer-events: none;
+}
+
+.barHidden {
+  @include bar-hidden;
+
   transition: none;
+}
+
+.barRouteHidden {
+  @include bar-hidden;
+
+  transition: max-height 300ms var(--ease-out),
+              transform 300ms var(--ease-out),
+              opacity 200ms var(--ease-out),
+              padding 300ms var(--ease-out);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -45,7 +59,7 @@
   gap: u(4);
   min-width: 0;
   padding: u(2) 0;
-  color: oklch(0.6 0.01 264);
+  color: oklch(0.72 0.008 264);
 }
 
 .tab {
@@ -95,7 +109,7 @@
 .icon {
   width: u(21);
   height: u(21);
-  color: oklch(0.55 0.01 264);
+  color: oklch(0.68 0.008 264);
   transition: color var(--duration-base) var(--ease-out),
               transform 320ms var(--ease-spring);
 }

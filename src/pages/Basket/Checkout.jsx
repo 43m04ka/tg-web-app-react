@@ -16,9 +16,12 @@ import {
     PAYMENT_METHODS,
     accountForm,
     buildAccountData,
+    contactHandle,
     faqFor,
     findMethod,
+    formatContact,
     isAccountFilled,
+    isContactValid,
     isEmailValid,
     isMethodAvailable,
     money,
@@ -26,25 +29,27 @@ import {
     splitSchedule
 } from './cartModel';
 import {useBasketQuote} from './useBasketQuote';
+import {usePromoMemory} from './usePromoMemory';
 import {useOrderFlow, SCREEN} from './useOrderFlow';
 import AccountFields from './AccountFields';
+import ContactField from './ContactField';
 import PromoField from './PromoField';
 import {OrderAccepted, PaymentFail, PaymentSuccess, PaymentWaiting} from './PaymentScreens';
 import style from './Basket.module.scss';
 
-const PROMO_KEY = 'cart:promo';
 const FORM_KEY = 'checkout:form';
 
-const contactFor = ({isVk, isTg, user, username}) => {
-    if (isVk) return `https://vk.com/im/convo/${user?.id} \n${user?.first_name || ''} ${user?.last_name || ''}`.trim();
-    if (isTg) return `@${user?.username || username}`;
+const nativeContact = ({isVk, user}) => {
+    if (isVk) {
+        return `https://vk.com/im/convo/${user?.id} \n${user?.first_name || ''} ${user?.last_name || ''}`.trim();
+    }
 
-    return username;
+    return `@${user?.username || ''}`;
 };
 
 function PaymentOption({method, total, isActive, onSelect}) {
     const isAvailable = isMethodAvailable(method, total);
-    const schedule = method.schedule && isActive ? splitSchedule(total) : null;
+    const schedule = method.schedule ? splitSchedule(total) : null;
 
     return (
         <div className={`${style.payment} ${isActive ? style.paymentActive : ''} ${isAvailable ? '' : style.paymentLocked}`}>
@@ -68,24 +73,28 @@ function PaymentOption({method, total, isActive, onSelect}) {
             </button>
 
             {schedule ? (
-                <div className={style.schedule}>
-                    {schedule.map((part, index) => (
-                        <div key={part.label} className={style.schedulePart}>
-                            <span className={`${style.scheduleBar} ${index === 0 ? style.scheduleBarPaid : ''}`}/>
-                            <span className={`${style.scheduleSum} ${index === 0 ? style.scheduleSumFirst : ''}`}>
-                                {money(part.amount)}
-                            </span>
-                            <span className={style.scheduleDate}>{part.label}</span>
+                <div className={`${style.reveal} ${isActive ? style.revealOpen : ''}`}>
+                    <div className={style.revealInner}>
+                        <div className={style.schedule}>
+                            {schedule.map((part, index) => (
+                                <div key={part.label} className={style.schedulePart}>
+                                    <span className={`${style.scheduleBar} ${index === 0 ? style.scheduleBarPaid : ''}`}/>
+                                    <span className={`${style.scheduleSum} ${index === 0 ? style.scheduleSumFirst : ''}`}>
+                                        {money(part.amount)}
+                                    </span>
+                                    <span className={style.scheduleDate}>{part.label}</span>
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
-            ) : null}
 
-            {schedule && method.terms ? (
-                <p className={style.scheduleNote}>
-                    График информационный и может отличаться от итогового при оформлении.{' '}
-                    <a href={method.terms.url} target="_blank" rel="noreferrer">{method.terms.label}</a>
-                </p>
+                        {method.terms ? (
+                            <p className={style.scheduleNote}>
+                                График информационный и может отличаться от итогового при оформлении.{' '}
+                                <a href={method.terms.url} target="_blank" rel="noreferrer">{method.terms.label}</a>
+                            </p>
+                        ) : null}
+                    </div>
+                </div>
             ) : null}
         </div>
     );
@@ -114,7 +123,11 @@ function Faq({items}) {
                             <span className={`${style.faqSign} ${isOpen ? style.faqSignOpen : ''}`} aria-hidden="true">+</span>
                         </button>
 
-                        {isOpen ? <p className={style.faqAnswer}>{item.answer}</p> : null}
+                        <div className={`${style.reveal} ${isOpen ? style.revealOpen : ''}`}>
+                            <div className={style.revealInner}>
+                                <p className={style.faqAnswer}>{item.answer}</p>
+                            </div>
+                        </div>
                     </div>
                 );
             })}
@@ -132,35 +145,36 @@ export default function Checkout() {
     const user = useSessionStore((state) => state.user);
     const isVk = useSessionStore((state) => state.isVk);
     const isTg = useSessionStore((state) => state.isTg);
-    const isWeb = useSessionStore((state) => state.isWeb);
     const platform = useSessionStore((state) => state.platform);
 
     const pages = useStructureStore((state) => state.pages);
     const catalogs = useStructureStore((state) => state.catalogs);
 
     const items = useCartStore((state) => state.items);
-    const revision = useCartStore((state) => state.revision);
     const loadCart = useCartStore((state) => state.load);
     const reloadCart = useCartStore((state) => state.reload);
 
     const saved = useMemo(() => recallView(FORM_KEY) || {}, []);
 
-    const [promoCode, setPromoCode] = useState(() => recallView(PROMO_KEY) || '');
+    const hasNativeContact = (isTg && Boolean(user?.username)) || isVk;
+
     const [method, setMethod] = useState(saved.method || 'sbp');
     const [accountKind, setAccountKind] = useState(saved.accountKind || ACCOUNT_KINDS.NEW);
     const [accountValues, setAccountValues] = useState(saved.accountValues || {});
-    const [username, setUsername] = useState(saved.username || '');
+    const [channel, setChannel] = useState(saved.channel || (isVk ? 'vk' : 'telegram'));
+    const [contactValue, setContactValue] = useState(saved.contactValue || '');
     const [email, setEmail] = useState(saved.email || '');
     const [isTouched, setTouched] = useState(false);
 
     const pageType = useMemo(
-        () => (pages || []).find((page) => page.id === pageId)?.type || null,
+        () => (pages ? (pages.find((page) => page.id === pageId)?.type || null) : undefined),
         [pages, pageId]
     );
 
     const pageItems = useMemo(() => pageCartItems(items, catalogs, pageId), [items, catalogs, pageId]);
 
-    const {quote, isLoading, error, retry} = useBasketQuote({userId, pageId, promoCode, revision});
+    const {promo, apply, clear} = usePromoMemory();
+    const {quote, isLoading, error, retry} = useBasketQuote({items: pageItems, pageType, promo});
 
     const flow = useOrderFlow(userId);
 
@@ -171,12 +185,8 @@ export default function Checkout() {
     }, [userId, loadCart]);
 
     useEffect(() => {
-        rememberView(FORM_KEY, {method, accountKind, accountValues, username, email});
-    }, [method, accountKind, accountValues, username, email]);
-
-    useEffect(() => {
-        rememberView(PROMO_KEY, promoCode);
-    }, [promoCode]);
+        rememberView(FORM_KEY, {method, accountKind, accountValues, channel, contactValue, email});
+    }, [method, accountKind, accountValues, channel, contactValue, email]);
 
     const total = quote?.total ?? 0;
 
@@ -198,6 +208,11 @@ export default function Checkout() {
         navigate('/main');
     }, [flow, navigate, reloadCart, userId]);
 
+    const finishFlow = useCallback(() => {
+        clear();
+        closeFlow();
+    }, [clear, closeFlow]);
+
     const retryFlow = useCallback(() => {
         flow.close();
         reloadCart(userId);
@@ -207,10 +222,11 @@ export default function Checkout() {
     const selected = findMethod(method);
     const isOnline = selected.isOnline;
 
-    const needsUsername = (isTg && !user?.username) || isWeb;
-    const contact = contactFor({isVk, isTg, user, username});
+    const contact = hasNativeContact
+        ? nativeContact({isVk, user})
+        : formatContact(channel, contactValue);
 
-    const isContactReady = !needsUsername || username.trim().length > 0;
+    const isContactReady = hasNativeContact || isContactValid(channel, contactValue);
     const isEmailReady = !isOnline || isEmailValid(email);
     const isAccountReady = isAccountFilled(pageType, accountKind, accountValues);
     const isReady = Boolean(userId) && isContactReady && isEmailReady && isAccountReady
@@ -223,12 +239,16 @@ export default function Checkout() {
 
         hapticImpact('medium');
 
+        const handle = hasNativeContact
+            ? user?.username
+            : (channel === 'telegram' ? contactHandle(channel, contactValue) : undefined);
+
         flow.submit({
             platform,
             vkGroupId: isVk ? vkGroupId : undefined,
             pageId,
             contact,
-            username: user?.username || username,
+            username: handle || undefined,
             accountData: buildAccountData(pageType, accountKind, accountValues),
             email: email.trim() || undefined,
             paymentMethod: method,
@@ -238,8 +258,8 @@ export default function Checkout() {
             total
         });
     }, [
-        accountKind, accountValues, contact, email, flow, isReady, isVk, method, pageId,
-        pageItems, pageType, platform, quote, total, user, username, vkGroupId
+        accountKind, accountValues, channel, contact, contactValue, email, flow, hasNativeContact,
+        isReady, isVk, method, pageId, pageItems, pageType, platform, quote, total, user, vkGroupId
     ]);
 
     if (flow.screen === SCREEN.WAITING) {
@@ -247,7 +267,7 @@ export default function Checkout() {
     }
 
     if (flow.screen === SCREEN.SUCCESS) {
-        return <PaymentSuccess order={flow.order} snapshot={flow.snapshot} onClose={closeFlow}/>;
+        return <PaymentSuccess order={flow.order} snapshot={flow.snapshot} onClose={finishFlow}/>;
     }
 
     if (flow.screen === SCREEN.FAIL) {
@@ -255,7 +275,7 @@ export default function Checkout() {
     }
 
     if (flow.screen === SCREEN.ACCEPTED) {
-        return <OrderAccepted order={flow.order} snapshot={flow.snapshot} onClose={closeFlow}/>;
+        return <OrderAccepted order={flow.order} snapshot={flow.snapshot} onClose={finishFlow}/>;
     }
 
     if (pageItems !== null && pageItems.length === 0) {
@@ -327,28 +347,18 @@ export default function Checkout() {
                     <h2 className={style.blockTitle}>Связь с вами</h2>
 
                     <div className={style.card}>
-                        {needsUsername ? (
-                            <label className={style.field}>
-                                <span className={style.fieldLabel}>
-                                    {isTg ? 'Ник в Telegram' : 'Telegram, VK или телефон'}
-                                </span>
-                                <input
-                                    className={`${style.input} ${isTouched && !isContactReady ? style.inputBad : ''}`}
-                                    value={username}
-                                    placeholder={isTg ? 'gwstore_admin' : '@username или +79990000000'}
-                                    autoComplete="off"
-                                    autoCapitalize="none"
-                                    onChange={(event) => setUsername(
-                                        isTg
-                                            ? event.target.value.replace(/[^a-zA-Z0-9_]/g, '')
-                                            : event.target.value
-                                    )}
-                                />
-                            </label>
-                        ) : (
+                        {hasNativeContact ? (
                             <p className={style.hint}>
                                 Напишем в {isVk ? 'VK' : 'Telegram'} — {contact.split('\n')[0]}
                             </p>
+                        ) : (
+                            <ContactField
+                                channel={channel}
+                                value={contactValue}
+                                isTouched={isTouched}
+                                onChannel={setChannel}
+                                onChange={setContactValue}
+                            />
                         )}
 
                         {isOnline ? (
@@ -381,17 +391,13 @@ export default function Checkout() {
                                 <span className={style.orderMeta}>
                                     {position.quantity > 1 ? `${position.quantity} шт.` : ''}
                                 </span>
-                                <span className={style.orderSum}>{money(position.sum)}</span>
+                                <span key={position.sum} className={style.orderSum}>{money(position.sum)}</span>
                             </div>
                         ))}
                     </div>
                 </section>
 
-                <PromoField
-                    promo={quote?.promo || null}
-                    onApply={setPromoCode}
-                    onClear={() => setPromoCode('')}
-                />
+                <PromoField promo={quote?.promo || null} onApply={apply} onClear={clear}/>
 
                 <section className={style.block}>
                     <h2 className={style.blockTitle}>Часто спрашивают</h2>
@@ -417,7 +423,7 @@ export default function Checkout() {
                         {quote?.discount > 0 ? (
                             <span className={style.actionOld}>{money(quote.itemsTotal)}</span>
                         ) : null}
-                        <span className={style.actionTotal}>{money(total)}</span>
+                        <span key={total} className={style.actionTotal}>{money(total)}</span>
                     </span>
                 </div>
 

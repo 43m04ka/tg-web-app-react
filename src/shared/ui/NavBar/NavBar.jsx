@@ -12,6 +12,8 @@ import {resetSearchState} from '../../lib/searchMemory';
 import {BasketIcon, ChevronIcon, HomeIcon, MoreIcon, SearchIcon} from './NavIcons';
 import style from './NavBar.module.scss';
 
+const hasOwnBottomBar = (pathname) => pathname.startsWith('/card/') || pathname === '/checkout';
+
 const TABS = [
     {path: '/main', label: 'Главная', Icon: HomeIcon, effect: 'home'},
     {path: '/search', label: 'Поиск', Icon: SearchIcon, effect: 'search'},
@@ -47,6 +49,9 @@ export default function NavBar() {
         navigate(path);
     }, [navigate, pathname]);
 
+    const isRouteHidden = hasOwnBottomBar(pathname);
+    const isHidden = isRouteHidden || isKeyboardOpen;
+
     const left = TABS.slice(0, 2);
     const right = TABS.slice(2);
 
@@ -75,9 +80,9 @@ export default function NavBar() {
 
     return (
         <nav
-            className={`${style.bar} ${isKeyboardOpen ? style.barHidden : ''}`}
+            className={`${style.bar} ${isRouteHidden ? style.barRouteHidden : ''} ${isKeyboardOpen && !isRouteHidden ? style.barHidden : ''}`}
             style={{paddingBottom: `calc(${safeAreaInset.bottom}px + 12 * var(--u))`}}
-            aria-hidden={isKeyboardOpen}
+            aria-hidden={isHidden}
         >
             {left.map(renderTab)}
 

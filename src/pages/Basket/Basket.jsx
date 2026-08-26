@@ -3,27 +3,27 @@ import {useNavigate} from 'react-router-dom';
 import {useSessionStore, selectUserId} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
 import {useCartStore} from '../../store/useCartStore';
-import {useProductStore} from '../../store/useProductStore';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
 import {useBackButton} from '../../shared/hooks/useBackButton';
 import {useScrollMemory} from '../../shared/hooks/useScrollMemory';
 import {hapticImpact, hapticSelection} from '../../shared/lib/haptic';
-import {recallView, rememberView} from '../../shared/lib/viewMemory';
 import BackPill from '../../shared/ui/BackPill/BackPill';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import ProductCard from '../Main/ProductCard';
-import {fetchRecommendations} from '../../shared/api/product';
 import {discountPercent, shortPlatform} from '../Main/catalogSections';
 import {money, pageCartItems, rupees} from './cartModel';
+import {unitOldPrice, unitPrice} from './quoteLocal';
 import {useBasketQuote} from './useBasketQuote';
+import {usePromoMemory} from './usePromoMemory';
+import {useRecommendations} from './useRecommendations';
 import {usePendingOrder} from './usePendingOrder';
 import PromoField from './PromoField';
 import style from './Basket.module.scss';
 
-const PROMO_KEY = 'cart:promo';
-
 function CartRow({item, regionTitle, isRupee, onOpen, onCount}) {
-    const percent = isRupee ? 0 : discountPercent(item.price, item.oldPrice);
+    const price = unitPrice(item);
+    const oldPrice = unitOldPrice(item);
+    const percent = isRupee ? 0 : discountPercent(price, oldPrice);
     const meta = [shortPlatform(item.platform), item.typeLabel, regionTitle].filter(Boolean).join(' · ');
 
     return (
@@ -40,10 +40,10 @@ function CartRow({item, regionTitle, isRupee, onOpen, onCount}) {
 
                 <div className={style.rowBottom}>
                     <div className={style.rowPrices}>
-                        <span className={style.rowPrice}>
-                            {isRupee ? rupees(item.priceInOtherCurrency) : money(item.price)}
+                        <span key={price} className={style.rowPrice}>
+                            {isRupee ? rupees(item.priceInOtherCurrency) : money(price)}
                         </span>
-                        {percent > 0 ? <span className={style.rowOldPrice}>{money(item.oldPrice)}</span> : null}
+                        {percent > 0 ? <span className={style.rowOldPrice}>{money(oldPrice)}</span> : null}
                     </div>
 
                     <div className={style.counter}>
@@ -56,7 +56,7 @@ function CartRow({item, regionTitle, isRupee, onOpen, onCount}) {
                             −
                         </button>
 
-                        <span className={style.counterValue}>{item.count}</span>
+                        <span key={item.count} className={style.counterValue}>{item.count}</span>
 
                         <button
                             type="button"
@@ -114,53 +114,32 @@ export default function Basket() {
     const catalogs = useStructureStore((state) => state.catalogs);
 
     const items = useCartStore((state) => state.items);
-    const revision = useCartStore((state) => state.revision);
     const loadCart = useCartStore((state) => state.load);
     const setCartCount = useCartStore((state) => state.setCount);
 
-    const rememberPreviews = useProductStore((state) => state.rememberPreviews);
-
-    const [promoCode, setPromoCode] = useState(() => recallView(PROMO_KEY) || '');
-    const [recommendations, setRecommendations] = useState([]);
+    const [leavingId, setLeavingId] = useState(null);
 
     const pending = usePendingOrder(userId);
+    const recommendations = useRecommendations(pageId);
 
     const page = useMemo(() => (pages || []).find((item) => item.id === pageId) || null, [pages, pageId]);
     const regionTitle = page?.name || null;
-    const isIndia = page?.type === 'ps_india';
+    const pageType = pages ? (page?.type || null) : undefined;
+    const isIndia = pageType === 'ps_india';
 
     const pageItems = useMemo(
         () => pageCartItems(items, catalogs, pageId),
         [items, catalogs, pageId]
     );
 
-    const {quote, isLoading, error, retry} = useBasketQuote({userId, pageId, promoCode, revision});
+    const {promo, apply, clear} = usePromoMemory();
+    const {quote, isLoading, error, retry} = useBasketQuote({items: pageItems, pageType, promo});
 
     const scrollRef = useScrollMemory('basket', {ready: pageItems !== null});
 
     useEffect(() => {
         loadCart(userId);
     }, [userId, loadCart]);
-
-    useEffect(() => {
-        rememberView(PROMO_KEY, promoCode);
-    }, [promoCode]);
-
-    useEffect(() => {
-        if (pageId === null) return undefined;
-
-        const controller = new AbortController();
-
-        fetchRecommendations(pageId, controller.signal)
-            .then((list) => {
-                const products = Array.isArray(list) ? list.slice(0, 10) : [];
-                rememberPreviews(products);
-                setRecommendations(products);
-            })
-            .catch(() => setRecommendations([]));
-
-        return () => controller.abort();
-    }, [pageId, rememberPreviews]);
 
     const back = useCallback(() => {
         hapticImpact('light');
@@ -176,7 +155,20 @@ export default function Basket() {
 
     const changeCount = useCallback((item, next) => {
         hapticSelection();
+
+        if (next < 1) {
+            setLeavingId(item.id);
+            return;
+        }
+
         setCartCount(userId, item.id, next);
+    }, [setCartCount, userId]);
+
+    const dropLeaving = useCallback((event, item) => {
+        if (event.target !== event.currentTarget) return;
+
+        setLeavingId(null);
+        setCartCount(userId, item.id, 0);
     }, [setCartCount, userId]);
 
     const goToCheckout = useCallback(() => {
@@ -232,8 +224,9 @@ export default function Basket() {
                             {pageItems.map((item, index) => (
                                 <div
                                     key={item.id}
-                                    className={style.listItem}
-                                    style={{animationDelay: `${Math.min(index, 6) * 40}ms`}}
+                                    className={`${style.listItem} ${leavingId === item.id ? style.listItemLeaving : ''}`}
+                                    style={{animationDelay: leavingId === item.id ? '0ms' : `${Math.min(index, 6) * 40}ms`}}
+                                    onAnimationEnd={leavingId === item.id ? (event) => dropLeaving(event, item) : undefined}
                                 >
                                     <CartRow
                                         item={item}
@@ -246,11 +239,7 @@ export default function Basket() {
                             ))}
                         </div>
 
-                        <PromoField
-                            promo={quote?.promo || null}
-                            onApply={setPromoCode}
-                            onClear={() => setPromoCode('')}
-                        />
+                        <PromoField promo={quote?.promo || null} onApply={apply} onClear={clear}/>
 
                         <IndiaSummary calc={quote?.calc}/>
 
@@ -265,11 +254,13 @@ export default function Basket() {
                                         <span className={style.totalsLabel}>
                                             {isIndia ? 'Пополнение и подписки' : `Товары (${count})`}
                                         </span>
-                                        <span className={style.totalsValue}>{money(quote?.itemsTotal ?? 0)}</span>
+                                        <span key={quote?.itemsTotal} className={style.totalsValue}>
+                                            {money(quote?.itemsTotal ?? 0)}
+                                        </span>
                                     </div>
 
                                     {quote?.discount > 0 ? (
-                                        <div className={style.totalsRow}>
+                                        <div className={`${style.totalsRow} ${style.totalsRowIn}`}>
                                             <span className={style.totalsLabel}>Скидка по промокоду</span>
                                             <span className={style.totalsDiscount}>−{money(quote.discount)}</span>
                                         </div>
@@ -279,7 +270,7 @@ export default function Basket() {
 
                                     <div className={style.totalsRow}>
                                         <span className={style.totalsFinalLabel}>Итого</span>
-                                        <span className={style.totalsFinal}>{money(total)}</span>
+                                        <span key={total} className={style.totalsFinal}>{money(total)}</span>
                                     </div>
                                 </>
                             )}
@@ -292,8 +283,14 @@ export default function Basket() {
                         <h2 className={style.recommendTitle}>Рекомендуем добавить</h2>
 
                         <div className={style.recommendTrack}>
-                            {recommendations.map((product) => (
-                                <ProductCard key={product.id} product={product} onOpen={openProduct}/>
+                            {recommendations.map((product, index) => (
+                                <div
+                                    key={product.id}
+                                    className={style.recommendItem}
+                                    style={{animationDelay: `${index * 45}ms`}}
+                                >
+                                    <ProductCard product={product} onOpen={openProduct}/>
+                                </div>
                             ))}
                         </div>
                     </section>

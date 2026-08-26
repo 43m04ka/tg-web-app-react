@@ -4,6 +4,8 @@ import {usePlatform} from '../shared/hooks/usePlatform';
 import {configureTelegramViewport} from '../shared/lib/telegram';
 import {useTelegramSdk} from '../shared/hooks/useTelegramSdk';
 import {syncUser} from '../shared/api/structure';
+import {loadPriceRules} from '../shared/api/priceRules';
+import {warmRecommendations} from '../pages/Basket/recommendQueue';
 import {BOOTSTRAP_TIMEOUT_MS} from '../shared/config/env';
 import {useSessionStore} from '../store/useSessionStore';
 import {selectIsStructureReady, useStructureStore} from '../store/useStructureStore';
@@ -20,9 +22,11 @@ export function useBootstrap() {
     const setSyncFailed = useSessionStore((state) => state.setSyncFailed);
     const setPlatform = useSessionStore((state) => state.setPlatform);
     const syncToken = useSessionStore((state) => state.syncToken);
+    const pageId = useSessionStore((state) => state.pageId);
 
     const loadStructure = useStructureStore((state) => state.load);
     const isStructureReady = useStructureStore(selectIsStructureReady);
+    const pages = useStructureStore((state) => state.pages);
 
     const [isTimedOut, setIsTimedOut] = useState(false);
 
@@ -71,6 +75,16 @@ export function useBootstrap() {
 
         return () => controller.abort();
     }, [userKey, syncToken, setInternalUserId, setSyncFailed]);
+
+    useEffect(() => {
+        if (pageId === null || pageId === undefined) return;
+
+        warmRecommendations(pageId);
+
+        const isIndia = (pages || []).find((page) => page.id === pageId)?.type === 'ps_india';
+
+        if (isIndia) loadPriceRules('india').catch(() => undefined);
+    }, [pageId, pages]);
 
     return {
         isReady: isStructureReady && (isTimedOut || (isUserReady && isPlatformResolved)),

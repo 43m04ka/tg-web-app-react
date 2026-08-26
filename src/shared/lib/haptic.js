@@ -27,6 +27,20 @@ export const hapticImpact = (style = 'light') => {
     vkTaptic('VKWebAppTapticImpactOccurred', {style});
 };
 
+export const hapticNotification = (type = 'success') => {
+    const haptic = telegramHaptic();
+
+    if (typeof haptic?.notificationOccurred === 'function') {
+        try {
+            haptic.notificationOccurred(type);
+            return;
+        } catch (e) {
+        }
+    }
+
+    vkTaptic('VKWebAppTapticNotificationOccurred', {type});
+};
+
 export const hapticSelection = () => {
     const haptic = telegramHaptic();
 

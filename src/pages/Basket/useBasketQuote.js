@@ -1,37 +1,50 @@
-import {useCallback, useEffect, useState} from 'react';
-import {fetchBasketQuote} from '../../shared/api/basket';
+import {useCallback, useEffect, useMemo, useState} from 'react';
+import {loadPriceRules, peekPriceRules} from '../../shared/api/priceRules';
+import {buildQuote} from './quoteLocal';
 
-const EMPTY = {
-    quote: null,
-    isLoading: false,
-    error: false
-};
+const INDIA = 'india';
 
-export function useBasketQuote({userId, pageId, promoCode, revision}) {
-    const [state, setState] = useState(EMPTY);
+export function useBasketQuote({items, pageType, promo}) {
+    const [rules, setRules] = useState(() => peekPriceRules(INDIA));
+    const [isFailed, setFailed] = useState(false);
     const [attempt, setAttempt] = useState(0);
 
+    const needsRules = pageType === 'ps_india';
+
     useEffect(() => {
-        if (!userId || !pageId) {
-            setState(EMPTY);
-            return undefined;
-        }
+        if (!needsRules || rules) return undefined;
 
-        const controller = new AbortController();
+        let isAlive = true;
 
-        setState((prev) => ({...prev, isLoading: true, error: false}));
+        setFailed(false);
 
-        fetchBasketQuote({userId, pageId, promoCode}, controller.signal)
-            .then((quote) => setState({quote, isLoading: false, error: false}))
+        loadPriceRules(INDIA)
+            .then((list) => {
+                if (isAlive) setRules(list);
+            })
             .catch(() => {
-                if (controller.signal.aborted) return;
-                setState((prev) => ({...prev, isLoading: false, error: true}));
+                if (isAlive) setFailed(true);
             });
 
-        return () => controller.abort();
-    }, [userId, pageId, promoCode, revision, attempt]);
+        return () => {
+            isAlive = false;
+        };
+    }, [needsRules, rules, attempt]);
+
+    const quote = useMemo(
+        () => (pageType === undefined ? null : buildQuote({items, pageType, promo, indiaRules: rules})),
+        [items, pageType, promo, rules]
+    );
 
     const retry = useCallback(() => setAttempt((value) => value + 1), []);
 
-    return {...state, retry};
+    const isKnown = Array.isArray(items) && pageType !== undefined;
+    const isRulesReady = !needsRules || Boolean(rules);
+
+    return {
+        quote,
+        isLoading: !isKnown || (!isRulesReady && !isFailed),
+        error: isKnown && (isFailed || (isRulesReady && quote === null)),
+        retry
+    };
 }

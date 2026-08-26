@@ -139,6 +139,85 @@ export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const isEmailValid = (email) => EMAIL_PATTERN.test(String(email || '').trim());
 
+export const CONTACT_CHANNELS = [
+    {
+        key: 'telegram',
+        title: 'Telegram',
+        label: 'Ник в Telegram',
+        placeholder: 'username',
+        note: 'Только латиница, цифры и подчёркивание — без ссылки',
+        error: 'Ник от 4 символов, без пробелов и точек'
+    },
+    {
+        key: 'vk',
+        title: 'VK',
+        label: 'Страница ВКонтакте',
+        placeholder: 'vk.com/durov',
+        note: 'Ссылка на страницу или короткое имя',
+        error: 'Похоже на неверную ссылку'
+    },
+    {
+        key: 'email',
+        title: 'Почта',
+        label: 'Адрес почты',
+        placeholder: 'mail@example.com',
+        note: 'Ответим письмом на этот адрес',
+        error: 'Проверьте адрес почты'
+    },
+    {
+        key: 'phone',
+        title: 'Телефон',
+        label: 'Номер телефона',
+        placeholder: '+7 999 000-00-00',
+        note: 'Напишем в мессенджер по этому номеру',
+        error: 'Номер из 10–15 цифр'
+    }
+];
+
+export const findChannel = (key) => CONTACT_CHANNELS.find((channel) => channel.key === key) || CONTACT_CHANNELS[0];
+
+const digitsOf = (value) => String(value || '').replace(/[^\d+]/g, '');
+
+const VK_LINK = /^(https?:\/\/)?(m\.)?vk\.com\/[a-zA-Z0-9_.]{3,}$/;
+const VK_NAME = /^[a-zA-Z0-9_.]{3,}$/;
+const TELEGRAM_NAME = /^[a-zA-Z0-9_]{4,32}$/;
+const PHONE = /^\+?\d{10,15}$/;
+
+const stripAt = (value) => String(value || '').trim().replace(/^@+/, '');
+
+export const isContactValid = (channelKey, value) => {
+    const text = String(value || '').trim();
+    if (text === '') return false;
+
+    if (channelKey === 'telegram') return TELEGRAM_NAME.test(stripAt(text));
+    if (channelKey === 'vk') return VK_LINK.test(text) || VK_NAME.test(stripAt(text));
+    if (channelKey === 'email') return isEmailValid(text);
+    if (channelKey === 'phone') return PHONE.test(digitsOf(text));
+
+    return text.length > 2;
+};
+
+export const contactHandle = (channelKey, value) => {
+    const text = String(value || '').trim();
+
+    if (channelKey === 'telegram') return stripAt(text);
+    if (channelKey === 'vk') return VK_LINK.test(text) ? text : `https://vk.com/${stripAt(text)}`;
+    if (channelKey === 'phone') return digitsOf(text);
+
+    return text;
+};
+
+export const formatContact = (channelKey, value) => {
+    const handle = contactHandle(channelKey, value);
+
+    if (channelKey === 'telegram') return `Telegram: @${handle}`;
+    if (channelKey === 'vk') return `VK: ${handle}`;
+    if (channelKey === 'email') return `Почта: ${handle}`;
+    if (channelKey === 'phone') return `Телефон: ${handle}`;
+
+    return handle;
+};
+
 const FAQ_PSN = [
     {
         question: 'Нужен ли турецкий аккаунт?',

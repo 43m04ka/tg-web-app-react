@@ -1,11 +1,12 @@
 import React, {useCallback, useState} from 'react';
-import {hapticImpact} from '../../shared/lib/haptic';
+import {hapticImpact, hapticNotification} from '../../shared/lib/haptic';
 import {checkPromo} from '../../shared/api/basket';
 import style from './Basket.module.scss';
 
 const HINTS = {
     missing: 'Такого промокода нет',
-    exhausted: 'Промокод уже использован'
+    exhausted: 'Промокод уже использован',
+    failed: 'Не удалось проверить, попробуйте ещё раз'
 };
 
 export default function PromoField({promo, onApply, onClear}) {
@@ -24,17 +25,20 @@ export default function PromoField({promo, onApply, onClear}) {
 
         try {
             const result = await checkPromo(name);
+            const percent = Number(result?.percent);
 
-            if (result && Number(result.totalNumberUses) > 0) {
-                onApply(name);
+            if (result && Number(result.totalNumberUses) > 0 && percent > 0) {
+                hapticNotification('success');
+                onApply({name, percent});
                 setValue('');
                 setOpen(false);
                 return;
             }
 
+            hapticNotification('error');
             setHint(HINTS[result ? 'exhausted' : 'missing']);
         } catch (error) {
-            setHint(HINTS.missing);
+            setHint(HINTS.failed);
         } finally {
             setChecking(false);
         }
@@ -82,9 +86,13 @@ export default function PromoField({promo, onApply, onClear}) {
                 placeholder="Введите промокод"
                 autoComplete="off"
                 autoCapitalize="characters"
+                autoFocus
                 onChange={(event) => {
                     setValue(event.target.value.toUpperCase());
                     setHint('');
+                }}
+                onKeyDown={(event) => {
+                    if (event.key === 'Enter') apply();
                 }}
             />
 

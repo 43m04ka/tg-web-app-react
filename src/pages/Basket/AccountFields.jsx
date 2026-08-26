@@ -51,48 +51,55 @@ export default function AccountFields({pageType, kind, values, onKind, onChange}
             </div>
 
             <div className={style.card}>
-                <p className={style.hint}>{isNew ? form.newHint : form.ownHint}</p>
+                <p key={isNew ? 'new' : 'own'} className={style.hint}>{isNew ? form.newHint : form.ownHint}</p>
 
-                {isNew ? null : (
-                    <div className={style.fields}>
-                        {longFields.map((field) => (
-                            <input
-                                key={field.key}
-                                className={style.input}
-                                value={values[field.key] || ''}
-                                placeholder={field.placeholder}
-                                autoComplete="off"
-                                autoCapitalize="none"
-                                spellCheck="false"
-                                onChange={(event) => onChange(field.key, event.target.value)}
-                            />
-                        ))}
+                <div className={`${style.reveal} ${style.revealInline} ${isNew ? '' : style.revealOpen}`}>
+                    <div className={style.revealInner}>
+                        <div className={style.fields}>
+                            {longFields.map((field) => (
+                                <input
+                                    key={field.key}
+                                    className={style.input}
+                                    value={values[field.key] || ''}
+                                    placeholder={field.placeholder}
+                                    autoComplete="off"
+                                    autoCapitalize="none"
+                                    spellCheck="false"
+                                    tabIndex={isNew ? -1 : undefined}
+                                    onChange={(event) => onChange(field.key, event.target.value)}
+                                />
+                            ))}
 
-                        {shortFields.length ? (
-                            <div className={style.fieldsRow}>
-                                {shortFields.map((field) => (
-                                    <input
-                                        key={field.key}
-                                        className={`${style.input} ${style.inputShort}`}
-                                        value={values[field.key] || ''}
-                                        placeholder={field.placeholder}
-                                        maxLength={field.maxLength}
-                                        inputMode="numeric"
-                                        autoComplete="off"
-                                        onChange={(event) => onChange(field.key, event.target.value)}
-                                    />
-                                ))}
-                            </div>
-                        ) : null}
+                            {shortFields.length ? (
+                                <div className={style.fieldsRow}>
+                                    {shortFields.map((field) => (
+                                        <input
+                                            key={field.key}
+                                            className={`${style.input} ${style.inputShort}`}
+                                            value={values[field.key] || ''}
+                                            placeholder={field.placeholder}
+                                            maxLength={field.maxLength}
+                                            inputMode="numeric"
+                                            autoComplete="off"
+                                            tabIndex={isNew ? -1 : undefined}
+                                            onChange={(event) => onChange(field.key, event.target.value)}
+                                        />
+                                    ))}
+                                </div>
+                            ) : null}
+
+                            <button
+                                type="button"
+                                className={style.guide}
+                                tabIndex={isNew ? -1 : undefined}
+                                onClick={() => openGuide(form.guide.url)}
+                            >
+                                {form.guide.label}
+                                <span aria-hidden="true">›</span>
+                            </button>
+                        </div>
                     </div>
-                )}
-
-                {isNew ? null : (
-                    <button type="button" className={style.guide} onClick={() => openGuide(form.guide.url)}>
-                        {form.guide.label}
-                        <span aria-hidden="true">›</span>
-                    </button>
-                )}
+                </div>
             </div>
         </section>
     );

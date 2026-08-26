@@ -31,9 +31,21 @@ export default function ProductChips({chips}) {
     return (
         <div className={style.chipsBox} style={height === null ? undefined : {height: `${height}px`}}>
             <div className={style.chips} ref={innerRef}>
-                {visible.map((chip, index) => (
-                    <span key={`${chip}-${index}`} className={style.chip}>{chip}</span>
-                ))}
+                {visible.map((chip, index) => {
+                    const isRevealed = isOpen && index >= VISIBLE_LIMIT;
+
+                    return (
+                        <span
+                            key={`${chip}-${index}`}
+                            className={`${style.chip} ${isRevealed ? style.chipRevealed : ''}`}
+                            style={isRevealed
+                                ? {animationDelay: `${Math.min(index - VISIBLE_LIMIT, 8) * 32}ms`}
+                                : undefined}
+                        >
+                            {chip}
+                        </span>
+                    );
+                })}
 
                 {isCollapsible ? (
                     <button type="button" className={`${style.chip} ${style.chipToggle}`} onClick={toggle}>

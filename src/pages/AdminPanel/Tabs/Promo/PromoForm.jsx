@@ -210,14 +210,6 @@ const PromoForm = ({promoId, findPromo, onClose, onSaved}) => {
                                onChange={(event) => handleChange('personalNumberUses', event.target.value)}/>
                     </Row>
                 </Group>
-
-                {!isNew ? (
-                    <Group title="Служебное">
-                        <Row label="ID">
-                            <span className={s['formValue']}>{promoId}</span>
-                        </Row>
-                    </Group>
-                ) : null}
             </Sheet>
         </TabPane>
     );

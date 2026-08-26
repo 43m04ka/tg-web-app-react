@@ -17,7 +17,7 @@ import style from './App.module.scss';
 const AdminAuth = lazy(() => import('../pages/AdminPanel/AP_Authentication'));
 const AdminPanel = lazy(() => import('../pages/AdminPanel/AdminPanel'));
 
-const hasOwnBottomBar = (pathname) => pathname.startsWith('/card/');
+const hasOwnBottomBar = (pathname) => pathname.startsWith('/card/') || pathname === '/checkout';
 
 export default function App() {
     const {isReady} = useBootstrap();

@@ -2,23 +2,15 @@ import React, {useCallback} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {useSessionStore} from '../../../store/useSessionStore';
 import {useStructureStore} from '../../../store/useStructureStore';
+import {useCartStore} from '../../../store/useCartStore';
+import {pageCartItems} from '../../../pages/Basket/cartModel';
 import {useAppInsets} from '../../hooks/useAppInsets';
 import {hapticImpact} from '../../lib/haptic';
+import {primeKeyboard} from '../../lib/keyboard';
+import {WIDEST_REGION_TITLE, regionIcon, regionTitle} from '../../lib/region';
+import {resetSearchState} from '../../lib/searchMemory';
 import {BasketIcon, ChevronIcon, HomeIcon, MoreIcon, SearchIcon} from './NavIcons';
 import style from './NavBar.module.scss';
-
-const SHORT_TITLES = {
-    ps: 'Турция',
-    ps_india: 'Индия',
-    xbox: 'Xbox',
-    steam: 'Steam',
-    services: 'Сервисы'
-};
-
-const WIDEST_TITLE = Object.values(SHORT_TITLES).reduce(
-    (widest, title) => (title.length > widest.length ? title : widest),
-    ''
-);
 
 const TABS = [
     {path: '/main', label: 'Главная', Icon: HomeIcon, effect: 'home'},
@@ -35,25 +27,32 @@ export default function NavBar() {
     const pageId = useSessionStore((state) => state.pageId);
     const pages = useStructureStore((state) => state.pages);
     const startPages = useStructureStore((state) => state.startPages);
+    const catalogs = useStructureStore((state) => state.catalogs);
+    const cartItems = useCartStore((state) => state.items);
+
+    const cartSize = pageCartItems(cartItems, catalogs, pageId)?.length ?? 0;
 
     const page = pages?.find((candidate) => candidate.id === pageId);
     const startPage = startPages?.find((candidate) => candidate.structurePageId === pageId);
-    const icon = startPage?.icon || page?.barIcon;
+    const icon = regionIcon(page, startPage);
 
     const press = useCallback(() => hapticImpact('light'), []);
 
     const go = useCallback((path) => {
         if (pathname === path) return;
+
+        if (path === '/search') primeKeyboard();
+        else if (pathname === '/search') resetSearchState();
+
         navigate(path);
     }, [navigate, pathname]);
-
-    if (isKeyboardOpen) return null;
 
     const left = TABS.slice(0, 2);
     const right = TABS.slice(2);
 
     const renderTab = ({path, label, Icon, effect}) => {
         const isActive = pathname === path;
+        const badge = path === '/basket' && cartSize > 0 ? cartSize : null;
 
         return (
             <button
@@ -65,7 +64,10 @@ export default function NavBar() {
                 onClick={() => go(path)}
                 aria-current={isActive ? 'page' : undefined}
             >
-                <Icon className={style.icon}/>
+                <span className={style.iconBox}>
+                    <Icon className={style.icon}/>
+                    {badge ? <span className={style.badge}>{badge > 99 ? '99+' : badge}</span> : null}
+                </span>
                 <span className={style.label}>{label}</span>
             </button>
         );
@@ -73,8 +75,9 @@ export default function NavBar() {
 
     return (
         <nav
-            className={style.bar}
+            className={`${style.bar} ${isKeyboardOpen ? style.barHidden : ''}`}
             style={{paddingBottom: `calc(${safeAreaInset.bottom}px + 12 * var(--u))`}}
+            aria-hidden={isKeyboardOpen}
         >
             {left.map(renderTab)}
 
@@ -93,10 +96,8 @@ export default function NavBar() {
                         />
                     ) : null}
                     <span className={style.chipTitle}>
-                        <span className={style.sizer} aria-hidden="true">{WIDEST_TITLE}</span>
-                        <span className={style.value}>
-                            {SHORT_TITLES[page?.type] || startPage?.title || page?.title || 'Витрина'}
-                        </span>
+                        <span className={style.sizer} aria-hidden="true">{WIDEST_REGION_TITLE}</span>
+                        <span className={style.value}>{regionTitle(page, startPage)}</span>
                     </span>
                     <ChevronIcon className={style.chevron}/>
                 </span>

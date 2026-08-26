@@ -1,11 +1,11 @@
 export const LIST_KEYS = ['platform', 'type', 'genre', 'language', 'numberPlayers'];
 
 export const FILTER_GROUPS = [
-    {key: 'platform', title: 'Платформа'},
-    {key: 'type', title: 'Тип продукта'},
-    {key: 'genre', title: 'Жанры', limit: 10},
-    {key: 'language', title: 'Локализация', limit: 8},
-    {key: 'numberPlayers', title: 'Количество игроков', limit: 8}
+    {key: 'platform', title: 'Платформа', icon: 'platform'},
+    {key: 'type', title: 'Тип продукта', icon: 'type'},
+    {key: 'genre', title: 'Жанры', icon: 'genre', limit: 10},
+    {key: 'language', title: 'Локализация', icon: 'language', limit: 8},
+    {key: 'numberPlayers', title: 'Количество игроков', icon: 'players', limit: 8}
 ];
 
 export const TOGGLES = [
@@ -86,9 +86,38 @@ const priceLabel = (priceMin, priceMax) => {
     return null;
 };
 
+const TYPE_LABELS = {
+    GAME: 'Игра',
+    ADD_ON: 'DLC',
+    COMPLECT: 'Комплект',
+    BUNDLE: 'Комплект',
+    DONATION: 'Донат',
+    SUBSCRIPTION: 'Подписка',
+    CODE: 'Код',
+    OTHER: 'Другое'
+};
+
+const playersLabel = (value) => {
+    const range = String(value).match(/^(\d+)\s*[-–—]\s*(\d+)$/);
+    if (range) return `${range[1]}–${range[2]} игрока`;
+
+    if (/^\d+$/.test(value)) {
+        return Number(value) === 1 ? '1 игрок' : `${value} игроков`;
+    }
+
+    return value;
+};
+
+export const optionLabel = (key, option) => {
+    if (key === 'type') return TYPE_LABELS[option.value] || option.label || option.value;
+    if (key === 'numberPlayers') return playersLabel(option.value);
+
+    return option.label || option.value;
+};
+
 const labelOf = (facets, key, value) => {
     const option = (facets?.[key] || []).find((item) => item.value === value);
-    return option?.label || value;
+    return optionLabel(key, option || {value});
 };
 
 export const describeFilters = (filters, facets) => {

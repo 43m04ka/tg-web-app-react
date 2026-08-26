@@ -31,28 +31,31 @@ export default function Favorites() {
     const setFavorite = useFavoriteStore((state) => state.setFavorite);
     const rememberPreviews = useProductStore((state) => state.rememberPreviews);
 
-    const [removing, setRemoving] = useState(null);
+    const [leavingId, setLeavingId] = useState(null);
 
     useEffect(() => {
         rememberPreviews(items);
     }, [items, rememberPreviews]);
 
-    const remove = useCallback(async (product) => {
-        if (!userId) return;
+    const remove = useCallback((product) => {
+        if (!userId || leavingId) return;
 
         hapticImpact('light');
-        setRemoving(product.id);
+        setLeavingId(product.id);
 
-        // Убираем сразу: ждать ответа ради строки, которая заведомо исчезнет, незачем.
-        // Не получилось — перечитываем список, товар вернётся на место.
+        setFavorite(userId, product.id, false)
+            .then((isDone) => {
+                if (!isDone) reload();
+            })
+            .catch(() => reload());
+    }, [userId, leavingId, setFavorite, reload]);
+
+    const dropLeaving = useCallback((event, product) => {
+        if (event.target !== event.currentTarget) return;
+
         setItems((prev) => (prev || []).filter((item) => item.id !== product.id));
-
-        try {
-            if (!await setFavorite(userId, product.id, false)) reload();
-        } finally {
-            setRemoving(null);
-        }
-    }, [userId, setItems, setFavorite, reload]);
+        setLeavingId(null);
+    }, [setItems]);
 
     const count = items?.length ?? 0;
 
@@ -103,15 +106,19 @@ export default function Favorites() {
                             .filter(Boolean)
                             .join(' · ');
 
+                        const isLeaving = leavingId === product.id;
+
                         return (
-                            <article key={product.id} className={style.favorite}>
+                            <article
+                                key={product.id}
+                                className={`${style.favorite} ${isLeaving ? style.favoriteLeaving : ''}`}
+                                onAnimationEnd={isLeaving ? (event) => dropLeaving(event, product) : undefined}
+                            >
                                 <span
                                     className={style.cover}
                                     style={product.image ? {backgroundImage: `url(${product.image})`} : undefined}
                                     onClick={() => navigate(`/card/${product.id}`)}
-                                >
-                                    {percent > 0 ? <span className={style.badge}>−{percent}%</span> : null}
-                                </span>
+                                />
 
                                 <span className={style.favoriteBody}>
                                     <span className={style.favoriteTop}>
@@ -120,7 +127,7 @@ export default function Favorites() {
                                             {product.name}
                                         </span>
                                         <button type="button" className={style.heart}
-                                                disabled={removing === product.id}
+                                                disabled={isLeaving}
                                                 aria-label="Убрать из избранного"
                                                 onClick={() => remove(product)}>
                                             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -136,8 +143,14 @@ export default function Favorites() {
 
                                     <span className={style.favoritePrices}>
                                         <span className={style.price}>{formatMoney(product.price)}</span>
+
                                         {percent > 0 ? (
-                                            <span className={style.oldPrice}>{formatMoney(product.oldPrice)}</span>
+                                            <>
+                                                <span className={style.oldPrice}>
+                                                    {formatMoney(product.oldPrice)}
+                                                </span>
+                                                <span className={style.discount}>−{percent}%</span>
+                                            </>
                                         ) : null}
                                     </span>
                                 </span>

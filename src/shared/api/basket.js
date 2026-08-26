@@ -9,6 +9,17 @@ export const addBasketProduct = (userId, cardId, signal) =>
 export const deleteBasketProduct = (userId, cardId, signal) =>
     request('/api/basket/deleteProduct', {method: 'POST', body: {userId, cardId}, signal, retries: 0});
 
+export const fetchBasketQuote = ({userId, pageId, promoCode}, signal) =>
+    requestResult('/api/basket/quote', {
+        method: 'POST',
+        body: {userId, pageId, promoCode: promoCode || null},
+        signal,
+        retries: 1
+    });
+
+export const checkPromo = (name, signal) =>
+    requestResult('/api/basket/usePromo', {query: {name}, signal, retries: 0});
+
 export const updateBasketCount = (userId, cardId, count, signal) =>
     request('/api/basket/updateCountProduct', {
         method: 'POST',

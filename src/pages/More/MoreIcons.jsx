@@ -34,8 +34,10 @@ export const SupportIcon = (props) => (
 
 export const ChannelIcon = (props) => (
     <svg viewBox="0 0 24 24" {...props}>
-        <path d="M20.4 4.2 3.9 10.6c-.8.3-.8 1.4 0 1.7l4 1.4 1.6 4.9c.2.7 1.2.8 1.6.2l2.2-3 4 3c.6.4 1.4.1 1.6-.6l2.4-13c.1-.7-.5-1.3-1.2-1z" {...stroke}/>
-        <path d="m8 13.7 9.6-6.8-6.1 7.8" {...stroke}/>
+        <g transform="translate(-0.6 0.55)">
+            <path d="M20.4 4.2 3.9 10.6c-.8.3-.8 1.4 0 1.7l4 1.4 1.6 4.9c.2.7 1.2.8 1.6.2l2.2-3 4 3c.6.4 1.4.1 1.6-.6l2.4-13c.1-.7-.5-1.3-1.2-1z" {...stroke}/>
+            <path d="m8 13.7 9.6-6.8-6.1 7.8" {...stroke}/>
+        </g>
     </svg>
 );
 

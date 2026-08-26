@@ -7,7 +7,7 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  background: var(--bg-gradient);
+  background: var(--bg-elevated);
   animation: fade 225ms var(--ease-out) backwards;
 }
 
@@ -38,7 +38,6 @@
   }
 }
 
-// ── Шапка ────────────────────────────────────────────────
 .header {
   position: sticky;
   top: 0;
@@ -50,6 +49,21 @@
   padding: 0 u(20) u(12);
   background: oklch(0.15 0.014 264);
   border-bottom: 1px solid var(--border-subtle);
+  transition: transform 420ms var(--ease-out), opacity 300ms var(--ease-out);
+  will-change: transform;
+}
+
+.headerHidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 520ms var(--ease-out), opacity 420ms var(--ease-out) 60ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header {
+    transition: none;
+  }
 }
 
 .headerRow {
@@ -112,10 +126,20 @@
   display: flex;
   align-items: center;
   gap: u(8);
+  margin-left: u(-20);
+  margin-right: u(-20);
+  padding-left: u(20);
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+  mask-image: linear-gradient(90deg, #000 calc(100% - #{u(20)}), transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - #{u(20)}), transparent 100%);
+}
+
+.controls::after {
+  content: '';
+  flex: 0 0 u(12);
 }
 
 .controls::-webkit-scrollbar {
@@ -139,6 +163,7 @@
 
 .chip:active {
   background: var(--surface-3);
+  transform: scale(0.96);
 }
 
 .chipActive {
@@ -148,16 +173,34 @@
   color: var(--accent-text);
 }
 
+.chipIcon {
+  width: u(13);
+  height: u(13);
+  flex: none;
+  margin-right: u(-1);
+  opacity: 0.85;
+}
+
+.chipRemovable {
+  animation: chipIn 250ms var(--ease-spring) backwards;
+}
+
+@keyframes chipIn {
+  from {
+    opacity: 0;
+    transform: scale(0.86);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .chipCross {
   opacity: 0.55;
 }
 
-// Сортировка всегда прижата к правому краю: в рендере это отдельный от фильтров орган
-.sortChip {
-  margin-left: auto;
-}
 
-// ── Сетка ────────────────────────────────────────────────
 .content {
   flex: 1;
   padding: u(16) u(20) 0;
@@ -177,6 +220,28 @@
   gap: u(8);
   min-width: 0;
   cursor: pointer;
+}
+
+.cardIn {
+  animation: cardIn 300ms var(--ease-out) backwards;
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cardIn,
+  .chipRemovable {
+    animation: none;
+  }
 }
 
 .cover {
@@ -257,8 +322,6 @@
   text-decoration: line-through;
 }
 
-// Строка под ценой остаётся и без скидки: иначе карточки со скидкой и без неё
-// встают разной высоты и ряд сетки разъезжается
 .oldPricePlaceholder {
   font-size: u(11.5);
   font-weight: 600;
@@ -281,7 +344,6 @@
   color: var(--text-secondary);
 }
 
-// ── Прелоадер ────────────────────────────────────────────
 .skeletonCard {
   display: flex;
   flex-direction: column;
@@ -340,7 +402,6 @@
   }
 }
 
-// ── Пустая выдача ────────────────────────────────────────
 .empty {
   display: flex;
   flex-direction: column;

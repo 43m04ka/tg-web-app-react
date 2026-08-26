@@ -5,6 +5,12 @@ import style from './Product.module.scss';
 
 const NOTICE_MS = 2000;
 
+const SHARE_NOTICES = {
+    sent: 'Карточка отправлена',
+    copied: 'Скопировали текст карточки',
+    failed: 'Не удалось поделиться'
+};
+
 export default function ProductShare({productId, userId, text, link}) {
     const [notice, setNotice] = useState(null);
     const timerRef = useRef(0);
@@ -19,9 +25,9 @@ export default function ProductShare({productId, userId, text, link}) {
 
     const share = useCallback(async () => {
         hapticImpact('light');
-        const isShared = await shareProduct({productId, userId, text});
-        if (isShared) flash('Карточка отправлена');
-    }, [productId, userId, text, flash]);
+        const notice = SHARE_NOTICES[await shareProduct({productId, userId, text, link})];
+        if (notice) flash(notice);
+    }, [productId, userId, text, link, flash]);
 
     const copy = useCallback(async () => {
         hapticImpact('light');

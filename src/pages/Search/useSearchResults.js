@@ -1,25 +1,41 @@
 import {useEffect, useState} from 'react';
 import {searchProducts} from '../../shared/api/catalog';
+import {recallView, rememberView} from '../../shared/lib/viewMemory';
 import {useProductStore} from '../../store/useProductStore';
 
 const DEBOUNCE_MS = 320;
 const MIN_QUERY_LENGTH = 2;
 
-const IDLE = {items: null, suggestions: [], isLoading: false, error: false};
+const IDLE = {items: null, suggestions: [], isLoading: false, error: false, isRestored: false};
+
+const cacheKeyOf = (requestKey) => `search:${requestKey}`;
+
+const fromCache = (requestKey) => {
+    const cached = recallView(cacheKeyOf(requestKey));
+
+    return cached ? {...cached, isRestored: true} : null;
+};
 
 export function useSearchResults({query, scope, filters, sorting}) {
-    const [state, setState] = useState(IDLE);
-
-    const rememberPreviews = useProductStore((store) => store.rememberPreviews);
-
     const trimmed = String(query || '').trim();
     const requestKey = JSON.stringify({query: trimmed, scope, filters, sorting});
+
+    const [state, setState] = useState(() => fromCache(requestKey) || IDLE);
+
+    const rememberPreviews = useProductStore((store) => store.rememberPreviews);
 
     useEffect(() => {
         const request = JSON.parse(requestKey);
 
         if (request.query.length < MIN_QUERY_LENGTH) {
             setState(IDLE);
+            return undefined;
+        }
+
+        const cached = fromCache(requestKey);
+
+        if (cached) {
+            setState(cached);
             return undefined;
         }
 
@@ -41,11 +57,14 @@ export function useSearchResults({query, scope, filters, sorting}) {
                     rememberPreviews(items);
                     rememberPreviews(suggestions);
 
-                    setState({items, suggestions, isLoading: false, error: false});
+                    const next = {items, suggestions, isLoading: false, error: false, isRestored: false};
+
+                    rememberView(cacheKeyOf(requestKey), next);
+                    setState(next);
                 })
                 .catch(() => {
                     if (controller.signal.aborted) return;
-                    setState({items: null, suggestions: [], isLoading: false, error: true});
+                    setState({...IDLE, error: true});
                 });
         }, DEBOUNCE_MS);
 

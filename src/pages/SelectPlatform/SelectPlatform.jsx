@@ -13,7 +13,7 @@ import style from './SelectPlatform.module.scss';
 const MIN_FADE_PX = 24;
 const STAGGER_MS = 22;
 const STAGGER_CAP_MS = 170;
-const LEAVE_MS = 240;
+const LEAVE_MS = 265;
 const ENTER_MS = 210;
 
 const toGroups = (items) => {
@@ -80,7 +80,7 @@ export default function SelectPlatform() {
         window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium');
         setPickedId(item.id);
         setPageId(item.structurePageId);
-        setTimeout(() => navigate('/main'), LEAVE_MS);
+        setTimeout(() => navigate('/main', {state: {skipLeave: true}}), LEAVE_MS);
     }, [navigate, pickedId, setPageId]);
 
     const fadeZone = contentSafeAreaInset.top;

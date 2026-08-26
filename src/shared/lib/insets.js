@@ -5,6 +5,8 @@ import {subscribeVkSafeArea} from './vk';
 const TG_FULLSCREEN_MIN_TOP = 24;
 const TG_FULLSCREEN_MIN_CHROME = 46;
 const MOCK_BACK_BUTTON_INSET = 45;
+const KEYBOARD_MIN_SHIFT = 80;
+const FOCUS_HANDOVER_MS = 60;
 const SETTLE_DELAYS = [0, 80, 250, 600, 1200, 2000, 3500];
 const KEYBOARD_INPUT_TYPES = new Set(['text', 'search', 'email', 'tel', 'url', 'number', 'password']);
 
@@ -44,7 +46,6 @@ let state = {
 const listeners = new Set();
 let vkInsets = {top: 0, bottom: 0};
 let isFieldFocused = false;
-let baselineHeight = 0;
 
 const isSame = (a, b) =>
     a.safeAreaInset.top === b.safeAreaInset.top &&
@@ -63,14 +64,12 @@ const compute = () => {
     const width = vv ? vv.width : window.innerWidth;
     const height = vv ? vv.height : window.innerHeight;
 
-    let isKeyboardOpen;
-    if (tg && typeof tg.viewportHeight === 'number' && typeof tg.viewportStableHeight === 'number') {
-        isKeyboardOpen = tg.viewportHeight < tg.viewportStableHeight - 40;
-    } else if (isFieldFocused) {
-        isKeyboardOpen = vv ? baselineHeight - height > 80 : true;
-    } else {
-        isKeyboardOpen = false;
-    }
+    const shrunkByTelegram =
+        tg && typeof tg.viewportHeight === 'number' && typeof tg.viewportStableHeight === 'number'
+            ? tg.viewportHeight < tg.viewportStableHeight - KEYBOARD_MIN_SHIFT
+            : false;
+
+    const isKeyboardOpen = isFieldFocused || shrunkByTelegram;
 
     let top = systemInsets.top;
     let bottom = isKeyboardOpen ? 0 : systemInsets.bottom;
@@ -104,6 +103,7 @@ const compute = () => {
 
 const publish = () => {
     const next = compute();
+
     if (isSame(state, next)) return;
 
     state = next;
@@ -167,7 +167,6 @@ export const startInsets = () => {
 
     measureSystemInsets();
     isFieldFocused = isEditableTarget(document.activeElement);
-    baselineHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 
     syncTelegramSubscription();
     subscribeTelegramSdk(syncTelegramSubscription);
@@ -186,34 +185,30 @@ export const startInsets = () => {
         window.addEventListener('resize', onViewportChange);
     }
 
-    let baselineTimer = null;
+    let blurTimer = null;
 
     document.addEventListener('focusin', (event) => {
         if (!isEditableTarget(event.target)) return;
+
+        if (blurTimer) clearTimeout(blurTimer);
         isFieldFocused = true;
-        if (baselineTimer) clearTimeout(baselineTimer);
         publish();
     });
 
     document.addEventListener('focusout', (event) => {
         if (!isEditableTarget(event.target)) return;
-        isFieldFocused = false;
-        if (baselineTimer) clearTimeout(baselineTimer);
-        baselineTimer = window.setTimeout(() => {
-            if (isFieldFocused) return;
-            baselineHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+
+        if (blurTimer) clearTimeout(blurTimer);
+        blurTimer = window.setTimeout(() => {
+            if (isEditableTarget(document.activeElement)) return;
+
+            isFieldFocused = false;
             publish();
-        }, 400);
-        publish();
+        }, FOCUS_HANDOVER_MS);
     });
 
     window.addEventListener('orientationchange', () => {
-        window.setTimeout(() => {
-            if (!isFieldFocused) {
-                baselineHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-            }
-            remeasureAndPublish();
-        }, 400);
+        window.setTimeout(remeasureAndPublish, 400);
     });
 
     document.addEventListener('visibilitychange', () => {

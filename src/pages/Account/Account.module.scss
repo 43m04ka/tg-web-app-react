@@ -9,7 +9,7 @@
   gap: u(12);
   padding-left: u(20);
   padding-right: u(20);
-  background: var(--bg-gradient);
+  background: var(--bg-elevated);
   animation: fade 225ms var(--ease-out) backwards;
 }
 
@@ -154,6 +154,41 @@
   background: var(--surface-2);
 }
 
+.favoriteLeaving {
+  overflow: hidden;
+  pointer-events: none;
+  animation: favoriteLeave 420ms var(--ease-out) forwards;
+}
+
+@keyframes favoriteLeave {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    max-height: u(220);
+  }
+  55% {
+    opacity: 0;
+    transform: translateX(u(-26)) scale(0.95);
+    max-height: u(220);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(u(-26)) scale(0.95);
+    max-height: 0;
+    margin-bottom: u(-12);
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .favoriteLeaving {
+    animation-duration: 1ms;
+  }
+}
+
 .cover {
   position: relative;
   width: u(74);
@@ -235,18 +270,14 @@
   color: var(--text);
 }
 
-.badge {
-  position: absolute;
-  top: u(6);
-  left: u(6);
-  padding: u(3) u(6);
+.discount {
+  padding: u(3.5) u(7);
   border-radius: u(7);
-  background: oklch(0.62 0.19 24);
-  font-size: u(10);
+  background: var(--gold);
+  font-size: u(10.5);
   font-weight: 800;
   line-height: 1;
-  color: oklch(0.99 0.004 25);
-  box-shadow: var(--shadow-sm);
+  color: var(--gold-surface);
 }
 
 .oldPrice {

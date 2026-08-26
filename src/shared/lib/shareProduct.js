@@ -1,20 +1,22 @@
 import {prepareShareMessage} from '../api/product';
 import {getWebApp} from './telegram';
 
-const shareFallback = async (text) => {
-    if (!text) return false;
+const SHARE_MESSAGE_VERSION = '8.0';
 
-    if (typeof navigator.share === 'function') {
-        try {
-            await navigator.share({text});
-            return true;
-        } catch (error) {
-            if (error?.name === 'AbortError') return false;
-        }
+const shareUrl = (link, text) =>
+    `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
+
+const supportsShareMessage = (tg) =>
+    typeof tg?.shareMessage === 'function' && tg.isVersionAtLeast?.(SHARE_MESSAGE_VERSION) === true;
+
+const sendPrepared = (tg, messageId) => new Promise((resolve) => {
+    try {
+        tg.shareMessage(messageId, (isSent) => resolve(isSent === true ? 'sent' : 'cancelled'));
+    } catch (error) {
+        console.error('[share] shareMessage:', error.message);
+        resolve(null);
     }
-
-    return copyText(text);
-};
+});
 
 export const copyText = async (text) => {
     try {
@@ -26,21 +28,34 @@ export const copyText = async (text) => {
     }
 };
 
-export const shareProduct = async ({productId, userId, text}) => {
+export const shareProduct = async ({productId, userId, text, link}) => {
     const tg = getWebApp();
 
-    if (typeof tg?.shareMessage !== 'function' || !userId) {
-        return shareFallback(text);
+    if (userId && supportsShareMessage(tg)) {
+        const messageId = await prepareShareMessage(productId, userId).catch((error) => {
+            console.error('[share] prepare:', error.message);
+            return null;
+        });
+
+        if (messageId) {
+            const outcome = await sendPrepared(tg, messageId);
+            if (outcome) return outcome;
+        }
     }
 
-    try {
-        const messageId = await prepareShareMessage(productId, userId);
-        if (!messageId) return shareFallback(text);
-
-        tg.shareMessage(messageId);
-        return true;
-    } catch (error) {
-        console.error('[share] prepare:', error.message);
-        return shareFallback(text);
+    if (link && typeof tg?.openTelegramLink === 'function') {
+        tg.openTelegramLink(shareUrl(link, text));
+        return 'cancelled';
     }
+
+    if (text && typeof navigator.share === 'function') {
+        try {
+            await navigator.share({text});
+            return 'sent';
+        } catch (error) {
+            if (error?.name === 'AbortError') return 'cancelled';
+        }
+    }
+
+    return await copyText(text) ? 'copied' : 'failed';
 };

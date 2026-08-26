@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
 import {hapticImpact} from '../../shared/lib/haptic';
 import {fetchCatalogProducts} from '../../shared/api/catalog';
@@ -11,12 +11,46 @@ import {
     createFilters,
     describeFilters,
     isSamePriceRange,
+    optionLabel,
     productsPlural,
     setPriceRange,
     toggleFlag,
     toggleListValue
 } from '../../shared/lib/catalogQuery';
+import {
+    GenreIcon,
+    LanguageIcon,
+    PlatformIcon,
+    PlayersIcon,
+    PriceIcon,
+    SortIcon,
+    TypeIcon
+} from './CatalogIcons';
 import style from './FilterSheet.module.scss';
+
+const GROUP_ICONS = {
+    platform: PlatformIcon,
+    type: TypeIcon,
+    genre: GenreIcon,
+    language: LanguageIcon,
+    players: PlayersIcon,
+    price: PriceIcon,
+    sort: SortIcon
+};
+
+function GroupHead({icon, title, children}) {
+    const IconComponent = GROUP_ICONS[icon];
+
+    return (
+        <div className={style.groupHead}>
+            <span className={style.groupTitle}>
+                {IconComponent ? <IconComponent className={style.groupIcon}/> : null}
+                {title}
+            </span>
+            {children}
+        </div>
+    );
+}
 
 function Group({group, options, values, onToggle}) {
     const [isExpanded, setExpanded] = useState(false);
@@ -29,29 +63,30 @@ function Group({group, options, values, onToggle}) {
 
     return (
         <section className={style.group}>
-            <div className={style.groupHead}>
-                <span className={style.groupTitle}>{group.title}</span>
-
+            <GroupHead icon={group.icon} title={group.title}>
                 {hidden > 0 || isExpanded ? (
                     <button type="button" className={style.groupMore} onClick={() => setExpanded(!isExpanded)}>
-                        {isExpanded ? 'Свернуть ▴' : `Ещё ${hidden} ▾`}
+                        {isExpanded ? 'Свернуть' : `Ещё ${hidden}`}
+                        <span className={`${style.groupMoreChevron} ${isExpanded ? style.groupMoreOpen : ''}`}>▾</span>
                     </button>
                 ) : null}
-            </div>
+            </GroupHead>
 
             <div className={style.options}>
-                {visible.map((option) => {
+                {visible.map((option, index) => {
                     const isActive = values.includes(option.value);
+                    const isRevealed = index >= limit;
 
                     return (
                         <button
                             key={option.value}
                             type="button"
-                            className={`${style.option} ${isActive ? style.optionActive : ''}`}
+                            className={`${style.option} ${isActive ? style.optionActive : ''} ${isRevealed ? style.optionRevealed : ''}`}
+                            style={isRevealed ? {animationDelay: `${Math.min(index - limit, 8) * 28}ms`} : undefined}
                             aria-pressed={isActive}
                             onClick={() => onToggle(group.key, option.value)}
                         >
-                            {option.label}
+                            {optionLabel(group.key, option)}
                         </button>
                     );
                 })}
@@ -62,6 +97,11 @@ function Group({group, options, values, onToggle}) {
 
 const PREVIEW_DELAY_MS = 250;
 const SLIDER_STEPS = 100;
+
+const CLOSE_DISTANCE = 96;
+const CLOSE_VELOCITY = 0.6;
+
+const DRAG_THRESHOLD = 6;
 
 const resolveBounds = (price) => {
     const min = Number(price?.min);
@@ -92,8 +132,6 @@ function PriceSlider({bounds, priceMin, priceMax, onChange}) {
     const from = priceMin === null ? bounds.min : Math.max(bounds.min, priceMin);
     const to = priceMax === null ? bounds.max : Math.min(bounds.max, priceMax);
 
-    // Границы диапазона равны краям — это «фильтра нет», и в запрос уходит null:
-    // иначе товар с ценой ровно на краю мог бы отсечься округлением шага
     const commit = (nextFrom, nextTo) => onChange(
         nextFrom <= bounds.min ? null : nextFrom,
         nextTo >= bounds.max ? null : nextTo
@@ -134,7 +172,6 @@ function PriceSlider({bounds, priceMin, priceMax, onChange}) {
 }
 
 export default function FilterSheet({
-    isOpen,
     scope,
     facets,
     price,
@@ -149,38 +186,101 @@ export default function FilterSheet({
     const [draft, setDraft] = useState(filters);
     const [draftSorting, setDraftSorting] = useState(sorting);
     const [preview, setPreview] = useState(total);
+    const [isCounting, setCounting] = useState(false);
+    const [isClosing, setClosing] = useState(false);
+    const [dragOffset, setDragOffset] = useState(0);
 
-    useEffect(() => {
-        if (!isOpen) return;
-        setDraft(filters);
-        setDraftSorting(sorting);
-        setPreview(total);
-    }, [isOpen, filters, sorting, total]);
+    const dragRef = useRef(null);
+    const appliedRef = useRef(JSON.stringify(filters));
 
     const scopeKey = JSON.stringify(scope);
     const draftKey = JSON.stringify(draft);
+    const appliedKey = appliedRef.current;
 
     useEffect(() => {
-        if (!isOpen) return undefined;
-
         const controller = new AbortController();
+
+        if (draftKey !== appliedKey) setCounting(true);
 
         const timer = setTimeout(() => {
             fetchCatalogProducts(
                 {...JSON.parse(scopeKey), filters: JSON.parse(draftKey), page: 1, perPage: 1},
                 controller.signal
             )
-                .then((payload) => setPreview(payload?.total ?? 0))
-                .catch(() => setPreview(null));
+                .then((payload) => {
+                    setPreview(payload?.total ?? 0);
+                    setCounting(false);
+                })
+                .catch(() => {
+                    if (controller.signal.aborted) return;
+                    setPreview(null);
+                    setCounting(false);
+                });
         }, PREVIEW_DELAY_MS);
 
         return () => {
             clearTimeout(timer);
             controller.abort();
         };
-    }, [isOpen, scopeKey, draftKey]);
+    }, [scopeKey, draftKey, appliedKey]);
 
-    if (!isOpen) return null;
+    const requestClose = useCallback(() => setClosing(true), []);
+
+    const handleAnimationEnd = useCallback((event) => {
+        if (event.target !== event.currentTarget) return;
+        if (isClosing) onClose();
+    }, [isClosing, onClose]);
+
+    const startDrag = (event) => {
+        if (event.pointerType === 'mouse' && event.button !== 0) return;
+
+        dragRef.current = {
+            startY: event.clientY,
+            lastY: event.clientY,
+            lastAt: event.timeStamp,
+            velocity: 0,
+            isActive: false
+        };
+    };
+
+    const moveDrag = (event) => {
+        const drag = dragRef.current;
+        if (!drag) return;
+
+        const shift = event.clientY - drag.startY;
+
+        if (!drag.isActive) {
+            if (shift < DRAG_THRESHOLD) return;
+
+            drag.isActive = true;
+            event.currentTarget.setPointerCapture(event.pointerId);
+        }
+
+        const elapsed = event.timeStamp - drag.lastAt;
+        if (elapsed > 0) drag.velocity = (event.clientY - drag.lastY) / elapsed;
+
+        drag.lastY = event.clientY;
+        drag.lastAt = event.timeStamp;
+
+        setDragOffset(Math.max(0, shift));
+    };
+
+    const endDrag = () => {
+        const drag = dragRef.current;
+        if (!drag) return;
+
+        dragRef.current = null;
+
+        if (!drag.isActive) return;
+
+        if (dragOffset > CLOSE_DISTANCE || drag.velocity > CLOSE_VELOCITY) {
+            hapticImpact('light');
+            requestClose();
+            return;
+        }
+
+        setDragOffset(0);
+    };
 
     const chips = describeFilters(draft, facets);
     const activeCount = countActiveFilters(draft);
@@ -207,18 +307,40 @@ export default function FilterSheet({
     const apply = () => {
         hapticImpact('medium');
         onApply(draft, draftSorting);
+        requestClose();
     };
+
+    const isDragging = dragRef.current?.isActive === true;
 
     return (
         <div className={style.overlay} role="dialog" aria-modal="true" aria-label="Фильтры">
-            <button type="button" className={style.backdrop} aria-label="Закрыть фильтры" onClick={onClose}/>
+            <button
+                type="button"
+                className={`${style.backdrop} ${isClosing ? style.backdropClosing : ''}`}
+                aria-label="Закрыть фильтры"
+                onClick={requestClose}
+            />
 
-            <div className={style.sheet}>
-                <div className={style.head}>
+            <div
+                className={`${style.sheet} ${isClosing ? style.sheetClosing : ''}`}
+                style={{
+                    '--drag-offset': `${dragOffset}px`,
+                    transform: dragOffset && !isClosing ? `translateY(${dragOffset}px)` : undefined,
+                    transition: isDragging ? 'none' : undefined
+                }}
+                onAnimationEnd={handleAnimationEnd}
+            >
+                <div
+                    className={style.head}
+                    onPointerDown={startDrag}
+                    onPointerMove={moveDrag}
+                    onPointerUp={endDrag}
+                    onPointerCancel={endDrag}
+                >
                     <span className={style.grabber} aria-hidden="true"/>
 
                     <div className={style.headRow}>
-                        <span className={style.headTitle}>Фильтры</span>
+                        <span className={style.headTitle}>Фильтры и сортировка</span>
                         {activeCount > 0 ? (
                             <button type="button" className={style.reset} onClick={reset}>Сбросить всё</button>
                         ) : null}
@@ -242,6 +364,33 @@ export default function FilterSheet({
                 </div>
 
                 <div className={style.body}>
+                    <section className={style.sortBlock}>
+                        <GroupHead icon="sort" title="Сортировка"/>
+
+                        <div className={style.options}>
+                            {SORTINGS.map((option) => {
+                                const isActive = draftSorting === option.key;
+
+                                return (
+                                    <button
+                                        key={option.key}
+                                        type="button"
+                                        className={`${style.option} ${isActive ? style.optionActive : ''}`}
+                                        aria-pressed={isActive}
+                                        onClick={() => {
+                                            hapticImpact('light');
+                                            setDraftSorting(option.key);
+                                        }}
+                                    >
+                                        {option.label}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </section>
+
+                    <span className={style.divider}>Фильтры</span>
+
                     {FILTER_GROUPS.map((group) => (
                         <Group
                             key={group.key}
@@ -253,10 +402,9 @@ export default function FilterSheet({
                     ))}
 
                     <section className={style.group}>
-                        <div className={style.groupHead}>
-                            <span className={style.groupTitle}>Цена</span>
+                        <GroupHead icon="price" title="Цена">
                             <span className={style.groupNote}>{priceNote(draft, bounds)}</span>
-                        </div>
+                        </GroupHead>
 
                         {bounds ? (
                             <PriceSlider
@@ -280,33 +428,6 @@ export default function FilterSheet({
                                         onClick={() => applyPreset(preset)}
                                     >
                                         {preset.label}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </section>
-
-                    <section className={style.group}>
-                        <div className={style.groupHead}>
-                            <span className={style.groupTitle}>Сортировка</span>
-                        </div>
-
-                        <div className={style.options}>
-                            {SORTINGS.map((option) => {
-                                const isActive = draftSorting === option.key;
-
-                                return (
-                                    <button
-                                        key={option.key}
-                                        type="button"
-                                        className={`${style.option} ${isActive ? style.optionActive : ''}`}
-                                        aria-pressed={isActive}
-                                        onClick={() => {
-                                            hapticImpact('light');
-                                            setDraftSorting(option.key);
-                                        }}
-                                    >
-                                        {option.label}
                                     </button>
                                 );
                             })}
@@ -340,10 +461,22 @@ export default function FilterSheet({
                 </div>
 
                 <div className={style.footer} style={{paddingBottom: `calc(${safeAreaInset.bottom}px + 20 * var(--u))`}}>
-                    <button type="button" className={style.apply} onClick={apply}>
-                        {typeof preview === 'number'
-                            ? `Показать ${preview.toLocaleString('ru-RU')} ${productsPlural(preview)}`
-                            : 'Показать товары'}
+                    <button type="button" className={`${style.apply} ${isCounting ? style.applyCounting : ''}`}
+                            onClick={apply}>
+                        {isCounting ? (
+                            <span className={style.applyCount}>
+                                Считаем
+                                <span className={style.dots} aria-hidden="true">
+                                    <i/><i/><i/>
+                                </span>
+                            </span>
+                        ) : (
+                            <span className={style.applyCount}>
+                                {typeof preview === 'number'
+                                    ? `Показать ${money(preview)} ${productsPlural(preview)}`
+                                    : 'Показать товары'}
+                            </span>
+                        )}
                     </button>
                 </div>
             </div>

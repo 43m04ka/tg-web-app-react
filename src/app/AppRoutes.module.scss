@@ -3,6 +3,7 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
+  animation: stageIn 165ms var(--ease-out);
   transition: opacity 150ms var(--ease-out);
 }
 
@@ -11,21 +12,22 @@
   min-height: 0;
 }
 
-.leaving,
-.entering {
+.leaving {
   opacity: 0;
 }
 
-.entering {
-  transition: none;
-}
-
-.idle {
-  opacity: 1;
+@keyframes stageIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .stage {
+    animation: none;
     transition: none;
   }
 }

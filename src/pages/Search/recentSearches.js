@@ -1,5 +1,6 @@
 const STORAGE_KEY = 'gw:recent-searches';
 const LIMIT = 6;
+const MIN_LENGTH = 2;
 
 const read = () => {
     try {
@@ -21,13 +22,22 @@ const write = (items) => {
     return undefined;
 };
 
+const isDraftOf = (stored, value) => value.startsWith(stored) && stored.length < value.length;
+
 export const loadRecentSearches = () => read();
 
 export const rememberSearch = (query) => {
     const value = String(query || '').trim();
-    if (value.length < 2) return read();
+    if (value.length < MIN_LENGTH) return read();
 
-    const next = [value, ...read().filter((item) => item.toLowerCase() !== value.toLowerCase())].slice(0, LIMIT);
+    const lower = value.toLowerCase();
+
+    const kept = read().filter((item) => {
+        const stored = item.toLowerCase();
+        return stored !== lower && !isDraftOf(stored, lower);
+    });
+
+    const next = [value, ...kept].slice(0, LIMIT);
     write(next);
 
     return next;

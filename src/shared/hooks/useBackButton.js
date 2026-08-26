@@ -2,13 +2,13 @@ import {useEffect, useRef} from 'react';
 import {getWebApp} from '../lib/telegram';
 import {useTelegramSdk} from './useTelegramSdk';
 
-export function useBackButton(onBack) {
+export function useBackButton(onBack, {enabled = true} = {}) {
     const handlerRef = useRef(onBack);
     handlerRef.current = onBack;
 
     const sdkToken = useTelegramSdk();
     const tg = sdkToken > 0 ? getWebApp() : null;
-    const isNative = Boolean(tg?.BackButton);
+    const isNative = Boolean(tg?.BackButton) && enabled;
 
     useEffect(() => {
         if (!isNative) return undefined;

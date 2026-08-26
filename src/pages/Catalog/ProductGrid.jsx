@@ -18,12 +18,20 @@ export function ProductGridSkeleton({count = 4}) {
     );
 }
 
-function GridCard({product, onOpen}) {
+const STAGGER_LIMIT = 8;
+const STAGGER_STEP_MS = 32;
+
+function GridCard({product, index, animate, onOpen}) {
     const percent = discountPercent(product.price, product.oldPrice);
     const platform = shortPlatform(product.platform);
+    const isAnimated = animate && index < STAGGER_LIMIT;
 
     return (
-        <article className={style.card} onClick={() => onOpen?.(product)}>
+        <article
+            className={`${style.card} ${isAnimated ? style.cardIn : ''}`}
+            style={isAnimated ? {animationDelay: `${index * STAGGER_STEP_MS}ms`} : undefined}
+            onClick={() => onOpen?.(product)}
+        >
             <div
                 className={style.cover}
                 style={product.image ? {backgroundImage: `url(${product.image})`} : undefined}
@@ -48,11 +56,17 @@ function GridCard({product, onOpen}) {
     );
 }
 
-export default function ProductGrid({items, onOpen}) {
+export default function ProductGrid({items, animate = true, onOpen}) {
     return (
         <div className={style.grid}>
-            {items.map((product) => (
-                <GridCard key={product.id} product={product} onOpen={onOpen}/>
+            {items.map((product, index) => (
+                <GridCard
+                    key={product.id}
+                    product={product}
+                    index={index}
+                    animate={animate}
+                    onOpen={onOpen}
+                />
             ))}
         </div>
     );

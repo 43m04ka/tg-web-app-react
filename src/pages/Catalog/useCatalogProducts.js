@@ -1,5 +1,6 @@
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {fetchCatalogProducts} from '../../shared/api/catalog';
+import {recallView, rememberView} from '../../shared/lib/viewMemory';
 import {useProductStore} from '../../store/useProductStore';
 
 const blank = (key) => ({
@@ -10,21 +11,40 @@ const blank = (key) => ({
     total: 0,
     hasMore: false,
     isLoading: true,
-    error: false
+    error: false,
+    isRestored: false
 });
+
+const restore = (key) => {
+    const saved = recallView(`list:${key}`);
+
+    return saved
+        ? {...saved, key, attempt: 0, isLoading: false, error: false, isRestored: true}
+        : blank(key);
+};
+
+const stampOf = (state) => (state.items === null ? null : `${state.key}|${state.page}|${state.attempt}`);
 
 export function useCatalogProducts(query, {enabled = true} = {}) {
     const key = JSON.stringify(query);
-    const [state, setState] = useState(() => blank(key));
+    const [state, setState] = useState(() => restore(key));
+    const loadedRef = useRef(stampOf(state));
 
     const rememberPreviews = useProductStore((store) => store.rememberPreviews);
 
-    if (state.key !== key) setState(blank(key));
+    if (state.key !== key) {
+        const next = restore(key);
+        setState(next);
+        loadedRef.current = stampOf(next);
+    }
 
     const {page, attempt} = state;
+    const stamp = `${key}|${page}|${attempt}`;
 
     useEffect(() => {
-        if (!enabled) return undefined;
+        if (!enabled || loadedRef.current === stamp) return undefined;
+
+        loadedRef.current = stamp;
 
         const controller = new AbortController();
 
@@ -48,11 +68,23 @@ export function useCatalogProducts(query, {enabled = true} = {}) {
             })
             .catch(() => {
                 if (controller.signal.aborted) return;
+                loadedRef.current = null;
                 setState((prev) => (isCurrent(prev) ? {...prev, isLoading: false, error: true} : prev));
             });
 
         return () => controller.abort();
-    }, [key, page, attempt, enabled, rememberPreviews]);
+    }, [stamp, key, page, attempt, enabled, rememberPreviews]);
+
+    useEffect(() => {
+        if (state.items === null || state.isLoading || state.error) return;
+
+        rememberView(`list:${state.key}`, {
+            page: state.page,
+            items: state.items,
+            total: state.total,
+            hasMore: state.hasMore
+        });
+    }, [state]);
 
     const loadMore = useCallback(() => {
         setState((prev) => (prev.hasMore && !prev.isLoading ? {...prev, page: prev.page + 1} : prev));
@@ -68,6 +100,7 @@ export function useCatalogProducts(query, {enabled = true} = {}) {
         hasMore: state.hasMore,
         isLoading: state.isLoading,
         isLoadingMore: state.isLoading && state.page > 1,
+        isRestored: state.isRestored,
         error: state.error,
         loadMore,
         retry

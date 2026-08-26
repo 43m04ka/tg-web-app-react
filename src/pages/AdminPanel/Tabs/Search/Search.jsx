@@ -165,7 +165,6 @@ const CluesList = ({onCountChange}) => {
                 <table className={style['table']}>
                     <thead>
                         <tr>
-                            <th className={style['idCol']}>ID</th>
                             <th>Текст подсказки</th>
                             <th className={style['pageCol']}>Страница</th>
                         </tr>
@@ -173,7 +172,7 @@ const CluesList = ({onCountChange}) => {
                     <tbody>
                         {visibleList.length === 0 ? (
                             <tr>
-                                <td className={style['emptyCell']} colSpan={3}>
+                                <td className={style['emptyCell']} colSpan={2}>
                                     {loading
                                         ? 'Загрузка…'
                                         : (filtersActive ? 'Под фильтры ничего не подошло' : 'Подсказок пока нет')}
@@ -181,7 +180,6 @@ const CluesList = ({onCountChange}) => {
                             </tr>
                         ) : visibleList.map((clue) => (
                             <tr key={clue.id} onClick={() => openClue(clue)}>
-                                <td className={style['mono']}>{clue.id}</td>
                                 <td>{clue.name || '—'}</td>
                                 <td className={style['pageCol']}>
                                     {pageNameById[clue.structurePageId] ? (

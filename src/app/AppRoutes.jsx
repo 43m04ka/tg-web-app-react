@@ -4,21 +4,16 @@ import SelectPlatform from '../pages/SelectPlatform/SelectPlatform';
 import Main from '../pages/Main/Main';
 import Catalog from '../pages/Catalog/Catalog';
 import Search from '../pages/Search/Search';
+import Basket from '../pages/Basket/Basket';
+import Checkout from '../pages/Basket/Checkout';
 import More from '../pages/More/More';
 import Product from '../pages/Product/Product';
 import Favorites from '../pages/Account/Favorites';
 import OrderHistory from '../pages/Account/OrderHistory';
-import Stub from '../pages/Stub/Stub';
 import {useSessionStore} from '../store/useSessionStore';
 import style from './AppRoutes.module.scss';
 
 const LEAVE_MS = 150;
-
-const PHASE = {
-    IDLE: 'idle',
-    LEAVING: 'leaving',
-    ENTERING: 'entering'
-};
 
 function RequirePage({children}) {
     const pageId = useSessionStore((state) => state.pageId);
@@ -28,54 +23,40 @@ function RequirePage({children}) {
 export default function AppRoutes() {
     const location = useLocation();
     const [shown, setShown] = useState(location);
-    const [phase, setPhase] = useState(PHASE.IDLE);
+    const [isLeaving, setLeaving] = useState(false);
 
     useEffect(() => {
         if (location.pathname === shown.pathname) return undefined;
 
-        setPhase(PHASE.LEAVING);
+        if (location.state?.skipLeave) {
+            setShown(location);
+            setLeaving(false);
+            return undefined;
+        }
+
+        setLeaving(true);
 
         const timerId = setTimeout(() => {
             setShown(location);
-            setPhase(PHASE.ENTERING);
+            setLeaving(false);
         }, LEAVE_MS);
 
         return () => clearTimeout(timerId);
     }, [location, shown]);
 
-    // Новую страницу надо один раз показать браузеру погашенной, иначе снятие
-    // класса попадает в тот же кадр, что и подмена содержимого, перехода не
-    // возникает и страница появляется рывком.
-    useEffect(() => {
-        if (phase !== PHASE.ENTERING) return undefined;
-
-        let inner = 0;
-        const outer = requestAnimationFrame(() => {
-            inner = requestAnimationFrame(() => setPhase(PHASE.IDLE));
-        });
-
-        return () => {
-            cancelAnimationFrame(outer);
-            cancelAnimationFrame(inner);
-        };
-    }, [phase, shown]);
-
     return (
-        <div className={`${style.stage} ${style[phase]}`}>
+        <div
+            key={shown.pathname}
+            className={`${style.stage} ${isLeaving ? style.leaving : ''}`}
+        >
             <Routes location={shown}>
                 <Route path="/" element={<SelectPlatform/>}/>
                 <Route path="/main" element={<RequirePage><Main/></RequirePage>}/>
                 <Route path="/catalog/*" element={<RequirePage><Catalog/></RequirePage>}/>
                 <Route path="/card/:id" element={<RequirePage><Product/></RequirePage>}/>
                 <Route path="/search" element={<RequirePage><Search/></RequirePage>}/>
-                <Route
-                    path="/basket"
-                    element={
-                        <RequirePage>
-                            <Stub title="Корзина" text="Корзина и оформление заказа появятся на следующем этапе редизайна."/>
-                        </RequirePage>
-                    }
-                />
+                <Route path="/basket" element={<RequirePage><Basket/></RequirePage>}/>
+                <Route path="/checkout" element={<RequirePage><Checkout/></RequirePage>}/>
                 <Route path="/more" element={<RequirePage><More/></RequirePage>}/>
                 <Route path="/favorites" element={<RequirePage><Favorites/></RequirePage>}/>
                 <Route path="/history" element={<RequirePage><OrderHistory/></RequirePage>}/>

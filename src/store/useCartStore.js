@@ -11,15 +11,17 @@ const toList = (result) => (Array.isArray(result) ? result : []);
 export const useCartStore = create((set, get) => ({
     items: null,
     userId: null,
+    revision: 0,
 
     reload: async (userId) => {
         if (!userId) return;
 
         try {
-            set({items: toList(await fetchBasket(userId)), userId});
+            const items = toList(await fetchBasket(userId));
+            set((state) => ({items, userId, revision: state.revision + 1}));
         } catch (error) {
             console.error('[cart] reload:', error.message);
-            set({items: [], userId});
+            set((state) => ({items: [], userId, revision: state.revision + 1}));
         }
     },
 
@@ -38,6 +40,7 @@ export const useCartStore = create((set, get) => ({
 
         try {
             await addBasketProduct(userId, product.id);
+            set((state) => ({revision: state.revision + 1}));
         } catch (error) {
             console.error('[cart] add:', error.message);
             get().reload(userId);
@@ -54,6 +57,7 @@ export const useCartStore = create((set, get) => ({
 
             try {
                 await deleteBasketProduct(userId, productId);
+                set((state) => ({revision: state.revision + 1}));
             } catch (error) {
                 console.error('[cart] delete:', error.message);
                 get().reload(userId);
@@ -65,11 +69,14 @@ export const useCartStore = create((set, get) => ({
 
         try {
             await updateBasketCount(userId, productId, count);
+            set((state) => ({revision: state.revision + 1}));
         } catch (error) {
             console.error('[cart] count:', error.message);
             get().reload(userId);
         }
-    }
+    },
+
+    clearLocal: () => set((state) => ({items: [], revision: state.revision + 1}))
 }));
 
 export const selectCartCount = (productId) => (state) =>

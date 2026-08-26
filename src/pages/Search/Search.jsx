@@ -3,12 +3,18 @@ import {useNavigate} from 'react-router-dom';
 import {useSessionStore} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
+import {useBackButton} from '../../shared/hooks/useBackButton';
+import {useHidingHeader} from '../../shared/hooks/useHidingHeader';
 import {useNearBottom} from '../../shared/hooks/useNearBottom';
+import {useScrollMemory} from '../../shared/hooks/useScrollMemory';
 import {hapticImpact} from '../../shared/lib/haptic';
+import {claimKeyboard} from '../../shared/lib/keyboard';
+import {regionIcon, regionTitle} from '../../shared/lib/region';
+import {readSearchForm, writeSearchForm} from '../../shared/lib/searchMemory';
 import {getTelegramObject} from '../../shared/lib/telegram';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import {supportUrlForBot} from '../More/moreMenu';
-import {fetchCatalogFacets} from '../../shared/api/catalog';
+import {loadFacets, peekFacets} from '../../shared/api/facetsCache';
 import {
     countActiveFilters,
     createFilters,
@@ -16,54 +22,88 @@ import {
     productsPlural,
     sortingLabel
 } from '../../shared/lib/catalogQuery';
+import {
+    AddonsIcon,
+    DonationIcon,
+    FunnelIcon,
+    GamesIcon,
+    SortIcon,
+    SubscriptionIcon
+} from '../Catalog/CatalogIcons';
 import ProductGrid, {ProductGridSkeleton} from '../Catalog/ProductGrid';
 import FilterSheet from '../Catalog/FilterSheet';
 import {useCatalogProducts} from '../Catalog/useCatalogProducts';
-import {buildCategories, buildCollections, buildGenres} from './searchSections';
+import {buildCategories, buildGenres} from './searchSections';
 import {clearRecentSearches, forgetSearch, loadRecentSearches, rememberSearch} from './recentSearches';
 import {useSearchResults, MIN_QUERY_LENGTH} from './useSearchResults';
 import style from './Search.module.scss';
 
+const TILE_ICONS = {
+    games: GamesIcon,
+    subscriptions: SubscriptionIcon,
+    donation: DonationIcon,
+    addons: AddonsIcon
+};
+
 export default function Search() {
     const navigate = useNavigate();
-    const {contentSafeAreaInset, safeAreaInset} = useAppInsets();
+    const {contentSafeAreaInset, safeAreaInset, isKeyboardOpen} = useAppInsets();
 
     const pageId = useSessionStore((state) => state.pageId);
     const botType = useSessionStore((state) => state.botType);
     const pages = useStructureStore((state) => state.pages);
+    const startPages = useStructureStore((state) => state.startPages);
 
-    const pageName = useMemo(
-        () => (pages || []).find((page) => page.id === pageId)?.name || null,
-        [pages, pageId]
-    );
+    const region = useMemo(() => {
+        const page = (pages || []).find((candidate) => candidate.id === pageId);
+        const startPage = (startPages || []).find((candidate) => candidate.structurePageId === pageId);
 
-    const [query, setQuery] = useState('');
-    const [filters, setFilters] = useState(() => createFilters());
-    const [sorting, setSorting] = useState('default');
+        if (!page && !startPage) return null;
+
+        return {title: regionTitle(page, startPage), icon: regionIcon(page, startPage)};
+    }, [pages, startPages, pageId]);
+
+    const saved = useRef(readSearchForm()).current;
+
+    const [query, setQuery] = useState(saved?.query || '');
+    const [filters, setFilters] = useState(() => saved?.filters || createFilters());
+    const [sorting, setSorting] = useState(saved?.sorting || 'default');
     const [isSheetOpen, setSheetOpen] = useState(false);
-    const [facets, setFacets] = useState(null);
-    const [price, setPrice] = useState(null);
+    const [{facets, price}, setFacetData] = useState(() => peekFacets({pageId}));
     const [recent, setRecent] = useState(() => loadRecentSearches());
 
     const scope = useMemo(() => ({pageId}), [pageId]);
-    const scrollRef = useRef(null);
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+        claimKeyboard(inputRef.current);
+    }, []);
+
+    useEffect(() => {
+        writeSearchForm({query, filters, sorting});
+    }, [query, filters, sorting]);
 
     const trimmed = query.trim();
     const isSearching = trimmed.length >= MIN_QUERY_LENGTH;
     const activeCount = countActiveFilters(filters);
     const isBrowsing = !isSearching && activeCount > 0;
+    const mode = isSearching ? 'results' : isBrowsing ? 'browse' : 'idle';
+
+    const scrollRef = useScrollMemory(`search:${mode}`);
+    const isHeaderHidden = useHidingHeader(scrollRef, {enabled: !isSheetOpen && !isKeyboardOpen});
 
     useEffect(() => {
-        const controller = new AbortController();
+        let isAlive = true;
 
-        fetchCatalogFacets({pageId}, controller.signal)
-            .then((payload) => {
-                setFacets(payload?.facets || null);
-                setPrice(payload?.price || null);
+        loadFacets({pageId})
+            .then((value) => {
+                if (isAlive) setFacetData(value);
             })
             .catch(() => undefined);
 
-        return () => controller.abort();
+        return () => {
+            isAlive = false;
+        };
     }, [pageId]);
 
     const search = useSearchResults({query: trimmed, scope, filters, sorting});
@@ -80,6 +120,13 @@ export default function Search() {
         enabled: isBrowsing && browse.hasMore && !browse.isLoading && !browse.error,
         onReach: browse.loadMore
     });
+
+    useEffect(() => {
+        if (!isSearching || search.isLoading || search.error) return;
+        if (!search.items || search.items.length === 0) return;
+
+        setRecent(rememberSearch(trimmed));
+    }, [isSearching, search.isLoading, search.error, search.items, trimmed]);
 
     const openProduct = useCallback((product) => {
         hapticImpact('light');
@@ -98,15 +145,13 @@ export default function Search() {
         setQuery('');
         setFilters(nextFilters);
         setSorting(nextSorting);
-        scrollRef.current?.scrollTo({top: 0, behavior: 'instant'});
     }, []);
 
     const applyFilters = useCallback((nextFilters, nextSorting) => {
         setFilters(nextFilters);
         setSorting(nextSorting);
-        setSheetOpen(false);
         scrollRef.current?.scrollTo({top: 0, behavior: 'instant'});
-    }, []);
+    }, [scrollRef]);
 
     const reset = useCallback(() => {
         hapticImpact('light');
@@ -114,6 +159,8 @@ export default function Search() {
         setFilters(createFilters());
         setSorting('default');
     }, []);
+
+    useBackButton(reset, {enabled: mode !== 'idle'});
 
     const askManager = useCallback(() => {
         const url = supportUrlForBot(botType);
@@ -130,19 +177,28 @@ export default function Search() {
 
     const categories = useMemo(() => buildCategories(facets), [facets]);
     const genres = useMemo(() => buildGenres(facets), [facets]);
-    const collections = useMemo(() => buildCollections(), []);
-
-    const showControls = isSearching || isBrowsing;
 
     return (
         <div ref={scrollRef} className={style.screen}>
             <div
-                className={style.header}
+                className={`${style.header} ${isHeaderHidden ? style.headerHidden : ''}`}
                 style={{paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`}}
             >
                 <div className={style.headerRow}>
                     <h1 className={style.title}>Поиск</h1>
-                    {pageName ? <span className={style.region}>{pageName}</span> : null}
+
+                    {region ? (
+                        <span className={style.region}>
+                            {region.icon ? (
+                                <span
+                                    className={style.regionIcon}
+                                    style={{backgroundImage: `url(${region.icon})`}}
+                                    aria-hidden="true"
+                                />
+                            ) : null}
+                            {region.title}
+                        </span>
+                    ) : null}
                 </div>
 
                 <form className={`${style.field} ${isSearching ? style.fieldActive : ''}`} onSubmit={submit}>
@@ -152,6 +208,7 @@ export default function Search() {
                     </svg>
 
                     <input
+                        ref={inputRef}
                         className={style.input}
                         type="search"
                         value={query}
@@ -168,7 +225,7 @@ export default function Search() {
                     ) : null}
                 </form>
 
-                {showControls ? (
+                {mode !== 'idle' ? (
                     <div className={style.controls}>
                         <button
                             type="button"
@@ -178,37 +235,36 @@ export default function Search() {
                                 setSheetOpen(true);
                             }}
                         >
+                            <FunnelIcon className={style.chipIcon}/>
                             {activeCount > 0 ? `Фильтры · ${activeCount}` : 'Фильтры'}
+                        </button>
+
+                        <button type="button" className={style.chip} onClick={() => setSheetOpen(true)}>
+                            <SortIcon className={style.chipIcon}/>
+                            {sortingLabel(sorting)}
                         </button>
 
                         {chips.map((chip) => (
                             <button
                                 key={chip.id}
                                 type="button"
-                                className={style.chip}
+                                className={`${style.chip} ${style.chipRemovable}`}
                                 onClick={() => setFilters((current) => chip.remove(current))}
                             >
                                 {chip.label}
                                 <span className={style.chipCross} aria-hidden="true">✕</span>
                             </button>
                         ))}
-
-                        <button
-                            type="button"
-                            className={`${style.chip} ${style.sortChip}`}
-                            onClick={() => setSheetOpen(true)}
-                        >
-                            {sortingLabel(sorting)}
-                        </button>
                     </div>
                 ) : null}
             </div>
 
             <div
+                key={mode}
                 className={style.content}
                 style={{paddingBottom: `calc(${safeAreaInset.bottom}px + 24 * var(--u))`}}
             >
-                {isSearching ? (
+                {mode === 'results' ? (
                     <SearchOutcome
                         state={search}
                         query={trimmed}
@@ -217,7 +273,7 @@ export default function Search() {
                         onAskManager={askManager}
                         onOpenCatalog={() => navigate('/main')}
                     />
-                ) : isBrowsing ? (
+                ) : mode === 'browse' ? (
                     <BrowseOutcome
                         state={browse}
                         onOpen={openProduct}
@@ -228,7 +284,6 @@ export default function Search() {
                     <IdleScreen
                         categories={categories}
                         genres={genres}
-                        collections={collections}
                         recent={recent}
                         onApply={applySection}
                         onPickRecent={(value) => setQuery(value)}
@@ -238,17 +293,18 @@ export default function Search() {
                 )}
             </div>
 
-            <FilterSheet
-                isOpen={isSheetOpen}
-                scope={scope}
-                facets={facets}
-                price={price}
-                filters={filters}
-                sorting={sorting}
-                total={isBrowsing ? browse.total : null}
-                onApply={applyFilters}
-                onClose={() => setSheetOpen(false)}
-            />
+            {isSheetOpen ? (
+                <FilterSheet
+                    scope={scope}
+                    facets={facets}
+                    price={price}
+                    filters={filters}
+                    sorting={sorting}
+                    total={isBrowsing ? browse.total : null}
+                    onApply={applyFilters}
+                    onClose={() => setSheetOpen(false)}
+                />
+            ) : null}
         </div>
     );
 }
@@ -275,7 +331,7 @@ function SearchOutcome({state, query, onOpen, onReset, onAskManager, onOpenCatal
                 <span className={style.found}>
                     Найдено {state.items.length.toLocaleString('ru-RU')} {productsPlural(state.items.length)}
                 </span>
-                <ProductGrid items={state.items} onOpen={onOpen}/>
+                <ProductGrid items={state.items} animate={!state.isRestored} onOpen={onOpen}/>
             </>
         );
     }
@@ -371,7 +427,7 @@ function BrowseOutcome({state, onOpen, onReset, sentinelRef}) {
                 {state.total.toLocaleString('ru-RU')} {productsPlural(state.total)}
             </span>
 
-            <ProductGrid items={state.items} onOpen={onOpen}/>
+            <ProductGrid items={state.items} animate={!state.isRestored} onOpen={onOpen}/>
 
             {state.hasMore ? (
                 <div ref={sentinelRef} className={style.more}>
@@ -382,16 +438,7 @@ function BrowseOutcome({state, onOpen, onReset, sentinelRef}) {
     );
 }
 
-function IdleScreen({
-    categories,
-    genres,
-    collections,
-    recent,
-    onApply,
-    onPickRecent,
-    onForgetRecent,
-    onClearRecent
-}) {
+function IdleScreen({categories, genres, recent, onApply, onPickRecent, onForgetRecent, onClearRecent}) {
     return (
         <div className={style.idle}>
             {categories.length ? (
@@ -399,17 +446,27 @@ function IdleScreen({
                     <span className={style.sectionTitle}>Категории</span>
 
                     <div className={style.tiles}>
-                        {categories.map((tile) => (
-                            <button
-                                key={tile.type}
-                                type="button"
-                                className={`${style.tile} ${style[tile.tone]}`}
-                                onClick={() => onApply(tile.filters)}
-                            >
-                                <span className={style.tileTitle}>{tile.title}</span>
-                                <span className={style.tileNote}>{tile.note}</span>
-                            </button>
-                        ))}
+                        {categories.map((tile) => {
+                            const TileIcon = TILE_ICONS[tile.icon];
+
+                            return (
+                                <button
+                                    key={tile.type}
+                                    type="button"
+                                    className={`${style.tile} ${style[tile.tone]}`}
+                                    onClick={() => onApply(tile.filters)}
+                                >
+                                    {TileIcon ? (
+                                        <span className={style.tileIcon} aria-hidden="true">
+                                            <TileIcon/>
+                                        </span>
+                                    ) : null}
+
+                                    <span className={style.tileTitle}>{tile.title}</span>
+                                    <span className={style.tileNote}>{tile.note}</span>
+                                </button>
+                            );
+                        })}
                     </div>
                 </section>
             ) : null}
@@ -433,25 +490,6 @@ function IdleScreen({
                 </section>
             ) : null}
 
-            <section className={style.section}>
-                <span className={style.sectionTitle}>Подборки</span>
-
-                <div className={style.collections}>
-                    {collections.map((collection) => (
-                        <button
-                            key={collection.id}
-                            type="button"
-                            className={style.collection}
-                            onClick={() => onApply(collection.filters, collection.sorting)}
-                        >
-                            <span className={style.collectionIcon} aria-hidden="true">{collection.icon}</span>
-                            <span className={style.collectionTitle}>{collection.title}</span>
-                            <span className={style.collectionArrow} aria-hidden="true">›</span>
-                        </button>
-                    ))}
-                </div>
-            </section>
-
             {recent.length ? (
                 <section className={style.section}>
                     <div className={style.sectionHead}>
@@ -464,10 +502,15 @@ function IdleScreen({
                     <div className={style.recent}>
                         {recent.map((value) => (
                             <div key={value} className={style.recentRow}>
-                                <span className={style.recentIcon} aria-hidden="true">↺</span>
-                                <button type="button" className={style.recentValue} onClick={() => onPickRecent(value)}>
-                                    {value}
+                                <button
+                                    type="button"
+                                    className={style.recentPick}
+                                    onClick={() => onPickRecent(value)}
+                                >
+                                    <span className={style.recentIcon} aria-hidden="true">↺</span>
+                                    <span className={style.recentValue}>{value}</span>
                                 </button>
+
                                 <button
                                     type="button"
                                     className={style.recentRemove}

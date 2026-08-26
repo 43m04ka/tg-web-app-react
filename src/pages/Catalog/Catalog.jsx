@@ -3,11 +3,15 @@ import {useNavigate, useParams} from 'react-router-dom';
 import {useStructureStore} from '../../store/useStructureStore';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
 import {useBackButton} from '../../shared/hooks/useBackButton';
+import {useHidingHeader} from '../../shared/hooks/useHidingHeader';
 import {useNearBottom} from '../../shared/hooks/useNearBottom';
+import {useScrollMemory} from '../../shared/hooks/useScrollMemory';
 import {hapticImpact} from '../../shared/lib/haptic';
+import {recallView, rememberView} from '../../shared/lib/viewMemory';
 import BackPill from '../../shared/ui/BackPill/BackPill';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
-import {fetchCatalogFacets, fetchCatalogProducts} from '../../shared/api/catalog';
+import {fetchCatalogProducts} from '../../shared/api/catalog';
+import {loadFacets, peekFacets} from '../../shared/api/facetsCache';
 import {
     countActiveFilters,
     createFilters,
@@ -16,6 +20,7 @@ import {
     sortingLabel
 } from '../../shared/lib/catalogQuery';
 import {cleanPath} from '../Main/catalogSections';
+import {FunnelIcon, SortIcon} from './CatalogIcons';
 import ProductGrid, {ProductGridSkeleton} from './ProductGrid';
 import FilterSheet from './FilterSheet';
 import {useCatalogProducts} from './useCatalogProducts';
@@ -43,11 +48,13 @@ export default function Catalog() {
         [structureBlocks, path]
     );
 
-    const [filters, setFilters] = useState(() => createFilters());
-    const [sorting, setSorting] = useState('default');
+    const formKey = `catalog:form:${path}`;
+    const saved = useRef(recallView(formKey)).current;
+
+    const [filters, setFilters] = useState(() => saved?.filters || createFilters());
+    const [sorting, setSorting] = useState(saved?.sorting || 'default');
     const [isSheetOpen, setSheetOpen] = useState(false);
-    const [facets, setFacets] = useState(null);
-    const [price, setPrice] = useState(null);
+    const [{facets, price}, setFacetData] = useState(() => peekFacets({catalogId}));
     const [similar, setSimilar] = useState([]);
 
     const isMissing = Array.isArray(catalogs) && catalogId === null;
@@ -56,11 +63,12 @@ export default function Catalog() {
 
     const query = useMemo(() => ({...scope, filters, sorting}), [scope, filters, sorting]);
 
-    const {items, total, hasMore, isLoading, error, loadMore, retry} = useCatalogProducts(query, {
+    const {items, total, hasMore, isLoading, isRestored, error, loadMore, retry} = useCatalogProducts(query, {
         enabled: catalogId !== null
     });
 
-    const scrollRef = useRef(null);
+    const scrollRef = useScrollMemory(`catalog:${path}`, {ready: items !== null});
+    const isHeaderHidden = useHidingHeader(scrollRef, {enabled: !isSheetOpen && items !== null});
 
     const sentinelRef = useNearBottom({
         rootRef: scrollRef,
@@ -71,19 +79,24 @@ export default function Catalog() {
     const scopeKey = JSON.stringify(scope);
 
     useEffect(() => {
-        if (JSON.parse(scopeKey).catalogId === null) return undefined;
+        rememberView(formKey, {filters, sorting});
+    }, [formKey, filters, sorting]);
 
-        const controller = new AbortController();
+    useEffect(() => {
+        if (catalogId === null) return undefined;
 
-        fetchCatalogFacets(JSON.parse(scopeKey), controller.signal)
-            .then((payload) => {
-                setFacets(payload?.facets || null);
-                setPrice(payload?.price || null);
+        let isAlive = true;
+
+        loadFacets({catalogId})
+            .then((value) => {
+                if (isAlive) setFacetData(value);
             })
             .catch(() => undefined);
 
-        return () => controller.abort();
-    }, [scopeKey]);
+        return () => {
+            isAlive = false;
+        };
+    }, [catalogId]);
 
     const isEmptyByFilters = items !== null && items.length === 0 && countActiveFilters(filters) > 0;
 
@@ -123,9 +136,8 @@ export default function Catalog() {
     const applyFilters = useCallback((nextFilters, nextSorting) => {
         setFilters(nextFilters);
         setSorting(nextSorting);
-        setSheetOpen(false);
         scrollRef.current?.scrollTo({top: 0, behavior: 'instant'});
-    }, []);
+    }, [scrollRef]);
 
     const resetFilters = useCallback(() => {
         hapticImpact('light');
@@ -139,7 +151,7 @@ export default function Catalog() {
     return (
         <div ref={scrollRef} className={style.screen}>
             <div
-                className={style.header}
+                className={`${style.header} ${isHeaderHidden ? style.headerHidden : ''}`}
                 style={{paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`}}
             >
                 <div className={style.headerRow}>
@@ -163,24 +175,26 @@ export default function Catalog() {
                         className={`${style.chip} ${activeCount > 0 ? style.chipActive : ''}`}
                         onClick={openSheet}
                     >
+                        <FunnelIcon className={style.chipIcon}/>
                         {activeCount > 0 ? `Фильтры · ${activeCount}` : 'Фильтры'}
+                    </button>
+
+                    <button type="button" className={style.chip} onClick={openSheet}>
+                        <SortIcon className={style.chipIcon}/>
+                        {sortingLabel(sorting)}
                     </button>
 
                     {chips.map((chip) => (
                         <button
                             key={chip.id}
                             type="button"
-                            className={style.chip}
+                            className={`${style.chip} ${style.chipRemovable}`}
                             onClick={() => setFilters((current) => chip.remove(current))}
                         >
                             {chip.label}
                             <span className={style.chipCross} aria-hidden="true">✕</span>
                         </button>
                     ))}
-
-                    <button type="button" className={`${style.chip} ${style.sortChip}`} onClick={openSheet}>
-                        {sortingLabel(sorting)}
-                    </button>
                 </div>
             </div>
 
@@ -264,7 +278,7 @@ export default function Catalog() {
                     </div>
                 ) : (
                     <>
-                        <ProductGrid items={items} onOpen={openProduct}/>
+                        <ProductGrid items={items} animate={!isRestored} onOpen={openProduct}/>
 
                         {hasMore ? (
                             <div ref={sentinelRef} className={style.more}>
@@ -281,17 +295,18 @@ export default function Catalog() {
                 )}
             </div>
 
-            <FilterSheet
-                isOpen={isSheetOpen}
-                scope={scope}
-                facets={facets}
-                price={price}
-                filters={filters}
-                sorting={sorting}
-                total={total}
-                onApply={applyFilters}
-                onClose={() => setSheetOpen(false)}
-            />
+            {isSheetOpen ? (
+                <FilterSheet
+                    scope={scope}
+                    facets={facets}
+                    price={price}
+                    filters={filters}
+                    sorting={sorting}
+                    total={total}
+                    onApply={applyFilters}
+                    onClose={() => setSheetOpen(false)}
+                />
+            ) : null}
         </div>
     );
 }

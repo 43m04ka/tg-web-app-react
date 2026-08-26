@@ -144,11 +144,6 @@ const ClueForm = ({clueId, initialName = '', initialPageId = null, onClose, onSa
                             ))}
                         </select>
                     </Row>
-                    {!isNew ? (
-                        <Row label="ID" hint="Идентификатор записи в базе">
-                            <span className={f.mono}>{clueId}</span>
-                        </Row>
-                    ) : null}
                 </Group>
             </Sheet>
         </TabPane>

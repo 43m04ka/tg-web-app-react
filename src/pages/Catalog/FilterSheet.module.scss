@@ -18,6 +18,10 @@
   animation: fade 200ms var(--ease-out);
 }
 
+.backdropClosing {
+  animation: fadeOut 240ms var(--ease-out) forwards;
+}
+
 .sheet {
   position: relative;
   display: flex;
@@ -28,6 +32,12 @@
   border-top: 1px solid var(--border);
   box-shadow: 0 u(-24) u(50) u(-24) oklch(0 0 0 / 0.75);
   animation: slideUp 320ms var(--ease-out);
+  transition: transform 260ms var(--ease-spring);
+  will-change: transform;
+}
+
+.sheetClosing {
+  animation: slideDown 240ms var(--ease-out) forwards;
 }
 
 @keyframes fade {
@@ -36,6 +46,12 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
   }
 }
 
@@ -50,10 +66,20 @@
   }
 }
 
+@keyframes slideDown {
+  from {
+    transform: translateY(var(--drag-offset, 0px));
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .backdrop,
   .sheet {
     animation: none;
+    transition: none;
   }
 }
 
@@ -64,6 +90,7 @@
   gap: u(12);
   padding: u(12) u(20);
   border-bottom: 1px solid var(--border-subtle);
+  touch-action: none;
 }
 
 .grabber {
@@ -72,6 +99,13 @@
   align-self: center;
   border-radius: u(2);
   background: oklch(1 0 0 / 0.18);
+  transition: background-color var(--duration-base) var(--ease-out),
+              width var(--duration-base) var(--ease-out);
+}
+
+.head:active .grabber {
+  width: u(52);
+  background: oklch(1 0 0 / 0.32);
 }
 
 .headRow {
@@ -115,6 +149,28 @@
   font-size: u(11.5);
   font-weight: 700;
   color: var(--accent-text);
+  animation: chipIn 250ms var(--ease-spring) backwards;
+}
+
+.chip:active {
+  transform: scale(0.95);
+}
+
+@keyframes chipIn {
+  from {
+    opacity: 0;
+    transform: scale(0.86);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chip {
+    animation: none;
+  }
 }
 
 .chipCross {
@@ -139,6 +195,43 @@
   gap: u(11);
 }
 
+.sortBlock {
+  display: flex;
+  flex-direction: column;
+  gap: u(11);
+  padding: u(13) u(14) u(14);
+  border-radius: u(16);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+}
+
+.sortBlock .option {
+  background: var(--surface-3);
+}
+
+.sortBlock .optionActive {
+  background: var(--accent-surface);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: u(10);
+  margin-bottom: u(-9);
+  font-size: u(12.5);
+  font-weight: 800;
+  letter-spacing: u(0.4);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-subtle);
+}
+
 .groupHead {
   display: flex;
   align-items: center;
@@ -147,11 +240,22 @@
 }
 
 .groupTitle {
+  display: flex;
+  align-items: center;
+  gap: u(7);
   font-size: u(12.5);
   font-weight: 800;
   letter-spacing: u(0.4);
   text-transform: uppercase;
   color: var(--text-muted);
+}
+
+.groupIcon {
+  width: u(15);
+  height: u(15);
+  flex: none;
+  color: var(--accent-text);
+  opacity: 0.75;
 }
 
 .groupNote {
@@ -161,9 +265,22 @@
 }
 
 .groupMore {
+  display: flex;
+  align-items: center;
+  gap: u(4);
   font-size: u(11.5);
   font-weight: 700;
   color: var(--accent-text);
+}
+
+.groupMoreChevron {
+  display: inline-block;
+  line-height: 1;
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.groupMoreOpen {
+  transform: rotate(180deg);
 }
 
 .options {
@@ -195,11 +312,27 @@
   color: var(--accent-text);
 }
 
-// ── Ползунок цены ────────────────────────────────────────
-// Два обычных input[type=range] один поверх другого: у них родная поддержка касаний
-// и клавиатуры, чего самописный ползунок на pointer-событиях не даёт бесплатно.
-// Ловит касания только бегунок — иначе верхний input перехватывал бы нажатия
-// по всей ширине и второй бегунок стал бы недоступен.
+.optionRevealed {
+  animation: optionIn 260ms var(--ease-spring) backwards;
+}
+
+@keyframes optionIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .optionRevealed {
+    animation: none;
+  }
+}
+
 .slider {
   position: relative;
   height: u(26);
@@ -326,6 +459,11 @@
 }
 
 .apply {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: u(50);
   border-radius: u(16);
@@ -340,4 +478,83 @@
 .apply:active {
   transform: scale(0.98);
   filter: brightness(1.06);
+}
+
+.applyCounting::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    oklch(1 0 0 / 0) 40%,
+    oklch(1 0 0 / 0.22) 50%,
+    oklch(1 0 0 / 0) 60%
+  );
+  transform: translateX(-100%);
+  animation: applyShimmer 1100ms linear infinite;
+}
+
+@keyframes applyShimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.applyCount {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: u(2);
+  animation: countIn 220ms var(--ease-out);
+}
+
+@keyframes countIn {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dots {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: u(2);
+  padding-bottom: u(3);
+}
+
+.dots i {
+  width: u(3);
+  height: u(3);
+  border-radius: 50%;
+  background: currentColor;
+  animation: dotPulse 900ms var(--ease-out) infinite;
+}
+
+.dots i:nth-child(2) {
+  animation-delay: 150ms;
+}
+
+.dots i:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+@keyframes dotPulse {
+  0%, 60%, 100% {
+    opacity: 0.25;
+  }
+  30% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .applyCounting::after,
+  .applyCount,
+  .dots i {
+    animation: none;
+  }
 }

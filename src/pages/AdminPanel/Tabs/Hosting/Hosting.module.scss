@@ -14,7 +14,7 @@
   flex-direction: column;
   gap: var(--sp-2);
   margin: 0 0 var(--sp-4);
-  padding: 0;
+  padding-right: var(--dock-safe);
 }
 
 .headerTop {
@@ -42,6 +42,71 @@
   align-items: center;
   gap: var(--sp-3);
   flex-wrap: wrap;
+}
+
+.toolbarEnd {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-left: auto;
+}
+
+.searchField {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 200px;
+  max-width: 320px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: var(--sp-3);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  box-sizing: border-box;
+  height: 32px;
+  padding: 0 var(--sp-6) 0 32px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.searchClear {
+  position: absolute;
+  right: var(--sp-2);
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--surface-hover);
+    color: var(--text);
+  }
 }
 
 .btn {
@@ -201,12 +266,14 @@
 }
 
 .gridWrap {
+  position: relative;
   flex: 1;
   min-height: 0;
   overflow: auto;
   padding: var(--sp-3);
   border-radius: var(--r-lg);
   @include dashed-box;
+  transition: border-color var(--t-fast);
   scrollbar-width: thin;
   scrollbar-color: var(--border-strong) transparent;
 
@@ -220,14 +287,33 @@
   }
 }
 
+.gridWrapDrag {
+  border-color: var(--accent);
+}
+
+.dropHint {
+  position: absolute;
+  left: 50%;
+  bottom: var(--sp-4);
+  transform: translateX(-50%);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: var(--sp-3);
 }
 
-// Карточка файла: без заливки и без подъёма на ховере — по дизайн-системе
-// приподнятыми остаются только слои поверх контента
 .card {
   position: relative;
   display: flex;
@@ -237,30 +323,35 @@
   border-radius: var(--r-lg);
   border: 1px solid var(--border);
   background: var(--surface-alt);
+  cursor: pointer;
   transition: border-color var(--t-fast);
 
   &:hover {
     border-color: var(--border-strong);
+  }
+
+  &:hover .cardActions {
+    opacity: 1;
   }
 }
 
 .folderCard {
   align-items: center;
   justify-content: center;
-  min-height: 150px;
-  cursor: pointer;
+  min-height: 132px;
   text-align: center;
+  color: var(--text-muted);
 }
 
-.folderGlyph {
-  font-size: 40px;
-  line-height: 1;
+.icon {
+  color: var(--text-muted);
 }
 
 .cardName {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  max-width: 100%;
   color: var(--text);
   font-size: var(--fs-md);
 }
@@ -275,92 +366,73 @@
 
 .thumb {
   width: 100%;
-  height: 104px;
+  height: 96px;
   object-fit: cover;
   border-radius: var(--r-md);
   background: var(--surface-hover);
 }
 
-// Кнопка удаления живёт поверх карточки, поэтому получает подложку —
-// иначе на светлой картинке крестик не виден
-.removeBtn {
+.thumbFallback {
+  width: 100%;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-md);
+  background: var(--surface-hover);
+  color: var(--text-muted);
+}
+
+.cardActions {
   position: absolute;
   top: var(--sp-2);
   right: var(--sp-2);
+  display: flex;
+  gap: var(--sp-1);
+  opacity: 0;
+  transition: opacity var(--t-fast);
+}
+
+.cardBtn {
   width: 24px;
   height: 24px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(var(--danger-rgb), 0.45);
+  border: 1px solid var(--border-strong);
   border-radius: var(--r-pill);
-  background: rgba(var(--danger-rgb), 0.12);
-  color: var(--danger);
+  background: var(--surface);
+  color: var(--text-secondary);
   font-size: var(--fs-sm);
   cursor: pointer;
   backdrop-filter: blur(6px);
-  transition: background-color var(--t-fast);
+  transition: background-color var(--t-fast), color var(--t-fast), border-color var(--t-fast);
 
   &:hover {
-    background: rgba(var(--danger-rgb), 0.24);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  &:focus-visible {
+    outline: none;
+    opacity: 1;
+    box-shadow: var(--focus-ring);
   }
 }
 
+.cardBtnDanger:hover {
+  border-color: rgba(var(--danger-rgb), 0.6);
+  background: rgba(var(--danger-rgb), 0.12);
+  color: var(--danger);
+}
+
 .empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
   padding: var(--sp-8) var(--sp-3);
   text-align: center;
   color: var(--text-muted);
   font-size: var(--fs-md);
-}
-
-.emptyGlyph {
-  font-size: 40px;
-  line-height: 1;
-  margin-bottom: var(--sp-2);
-}
-
-// ==== Кнопка «скопировать ссылку» ====
-
-.copyWrap {
-  position: relative;
-  width: 100%;
-}
-
-.copyBtn {
-  width: 100%;
-  height: 28px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sp-2);
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  background: transparent;
-  color: var(--accent);
-  font-family: var(--font-ui);
-  font-size: var(--fs-sm);
-  cursor: pointer;
-  transition: background-color var(--t-fast), border-color var(--t-fast);
-
-  &:hover {
-    background: var(--surface-hover);
-    border-color: var(--border-strong);
-  }
-}
-
-.copyToast {
-  position: absolute;
-  bottom: calc(100% + var(--sp-2));
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 2px var(--sp-2);
-  border-radius: var(--r-sm);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-md);
-  color: var(--text);
-  font-size: var(--fs-xs);
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 10;
 }

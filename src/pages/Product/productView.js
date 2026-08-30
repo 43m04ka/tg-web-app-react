@@ -1,3 +1,5 @@
+import {isSubscription} from '../Main/catalogSections';
+
 const EXCEL_EPOCH = Date.UTC(1899, 11, 30);
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -88,6 +90,7 @@ export const buildSpecs = (product) => {
         {label: 'Язык в игре', value: product.language},
         {label: 'Издатель', value: product.publisherName},
         {label: 'Тип', value: product.typeLabel},
+        {label: 'Срок подписки', value: isSubscription(product) ? product.choiceRow : null},
         {label: 'Дата выхода', value: release.label}
     ].filter((row) => hasValue(row.value));
 };

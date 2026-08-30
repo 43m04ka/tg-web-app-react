@@ -784,15 +784,16 @@
 .payment {
   border-radius: u(16);
   background: var(--surface-1);
-  border: 1px solid var(--border-subtle);
+  border: 1.5px solid var(--border-subtle);
   overflow: hidden;
   transition: background-color var(--duration-base) var(--ease-out),
-              border-color var(--duration-base) var(--ease-out);
+              border-color var(--duration-base) var(--ease-out),
+              transform var(--duration-base) var(--ease-out);
 }
 
 .paymentActive {
   background: var(--accent-surface);
-  border: 1.5px solid var(--accent-soft);
+  border-color: var(--accent-soft);
 }
 
 .paymentLocked {
@@ -801,6 +802,7 @@
 
 .paymentHead {
   display: flex;
+  transition: transform 160ms var(--ease-out);
   align-items: center;
   gap: u(12);
   width: 100%;
@@ -813,6 +815,15 @@
   width: u(36);
   height: u(26);
   border-radius: u(7);
+  transition: transform 260ms var(--ease-out);
+}
+
+.paymentHead:active {
+  transform: scale(0.985);
+}
+
+.paymentActive .paymentMark {
+  transform: scale(1.06);
 }
 
 .paymentMarkIcon {
@@ -852,6 +863,7 @@
 .paymentNote {
   font-size: u(11.5);
   line-height: 1.35;
+  min-height: u(31);
   color: var(--text-muted);
   text-wrap: pretty;
 }
@@ -877,6 +889,7 @@
   background: var(--accent);
   border-color: var(--accent);
   color: var(--accent-contrast);
+  animation: valuePop 320ms var(--ease-out);
 }
 
 .schedule {
@@ -951,12 +964,31 @@
   font-weight: 700;
   color: var(--text-muted);
   transition: background-color var(--duration-base) var(--ease-out),
-              color var(--duration-base) var(--ease-out);
+              color var(--duration-base) var(--ease-out),
+              transform 160ms var(--ease-out);
+}
+
+.switcherButton:active {
+  transform: scale(0.96);
 }
 
 .switcherActive {
   background: var(--accent-surface);
   color: var(--accent-text);
+  animation: switcherPop 280ms var(--ease-out);
+}
+
+@keyframes switcherPop {
+  from {
+    transform: scale(0.94);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.revealOpen .fields {
+  animation: rise 300ms var(--ease-out) 60ms backwards;
 }
 
 .fields {

@@ -73,11 +73,18 @@ export const isSubscription = (product) =>
 export const subscriptionTerm = (product) => {
     if (!isSubscription(product)) return '';
 
-    const name = String(product?.name || '');
+    const sources = [product?.choiceRow, product?.choiceColumn, product?.name];
 
-    for (const {re, unit} of TERM_PATTERNS) {
-        const match = name.match(re);
-        if (match) return `${match[1]} ${unit}`;
+    for (const source of sources) {
+        const text = String(source || '').trim();
+        if (!text) continue;
+
+        for (const {re, unit} of TERM_PATTERNS) {
+            const match = text.match(re);
+            if (match) return `${match[1]} ${unit}`;
+        }
+
+        if (source === product?.choiceRow && text.length <= 12) return text;
     }
 
     return '';

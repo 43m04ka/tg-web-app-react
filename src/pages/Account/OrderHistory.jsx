@@ -5,6 +5,7 @@ import {useInfiniteList} from '../../shared/hooks/useInfiniteList';
 import {hapticImpact} from '../../shared/lib/haptic';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import {fetchOrderHistory} from '../../shared/api/account';
+import {rupees} from '../Basket/cartModel';
 import {useAccountList} from './useAccountList';
 import PageHeader from './PageHeader';
 import {
@@ -13,8 +14,10 @@ import {
     isOpenOrder,
     isSteamOrder,
     orderCoverLetter,
+    orderItems,
     orderNumber,
     orderTitle,
+    orderTopup,
     positionMeta,
     statusOf
 } from './orderStatus';
@@ -105,6 +108,8 @@ export default function OrderHistory() {
                     {visible.map((order) => {
                         const status = statusOf(order);
                         const isSteam = isSteamOrder(order);
+                        const items = isSteam ? [] : orderItems(order);
+                        const topup = orderTopup(order);
 
                         return (
                             <article key={order.id} className={style.order}>
@@ -127,6 +132,25 @@ export default function OrderHistory() {
 
                                     <span className={style.orderTotal}>{formatMoney(order.total)}</span>
                                 </div>
+
+                                {items.length > 1 ? (
+                                    <ul className={style.orderItems}>
+                                        {items.map((item, index) => (
+                                            <li key={`${item.name}-${index}`} className={style.orderItem}>
+                                                <span className={style.orderItemName}>{item.name}</span>
+                                                {item.quantity > 1 ? (
+                                                    <span className={style.orderItemCount}>×{item.quantity}</span>
+                                                ) : null}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : null}
+
+                                {topup?.meta?.leftoverRs > 0 ? (
+                                    <span className={style.orderNote}>
+                                        Остаток {rupees(topup.meta.leftoverRs)} сохранится на балансе аккаунта
+                                    </span>
+                                ) : null}
 
                                 {status.tone === 'wait' && order.paymentUrl ? (
                                     <button type="button" className={style.pay}

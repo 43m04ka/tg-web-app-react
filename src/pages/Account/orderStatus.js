@@ -1,3 +1,5 @@
+import {positionsPlural, rupees} from '../Basket/cartModel';
+
 // Подписи статусов заказа для покупателя. Служебные названия из БД показывать нельзя:
 // «paid» и «completed» для него — одно и то же «всё хорошо», а разница между ними
 // внутренняя (деньги пришли / админ выдал).
@@ -21,14 +23,26 @@ export const orderNumber = (order) => `№ ${order.id}`;
 
 export const isSteamOrder = (order) => order?.type === 'steam_topup';
 
+export const orderItems = (order) => (order?.positions || []).flatMap((position) => {
+    const nested = position.meta?.items || [];
+
+    if (nested.length) {
+        return nested.map((item) => ({name: item.name, quantity: Number(item.quantity) || 1}));
+    }
+
+    return [{name: position.name, quantity: Number(position.quantity) || 1}];
+});
+
+export const orderTopup = (order) => (order?.positions || []).find((position) => position.priceRs) || null;
+
 export const orderTitle = (order) => {
     if (isSteamOrder(order)) return 'Пополнение Steam';
-    return order?.positions?.[0]?.name || `Заказ ${orderNumber(order)}`;
+    return orderItems(order)[0]?.name || `Заказ ${orderNumber(order)}`;
 };
 
 export const orderCoverLetter = (order) => {
     if (isSteamOrder(order)) return 'S';
-    return (order?.positions?.[0]?.name || '?').slice(0, 1).toUpperCase();
+    return (orderItems(order)[0]?.name || '?').slice(0, 1).toUpperCase();
 };
 
 export const formatMoney = (value) => {
@@ -61,7 +75,10 @@ export const positionMeta = (order) => {
     }
 
     const positions = order.positions || [];
-    const extra = positions.length > 1 ? `${positions.length} позиции` : null;
+    const items = orderItems(order);
+    const topup = orderTopup(order);
+    const extra = items.length > 1 ? `${items.length} ${positionsPlural(items.length)}` : null;
+    const lead = topup ? `Пополнение ${rupees(topup.priceRs)}` : positions[0]?.meta?.platform;
 
-    return [positions[0]?.meta?.platform, order.pageTitle, extra].filter(Boolean).join(' · ');
+    return [lead, order.pageTitle, extra].filter(Boolean).join(' · ');
 };

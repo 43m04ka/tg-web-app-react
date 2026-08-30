@@ -280,7 +280,7 @@ export default function Basket() {
 
                 {recommendations.length ? (
                     <section className={style.recommend}>
-                        <h2 className={style.recommendTitle}>Рекомендуем добавить</h2>
+                        <h2 className={style.recommendTitle}>Может быть интересно:</h2>
 
                         <div className={style.recommendTrack}>
                             {recommendations.map((product, index) => (

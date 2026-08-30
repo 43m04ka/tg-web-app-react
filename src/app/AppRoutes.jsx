@@ -10,14 +10,51 @@ import More from '../pages/More/More';
 import Product from '../pages/Product/Product';
 import Favorites from '../pages/Account/Favorites';
 import OrderHistory from '../pages/Account/OrderHistory';
+import Steam from '../pages/Steam/Steam';
+import Services from '../pages/Services/Services';
 import {useSessionStore} from '../store/useSessionStore';
+import {useStructureStore} from '../store/useStructureStore';
+import {pageTypeOf, standaloneRoute} from '../shared/lib/pageRoutes';
 import style from './AppRoutes.module.scss';
 
 const LEAVE_MS = 150;
 
+function usePageType() {
+    const pageId = useSessionStore((state) => state.pageId);
+    const pages = useStructureStore((state) => state.pages);
+
+    return pageTypeOf(pages, pageId);
+}
+
 function RequirePage({children}) {
     const pageId = useSessionStore((state) => state.pageId);
     return pageId === null ? <Navigate to="/" replace/> : children;
+}
+
+function RequireCatalogPage({children}) {
+    const pageId = useSessionStore((state) => state.pageId);
+    const pageType = usePageType();
+
+    if (pageId === null) return <Navigate to="/" replace/>;
+
+    const standalone = standaloneRoute(pageType);
+    return standalone ? <Navigate to={standalone} replace/> : children;
+}
+
+function RequireStandalonePage({type, children}) {
+    const pageId = useSessionStore((state) => state.pageId);
+    const pageType = usePageType();
+
+    if (pageId === null) return <Navigate to="/" replace/>;
+    return pageType === type ? children : <Navigate to="/main" replace/>;
+}
+
+function RequireSearchPage({children}) {
+    const pageId = useSessionStore((state) => state.pageId);
+    const location = useLocation();
+
+    if (pageId !== null) return children;
+    return location.state?.allPages ? children : <Navigate to="/" replace/>;
 }
 
 export default function AppRoutes() {
@@ -51,10 +88,16 @@ export default function AppRoutes() {
         >
             <Routes location={shown}>
                 <Route path="/" element={<SelectPlatform/>}/>
-                <Route path="/main" element={<RequirePage><Main/></RequirePage>}/>
+                <Route path="/main" element={<RequireCatalogPage><Main/></RequireCatalogPage>}/>
+                <Route path="/steam" element={
+                    <RequireStandalonePage type="steam"><Steam/></RequireStandalonePage>
+                }/>
+                <Route path="/services" element={
+                    <RequireStandalonePage type="services"><Services/></RequireStandalonePage>
+                }/>
                 <Route path="/catalog/*" element={<RequirePage><Catalog/></RequirePage>}/>
                 <Route path="/card/:id" element={<RequirePage><Product/></RequirePage>}/>
-                <Route path="/search" element={<RequirePage><Search/></RequirePage>}/>
+                <Route path="/search" element={<RequireSearchPage><Search/></RequireSearchPage>}/>
                 <Route path="/basket" element={<RequirePage><Basket/></RequirePage>}/>
                 <Route path="/checkout" element={<RequirePage><Checkout/></RequirePage>}/>
                 <Route path="/more" element={<RequirePage><More/></RequirePage>}/>

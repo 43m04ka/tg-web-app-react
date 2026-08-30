@@ -60,6 +60,33 @@
   gap: u(12);
 }
 
+.back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: u(5);
+  flex: none;
+  height: u(34);
+  padding: 0 u(13) 0 u(10);
+  border-radius: u(12);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: u(12.5);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-secondary);
+}
+
+.back svg {
+  width: u(14);
+  height: u(14);
+  flex: none;
+}
+
+.back:active {
+  background: var(--surface-3);
+}
+
 .title {
   margin: 0;
   font-size: u(19);
@@ -87,7 +114,7 @@
   height: u(13);
   flex: none;
   border-radius: u(4);
-  background: center / contain no-repeat;
+  background: center / cover no-repeat;
 }
 
 .field {
@@ -138,6 +165,36 @@
   font-size: u(15);
   line-height: 1;
   color: var(--text-muted);
+}
+
+.recentReveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin-top: u(-11);
+  opacity: 0;
+  transform: translateY(u(-8));
+  pointer-events: none;
+  transition: grid-template-rows 340ms var(--ease-out),
+              margin-top 340ms var(--ease-out),
+              opacity 240ms var(--ease-out),
+              transform 340ms var(--ease-out);
+}
+
+.recentRevealOpen {
+  grid-template-rows: 1fr;
+  margin-top: 0;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.recentRevealInner {
+  display: flex;
+  flex-direction: column;
+  gap: u(11);
+  min-height: 0;
+  padding-top: u(2);
+  overflow: hidden;
 }
 
 .controls {
@@ -216,6 +273,46 @@
 
 .chipCross {
   opacity: 0.55;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: u(8);
+  margin-top: u(-4);
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  gap: u(7);
+  padding: u(8) u(13);
+  border-radius: u(13);
+  background: var(--accent-surface);
+  border: 1px solid var(--accent-soft);
+  font-size: u(12.5);
+  font-weight: 700;
+  color: var(--accent-text);
+  animation: chipIn 250ms var(--ease-spring) backwards;
+}
+
+.tag:active {
+  transform: scale(0.96);
+}
+
+.tagIcon {
+  width: u(14);
+  height: u(14);
+  flex: none;
+  opacity: 0.9;
+}
+
+.tagCount {
+  padding-left: u(7);
+  margin-left: u(1);
+  border-left: 1px solid var(--accent-soft);
+  font-weight: 600;
+  opacity: 0.8;
 }
 
 
@@ -631,7 +728,8 @@
     animation: none;
   }
 
-  .content {
+  .content,
+  .recentReveal {
     transition: none;
   }
 }

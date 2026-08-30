@@ -15,9 +15,9 @@ export const TOGGLES = [
 
 export const SORTINGS = [
     {key: 'default', label: 'По умолчанию'},
-    {key: 'discount', label: 'Скидка ↓'},
-    {key: 'priceAsc', label: 'Цена ↑'},
-    {key: 'priceDesc', label: 'Цена ↓'},
+    {key: 'discount', label: 'Скидка: по убыванию'},
+    {key: 'priceAsc', label: 'Цена: по возрастанию'},
+    {key: 'priceDesc', label: 'Цена: по убыванию'},
     {key: 'new', label: 'Новинки'},
     {key: 'rating', label: 'Рейтинг'},
     {key: 'alphabet', label: 'По алфавиту'}
@@ -113,6 +113,42 @@ export const optionLabel = (key, option) => {
     if (key === 'numberPlayers') return playersLabel(option.value);
 
     return option.label || option.value;
+};
+
+export const TAG_KEYS = ['type', 'platform'];
+
+const normalizeTerm = (value) =>
+    String(value || '')
+        .toLowerCase()
+        .replace(/ё/g, 'е')
+        .replace(/[^a-zа-я0-9]+/g, ' ')
+        .trim();
+
+const stemTerm = (value) => normalizeTerm(value).replace(/[аяыиоеуюй]+$/, '');
+
+export const matchQueryTags = (query, facets) => {
+    const stem = stemTerm(query);
+    if (stem.length < 3) return [];
+
+    return TAG_KEYS.flatMap((key) =>
+        (facets?.[key] || []).flatMap((option) => {
+            const label = optionLabel(key, option);
+            const labelStem = stemTerm(label);
+            if (labelStem.length < 3) return [];
+
+            const hit = labelStem.startsWith(stem) || stem.startsWith(labelStem);
+            if (!hit) return [];
+
+            return [{
+                id: `${key}:${option.value}`,
+                key,
+                value: option.value,
+                label,
+                count: option.count || 0,
+                filters: createFilters({[key]: [option.value]})
+            }];
+        })
+    );
 };
 
 const labelOf = (facets, key, value) => {

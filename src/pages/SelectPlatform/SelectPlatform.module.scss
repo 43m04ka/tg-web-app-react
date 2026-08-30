@@ -87,8 +87,9 @@
 .title {
   position: relative;
   z-index: 1;
-  font-size: u(31);
-  line-height: 1.26;
+  flex: none;
+  font-size: u(27);
+  line-height: 1.24;
   font-weight: 700;
   letter-spacing: u(-0.3);
   color: oklch(0.97 0.004 264);
@@ -103,9 +104,121 @@
   color: oklch(0.78 0.18 148);
 }
 
+.search {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: u(14);
+  width: 100%;
+  min-height: u(84);
+  padding: u(16);
+  border-radius: u(24);
+  text-align: left;
+  background:
+          linear-gradient(112deg, oklch(0.68 0.12 200 / 0.18), oklch(0.72 0.13 165 / 0.06) 62%),
+          var(--bg-elevated);
+  background-clip: padding-box;
+  border: u(1) solid oklch(0.7 0.12 190 / 0.3);
+  box-shadow: 0 u(14) u(30) u(-24) oklch(0.68 0.12 200 / 0.85);
+  overflow: hidden;
+  animation: rise 230ms var(--ease-out) 45ms backwards;
+  transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1),
+              border-color 300ms ease,
+              box-shadow 300ms ease;
+}
+
+.search::before {
+  content: '';
+  position: absolute;
+  top: u(-70);
+  right: u(-40);
+  width: u(180);
+  height: u(180);
+  border-radius: 50%;
+  background: radial-gradient(circle, oklch(0.72 0.13 185 / 0.3), transparent 68%);
+  pointer-events: none;
+}
+
+.search:active {
+  transform: scale(0.985);
+  border-color: oklch(0.74 0.13 185 / 0.55);
+  box-shadow: 0 u(10) u(24) u(-22) oklch(0.7 0.13 190 / 0.95);
+  transition-duration: 90ms;
+}
+
+.searchIcon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: u(52);
+  height: u(52);
+  flex: none;
+  border-radius: u(17);
+  background: linear-gradient(150deg, oklch(0.72 0.13 215), oklch(0.7 0.14 168));
+  box-shadow: inset 0 u(1) 0 oklch(1 0 0 / 0.28), 0 u(8) u(16) u(-12) oklch(0.7 0.13 195);
+  color: oklch(0.16 0.03 210);
+}
+
+.searchIcon svg {
+  width: u(22);
+  height: u(22);
+}
+
+.searchBody {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: u(5);
+}
+
+.searchTitle {
+  font-size: u(16.5);
+  font-weight: 700;
+  line-height: 1.2;
+  color: oklch(0.98 0.004 264);
+}
+
+.searchNote {
+  font-size: u(12.5);
+  line-height: 1.35;
+  text-wrap: pretty;
+  color: var(--text-muted);
+}
+
+.searchArrow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: u(28);
+  height: u(28);
+  flex: none;
+  border-radius: 50%;
+  background: oklch(1 0 0 / 0.06);
+  color: var(--text-secondary);
+  transition: transform 240ms var(--ease-out), background-color 240ms var(--ease-out);
+}
+
+.searchArrow svg {
+  width: u(13);
+  height: u(13);
+}
+
+.search:active .searchArrow {
+  transform: translateX(u(3));
+  background: oklch(0.72 0.13 190 / 0.26);
+}
+
 .group {
   position: relative;
   z-index: 1;
+  flex: none;
   display: flex;
   flex-direction: column;
   gap: u(12);
@@ -348,6 +461,7 @@
 @media (prefers-reduced-motion: reduce) {
   .item.entering,
   .title,
+  .search,
   .tickActive,
   .tickActive svg,
   .item.picked .cardActive {

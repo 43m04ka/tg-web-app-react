@@ -54,6 +54,31 @@ export const formatPrice = (value) => {
     return `${number.toLocaleString('ru-RU')} ₽`;
 };
 
-// «PS4, PS5» на карточке шириной в треть экрана не помещается и не нужен:
-// достаточно старшей платформы.
-export const shortPlatform = (platform) => String(platform || '').split(',')[0].trim();
+export const platformList = (platform) => String(platform || '')
+    .split(/[,/]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+export const shortPlatform = (platform) => platformList(platform)[0] || '';
+
+const TERM_PATTERNS = [
+    {re: /(\d+)\s*(?:мес(?:\.|яц\w*)?|month?s?|mo)/i, unit: 'мес.'},
+    {re: /(\d+)\s*(?:год|года|лет|year?s?|yr)/i, unit: 'г.'},
+    {re: /(\d+)\s*(?:дн(?:я|ей)?|день|day?s?)/i, unit: 'дн.'}
+];
+
+export const isSubscription = (product) =>
+    String(product?.type || '').toUpperCase() === 'SUBSCRIPTION';
+
+export const subscriptionTerm = (product) => {
+    if (!isSubscription(product)) return '';
+
+    const name = String(product?.name || '');
+
+    for (const {re, unit} of TERM_PATTERNS) {
+        const match = name.match(re);
+        if (match) return `${match[1]} ${unit}`;
+    }
+
+    return '';
+};

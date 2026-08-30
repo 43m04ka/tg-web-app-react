@@ -262,8 +262,10 @@
 
 .tags {
   display: flex;
+  flex-wrap: wrap;
   gap: u(4);
   min-width: 0;
+  max-width: 100%;
 }
 
 .tag {
@@ -290,6 +292,46 @@
   font-size: u(10);
   font-weight: 800;
   color: var(--gold-surface);
+}
+
+.regionBadge {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: u(4);
+  top: u(8);
+  left: u(8);
+  max-width: calc(100% - u(16));
+  padding: u(2) u(6);
+  border-radius: u(6);
+  background: oklch(0.14 0.01 264 / 0.8);
+  backdrop-filter: blur(u(6));
+  -webkit-backdrop-filter: blur(u(6));
+  font-size: u(9);
+  font-weight: 700;
+  color: oklch(1 0 0);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.regionBadgeIcon {
+  width: u(11);
+  height: u(11);
+  flex: none;
+  border-radius: u(3);
+  background: center / cover no-repeat;
+}
+
+.regionBadgeTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.regionBadgeTinted {
+  background: var(--card-gradient);
+  border: 1px solid var(--card-border);
+  color: oklch(1 0 0);
 }
 
 .name {
@@ -560,4 +602,20 @@
   font-size: u(12.5);
   font-weight: 800;
   color: var(--text);
+}
+
+.term {
+  position: absolute;
+  right: u(8);
+  bottom: u(8);
+  padding: u(3) u(7);
+  border-radius: u(999);
+  background: oklch(0.14 0.01 264 / 0.82);
+  backdrop-filter: blur(u(6));
+  -webkit-backdrop-filter: blur(u(6));
+  border: 1px solid oklch(1 0 0 / 0.16);
+  font-size: u(9.5);
+  font-weight: 700;
+  color: oklch(1 0 0);
+  white-space: nowrap;
 }

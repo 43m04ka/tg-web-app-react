@@ -13,7 +13,9 @@ const openGuide = (url) => {
     else window.open(url, '_blank', 'noopener');
 };
 
-export default function AccountFields({pageType, kind, values, onKind, onChange}) {
+const REQUIRED_KEYS = ['login', 'password'];
+
+export default function AccountFields({pageType, kind, values, isTouched, onKind, onChange}) {
     const form = accountForm(pageType);
 
     if (!form) return null;
@@ -21,6 +23,12 @@ export default function AccountFields({pageType, kind, values, onKind, onChange}
     const isNew = kind === ACCOUNT_KINDS.NEW;
     const shortFields = form.fields.filter((field) => field.short);
     const longFields = form.fields.filter((field) => !field.short);
+
+    const isMissing = (field) => !isNew && isTouched
+        && REQUIRED_KEYS.includes(field.key)
+        && String(values[field.key] || '').trim() === '';
+
+    const missingCount = form.fields.filter(isMissing).length;
 
     return (
         <section className={style.block}>
@@ -59,7 +67,7 @@ export default function AccountFields({pageType, kind, values, onKind, onChange}
                             {longFields.map((field) => (
                                 <input
                                     key={field.key}
-                                    className={style.input}
+                                    className={`${style.input} ${isMissing(field) ? style.inputBad : ''}`}
                                     value={values[field.key] || ''}
                                     placeholder={field.placeholder}
                                     autoComplete="off"
@@ -86,6 +94,12 @@ export default function AccountFields({pageType, kind, values, onKind, onChange}
                                         />
                                     ))}
                                 </div>
+                            ) : null}
+
+                            {missingCount > 0 ? (
+                                <span className={style.fieldError}>
+                                    Заполните логин и пароль от аккаунта {form.service} — без них заказ не оформить
+                                </span>
                             ) : null}
 
                             <button

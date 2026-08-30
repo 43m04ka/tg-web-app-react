@@ -4,7 +4,10 @@ import {useStructureStore} from '../../store/useStructureStore';
 import {useSessionStore} from '../../store/useSessionStore';
 import {usePlatform} from '../../shared/hooks/usePlatform';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
+import {hapticImpact} from '../../shared/lib/haptic';
+import {primeKeyboard} from '../../shared/lib/keyboard';
 import {getTelegramObject} from '../../shared/lib/telegram';
+import {standaloneRoute} from '../../shared/lib/pageRoutes';
 import {glowStyle} from './accent';
 import PlatformCard from './PlatformCard';
 import PlatformLink from './PlatformLink';
@@ -34,7 +37,7 @@ const toGroups = (items) => {
 
 export default function SelectPlatform() {
     const navigate = useNavigate();
-    const {botType} = usePlatform();
+    const {botType, isSettled} = usePlatform();
     const {safeAreaInset, contentSafeAreaInset} = useAppInsets();
 
     const startPages = useStructureStore((state) => state.startPages);
@@ -65,22 +68,30 @@ export default function SelectPlatform() {
     }, [startPages, pickedId, pageId]);
 
     const groups = useMemo(() => {
-        if (!Array.isArray(startPages)) return [];
+        if (!Array.isArray(startPages) || !isSettled) return [];
 
         const visible = [...startPages]
             .filter((item) => item.platform === botType)
             .sort((a, b) => a.serialNumber - b.serialNumber);
 
         return toGroups(visible);
-    }, [startPages, botType]);
+    }, [startPages, botType, isSettled]);
 
-    const handleSelect = useCallback((item) => {
+    const openGlobalSearch = useCallback(() => {
+        hapticImpact('light');
+        primeKeyboard();
+        navigate('/search', {state: {allPages: true}});
+    }, [navigate]);
+
+    const handleSelect = useCallback((item, page) => {
         if (pickedId !== null) return;
 
         window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium');
         setPickedId(item.id);
         setPageId(item.structurePageId);
-        setTimeout(() => navigate('/main', {state: {skipLeave: true}}), LEAVE_MS);
+
+        const target = standaloneRoute(page?.type) || '/main';
+        setTimeout(() => navigate(target, {state: {skipLeave: true}}), LEAVE_MS);
     }, [navigate, pickedId, setPageId]);
 
     const fadeZone = contentSafeAreaInset.top;
@@ -111,7 +122,7 @@ export default function SelectPlatform() {
                 <PlatformCard
                     item={{...page, ...item}}
                     isActive={isPicked || item.structurePageId === pageId}
-                    onSelect={() => handleSelect(item)}
+                    onSelect={() => handleSelect(item, page)}
                 />
             );
         } else if (item.type === 'link') {
@@ -157,9 +168,30 @@ export default function SelectPlatform() {
             ) : null}
 
             <h1 className={style.title}>
-                Ваш сервис для покупки игр и подписок для <span className={style.ps}>PlayStation</span> и{' '}
+                Геймворд — ваш сервис для покупки игр и подписок для <span className={style.ps}>PlayStation</span> и{' '}
                 <span className={style.xbox}>Xbox</span>
             </h1>
+
+            <button type="button" className={style.search} onClick={openGlobalSearch}>
+                <span className={style.searchIcon} aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <circle cx="10.6" cy="10.6" r="6.7" stroke="currentColor" strokeWidth="2"/>
+                        <path d="m15.6 15.6 5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    </svg>
+                </span>
+
+                <span className={style.searchBody}>
+                    <span className={style.searchTitle}>Поиск</span>
+                    <span className={style.searchNote}>Игры, подписки и донат в одном месте</span>
+                </span>
+
+                <span className={style.searchArrow} aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="m9 5 7 7-7 7" stroke="currentColor" strokeWidth="2.4"
+                              strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                </span>
+            </button>
 
             {groups.map((group) => (
                 <section key={group.key} className={style.group}>

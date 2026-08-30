@@ -6,7 +6,6 @@ import {useCartStore} from '../../../store/useCartStore';
 import {pageCartItems} from '../../../pages/Basket/cartModel';
 import {useAppInsets} from '../../hooks/useAppInsets';
 import {hapticImpact} from '../../lib/haptic';
-import {primeKeyboard} from '../../lib/keyboard';
 import {WIDEST_REGION_TITLE, regionIcon, regionTitle} from '../../lib/region';
 import {resetSearchState} from '../../lib/searchMemory';
 import {BasketIcon, ChevronIcon, HomeIcon, MoreIcon, SearchIcon} from './NavIcons';
@@ -23,7 +22,7 @@ const TABS = [
 
 export default function NavBar() {
     const navigate = useNavigate();
-    const {pathname} = useLocation();
+    const {pathname, state} = useLocation();
     const {safeAreaInset, isKeyboardOpen} = useAppInsets();
 
     const pageId = useSessionStore((state) => state.pageId);
@@ -40,14 +39,16 @@ export default function NavBar() {
 
     const press = useCallback(() => hapticImpact('light'), []);
 
+    const isGlobalSearch = pathname === '/search' && Boolean(state?.allPages);
+
     const go = useCallback((path) => {
-        if (pathname === path) return;
+        if (pathname === path && !(path === '/search' && isGlobalSearch)) return;
 
-        if (path === '/search') primeKeyboard();
-        else if (pathname === '/search') resetSearchState();
+        if (pathname === '/search') resetSearchState();
 
-        navigate(path);
-    }, [navigate, pathname]);
+        if (path === '/search') navigate(path, {state: null, replace: isGlobalSearch});
+        else navigate(path);
+    }, [navigate, pathname, isGlobalSearch]);
 
     const isRouteHidden = hasOwnBottomBar(pathname);
     const isHidden = isRouteHidden || isKeyboardOpen;

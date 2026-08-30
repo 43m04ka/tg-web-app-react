@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useCallback} from 'react';
+import {useNavigate} from 'react-router-dom';
 import {hapticImpact} from '../../shared/lib/haptic';
 import {useCarouselTrack} from '../../shared/hooks/useCarouselTrack';
 import {getTelegramObject} from '../../shared/lib/telegram';
@@ -20,18 +21,33 @@ const slideBackground = (data) => {
     return {background: data.gradient || 'linear-gradient(115deg, var(--accent-soft), var(--bg-elevated))'};
 };
 
-const openBanner = (data) => {
-    if (!data.url) return;
+const bannerProductId = (banner) => {
+    if (banner.type !== 'product') return null;
 
-    hapticImpact('light');
-
-    const tg = getTelegramObject();
-    if (typeof tg.openLink === 'function') tg.openLink(data.url);
-    else window.open(data.url, '_blank', 'noopener');
+    const id = banner.data?.productId;
+    return id === null || id === undefined || id === '' ? null : id;
 };
 
 export default function BannerCarousel({items}) {
     const {trackRef, active, handleScroll, scrollToSlide} = useCarouselTrack();
+    const navigate = useNavigate();
+
+    const openBanner = useCallback((banner) => {
+        const productId = bannerProductId(banner);
+        const url = banner.data?.url;
+        if (!productId && !url) return;
+
+        hapticImpact('light');
+
+        if (productId) {
+            navigate(`/card/${productId}`);
+            return;
+        }
+
+        const tg = getTelegramObject();
+        if (typeof tg.openLink === 'function') tg.openLink(url);
+        else window.open(url, '_blank', 'noopener');
+    }, [navigate]);
 
     // Пока баннеров нет — держим место серыми прямоугольниками и не сворачиваемся.
     // Схлопнуть карусель значило бы дёрнуть вверх всё, что под ней, и дёрнуть обратно,
@@ -63,13 +79,14 @@ export default function BannerCarousel({items}) {
                     const promo = formatPromoDate(data.promoEndDate);
                     const footnote = promo ? `Акция до ${promo}` : data.note;
                     const hasBottom = Boolean(price || footnote);
+                    const isClickable = Boolean(bannerProductId(banner) || data.url);
 
                     return (
                         <article
                             key={banner.id}
-                            className={style.slide}
+                            className={`${style.slide} ${isClickable ? style.slideClickable : ''}`}
                             style={slideBackground(data)}
-                            onClick={() => openBanner(data)}
+                            onClick={isClickable ? () => openBanner(banner) : undefined}
                         >
                             <div className={style.scrim} aria-hidden="true"/>
 

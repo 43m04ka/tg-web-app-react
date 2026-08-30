@@ -16,16 +16,18 @@ export const pageCartItems = (items, catalogs, pageId) => {
 export const PAYMENT_METHODS = [
     {
         key: 'sbp',
-        title: 'СБП — перевод по QR',
-        note: 'Оплата онлайн, зачисление сразу',
+        title: 'СБП',
+        note: 'Оплата с помощью Системы быстрых платежей',
         tone: 'sbp',
+        icon: 'sbp',
         isOnline: true
     },
     {
         key: 'split',
         title: 'Яндекс Сплит',
-        note: 'Четыре платежа раз в две недели, без процентов',
+        note: 'Яндекс Сплит — это сервис от Яндекса для оплаты покупок частями',
         tone: 'split',
+        icon: 'split',
         minTotal: SPLIT_MIN_TOTAL,
         schedule: true,
         terms: {label: 'Условия сервиса', url: 'https://yandex.ru/legal/yandexpay_b2c/'}
@@ -33,8 +35,9 @@ export const PAYMENT_METHODS = [
     {
         key: 'dolyami',
         title: 'Долями',
-        note: 'Четыре платежа раз в две недели, возможен сервисный сбор',
+        note: '«Долями» — это сервис оплаты покупок частями от Т‑Банка',
         tone: 'dolyami',
+        icon: 'dolyami',
         minTotal: SPLIT_MIN_TOTAL,
         schedule: true,
         terms: {label: 'Условия сервиса', url: 'https://dolyame.ru/'}

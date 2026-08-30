@@ -1,5 +1,6 @@
 import React from 'react';
-import {discountPercent, formatPrice, shortPlatform} from '../Main/catalogSections';
+import {discountPercent, formatPrice, platformList, subscriptionTerm} from '../Main/catalogSections';
+import {accentStyle} from '../SelectPlatform/accent';
 import style from './Catalog.module.scss';
 
 const SKELETON_KEYS = ['a', 'b', 'c', 'd'];
@@ -21,9 +22,11 @@ export function ProductGridSkeleton({count = 4}) {
 const STAGGER_LIMIT = 8;
 const STAGGER_STEP_MS = 32;
 
-function GridCard({product, index, animate, onOpen}) {
+function GridCard({product, index, animate, regionOf, onOpen}) {
     const percent = discountPercent(product.price, product.oldPrice);
-    const platform = shortPlatform(product.platform);
+    const platforms = platformList(product.platform);
+    const region = regionOf?.(product);
+    const term = subscriptionTerm(product);
     const isAnimated = animate && index < STAGGER_LIMIT;
 
     return (
@@ -36,12 +39,32 @@ function GridCard({product, index, animate, onOpen}) {
                 className={style.cover}
                 style={product.image ? {backgroundImage: `url(${product.image})`} : undefined}
             >
+                {region ? (
+                    <span
+                        className={`${style.regionBadge} ${region.color ? style.regionBadgeTinted : ''}`}
+                        style={region.color ? accentStyle(region.color) : undefined}
+                    >
+                        {region.icon ? (
+                            <span
+                                className={style.regionBadgeIcon}
+                                style={{backgroundImage: `url(${region.icon})`}}
+                                aria-hidden="true"
+                            />
+                        ) : null}
+                        <span className={style.regionBadgeTitle}>{region.title}</span>
+                    </span>
+                ) : null}
+
                 <div className={style.tags}>
-                    {platform ? <span className={style.tag}>{platform}</span> : null}
+                    {platforms.map((item) => (
+                        <span key={item} className={style.tag}>{item}</span>
+                    ))}
                     {product.typeLabel ? <span className={style.tag}>{product.typeLabel}</span> : null}
                 </div>
 
                 {percent > 0 ? <span className={style.discount}>−{percent}%</span> : null}
+
+                {term ? <span className={style.term}>{term}</span> : null}
             </div>
 
             <span className={style.name}>{product.name}</span>
@@ -56,7 +79,7 @@ function GridCard({product, index, animate, onOpen}) {
     );
 }
 
-export default function ProductGrid({items, animate = true, onOpen}) {
+export default function ProductGrid({items, animate = true, regionOf, onOpen}) {
     return (
         <div className={style.grid}>
             {items.map((product, index) => (
@@ -65,6 +88,7 @@ export default function ProductGrid({items, animate = true, onOpen}) {
                     product={product}
                     index={index}
                     animate={animate}
+                    regionOf={regionOf}
                     onOpen={onOpen}
                 />
             ))}

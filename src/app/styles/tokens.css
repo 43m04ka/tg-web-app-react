@@ -9,6 +9,8 @@
     --gold: oklch(0.85 0.16 90);
     --gold-surface: oklch(0.25 0.05 90);
 
+    --link: oklch(0.74 0.13 235);
+
     --danger: oklch(0.6 0.2 25);
     --success: oklch(0.72 0.15 148);
 

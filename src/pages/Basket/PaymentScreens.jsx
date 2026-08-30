@@ -1,7 +1,69 @@
 import React, {useCallback, useState} from 'react';
 import {hapticImpact} from '../../shared/lib/haptic';
-import {money} from './cartModel';
+import {shortPlatform} from '../Main/catalogSections';
+import {money, rupees} from './cartModel';
 import style from './Basket.module.scss';
+
+function PurchasedItems({snapshot}) {
+    const items = snapshot?.items || [];
+    if (!items.length) return null;
+
+    const topup = (snapshot.positions || []).find((position) => position.priceRs);
+
+    return (
+        <div className={style.bought}>
+            <span className={style.boughtTitle}>Что вы купили</span>
+
+            <div className={style.boughtList}>
+                {items.map((item) => {
+                    const meta = [
+                        shortPlatform(item.platform),
+                        item.typeLabel,
+                        item.count > 1 ? `${item.count} шт.` : null
+                    ].filter(Boolean).join(' · ');
+
+                    return (
+                        <div key={item.id} className={style.boughtRow}>
+                            <span
+                                className={style.boughtCover}
+                                style={item.image ? {backgroundImage: `url(${item.image})`} : undefined}
+                                aria-hidden="true"
+                            />
+
+                            <span className={style.boughtBody}>
+                                <span className={style.boughtName}>{item.name}</span>
+                                {meta ? <span className={style.boughtMeta}>{meta}</span> : null}
+                            </span>
+
+                            {item.sum > 0 ? <span className={style.boughtSum}>{money(item.sum)}</span> : null}
+                        </div>
+                    );
+                })}
+            </div>
+
+            {topup ? (
+                <span className={style.boughtNote}>
+                    Оплачено пополнением баланса PSN на {rupees(topup.priceRs)} — менеджер зачислит его
+                    на аккаунт и оформит покупки из списка.
+                </span>
+            ) : null}
+
+            {snapshot.discount > 0 ? (
+                <div className={style.boughtTotals}>
+                    <div className={style.boughtTotalRow}>
+                        <span>Товары</span>
+                        <span>{money(snapshot.itemsTotal)}</span>
+                    </div>
+
+                    <div className={style.boughtTotalRow}>
+                        <span>{snapshot.promo?.name ? `Промокод ${snapshot.promo.name}` : 'Скидка'}</span>
+                        <span className={style.boughtDiscount}>−{money(snapshot.discount)}</span>
+                    </div>
+                </div>
+            ) : null}
+        </div>
+    );
+}
 
 function Shell({tone, icon, title, text, children}) {
     return (
@@ -84,16 +146,7 @@ export function PaymentSuccess({order, snapshot, onClose}) {
                 </div>
             </div>
 
-            {snapshot?.items?.length ? (
-                <div className={style.stateList}>
-                    {snapshot.items.map((item) => (
-                        <div key={item.id} className={style.stateListRow}>
-                            <span className={style.stateListName}>{item.name}</span>
-                            <span className={style.stateListCount}>{item.count} шт.</span>
-                        </div>
-                    ))}
-                </div>
-            ) : null}
+            <PurchasedItems snapshot={snapshot}/>
 
             <div className={style.stateActions}>
                 <button type="button" className={style.primary} onClick={onClose}>Вернуться в каталог</button>
@@ -143,6 +196,8 @@ export function OrderAccepted({order, snapshot, onClose}) {
                     <span className={style.stateValue}>{money(snapshot?.total ?? order?.total)}</span>
                 </div>
             </div>
+
+            <PurchasedItems snapshot={snapshot}/>
 
             <div className={style.stateActions}>
                 <button type="button" className={style.primary} onClick={onClose}>Вернуться в каталог</button>

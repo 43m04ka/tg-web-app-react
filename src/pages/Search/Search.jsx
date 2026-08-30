@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import {useSessionStore} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
@@ -9,9 +9,10 @@ import {useNearBottom} from '../../shared/hooks/useNearBottom';
 import {useScrollMemory} from '../../shared/hooks/useScrollMemory';
 import {hapticImpact} from '../../shared/lib/haptic';
 import {claimKeyboard} from '../../shared/lib/keyboard';
-import {regionIcon, regionTitle} from '../../shared/lib/region';
+import {regionIcon, regionLabel, regionTitle} from '../../shared/lib/region';
 import {readSearchForm, writeSearchForm} from '../../shared/lib/searchMemory';
 import {getTelegramObject} from '../../shared/lib/telegram';
+import BackPill from '../../shared/ui/BackPill/BackPill';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import {supportUrlForBot} from '../More/moreMenu';
 import {loadFacets, peekFacets} from '../../shared/api/facetsCache';
@@ -19,6 +20,7 @@ import {
     countActiveFilters,
     createFilters,
     describeFilters,
+    matchQueryTags,
     productsPlural,
     sortingLabel
 } from '../../shared/lib/catalogQuery';
@@ -27,14 +29,17 @@ import {
     DonationIcon,
     FunnelIcon,
     GamesIcon,
+    PlatformIcon,
     SortIcon,
-    SubscriptionIcon
+    SubscriptionIcon,
+    TypeIcon
 } from '../Catalog/CatalogIcons';
 import ProductGrid, {ProductGridSkeleton} from '../Catalog/ProductGrid';
 import FilterSheet from '../Catalog/FilterSheet';
 import {useCatalogProducts} from '../Catalog/useCatalogProducts';
 import {buildCategories, buildGenres} from './searchSections';
 import {clearRecentSearches, forgetSearch, loadRecentSearches, rememberSearch} from './recentSearches';
+import {dedupeProducts} from './dedupeProducts';
 import {useSearchResults, MIN_QUERY_LENGTH} from './useSearchResults';
 import style from './Search.module.scss';
 
@@ -47,12 +52,17 @@ const TILE_ICONS = {
 
 export default function Search() {
     const navigate = useNavigate();
+    const location = useLocation();
     const {contentSafeAreaInset, safeAreaInset, isKeyboardOpen} = useAppInsets();
 
     const pageId = useSessionStore((state) => state.pageId);
+    const setPageId = useSessionStore((state) => state.setPageId);
     const botType = useSessionStore((state) => state.botType);
     const pages = useStructureStore((state) => state.pages);
     const startPages = useStructureStore((state) => state.startPages);
+    const catalogs = useStructureStore((state) => state.catalogs);
+
+    const allPages = Boolean(location.state?.allPages);
 
     const region = useMemo(() => {
         const page = (pages || []).find((candidate) => candidate.id === pageId);
@@ -69,11 +79,48 @@ export default function Search() {
     const [filters, setFilters] = useState(() => saved?.filters || createFilters());
     const [sorting, setSorting] = useState(saved?.sorting || 'default');
     const [isSheetOpen, setSheetOpen] = useState(false);
-    const [{facets, price}, setFacetData] = useState(() => peekFacets({pageId}));
-    const [recent, setRecent] = useState(() => loadRecentSearches());
     const [isFieldFocused, setFieldFocused] = useState(false);
 
-    const scope = useMemo(() => ({pageId}), [pageId]);
+    const scope = useMemo(
+        () => (allPages ? {allPages: true, botType} : {pageId}),
+        [allPages, botType, pageId]
+    );
+
+    const [{facets, price}, setFacetData] = useState(() => peekFacets(scope));
+    const [recent, setRecent] = useState(() => loadRecentSearches());
+
+    const catalogById = useMemo(
+        () => new Map((catalogs || []).map((catalog) => [catalog.id, catalog])),
+        [catalogs]
+    );
+
+    const pageIdOfProduct = useCallback(
+        (product) => catalogById.get(product.catalogId)?.structurePageId ?? null,
+        [catalogById]
+    );
+
+    const regionOfProduct = useMemo(() => {
+        if (!allPages) return null;
+
+        const pageById = new Map((pages || []).map((candidate) => [candidate.id, candidate]));
+        const startPageByPageId = new Map((startPages || []).map((item) => [item.structurePageId, item]));
+
+        return (product) => {
+            const productPageId = pageIdOfProduct(product);
+            if (productPageId === null) return null;
+
+            const productPage = pageById.get(productPageId) || null;
+            const productStartPage = startPageByPageId.get(productPageId) || null;
+            if (!productPage && !productStartPage) return null;
+
+            return {
+                title: regionLabel(productPage, productStartPage),
+                icon: regionIcon(productPage, productStartPage),
+                color: productStartPage?.color || null
+            };
+        };
+    }, [allPages, pages, startPages, pageIdOfProduct]);
+
     const inputRef = useRef(null);
 
     useEffect(() => {
@@ -93,8 +140,7 @@ export default function Search() {
     const scrollRef = useScrollMemory(`search:${mode}`);
     const isHeaderHidden = useHidingHeader(scrollRef, {enabled: !isSheetOpen && !isKeyboardOpen});
 
-    const isVeiled = isFieldFocused && !isSheetOpen;
-    const isIdleVeiled = isVeiled && mode === 'idle';
+    const isIdleVeiled = isFieldFocused && !isSheetOpen && mode === 'idle';
 
     const holdFocus = useCallback((event) => event.preventDefault(), []);
 
@@ -106,7 +152,7 @@ export default function Search() {
     useEffect(() => {
         let isAlive = true;
 
-        loadFacets({pageId})
+        loadFacets(scope)
             .then((value) => {
                 if (isAlive) setFacetData(value);
             })
@@ -115,9 +161,15 @@ export default function Search() {
         return () => {
             isAlive = false;
         };
-    }, [pageId]);
+    }, [scope]);
 
-    const search = useSearchResults({query: trimmed, scope, filters, sorting});
+    const rawSearch = useSearchResults({query: trimmed, scope, filters, sorting});
+
+    const search = useMemo(() => ({
+        ...rawSearch,
+        items: dedupeProducts(rawSearch.items, pageIdOfProduct),
+        suggestions: dedupeProducts(rawSearch.suggestions, pageIdOfProduct)
+    }), [rawSearch, pageIdOfProduct]);
 
     const browseQuery = useMemo(
         () => ({...scope, filters: isBrowsing ? filters : createFilters(), sorting}),
@@ -141,9 +193,16 @@ export default function Search() {
 
     const openProduct = useCallback((product) => {
         hapticImpact('light');
+        inputRef.current?.blur();
         if (trimmed.length >= MIN_QUERY_LENGTH) setRecent(rememberSearch(trimmed));
+
+        const productPageId = pageIdOfProduct(product);
+        if (productPageId !== null && (allPages || pageId === null) && productPageId !== pageId) {
+            setPageId(productPageId);
+        }
+
         navigate(`/card/${product.id}`);
-    }, [navigate, trimmed]);
+    }, [allPages, navigate, trimmed, pageId, pageIdOfProduct, setPageId]);
 
     const submit = useCallback((event) => {
         event.preventDefault();
@@ -171,7 +230,20 @@ export default function Search() {
         setSorting('default');
     }, []);
 
-    useBackButton(reset, {enabled: mode !== 'idle'});
+    const exitGlobalSearch = useCallback(() => {
+        hapticImpact('light');
+        navigate('/');
+    }, [navigate]);
+
+    const goBack = useCallback(() => {
+        if (mode !== 'idle') {
+            reset();
+            return;
+        }
+        exitGlobalSearch();
+    }, [mode, reset, exitGlobalSearch]);
+
+    const hasNativeBack = useBackButton(goBack, {enabled: mode !== 'idle' || allPages});
 
     const askManager = useCallback(() => {
         const url = supportUrlForBot(botType);
@@ -186,6 +258,8 @@ export default function Search() {
 
     const chips = describeFilters(filters, facets);
 
+    const queryTags = useMemo(() => matchQueryTags(trimmed, facets), [trimmed, facets]);
+
     const categories = useMemo(() => buildCategories(facets), [facets]);
     const genres = useMemo(() => buildGenres(facets), [facets]);
 
@@ -196,9 +270,15 @@ export default function Search() {
                 style={{paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`}}
             >
                 <div className={style.headerRow}>
+                    {allPages && !hasNativeBack ? (
+                        <BackPill className={style.back} onClick={exitGlobalSearch}/>
+                    ) : null}
+
                     <h1 className={style.title}>Поиск</h1>
 
-                    {region ? (
+                    {allPages ? (
+                        <span className={style.region}>Глобальный поиск</span>
+                    ) : region ? (
                         <span className={style.region}>
                             {region.icon ? (
                                 <span
@@ -238,6 +318,57 @@ export default function Search() {
                     ) : null}
                 </form>
 
+                {queryTags.length ? (
+                    <div className={style.tags}>
+                        {queryTags.map((tag) => {
+                            const TagIcon = tag.key === 'platform' ? PlatformIcon : TypeIcon;
+
+                            return (
+                                <button
+                                    key={tag.id}
+                                    type="button"
+                                    className={style.tag}
+                                    onPointerDown={holdFocus}
+                                    onClick={() => applySection(tag.filters)}
+                                >
+                                    <TagIcon className={style.tagIcon}/>
+                                    <span className={style.tagLabel}>Все: {tag.label}</span>
+                                    {tag.count ? (
+                                        <span className={style.tagCount}>
+                                            {tag.count.toLocaleString('ru-RU')}
+                                        </span>
+                                    ) : null}
+                                </button>
+                            );
+                        })}
+                    </div>
+                ) : null}
+
+                <div className={`${style.recentReveal} ${isIdleVeiled && recent.length ? style.recentRevealOpen : ''}`}>
+                    <div className={style.recentRevealInner}>
+                        <div className={style.sectionHead}>
+                            <span className={style.sectionTitle}>Недавние запросы</span>
+                            <button
+                                type="button"
+                                className={style.sectionAction}
+                                tabIndex={isIdleVeiled ? undefined : -1}
+                                onPointerDown={holdFocus}
+                                onClick={() => setRecent(clearRecentSearches())}
+                            >
+                                Очистить
+                            </button>
+                        </div>
+
+                        <RecentList
+                            recent={recent}
+                            holdFocus={holdFocus}
+                            tabIndex={isIdleVeiled ? undefined : -1}
+                            onPick={(value) => setQuery(value)}
+                            onForget={(value) => setRecent(forgetSearch(value))}
+                        />
+                    </div>
+                </div>
+
                 {mode !== 'idle' ? (
                     <div className={style.controls}>
                         <button
@@ -272,10 +403,10 @@ export default function Search() {
                 ) : null}
             </div>
 
-            {isVeiled ? (
+            {isIdleVeiled ? (
                 <button
                     type="button"
-                    className={`${style.veil} ${isIdleVeiled ? style.veilDimmed : ''}`}
+                    className={`${style.veil} ${style.veilDimmed}`}
                     aria-label="Свернуть клавиатуру"
                     onPointerDown={holdFocus}
                     onClick={dismissFocus}
@@ -291,6 +422,7 @@ export default function Search() {
                     <SearchOutcome
                         state={search}
                         query={trimmed}
+                        regionOf={regionOfProduct}
                         onOpen={openProduct}
                         onReset={reset}
                         onAskManager={askManager}
@@ -299,6 +431,7 @@ export default function Search() {
                 ) : mode === 'browse' ? (
                     <BrowseOutcome
                         state={browse}
+                        regionOf={regionOfProduct}
                         onOpen={openProduct}
                         onReset={reset}
                         sentinelRef={sentinelRef}
@@ -307,7 +440,7 @@ export default function Search() {
                     <IdleScreen
                         categories={categories}
                         genres={genres}
-                        recent={recent}
+                        recent={isIdleVeiled ? [] : recent}
                         onApply={applySection}
                         onPickRecent={(value) => setQuery(value)}
                         onForgetRecent={(value) => setRecent(forgetSearch(value))}
@@ -332,7 +465,7 @@ export default function Search() {
     );
 }
 
-function SearchOutcome({state, query, onOpen, onReset, onAskManager, onOpenCatalog}) {
+function SearchOutcome({state, query, regionOf, onOpen, onReset, onAskManager, onOpenCatalog}) {
     if (state.isLoading || state.items === null) {
         return state.error ? (
             <EmptyState
@@ -354,7 +487,7 @@ function SearchOutcome({state, query, onOpen, onReset, onAskManager, onOpenCatal
                 <span className={style.found}>
                     Найдено {state.items.length.toLocaleString('ru-RU')} {productsPlural(state.items.length)}
                 </span>
-                <ProductGrid items={state.items} animate={!state.isRestored} onOpen={onOpen}/>
+                <ProductGrid items={state.items} animate={!state.isRestored} regionOf={regionOf} onOpen={onOpen}/>
             </>
         );
     }
@@ -366,8 +499,7 @@ function SearchOutcome({state, query, onOpen, onReset, onAskManager, onOpenCatal
             <div className={style.emptyText}>
                 <span className={style.emptyTitle}>Ничего не нашли</span>
                 <span className={style.emptyNote}>
-                    Проверьте написание или поищите на английском — часть игр в каталоге
-                    под оригинальными названиями
+                    Проверьте написание — все игры в каталоге под оригинальными названиями
                 </span>
             </div>
 
@@ -416,7 +548,7 @@ function SearchOutcome({state, query, onOpen, onReset, onAskManager, onOpenCatal
     );
 }
 
-function BrowseOutcome({state, onOpen, onReset, sentinelRef}) {
+function BrowseOutcome({state, regionOf, onOpen, onReset, sentinelRef}) {
     if (state.items === null) {
         return state.error ? (
             <EmptyState
@@ -450,7 +582,7 @@ function BrowseOutcome({state, onOpen, onReset, sentinelRef}) {
                 {state.total.toLocaleString('ru-RU')} {productsPlural(state.total)}
             </span>
 
-            <ProductGrid items={state.items} animate={!state.isRestored} onOpen={onOpen}/>
+            <ProductGrid items={state.items} animate={!state.isRestored} regionOf={regionOf} onOpen={onOpen}/>
 
             {state.hasMore ? (
                 <div ref={sentinelRef} className={style.more}>
@@ -522,31 +654,41 @@ function IdleScreen({categories, genres, recent, onApply, onPickRecent, onForget
                         </button>
                     </div>
 
-                    <div className={style.recent}>
-                        {recent.map((value) => (
-                            <div key={value} className={style.recentRow}>
-                                <button
-                                    type="button"
-                                    className={style.recentPick}
-                                    onClick={() => onPickRecent(value)}
-                                >
-                                    <span className={style.recentIcon} aria-hidden="true">↺</span>
-                                    <span className={style.recentValue}>{value}</span>
-                                </button>
-
-                                <button
-                                    type="button"
-                                    className={style.recentRemove}
-                                    aria-label={`Убрать «${value}» из истории`}
-                                    onClick={() => onForgetRecent(value)}
-                                >
-                                    ✕
-                                </button>
-                            </div>
-                        ))}
-                    </div>
+                    <RecentList recent={recent} onPick={onPickRecent} onForget={onForgetRecent}/>
                 </section>
             ) : null}
+        </div>
+    );
+}
+
+function RecentList({recent, holdFocus, tabIndex, onPick, onForget}) {
+    return (
+        <div className={style.recent}>
+            {recent.map((value) => (
+                <div key={value} className={style.recentRow}>
+                    <button
+                        type="button"
+                        className={style.recentPick}
+                        tabIndex={tabIndex}
+                        onPointerDown={holdFocus}
+                        onClick={() => onPick(value)}
+                    >
+                        <span className={style.recentIcon} aria-hidden="true">↺</span>
+                        <span className={style.recentValue}>{value}</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className={style.recentRemove}
+                        aria-label={`Убрать «${value}» из истории`}
+                        tabIndex={tabIndex}
+                        onPointerDown={holdFocus}
+                        onClick={() => onForget(value)}
+                    >
+                        ✕
+                    </button>
+                </div>
+            ))}
         </div>
     );
 }

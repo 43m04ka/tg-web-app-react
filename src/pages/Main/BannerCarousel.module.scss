@@ -41,7 +41,11 @@
   transition: transform var(--duration-base) var(--ease-out);
 }
 
-.slide:not(.skeleton):active {
+.slideClickable {
+  cursor: pointer;
+}
+
+.slideClickable:active {
   transform: scale(0.985);
 }
 

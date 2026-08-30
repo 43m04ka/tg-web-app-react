@@ -113,8 +113,17 @@ const lockScreenOrientation = () => {
     }
 };
 
+const isLandscapeScreen = () => {
+    const width = window.innerWidth || window.screen?.width || 0;
+    const height = window.innerHeight || window.screen?.height || 0;
+    if (!width || !height) return false;
+    return width > height;
+};
+
 const supportsFullscreen = (tg) =>
-    typeof tg.requestFullscreen === 'function' && (tg.isVersionAtLeast?.('8.0') ?? false);
+    typeof tg.requestFullscreen === 'function'
+    && (tg.isVersionAtLeast?.('8.0') ?? false)
+    && !isLandscapeScreen();
 
 let isViewportConfigured = false;
 

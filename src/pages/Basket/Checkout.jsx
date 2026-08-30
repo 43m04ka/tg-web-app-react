@@ -28,6 +28,7 @@ import {
     pageCartItems,
     splitSchedule
 } from './cartModel';
+import {unitPrice} from './quoteLocal';
 import {useBasketQuote} from './useBasketQuote';
 import {usePromoMemory} from './usePromoMemory';
 import {useOrderFlow, SCREEN} from './useOrderFlow';
@@ -39,12 +40,23 @@ import style from './Basket.module.scss';
 
 const FORM_KEY = 'checkout:form';
 
-const nativeContact = ({isVk, user}) => {
-    if (isVk) {
-        return `https://vk.com/im/convo/${user?.id} \n${user?.first_name || ''} ${user?.last_name || ''}`.trim();
-    }
+const fullName = (user) => `${user?.first_name || ''} ${user?.last_name || ''}`.trim();
 
-    return `@${user?.username || ''}`;
+const isNativeUser = (user) => Boolean(user?.id) && !user.isGuest
+    && (user.platform === 'tg' || user.platform === 'vk');
+
+const nativeContact = (user) => {
+    if (user?.platform === 'vk') return `https://vk.com/im/convo/${user.id} \n${fullName(user)}`.trim();
+    if (user?.username) return `@${user.username}`;
+
+    return `${fullName(user) || 'Пользователь Telegram'} \ntg://user?id=${user?.id}`;
+};
+
+const contactHint = (user) => {
+    if (user?.platform === 'vk') return `Напишем в VK — ${fullName(user) || 'вам в личные сообщения'}`;
+    if (user?.username) return `Напишем в Telegram — @${user.username}`;
+
+    return 'Напишем в Telegram — в этот же чат с ботом';
 };
 
 function PaymentOption({method, total, isActive, onSelect}) {
@@ -60,7 +72,13 @@ function PaymentOption({method, total, isActive, onSelect}) {
                 aria-pressed={isActive}
                 onClick={() => onSelect(method.key)}
             >
-                <span className={`${style.paymentMark} ${style[method.tone]}`} aria-hidden="true"/>
+                <span
+                    className={`${style.paymentMark} ${method.icon ? style.paymentMarkIcon : style[method.tone]}`}
+                    style={method.icon
+                        ? {backgroundImage: `url(${process.env.PUBLIC_URL}/payments/${method.icon}.png)`}
+                        : undefined}
+                    aria-hidden="true"
+                />
 
                 <span className={style.paymentBody}>
                     <span className={style.paymentTitle}>{method.title}</span>
@@ -144,7 +162,6 @@ export default function Checkout() {
     const pageId = useSessionStore((state) => state.pageId);
     const user = useSessionStore((state) => state.user);
     const isVk = useSessionStore((state) => state.isVk);
-    const isTg = useSessionStore((state) => state.isTg);
     const platform = useSessionStore((state) => state.platform);
 
     const pages = useStructureStore((state) => state.pages);
@@ -156,7 +173,7 @@ export default function Checkout() {
 
     const saved = useMemo(() => recallView(FORM_KEY) || {}, []);
 
-    const hasNativeContact = (isTg && Boolean(user?.username)) || isVk;
+    const hasNativeContact = isNativeUser(user);
 
     const [method, setMethod] = useState(saved.method || 'sbp');
     const [accountKind, setAccountKind] = useState(saved.accountKind || ACCOUNT_KINDS.NEW);
@@ -223,7 +240,7 @@ export default function Checkout() {
     const isOnline = selected.isOnline;
 
     const contact = hasNativeContact
-        ? nativeContact({isVk, user})
+        ? nativeContact(user)
         : formatContact(channel, contactValue);
 
     const isContactReady = hasNativeContact || isContactValid(channel, contactValue);
@@ -231,6 +248,16 @@ export default function Checkout() {
     const isAccountReady = isAccountFilled(pageType, accountKind, accountValues);
     const isReady = Boolean(userId) && isContactReady && isEmailReady && isAccountReady
         && total > 0 && !isLoading && !error;
+
+    const blockReason = useMemo(() => {
+        if (!isTouched || isReady) return null;
+        if (!userId) return 'Не удалось определить ваш профиль — перезапустите приложение';
+        if (!isAccountReady) return 'Заполните логин и пароль от аккаунта выше';
+        if (!isContactReady) return 'Укажите контакт для связи';
+        if (!isEmailReady) return 'Укажите почту для чека';
+
+        return null;
+    }, [isTouched, isReady, userId, isAccountReady, isContactReady, isEmailReady]);
 
     const submit = useCallback(() => {
         setTouched(true);
@@ -254,12 +281,25 @@ export default function Checkout() {
             paymentMethod: method,
             promoCode: quote?.promo?.name || undefined
         }, {
-            items: (pageItems || []).map((item) => ({id: item.id, name: item.name, count: item.count})),
+            items: (pageItems || []).map((item) => ({
+                id: item.id,
+                name: item.name,
+                count: item.count,
+                image: item.image || null,
+                platform: item.platform || null,
+                typeLabel: item.typeLabel || null,
+                sum: unitPrice(item) * item.count
+            })),
+            positions: quote?.positions || [],
+            itemsTotal: quote?.itemsTotal ?? total,
+            discount: quote?.discount ?? 0,
+            promo: quote?.promo || null,
+            paymentTitle: selected.title,
             total
         });
     }, [
         accountKind, accountValues, channel, contact, contactValue, email, flow, hasNativeContact,
-        isReady, isVk, method, pageId, pageItems, pageType, platform, quote, total, user, vkGroupId
+        isReady, isVk, method, pageId, pageItems, pageType, platform, quote, selected, total, user, vkGroupId
     ]);
 
     if (flow.screen === SCREEN.WAITING) {
@@ -286,7 +326,7 @@ export default function Checkout() {
                     style={{paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`}}
                 >
                     {hasNativeBack ? null : <BackPill className={style.back} onClick={back}/>}
-                    <h1 className={style.title}>Оформление</h1>
+                    <h1 className={style.title}>Оформление заказа</h1>
                 </div>
 
                 <div className={style.content}>
@@ -309,7 +349,7 @@ export default function Checkout() {
                 style={{paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`}}
             >
                 {hasNativeBack ? null : <BackPill className={style.back} onClick={back}/>}
-                <h1 className={style.title}>Оформление</h1>
+                <h1 className={style.title}>Оформление заказа</h1>
             </div>
 
             <div
@@ -339,6 +379,7 @@ export default function Checkout() {
                     pageType={pageType}
                     kind={accountKind}
                     values={accountValues}
+                    isTouched={isTouched}
                     onKind={setAccountKind}
                     onChange={(key, value) => setAccountValues((prev) => ({...prev, [key]: value}))}
                 />
@@ -348,17 +389,24 @@ export default function Checkout() {
 
                     <div className={style.card}>
                         {hasNativeContact ? (
-                            <p className={style.hint}>
-                                Напишем в {isVk ? 'VK' : 'Telegram'} — {contact.split('\n')[0]}
-                            </p>
+                            <p className={style.hint}>{contactHint(user)}</p>
                         ) : (
-                            <ContactField
-                                channel={channel}
-                                value={contactValue}
-                                isTouched={isTouched}
-                                onChannel={setChannel}
-                                onChange={setContactValue}
-                            />
+                            <>
+                                {platform === 'tg' ? (
+                                    <p className={style.hint}>
+                                        Не удалось прочитать ваш профиль Telegram — оставьте контакт,
+                                        чтобы менеджер вас нашёл.
+                                    </p>
+                                ) : null}
+
+                                <ContactField
+                                    channel={channel}
+                                    value={contactValue}
+                                    isTouched={isTouched}
+                                    onChannel={setChannel}
+                                    onChange={setContactValue}
+                                />
+                            </>
                         )}
 
                         {isOnline ? (
@@ -427,6 +475,7 @@ export default function Checkout() {
                     </span>
                 </div>
 
+                {blockReason ? <p className={style.actionError}>{blockReason}</p> : null}
                 {flow.error ? <p className={style.actionError}>{flow.error}</p> : null}
                 {error ? (
                     <button type="button" className={style.secondary} onClick={retry}>

@@ -1,12 +1,25 @@
 import {useEffect, useState} from 'react';
 import {usePlatform} from './usePlatform';
+import {useTelegramSdk} from './useTelegramSdk';
 import {getVkUser} from '../lib/vk';
 import {GUEST_USER} from '../config/env';
 
-const guest = (platform) => ({...GUEST_USER, platform, photoUrl: null});
+const guest = (platform) => ({...GUEST_USER, platform, photoUrl: null, isGuest: true});
+
+const fromInitDataString = () => {
+    const raw = window.Telegram?.WebApp?.initData;
+    if (!raw) return null;
+
+    try {
+        const encoded = new URLSearchParams(raw).get('user');
+        return encoded ? JSON.parse(encoded) : null;
+    } catch (e) {
+        return null;
+    }
+};
 
 const telegramUser = () => {
-    const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user || fromInitDataString();
     if (!tgUser?.id) return null;
 
     return {
@@ -30,6 +43,7 @@ const keepIfSame = (prev, next) => (sameUser(prev, next) ? prev : next);
 
 export function usePlatformUser() {
     const {isVk, platform} = usePlatform();
+    const sdkToken = useTelegramSdk();
 
     const [user, setUser] = useState(() => telegramUser() || guest(platform));
     const [isReady, setIsReady] = useState(!isVk);
@@ -59,7 +73,7 @@ export function usePlatformUser() {
         return () => {
             cancelled = true;
         };
-    }, [isVk, platform]);
+    }, [isVk, platform, sdkToken]);
 
     return {user, isUserReady: isReady};
 }

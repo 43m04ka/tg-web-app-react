@@ -327,7 +327,7 @@ export default function Product() {
 
                 {recommendations?.length ? (
                     <section className={style.section}>
-                        <h2 className={style.sectionTitle}>С этим товаром берут</h2>
+                        <h2 className={style.sectionTitle}>Может быть интересно:</h2>
                         <div className={style.shelf}>
                             {recommendations.map((item) => (
                                 <ProductCard key={item.id} product={item} onOpen={openProduct}/>

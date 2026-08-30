@@ -20,13 +20,27 @@ const VK_PS_GROUP_ID = 85243268;
 const hasTgInitParams = () => {
     if (window.location.hash.includes('tgWebApp')) return true;
     try {
-        return !!sessionStorage.getItem('__telegram__initParams');
+        const raw = sessionStorage.getItem('__telegram__initParams');
+        if (!raw) return false;
+        return Object.keys(JSON.parse(raw) || {}).some((key) => key.startsWith('tgWebApp'));
     } catch (e) {
         return false;
     }
 };
 
-export const isTg = () => {
+const TG_STICKY_KEY = '__app_platform_tg';
+
+const readStickyTg = () => {
+    try {
+        return sessionStorage.getItem(TG_STICKY_KEY) === '1';
+    } catch (e) {
+        return false;
+    }
+};
+
+let stickyTg = readStickyTg();
+
+const detectTg = () => {
     const webApp = window.Telegram?.WebApp;
     if (webApp?.platform && webApp.platform !== 'unknown') return true;
     if (webApp?.initData) return true;
@@ -35,6 +49,19 @@ export const isTg = () => {
 
     const ua = navigator.userAgent || navigator.vendor || window.opera;
     return /Telegram/i.test(ua) || /TRS/i.test(ua);
+};
+
+export const isTg = () => {
+    if (stickyTg) return true;
+    if (!detectTg()) return false;
+
+    stickyTg = true;
+    try {
+        sessionStorage.setItem(TG_STICKY_KEY, '1');
+    } catch (e) {
+    }
+
+    return true;
 };
 
 export const isVk = () =>

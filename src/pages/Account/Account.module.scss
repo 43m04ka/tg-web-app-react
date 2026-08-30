@@ -396,6 +396,48 @@
   color: var(--text);
 }
 
+.orderItems {
+  display: flex;
+  flex-direction: column;
+  gap: u(6);
+  margin: 0;
+  padding: u(10) u(12);
+  list-style: none;
+  border-radius: u(13);
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+}
+
+.orderItem {
+  display: flex;
+  align-items: baseline;
+  gap: u(8);
+  font-size: u(12);
+  line-height: 1.35;
+  color: var(--text-secondary);
+}
+
+.orderItemName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.orderItemCount {
+  flex: none;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.orderNote {
+  font-size: u(11.5);
+  line-height: 1.4;
+  color: var(--text-faint);
+  text-wrap: pretty;
+}
+
 .pay {
   height: u(42);
   border-radius: u(13);

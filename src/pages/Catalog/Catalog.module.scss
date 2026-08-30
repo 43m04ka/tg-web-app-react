@@ -608,13 +608,12 @@
   position: absolute;
   right: u(8);
   bottom: u(8);
-  padding: u(3) u(7);
-  border-radius: u(999);
-  background: oklch(0.14 0.01 264 / 0.82);
+  padding: u(2) u(6);
+  border-radius: u(6);
+  background: oklch(0.14 0.01 264 / 0.8);
   backdrop-filter: blur(u(6));
   -webkit-backdrop-filter: blur(u(6));
-  border: 1px solid oklch(1 0 0 / 0.16);
-  font-size: u(9.5);
+  font-size: u(9);
   font-weight: 700;
   color: oklch(1 0 0);
   white-space: nowrap;

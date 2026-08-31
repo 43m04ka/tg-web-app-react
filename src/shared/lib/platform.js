@@ -10,8 +10,11 @@ export const BOT_TYPE = {
     TG: 'tg',
     VK_XBOX: 'vk-xbox',
     VK_PS: 'vk-ps',
-    WEB: 'web'
+    WEB: 'web',
+    TEST: 'test'
 };
+
+const TEST_STAND_HOST = /(^|\.)(workers\.dev|pages\.dev)$/;
 
 const VK_XBOX_APP_ID = '54475556';
 const VK_XBOX_GROUP_ID = 217049080;
@@ -74,39 +77,46 @@ export const getVkGroupId = () => {
     return String(vkAppId) === VK_XBOX_APP_ID ? VK_XBOX_GROUP_ID : VK_PS_GROUP_ID;
 };
 
+const vkBotType = () =>
+    (getVkGroupId() === VK_XBOX_GROUP_ID ? BOT_TYPE.VK_XBOX : BOT_TYPE.VK_PS);
+
+export const isTestStand = () => TEST_STAND_HOST.test(window.location.hostname);
+
+const BOT_FALLBACK = {[BOT_TYPE.TEST]: BOT_TYPE.WEB};
+
+export const fallbackBotType = (botType) => BOT_FALLBACK[botType] || null;
+
 export const getBotType = () => {
-    if (isVk()) return getVkGroupId() === VK_XBOX_GROUP_ID ? BOT_TYPE.VK_XBOX : BOT_TYPE.VK_PS;
+    if (isTestStand()) return BOT_TYPE.TEST;
+    if (isVk()) return vkBotType();
     if (isTg()) return BOT_TYPE.TG;
     return BOT_TYPE.WEB;
 };
 
-const forcedState = (platform) => ({
+const stateOf = (platform, botType) => ({
     isVk: platform === PLATFORM.VK,
     isTg: platform === PLATFORM.TG,
     isWeb: platform === PLATFORM.WEB,
     platform,
-    botType:
-        platform === PLATFORM.VK
-            ? (getVkGroupId() === VK_XBOX_GROUP_ID ? BOT_TYPE.VK_XBOX : BOT_TYPE.VK_PS)
-            : platform
+    botType
 });
 
+const forcedState = (forced) => {
+    if (forced === BOT_TYPE.TEST) return stateOf(PLATFORM.WEB, BOT_TYPE.TEST);
+    if (forced === PLATFORM.VK) return stateOf(PLATFORM.VK, vkBotType());
+    if (forced === PLATFORM.TG) return stateOf(PLATFORM.TG, BOT_TYPE.TG);
+    if (forced === PLATFORM.WEB) return stateOf(PLATFORM.WEB, BOT_TYPE.WEB);
+    return null;
+};
+
 export const getPlatformState = () => {
-    const forced = new URLSearchParams(window.location.search).get('platform');
-    if (forced === PLATFORM.VK || forced === PLATFORM.TG || forced === PLATFORM.WEB) {
-        return forcedState(forced);
-    }
+    const forced = forcedState(new URLSearchParams(window.location.search).get('platform'));
+    if (forced) return forced;
 
     const vk = isVk();
     const tg = isTg();
 
-    return {
-        isVk: vk,
-        isTg: tg,
-        isWeb: !vk && !tg,
-        platform: vk ? PLATFORM.VK : tg ? PLATFORM.TG : PLATFORM.WEB,
-        botType: getBotType()
-    };
+    return stateOf(vk ? PLATFORM.VK : tg ? PLATFORM.TG : PLATFORM.WEB, getBotType());
 };
 
 export const isSamePlatformState = (a, b) =>

@@ -6,6 +6,7 @@ import {
     OrdersIcon,
     SupportIcon
 } from './MoreIcons';
+import {fallbackBotType} from '../../shared/lib/platform';
 
 export const MENU_GROUPS = [
     {
@@ -133,10 +134,16 @@ export const MENU_GROUPS = [
     }
 ];
 
-export const menuForBot = (botType) => MENU_GROUPS
-    .map((group) => ({...group, items: group.items.filter((item) => item.bots.includes(botType))}))
-    .filter((group) => group.items.length > 0);
+const menuBot = (botType) => fallbackBotType(botType) || botType;
+
+export const menuForBot = (botType) => {
+    const bot = menuBot(botType);
+
+    return MENU_GROUPS
+        .map((group) => ({...group, items: group.items.filter((item) => item.bots.includes(bot))}))
+        .filter((group) => group.items.length > 0);
+};
 
 export const supportUrlForBot = (botType) => MENU_GROUPS
     .flatMap((group) => group.items)
-    .find((item) => item.key.startsWith('support-') && item.bots.includes(botType))?.url || null;
+    .find((item) => item.key.startsWith('support-') && item.bots.includes(menuBot(botType)))?.url || null;

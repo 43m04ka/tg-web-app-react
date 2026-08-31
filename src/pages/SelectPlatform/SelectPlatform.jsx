@@ -3,6 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import {useStructureStore} from '../../store/useStructureStore';
 import {useSessionStore} from '../../store/useSessionStore';
 import {usePlatform} from '../../shared/hooks/usePlatform';
+import {fallbackBotType} from '../../shared/lib/platform';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
 import {hapticImpact} from '../../shared/lib/haptic';
 import {primeKeyboard} from '../../shared/lib/keyboard';
@@ -70,11 +71,14 @@ export default function SelectPlatform() {
     const groups = useMemo(() => {
         if (!Array.isArray(startPages) || !isSettled) return [];
 
-        const visible = [...startPages]
-            .filter((item) => item.platform === botType)
+        const itemsOf = (platform) => [...startPages]
+            .filter((item) => item.platform === platform)
             .sort((a, b) => a.serialNumber - b.serialNumber);
 
-        return toGroups(visible);
+        const visible = itemsOf(botType);
+        const fallback = fallbackBotType(botType);
+
+        return toGroups(visible.length || !fallback ? visible : itemsOf(fallback));
     }, [startPages, botType, isSettled]);
 
     const openGlobalSearch = useCallback(() => {

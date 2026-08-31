@@ -41,6 +41,7 @@ export const BOT_OPTIONS = [
     {key: 'vk-xbox', name: 'VK Xbox'},
     {key: 'vk-ps', name: 'VK PS'},
     {key: 'web', name: 'Веб'},
+    {key: 'test', name: 'Тест'},
 ];
 
 export const typeName = (key) => TYPE_OPTIONS.find((option) => option.key === key)?.name || key || '—';

@@ -7,6 +7,7 @@ import StartPageForm from './StartPageForm';
 import WorkTabs, {useWorkTabs} from '../../../Elements/WorkTabs/WorkTabs';
 import {useFeedback} from '../../../Elements/Feedback/Feedback';
 import {TYPE_LABELS} from './startPageContent';
+import {BOT_OPTIONS} from '../EditPages/pageOptions';
 import style from './EditStartPages.module.scss';
 
 // СТАРТОВЫЙ ЭКРАН
@@ -15,12 +16,7 @@ import style from './EditStartPages.module.scss';
 // Элемент открывается вкладкой, а не попапом поверх превью: раньше форма перекрывала
 // ровно то, что ею и правишь.
 
-const PLATFORMS = [
-    {key: 'tg', name: 'Telegram'},
-    {key: 'vk-xbox', name: 'VK Xbox'},
-    {key: 'vk-ps', name: 'VK PS'},
-    {key: 'web', name: 'Web'},
-];
+const PLATFORMS = BOT_OPTIONS;
 
 const ADD_TYPES = ['title', 'label', 'page', 'link'];
 

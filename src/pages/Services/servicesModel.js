@@ -38,25 +38,131 @@ export const stockLabel = (stock) => {
     return 'В наличии';
 };
 
-export const BRAND_TONES = [
-    {from: 'oklch(0.56 0.17 250)', to: 'oklch(0.28 0.07 255)', ring: 'oklch(0.72 0.17 250 / 0.55)'},
-    {from: 'oklch(0.56 0.18 300)', to: 'oklch(0.28 0.07 295)', ring: 'oklch(0.74 0.18 300 / 0.55)'},
-    {from: 'oklch(0.58 0.18 148)', to: 'oklch(0.28 0.07 158)', ring: 'oklch(0.74 0.18 148 / 0.55)'},
-    {from: 'oklch(0.62 0.17 40)', to: 'oklch(0.3 0.07 40)', ring: 'oklch(0.76 0.17 40 / 0.55)'},
-    {from: 'oklch(0.58 0.19 15)', to: 'oklch(0.28 0.08 15)', ring: 'oklch(0.74 0.2 15 / 0.55)'}
-];
+export const BRAND_FALLBACKS = ['#4C8DFF', '#A265FF', '#28B67A', '#FF9A3D', '#FF5470'];
 
-export const toneOf = (brand, index) => {
-    if (brand?.accent) {
-        return {
-            from: brand.accent,
-            to: `color-mix(in oklch, ${brand.accent} 34%, oklch(0.22 0.02 264))`,
-            ring: `color-mix(in oklch, ${brand.accent} 62%, transparent)`
-        };
+const HEX = /^#?([\da-f]{3}|[\da-f]{6})$/i;
+
+const SCREEN_LUMINANCE = 0.0135;
+const LIGHT_EDGE = 0.3;
+const READABLE = 4.2;
+const INK_LIGHT = '#ffffff';
+const INK_DARK = '#111419';
+
+const clamp = (value, low, high) => Math.min(high, Math.max(low, value));
+
+const readHex = (value) => {
+    const found = HEX.exec(String(value ?? '').trim());
+    if (!found) return null;
+
+    const digits = found[1].length === 3
+        ? found[1].replace(/./g, (char) => char + char)
+        : found[1];
+
+    return [0, 2, 4].map((at) => parseInt(digits.slice(at, at + 2), 16) / 255);
+};
+
+const toLinear = (part) => (part <= 0.04045 ? part / 12.92 : Math.pow((part + 0.055) / 1.055, 2.4));
+
+const luminanceOf = ([red, green, blue]) => 0.2126 * toLinear(red)
+    + 0.7152 * toLinear(green)
+    + 0.0722 * toLinear(blue);
+
+const contrast = (one, two) => (Math.max(one, two) + 0.05) / (Math.min(one, two) + 0.05);
+
+const toHsl = ([red, green, blue]) => {
+    const top = Math.max(red, green, blue);
+    const low = Math.min(red, green, blue);
+    const span = top - low;
+    const light = (top + low) / 2;
+
+    if (!span) return [0, 0, light];
+
+    const sat = span / (1 - Math.abs(2 * light - 1));
+    const hue = top === red
+        ? ((green - blue) / span) % 6
+        : top === green
+            ? (blue - red) / span + 2
+            : (red - green) / span + 4;
+
+    return [(hue * 60 + 360) % 360, sat, light];
+};
+
+const fromHsl = ([hue, sat, light]) => {
+    const chroma = (1 - Math.abs(2 * light - 1)) * sat;
+    const mid = chroma * (1 - Math.abs(((hue / 60) % 2) - 1));
+    const lift = light - chroma / 2;
+    const wheel = [
+        [chroma, mid, 0], [mid, chroma, 0], [0, chroma, mid],
+        [0, mid, chroma], [mid, 0, chroma], [chroma, 0, mid]
+    ];
+
+    return wheel[Math.floor(hue / 60) % 6].map((part) => clamp(part + lift, 0, 1));
+};
+
+const relight = (hsl, light) => fromHsl([hsl[0], hsl[1], clamp(light, 0.03, 0.97)]);
+
+const toCss = (rgb) => `#${rgb.map((part) => Math.round(part * 255).toString(16).padStart(2, '0')).join('')}`;
+
+const toRgba = (rgb, alpha) => `rgba(${rgb.map((part) => Math.round(part * 255)).join(', ')}, ${alpha})`;
+
+const liftForScreen = (rgb, hsl) => {
+    let light = hsl[2];
+    let lifted = rgb;
+
+    while (contrast(luminanceOf(lifted), SCREEN_LUMINANCE) < READABLE && light < 0.94) {
+        light += 0.02;
+        lifted = relight(hsl, light);
     }
 
-    return BRAND_TONES[index % BRAND_TONES.length];
+    return lifted;
 };
+
+const holdSide = (hsl, light, isLight) => {
+    let level = clamp(light, 0.06, 0.95);
+    let shifted = relight(hsl, level);
+
+    while (isLight && luminanceOf(shifted) < LIGHT_EDGE + 0.04 && level < 0.95) {
+        level += 0.02;
+        shifted = relight(hsl, level);
+    }
+
+    while (!isLight && luminanceOf(shifted) > LIGHT_EDGE - 0.04 && level > 0.06) {
+        level -= 0.02;
+        shifted = relight(hsl, level);
+    }
+
+    return shifted;
+};
+
+export const themeOf = (brand, index) => {
+    const source = readHex(brand?.accent)
+        || readHex(BRAND_FALLBACKS[index % BRAND_FALLBACKS.length]);
+    const hsl = toHsl(source);
+    const isLight = luminanceOf(source) > LIGHT_EDGE;
+    const darker = hsl[2] - (isLight ? 0.14 : 0.17);
+    const keepsSide = !isLight || luminanceOf(relight(hsl, darker)) > LIGHT_EDGE + 0.04;
+    const edge = holdSide(hsl, keepsSide ? darker : hsl[2] + 0.14, isLight);
+    const text = liftForScreen(source, hsl);
+
+    return {
+        base: toCss(source),
+        edge: toCss(edge),
+        ink: isLight ? INK_DARK : INK_LIGHT,
+        text: toCss(text),
+        ring: toRgba(text, 0.55),
+        glow: toRgba(source, 0.5),
+        isLight
+    };
+};
+
+export const themeVars = (theme) => ({
+    '--svc': theme.base,
+    '--svc-edge': theme.edge,
+    '--svc-ink': theme.ink,
+    '--svc-text': theme.text,
+    '--svc-ring': theme.ring,
+    '--svc-glow': theme.glow
+});
 
 export const servicesFaq = (brand, regionName) => {
     const name = brand?.name || 'сервиса';

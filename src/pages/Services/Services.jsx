@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useSessionStore, selectUserId} from '../../store/useSessionStore';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
@@ -10,7 +10,7 @@ import BackPill from '../../shared/ui/BackPill/BackPill';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import {isEmailValid, money} from '../Basket/cartModel';
 import {CodeDone, CodeFail, CodeStalled, CodeWaiting} from './ServicesScreens';
-import {kindLabel, kindsOf, offersOf, regionsOf, servicesFaq, stockLabel, toneOf} from './servicesModel';
+import {kindLabel, kindsOf, offersOf, regionsOf, servicesFaq, stockLabel, themeOf, themeVars} from './servicesModel';
 import {useCodeCatalog} from './useCodeCatalog';
 import {SCREEN, useCodeOrder} from './useCodeOrder';
 import style from './Services.module.scss';
@@ -22,6 +22,19 @@ const RegionMark = ({region}) => {
     if (region?.flag) return <span className={style.regionFlag}>{region.flag}</span>;
 
     return null;
+};
+
+const centerActive = (strip, smooth) => {
+    if (!strip) return;
+
+    const active = strip.querySelector('[data-active="true"]');
+    if (!active) return;
+
+    const box = strip.getBoundingClientRect();
+    const spot = active.getBoundingClientRect();
+    const shift = strip.scrollLeft + (spot.left - box.left) - (box.width - spot.width) / 2;
+
+    strip.scrollTo({left: Math.max(0, shift), behavior: smooth ? 'smooth' : 'auto'});
 };
 
 const fullName = (user) => `${user?.first_name || ''} ${user?.last_name || ''}`.trim();
@@ -57,6 +70,8 @@ export default function Services() {
 
     const flow = useCodeOrder(userId);
     const scrollRef = useScrollMemory('services', {ready: brands !== null});
+    const brandsRef = useRef(null);
+    const offersRef = useRef(null);
 
     const brand = useMemo(
         () => (brands || []).find((item) => item.id === brandId) || (brands || [])[0] || null,
@@ -90,6 +105,14 @@ export default function Services() {
             email
         });
     }, [brand, activeKind, activeRegion, offer, email]);
+
+    useEffect(() => {
+        centerActive(brandsRef.current, false);
+    }, [brand?.id]);
+
+    useEffect(() => {
+        centerActive(offersRef.current, true);
+    }, [brand?.id, activeKind, activeRegion, offer?.id]);
 
     const back = useCallback(() => {
         hapticImpact('light');
@@ -173,10 +196,10 @@ export default function Services() {
         return <CodeStalled order={flow.order} botType={botType} onClose={flow.close}/>;
     }
 
-    const tone = toneOf(brand, Math.max(0, (brands || []).findIndex((item) => item.id === brand?.id)));
+    const theme = themeOf(brand, Math.max(0, (brands || []).findIndex((item) => item.id === brand?.id)));
 
     return (
-        <div ref={scrollRef} className={style.screen}>
+        <div ref={scrollRef} className={style.screen} style={themeVars(theme)}>
             <div
                 className={style.header}
                 style={{paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`}}
@@ -214,24 +237,22 @@ export default function Services() {
                     />
                 ) : (
                     <>
-                        <div className={style.brands}>
+                        <div ref={brandsRef} className={style.brands}>
                             {brands.map((item, index) => {
-                                const itemTone = toneOf(item, index);
+                                const itemTheme = themeOf(item, index);
                                 const isActive = item.id === brand.id;
 
                                 return (
                                     <button
                                         key={item.id}
                                         type="button"
+                                        data-active={isActive}
                                         className={`${style.brand} ${isActive ? style.brandActive : ''}`}
                                         aria-pressed={isActive}
-                                        style={{'--brand-ring': itemTone.ring, '--brand-from': itemTone.from}}
+                                        style={themeVars(itemTheme)}
                                         onClick={() => pickBrand(item)}
                                     >
-                                        <span
-                                            className={style.brandTile}
-                                            style={{background: `linear-gradient(140deg, ${itemTone.from}, ${itemTone.to})`}}
-                                        >
+                                        <span className={style.brandTile}>
                                             {item.icon
                                                 ? <img className={style.brandImage} src={item.icon} alt=""/>
                                                 : item.glyph}
@@ -242,13 +263,7 @@ export default function Services() {
                             })}
                         </div>
 
-                        <div
-                            className={style.hero}
-                            style={{
-                                background: `linear-gradient(135deg, ${tone.from}, ${tone.to})`,
-                                borderColor: tone.ring
-                            }}
-                        >
+                        <div className={style.hero}>
                             <span className={style.heroBlob} aria-hidden="true"/>
 
                             <div className={style.heroTop}>
@@ -325,7 +340,7 @@ export default function Services() {
                                 <span className={style.blockNote}>Цены за 1 код</span>
                             </div>
 
-                            <div className={style.offers}>
+                            <div ref={offersRef} className={style.offers}>
                                 {offers.map((item) => {
                                     const isActive = item.id === offer?.id;
                                     const isOut = item.stock <= 0;
@@ -334,6 +349,7 @@ export default function Services() {
                                         <button
                                             key={item.id}
                                             type="button"
+                                            data-active={isActive}
                                             className={`${style.offer} ${isActive ? style.offerActive : ''} ${isOut ? style.offerOut : ''}`}
                                             aria-pressed={isActive}
                                             disabled={isOut}
@@ -343,18 +359,17 @@ export default function Services() {
                                                 {isActive ? '✓' : ''}
                                             </span>
 
-                                            <span className={style.offerBody}>
-                                                <span className={style.offerName}>{item.denomination}</span>
-                                                <span className={`${style.offerStock} ${isOut ? style.offerStockOut : ''}`}>
-                                                    {stockLabel(item.stock)}
-                                                </span>
-                                            </span>
+                                            <span className={style.offerName}>{item.denomination}</span>
 
                                             <span className={style.offerPrices}>
                                                 <span className={style.offerPrice}>{money(item.price)}</span>
                                                 {item.oldPrice ? (
                                                     <span className={style.offerOldPrice}>{money(item.oldPrice)}</span>
                                                 ) : null}
+                                            </span>
+
+                                            <span className={`${style.offerStock} ${isOut ? style.offerStockOut : ''}`}>
+                                                {stockLabel(item.stock)}
                                             </span>
                                         </button>
                                     );

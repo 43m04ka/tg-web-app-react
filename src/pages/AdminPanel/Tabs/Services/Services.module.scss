@@ -486,6 +486,11 @@
   color: var(--accent);
 }
 
+.stockSold {
+  background: var(--surface-hover);
+  color: var(--text-muted);
+}
+
 .stockEmpty {
   background: rgba(var(--danger-rgb), 0.12);
   color: var(--danger);

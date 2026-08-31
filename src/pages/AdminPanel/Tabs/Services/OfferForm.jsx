@@ -8,7 +8,7 @@ import FlagPicker from '../../Elements/FlagPicker/FlagPicker';
 import {isFlagName} from '../../Elements/FlagPicker/flags';
 import {useServer} from './useServer';
 import CodeStock from './CodeStock';
-import {KIND_OPTIONS, parsePrice} from './serviceModel';
+import {KIND_OPTIONS, money, parsePrice} from './serviceModel';
 import s from './Services.module.scss';
 
 const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
@@ -52,6 +52,20 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
     }, [values, initial]);
 
     const hasChanges = Object.keys(changed).length > 0;
+
+    const discount = useMemo(() => {
+        const price = parsePrice(values.price);
+        const oldPrice = parsePrice(values.oldPrice);
+        if (price === null || oldPrice === null || oldPrice === 0) return null;
+
+        if (oldPrice <= price) {
+            return {isBad: true, text: 'Старая цена не больше текущей — зачёркивать нечего'};
+        }
+
+        const percent = Math.round((1 - price / oldPrice) * 100);
+
+        return {isBad: false, text: `Скидка ${percent}% — выгода ${money(oldPrice - price)}`};
+    }, [values.price, values.oldPrice]);
 
     const buildPayload = () => {
         const denomination = values.denomination.trim();
@@ -186,7 +200,7 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
             <Sheet>
                 <Group title="Товар">
                     <Row label="Тип" hint="Селектор «Тип товара» на витрине">
-                        <select className={f.input} value={values.kind}
+                        <select className={`${f.input} ${f.select}`} value={values.kind}
                                 onChange={(event) => handleChange('kind', event.target.value)}>
                             {KIND_OPTIONS.map((option) => (
                                 <option key={option.key} value={option.key}>{option.name}</option>
@@ -198,25 +212,29 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
                                value={values.denomination}
                                onChange={(event) => handleChange('denomination', event.target.value)}/>
                     </Row>
-                    <Row label="Регион" hint="Попадает и в переключатель региона, и в строку активации">
-                        <input className={f.input} type="text" placeholder="Казахстан"
-                               value={values.regionName}
-                               onChange={(event) => handleChange('regionName', event.target.value)}/>
-                    </Row>
-                    <Row label="Флаг" hint="Готовый набор — выбор страны заодно подставит название региона">
+                </Group>
+
+                <Group title="Регион">
+                    <Row label="Флаг" top
+                         hint="Начните отсюда: выбор страны сам подставит название региона и картинку флага">
                         <FlagPicker value={values.regionIcon}
                                     onPick={handleFlag}
                                     onClear={() => handleChange('regionIcon', '')}/>
                     </Row>
-                    <Row label="Своя иконка" hint="Если нужного флага нет в наборе. Ужимается до 192px">
-                        <ImageField value={values.regionIcon}
-                                    onChange={(value) => handleChange('regionIcon', value)}
-                                    emptyText="Нет"/>
+                    <Row label="Название" hint="Попадает и в переключатель региона, и в строку активации">
+                        <input className={f.input} type="text" placeholder="Казахстан"
+                               value={values.regionName}
+                               onChange={(event) => handleChange('regionName', event.target.value)}/>
                     </Row>
-                    <Row label="Эмодзи" hint="Запасной вариант: показывается, пока флаг не выбран">
+                    <Row label="Эмодзи" hint="Запасной вариант: витрина покажет его, если картинки флага нет">
                         <input className={`${f.input} ${f.mono}`} type="text" maxLength={4} placeholder="🇰🇿"
                                value={values.regionFlag}
                                onChange={(event) => handleChange('regionFlag', event.target.value)}/>
+                    </Row>
+                    <Row label="Своя картинка" hint="На случай, если нужного флага нет в наборе. Ужимается до 192px">
+                        <ImageField value={values.regionIcon}
+                                    onChange={(value) => handleChange('regionIcon', value)}
+                                    emptyText="Нет"/>
                     </Row>
                 </Group>
 
@@ -230,6 +248,11 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
                         <input className={f.input} type="number" min={0} step={1} placeholder=""
                                value={values.oldPrice}
                                onChange={(event) => handleChange('oldPrice', event.target.value)}/>
+                        {discount ? (
+                            <span className={discount.isBad ? s['formWarn'] : s['formStatus']}>
+                                {discount.text}
+                            </span>
+                        ) : null}
                     </Row>
                 </Group>
 
@@ -240,9 +263,11 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
                                onChange={(event) => handleChange('serialNumber', event.target.value)}/>
                     </Row>
                     <Row label="Скрыть с витрины" hint="Склад сохранится, но купить номинал будет нельзя">
-                        <input type="checkbox"
-                               checked={values.isHidden}
-                               onChange={(event) => handleChange('isHidden', event.target.checked)}/>
+                        <button type="button" role="switch" aria-checked={values.isHidden}
+                                className={`${f.switch} ${values.isHidden ? f.switchOn : ''}`}
+                                onClick={() => handleChange('isHidden', !values.isHidden)}>
+                            <span className={f.switchDot}/>
+                        </button>
                     </Row>
                 </Group>
 

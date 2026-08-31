@@ -137,16 +137,23 @@ const CodeStock = ({offerId, onChanged}) => {
             </Row>
 
             <Row label="На складе" top wide
-                 hint={`Свободно ${totals.available} · бронь ${totals.reserved} · продано ${totals.sold}`}>
+                 hint="Свободный код уходит покупателю сразу после оплаты. Бронь — код держится за неоплаченным заказом и вернётся на склад сам. Удалить можно только свободный">
                 <div className={s['stockList']}>
                     <div className={s['stockFilters']}>
-                        {FILTERS.map((option) => (
-                            <button key={option.key} type="button"
-                                    className={`${s['chip']} ${filter === option.key ? s['chipActive'] : ''}`}
-                                    onClick={() => setFilter(option.key)}>
-                                {option.name}
-                            </button>
-                        ))}
+                        {FILTERS.map((option) => {
+                            const count = option.key === 'all'
+                                ? (codes || []).length
+                                : totals[option.key] || 0;
+
+                            return (
+                                <button key={option.key} type="button"
+                                        className={`${s['chip']} ${filter === option.key ? s['chipActive'] : ''}`}
+                                        onClick={() => setFilter(option.key)}>
+                                    {option.name}
+                                    <span className={s['chipCount']}>{count}</span>
+                                </button>
+                            );
+                        })}
                         <button type="button" className={s['btn']} onClick={load}>Обновить</button>
                     </div>
 
@@ -155,7 +162,9 @@ const CodeStock = ({offerId, onChanged}) => {
                             <p className={s['formNote']}>Загрузка…</p>
                         ) : visible.length === 0 ? (
                             <p className={s['formNote']}>
-                                {filter === 'all' ? 'Склад пуст — загрузите коды выше' : 'В этом статусе кодов нет'}
+                                {filter === 'all'
+                                    ? 'Склад пуст — пока кодов нет, покупатель видит «Нет в наличии». Вставьте их в поле выше'
+                                    : 'В этом статусе кодов нет'}
                             </p>
                         ) : visible.map((item) => (
                             <div key={item.id} className={s['stockRow']}>

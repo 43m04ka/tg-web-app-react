@@ -20,6 +20,9 @@ const offerWord = (count) => `${count} ${plural(count, ['номинал', 'но�
 
 const norm = (value) => String(value ?? '').toLowerCase();
 
+const emptyOffers = (brand) => (brand.offers || [])
+    .filter((offer) => !(offer.stock?.available > 0)).length;
+
 const groupByRegion = (offers) => {
     const groups = new Map();
 
@@ -82,8 +85,9 @@ const ServicesList = ({onCountChange}) => {
             brands: sum.brands + 1,
             offers: sum.offers + (brand.offers?.length || 0),
             available: sum.available + stock.available,
+            starving: sum.starving + emptyOffers(brand),
         };
-    }, {brands: 0, offers: 0, available: 0}), [brands]);
+    }, {brands: 0, offers: 0, available: 0, starving: 0}), [brands]);
 
     useEffect(() => {
         if (loading) {
@@ -180,6 +184,7 @@ const ServicesList = ({onCountChange}) => {
                 brand,
                 offers: visible,
                 stock: brandStock(brand),
+                starving: emptyOffers(brand),
                 regions: groupByRegion(visible),
             });
 
@@ -215,6 +220,14 @@ const ServicesList = ({onCountChange}) => {
                     свободный код и помечает его проданным. Пока счёт не оплачен, код держится в брони
                     и другому покупателю не достанется.
                 </p>
+
+                {!loading && totals.starving > 0 ? (
+                    <p className={s['alert']}>
+                        Без кодов на складе: {offerWord(totals.starving)} из {totals.offers}. На витрине
+                        они видны, но кнопка оплаты не сработает — покупатель увидит «Нет в наличии».
+                        Коды загружаются внутри номинала.
+                    </p>
+                ) : null}
 
                 <div className={s['toolbar']}>
                     <button type="button" className={`${s['btn']} ${s['btnPrimary']}`}
@@ -262,7 +275,7 @@ const ServicesList = ({onCountChange}) => {
                         По запросу «{query.trim()}» ничего не нашлось. Ищем по названию бренда,
                         региону и номиналу.
                     </p>
-                ) : rows.map(({brand, offers, stock, regions}) => {
+                ) : rows.map(({brand, offers, stock, starving, regions}) => {
                     const total = brand.offers?.length || 0;
                     const isOpen = searching || expanded.has(brand.id);
 
@@ -290,6 +303,11 @@ const ServicesList = ({onCountChange}) => {
                                     {total === 0 ? (
                                         <span className={`${s['badge']} ${s['badgeMuted']}`}>не в витрине</span>
                                     ) : null}
+                                    {starving > 0 && starving < total ? (
+                                        <span className={`${s['badge']} ${s['stockEmpty']}`}>
+                                            {starving} без кодов
+                                        </span>
+                                    ) : null}
                                 </button>
 
                                 <span className={s['brandStock']}>
@@ -309,7 +327,7 @@ const ServicesList = ({onCountChange}) => {
                                 <span className={s['brandActions']}>
                                     <button type="button" className={s['btn']}
                                             onClick={() => openOffer(null, brand)}>
-                                        Номинал
+                                        Добавить номинал
                                     </button>
                                     <button type="button" className={s['btn']}
                                             onClick={() => openBrand(brand)}>

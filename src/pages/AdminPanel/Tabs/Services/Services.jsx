@@ -174,7 +174,9 @@ const ServicesList = ({onCountChange}) => {
                                         aria-expanded={isOpen}
                                         onClick={() => toggle(brand.id)}>
                                     <span className={`${s['chevron']} ${isOpen ? s['chevronOpen'] : ''}`}>›</span>
-                                    <span className={s['brandGlyph']}>{brand.glyph}</span>
+                                    {brand.icon
+                                        ? <img className={s['brandIcon']} src={brand.icon} alt=""/>
+                                        : <span className={s['brandGlyph']}>{brand.glyph}</span>}
                                     <span className={s['brandName']}>{brand.name}</span>
                                     {brand.isHidden ? (
                                         <span className={`${s['badge']} ${s['badgeMuted']}`}>скрыт</span>
@@ -231,7 +233,10 @@ const ServicesList = ({onCountChange}) => {
                                                         </td>
                                                         <td className={s['kindCol']}>{kindName(offer.kind)}</td>
                                                         <td className={s['regionCol']}>
-                                                            {offer.regionFlag ? `${offer.regionFlag} ` : ''}
+                                                            {offer.regionIcon
+                                                                ? <img className={s['regionIcon']}
+                                                                       src={offer.regionIcon} alt=""/>
+                                                                : (offer.regionFlag ? `${offer.regionFlag} ` : '')}
                                                             {offer.regionName}
                                                         </td>
                                                         <td className={s['priceCol']}>

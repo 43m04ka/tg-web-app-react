@@ -10,12 +10,19 @@ import BackPill from '../../shared/ui/BackPill/BackPill';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import {isEmailValid, money} from '../Basket/cartModel';
 import {CodeDone, CodeFail, CodeStalled, CodeWaiting} from './ServicesScreens';
-import {kindLabel, kindsOf, offersOf, regionsOf, stockLabel, toneOf} from './servicesModel';
+import {kindLabel, kindsOf, offersOf, regionsOf, servicesFaq, stockLabel, toneOf} from './servicesModel';
 import {useCodeCatalog} from './useCodeCatalog';
 import {SCREEN, useCodeOrder} from './useCodeOrder';
 import style from './Services.module.scss';
 
 const FORM_KEY = 'services:form';
+
+const RegionMark = ({region}) => {
+    if (region?.icon) return <img className={style.regionIcon} src={region.icon} alt=""/>;
+    if (region?.flag) return <span className={style.regionFlag}>{region.flag}</span>;
+
+    return null;
+};
 
 const fullName = (user) => `${user?.first_name || ''} ${user?.last_name || ''}`.trim();
 
@@ -176,7 +183,6 @@ export default function Services() {
             >
                 {hasNativeBack ? null : <BackPill className={style.back} onClick={back}/>}
                 <h1 className={style.title}>Коды пополнения</h1>
-                {offers.length ? <span className={style.count}>{offers.length}</span> : null}
             </div>
 
             <div
@@ -218,16 +224,17 @@ export default function Services() {
                                         key={item.id}
                                         type="button"
                                         className={`${style.brand} ${isActive ? style.brandActive : ''}`}
+                                        aria-pressed={isActive}
+                                        style={{'--brand-ring': itemTone.ring, '--brand-from': itemTone.from}}
                                         onClick={() => pickBrand(item)}
                                     >
                                         <span
                                             className={style.brandTile}
-                                            style={{
-                                                background: `linear-gradient(140deg, ${itemTone.from}, ${itemTone.to})`,
-                                                borderColor: isActive ? itemTone.ring : 'transparent'
-                                            }}
+                                            style={{background: `linear-gradient(140deg, ${itemTone.from}, ${itemTone.to})`}}
                                         >
-                                            {item.glyph}
+                                            {item.icon
+                                                ? <img className={style.brandImage} src={item.icon} alt=""/>
+                                                : item.glyph}
                                         </span>
                                         <span className={style.brandName}>{item.name}</span>
                                     </button>
@@ -245,7 +252,11 @@ export default function Services() {
                             <span className={style.heroBlob} aria-hidden="true"/>
 
                             <div className={style.heroTop}>
-                                <span className={style.heroGlyph}>{brand.glyph}</span>
+                                <span className={style.heroGlyph}>
+                                    {brand.icon
+                                        ? <img className={style.heroImage} src={brand.icon} alt=""/>
+                                        : brand.glyph}
+                                </span>
                                 <div className={style.heroTitles}>
                                     <span className={style.heroKind}>{kindLabel(activeKind)}</span>
                                     <span className={style.heroName}>{brand.name}</span>
@@ -260,7 +271,7 @@ export default function Services() {
 
                                 {activeRegion ? (
                                     <span className={style.heroRegion}>
-                                        {regions.find((item) => item.name === activeRegion)?.flag || ''}
+                                        <RegionMark region={regions.find((item) => item.name === activeRegion)}/>
                                         {activeRegion}
                                     </span>
                                 ) : null}
@@ -300,7 +311,7 @@ export default function Services() {
                                             aria-pressed={item.name === activeRegion}
                                             onClick={() => pickRegion(item.name)}
                                         >
-                                            {item.flag ? <span className={style.regionFlag}>{item.flag}</span> : null}
+                                            <RegionMark region={item}/>
                                             {item.name}
                                         </button>
                                     ))}
@@ -369,28 +380,17 @@ export default function Services() {
                             ) : null}
                         </section>
 
-                        <div className={style.summary}>
-                            <div className={style.summaryRow}>
-                                <span>Доставка кода</span>
-                                <span className={style.summaryValue}>Мгновенно, в чат</span>
-                            </div>
-
-                            <div className={style.summaryRow}>
-                                <span>Активация</span>
-                                <span className={style.summaryValue}>
-                                    {[activeRegion, brand.activationNote || 'без VPN'].filter(Boolean).join(', ')}
-                                </span>
-                            </div>
-
-                            <div className={style.summaryLine} aria-hidden="true"/>
-
-                            <div className={style.summaryRow}>
-                                <span className={style.summaryTotalLabel}>К оплате</span>
-                                <span key={offer?.price} className={style.summaryTotal}>
-                                    {offer ? money(offer.price) : '—'}
-                                </span>
-                            </div>
+                        <div className={style.total}>
+                            <span className={style.totalLabel}>К оплате</span>
+                            <span key={offer?.price} className={style.totalValue}>
+                                {offer ? money(offer.price) : '—'}
+                            </span>
                         </div>
+
+                        <section className={style.block}>
+                            <h2 className={style.blockTitle}>Часто спрашивают</h2>
+                            <Faq items={servicesFaq(brand, activeRegion)}/>
+                        </section>
 
                         <p className={style.legal}>
                             Нажимая кнопку, вы соглашаетесь с{' '}
@@ -424,6 +424,41 @@ export default function Services() {
                     </button>
                 </div>
             ) : null}
+        </div>
+    );
+}
+
+function Faq({items}) {
+    const [openIndex, setOpenIndex] = useState(null);
+
+    return (
+        <div className={style.faq}>
+            {items.map((item, index) => {
+                const isOpen = openIndex === index;
+
+                return (
+                    <div key={item.question} className={style.faqItem}>
+                        <button
+                            type="button"
+                            className={style.faqHead}
+                            aria-expanded={isOpen}
+                            onClick={() => {
+                                hapticImpact('light');
+                                setOpenIndex(isOpen ? null : index);
+                            }}
+                        >
+                            <span className={style.faqQuestion}>{item.question}</span>
+                            <span className={`${style.faqSign} ${isOpen ? style.faqSignOpen : ''}`} aria-hidden="true">+</span>
+                        </button>
+
+                        <div className={`${style.reveal} ${isOpen ? style.revealOpen : ''}`}>
+                            <div className={style.revealInner}>
+                                <p className={style.faqAnswer}>{item.answer}</p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })}
         </div>
     );
 }

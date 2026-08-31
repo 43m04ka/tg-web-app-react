@@ -3,6 +3,9 @@ import TabPane from '../../Elements/WorkTabs/TabPane';
 import f, {Group, Row, Sheet} from '../../Elements/FormLayout/FormLayout';
 import useData from '../../useData';
 import {useFeedback} from '../../Elements/Feedback/Feedback';
+import ImageField from '../../Elements/ImageField/ImageField';
+import FlagPicker from '../../Elements/FlagPicker/FlagPicker';
+import {isFlagName} from '../../Elements/FlagPicker/flags';
 import {useServer} from './useServer';
 import CodeStock from './CodeStock';
 import {KIND_OPTIONS, parsePrice} from './serviceModel';
@@ -20,6 +23,7 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
     const initial = useMemo(() => ({
         kind: String(source?.kind ?? 'gift_card'),
         regionName: String(source?.regionName ?? 'Россия'),
+        regionIcon: String(source?.regionIcon ?? ''),
         regionFlag: String(source?.regionFlag ?? ''),
         denomination: String(source?.denomination ?? ''),
         price: source?.price === undefined || source?.price === null ? '' : String(source.price),
@@ -32,6 +36,12 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
     const [saving, setSaving] = useState(false);
 
     const handleChange = (key, value) => setValues((prev) => ({...prev, [key]: value}));
+
+    const handleFlag = (flag) => setValues((prev) => ({
+        ...prev,
+        regionIcon: flag.icon,
+        regionName: !prev.regionName.trim() || isFlagName(prev.regionName) ? flag.name : prev.regionName,
+    }));
 
     const changed = useMemo(() => {
         const result = {};
@@ -78,6 +88,7 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
         return {
             kind: values.kind,
             regionName,
+            regionIcon: values.regionIcon || null,
             regionFlag: values.regionFlag.trim() || null,
             denomination,
             price,
@@ -192,7 +203,17 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
                                value={values.regionName}
                                onChange={(event) => handleChange('regionName', event.target.value)}/>
                     </Row>
-                    <Row label="Флаг" hint="Эмодзи флага рядом с названием региона">
+                    <Row label="Флаг" hint="Готовый набор — выбор страны заодно подставит название региона">
+                        <FlagPicker value={values.regionIcon}
+                                    onPick={handleFlag}
+                                    onClear={() => handleChange('regionIcon', '')}/>
+                    </Row>
+                    <Row label="Своя иконка" hint="Если нужного флага нет в наборе. Ужимается до 192px">
+                        <ImageField value={values.regionIcon}
+                                    onChange={(value) => handleChange('regionIcon', value)}
+                                    emptyText="Нет"/>
+                    </Row>
+                    <Row label="Эмодзи" hint="Запасной вариант: показывается, пока флаг не выбран">
                         <input className={`${f.input} ${f.mono}`} type="text" maxLength={4} placeholder="🇰🇿"
                                value={values.regionFlag}
                                onChange={(event) => handleChange('regionFlag', event.target.value)}/>

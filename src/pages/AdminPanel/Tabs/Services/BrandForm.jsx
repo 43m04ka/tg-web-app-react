@@ -3,6 +3,7 @@ import TabPane from '../../Elements/WorkTabs/TabPane';
 import f, {Group, Row, Sheet} from '../../Elements/FormLayout/FormLayout';
 import useData from '../../useData';
 import {useFeedback} from '../../Elements/Feedback/Feedback';
+import ImageField from '../../Elements/ImageField/ImageField';
 import {useServer} from './useServer';
 import {brandStock} from './serviceModel';
 import s from './Services.module.scss';
@@ -18,6 +19,7 @@ const BrandForm = ({brandId, findBrand, onClose, onSaved}) => {
 
     const initial = useMemo(() => ({
         name: String(source?.name ?? ''),
+        icon: String(source?.icon ?? ''),
         glyph: String(source?.glyph ?? '🎁'),
         accent: String(source?.accent ?? ''),
         activationNote: String(source?.activationNote ?? ''),
@@ -55,6 +57,7 @@ const BrandForm = ({brandId, findBrand, onClose, onSaved}) => {
 
         return {
             name,
+            icon: values.icon || null,
             glyph: values.glyph.trim() || '🎁',
             accent: values.accent.trim() || null,
             activationNote: values.activationNote.trim() || null,
@@ -156,7 +159,12 @@ const BrandForm = ({brandId, findBrand, onClose, onSaved}) => {
                                value={values.name}
                                onChange={(event) => handleChange('name', event.target.value)}/>
                     </Row>
-                    <Row label="Символ" hint="Эмодзи или буква на плитке — картинок здесь нет намеренно">
+                    <Row label="Иконка" hint="Картинка на плитке бренда. Ужимается до 192px, прозрачный PNG выглядит лучше всего">
+                        <ImageField value={values.icon}
+                                    onChange={(value) => handleChange('icon', value)}
+                                    emptyText="Нет"/>
+                    </Row>
+                    <Row label="Символ" hint="Запасной вариант: показывается, пока иконка не загружена">
                         <input className={`${f.input} ${f.mono}`} type="text" maxLength={4} placeholder="🎮"
                                value={values.glyph}
                                onChange={(event) => handleChange('glyph', event.target.value)}/>

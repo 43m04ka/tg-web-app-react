@@ -25,7 +25,7 @@ export const kindsOf = (brand) => uniqueBy(brand?.offers || [], (offer) => offer
 export const regionsOf = (brand, kind) => uniqueBy(
     (brand?.offers || []).filter((offer) => offer.kind === kind),
     (offer) => offer.regionName
-).map((offer) => ({name: offer.regionName, flag: offer.regionFlag}));
+).map((offer) => ({name: offer.regionName, flag: offer.regionFlag, icon: offer.regionIcon}));
 
 export const offersOf = (brand, kind, regionName) => (brand?.offers || [])
     .filter((offer) => offer.kind === kind && offer.regionName === regionName);
@@ -39,17 +39,51 @@ export const stockLabel = (stock) => {
 };
 
 export const BRAND_TONES = [
-    {from: 'oklch(0.42 0.12 250)', to: 'oklch(0.18 0.03 250)', ring: 'oklch(0.6 0.14 250 / 0.32)'},
-    {from: 'oklch(0.42 0.13 300)', to: 'oklch(0.18 0.03 290)', ring: 'oklch(0.62 0.15 300 / 0.32)'},
-    {from: 'oklch(0.42 0.13 148)', to: 'oklch(0.18 0.03 160)', ring: 'oklch(0.6 0.15 148 / 0.32)'},
-    {from: 'oklch(0.44 0.13 40)', to: 'oklch(0.18 0.03 40)', ring: 'oklch(0.65 0.16 40 / 0.32)'},
-    {from: 'oklch(0.42 0.15 15)', to: 'oklch(0.18 0.03 15)', ring: 'oklch(0.64 0.18 15 / 0.32)'}
+    {from: 'oklch(0.56 0.17 250)', to: 'oklch(0.28 0.07 255)', ring: 'oklch(0.72 0.17 250 / 0.55)'},
+    {from: 'oklch(0.56 0.18 300)', to: 'oklch(0.28 0.07 295)', ring: 'oklch(0.74 0.18 300 / 0.55)'},
+    {from: 'oklch(0.58 0.18 148)', to: 'oklch(0.28 0.07 158)', ring: 'oklch(0.74 0.18 148 / 0.55)'},
+    {from: 'oklch(0.62 0.17 40)', to: 'oklch(0.3 0.07 40)', ring: 'oklch(0.76 0.17 40 / 0.55)'},
+    {from: 'oklch(0.58 0.19 15)', to: 'oklch(0.28 0.08 15)', ring: 'oklch(0.74 0.2 15 / 0.55)'}
 ];
 
 export const toneOf = (brand, index) => {
     if (brand?.accent) {
-        return {from: brand.accent, to: 'oklch(0.17 0.02 264)', ring: brand.accent};
+        return {
+            from: brand.accent,
+            to: `color-mix(in oklch, ${brand.accent} 34%, oklch(0.22 0.02 264))`,
+            ring: `color-mix(in oklch, ${brand.accent} 62%, transparent)`
+        };
     }
 
     return BRAND_TONES[index % BRAND_TONES.length];
+};
+
+export const servicesFaq = (brand, regionName) => {
+    const name = brand?.name || 'сервиса';
+    const where = regionName ? ` с регионом ${regionName}` : '';
+
+    return [
+        {
+            question: 'Куда придёт код?',
+            answer: 'Сразу после оплаты код придёт сообщением в чат бота, а копия вместе с чеком — на указанную почту.'
+                + ' Код закрепляется за вами ещё до оплаты, так что другому покупателю он не достанется.'
+        },
+        {
+            question: 'Как активировать?',
+            answer: `Код активируется в аккаунте ${name}${where}: откройте пополнение баланса или ввод кода в самом сервисе и вставьте выданную комбинацию. `
+                + (brand?.activationNote || 'VPN для активации не нужен.')
+        },
+        {
+            question: 'Как быстро придёт код?',
+            answer: 'Мгновенно: сервер отдаёт свободный код со склада сразу, как подтвердится оплата. Ждать ответа оператора не нужно.'
+        },
+        {
+            question: 'Что если оплата не прошла?',
+            answer: 'Деньги не спишутся: неоплаченный счёт закрывается сам, а забронированный код возвращается на склад. Заказ можно оформить заново.'
+        },
+        {
+            question: 'Код не подошёл — что делать?',
+            answer: 'Напишите в поддержку и укажите номер заказа. Если код оказался нерабочим, мы заменим его на другой.'
+        }
+    ];
 };

@@ -3,7 +3,7 @@ import TabPane from '../../Elements/WorkTabs/TabPane';
 import f, {Group, Row, Sheet} from '../../Elements/FormLayout/FormLayout';
 import s from './Search.module.scss';
 import useData from '../../useData';
-import useGlobalData from '../../../../hooks/useGlobalData';
+import useGlobalData from '../../legacy/useGlobalData';
 import {useServer} from './useServer';
 import {useFeedback} from '../../Elements/Feedback/Feedback';
 
@@ -144,11 +144,6 @@ const ClueForm = ({clueId, initialName = '', initialPageId = null, onClose, onSa
                             ))}
                         </select>
                     </Row>
-                    {!isNew ? (
-                        <Row label="ID" hint="Идентификатор записи в базе">
-                            <span className={f.mono}>{clueId}</span>
-                        </Row>
-                    ) : null}
                 </Group>
             </Sheet>
         </TabPane>

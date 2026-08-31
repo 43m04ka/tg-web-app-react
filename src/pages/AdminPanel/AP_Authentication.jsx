@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {useServer} from "../../hooks/useServer";
+import {useServer} from "./legacy/useServer";
 import {useNavigate} from "react-router-dom";
 import useData from "./useData";
 import style from './AP_Authentication.module.scss';

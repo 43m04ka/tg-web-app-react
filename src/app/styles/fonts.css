@@ -1,0 +1,15 @@
+@font-face {
+    font-family: 'SF Pro Display';
+    src: url('../../shared/assets/fonts/SF-Pro-Display-Medium.ttf') format('truetype');
+    font-weight: 400 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'SF Pro Display';
+    src: url('../../shared/assets/fonts/SF-Pro-Display-Bold.ttf') format('truetype');
+    font-weight: 600 900;
+    font-style: normal;
+    font-display: swap;
+}

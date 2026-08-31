@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import useGlobalData from '../../../../../hooks/useGlobalData';
+import useGlobalData from '../../../legacy/useGlobalData';
 import useData from '../../../useData';
 import {useServer} from '../useServer';
 import WorkTabs, {useWorkTabs} from '../../../Elements/WorkTabs/WorkTabs';

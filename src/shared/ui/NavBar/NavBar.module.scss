@@ -1,0 +1,320 @@
+@import '../../../app/styles/units';
+
+.bar {
+  flex: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: u(2);
+  padding: u(9) u(6) 0;
+  background: oklch(0.15 0.012 264 / 0.96);
+  backdrop-filter: blur(u(14));
+  -webkit-backdrop-filter: blur(u(14));
+  border-top: 1px solid oklch(1 0 0 / 0.07);
+  animation: barRise 280ms var(--ease-out) backwards;
+  overflow: hidden;
+  max-height: u(140);
+  transition: max-height 340ms var(--ease-out),
+              transform 340ms var(--ease-out),
+              opacity 240ms var(--ease-out) 40ms,
+              padding 340ms var(--ease-out);
+}
+
+@mixin bar-hidden {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0 !important;
+  transform: translateY(100%);
+  opacity: 0;
+  border-top-color: transparent;
+  pointer-events: none;
+}
+
+.barHidden {
+  @include bar-hidden;
+
+  transition: none;
+}
+
+.barRouteHidden {
+  @include bar-hidden;
+
+  transition: max-height 300ms var(--ease-out),
+              transform 300ms var(--ease-out),
+              opacity 200ms var(--ease-out),
+              padding 300ms var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    transition: none;
+  }
+}
+
+.tab,
+.platform {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: u(4);
+  min-width: 0;
+  padding: u(2) 0;
+  color: oklch(0.72 0.008 264);
+}
+
+.tab {
+  flex: 1 1 0;
+}
+
+.tab:active:not(:disabled),
+.platform:active:not(:disabled) {
+  transform: none;
+}
+
+.iconBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge {
+  position: absolute;
+  top: u(-4);
+  right: u(-7);
+  min-width: u(15);
+  height: u(15);
+  padding: 0 u(3);
+  border-radius: u(8);
+  background: var(--danger);
+  font-size: u(8.5);
+  font-weight: 800;
+  line-height: u(15);
+  text-align: center;
+  color: oklch(1 0 0);
+  animation: badgePop 300ms var(--ease-spring);
+}
+
+@keyframes badgePop {
+  from {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.icon {
+  width: u(21);
+  height: u(21);
+  color: oklch(0.68 0.008 264);
+  transition: color var(--duration-base) var(--ease-out),
+              transform 320ms var(--ease-spring);
+}
+
+.tab:active .icon,
+.platform:active .chip {
+  transform: scale(0.88);
+  transition-duration: 90ms;
+}
+
+.label {
+  font-size: u(9.5);
+  font-weight: 600;
+  letter-spacing: u(0.1);
+  white-space: nowrap;
+  transition: color var(--duration-base) var(--ease-out),
+              font-weight var(--duration-base) var(--ease-out);
+}
+
+.tabActive {
+  color: var(--accent);
+}
+
+.tabActive .label {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.tabActive .icon {
+  color: var(--accent);
+  animation: iconPop 340ms var(--ease-spring);
+}
+
+.tabActive[data-effect='search'] :global(.spun) {
+  transform-origin: 44% 44%;
+  animation: searchTurn 420ms var(--ease-spring);
+}
+
+.tabActive[data-effect='home'] :global(.drawn),
+.tabActive[data-effect='basket'] :global(.drawn) {
+  stroke-dasharray: 26;
+  animation: draw 380ms var(--ease-out) 60ms backwards;
+}
+
+.tabActive[data-effect='more'] :global(.tile) {
+  transform-origin: center;
+  animation: tilePop 300ms var(--ease-spring) backwards;
+}
+
+.tabActive[data-effect='more'] :global(.tile):nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.tabActive[data-effect='more'] :global(.tile):nth-child(2) {
+  animation-delay: 45ms;
+}
+
+.tabActive[data-effect='more'] :global(.tile):nth-child(3) {
+  animation-delay: 90ms;
+}
+
+.tabActive[data-effect='more'] :global(.tile):nth-child(4) {
+  animation-delay: 135ms;
+}
+
+.platform {
+  flex: 0 0 auto;
+  gap: u(5);
+  padding: u(2) u(6);
+}
+
+.platform.tabActive .chip {
+  background: oklch(1 0 0 / 0.13);
+  border-color: var(--accent);
+  animation: chipPop 340ms var(--ease-spring);
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: u(5);
+  max-width: 100%;
+  padding: u(5) u(9);
+  border-radius: u(11);
+  background: oklch(1 0 0 / 0.08);
+  border: 1px solid oklch(1 0 0 / 0.1);
+  transition: transform 320ms var(--ease-spring),
+              background-color var(--duration-base) var(--ease-out),
+              border-color var(--duration-base) var(--ease-out);
+}
+
+.chipIcon {
+  width: u(14);
+  height: u(14);
+  flex: none;
+  border-radius: u(4);
+  background: center / cover no-repeat;
+}
+
+.chipTitle {
+  display: grid;
+  font-size: u(10.5);
+  font-weight: 700;
+  color: oklch(0.92 0.004 264);
+  white-space: nowrap;
+}
+
+.chipTitle > * {
+  grid-area: 1 / 1;
+}
+
+.sizer {
+  visibility: hidden;
+}
+
+.value {
+  justify-self: center;
+}
+
+.chevron {
+  width: u(8.5);
+  height: u(8.5);
+  flex: none;
+  color: oklch(0.65 0.01 264);
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.platform:active .chevron {
+  transform: translateY(u(1));
+}
+
+@keyframes barRise {
+  from {
+    opacity: 0;
+    transform: translateY(u(14));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes iconPop {
+  0% {
+    transform: scale(0.82) translateY(u(2));
+  }
+  55% {
+    transform: scale(1.14) translateY(u(-2));
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes chipPop {
+  0% {
+    transform: scale(0.9);
+  }
+  55% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes searchTurn {
+  0% {
+    transform: rotate(-24deg) scale(0.9);
+  }
+  60% {
+    transform: rotate(8deg) scale(1.06);
+  }
+  100% {
+    transform: rotate(0) scale(1);
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 26;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes tilePop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar,
+  .tabActive .icon,
+  .tabActive :global(.spun),
+  .tabActive :global(.drawn),
+  .tabActive :global(.tile) {
+    animation: none;
+  }
+}

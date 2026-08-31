@@ -1,7 +1,7 @@
 import React, {useRef, useState} from 'react';
 import TabPane from '../../../Elements/WorkTabs/TabPane';
 import RecalculateModalContent from '../Elements/RecalculatePriceTab';
-import useGlobalData from '../../../../../hooks/useGlobalData';
+import useGlobalData from '../../../legacy/useGlobalData';
 import s from './Panels.module.scss';
 
 /**

@@ -1,55 +1,61 @@
-// Карточкой делимся заранее заготовленным сообщением: бек через
-// /api/product/prepareShareMessage создаёт его ботом и возвращает id, а Telegram по
-// этому id открывает нативный шэр (tg.shareMessage).
-//
-// Метод shareMessage появился только в Bot API 8.0, а вне Telegram (VK, обычный
-// браузер) его нет вовсе — поэтому его наличие обязательно проверять. Без проверки
-// клик по «Поделиться карточкой» падал с TypeError: tg.shareMessage is not a function.
+import {prepareShareMessage} from '../api/product';
+import {getWebApp} from './telegram';
 
-export const canShareViaTelegram = (tg) => typeof tg?.shareMessage === 'function';
+const SHARE_MESSAGE_VERSION = '8.0';
 
-const hapticSoft = () => {
-    window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('soft');
-};
+const shareUrl = (link, text) =>
+    `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
 
-// Запасной путь для VK/браузера и старых версий Telegram: системное «Поделиться»,
-// а если его нет — просто кладём текст со ссылкой в буфер обмена.
-const shareFallback = async (text) => {
-    if (!text) return false;
+const supportsShareMessage = (tg) =>
+    typeof tg?.shareMessage === 'function' && tg.isVersionAtLeast?.(SHARE_MESSAGE_VERSION) === true;
 
-    if (typeof navigator.share === 'function') {
-        try {
-            await navigator.share({ text });
-            return true;
-        } catch (e) {
-            // пользователь закрыл системный диалог — это не ошибка, ничего больше не делаем
-            if (e?.name === 'AbortError') return false;
-        }
+const sendPrepared = (tg, messageId) => new Promise((resolve) => {
+    try {
+        tg.shareMessage(messageId, (isSent) => resolve(isSent === true ? 'sent' : 'cancelled'));
+    } catch (error) {
+        console.error('[share] shareMessage:', error.message);
+        resolve(null);
     }
+});
 
+export const copyText = async (text) => {
     try {
         await navigator.clipboard.writeText(text);
         return true;
-    } catch (e) {
-        console.error('[shareProduct] не удалось поделиться карточкой:', e);
+    } catch (error) {
+        console.error('[share] clipboard:', error.message);
         return false;
     }
 };
 
-export const shareProduct = async ({ tg, prepareShareMessage, productId, userId, fallbackText }) => {
-    if (!canShareViaTelegram(tg)) {
-        return shareFallback(fallbackText);
+export const shareProduct = async ({productId, userId, text, link}) => {
+    const tg = getWebApp();
+
+    if (userId && supportsShareMessage(tg)) {
+        const messageId = await prepareShareMessage(productId, userId).catch((error) => {
+            console.error('[share] prepare:', error.message);
+            return null;
+        });
+
+        if (messageId) {
+            const outcome = await sendPrepared(tg, messageId);
+            if (outcome) return outcome;
+        }
     }
 
-    await prepareShareMessage((messageId) => {
-        // бек мог не отдать id (ошибка/пустой ответ) — тогда не зовём Telegram с undefined
-        if (!messageId) {
-            shareFallback(fallbackText);
-            return;
-        }
-        tg.shareMessage(messageId);
-        hapticSoft();
-    }, productId, userId);
+    if (link && typeof tg?.openTelegramLink === 'function') {
+        tg.openTelegramLink(shareUrl(link, text));
+        return 'cancelled';
+    }
 
-    return true;
+    if (text && typeof navigator.share === 'function') {
+        try {
+            await navigator.share({text});
+            return 'sent';
+        } catch (error) {
+            if (error?.name === 'AbortError') return 'cancelled';
+        }
+    }
+
+    return await copyText(text) ? 'copied' : 'failed';
 };

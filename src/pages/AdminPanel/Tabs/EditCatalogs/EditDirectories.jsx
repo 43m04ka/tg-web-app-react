@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useServer} from "./useServer";
-import useGlobalData from "../../../../hooks/useGlobalData";
+import useGlobalData from '../../legacy/useGlobalData';
 import useData from "../../useData";
 import style from "./EditDirectories.module.scss";
 import WorkTabs, {useWorkTabs} from "../../Elements/WorkTabs/WorkTabs";
@@ -9,7 +9,7 @@ import ParsePanel from './Panels/ParsePanel';
 import CardsPanel from './Panels/CardsPanel';
 import CreateCatalogPanel from './Panels/CreateCatalogPanel';
 import RecalculatePanel from './Panels/RecalculatePanel';
-import {API_BASE_URL} from "../../../../hooks/useServerRoutes/baseUrl";
+import {API_BASE_URL} from '../../legacy/baseUrl';
 
 const CatalogList = ({onCountChange}) => {
     const {deleteCatalog, changeSaleStatusCatalog} = useServer();

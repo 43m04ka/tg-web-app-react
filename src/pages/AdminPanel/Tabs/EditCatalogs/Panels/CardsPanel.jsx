@@ -7,7 +7,7 @@ import {useServer} from '../../../useServer';
 import useData from '../../../useData';
 import s from './Panels.module.scss';
 import t from './CardsPanel.module.scss';
-import {API_BASE_URL} from '../../../../../hooks/useServerRoutes/baseUrl';
+import {API_BASE_URL} from '../../../legacy/baseUrl';
 
 /** Товары выбранного каталога: постраничный список с теми же действиями, что и в «Товарах». */
 const CardsPanel = ({catalog, subtitle, onClose}) => {

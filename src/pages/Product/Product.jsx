@@ -1,292 +1,361 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {useTelegram} from "../../hooks/useTelegram";
-import {useNavigate} from "react-router-dom";
-import useGlobalData from "../../hooks/useGlobalData";
-import Recommendations from "../../shared/ui/Recommendations/Recommendations";
-import style from './Product.module.scss'
-import Description from "./Elements/Description";
-import ChoiceElement from "./Elements/ChoiceElement";
-import DescriptionImages from "./Elements/DescriptionImages/DescriptionImages";
-import ProductBasketCounter from "./Elements/ProductBasketCounter";
-import ShareLabels from "./Elements/ShareLabels";
-import BackgroundImage from "./Elements/BackgroundImage/BackgroundImage";
-import NamePlace from "./Elements/NamePlace";
-import InfoBubbles from "./Elements/InfoBubbles/InfoBubbles";
-import DescriptionText from "./Elements/DescriptionText";
-import SimilarProducts from "./Elements/SimilarProducts";
-import {useServerUser} from "../../hooks/useServerUser";
-import {useIsDesktopMedia} from "../../hooks/useIsDesktopMedia";
-import DesktopProduct from "./DesktopProduct/DesktopProduct";
-import {usePlatformUser} from "../../hooks/usePlatformUser";
-import {useAppInsets} from "../../hooks/useAppInsets";
-import {getSubscriptionSale} from "./DesktopProduct/productDesktopUtils";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
+import {useSessionStore, selectUserId} from '../../store/useSessionStore';
+import {useStructureStore} from '../../store/useStructureStore';
+import {useCartStore, selectCartCount} from '../../store/useCartStore';
+import {useFavoriteStore, selectIsFavorite} from '../../store/useFavoriteStore';
+import {useAppInsets} from '../../shared/hooks/useAppInsets';
+import {usePlatform} from '../../shared/hooks/usePlatform';
+import {useBackButton} from '../../shared/hooks/useBackButton';
+import {hapticImpact, hapticSelection} from '../../shared/lib/haptic';
+import {getTelegramObject} from '../../shared/lib/telegram';
+import {shareText, productLink} from './productView';
+import EmptyState from '../../shared/ui/EmptyState/EmptyState';
+import ProductCard from '../Main/ProductCard';
+import BackPill from '../../shared/ui/BackPill/BackPill';
+import ProductChips from './ProductChips';
+import ProductShare from './ProductShare';
+import {discountPercent} from '../Main/catalogSections';
+import ProductHero from './ProductHero';
+import ProductEditions from './ProductEditions';
+import ProductAddons from './ProductAddons';
+import ProductOffer from './ProductOffer';
+import ProductDescription from './ProductDescription';
+import ProductGallery from './ProductGallery';
+import ProductSpecs from './ProductSpecs';
+import ProductBuyBar from './ProductBuyBar';
+import ProductSkeleton from './ProductSkeleton';
+import ProductVideo from './ProductVideo';
+import StarRating from './StarRating';
+import {useProduct, useRecommendations} from './useProduct';
+import {
+    buildChips,
+    buildSpecs,
+    editionLabels,
+    eyebrow,
+    isPurchasable,
+    promotionLabel,
+    subscriptionOffer
+} from './productView';
+import style from './Product.module.scss';
 
-const parameters = [{label: 'Платформа', key: 'platform', type: 'bubble'}, {
-    label: 'Регион активации', key: 'regionActivate', type: 'parameter'
-}, {label: 'Язык в игре', key: 'language', type: 'bubble'}, {
-    label: 'Дата релиза', key: (item) => {
-        if (item.releaseDate !== null && !Number.isNaN(Number(item.releaseDate)) && item.releaseDate.trim() !== "" || (new Date(item.releaseDate)).getFullYear() < 1980) {
-            let a = (new Date(item.releaseDate)) * 24 * 60 * 60 * 1000
-            let currentDate = new Date('1899-12-30T00:00:00.000Z')
-            let newDate = new Date(a + currentDate.getTime());
+const PARALLAX_RATIO = 0.32;
+const PARALLAX_LIMIT = 260;
 
-            if (newDate < ((new Date()))) {
-                return "Уже в продаже"
-            } else {
-                return newDate.toLocaleDateString('ru-RU')
-            }
-        } else if (item.releaseDate !== null && item.releaseDate !== '') {
-            return (new Date(item.releaseDate)).toLocaleDateString('ru-RU')
-        } else {
-            return null
-        }
-    }, type: 'bubble'
-}, {
-    label: 'Количество игроков', key: (item) => {
-        if (item.numberPlayers !== null && item.numberPlayers !== '') {
-            return item.numberPlayers + (item.numberPlayers.includes('-') ? ' игрока' : ' игрок')
-        } else {
-            return null
-        }
-    }, type: 'bubble'
-}, {label: 'Тип', key: 'typeLabel', type: 'bubble'},]
+export default function Product() {
+    const {id} = useParams();
+    const productId = Number(id);
 
-const Product = () => {
-    const isDesktop = useIsDesktopMedia();
-    const { tg } = useTelegram();
-const { safeAreaInset, contentSafeAreaInset, isKeyboardOpen } = useAppInsets();
-    const { user } = usePlatformUser();
     const navigate = useNavigate();
+    const {safeAreaInset, contentSafeAreaInset} = useAppInsets();
+    const {isTg} = usePlatform();
 
-    const {addCardToBasket, getCard, findCardsByCatalog} = useServerUser()
+    const userId = useSessionStore(selectUserId);
+    const pageId = useSessionStore((state) => state.pageId);
+    const catalogs = useStructureStore((state) => state.catalogs);
+    const mainPageProducts = useStructureStore((state) => state.mainPageProducts);
 
-    const {
-        previewFavoriteData,
-        pageId,
-        basket,
-        catalogList,
-        updateBasket,
-        bufferCardsCatalog,
-        bufferCardsRecommendations,
-        mainPageCards,
-        addCardToBasketList
-    } = useGlobalData()
+    const preview = useMemo(
+        () => (mainPageProducts || []).find((item) => item.id === productId) || null,
+        [mainPageProducts, productId]
+    );
 
-    let cardId = Number((window.location.pathname).replace('/card/', ''))
+    const {product, error, reload} = useProduct(productId, preview);
 
-    const [productData, setProductData] = useState(null);
-    const [selectCardList, setSelectCardList] = React.useState(null);
-    const [selectGroup, setSelectGroup] = React.useState(0);
-    const [selectPosition, setSelectPosition] = React.useState(0);
-    const [buttonHidden, setButtonHidden] = React.useState(false);
-    const blockRef = useRef(null);
+    const loadCart = useCartStore((state) => state.load);
+    const addToCart = useCartStore((state) => state.add);
+    const setCartCount = useCartStore((state) => state.setCount);
+    const cartCount = useCartStore(selectCartCount(productId));
 
-    let flag = false
-    basket.map(pos => {
-        if (pos.id === cardId) {
-            flag = true;
-        }
-    })
+    const loadFavorites = useFavoriteStore((state) => state.load);
+    const toggleFavorite = useFavoriteStore((state) => state.toggle);
+    const isFavorite = useFavoriteStore(selectIsFavorite(productId));
 
-    const [cardInBasket, setCardInBasket] = useState(flag)
-    const [cardInFavorite, setCardInFavorite] = useState(previewFavoriteData.includes(cardId))
+    const screenRef = useRef(null);
+    const heroRef = useRef(null);
+    const frameRef = useRef(0);
+    const keepScrollRef = useRef(false);
 
-    if ((productData !== null && !isNaN(cardId) && cardId !== productData.id) || (productData !== null && selectCardList !== null && productData.id !== selectCardList[selectGroup]?.body[selectPosition]?.id)) {
-        setProductData(null)
-        if (isNaN(cardId)) {
-            cardId = selectCardList[selectGroup].body[selectPosition].id
-        } else {
-            setSelectCardList(null)
-            setSelectGroup(0)
-            setSelectPosition(0)
-        }
+    const [selectedAddonIds, setSelectedAddonIds] = useState(() => new Set());
+    const [isAdding, setIsAdding] = useState(false);
+    const [isVideoOpen, setIsVideoOpen] = useState(false);
 
-        let flag = false
-        basket.map(pos => {
-            if (pos.id === cardId) {
-                flag = true
-            }
-        })
-        setCardInBasket(flag)
-        setCardInFavorite(previewFavoriteData.includes(cardId))
-    }
-    if (productData !== null && isNaN(cardId) && selectCardList === null) {
-        setProductData(null)
-        setSelectGroup(0)
-        setSelectPosition(0)
-    }
+    const goBack = useCallback(() => {
+        hapticImpact('light');
+        if (window.history.length > 1) navigate(-1);
+        else navigate('/main');
+    }, [navigate]);
+
+    const hasNativeBack = useBackButton(goBack);
 
     useEffect(() => {
-        tg.BackButton.show();
-        const onBack = () => navigate(-1);
-        tg.onEvent('backButtonClicked', onBack);
-        return () => {
-            tg.offEvent('backButtonClicked', onBack);
-        };
-    }, [navigate, tg]);
+        loadCart(userId);
+        loadFavorites(userId);
+    }, [userId, loadCart, loadFavorites]);
 
-    if (productData !== null) {
+    useEffect(() => {
+        setSelectedAddonIds(new Set());
+        setIsVideoOpen(false);
 
-
-        const subscriptionSale = getSubscriptionSale(productData);
-        const saleType = subscriptionSale?.saleType || null
-        const saleLabel = subscriptionSale?.label || ''
-
-
-        if (isDesktop) {
-            return <DesktopProduct
-                productData={productData}
-                selectCardList={selectCardList}
-                selectGroup={selectGroup}
-                selectPosition={selectPosition}
-                setSelectGroup={setSelectGroup}
-                setSelectPosition={setSelectPosition}
-                cardInBasket={cardInBasket}
-                setCardInBasket={setCardInBasket}
-                cardInFavorite={cardInFavorite}
-                setCardInFavorite={setCardInFavorite}
-                parameters={parameters}
-            />;
+        if (keepScrollRef.current) {
+            keepScrollRef.current = false;
+            return;
         }
 
-        return (<div className={style['container']} style={{
-            paddingTop: String(contentSafeAreaInset.top + safeAreaInset.top) + 'px',
-            paddingBottom: String(contentSafeAreaInset.bottom + safeAreaInset.bottom + 0.2 * window.innerWidth) + 'px',
-            height: '100vh',
-        }} onScroll={(event) => {
-            let scroll = event.target.scrollTop
-            let height = blockRef.current.clientHeight + (window.innerWidth * 1.2)
+        if (screenRef.current) screenRef.current.scrollTop = 0;
+    }, [productId]);
 
-            if (scroll > height && !buttonHidden) {
+    useEffect(() => () => cancelAnimationFrame(frameRef.current), []);
 
-                setButtonHidden(true)
-            } else if (scroll < height && buttonHidden) {
-                setButtonHidden(false)
+    const handleScroll = useCallback((event) => {
+        const {scrollTop} = event.currentTarget;
+
+        cancelAnimationFrame(frameRef.current);
+        frameRef.current = requestAnimationFrame(() => {
+            const shift = Math.min(scrollTop, PARALLAX_LIMIT) * PARALLAX_RATIO;
+            heroRef.current?.style.setProperty('--parallax', `${shift}px`);
+        });
+    }, []);
+
+    const editions = useMemo(() => {
+        if (!product) return [];
+
+        const list = [product, ...(product.conceptProducts || [])]
+            .filter((item) => item && item.id)
+            .filter((item, index, all) => all.findIndex((other) => other.id === item.id) === index)
+            .sort((a, b) => Number(a.price) - Number(b.price));
+
+        const labels = editionLabels(list.map((item) => item.name));
+
+        return list.map((item, index) => ({product: item, label: labels[index]}));
+    }, [product]);
+
+    const addons = useMemo(
+        () => (product?.conceptAddOns || []).filter((item) => item && item.id && Number(item.price) > 0),
+        [product]
+    );
+
+    const excludedIds = useMemo(() => {
+        const ids = new Set([productId]);
+        editions.forEach((edition) => ids.add(edition.product.id));
+        addons.forEach((addon) => ids.add(addon.id));
+        return ids;
+    }, [productId, editions, addons]);
+
+    const recommendations = useRecommendations(pageId, excludedIds);
+
+    const offer = useMemo(() => (product ? subscriptionOffer(product) : null), [product]);
+
+    const offerRoute = useMemo(() => {
+        if (!offer?.catalogSuffix) return null;
+
+        const catalog = (catalogs || []).find((item) =>
+            item.structurePageId === pageId && String(item.path || '').endsWith(offer.catalogSuffix));
+
+        return catalog ? `/catalog/${catalog.path}` : null;
+    }, [offer, catalogs, pageId]);
+
+    const selectedAddons = useMemo(
+        () => addons.filter((addon) => selectedAddonIds.has(addon.id)),
+        [addons, selectedAddonIds]
+    );
+
+    const openProduct = useCallback((next) => {
+        if (!next || next.id === productId) return;
+        hapticImpact('light');
+        navigate(`/card/${next.id}`);
+    }, [navigate, productId]);
+
+    const selectEdition = useCallback((next) => {
+        if (!next || next.id === productId) return;
+        hapticSelection();
+        keepScrollRef.current = true;
+        navigate(`/card/${next.id}`, {replace: true});
+    }, [navigate, productId]);
+
+    const toggleAddon = useCallback((addon) => {
+        hapticSelection();
+        setSelectedAddonIds((prev) => {
+            const next = new Set(prev);
+            if (next.has(addon.id)) next.delete(addon.id);
+            else next.add(addon.id);
+            return next;
+        });
+    }, []);
+
+    const handleFavorite = useCallback(() => {
+        hapticImpact('light');
+        toggleFavorite(userId, productId);
+    }, [toggleFavorite, userId, productId]);
+
+    const handlePlay = useCallback(() => {
+        if (!product?.videoUrl) return;
+        hapticImpact('light');
+        setIsVideoOpen(true);
+    }, [product]);
+
+    const openVideoOutside = useCallback(() => {
+        const url = product?.videoUrl;
+        if (!url) return;
+
+        setIsVideoOpen(false);
+
+        const tg = getTelegramObject();
+        if (typeof tg.openLink === 'function') tg.openLink(url);
+        else window.open(url, '_blank', 'noopener');
+    }, [product]);
+
+    const addAllToCart = useCallback(async () => {
+        if (!product || isAdding) return;
+
+        hapticImpact('medium');
+        setIsAdding(true);
+
+        try {
+            await addToCart(userId, product);
+            for (const addon of selectedAddons) {
+                await addToCart(userId, addon);
             }
-
-        }}>
-            <div className={style['basketButton']}
-                 style={{
-                     paddingBottom: (buttonHidden ? '0' : String(contentSafeAreaInset.bottom + safeAreaInset.bottom) + 'px'),
-                     height: (buttonHidden ? '0' : String((0.15 * window.innerWidth) + contentSafeAreaInset.bottom + safeAreaInset.bottom) + 'px'),
-                 }}>
-                <button onClick={async () => {
-                    if (productData.onSale) {
-                        if (cardInBasket) {
-                            let params = new URLSearchParams(window.location.search);
-                            let valueOfKey = params.get('from');
-
-                            navigate(valueOfKey !== 'basket' ? '/main/basket?from=product' : '/main/basket')
-                        } else {
-                            setTimeout(()=>{
-                                setCardInBasket(true)
-                            }, 25)
-                            addCardToBasketList(productData)
-                            await addCardToBasket(async () => {
-                                await updateBasket(catalogList, pageId)
-                            }, user.id, productData.id)
-                        }
-                    }
-                }}
-                        style={{background: productData.onSale ? cardInBasket ? '#50A355' : '#404ADE' : '#6e6e6e'}}>
-                    {productData.onSale ? cardInBasket ? 'В корзине' : 'Добавить в корзину' : 'Нет в продаже'}
-                </button>
-                {productData.onSale && cardInBasket ?
-                    <ProductBasketCounter idPos={productData.id} setCardInBasket={setCardInBasket}/> : ''}
-            </div>
-
-            <BackgroundImage productData={productData} selectCardList={selectCardList}/>
-
-            <div className={style['priceNameBlock']} ref={blockRef}>
-
-                <NamePlace productData={productData} cardInFavorite={cardInFavorite}
-                           setCardInFavorite={setCardInFavorite}/>
-
-                <InfoBubbles productData={productData}/>
-
-                {selectCardList !== null && selectCardList.length > 1 ? (<ChoiceElement list={selectCardList}
-                                                                                        isXbox={productData.name.toLowerCase().includes('gpu')}
-                                                                                        parameter={'name'}
-                                                                                        index={selectGroup}
-                                                                                        set={(index) => {
-                                                                                            setSelectGroup(index);
-                                                                                            setSelectPosition(0)
-                                                                                        }}/>) : ''}
-                {selectCardList !== null ? (<ChoiceElement list={selectCardList[selectGroup]?.body}
-                                                           isXbox={productData.name.toLowerCase().includes('gpu')}
-                                                           parentIndex={selectGroup}
-                                                           parameter={'choiceRow'}
-                                                           index={selectPosition}
-                                                           set={setSelectPosition}/>) : ''}
-
-                {saleType !== null ?
-                    <div style={{borderColor: '#171717'}} className={style['sale'] + ' ' + style['bg-' + saleType]}
-                         onClick={() => {
-                             navigate(subscriptionSale.route)
-                         }}>
-                        <div className={style[saleType]}/>
-                        <div className={style[saleType]}/>
-                        <div className={style[saleType]}/>
-                        <div className={style[saleType]}/>
-                        <p>{saleLabel}</p>
-                        <div/>
-                    </div> : ''}
-
-                {productData.description !== null ? <DescriptionText productData={productData}/> : ''}
-
-                <DescriptionImages data={productData.descriptionImages}/>
-
-                <Description productData={productData} parameters={parameters}/>
-            </div>
-
-            <SimilarProducts minRating={productData.name.replace(/[^a-zA-Z0-9\s]/g, "").split(' ')[0].length}
-                             productData={productData}/>
-
-            <Recommendations horizontal={true}/>
-
-            <ShareLabels productData={productData} parameters={parameters}/>
-
-        </div>);
-    } else {
-        if (!isNaN(cardId)) {
-            let bufferedCardList = [...bufferCardsCatalog, ...bufferCardsRecommendations, ...(mainPageCards === null ? [] : mainPageCards)].map(card => {
-                return card.id === cardId ? card : null
-            }).filter(item => item !== null)
-
-            if (bufferedCardList.length === 1) {
-                getCard(setProductData, cardId).then()
-                setTimeout(() => {
-                    setProductData(bufferedCardList[0])
-                }, 50)
-            } else {
-                getCard(setProductData, cardId).then()
-            }
-        } else if (selectCardList === null) {
-            let catalogId = 0
-            catalogList.map(el => {
-                if (el.path === window.location.pathname.replace('/choice-catalog/', '')) catalogId = el.id
-            })
-            findCardsByCatalog(catalogId, (result) => {
-                let data = []
-
-                result.sort((a, b) => {
-                    return b.serialNumber > a.serialNumber ? -1 : 1
-                }).map((card) => {
-                    let group = data.filter(el => el.name === card.choiceColumn)
-                    if (group.length > 0) {
-                        data[group[0].id].body.push(card)
-                    } else {
-                        data.push({id: data.length, name: card.choiceColumn, body: [card]})
-                    }
-                })
-
-                setSelectCardList(data)
-                setProductData(data[selectGroup].body[selectPosition])
-            }).then()
-        } else {
-            setProductData(selectCardList[selectGroup].body[selectPosition])
+        } finally {
+            setIsAdding(false);
         }
+    }, [product, isAdding, addToCart, userId, selectedAddons]);
+
+    const changeCount = useCallback((next) => {
+        hapticSelection();
+        setCartCount(userId, productId, next);
+    }, [setCartCount, userId, productId]);
+
+    const openBasket = useCallback(() => {
+        hapticImpact('light');
+        navigate('/basket');
+    }, [navigate]);
+
+    const openCatalog = useCallback((route) => {
+        hapticImpact('light');
+        navigate(route);
+    }, [navigate]);
+
+    const topPadding = contentSafeAreaInset.top;
+
+    const floatingBack = hasNativeBack ? null : (
+        <BackPill
+            className={style.floatingBack}
+            style={{top: `calc(${topPadding}px + 10 * var(--u))`}}
+            onClick={goBack}
+        />
+    );
+
+    if (error) {
+        return (
+            <div className={style.screen} style={{paddingTop: `calc(${topPadding}px + 14 * var(--u))`}}>
+                {floatingBack}
+                <EmptyState
+                    tone="danger"
+                    icon="⚠"
+                    title="Товар не открылся"
+                    text="Возможно, его убрали с витрины или пропала связь. Попробуйте ещё раз."
+                    actionLabel="Повторить"
+                    onAction={reload}
+                />
+            </div>
+        );
     }
-};
 
-export default Product;
+    if (!product) {
+        return (
+            <div className={style.screen}>
+                {floatingBack}
+                <ProductSkeleton/>
+            </div>
+        );
+    }
+
+    const discount = discountPercent(product.price, product.oldPrice);
+    const promoUntil = discount > 0 ? promotionLabel(product) : null;
+    const chips = buildChips(product);
+    const specs = buildSpecs(product);
+    const link = productLink(product, isTg);
+
+    const total = Number(product.price) + selectedAddons.reduce((sum, addon) => sum + Number(addon.price), 0);
+    const oldTotal = discount > 0
+        ? Number(product.oldPrice) + selectedAddons.reduce((sum, addon) => sum + Number(addon.oldPrice || addon.price), 0)
+        : null;
+
+    return (
+        <div className={style.screen} ref={screenRef} onScroll={handleScroll}>
+            <ProductHero
+                ref={heroRef}
+                product={product}
+                topInset={topPadding}
+                showBack={!hasNativeBack}
+                discount={discount}
+                promoUntil={promoUntil}
+                isFavorite={isFavorite}
+                onBack={goBack}
+                onPlay={handlePlay}
+                onToggleFavorite={handleFavorite}
+            />
+
+            <div className={style.body}>
+                <section className={style.head}>
+                    {eyebrow(product) ? <span className={style.eyebrow}>{eyebrow(product)}</span> : null}
+                    <h1 className={style.title}>{product.name}</h1>
+                    <StarRating rating={product.starRating}/>
+                </section>
+
+                <ProductChips chips={chips}/>
+
+                <ProductEditions editions={editions} activeId={productId} onSelect={selectEdition}/>
+
+                <ProductAddons addons={addons} selectedIds={selectedAddonIds} onToggle={toggleAddon}/>
+
+                <ProductOffer offer={offer} route={offerRoute} onOpen={openCatalog}/>
+
+                <ProductDescription description={product.description}/>
+
+                <ProductGallery images={product.descriptionImages}/>
+
+                <ProductSpecs specs={specs}/>
+
+                <ProductShare
+                    productId={product.id}
+                    userId={userId}
+                    text={shareText(product, specs, link)}
+                    link={link}
+                />
+
+                {recommendations?.length ? (
+                    <section className={style.section}>
+                        <h2 className={style.sectionTitle}>Может быть интересно:</h2>
+                        <div className={style.shelf}>
+                            {recommendations.map((item) => (
+                                <ProductCard key={item.id} product={item} onOpen={openProduct}/>
+                            ))}
+                        </div>
+                    </section>
+                ) : null}
+            </div>
+
+            <ProductBuyBar
+                total={total}
+                oldTotal={oldTotal}
+                isAvailable={isPurchasable(product)}
+                count={cartCount}
+                isBusy={isAdding}
+                bottomInset={safeAreaInset.bottom}
+                onAdd={addAllToCart}
+                onChangeCount={changeCount}
+                onOpenBasket={openBasket}
+            />
+
+            {isVideoOpen ? (
+                <ProductVideo
+                    url={product.videoUrl}
+                    onClose={() => setIsVideoOpen(false)}
+                    onFallback={openVideoOutside}
+                />
+            ) : null}
+        </div>
+    );
+}

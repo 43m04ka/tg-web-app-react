@@ -106,7 +106,6 @@ const HistoryList = ({onCountChange}) => {
                 <table className={style['table']}>
                     <thead>
                         <tr>
-                            <th className={style['orderCol']}>ID</th>
                             <th>Страница</th>
                             <th className={style['statusCol']}>Статус</th>
                             <th>Сумма</th>
@@ -119,13 +118,12 @@ const HistoryList = ({onCountChange}) => {
                     <tbody>
                         {historyList.length === 0 ? (
                             <tr>
-                                <td className={style['emptyCell']} colSpan={8}>
+                                <td className={style['emptyCell']} colSpan={7}>
                                     {loading ? 'Загрузка…' : 'Заказы не найдены'}
                                 </td>
                             </tr>
                         ) : historyList.map((item) => (
                             <tr key={item.id} onClick={() => openOrder(item)}>
-                                <td className={style['mono']}>№{item.id}</td>
                                 <td>{item.pageTitle || TYPE_LABELS[item.type] || item.type}</td>
                                 <td className={style['statusCol']}>
                                     <span className={`${style['badge']} ${style[`badge_${statusTone(item.status)}`]}`}>

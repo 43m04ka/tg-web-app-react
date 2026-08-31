@@ -32,6 +32,30 @@ $text-size: 14px;
     transition: background-color var(--t-fast), color var(--t-fast),
       border-color var(--t-fast), box-shadow var(--t-fast), opacity var(--t-fast) !important;
   }
+
+  // Витрина прячет полосы прокрутки на всём документе — там их место занимает
+  // сам жест. В админке списки длинные и правятся мышью, так что полосы вернуть.
+  * {
+    scrollbar-width: thin;
+    -ms-overflow-style: auto;
+  }
+
+  ::-webkit-scrollbar {
+    display: block;
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: var(--r-pill);
+    background-clip: content-box;
+    background-color: var(--border-strong);
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
 }
 
 .main-division {

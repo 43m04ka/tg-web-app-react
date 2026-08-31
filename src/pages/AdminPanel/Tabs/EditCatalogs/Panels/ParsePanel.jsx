@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import TabPane from '../../../Elements/WorkTabs/TabPane';
 import f, {Group, Row, Sheet} from '../../../Elements/FormLayout/FormLayout';
 import s from './Panels.module.scss';
-import {API_BASE_URL} from '../../../../../hooks/useServerRoutes/baseUrl';
+import {API_BASE_URL} from '../../../legacy/baseUrl';
 
 const PS_FILTER_TYPES = [
     {value: 'FULL_GAME', label: 'Полная игра'},
@@ -14,6 +14,12 @@ const PS_FILTER_TYPES = [
 ];
 
 const PS_FILTER_PLATFORMS = ['PS4', 'PS5'];
+
+// Издания приходят обычными товарами каталога, а дополнения — скрытыми: их бывает больше,
+// чем самих игр, и в общей выдаче они вытесняли бы её. Найти и вернуть их можно во вкладке
+// «Товары» фильтром «Только скрытые».
+const ADDONS_HINT = 'Аддоны сохраняются скрытыми и уходят в конец каталога: '
+    + 'в списках витрины их нет, они видны только в блоке «Дополнения» карточки игры';
 
 const PS_SORT_OPTIONS = [
     {value: 'default', label: 'По умолчанию'},
@@ -507,9 +513,12 @@ const ParsePanel = ({catalog, page, onClose}) => {
                                 ) : null}
                             </Row>
                             <Row label="Глубина" wide
-                                 hint={isPs
-                                     ? null
-                                     : 'Поверхностный: цены и медиа берутся из списка витрины, без захода в карточки — быстро, но без русских описаний и без аддонов'}>
+                                 hint={[
+                                     isPs
+                                         ? null
+                                         : 'Поверхностный: цены и медиа берутся из списка витрины, без захода в карточки — быстро, но без русских описаний и без аддонов',
+                                     ADDONS_HINT,
+                                 ].filter(Boolean).join('. ')}>
                                 <div className={f.checkGrid}>
                                     <label className={f.checkRow}>
                                         <input type="checkbox" checked={formData.isShallow}
@@ -556,7 +565,7 @@ const ParsePanel = ({catalog, page, onClose}) => {
                                       value={formData.links}
                                       onChange={(e) => handleChange('links', e.target.value)} />
                         </Row>
-                        <Row label="Глубина" wide>
+                        <Row label="Глубина" hint={ADDONS_HINT} wide>
                             <label className={f.checkRow}>
                                 <input type="checkbox" checked={formData.parceAddons}
                                        onChange={(e) => handleChange('parceAddons', e.target.checked)} />

@@ -141,7 +141,6 @@ const PromoList = ({onCountChange}) => {
                 <table className={style['table']}>
                     <thead>
                         <tr>
-                            <th className={style['idCol']}>ID</th>
                             <th>Название</th>
                             <th className={style['percentCol']}>Скидка</th>
                             <th className={style['usesCol']}>Осталось использований</th>
@@ -151,7 +150,7 @@ const PromoList = ({onCountChange}) => {
                     <tbody>
                         {visibleList.length === 0 ? (
                             <tr>
-                                <td className={style['emptyCell']} colSpan={5}>
+                                <td className={style['emptyCell']} colSpan={4}>
                                     {loading
                                         ? 'Загрузка…'
                                         : (search.trim() ? 'Под поиск ничего не подошло' : 'Промокодов пока нет')}
@@ -159,7 +158,6 @@ const PromoList = ({onCountChange}) => {
                             </tr>
                         ) : visibleList.map((promo) => (
                             <tr key={promo.id} onClick={() => openPromo(promo)}>
-                                <td className={style['mono']}>{promo.id}</td>
                                 <td className={style['nameCell']}>{promo.name || '—'}</td>
                                 <td className={style['percentCol']}>
                                     <span className={style['badge']}>{promo.percent ?? 0}%</span>

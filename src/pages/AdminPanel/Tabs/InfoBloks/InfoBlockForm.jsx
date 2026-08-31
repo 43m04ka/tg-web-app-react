@@ -168,14 +168,6 @@ const InfoBlockForm = ({blockId, findBlock, onClose, onSaved}) => {
                                onChange={(event) => handleChange('path', event.target.value)}/>
                     </Row>
                 </Group>
-
-                {!isNew ? (
-                    <Group title="Служебное">
-                        <Row label="ID">
-                            <span className={s['formValue']}>{blockId}</span>
-                        </Row>
-                    </Group>
-                ) : null}
             </Sheet>
         </TabPane>
     );

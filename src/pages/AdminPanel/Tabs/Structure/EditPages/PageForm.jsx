@@ -3,7 +3,7 @@ import TabPane from '../../../Elements/WorkTabs/TabPane';
 import f, {Group, Row, Sheet} from '../../../Elements/FormLayout/FormLayout';
 import s from './EditPages.module.scss';
 import useData from '../../../useData';
-import useGlobalData from '../../../../../hooks/useGlobalData';
+import useGlobalData from '../../../legacy/useGlobalData';
 import {useServer} from '../useServer';
 import {useFeedback} from '../../../Elements/Feedback/Feedback';
 import {TYPE_OPTIONS, BOT_OPTIONS} from './pageOptions';

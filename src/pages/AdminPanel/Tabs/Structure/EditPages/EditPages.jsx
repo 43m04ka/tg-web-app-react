@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import useGlobalData from "../../../../../hooks/useGlobalData";
+import useGlobalData from '../../../legacy/useGlobalData';
 import style from "./EditPages.module.scss";
 import PageForm from "./PageForm";
 import StructurePanel from "./StructurePanel";

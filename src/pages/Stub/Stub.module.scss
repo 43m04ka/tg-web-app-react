@@ -1,0 +1,14 @@
+@import '../../app/styles/units';
+
+.screen {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: u(20);
+  padding-right: u(20);
+  padding-bottom: u(40);
+  background: var(--bg-elevated);
+}

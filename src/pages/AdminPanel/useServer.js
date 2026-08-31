@@ -105,7 +105,7 @@ export function useServer() {
      * Отдельно от searchForName: тот отдаёт максимум 20 совпадений по имени, и фильтровать
      * их на клиенте бессмысленно — отбор нужен по всей таблице, а не по верхушке выдачи.
      */
-    const getProducts = async ({search, catalogId, onSale, type, page, pageSize} = {}) => {
+    const getProducts = async ({search, catalogId, onSale, type, visibility, page, pageSize} = {}) => {
         const params = new URLSearchParams();
 
         // Пустое значение не отправляем: на сервере это «фильтр не задан»
@@ -113,6 +113,7 @@ export function useServer() {
         if (catalogId) params.set('catalogId', String(catalogId));
         if (onSale === true || onSale === false) params.set('onSale', String(onSale));
         if (type) params.set('type', type);
+        if (visibility) params.set('visibility', visibility);
         if (page) params.set('page', String(page));
         if (pageSize) params.set('pageSize', String(pageSize));
         params.set('time', String(Date.now()));

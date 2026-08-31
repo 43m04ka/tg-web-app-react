@@ -5,6 +5,7 @@ import {useServer} from '../useServer';
 import useData from '../../../useData';
 import {useFeedback} from '../../../Elements/Feedback/Feedback';
 import StructureBlockForm from './StructureBlockForm';
+import BannerPanel from './BannerPanel';
 import {describeBlock, describeTarget, detectKind} from './structureKinds';
 import {hasStructure, typeName, STRUCTURELESS_SECTIONS} from './pageOptions';
 
@@ -19,9 +20,14 @@ import {hasStructure, typeName, STRUCTURELESS_SECTIONS} from './pageOptions';
 // группами описывает structureKinds.js.
 
 const GROUPS = [
-    {key: 'head', label: 'Карусель', hint: 'Верхний слайдер страницы'},
-    {key: 'body', label: 'Тело сайта', hint: 'Основное содержимое под каруселью'},
+    {key: 'banners', label: 'Карусель', hint: 'Верхняя карусель страницы'},
+    {key: 'body', label: 'Тело сайта', hint: 'Каталоги и баннеры под каруселью'},
+    {key: 'head', label: 'Карусель старого бота', hint: 'Слайдер прежнего дизайна — пока жив старый бот'},
 ];
+
+// Баннеры лежат в своей таблице и к structureCatalogs отношения не имеют —
+// общий у них только экран, на котором их правят.
+const isBlockGroup = (group) => group !== 'banners';
 
 const StructurePanel = ({page}) => {
     const {
@@ -35,7 +41,7 @@ const StructurePanel = ({page}) => {
     const serverRef = useRef(null);
     serverRef.current = {getStructureCatalogList, createStructureCatalog, updateCatalogData, deleteStructureCatalog};
 
-    const [group, setGroup] = useState('head');
+    const [group, setGroup] = useState('banners');
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(false);
     const [busy, setBusy] = useState(false);
@@ -53,7 +59,7 @@ const StructurePanel = ({page}) => {
     const load = useCallback(async (targetGroup = group) => {
         // У витрин без блоков (Steam, Сервисы) запрашивать нечего — списка блоков
         // у них не бывает, и лишний запрос на каждый выбор строки не нужен
-        if (!pageId || !hasStructure(pageType)) {
+        if (!pageId || !hasStructure(pageType) || !isBlockGroup(targetGroup)) {
             setItems([]);
             return;
         }
@@ -204,16 +210,40 @@ const StructurePanel = ({page}) => {
     const structureless = page && !hasStructure(page.type);
     const section = structureless ? STRUCTURELESS_SECTIONS[page.type] : null;
 
+    const groupBar = (
+        <div className={s['groupBar']}>
+            {GROUPS.map((option) => (
+                <button key={option.key} type="button"
+                        className={`${s['groupBtn']} ${group === option.key ? s['groupBtnActive'] : ''}`}
+                        title={option.hint}
+                        disabled={!page}
+                        onClick={() => setGroup(option.key)}>
+                    {option.label}
+                </button>
+            ))}
+            {isBlockGroup(group) ? (
+                <span className={s['groupCount']}>
+                    {loading ? 'Загрузка…' : `${items.length} ${items.length === 1 ? 'блок' : 'блоков'}`}
+                </span>
+            ) : null}
+        </div>
+    );
+
+    // Баннеры живут в своей таблице, а не в блоках страницы, поэтому им не мешает
+    // ни отсутствие структуры у витрины (Steam, Сервисы), ни её тип.
+    if (page && group === 'banners') {
+        return (
+            <div className={s['panel']}>
+                {groupBar}
+                <BannerPanel page={page}/>
+            </div>
+        );
+    }
+
     if (!page || structureless) {
         return (
             <div className={s['panel']}>
-                <div className={s['groupBar']}>
-                    {GROUPS.map((option) => (
-                        <button key={option.key} type="button" className={s['groupBtn']} disabled>
-                            {option.label}
-                        </button>
-                    ))}
-                </div>
+                {groupBar}
                 <div className={s['placeholder']}>
                     <p className={s['placeholderTitle']}>
                         {structureless ? 'Каталоги не настраиваются' : 'Страница не выбрана'}
@@ -252,19 +282,7 @@ const StructurePanel = ({page}) => {
 
     return (
         <div className={s['panel']}>
-            <div className={s['groupBar']}>
-                {GROUPS.map((option) => (
-                    <button key={option.key} type="button"
-                            className={`${s['groupBtn']} ${group === option.key ? s['groupBtnActive'] : ''}`}
-                            title={option.hint}
-                            onClick={() => setGroup(option.key)}>
-                        {option.label}
-                    </button>
-                ))}
-                <span className={s['groupCount']}>
-                    {loading ? 'Загрузка…' : `${items.length} ${items.length === 1 ? 'блок' : 'блоков'}`}
-                </span>
-            </div>
+            {groupBar}
 
             <div className={s['panelTools']}>
                 <input className={s['searchInput']} placeholder="Поиск по названию, пути или номеру"

@@ -111,11 +111,6 @@ const OrderForm = ({orderId, onClose}) => {
         >
             <Sheet>
                 <Group title="Заказ">
-                    <Row label="Номер">
-                        <span className={`${f.input} ${f.mono}`} style={{border: 'none', background: 'none', padding: 0}}>
-                            №{order.id}
-                        </span>
-                    </Row>
                     <Row label="Дата">
                         <span className={f.mono}>{order.createdAt ? new Date(order.createdAt).toLocaleString() : '—'}</span>
                     </Row>

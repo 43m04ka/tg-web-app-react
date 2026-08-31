@@ -1,4 +1,4 @@
-import {API_BASE_URL} from '../../hooks/useServerRoutes/baseUrl';
+import {API_BASE_URL} from './legacy/baseUrl';
 import useData from './useData';
 
 export {API_BASE_URL};

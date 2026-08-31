@@ -4,7 +4,7 @@ import style from "../EditCards.module.scss";
 import useData from "../../../useData";
 import TabPane from "../../../Elements/WorkTabs/TabPane";
 import CardForm from "./CardForm";
-import useGlobalData from "../../../../../hooks/useGlobalData";
+import useGlobalData from '../../../legacy/useGlobalData';
 
 // Поля карточки разложены по смысловым секциям — раньше шли одним списком из 21 строки.
 const sections = [
@@ -28,6 +28,12 @@ const sections = [
             {type: 'text', key: 'typeLabel', label: 'Подпись типа', hint: 'Показывается вместо кода типа'},
             {type: 'text', key: 'publisherName', label: 'Издатель'},
             {type: 'switch', key: 'onSale', label: 'Включено в продажу', hint: 'Виден покупателю в витрине'},
+            {
+                type: 'switch', key: 'isHidden', label: 'Скрыт из каталогов',
+                hint: 'Не попадает в списки, поиск и полки главной, но остаётся доступен в блоке '
+                    + '«Дополнения» родительской карточки и по прямой ссылке. Парсер ставит этот флаг '
+                    + 'дополнениям сам — при следующем парсе значение перезапишется',
+            },
             {type: 'textarea', key: 'description', label: 'Описание'},
         ],
     },

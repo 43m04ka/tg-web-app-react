@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {API_BASE_URL} from '../../../../hooks/useServerRoutes/baseUrl';
+import {API_BASE_URL} from '../../legacy/baseUrl';
 
 const PARSING_API = `${API_BASE_URL}/api/parsing`;
 

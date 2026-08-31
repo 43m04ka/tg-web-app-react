@@ -1,0 +1,488 @@
+@import '../../app/styles/units';
+
+.screen {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  display: flex;
+  flex-direction: column;
+  gap: u(12);
+  padding-left: u(20);
+  padding-right: u(20);
+  background: var(--bg-elevated);
+  animation: fade 225ms var(--ease-out) backwards;
+}
+
+.screen > * {
+  animation: rise 240ms var(--ease-out) backwards;
+}
+
+.screen > *:nth-child(1) {
+  animation-delay: 40ms;
+}
+
+.screen > *:nth-child(2) {
+  animation-delay: 80ms;
+}
+
+.screen > *:nth-child(3) {
+  animation-delay: 110ms;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen,
+  .screen > * {
+    animation: none;
+  }
+}
+
+// ── Шапка ────────────────────────────────────────────────
+.header {
+  display: flex;
+  align-items: center;
+  gap: u(12);
+}
+
+.back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: u(5);
+  flex: none;
+  height: u(34);
+  padding: 0 u(13) 0 u(10);
+  border-radius: u(12);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: u(12.5);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-secondary);
+}
+
+.back svg {
+  width: u(14);
+  height: u(14);
+  flex: none;
+}
+
+.back span {
+  line-height: 1;
+}
+
+.back:active {
+  background: var(--surface-3);
+}
+
+.title {
+  margin: 0;
+  font-size: u(19);
+  font-weight: 800;
+  letter-spacing: u(-0.3);
+  color: var(--text);
+}
+
+.note {
+  margin-left: auto;
+  font-size: u(12.5);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+// ── Фильтры ──────────────────────────────────────────────
+.filters {
+  display: flex;
+  gap: u(8);
+}
+
+.chip {
+  padding: u(8) u(14);
+  border-radius: u(13);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: u(12.5);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.chipActive {
+  background: var(--accent-surface);
+  border-color: var(--accent-soft);
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: u(12);
+}
+
+// ── Избранное ────────────────────────────────────────────
+.favorite {
+  display: flex;
+  align-items: stretch;
+  gap: u(13);
+  padding: u(12);
+  border-radius: u(20);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  transition: background-color var(--duration-base) var(--ease-out);
+}
+
+.favorite:active {
+  background: var(--surface-2);
+}
+
+.favoriteLeaving {
+  overflow: hidden;
+  pointer-events: none;
+  animation: favoriteLeave 420ms var(--ease-out) forwards;
+}
+
+@keyframes favoriteLeave {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    max-height: u(220);
+  }
+  55% {
+    opacity: 0;
+    transform: translateX(u(-26)) scale(0.95);
+    max-height: u(220);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(u(-26)) scale(0.95);
+    max-height: 0;
+    margin-bottom: u(-12);
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .favoriteLeaving {
+    animation-duration: 1ms;
+  }
+}
+
+.cover {
+  position: relative;
+  width: u(74);
+  height: u(98);
+  flex: none;
+  border-radius: u(14);
+  background: linear-gradient(150deg, oklch(0.3 0.03 264), oklch(0.19 0.015 264)) center / cover no-repeat;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.favoriteBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.favoriteTop {
+  display: flex;
+  align-items: flex-start;
+  gap: u(6);
+}
+
+.favoriteName {
+  flex: 1;
+  font-size: u(14);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text);
+  cursor: pointer;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.heart {
+  flex: none;
+  width: u(38);
+  height: u(38);
+  margin: u(-6) u(-6) 0 0;
+  color: oklch(0.68 0.19 24);
+  transition: color var(--duration-base) var(--ease-out),
+              opacity var(--duration-base) var(--ease-out);
+}
+
+.heart svg {
+  width: u(22);
+  height: u(22);
+}
+
+.heart:disabled {
+  opacity: 0.4;
+}
+
+.favoriteMeta {
+  margin-top: u(3);
+  font-size: u(11.5);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.favoritePrices {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: u(3) u(8);
+  margin-top: auto;
+  padding-top: u(8);
+}
+
+.price {
+  font-size: u(16);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text);
+}
+
+.discount {
+  padding: u(3.5) u(7);
+  border-radius: u(7);
+  background: var(--gold);
+  font-size: u(10.5);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--gold-surface);
+}
+
+.oldPrice {
+  font-size: u(12);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text-faint);
+  text-decoration: line-through;
+}
+
+// ── Заказы ───────────────────────────────────────────────
+.order {
+  display: flex;
+  flex-direction: column;
+  gap: u(11);
+  padding: u(14);
+  border-radius: u(20);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+}
+
+.orderHead {
+  display: flex;
+  align-items: center;
+  gap: u(9);
+}
+
+.status {
+  padding: u(4) u(9);
+  border-radius: u(9);
+  font-size: u(11);
+  font-weight: 800;
+}
+
+.ok {
+  background: var(--accent-surface);
+  color: var(--accent-text);
+}
+
+.wait {
+  background: oklch(0.85 0.16 90 / 0.18);
+  color: oklch(0.88 0.13 90);
+}
+
+.info {
+  background: oklch(0.62 0.19 258 / 0.18);
+  color: oklch(0.82 0.13 258);
+}
+
+.fail {
+  background: oklch(0.6 0.2 25 / 0.16);
+  color: oklch(0.78 0.16 25);
+}
+
+.orderNumber {
+  margin-left: auto;
+  font-size: u(11.5);
+  color: var(--text-muted);
+}
+
+.orderRow {
+  display: flex;
+  align-items: center;
+  gap: u(12);
+}
+
+// У позиций заказа нет картинки товара — сервер её не хранит. Вместо пустого
+// прямоугольника ставим первую букву названия, у Steam — его «S».
+.orderCover {
+  width: u(52);
+  height: u(66);
+  flex: none;
+  border-radius: u(11);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(150deg, oklch(0.32 0.04 280), oklch(0.19 0.02 264));
+  font-size: u(19);
+  font-weight: 800;
+  color: oklch(0.85 0.02 264);
+}
+
+.steamCover {
+  background: oklch(0.26 0.06 250);
+  color: oklch(0.85 0.08 250);
+}
+
+.orderBody {
+  display: flex;
+  flex-direction: column;
+  gap: u(3);
+  flex: 1;
+  min-width: 0;
+}
+
+.orderTitle {
+  font-size: u(13.5);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.orderMeta {
+  font-size: u(11.5);
+  color: var(--text-muted);
+}
+
+.orderTotal {
+  flex: none;
+  font-size: u(14);
+  font-weight: 800;
+  color: var(--text);
+}
+
+.orderItems {
+  display: flex;
+  flex-direction: column;
+  gap: u(6);
+  margin: 0;
+  padding: u(10) u(12);
+  list-style: none;
+  border-radius: u(13);
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+}
+
+.orderItem {
+  display: flex;
+  align-items: baseline;
+  gap: u(8);
+  font-size: u(12);
+  line-height: 1.35;
+  color: var(--text-secondary);
+}
+
+.orderItemName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.orderItemCount {
+  flex: none;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.orderNote {
+  font-size: u(11.5);
+  line-height: 1.4;
+  color: var(--text-faint);
+  text-wrap: pretty;
+}
+
+.pay {
+  height: u(42);
+  border-radius: u(13);
+  background: linear-gradient(120deg, var(--accent), var(--accent-hover));
+  font-size: u(13.5);
+  font-weight: 800;
+  color: var(--accent-contrast);
+}
+
+// ── Прелоадер ────────────────────────────────────────────
+.skeletonCard {
+  height: u(110);
+  border-radius: u(18);
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(150deg, oklch(0.26 0.012 264), oklch(0.21 0.01 264));
+}
+
+.shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    oklch(1 0 0 / 0) 35%,
+    oklch(1 0 0 / 0.06) 46%,
+    oklch(1 0 0 / 0.13) 50%,
+    oklch(1 0 0 / 0.06) 54%,
+    oklch(1 0 0 / 0) 65%
+  );
+  transform: translateX(-100%);
+  animation: accountShimmer 1700ms var(--ease-out) infinite;
+}
+
+@keyframes accountShimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer::after {
+    animation: none;
+  }
+}

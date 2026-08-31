@@ -1,177 +1,312 @@
-import React, {useEffect, useRef, useState} from 'react';
-import '../../app/styles/style.css';
-import {useTelegram} from "../../hooks/useTelegram";
-import {useNavigate} from "react-router-dom";
-import useGlobalData from "../../hooks/useGlobalData";
-import {useServerUser} from "../../hooks/useServerUser";
-import CatalogItem from "./CatalogItem";
-import style from './Catalog.module.scss'
-import Sorting from "../../shared/ui/Filter/Sorting";
-import Filter from "../../shared/ui/Filter/Filter";
-import {useIsDesktopMedia} from "../../hooks/useIsDesktopMedia";
-import DesktopCatalog from "./DesktopCatalog/DesktopCatalog";
-import ShareCatalogButton from "./ShareCatalogButton/ShareCatalogButton";
-import {usePlatform} from "../../hooks/utils/usePlatform";
-import {useAppInsets} from "../../hooks/useAppInsets";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
+import {useStructureStore} from '../../store/useStructureStore';
+import {useAppInsets} from '../../shared/hooks/useAppInsets';
+import {useBackButton} from '../../shared/hooks/useBackButton';
+import {useHidingHeader} from '../../shared/hooks/useHidingHeader';
+import {useNearBottom} from '../../shared/hooks/useNearBottom';
+import {useScrollMemory} from '../../shared/hooks/useScrollMemory';
+import {hapticImpact} from '../../shared/lib/haptic';
+import {recallView, rememberView} from '../../shared/lib/viewMemory';
+import BackPill from '../../shared/ui/BackPill/BackPill';
+import EmptyState from '../../shared/ui/EmptyState/EmptyState';
+import {fetchCatalogProducts} from '../../shared/api/catalog';
+import {loadFacets, peekFacets} from '../../shared/api/facetsCache';
+import {
+    countActiveFilters,
+    createFilters,
+    describeFilters,
+    productsPlural,
+    sortingLabel
+} from '../../shared/lib/catalogQuery';
+import {cleanPath} from '../Main/catalogSections';
+import {FunnelIcon, SortIcon} from './CatalogIcons';
+import ProductGrid, {ProductGridSkeleton} from './ProductGrid';
+import FilterSheet from './FilterSheet';
+import {useCatalogProducts} from './useCatalogProducts';
+import style from './Catalog.module.scss';
 
-let lastScroll = 0
+const SIMILAR_LIMIT = 6;
 
-let listNumber = 1
-let lastCardList = null
-let lastPath = ''
-let len = 1
-let onLoad = false
-let lastJson = {sorting: 'default', platform: [], language: [], numberPlayers: [], genre:[], type:[]}
-
-const Catalog = () => {
-    const isDesktop = useIsDesktopMedia();
-
+export default function Catalog() {
     const navigate = useNavigate();
-    const { tg } = useTelegram()
-    const { safeAreaInset, contentSafeAreaInset, isKeyboardOpen } = useAppInsets();
-    const {isTg } = usePlatform();
-    const {catalogList, catalogStructureList, setBufferCardsCatalog} = useGlobalData()
-    const {getCardList} = useServerUser()
-    const [height, setHeight] = useState(0);
+    const params = useParams();
+    const {contentSafeAreaInset, safeAreaInset} = useAppInsets();
 
-    const [sortWindowOpen, setSortWindowOpen] = useState(false);
-    const [filterWindowOpen, setFilterWindowOpen] = useState(false);
-    const [json, setJson] = useState(lastJson);
+    const path = cleanPath(params['*'] || '');
 
-    const [icon, setIcon] = useState('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAACjUlEQVR4nO3dR24UQRSH8bciCAEmR2PSFRBwJ0AI7mLBCZAQG4JkjmDA5OBAnDmDkYDNh0qalkwS4GlPvffq/5N65U2Xv03PTNVrMxEREREREREREZkI4DxwdXSdq30/zQJ2Avf41d3yt9r312KMef7sMbC79n02AZgCHvB3T4A9te83Nf49hqJMKMZD/t9TRekZsAt4tI4Ya6Psrb2OFBg/RueZoowJ2Ac8pz9vgIO11xU5xoseYyjKegH7NyhGZxE4VHudkWK83MAYiuIwRmcJOFx73S4BB4BXTJ6iOIrRWVaUH2O8pr5l4Ii1rDx+OonRWWk2CnAUeIs/H4Hj1hJg2mmM9qKMYrzDv0/ACcsMOBYkRv4ooxjviWcAnLRMAsdYG+WUZQDMAB+Ibxg+SqIY8aOUx8bR42M2Q+C0BfzWttx4VsOyRosCuEV+Ny0CYAfwjfy+AtvNu/LMTjtmzDtgE7BKfp+BzRYBcI38Zi3xHtxo5sMdeQC2AheBOWAhyTUHXAC21P7/ioiIiIiIRPlgeBm47+AD3UJPV1nLpbI2a/RcoFfla6EpiwK4Tn6zFkFDX7+vlrWad2WnH+2YNu/Kz5qjnzez+wJsswjKBgDyu2FRNLANaFDO0VskCXctpti9mC3KMGyMRDvfU+6Ajx5lkPWMSKTTU02coopyvjB/jEAncJs8iev1jHp7MX6a4lCGiXmz0vI0B43W8EbDZxxyMJ5pSeOZ6k+T6yiGoyiLmrtYfyJpRzEczOztaHavg6nWHcUYc3/XAv3R/PdxoWH8qd4d0tHrKvqGXujiD3rlUcg3tHX0prZJQa/Ncxvlzm9i3A43ZSET4CxwZXSdqX0/IiIiIiIiIiIi1ojv9aD4fOfUvPQAAAAASUVORK5CYII=')
+    const catalogs = useStructureStore((state) => state.catalogs);
+    const structureBlocks = useStructureStore((state) => state.structureBlocks);
 
-    const [cardList, setCardList] = useState(lastCardList)
-    const scrollRef = useRef();
+    const catalogId = useMemo(
+        () => (catalogs || []).find((catalog) => catalog.path === path)?.id ?? null,
+        [catalogs, path]
+    );
 
-    const setNewCardData = (data, number) => {
-        setCardList([...(cardList || []), ...data.cardList])
-        setBufferCardsCatalog([...(cardList || []), ...data.cardList])
-        lastCardList = [...(cardList || []), ...data.cardList]
-        listNumber = number
-        len = data.len
-        onLoad = false;
-        lastJson = json
-    }
+    const title = useMemo(
+        () => (structureBlocks || []).find((block) => cleanPath(block.path) === path)?.name || 'Каталог',
+        [structureBlocks, path]
+    );
 
-    useEffect(() => {
-        if (window.innerHeight > height) {
-            setTimeout(() => {
-                setHeight(window.innerHeight)
-            }, 50)
+    const formKey = `catalog:form:${path}`;
+    const saved = useRef(recallView(formKey)).current;
 
-        }
-    }, [window.innerHeight])
+    const [filters, setFilters] = useState(() => saved?.filters || createFilters());
+    const [sorting, setSorting] = useState(saved?.sorting || 'default');
+    const [isSheetOpen, setSheetOpen] = useState(false);
+    const [{facets, price}, setFacetData] = useState(() => peekFacets({catalogId}));
+    const [similar, setSimilar] = useState([]);
 
-    let catalog = null;
-    if (!isDesktop) {
-        catalog = catalogList.map(catalog => {
-            if (catalog.path === (window.location.pathname).replace('/catalog/', '')) {
-                if (lastPath !== catalog.path) {
-                    lastPath = catalog.path
-                    setCardList(null)
-                    lastScroll = 0
-                    lastCardList = null
-                    lastJson = {sorting: 'default', platform: [], language: [], numberPlayers: [], genre:[], type:[]}
-                }
-                return catalog
-            } else {
-                return null
-            }
-        }).filter(item => item !== null)[0] || null;
-    }
+    const isMissing = Array.isArray(catalogs) && catalogId === null;
+
+    const scope = useMemo(() => ({catalogId}), [catalogId]);
+
+    const query = useMemo(() => ({...scope, filters, sorting}), [scope, filters, sorting]);
+
+    const {items, total, hasMore, isLoading, isRestored, error, loadMore, retry} = useCatalogProducts(query, {
+        enabled: catalogId !== null
+    });
+
+    const scrollRef = useScrollMemory(`catalog:${path}`, {ready: items !== null});
+    const isHeaderHidden = useHidingHeader(scrollRef, {enabled: !isSheetOpen && items !== null});
+
+    const sentinelRef = useNearBottom({
+        rootRef: scrollRef,
+        enabled: hasMore && !isLoading && !error,
+        onReach: loadMore
+    });
+
+    const scopeKey = JSON.stringify(scope);
 
     useEffect(() => {
-        if (isDesktop) return;
-        tg.BackButton.show();
-        try {
-            scrollRef.current.scrollTo({
-                top: lastScroll, behavior: "instant",
-            });
-        } catch (e) {
-        }
+        rememberView(formKey, {filters, sorting});
+    }, [formKey, filters, sorting]);
 
-        const onBack = () => navigate(-1);
-        tg.onEvent('backButtonClicked', onBack);
+    useEffect(() => {
+        if (catalogId === null) return undefined;
+
+        let isAlive = true;
+
+        loadFacets({catalogId})
+            .then((value) => {
+                if (isAlive) setFacetData(value);
+            })
+            .catch(() => undefined);
+
         return () => {
-            tg.offEvent('backButtonClicked', onBack);
+            isAlive = false;
         };
-    }, [scrollRef, navigate, tg, isDesktop]);
+    }, [catalogId]);
 
-    const onClose = () => {
-        setFilterWindowOpen(false);
-        setSortWindowOpen(false);
-        setCardList(null)
-        lastScroll = 0
-        lastCardList = null
-    }
+    const isEmptyByFilters = items !== null && items.length === 0 && countActiveFilters(filters) > 0;
 
-    if (isDesktop) {
-        return <DesktopCatalog />;
-    }
+    useEffect(() => {
+        if (!isEmptyByFilters || JSON.parse(scopeKey).catalogId === null) return undefined;
 
-    if (catalog !== null) {
-        if (cardList !== null) {
-            return (<div className={style['mainDivision']} style={{paddingTop: String(contentSafeAreaInset.top + safeAreaInset.top) + 'px',}}>
-                <div className={style['titleRow']}>
-                    <div className={style['title']}>
-                        {catalogStructureList.find(catalog => catalog.path === lastPath && typeof catalog.name !== 'undefined').name}
+        const controller = new AbortController();
+
+        fetchCatalogProducts(
+            {...JSON.parse(scopeKey), page: 1, perPage: SIMILAR_LIMIT, sorting: 'discount'},
+            controller.signal
+        )
+            .then((payload) => setSimilar(Array.isArray(payload?.items) ? payload.items : []))
+            .catch(() => setSimilar([]));
+
+        return () => controller.abort();
+    }, [isEmptyByFilters, scopeKey]);
+
+    const back = useCallback(() => {
+        hapticImpact('light');
+        if (window.history.length > 1) navigate(-1);
+        else navigate('/main');
+    }, [navigate]);
+
+    const hasNativeBack = useBackButton(back);
+
+    const openProduct = useCallback((product) => {
+        hapticImpact('light');
+        navigate(`/card/${product.id}`);
+    }, [navigate]);
+
+    const openSheet = useCallback(() => {
+        hapticImpact('light');
+        setSheetOpen(true);
+    }, []);
+
+    const applyFilters = useCallback((nextFilters, nextSorting) => {
+        setFilters(nextFilters);
+        setSorting(nextSorting);
+        scrollRef.current?.scrollTo({top: 0, behavior: 'instant'});
+    }, [scrollRef]);
+
+    const resetFilters = useCallback(() => {
+        hapticImpact('light');
+        setFilters(createFilters());
+        setSorting('default');
+    }, []);
+
+    const chips = describeFilters(filters, facets);
+    const activeCount = countActiveFilters(filters);
+
+    return (
+        <div ref={scrollRef} className={style.screen}>
+            <div
+                className={`${style.header} ${isHeaderHidden ? style.headerHidden : ''}`}
+                style={{paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`}}
+            >
+                <div className={style.headerRow}>
+                    {hasNativeBack ? null : <BackPill className={style.back} onClick={back}/>}
+
+                    <div className={style.headerText}>
+                        <h1 className={style.title}>{title}</h1>
+                        <span className={style.count}>
+                            {isMissing
+                                ? 'Раздел недоступен'
+                                : items === null
+                                    ? 'Загружаем…'
+                                    : `${total.toLocaleString('ru-RU')} ${productsPlural(total)}`}
+                        </span>
                     </div>
-                    <ShareCatalogButton catalogPath={catalog?.path || lastPath} isTg={isTg}/>
                 </div>
-                <div style={{display:'flex', flexDirection:'row', marginBottom: '3vw'}}>
-                <button className={style['sorting']} onClick={() => {
-                    setSortWindowOpen(true)
-                }}>
-                    <div className={style[json.sorting !== 'default' ? 'pulseBg' : '']}/>
-                    <div style={{backgroundImage: `url(${icon})`}}/>
-                    <p>Сортировка</p>
-                </button>
-                <button className={style['filter']} onClick={() => {
-                    setFilterWindowOpen(true)
-                }}>
-                    <div
-                        className={style[json.platform.length + json.language.length + json.numberPlayers.length > 0 ? 'pulseBg' : '']}/>
-                    <div/>
-                    <p>Фильтры</p>
-                </button>
-                </div>
-                <div className={'scroll-container-y'} ref={scrollRef}
-                     onScroll={async (event) => {
-                         lastScroll = event.target.scrollTop
-                         if (listNumber < len && event.target.scrollTop + 2000 > scrollRef.current.scrollHeight && !onLoad) {
-                             onLoad = true
-                             getCardList(setNewCardData, catalog.id, listNumber + 1, json).then()
-                         }
-                     }}
-                     style={{
-                         paddingBottom: String(contentSafeAreaInset.bottom + safeAreaInset.bottom + 0.03 * window.innerWidth) + 'px',
-                         height: '100vh',
-                     }}>
-                    <div className={style['listGrid']}>
 
-                        {cardList.map(item => (
-                                <div style={{marginLeft: '6vw'}}>
-                                    <CatalogItem key={item.id} product={item}/></div>))}
+                <div className={style.controls}>
+                    <button
+                        type="button"
+                        className={`${style.chip} ${activeCount > 0 ? style.chipActive : ''}`}
+                        onClick={openSheet}
+                    >
+                        <FunnelIcon className={style.chipIcon}/>
+                        {activeCount > 0 ? `Фильтры · ${activeCount}` : 'Фильтры'}
+                    </button>
+
+                    <button type="button" className={style.chip} onClick={openSheet}>
+                        <SortIcon className={style.chipIcon}/>
+                        {sortingLabel(sorting)}
+                    </button>
+
+                    {chips.map((chip) => (
+                        <button
+                            key={chip.id}
+                            type="button"
+                            className={`${style.chip} ${style.chipRemovable}`}
+                            onClick={() => setFilters((current) => chip.remove(current))}
+                        >
+                            {chip.label}
+                            <span className={style.chipCross} aria-hidden="true">✕</span>
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div
+                className={style.content}
+                style={{paddingBottom: `calc(${safeAreaInset.bottom}px + 24 * var(--u))`}}
+            >
+                {isMissing ? (
+                    <EmptyState
+                        icon="🗂"
+                        title="Каталог не найден"
+                        text="Похоже, раздел переехал или его убрали с витрины."
+                        actionLabel="На главную"
+                        onAction={() => navigate('/main')}
+                    />
+                ) : items === null && !error ? (
+                    <ProductGridSkeleton/>
+                ) : error && items === null ? (
+                    <EmptyState
+                        tone="danger"
+                        icon="⚠"
+                        title="Каталог не загрузился"
+                        text="Проверьте связь и попробуйте ещё раз — товары никуда не делись."
+                        actionLabel="Повторить"
+                        onAction={retry}
+                    />
+                ) : items.length === 0 ? (
+                    <div className={style.empty}>
+                        <span className={style.emptyIcon} aria-hidden="true">
+                            <span className={style.emptySlider}><i style={{left: '20%'}}/></span>
+                            <span className={style.emptySlider}><i style={{left: '62%'}}/></span>
+                            <span className={style.emptySlider}><i style={{left: '38%'}}/></span>
+                        </span>
+
+                        <div className={style.emptyText}>
+                            <span className={style.emptyTitle}>
+                                {activeCount > 0 ? 'Под такие фильтры ничего нет' : 'В каталоге пока пусто'}
+                            </span>
+                            <span className={style.emptyNote}>
+                                {activeCount > 0
+                                    ? 'Попробуйте убрать цену или платформу — обычно это открывает десятки позиций'
+                                    : 'Товары появятся, как только каталог наполнится. Загляните позже.'}
+                            </span>
+                        </div>
+
+                        {activeCount > 0 ? (
+                            <div className={style.emptyActions}>
+                                <button type="button" className={style.emptyPrimary} onClick={resetFilters}>
+                                    Сбросить фильтры
+                                </button>
+                                <button type="button" className={style.emptySecondary} onClick={openSheet}>
+                                    Изменить фильтры
+                                </button>
+                            </div>
+                        ) : null}
+
+                        {similar.length ? (
+                            <div className={style.similar}>
+                                <span className={style.similarTitle}>Похожее</span>
+                                <div className={style.similarRow}>
+                                    {similar.map((product) => (
+                                        <button
+                                            key={product.id}
+                                            type="button"
+                                            className={style.similarCard}
+                                            onClick={() => openProduct(product)}
+                                        >
+                                            <span
+                                                className={style.similarCover}
+                                                style={product.image ? {backgroundImage: `url(${product.image})`} : undefined}
+                                            />
+                                            <span className={style.similarName}>{product.name}</span>
+                                            <span className={style.similarPrice}>
+                                                {Number(product.price).toLocaleString('ru-RU')} ₽
+                                            </span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : null}
                     </div>
-                    {cardList.length !== 0 ? '' : <div className={style['title']} style={{margin:'5vw', textAlign:'center'}}>Ничего не найдено, попробуйте изменить фильтры</div>}
-                </div>
-                {sortWindowOpen ? (<Sorting onClose={onClose} json={json} setJson={setJson} setIcon={setIcon}/>) : ''}
-                {filterWindowOpen ? (<Filter onClose={onClose} json={json} setJson={setJson}/>) : ''}
-            </div>);
-        } else {
-            getCardList(setNewCardData, catalog.id, 1, json).then()
-            return (<div>
-                <div className={style["wrapper"]}>
-                    <div className={style["circle"]}></div>
-                    <div className={style["circle"]}></div>
-                    <div className={style["circle"]}></div>
-                    <div className={style["shadow"]}></div>
-                    <div className={style["shadow"]}></div>
-                    <div className={style["shadow"]}></div>
-                </div>
-            </div>)
-        }
-    }
-};
+                ) : (
+                    <>
+                        <ProductGrid items={items} animate={!isRestored} onOpen={openProduct}/>
 
-export default Catalog;
+                        {hasMore ? (
+                            <div ref={sentinelRef} className={style.more}>
+                                <ProductGridSkeleton count={2}/>
+                            </div>
+                        ) : null}
+
+                        {error ? (
+                            <button type="button" className={style.retry} onClick={retry}>
+                                Не удалось догрузить. Повторить
+                            </button>
+                        ) : null}
+                    </>
+                )}
+            </div>
+
+            {isSheetOpen ? (
+                <FilterSheet
+                    scope={scope}
+                    facets={facets}
+                    price={price}
+                    filters={filters}
+                    sorting={sorting}
+                    total={total}
+                    onApply={applyFilters}
+                    onClose={() => setSheetOpen(false)}
+                />
+            ) : null}
+        </div>
+    );
+}

@@ -14,13 +14,14 @@ import SoonScreen from "./Tabs/Soon/SoonScreen";
 import useData from "./useData";
 import History from "./Tabs/HistoryOrders/History";
 import Promo from "./Tabs/Promo/Promo";
+import Services from "./Tabs/Services/Services";
 import Search from "./Tabs/Search/Search";
 import InfoBlock from "./Tabs/InfoBloks/InfoBlock";
 import AdminGallery from "./Tabs/Hosting/AdminGallary";
 import Parsing from "./Tabs/Parsing/Parsing";
 import Broadcast from "./Tabs/Broadcast/Broadcast";
 import Dashboard from "./Tabs/Dashboard/Dashboard";
-import useGlobalData from "../../hooks/useGlobalData";
+import useGlobalData from './legacy/useGlobalData';
 import useAdminTheme from "./useAdminTheme";
 import {FeedbackProvider} from "./Elements/Feedback/Feedback";
 
@@ -51,15 +52,7 @@ const routeGroups = [
                     />
                 ),
             },
-            {
-                name: 'Сервисы', path: 'services', element: (
-                    <SoonScreen
-                        title="Сервисы"
-                        subtitle="витрина сервисов"
-                        description="Страницы типа «Сервисы» продаются как обычные товары, но карусель и тело сайта им не нужны. Настройки витрины появятся здесь."
-                    />
-                ),
-            },
+            {name: 'Сервисы', path: 'services', element: <Services/>},
         ],
     },
     {

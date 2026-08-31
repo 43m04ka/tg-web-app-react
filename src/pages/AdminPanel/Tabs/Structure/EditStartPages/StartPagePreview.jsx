@@ -1,8 +1,19 @@
 import React from 'react';
-import PlatformCard from '../../../../SelectPlatform/Elements/PlatformCard';
-import SelectPlatformText from '../../../../SelectPlatform/Elements/SelectPlatformText';
+import PlatformCard from '../../../../SelectPlatform/PlatformCard';
+import PlatformLink from '../../../../SelectPlatform/PlatformLink';
 import style from './StartPagePreview.module.scss';
-import SelectPlatformLink from '../../../../SelectPlatform/Elements/SelectPlatformLink';
+
+// Заголовок и надпись у редизайна не вынесены в компонент — витрина рисует их
+// прямо в разметке секции. Здесь повторён тот же вид, чтобы превью совпадало
+// с ботом и не тянуло за собой удалённые компоненты старого экрана.
+const PreviewText = ({item}) => (
+    <div className={item.type === 'title' ? style.previewTitle : style.previewLabel}>
+        {item.icon ? (
+            <span className={style.previewIcon} style={{backgroundImage: `url(${item.icon})`}} aria-hidden="true"/>
+        ) : null}
+        <span>{item.text}</span>
+    </div>
+);
 
 const TYPE_LABELS = {
     title: 'Заголовок',
@@ -26,9 +37,7 @@ const StartPagePreviewItem = ({
 
     const renderContent = () => {
         if (item.type === 'title' || item.type === 'label') {
-            return (
-                <SelectPlatformText data={item} />
-            );
+            return <PreviewText item={item}/>;
         }
 
         if (item.type === 'page' && page) {
@@ -39,13 +48,7 @@ const StartPagePreviewItem = ({
 
             return (
                 <div className={style.cardWrap}>
-                    <PlatformCard
-                        item={cardItem}
-                        isActive={false}
-                        animationDelay="0s"
-                        onSelect={() => { }}
-                        onTouchStart={() => { }}
-                    />
+                    <PlatformCard item={cardItem} isActive={false} onSelect={() => { }}/>
                 </div>
             );
         }
@@ -56,7 +59,7 @@ const StartPagePreviewItem = ({
 
         if (item.type === 'link') {
             return (<div className={style.cardWrap}>
-                <SelectPlatformLink item={item} isActive={false} animationDelay={'0s'}/>
+                <PlatformLink item={item}/>
             </div>)
         }
 

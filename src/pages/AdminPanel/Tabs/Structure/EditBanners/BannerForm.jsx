@@ -4,7 +4,7 @@ import f, {Group, Row, Sheet} from '../../../Elements/FormLayout/FormLayout';
 import s from '../EditStartPages/EditStartPages.module.scss';
 import b from './EditBanners.module.scss';
 import useData from '../../../useData';
-import useGlobalData from '../../../../../hooks/useGlobalData';
+import useGlobalData from '../../../legacy/useGlobalData';
 import {useServer} from '../useServer';
 import {useFeedback} from '../../../Elements/Feedback/Feedback';
 import BannerPreview from './BannerPreview';

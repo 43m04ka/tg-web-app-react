@@ -1,0 +1,245 @@
+@import '../../app/styles/units';
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: u(12);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: u(9);
+  padding: 0 u(20);
+}
+
+.icon {
+  width: u(26);
+  height: u(26);
+  flex: none;
+  border-radius: u(7);
+  background: center / contain no-repeat;
+}
+
+.title {
+  margin: 0;
+  font-size: u(20);
+  font-weight: 800;
+  letter-spacing: u(-0.35);
+  color: var(--text);
+}
+
+.row {
+  display: flex;
+  gap: u(12);
+  padding: 0 u(20);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-left: u(20);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.row::-webkit-scrollbar {
+  display: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: u(8);
+  width: u(152);
+  flex: none;
+  scroll-snap-align: start;
+  cursor: pointer;
+}
+
+.cover {
+  position: relative;
+  height: u(196);
+  border-radius: u(16);
+  background: linear-gradient(160deg, oklch(0.28 0.02 264), oklch(0.17 0.014 264)) center / cover no-repeat;
+  display: flex;
+  align-items: flex-end;
+  padding: u(8);
+  transition: transform var(--duration-base) var(--ease-out),
+              box-shadow var(--duration-base) var(--ease-out);
+}
+
+.card:active .cover {
+  transform: scale(0.97);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: u(4);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.tag {
+  padding: u(2) u(6);
+  border-radius: u(6);
+  background: oklch(0.14 0.01 264 / 0.8);
+  backdrop-filter: blur(u(6));
+  -webkit-backdrop-filter: blur(u(6));
+  font-size: u(9);
+  font-weight: 700;
+  color: oklch(1 0 0);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.discount {
+  position: absolute;
+  top: u(8);
+  right: u(8);
+  padding: u(3) u(6);
+  border-radius: u(7);
+  background: var(--gold);
+  font-size: u(10);
+  font-weight: 800;
+  color: var(--gold-surface);
+}
+
+.name {
+  font-size: u(12.5);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-secondary);
+  // Две строки: у части товаров название длиннее карточки, а обрыв на середине
+  // третьей строки ломает высоту всего ряда.
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.prices {
+  display: flex;
+  flex-direction: column;
+  gap: u(1);
+}
+
+.price {
+  font-size: u(14);
+  font-weight: 800;
+  color: var(--text);
+}
+
+.oldPrice {
+  font-size: u(11.5);
+  font-weight: 600;
+  color: var(--text-faint);
+  text-decoration: line-through;
+}
+
+.footer {
+  padding: 0 u(20);
+}
+
+.open {
+  width: 100%;
+  height: u(40);
+  border-radius: u(14);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: u(13);
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.open:active {
+  background: var(--surface-3);
+}
+
+// Баннер тела идёт во всю ширину и в тех же пропорциях, что в старом боте:
+// там это блок высотой 40vw без боковых отступов. Картинка кладётся фоном,
+// а не <img>: недогруженная ссылка тогда оставляет ровный прямоугольник,
+// а не схлопывает блок в ноль высоты.
+.banner {
+  width: 100%;
+  aspect-ratio: 5 / 2;
+  background: var(--surface-1) center / cover no-repeat;
+}
+
+.bannerClickable {
+  cursor: pointer;
+}
+
+.bannerClickable:active {
+  opacity: 0.92;
+}
+
+// ── Прелоадер ────────────────────────────────────────────
+.skeletonHead {
+  width: u(150);
+  height: u(17);
+  margin: 0 u(20);
+  border-radius: u(6);
+}
+
+.skeletonCard {
+  width: u(152);
+  height: u(196);
+  flex: none;
+  border-radius: u(16);
+}
+
+.skeletonOpen {
+  height: u(40);
+  margin: 0 u(20);
+  border-radius: u(14);
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(150deg, oklch(0.26 0.012 264), oklch(0.21 0.01 264));
+}
+
+.shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    oklch(1 0 0 / 0) 35%,
+    oklch(1 0 0 / 0.06) 46%,
+    oklch(1 0 0 / 0.13) 50%,
+    oklch(1 0 0 / 0.06) 54%,
+    oklch(1 0 0 / 0) 65%
+  );
+  transform: translateX(-100%);
+  animation: sectionShimmer 1700ms var(--ease-out) infinite;
+}
+
+@keyframes sectionShimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer::after {
+    animation: none;
+  }
+}
+
+.term {
+  position: absolute;
+  right: u(8);
+  bottom: u(8);
+  padding: u(2) u(6);
+  border-radius: u(6);
+  background: oklch(0.14 0.01 264 / 0.8);
+  backdrop-filter: blur(u(6));
+  -webkit-backdrop-filter: blur(u(6));
+  font-size: u(9);
+  font-weight: 700;
+  color: oklch(1 0 0);
+  white-space: nowrap;
+}

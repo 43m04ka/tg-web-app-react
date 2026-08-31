@@ -1,94 +1,222 @@
-import React, {useCallback, useEffect, useRef} from 'react';
-import style from './SelectPlatform.module.scss';
-import useGlobalData from '../../hooks/useGlobalData';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {useTelegram} from '../../hooks/useTelegram';
-import {useIsDesktopMedia} from '../../hooks/useIsDesktopMedia';
-import PlatformCard from './Elements/PlatformCard';
-import SelectPlatformHeader from './Elements/SelectPlatformText';
-import SelectPlatformLink from './Elements/SelectPlatformLink';
-import {usePlatform} from "../../hooks/utils/usePlatform";
-import {useAppInsets} from "../../hooks/useAppInsets";
+import {useStructureStore} from '../../store/useStructureStore';
+import {useSessionStore} from '../../store/useSessionStore';
+import {usePlatform} from '../../shared/hooks/usePlatform';
+import {fallbackBotType} from '../../shared/lib/platform';
+import {useAppInsets} from '../../shared/hooks/useAppInsets';
+import {hapticImpact} from '../../shared/lib/haptic';
+import {primeKeyboard} from '../../shared/lib/keyboard';
+import {getTelegramObject} from '../../shared/lib/telegram';
+import {standaloneRoute} from '../../shared/lib/pageRoutes';
+import {glowStyle} from './accent';
+import PlatformCard from './PlatformCard';
+import PlatformLink from './PlatformLink';
+import style from './SelectPlatform.module.scss';
 
-const SelectPlatform = () => {
-    const {pageList, pageId, setPageId, updateBasket, catalogList, setBarIsVisible, startPageList, updateStartPageList} = useGlobalData();
-    const navigate = useNavigate();
-    const { tg } = useTelegram();
-const { safeAreaInset, contentSafeAreaInset, isKeyboardOpen } = useAppInsets();
+const MIN_FADE_PX = 24;
+const STAGGER_MS = 22;
+const STAGGER_CAP_MS = 170;
+const LEAVE_MS = 265;
+const ENTER_MS = 210;
 
-    const { botType } = usePlatform();
-    useIsDesktopMedia();
-    const selectingRef = useRef(false);
+const toGroups = (items) => {
+    const groups = [];
+    let current = null;
 
-
-    useEffect(() => {
-        tg.BackButton.hide();
-    }, [tg]);
-
-    // Данных может не быть, если сервер не вложил их в index.html, а фоновый
-    // запрос оборвался — без этого экран остаётся с одним заголовком
-    const retriedRef = useRef(false);
-    useEffect(() => {
-        if (startPageList.length > 0 || retriedRef.current) return;
-        retriedRef.current = true;
-        updateStartPageList();
-    }, [startPageList, updateStartPageList]);
-
-    const handleSelect = useCallback((item) => {
-        if (selectingRef.current) {
-            return;
+    items.forEach((item) => {
+        if (item.type === 'title' || !current) {
+            current = {header: item.type === 'title' ? item : null, key: item.id, children: []};
+            groups.push(current);
+            if (item.type === 'title') return;
         }
+        current.children.push(item);
+    });
 
-        console.log(item)
-
-        window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium');
-
-        if (item.id !== pageId) {
-            setPageId(item.id);
-            updateBasket(catalogList, item.id);
-        }
-
-        setTimeout(()=>{
-            setBarIsVisible(true);
-            navigate('/main/catalogs');  
-        }, 300)
-    }, [catalogList, pageId, setPageId, updateBasket]);
-
-
-    if (!pageList?.length) {
-        return null;
-    }
-
-    console.log(pageList)
-
-    return (
-        <div className={style.container}style={{paddingTop: String(safeAreaInset.top + contentSafeAreaInset.top + window.innerWidth * 0.05) + 'px', 
-            paddingBottom: String(safeAreaInset.top + contentSafeAreaInset.top + window.innerWidth * 0.05) + 'px'
-        }}>
-            <h className={style.introText}>
-                Геймворд — ваш сервис для покупки игр и подписок для 
-                <a> PlayStation</a> и 
-                <a> Xbox</a>
-            </h>
-            {([...startPageList].sort((a, b) => a.serialNumber - b.serialNumber)).map((item, index) => {
-                if(item.platform === botType){
-                    if(item.type === 'page'){
-                        return(<PlatformCard
-                            key={item.id}
-                            item={{...pageList.find(user => user.id === item.structurePageId), ...item}}
-                            isActive={item.structurePageId === pageId}
-                            animationDelay={`${index * 0.08}s`}
-                            onSelect={() => handleSelect(pageList.find(user => user.id === item.structurePageId))}
-                        />)
-                    }else if(item.type === 'link'){
-                        return(<SelectPlatformLink item={item} animationDelay={'0s'}/>)
-                    }else{
-                        return(<SelectPlatformHeader data={item}/>)
-                    }
-                }
-            })}
-        </div>
-    );
+    return groups;
 };
 
-export default SelectPlatform;
+export default function SelectPlatform() {
+    const navigate = useNavigate();
+    const {botType, isSettled} = usePlatform();
+    const {safeAreaInset, contentSafeAreaInset} = useAppInsets();
+
+    const startPages = useStructureStore((state) => state.startPages);
+    const pages = useStructureStore((state) => state.pages);
+    const pageId = useSessionStore((state) => state.pageId);
+    const setPageId = useSessionStore((state) => state.setPageId);
+
+    const [pickedId, setPickedId] = useState(null);
+    const [isEntering, setIsEntering] = useState(true);
+
+    useEffect(() => {
+        getTelegramObject().BackButton?.hide();
+    }, []);
+
+    useEffect(() => {
+        const timerId = setTimeout(() => setIsEntering(false), STAGGER_CAP_MS + ENTER_MS + 120);
+        return () => clearTimeout(timerId);
+    }, []);
+
+    const activeGlow = useMemo(() => {
+        if (!Array.isArray(startPages)) return {};
+
+        const active = startPages.find((item) =>
+            pickedId !== null ? item.id === pickedId : item.structurePageId === pageId
+        );
+
+        return active ? glowStyle(active.color) : {};
+    }, [startPages, pickedId, pageId]);
+
+    const groups = useMemo(() => {
+        if (!Array.isArray(startPages) || !isSettled) return [];
+
+        const itemsOf = (platform) => [...startPages]
+            .filter((item) => item.platform === platform)
+            .sort((a, b) => a.serialNumber - b.serialNumber);
+
+        const visible = itemsOf(botType);
+        const fallback = fallbackBotType(botType);
+
+        return toGroups(visible.length || !fallback ? visible : itemsOf(fallback));
+    }, [startPages, botType, isSettled]);
+
+    const openGlobalSearch = useCallback(() => {
+        hapticImpact('light');
+        primeKeyboard();
+        navigate('/search', {state: {allPages: true}});
+    }, [navigate]);
+
+    const handleSelect = useCallback((item, page) => {
+        if (pickedId !== null) return;
+
+        window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium');
+        setPickedId(item.id);
+        setPageId(item.structurePageId);
+
+        const target = standaloneRoute(page?.type) || '/main';
+        setTimeout(() => navigate(target, {state: {skipLeave: true}}), LEAVE_MS);
+    }, [navigate, pickedId, setPageId]);
+
+    const fadeZone = contentSafeAreaInset.top;
+    const fadeHeight = Math.max(fadeZone - safeAreaInset.top, Math.min(fadeZone, MIN_FADE_PX));
+    const solidHeight = Math.max(fadeZone - fadeHeight, 0);
+
+    let order = 0;
+    const revealProps = () => {
+        const delay = Math.min(order++ * STAGGER_MS, STAGGER_CAP_MS);
+        return isEntering ? {style: {animationDelay: `${delay}ms`}} : {};
+    };
+
+    const renderChild = (item) => {
+        const isPicked = pickedId === item.id;
+        const className = [
+            style.item,
+            isEntering ? style.entering : '',
+            isPicked ? style.picked : ''
+        ].join(' ');
+
+        let content;
+
+        if (item.type === 'page') {
+            const page = pages?.find((candidate) => candidate.id === item.structurePageId);
+            if (!page) return null;
+
+            content = (
+                <PlatformCard
+                    item={{...page, ...item}}
+                    isActive={isPicked || item.structurePageId === pageId}
+                    onSelect={() => handleSelect(item, page)}
+                />
+            );
+        } else if (item.type === 'link') {
+            content = <PlatformLink item={item}/>;
+        } else {
+            content = <p className={style.hint}>{item.text}</p>;
+        }
+
+        return (
+            <div key={item.id} className={className} {...revealProps()}>
+                {content}
+            </div>
+        );
+    };
+
+    return (
+        <div
+            className={`${style.screen} ${pickedId !== null ? style.leaving : ''}`}
+            style={{
+                paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`,
+                paddingBottom: `calc(${pageId === null ? safeAreaInset.bottom : 0}px + 32 * var(--u))`
+            }}
+        >
+            <div
+                className={`${style.glow} ${activeGlow.backgroundColor ? style.glowVisible : ''}`}
+                style={activeGlow}
+                aria-hidden="true"
+            />
+
+            {fadeZone > 0 ? (
+                <>
+                    <div
+                        className={style.topSolid}
+                        style={{height: `${solidHeight}px`}}
+                        aria-hidden="true"
+                    />
+                    <div
+                        className={style.topFade}
+                        style={{top: `${solidHeight}px`, height: `${fadeHeight}px`}}
+                        aria-hidden="true"
+                    />
+                </>
+            ) : null}
+
+            <h1 className={style.title}>
+                Геймворд — ваш сервис для покупки игр и подписок для <span className={style.ps}>PlayStation</span> и{' '}
+                <span className={style.xbox}>Xbox</span>
+            </h1>
+
+            <button type="button" className={style.search} onClick={openGlobalSearch}>
+                <span className={style.searchIcon} aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <circle cx="10.6" cy="10.6" r="6.7" stroke="currentColor" strokeWidth="2"/>
+                        <path d="m15.6 15.6 5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    </svg>
+                </span>
+
+                <span className={style.searchBody}>
+                    <span className={style.searchTitle}>Поиск</span>
+                    <span className={style.searchNote}>Игры, подписки и донат в одном месте</span>
+                </span>
+
+                <span className={style.searchArrow} aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="m9 5 7 7-7 7" stroke="currentColor" strokeWidth="2.4"
+                              strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                </span>
+            </button>
+
+            {groups.map((group) => (
+                <section key={group.key} className={style.group}>
+                    {group.header ? (
+                        <div className={`${style.item} ${isEntering ? style.entering : ''}`} {...revealProps()}>
+                            <div className={style.sectionHeader}>
+                                {group.header.icon ? (
+                                    <span
+                                        className={style.sectionIcon}
+                                        style={{backgroundImage: `url(${group.header.icon})`}}
+                                        aria-hidden="true"
+                                    />
+                                ) : null}
+                                <span className={style.sectionTitle}>{group.header.text}</span>
+                            </div>
+                        </div>
+                    ) : null}
+
+                    {group.children.map(renderChild)}
+                </section>
+            ))}
+        </div>
+    );
+}

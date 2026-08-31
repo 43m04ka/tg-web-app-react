@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import s from './RecalculatePriceTab.module.scss';
 import f, {Group, Sheet} from '../../../Elements/FormLayout/FormLayout';
-import useGlobalData from '../../../../../hooks/useGlobalData';
-import {API_BASE_URL} from '../../../../../hooks/useServerRoutes/baseUrl';
+import useGlobalData from '../../../legacy/useGlobalData';
+import {API_BASE_URL} from '../../../legacy/baseUrl';
 
 export default function RecalculateModalContent({ catalogId, catalogsList, runRef, onLoadingChange}) {
     const [rules, setRules] = useState([]);

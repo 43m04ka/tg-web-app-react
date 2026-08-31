@@ -136,7 +136,6 @@ const InfoBlockList = ({onCountChange}) => {
                 <table className={style['table']}>
                     <thead>
                         <tr>
-                            <th className={style['idCol']}>ID</th>
                             <th>Заголовок</th>
                             <th>Описание</th>
                             <th className={style['linkCol']}>Ссылка</th>
@@ -145,7 +144,7 @@ const InfoBlockList = ({onCountChange}) => {
                     <tbody>
                         {visibleList.length === 0 ? (
                             <tr>
-                                <td className={style['emptyCell']} colSpan={4}>
+                                <td className={style['emptyCell']} colSpan={3}>
                                     {loading
                                         ? 'Загрузка…'
                                         : (search.trim() ? 'Под поиск ничего не подошло' : 'Блоков пока нет')}
@@ -153,7 +152,6 @@ const InfoBlockList = ({onCountChange}) => {
                             </tr>
                         ) : visibleList.map((block) => (
                             <tr key={block.id} onClick={() => openBlock(block)}>
-                                <td className={style['mono']}>{block.id}</td>
                                 <td className={style['nameCell']}>{block.name || '—'}</td>
                                 <td className={style['bodyCell']}>{block.body || '—'}</td>
                                 <td className={style['linkCol']}>

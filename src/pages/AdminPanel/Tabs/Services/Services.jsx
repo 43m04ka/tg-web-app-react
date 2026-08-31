@@ -7,6 +7,44 @@ import OfferForm from './OfferForm';
 import {brandStock, kindName, money} from './serviceModel';
 import s from './Services.module.scss';
 
+const plural = (count, forms) => {
+    const tail = Math.abs(count) % 100;
+    const last = tail % 10;
+    if (tail > 10 && tail < 20) return forms[2];
+    if (last > 1 && last < 5) return forms[1];
+    if (last === 1) return forms[0];
+    return forms[2];
+};
+
+const offerWord = (count) => `${count} ${plural(count, ['номинал', 'номинала', 'номиналов'])}`;
+
+const norm = (value) => String(value ?? '').toLowerCase();
+
+const groupByRegion = (offers) => {
+    const groups = new Map();
+
+    offers.forEach((offer) => {
+        const key = offer.regionName || '—';
+        if (!groups.has(key)) {
+            groups.set(key, {
+                key,
+                name: key,
+                icon: offer.regionIcon,
+                flag: offer.regionFlag,
+                items: [],
+            });
+        }
+        groups.get(key).items.push(offer);
+    });
+
+    return [...groups.values()];
+};
+
+const RegionMark = ({icon, flag}) => {
+    if (icon) return <img className={s['regionIcon']} src={icon} alt=""/>;
+    return <span className={s['regionFlag']}>{flag || '·'}</span>;
+};
+
 const ServicesList = ({onCountChange}) => {
     const server = useServer();
     const serverRef = useRef(server);
@@ -17,7 +55,8 @@ const ServicesList = ({onCountChange}) => {
 
     const [brands, setBrands] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [collapsed, setCollapsed] = useState(() => new Set());
+    const [expanded, setExpanded] = useState(() => new Set());
+    const [query, setQuery] = useState('');
 
     const treeRef = useRef([]);
     treeRef.current = brands || [];
@@ -72,7 +111,7 @@ const ServicesList = ({onCountChange}) => {
         openTab({
             id,
             title: brand ? brand.name || `Бренд ${brand.id}` : 'Новый бренд',
-            subtitle: brand ? `${brand.offers?.length || 0} номиналов` : 'Создание',
+            subtitle: brand ? offerWord(brand.offers?.length || 0) : 'Создание',
             entity: 'service-brand',
             entityId: brand?.id ?? -1,
             content: (
@@ -111,7 +150,7 @@ const ServicesList = ({onCountChange}) => {
         (brands || []).forEach((brand) => {
             updateTab(`service-brand-${brand.id}`, {
                 title: brand.name || `Бренд ${brand.id}`,
-                subtitle: `${brand.offers?.length || 0} номиналов`,
+                subtitle: offerWord(brand.offers?.length || 0),
             });
 
             (brand.offers || []).forEach((offer) => updateTab(`service-offer-${offer.id}`, {
@@ -121,12 +160,43 @@ const ServicesList = ({onCountChange}) => {
         });
     }, [brands, updateTab]);
 
-    const toggle = (brandId) => setCollapsed((prev) => {
+    const searching = query.trim().length > 0;
+
+    const rows = useMemo(() => {
+        const needle = norm(query.trim());
+
+        return (brands || []).reduce((list, brand) => {
+            const offers = brand.offers || [];
+            const brandHit = Boolean(needle) && norm(brand.name).includes(needle);
+
+            const visible = !needle || brandHit
+                ? offers
+                : offers.filter((offer) => norm(offer.denomination).includes(needle)
+                    || norm(offer.regionName).includes(needle));
+
+            if (needle && !brandHit && visible.length === 0) return list;
+
+            list.push({
+                brand,
+                offers: visible,
+                stock: brandStock(brand),
+                regions: groupByRegion(visible),
+            });
+
+            return list;
+        }, []);
+    }, [brands, query]);
+
+    const toggle = (brandId) => setExpanded((prev) => {
         const next = new Set(prev);
         if (next.has(brandId)) next.delete(brandId);
         else next.add(brandId);
         return next;
     });
+
+    const allOpen = rows.length > 0 && rows.every(({brand}) => expanded.has(brand.id));
+
+    const toggleAll = () => setExpanded(allOpen ? new Set() : new Set(rows.map(({brand}) => brand.id)));
 
     return (
         <div className={s['screen']}>
@@ -152,6 +222,30 @@ const ServicesList = ({onCountChange}) => {
                         Создать бренд
                     </button>
                     <button type="button" className={s['btn']} onClick={load}>Обновить</button>
+
+                    <div className={s['searchField']}>
+                        <svg className={s['searchIcon']} viewBox="0 0 24 24" width="16" height="16"
+                             fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                            <circle cx="11" cy="11" r="7"/>
+                            <path d="m20 20-3.5-3.5" strokeLinecap="round"/>
+                        </svg>
+                        <input
+                            className={s['searchInput']}
+                            placeholder="Бренд, регион или номинал"
+                            value={query}
+                            onChange={(event) => setQuery(event.target.value)}
+                        />
+                        {query ? (
+                            <button type="button" className={s['searchClear']}
+                                    onClick={() => setQuery('')} aria-label="Очистить">
+                                ✕
+                            </button>
+                        ) : null}
+                    </div>
+
+                    <button type="button" className={s['btn']} onClick={toggleAll} disabled={searching}>
+                        {allOpen ? 'Свернуть всё' : 'Развернуть всё'}
+                    </button>
                 </div>
             </header>
 
@@ -163,9 +257,14 @@ const ServicesList = ({onCountChange}) => {
                         Брендов пока нет. Создайте первый — например, Steam, — а внутри заведите номиналы
                         и загрузите к ним коды.
                     </p>
-                ) : (brands || []).map((brand) => {
-                    const stock = brandStock(brand);
-                    const isOpen = !collapsed.has(brand.id);
+                ) : rows.length === 0 ? (
+                    <p className={s['empty']}>
+                        По запросу «{query.trim()}» ничего не нашлось. Ищем по названию бренда,
+                        региону и номиналу.
+                    </p>
+                ) : rows.map(({brand, offers, stock, regions}) => {
+                    const total = brand.offers?.length || 0;
+                    const isOpen = searching || expanded.has(brand.id);
 
                     return (
                         <section key={brand.id} className={s['brand']}>
@@ -174,19 +273,35 @@ const ServicesList = ({onCountChange}) => {
                                         aria-expanded={isOpen}
                                         onClick={() => toggle(brand.id)}>
                                     <span className={`${s['chevron']} ${isOpen ? s['chevronOpen'] : ''}`}>›</span>
-                                    {brand.icon
-                                        ? <img className={s['brandIcon']} src={brand.icon} alt=""/>
-                                        : <span className={s['brandGlyph']}>{brand.glyph}</span>}
+                                    <span className={s['brandMark']}>
+                                        {brand.icon
+                                            ? <img className={s['brandIcon']} src={brand.icon} alt=""/>
+                                            : <span className={s['brandGlyph']}>{brand.glyph}</span>}
+                                    </span>
                                     <span className={s['brandName']}>{brand.name}</span>
+                                    <span className={s['brandCount']}>
+                                        {searching && offers.length !== total
+                                            ? `${offers.length} из ${total}`
+                                            : offerWord(total)}
+                                    </span>
                                     {brand.isHidden ? (
                                         <span className={`${s['badge']} ${s['badgeMuted']}`}>скрыт</span>
+                                    ) : null}
+                                    {total === 0 ? (
+                                        <span className={`${s['badge']} ${s['badgeMuted']}`}>не в витрине</span>
                                     ) : null}
                                 </button>
 
                                 <span className={s['brandStock']}>
-                                    <span className={`${s['badge']} ${s['stockFree']}`}>{stock.available} свободно</span>
+                                    <span className={`${s['badge']} ${
+                                        stock.available > 0 ? s['stockFree'] : s['stockEmpty']
+                                    }`}>
+                                        {stock.available} свободно
+                                    </span>
                                     {stock.reserved > 0 ? (
-                                        <span className={`${s['badge']} ${s['stockHeld']}`}>{stock.reserved} бронь</span>
+                                        <span className={`${s['badge']} ${s['stockHeld']}`}>
+                                            {stock.reserved} бронь
+                                        </span>
                                     ) : null}
                                     <span className={s['mono']}>{stock.sold} продано</span>
                                 </span>
@@ -205,70 +320,77 @@ const ServicesList = ({onCountChange}) => {
 
                             {isOpen ? (
                                 <div className={s['offers']}>
-                                    {(brand.offers || []).length === 0 ? (
+                                    {offers.length === 0 ? (
                                         <p className={s['emptyRow']}>
                                             У бренда нет номиналов — покупателю он не показывается.
                                         </p>
-                                    ) : (
-                                        <table className={s['table']}>
-                                            <thead>
-                                                <tr>
-                                                    <th>Номинал</th>
-                                                    <th className={s['kindCol']}>Тип</th>
-                                                    <th className={s['regionCol']}>Регион</th>
-                                                    <th className={s['priceCol']}>Цена</th>
-                                                    <th className={s['stockCol']}>Склад</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {(brand.offers || []).map((offer) => (
-                                                    <tr key={offer.id} onClick={() => openOffer(offer, brand)}>
-                                                        <td className={s['nameCell']}>
-                                                            {offer.denomination}
-                                                            {offer.isHidden ? (
-                                                                <span className={`${s['badge']} ${s['badgeMuted']}`}>
-                                                                    скрыт
+                                    ) : regions.map((region) => (
+                                        <div key={region.key} className={s['region']}>
+                                            <div className={s['regionHead']}>
+                                                <RegionMark icon={region.icon} flag={region.flag}/>
+                                                <span className={s['regionName']}>{region.name}</span>
+                                                <span className={s['regionCount']}>
+                                                    {offerWord(region.items.length)}
+                                                </span>
+                                            </div>
+
+                                            <div className={s['grid']}>
+                                                {region.items.map((offer) => {
+                                                    const available = offer.stock?.available || 0;
+                                                    const reserved = offer.stock?.reserved || 0;
+
+                                                    return (
+                                                        <button
+                                                            key={offer.id}
+                                                            type="button"
+                                                            className={`${s['card']} ${
+                                                                offer.isHidden ? s['cardHidden'] : ''
+                                                            }`}
+                                                            onClick={() => openOffer(offer, brand)}
+                                                        >
+                                                            <span className={s['cardTop']}>
+                                                                <span className={s['cardName']}>
+                                                                    {offer.denomination}
                                                                 </span>
-                                                            ) : null}
-                                                        </td>
-                                                        <td className={s['kindCol']}>{kindName(offer.kind)}</td>
-                                                        <td className={s['regionCol']}>
-                                                            {offer.regionIcon
-                                                                ? <img className={s['regionIcon']}
-                                                                       src={offer.regionIcon} alt=""/>
-                                                                : (offer.regionFlag ? `${offer.regionFlag} ` : '')}
-                                                            {offer.regionName}
-                                                        </td>
-                                                        <td className={s['priceCol']}>
-                                                            <span className={s['price']}>{money(offer.price)}</span>
-                                                            {offer.oldPrice ? (
-                                                                <span className={s['oldPrice']}>
-                                                                    {money(offer.oldPrice)}
+                                                                <span className={s['cardPrice']}>
+                                                                    {money(offer.price)}
                                                                 </span>
-                                                            ) : null}
-                                                        </td>
-                                                        <td className={s['stockCol']}>
-                                                            <span className={`${s['badge']} ${
-                                                                (offer.stock?.available || 0) > 0
-                                                                    ? s['stockFree']
-                                                                    : s['stockEmpty']
-                                                            }`}>
-                                                                {offer.stock?.available || 0}
                                                             </span>
-                                                            {(offer.stock?.reserved || 0) > 0 ? (
-                                                                <span className={`${s['badge']} ${s['stockHeld']}`}>
-                                                                    {offer.stock.reserved}
+
+                                                            <span className={s['cardBottom']}>
+                                                                <span className={`${s['dot']} ${
+                                                                    available > 0 ? s['dotFree'] : s['dotEmpty']
+                                                                }`}/>
+                                                                <span className={s['cardStock']}>
+                                                                    {available > 0
+                                                                        ? `${available} на складе`
+                                                                        : 'нет кодов'}
                                                                 </span>
-                                                            ) : null}
-                                                            <span className={s['mono']}>
-                                                                {offer.stock?.sold || 0}
+                                                                {reserved > 0 ? (
+                                                                    <span className={s['cardTag']}>
+                                                                        {reserved} бронь
+                                                                    </span>
+                                                                ) : null}
+                                                                {offer.oldPrice ? (
+                                                                    <span className={s['oldPrice']}>
+                                                                        {money(offer.oldPrice)}
+                                                                    </span>
+                                                                ) : null}
+                                                                {offer.kind !== 'gift_card' ? (
+                                                                    <span className={s['cardTag']}>
+                                                                        {kindName(offer.kind)}
+                                                                    </span>
+                                                                ) : null}
+                                                                {offer.isHidden ? (
+                                                                    <span className={s['cardTag']}>скрыт</span>
+                                                                ) : null}
                                                             </span>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    )}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             ) : null}
                         </section>

@@ -1,6 +1,12 @@
 .skeleton {
     display: block;
-    background: linear-gradient(90deg, var(--a2-card), var(--a2-raised), var(--a2-card));
+    background: var(--a2-skeleton);
+    background-image: linear-gradient(
+        90deg,
+        var(--a2-skeleton) 0%,
+        var(--a2-skeleton-shine) 50%,
+        var(--a2-skeleton) 100%
+    );
     background-size: 200% 100%;
     animation: shimmer 1400ms linear infinite;
 }
@@ -61,7 +67,7 @@
     align-items: center;
     gap: 6px;
     padding: 32px 20px;
-    border: 1px dashed var(--a2-border);
+    border: 1px dashed var(--a2-border-strong);
     border-radius: var(--a2-radius-m);
     text-align: center;
 }

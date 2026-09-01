@@ -1,0 +1,81 @@
+.bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    height: 46px;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--a2-border);
+    background: var(--a2-plane);
+}
+
+.crumbs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    color: var(--a2-text-faint);
+}
+
+.module {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-m);
+}
+
+.title {
+    color: var(--a2-text);
+    font-size: var(--a2-size-l);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.subtitle {
+    margin-left: 4px;
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-s);
+}
+
+.tools {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 28px;
+    padding: 0 8px 0 9px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+    color: var(--a2-text-faint);
+    font-family: var(--a2-font);
+    font-size: var(--a2-size-s);
+    cursor: pointer;
+    transition: border-color var(--a2-motion) var(--a2-ease), color var(--a2-motion) var(--a2-ease);
+}
+
+.search:hover {
+    border-color: var(--a2-border-strong);
+    color: var(--a2-text-muted);
+}
+
+.kbd {
+    padding: 1px 5px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-s);
+    background: var(--a2-plane);
+    color: var(--a2-text-faint);
+    font-family: var(--a2-font-mono);
+    font-size: var(--a2-size-xs);
+}

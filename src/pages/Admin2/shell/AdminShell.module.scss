@@ -1,0 +1,27 @@
+.shell {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    background: var(--a2-bg);
+    color: var(--a2-text);
+    font-family: var(--a2-font);
+    font-size: var(--a2-size-m);
+    overflow: hidden;
+}
+
+.main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.work {
+    flex: 1;
+    padding: 16px 16px calc(var(--a2-dock-height) + 16px);
+    overflow-y: auto;
+}
+
+.loading {
+    padding: 16px;
+}

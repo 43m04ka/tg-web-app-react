@@ -1,0 +1,123 @@
+.nav {
+    display: flex;
+    flex-direction: column;
+    width: var(--a2-nav-width);
+    height: 100%;
+    border-right: 1px solid var(--a2-border);
+    background: var(--a2-plane);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 46px;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--a2-border);
+}
+
+.mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--a2-radius-s);
+    background: var(--a2-accent);
+    color: var(--a2-accent-text);
+    font-size: var(--a2-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.brandText {
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+}
+
+.groups {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 14px;
+    padding: 12px 8px;
+    overflow-y: auto;
+}
+
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.groupTitle {
+    padding: 0 8px 5px;
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.link {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    height: 30px;
+    padding: 0 8px;
+    border-radius: var(--a2-radius-m);
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-m);
+    text-decoration: none;
+    transition: background var(--a2-motion) var(--a2-ease), color var(--a2-motion) var(--a2-ease);
+}
+
+.link:hover {
+    background: var(--a2-card);
+    color: var(--a2-text);
+}
+
+.active {
+    background: var(--a2-accent-soft);
+    color: var(--a2-accent);
+}
+
+.linkText {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 10px;
+    border-top: 1px solid var(--a2-border);
+}
+
+.session {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.sessionLogin {
+    color: var(--a2-text);
+    font-size: var(--a2-size-s);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sessionDevice {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+}
+
+.footerActions {
+    display: flex;
+    gap: 2px;
+}

@@ -1,0 +1,127 @@
+.skeleton {
+    display: block;
+    background: linear-gradient(90deg, var(--a2-card), var(--a2-raised), var(--a2-card));
+    background-size: 200% 100%;
+    animation: shimmer 1400ms linear infinite;
+}
+
+.skeletonRows {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.spinner {
+    display: inline-block;
+    border: 2px solid var(--a2-border-strong);
+    border-right-color: var(--a2-accent);
+    border-radius: 50%;
+    animation: spin 700ms linear infinite;
+}
+
+.progress {
+    display: block;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--a2-border);
+    overflow: hidden;
+}
+
+.progressMuted {
+    opacity: 0.6;
+}
+
+.progressFill {
+    display: block;
+    height: 100%;
+    border-radius: 2px;
+    transition: width var(--a2-motion-slow) var(--a2-ease);
+}
+
+.progressFill.accent {
+    background: var(--a2-accent);
+}
+
+.progressFill.positive {
+    background: var(--a2-positive);
+}
+
+.progressFill.warning {
+    background: var(--a2-warning);
+}
+
+.progressFill.danger {
+    background: var(--a2-danger);
+}
+
+.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 32px 20px;
+    border: 1px dashed var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    text-align: center;
+}
+
+.emptyTitle {
+    color: var(--a2-text);
+    font-size: var(--a2-size-l);
+}
+
+.emptyText {
+    max-width: 420px;
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-m);
+    line-height: 1.5;
+}
+
+.empty.danger {
+    border-color: var(--a2-danger-soft);
+}
+
+.empty.danger .emptyTitle {
+    color: var(--a2-danger);
+}
+
+.note {
+    padding: 8px 10px;
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+    line-height: 1.5;
+}
+
+.note.warning {
+    background: var(--a2-warning-soft);
+    color: var(--a2-warning);
+}
+
+.note.danger {
+    background: var(--a2-danger-soft);
+    color: var(--a2-danger);
+}
+
+.note.accent {
+    background: var(--a2-accent-soft);
+    color: var(--a2-accent);
+}
+
+@keyframes shimmer {
+    from {
+        background-position: 200% 0;
+    }
+
+    to {
+        background-position: -200% 0;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

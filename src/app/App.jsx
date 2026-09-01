@@ -19,6 +19,7 @@ import style from './App.module.scss';
 // не нужна никогда.
 const AdminAuth = lazy(() => import('../pages/AdminPanel/AP_Authentication'));
 const AdminPanel = lazy(() => import('../pages/AdminPanel/AdminPanel'));
+const Admin2 = lazy(() => import('../pages/Admin2'));
 
 export default function App() {
     const {isReady} = useBootstrap();
@@ -41,6 +42,7 @@ export default function App() {
                 <Routes>
                     <Route path="/admin" element={<AdminAuth/>}/>
                     <Route path="/admin-panel/*" element={<AdminPanel/>}/>
+                    <Route path="/admin2/*" element={<Admin2/>}/>
                     <Route path="*" element={<Navigate to="/admin" replace/>}/>
                 </Routes>
             </Suspense>

@@ -1,0 +1,40 @@
+.tabs {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px;
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-plane);
+}
+
+.tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 26px;
+    padding: 0 10px;
+    border: none;
+    border-radius: var(--a2-radius-s);
+    background: transparent;
+    color: var(--a2-text-muted);
+    font-family: var(--a2-font);
+    font-size: var(--a2-size-m);
+    cursor: pointer;
+    transition: background var(--a2-motion) var(--a2-ease), color var(--a2-motion) var(--a2-ease);
+}
+
+.tab:hover {
+    color: var(--a2-text);
+}
+
+.active {
+    background: var(--a2-card);
+    color: var(--a2-text);
+    box-shadow: var(--a2-shadow-card);
+}
+
+.count {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    font-variant-numeric: tabular-nums;
+}

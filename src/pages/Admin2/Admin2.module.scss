@@ -1,0 +1,15 @@
+.root {
+    min-height: 100vh;
+    background: var(--a2-bg);
+    color: var(--a2-text);
+    font-family: var(--a2-font);
+    font-size: var(--a2-size-m);
+    -webkit-font-smoothing: antialiased;
+}
+
+.root button,
+.root input,
+.root select,
+.root textarea {
+    font-family: inherit;
+}

@@ -1,0 +1,79 @@
+.screen {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 1180px;
+}
+
+.block {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-plane);
+}
+
+.blockHead {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--a2-border);
+}
+
+.blockTitle {
+    margin: 0;
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+}
+
+.blockNote {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-s);
+}
+
+.blockBody {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 14px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+}
+
+.dotItem {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+}
+
+.progressCell {
+    width: 180px;
+}
+
+.progressValue {
+    color: var(--a2-text-muted);
+    font-family: var(--a2-font-mono);
+    font-size: var(--a2-size-s);
+}
+
+.modalText {
+    margin: 0;
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-m);
+    line-height: 1.6;
+}

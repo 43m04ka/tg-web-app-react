@@ -1,0 +1,32 @@
+export const keys = {
+    processes: ['processes'],
+    notices: ['notices'],
+    notice: (id) => ['notices', id],
+    parseQueue: ['parse-queue'],
+    settings: ['settings'],
+    products: ['products'],
+    product: (id) => ['products', id],
+    catalogs: ['catalogs'],
+    orders: ['orders'],
+    order: (id) => ['orders', id],
+    priceRules: ['price-rules'],
+    promo: ['promo'],
+    services: ['services'],
+    structure: ['structure'],
+    media: ['media'],
+};
+
+export const invalidatedBy = {
+    'process.start': [keys.processes, keys.parseQueue],
+    'process.cancel': [keys.processes, keys.parseQueue],
+    'notice.dismiss': [keys.notices],
+    'settings.write': [keys.settings],
+    'product.write': [keys.products, keys.catalogs],
+    'catalog.write': [keys.catalogs, keys.products],
+    'order.write': [keys.orders],
+    'price.write': [keys.priceRules, keys.products],
+    'promo.write': [keys.promo],
+    'service.write': [keys.services],
+    'structure.write': [keys.structure],
+    'media.write': [keys.media],
+};

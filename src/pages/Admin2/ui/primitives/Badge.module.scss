@@ -1,0 +1,134 @@
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 18px;
+    padding: 0 7px;
+    border-radius: 9px;
+    background: var(--a2-raised);
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-xs);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+}
+
+.neutral {
+    background: var(--a2-raised);
+    color: var(--a2-text-muted);
+}
+
+.accent {
+    background: var(--a2-accent-soft);
+    color: var(--a2-accent);
+}
+
+.positive {
+    background: var(--a2-positive-soft);
+    color: var(--a2-positive);
+}
+
+.warning {
+    background: var(--a2-warning-soft);
+    color: var(--a2-warning);
+}
+
+.danger {
+    background: var(--a2-danger-soft);
+    color: var(--a2-danger);
+}
+
+.info {
+    background: var(--a2-info-soft);
+    color: var(--a2-info);
+}
+
+.dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.dot.neutral {
+    background: var(--a2-text-faint);
+}
+
+.dot.accent {
+    background: var(--a2-accent);
+}
+
+.dot.positive {
+    background: var(--a2-positive);
+}
+
+.dot.warning {
+    background: var(--a2-warning);
+}
+
+.dot.danger {
+    background: var(--a2-danger);
+}
+
+.dot.info {
+    background: var(--a2-info);
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    border: 1px solid var(--a2-border);
+    border-radius: 12px;
+    background: var(--a2-card);
+    color: var(--a2-text-muted);
+    overflow: hidden;
+    transition: border-color var(--a2-motion) var(--a2-ease), color var(--a2-motion) var(--a2-ease);
+}
+
+.chip:hover {
+    border-color: var(--a2-border-strong);
+    color: var(--a2-text);
+}
+
+.chipActive {
+    border-color: transparent;
+    background: var(--a2-accent-soft);
+    color: var(--a2-accent);
+}
+
+.chipBody {
+    padding: 0 10px;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font-family: var(--a2-font);
+    font-size: var(--a2-size-s);
+    line-height: 22px;
+    cursor: pointer;
+}
+
+.chipRemove {
+    padding: 0 8px 0 2px;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font-size: 14px;
+    line-height: 22px;
+    cursor: pointer;
+}
+
+.count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 8px;
+    background: var(--a2-raised);
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-xs);
+    font-variant-numeric: tabular-nums;
+}

@@ -204,9 +204,11 @@ const ServicesList = ({onCountChange}) => {
                                     {brand.isHidden ? (
                                         <span className={`${s['badge']} ${s['badgeMuted']}`}>скрыт</span>
                                     ) : null}
-                                    {brand.catalogId ? (
+                                    {(brand.catalogLinks || []).length > 0 ? (
                                         <span className={`${s['badge']} ${s['badgeLink']}`}>
-                                            каталог #{brand.catalogId}
+                                            {(brand.catalogLinks || []).length === 1
+                                                ? 'каталог'
+                                                : `каталогов: ${brand.catalogLinks.length}`}
                                         </span>
                                     ) : null}
                                 </button>

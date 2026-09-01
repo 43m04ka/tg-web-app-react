@@ -5,8 +5,9 @@ import useData from '../../useData';
 import {useFeedback} from '../../Elements/Feedback/Feedback';
 import ImageField from '../../Elements/ImageField/ImageField';
 import AccentPicker from './AccentPicker';
+import CatalogLinks from './CatalogLinks';
 import {useServer} from './useServer';
-import {brandStock, KIND_OPTIONS} from './serviceModel';
+import {brandStock} from './serviceModel';
 import s from './Services.module.scss';
 
 const BrandForm = ({brandId, findBrand, onClose, onSaved}) => {
@@ -26,8 +27,13 @@ const BrandForm = ({brandId, findBrand, onClose, onSaved}) => {
         activationNote: String(source?.activationNote ?? ''),
         deliveryNote: String(source?.deliveryNote ?? ''),
         groupLabel: String(source?.groupLabel ?? ''),
-        catalogId: source?.catalogId ? String(source.catalogId) : '',
-        catalogKind: String(source?.catalogKind ?? 'subscription'),
+        catalogLinks: JSON.stringify((source?.catalogLinks || []).map((link) => ({
+            catalogId: String(link.catalogId ?? ''),
+            kind: link.kind || 'subscription',
+            regionName: link.regionName || '',
+            regionFlag: link.regionFlag || '',
+            regionIcon: link.regionIcon || '',
+        }))),
         serialNumber: String(source?.serialNumber ?? 0),
         isHidden: Boolean(source?.isHidden),
     }), [source]);
@@ -46,10 +52,14 @@ const BrandForm = ({brandId, findBrand, onClose, onSaved}) => {
         return () => { alive = false; };
     }, []);
 
-    const linkedCatalog = useMemo(
-        () => (catalogs || []).find((item) => String(item.id) === String(values.catalogId)) || null,
-        [catalogs, values.catalogId],
-    );
+    const links = useMemo(() => {
+        try {
+            const parsed = JSON.parse(values.catalogLinks);
+            return Array.isArray(parsed) ? parsed : [];
+        } catch {
+            return [];
+        }
+    }, [values.catalogLinks]);
 
     const handleChange = (key, value) => setValues((prev) => ({...prev, [key]: value}));
 
@@ -84,8 +94,15 @@ const BrandForm = ({brandId, findBrand, onClose, onSaved}) => {
             activationNote: values.activationNote.trim() || null,
             deliveryNote: values.deliveryNote.trim() || null,
             groupLabel: values.groupLabel.trim() || null,
-            catalogId: values.catalogId ? Number(values.catalogId) : null,
-            catalogKind: values.catalogKind,
+            catalogLinks: links
+                .filter((link) => link.catalogId)
+                .map((link) => ({
+                    catalogId: Number(link.catalogId),
+                    kind: link.kind,
+                    regionName: link.regionName.trim() || null,
+                    regionFlag: link.regionFlag.trim() || null,
+                    regionIcon: link.regionIcon || null,
+                })),
             serialNumber,
             isHidden: Boolean(values.isHidden),
         };
@@ -200,46 +217,25 @@ const BrandForm = ({brandId, findBrand, onClose, onSaved}) => {
                     </Row>
                 </Group>
 
-                <Group title="Каталог">
+                <Group title="Каталоги">
                     <p className={s['formNote']}>
-                        Привязка к обычному каталогу заменяет ручное заведение позиций: товары каталога
+                        Связь с обычным каталогом заменяет ручное заведение позиций: товары каталога
                         сами становятся предложениями бренда. Ничего не копируется — правка карточки
                         в каталоге сразу видна на витрине. Колонка сетки выбора становится тарифом,
                         строка — номиналом. Такие позиции всегда оформляет менеджер.
                     </p>
-                    <Row label="Каталог" hint="Пусто — бренд живёт только на своих позициях">
-                        <select className={f.input} value={values.catalogId}
-                                onChange={(event) => handleChange('catalogId', event.target.value)}>
-                            <option value="">Без привязки</option>
-                            {(catalogs || []).map((item) => (
-                                <option key={item.id} value={item.id}>
-                                    {[item.pageName, item.path].filter(Boolean).join(' · ')}
-                                    {` — ${item.productCount} карточек`}
-                                </option>
-                            ))}
-                        </select>
+                    <p className={s['formNote']}>
+                        Каталогов может быть несколько, у каждого свой регион: турецкий и индийский
+                        каталоги PS Plus живут под одним брендом, а покупатель переключает их регионом.
+                        Один каталог входит в бренд один раз.
+                    </p>
+                    <Row label="Связи" hint="Каждая строка — каталог со своим регионом и типом" top wide>
+                        <CatalogLinks
+                            links={links}
+                            catalogs={catalogs}
+                            onChange={(next) => handleChange('catalogLinks', JSON.stringify(next))}
+                        />
                     </Row>
-                    {values.catalogId ? (
-                        <Row label="Тип позиций" hint="Под каким типом товары каталога встанут на витрине">
-                            <select className={f.input} value={values.catalogKind}
-                                    onChange={(event) => handleChange('catalogKind', event.target.value)}>
-                                {KIND_OPTIONS.map((option) => (
-                                    <option key={option.key} value={option.key}>{option.name}</option>
-                                ))}
-                            </select>
-                        </Row>
-                    ) : null}
-                    {values.catalogId && linkedCatalog && linkedCatalog.productCount === 0 ? (
-                        <p className={s['formNote']}>
-                            В этом каталоге нет ни одной видимой карточки в продаже — на витрине
-                            от привязки ничего не появится.
-                        </p>
-                    ) : null}
-                    {values.catalogId && catalogs && !linkedCatalog ? (
-                        <p className={s['formNote']}>
-                            Каталог с id {values.catalogId} не найден — возможно, его удалили.
-                        </p>
-                    ) : null}
                 </Group>
 
                 <Group title="Витрина">

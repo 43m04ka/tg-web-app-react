@@ -27,14 +27,19 @@ export const regionsOf = (brand, kind) => uniqueBy(
     (offer) => offer.regionName
 ).map((offer) => ({name: offer.regionName, flag: offer.regionFlag, icon: offer.regionIcon}));
 
+export const UNGROUPED = '';
+
 export const groupsOf = (brand, kind, regionName) => uniqueBy(
     (brand?.offers || []).filter((offer) => offer.kind === kind && offer.regionName === regionName),
-    (offer) => offer.groupName || ''
-).map((offer) => offer.groupName || null).filter(Boolean);
+    (offer) => offer.groupName || UNGROUPED
+).map((offer) => ({
+    key: offer.groupName || UNGROUPED,
+    name: offer.groupName || 'Остальное'
+}));
 
-export const offersOf = (brand, kind, regionName, groupName) => (brand?.offers || [])
+export const offersOf = (brand, kind, regionName, groupKey) => (brand?.offers || [])
     .filter((offer) => offer.kind === kind && offer.regionName === regionName)
-    .filter((offer) => (groupName ? offer.groupName === groupName : true));
+    .filter((offer) => (groupKey === null ? true : (offer.groupName || UNGROUPED) === groupKey));
 
 export const isManual = (offer) => offer?.fulfillment === 'manual';
 

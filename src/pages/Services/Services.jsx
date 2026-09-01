@@ -87,7 +87,8 @@ export default function Services() {
         : regions[0]?.name || null;
 
     const groups = useMemo(() => groupsOf(brand, activeKind, activeRegion), [brand, activeKind, activeRegion]);
-    const activeGroup = groups.includes(groupName) ? groupName : groups[0] || null;
+    const activeGroup = groups.some((item) => item.key === groupName) ? groupName : (groups[0]?.key ?? null);
+    const activeGroupName = groups.find((item) => item.key === activeGroup)?.key || null;
 
     const offers = useMemo(
         () => offersOf(brand, activeKind, activeRegion, activeGroup),
@@ -289,7 +290,7 @@ export default function Services() {
                                 </span>
                                 <div className={style.heroTitles}>
                                     <span className={style.heroKind}>
-                                        {[kindLabel(activeKind), activeGroup].filter(Boolean).join(' · ')}
+                                        {[kindLabel(activeKind), activeGroupName].filter(Boolean).join(' · ')}
                                     </span>
                                     <span className={style.heroName}>{brand.name}</span>
                                 </div>
@@ -335,15 +336,15 @@ export default function Services() {
                                 <h2 className={style.blockTitle}>{groupLabelOf(brand)}</h2>
 
                                 <div className={style.kinds}>
-                                    {groups.map((value) => (
+                                    {groups.map((item) => (
                                         <button
-                                            key={value}
+                                            key={item.key}
                                             type="button"
-                                            className={`${style.kind} ${value === activeGroup ? style.kindActive : ''}`}
-                                            aria-pressed={value === activeGroup}
-                                            onClick={() => pickGroup(value)}
+                                            className={`${style.kind} ${item.key === activeGroup ? style.kindActive : ''}`}
+                                            aria-pressed={item.key === activeGroup}
+                                            onClick={() => pickGroup(item.key)}
                                         >
-                                            {value}
+                                            {item.name}
                                         </button>
                                     ))}
                                 </div>

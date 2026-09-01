@@ -38,7 +38,7 @@ const CatalogLinks = ({links, catalogs, onChange}) => {
                     <div key={index} className={s['link']}>
                         <div className={s['linkHead']}>
                             <select
-                                className={f.input}
+                                className={`${f.input} ${f.select}`}
                                 value={link.catalogId}
                                 onChange={(event) => patch(index, {catalogId: event.target.value})}
                             >
@@ -67,7 +67,7 @@ const CatalogLinks = ({links, catalogs, onChange}) => {
 
                             <label className={s['linkField']}>
                                 <span className={s['linkLabel']}>Тип</span>
-                                <select className={f.input} value={link.kind}
+                                <select className={`${f.input} ${f.select}`} value={link.kind}
                                         onChange={(event) => patch(index, {kind: event.target.value})}>
                                     {KIND_OPTIONS.map((option) => (
                                         <option key={option.key} value={option.key}>{option.name}</option>

@@ -4,11 +4,44 @@ import f, {Group, Row, Sheet} from '../../Elements/FormLayout/FormLayout';
 import useData from '../../useData';
 import {useFeedback} from '../../Elements/Feedback/Feedback';
 import ImageField from '../../Elements/ImageField/ImageField';
-import AccentPicker from './AccentPicker';
+import {themeOf} from '../../../Services/servicesModel';
 import CatalogLinks from './CatalogLinks';
 import {useServer} from './useServer';
 import {brandStock} from './serviceModel';
 import s from './Services.module.scss';
+
+const HEX = /^#([\da-f]{3}|[\da-f]{6})$/i;
+
+const ThemePreview = ({accent, name, icon, glyph}) => {
+    const theme = themeOf({accent}, 0);
+
+    return (
+        <div className={s['themePreview']}>
+            <span className={s['previewTile']}
+                  style={{
+                      background: `color-mix(in srgb, ${theme.base} 15%, oklch(0.185 0.014 264))`,
+                      borderColor: theme.ring,
+                  }}>
+                {icon
+                    ? <img className={s['previewIcon']} src={icon} alt=""/>
+                    : <span className={s['previewGlyph']}>{glyph || '🎁'}</span>}
+            </span>
+
+            <span className={s['previewHero']}
+                  style={{background: theme.base, borderColor: theme.ring, color: theme.ink}}>
+                <span className={s['previewKind']}>Подарочная карта</span>
+                <span className={s['previewName']}>{name || 'Без названия'}</span>
+            </span>
+
+            <span className={s['previewSide']}>
+                <span className={s['previewPay']} style={{background: theme.base, color: theme.ink}}>
+                    Оплатить
+                </span>
+                <span className={s['previewPrice']} style={{color: theme.text}}>1 290 ₽</span>
+            </span>
+        </div>
+    );
+};
 
 const BrandForm = ({brandId, findBrand, onClose, onSaved}) => {
     const isNew = brandId === -1;
@@ -72,6 +105,15 @@ const BrandForm = ({brandId, findBrand, onClose, onSaved}) => {
     }, [values, initial]);
 
     const hasChanges = Object.keys(changed).length > 0;
+    const isAccentValid = HEX.test(values.accent.trim());
+
+    const swatch = useMemo(() => {
+        const text = values.accent.trim();
+        if (!isAccentValid) return '#4c8dff';
+        return text.length === 4
+            ? `#${text.slice(1).replace(/./g, (char) => char + char)}`
+            : text;
+    }, [values.accent, isAccentValid]);
 
     const buildPayload = () => {
         const name = values.name.trim();
@@ -211,9 +253,37 @@ const BrandForm = ({brandId, findBrand, onClose, onSaved}) => {
                                value={values.glyph}
                                onChange={(event) => handleChange('glyph', event.target.value)}/>
                     </Row>
-                    <Row label="Акцент" hint="Цвет плитки бренда на витрине: готовый набор или своя oklch-строка">
-                        <AccentPicker value={values.accent}
-                                      onChange={(value) => handleChange('accent', value)}/>
+                </Group>
+
+                <Group title="Цвет">
+                    <Row label="Фирменный цвет" wide
+                         hint="Hex вида #66C0F4. Из него собирается вся тема экрана: шапка, активный номинал, цена и кнопка оплаты">
+                        <div className={s['accentField']}>
+                            <input className={s['accentSwatch']} type="color"
+                                   aria-label="Выбрать цвет бренда"
+                                   value={swatch}
+                                   onChange={(event) => handleChange('accent', event.target.value.toUpperCase())}/>
+                            <input className={`${f.input} ${f.mono}`} type="text" placeholder="#66C0F4"
+                                   value={values.accent}
+                                   onChange={(event) => handleChange('accent', event.target.value)}/>
+                            {values.accent ? (
+                                <button type="button" className={s['btn']}
+                                        onClick={() => handleChange('accent', '')}>
+                                    Очистить
+                                </button>
+                            ) : null}
+                        </div>
+                        {values.accent && !isAccentValid ? (
+                            <span className={s['formWarn']}>
+                                Не похоже на hex — витрина возьмёт запасной цвет из палитры
+                            </span>
+                        ) : null}
+                    </Row>
+
+                    <Row label="Как это выглядит" top wide
+                         hint="Плитка в карусели, шапка бренда и кнопка оплаты. Краску текста витрина подбирает сама — светлый цвет получит тёмные буквы">
+                        <ThemePreview accent={values.accent} name={values.name}
+                                      icon={values.icon} glyph={values.glyph}/>
                     </Row>
                 </Group>
 
@@ -260,9 +330,11 @@ const BrandForm = ({brandId, findBrand, onClose, onSaved}) => {
                                onChange={(event) => handleChange('serialNumber', event.target.value)}/>
                     </Row>
                     <Row label="Скрыть с витрины" hint="Бренд остаётся в админке, но покупатель его не видит">
-                        <input type="checkbox"
-                               checked={values.isHidden}
-                               onChange={(event) => handleChange('isHidden', event.target.checked)}/>
+                        <button type="button" role="switch" aria-checked={values.isHidden}
+                                className={`${f.switch} ${values.isHidden ? f.switchOn : ''}`}
+                                onClick={() => handleChange('isHidden', !values.isHidden)}>
+                            <span className={f.switchDot}/>
+                        </button>
                     </Row>
                 </Group>
             </Sheet>

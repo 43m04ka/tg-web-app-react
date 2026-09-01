@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useSessionStore, selectUserId} from '../../store/useSessionStore';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
@@ -11,7 +11,6 @@ import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import {isEmailValid, money} from '../Basket/cartModel';
 import {CodeDone, CodeFail, CodeStalled, CodeWaiting} from './ServicesScreens';
 import {
-    deliveryLabelOf,
     denomLabelOf,
     groupLabelOf,
     groupsOf,
@@ -22,8 +21,10 @@ import {
     offersOf,
     priceNoteOf,
     regionsOf,
+    servicesFaq,
     stockLabel,
-    toneOf
+    themeOf,
+    themeVars
 } from './servicesModel';
 import {useCodeCatalog} from './useCodeCatalog';
 import {SCREEN, useCodeOrder} from './useCodeOrder';
@@ -36,6 +37,19 @@ const RegionMark = ({region}) => {
     if (region?.flag) return <span className={style.regionFlag}>{region.flag}</span>;
 
     return null;
+};
+
+const centerActive = (strip, smooth) => {
+    if (!strip) return;
+
+    const active = strip.querySelector('[data-active="true"]');
+    if (!active) return;
+
+    const box = strip.getBoundingClientRect();
+    const spot = active.getBoundingClientRect();
+    const shift = strip.scrollLeft + (spot.left - box.left) - (box.width - spot.width) / 2;
+
+    strip.scrollTo({left: Math.max(0, shift), behavior: smooth ? 'smooth' : 'auto'});
 };
 
 const fullName = (user) => `${user?.first_name || ''} ${user?.last_name || ''}`.trim();
@@ -72,6 +86,8 @@ export default function Services() {
 
     const flow = useCodeOrder(userId);
     const scrollRef = useScrollMemory('services', {ready: brands !== null});
+    const brandsRef = useRef(null);
+    const offersRef = useRef(null);
 
     const brand = useMemo(
         () => (brands || []).find((item) => item.id === brandId) || (brands || [])[0] || null,
@@ -110,6 +126,14 @@ export default function Services() {
             email
         });
     }, [brand, activeKind, activeRegion, activeGroup, offer, email]);
+
+    useEffect(() => {
+        centerActive(brandsRef.current, false);
+    }, [brand?.id]);
+
+    useEffect(() => {
+        centerActive(offersRef.current, true);
+    }, [brand?.id, activeKind, activeRegion, activeGroup, offer?.id]);
 
     const back = useCallback(() => {
         hapticImpact('light');
@@ -203,10 +227,10 @@ export default function Services() {
         return <CodeStalled order={flow.order} botType={botType} onClose={flow.close}/>;
     }
 
-    const tone = toneOf(brand, Math.max(0, (brands || []).findIndex((item) => item.id === brand?.id)));
+    const theme = themeOf(brand, Math.max(0, (brands || []).findIndex((item) => item.id === brand?.id)));
 
     return (
-        <div ref={scrollRef} className={style.screen}>
+        <div ref={scrollRef} className={style.screen} style={themeVars(theme)}>
             <div
                 className={style.header}
                 style={{paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`}}
@@ -244,25 +268,22 @@ export default function Services() {
                     />
                 ) : (
                     <>
-                        <div className={style.brands}>
+                        <div ref={brandsRef} className={style.brands}>
                             {brands.map((item, index) => {
-                                const itemTone = toneOf(item, index);
+                                const itemTheme = themeOf(item, index);
                                 const isActive = item.id === brand.id;
 
                                 return (
                                     <button
                                         key={item.id}
                                         type="button"
+                                        data-active={isActive}
                                         className={`${style.brand} ${isActive ? style.brandActive : ''}`}
+                                        aria-pressed={isActive}
+                                        style={themeVars(itemTheme)}
                                         onClick={() => pickBrand(item)}
                                     >
-                                        <span
-                                            className={style.brandTile}
-                                            style={{
-                                                background: `linear-gradient(140deg, ${itemTone.from}, ${itemTone.to})`,
-                                                borderColor: isActive ? itemTone.ring : 'transparent'
-                                            }}
-                                        >
+                                        <span className={style.brandTile}>
                                             {item.icon
                                                 ? <img className={style.brandImage} src={item.icon} alt=""/>
                                                 : item.glyph}
@@ -273,13 +294,7 @@ export default function Services() {
                             })}
                         </div>
 
-                        <div
-                            className={style.hero}
-                            style={{
-                                background: `linear-gradient(135deg, ${tone.from}, ${tone.to})`,
-                                borderColor: tone.ring
-                            }}
-                        >
+                        <div className={style.hero}>
                             <span className={style.heroBlob} aria-hidden="true"/>
 
                             <div className={style.heroTop}>
@@ -331,26 +346,6 @@ export default function Services() {
                             </section>
                         ) : null}
 
-                        {groups.length > 1 ? (
-                            <section className={style.block}>
-                                <h2 className={style.blockTitle}>{groupLabelOf(brand)}</h2>
-
-                                <div className={style.kinds}>
-                                    {groups.map((item) => (
-                                        <button
-                                            key={item.key}
-                                            type="button"
-                                            className={`${style.kind} ${item.key === activeGroup ? style.kindActive : ''}`}
-                                            aria-pressed={item.key === activeGroup}
-                                            onClick={() => pickGroup(item.key)}
-                                        >
-                                            {item.name}
-                                        </button>
-                                    ))}
-                                </div>
-                            </section>
-                        ) : null}
-
                         {regions.length > 1 ? (
                             <section className={style.block}>
                                 <h2 className={style.blockTitle}>Регион</h2>
@@ -372,13 +367,33 @@ export default function Services() {
                             </section>
                         ) : null}
 
+                        {groups.length > 1 ? (
+                            <section className={style.block}>
+                                <h2 className={style.blockTitle}>{groupLabelOf(brand)}</h2>
+
+                                <div className={style.kinds}>
+                                    {groups.map((item) => (
+                                        <button
+                                            key={item.key}
+                                            type="button"
+                                            className={`${style.kind} ${item.key === activeGroup ? style.kindActive : ''}`}
+                                            aria-pressed={item.key === activeGroup}
+                                            onClick={() => pickGroup(item.key)}
+                                        >
+                                            {item.name}
+                                        </button>
+                                    ))}
+                                </div>
+                            </section>
+                        ) : null}
+
                         <section className={style.block}>
                             <div className={style.blockHead}>
                                 <h2 className={style.blockTitle}>{denomLabelOf(activeKind)}</h2>
                                 <span className={style.blockNote}>{priceNoteOf(activeKind)}</span>
                             </div>
 
-                            <div className={style.offers}>
+                            <div ref={offersRef} className={style.offers}>
                                 {offers.map((item) => {
                                     const isActive = item.id === offer?.id;
                                     const isOut = !isSellable(item);
@@ -387,6 +402,7 @@ export default function Services() {
                                         <button
                                             key={item.id}
                                             type="button"
+                                            data-active={isActive}
                                             className={`${style.offer} ${isActive ? style.offerActive : ''} ${isOut ? style.offerOut : ''}`}
                                             aria-pressed={isActive}
                                             disabled={isOut}
@@ -396,18 +412,17 @@ export default function Services() {
                                                 {isActive ? '✓' : ''}
                                             </span>
 
-                                            <span className={style.offerBody}>
-                                                <span className={style.offerName}>{item.denomination}</span>
-                                                <span className={`${style.offerStock} ${isOut ? style.offerStockOut : ''}`}>
-                                                    {stockLabel(item)}
-                                                </span>
-                                            </span>
+                                            <span className={style.offerName}>{item.denomination}</span>
 
                                             <span className={style.offerPrices}>
                                                 <span className={style.offerPrice}>{money(item.price)}</span>
                                                 {item.oldPrice ? (
                                                     <span className={style.offerOldPrice}>{money(item.oldPrice)}</span>
                                                 ) : null}
+                                            </span>
+
+                                            <span className={`${style.offerStock} ${isOut ? style.offerStockOut : ''}`}>
+                                                {stockLabel(item)}
                                             </span>
                                         </button>
                                     );
@@ -433,53 +448,17 @@ export default function Services() {
                             ) : null}
                         </section>
 
-                        <div className={style.summary}>
-                            <div className={style.facts}>
-                                <div className={style.fact}>
-                                    <span className={style.factIcon} aria-hidden="true">
-                                        <svg viewBox="0 0 24 24" fill="none">
-                                            <path
-                                                d="M13 2.5 5 13.2h5.6L10 21.5 19 10.8h-5.6z"
-                                                stroke="currentColor"
-                                                strokeWidth="1.7"
-                                                strokeLinejoin="round"
-                                            />
-                                        </svg>
-                                    </span>
-                                    <span className={style.factBody}>
-                                        <span className={style.factLabel}>Доставка</span>
-                                        <span className={style.factValue}>{deliveryLabelOf(offer, brand)}</span>
-                                    </span>
-                                </div>
-
-                                <div className={style.fact}>
-                                    <span className={style.factIcon} aria-hidden="true">
-                                        <svg viewBox="0 0 24 24" fill="none">
-                                            <circle cx="8.6" cy="12" r="4.1" stroke="currentColor" strokeWidth="1.7"/>
-                                            <path
-                                                d="M12.7 12H21m-3.4 0v3.1m-3-3.1v2.2"
-                                                stroke="currentColor"
-                                                strokeWidth="1.7"
-                                                strokeLinecap="round"
-                                            />
-                                        </svg>
-                                    </span>
-                                    <span className={style.factBody}>
-                                        <span className={style.factLabel}>Активация</span>
-                                        <span className={style.factValue}>
-                                            {[activeRegion, brand.activationNote || 'без VPN'].filter(Boolean).join(', ')}
-                                        </span>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div className={style.total}>
-                                <span className={style.totalLabel}>К оплате</span>
-                                <span key={offer?.price} className={style.totalValue}>
-                                    {offer ? money(offer.price) : '—'}
-                                </span>
-                            </div>
+                        <div className={style.total}>
+                            <span className={style.totalLabel}>К оплате</span>
+                            <span key={offer?.price} className={style.totalValue}>
+                                {offer ? money(offer.price) : '—'}
+                            </span>
                         </div>
+
+                        <section className={style.block}>
+                            <h2 className={style.blockTitle}>Часто спрашивают</h2>
+                            <Faq items={servicesFaq(brand, activeRegion, offer)}/>
+                        </section>
 
                         <p className={style.legal}>
                             Нажимая кнопку, вы соглашаетесь с{' '}
@@ -513,6 +492,41 @@ export default function Services() {
                     </button>
                 </div>
             ) : null}
+        </div>
+    );
+}
+
+function Faq({items}) {
+    const [openIndex, setOpenIndex] = useState(null);
+
+    return (
+        <div className={style.faq}>
+            {items.map((item, index) => {
+                const isOpen = openIndex === index;
+
+                return (
+                    <div key={item.question} className={style.faqItem}>
+                        <button
+                            type="button"
+                            className={style.faqHead}
+                            aria-expanded={isOpen}
+                            onClick={() => {
+                                hapticImpact('light');
+                                setOpenIndex(isOpen ? null : index);
+                            }}
+                        >
+                            <span className={style.faqQuestion}>{item.question}</span>
+                            <span className={`${style.faqSign} ${isOpen ? style.faqSignOpen : ''}`} aria-hidden="true">+</span>
+                        </button>
+
+                        <div className={`${style.reveal} ${isOpen ? style.revealOpen : ''}`}>
+                            <div className={style.revealInner}>
+                                <p className={style.faqAnswer}>{item.answer}</p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })}
         </div>
     );
 }

@@ -281,7 +281,7 @@ const PlanMatrix = ({brandId, findBrand, onClose, onSaved}) => {
                         Сохранение переписывает только выбранный тип и регион, остальное не трогает.
                     </p>
                     <Row label="Тип" hint="Селектор «Тип товара» на витрине">
-                        <select className={f.input} value={kind}
+                        <select className={`${f.input} ${f.select}`} value={kind}
                                 onChange={(event) => setKind(event.target.value)}>
                             {KIND_OPTIONS.map((option) => (
                                 <option key={option.key} value={option.key}>{option.name}</option>
@@ -289,7 +289,7 @@ const PlanMatrix = ({brandId, findBrand, onClose, onSaved}) => {
                         </select>
                     </Row>
                     <Row label="Регион" hint="Одна сетка — один регион. Смена региона перезагружает сетку">
-                        <select className={f.input} value={regionKey}
+                        <select className={`${f.input} ${f.select}`} value={regionKey}
                                 onChange={(event) => setRegionKey(event.target.value)}>
                             {regions.map((name) => <option key={name} value={name}>{name}</option>)}
                             <option value={NEW_REGION}>Новый регион…</option>
@@ -313,7 +313,7 @@ const PlanMatrix = ({brandId, findBrand, onClose, onSaved}) => {
                                onChange={(event) => setRegionFlag(event.target.value)}/>
                     </Row>
                     <Row label="Выдача" hint="Подписки обычно оформляет менеджер — склад кодов им не нужен">
-                        <select className={f.input} value={fulfillment}
+                        <select className={`${f.input} ${f.select}`} value={fulfillment}
                                 onChange={(event) => setFulfillment(event.target.value)}>
                             {FULFILLMENT_OPTIONS.map((option) => (
                                 <option key={option.key} value={option.key}>{option.name}</option>

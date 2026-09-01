@@ -15,7 +15,7 @@ export default function ContextBar({onOpenPalette}) {
     return (
         <header className={style.bar}>
             <div className={style.crumbs}>
-                <span className={style.module}>{module ? module.title : 'Пульт'}</span>
+                <span className={style.module}>{module ? module.title : 'Админка'}</span>
                 {header.title ? (
                     <>
                         <Icon name="chevron" size={13}/>

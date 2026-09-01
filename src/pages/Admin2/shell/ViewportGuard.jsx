@@ -18,7 +18,7 @@ export default function ViewportGuard({children}) {
     return (
         <div className={style.guard}>
             <div className={style.card}>
-                <h1 className={style.title}>Пульт открывается на компьютере</h1>
+                <h1 className={style.title}>Админка открывается на компьютере</h1>
                 <p className={style.text}>
                     Рабочая ширина — от 1280 пикселей: списки, инспектор и полоса задач рассчитаны
                     на большой экран. С телефона краткую сводку присылает бот.

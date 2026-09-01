@@ -59,7 +59,7 @@ export default function LoginScreen() {
                 <div className={style.head}>
                     <span className={style.mark}>GW</span>
                     <div className={style.heading}>
-                        <h1 className={style.title}>Пульт</h1>
+                        <h1 className={style.title}>Админка</h1>
                         <span className={style.subtitle}>
                             {step === 'credentials' ? 'Вход в админку' : 'Подтверждение входа'}
                         </span>

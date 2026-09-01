@@ -5,13 +5,12 @@ import ContextBar from './ContextBar';
 import CommandPalette from './CommandPalette';
 import TaskDock from './TaskDock/TaskDock';
 import {BASE, homePath, moduleRoutes} from '../platform/registry';
-import {signOut, useSession} from '../platform/session';
+import {signOut} from '../platform/session';
 import {SkeletonRows} from '../ui/primitives/Feedback';
 import style from './AdminShell.module.scss';
 
 export default function AdminShell({theme, onToggleTheme}) {
     const navigate = useNavigate();
-    const session = useSession();
     const [paletteOpen, setPaletteOpen] = useState(false);
 
     const routes = useMemo(() => moduleRoutes().map((route) => ({
@@ -61,7 +60,6 @@ export default function AdminShell({theme, onToggleTheme}) {
             <Navigation
                 theme={theme}
                 onToggleTheme={onToggleTheme}
-                session={session}
                 onSignOut={signOut}
             />
 

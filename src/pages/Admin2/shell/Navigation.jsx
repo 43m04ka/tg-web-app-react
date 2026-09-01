@@ -5,14 +5,14 @@ import {BASE, navigationGroups} from '../platform/registry';
 import {IconButton} from '../ui/primitives/Button';
 import style from './Navigation.module.scss';
 
-export default function Navigation({theme, onToggleTheme, session, onSignOut}) {
+export default function Navigation({theme, onToggleTheme, onSignOut}) {
     const groups = navigationGroups();
 
     return (
         <nav className={style.nav}>
             <div className={style.brand}>
                 <span className={style.mark}>GW</span>
-                <span className={style.brandText}>Пульт</span>
+                <span className={style.brandText}>Админка</span>
             </div>
 
             <div className={style.groups}>
@@ -34,21 +34,15 @@ export default function Navigation({theme, onToggleTheme, session, onSignOut}) {
             </div>
 
             <div className={style.footer}>
-                <div className={style.session}>
-                    <span className={style.sessionLogin}>{session?.login || 'admin'}</span>
-                    <span className={style.sessionDevice}>{session?.device || ''}</span>
-                </div>
-                <div className={style.footerActions}>
-                    <IconButton
-                        label={theme === 'dark' ? 'Светлая тема' : 'Тёмная тема'}
-                        onClick={onToggleTheme}
-                    >
-                        <Icon name={theme === 'dark' ? 'sun' : 'moon'}/>
-                    </IconButton>
-                    <IconButton label="Выйти" onClick={onSignOut}>
-                        <Icon name="exit"/>
-                    </IconButton>
-                </div>
+                <IconButton
+                    label={theme === 'dark' ? 'Светлая тема' : 'Тёмная тема'}
+                    onClick={onToggleTheme}
+                >
+                    <Icon name={theme === 'dark' ? 'sun' : 'moon'}/>
+                </IconButton>
+                <IconButton label="Выйти" onClick={onSignOut}>
+                    <Icon name="exit"/>
+                </IconButton>
             </div>
         </nav>
     );

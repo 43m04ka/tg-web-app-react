@@ -1,5 +1,35 @@
 @import '../../app/styles/units';
 
+@property --svc {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --svc-edge {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --svc-text {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --svc-ring {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --svc-glow {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+
 .screen {
   height: 100%;
   overflow-y: auto;
@@ -8,6 +38,11 @@
   flex-direction: column;
   align-items: stretch;
   background: var(--bg-elevated);
+  transition: --svc 200ms var(--ease-out),
+              --svc-edge 200ms var(--ease-out),
+              --svc-text 200ms var(--ease-out),
+              --svc-ring 200ms var(--ease-out),
+              --svc-glow 200ms var(--ease-out);
 }
 
 @keyframes rise {
@@ -119,10 +154,12 @@
 
 .brands {
   display: flex;
+  align-items: flex-start;
   gap: u(8);
   margin-left: u(-20);
   margin-right: u(-20);
-  padding: u(4) 0 u(6) u(20);
+  margin-bottom: u(-10);
+  padding: u(4) 0 u(18) u(20);
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
@@ -150,19 +187,26 @@
   border-radius: u(24);
   border: 1px solid transparent;
   background: transparent;
-  transition: background var(--duration-base) var(--ease-out),
-              border-color var(--duration-base) var(--ease-out),
-              transform var(--duration-fast) var(--ease-out);
+  transform-origin: top center;
+  transition: background 260ms var(--ease-out),
+              border-color 260ms var(--ease-out),
+              box-shadow 260ms var(--ease-out),
+              transform 320ms var(--ease-spring);
 }
 
 .brandActive {
   background: var(--surface-2);
   border-color: var(--svc-ring, var(--border-strong));
   box-shadow: 0 u(12) u(26) u(-18) var(--svc-glow, transparent);
+  transform: scale(1.07);
 }
 
 .brand:active {
   transform: scale(0.96);
+}
+
+.brandActive:active {
+  transform: scale(1.02);
 }
 
 .brandTile {
@@ -174,12 +218,13 @@
   border-radius: u(22);
   background: color-mix(in srgb, var(--svc, var(--surface-3)) 15%, oklch(0.185 0.014 264));
   border: 1px solid color-mix(in srgb, var(--svc-text, var(--border)) 20%, transparent);
-  font-size: u(31);
+  font-size: u(35.5);
   line-height: 1;
-  filter: saturate(0.55) brightness(0.76);
-  transition: filter 220ms var(--ease-out),
-              box-shadow 220ms var(--ease-out),
-              border-color 220ms var(--ease-out);
+  filter: saturate(0.55) brightness(0.912);
+  transition: filter 260ms var(--ease-out),
+              background 260ms var(--ease-out),
+              box-shadow 260ms var(--ease-out),
+              border-color 260ms var(--ease-out);
 }
 
 .brandActive .brandTile {
@@ -188,11 +233,18 @@
   box-shadow: 0 u(10) u(22) u(-12) var(--svc-glow);
 }
 
+.brandNameBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: u(28);
+}
+
 .brandName {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  min-height: u(28);
   max-width: 100%;
   font-size: u(11.5);
   font-weight: 600;
@@ -201,12 +253,14 @@
   overflow-wrap: anywhere;
   color: var(--text-muted);
   overflow: hidden;
+  transition: color 260ms var(--ease-out), font-weight 260ms var(--ease-out);
 }
 
 .brandImage {
-  width: u(44);
-  height: u(44);
+  width: u(51);
+  height: u(51);
   object-fit: contain;
+  transition: transform 320ms var(--ease-spring);
 }
 
 .brandActive .brandName {

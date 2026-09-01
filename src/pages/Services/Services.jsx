@@ -52,6 +52,12 @@ const centerActive = (strip, smooth) => {
     strip.scrollTo({left: Math.max(0, shift), behavior: smooth ? 'smooth' : 'auto'});
 };
 
+const centerSelf = (spot) => {
+    if (!spot) return;
+
+    spot.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'center'});
+};
+
 const fullName = (user) => `${user?.first_name || ''} ${user?.last_name || ''}`.trim();
 
 const nativeContact = (user) => {
@@ -87,6 +93,7 @@ export default function Services() {
     const flow = useCodeOrder(userId);
     const scrollRef = useScrollMemory('services', {ready: brands !== null});
     const brandsRef = useRef(null);
+    const brandsCentered = useRef(false);
     const offersRef = useRef(null);
 
     const brand = useMemo(
@@ -128,7 +135,8 @@ export default function Services() {
     }, [brand, activeKind, activeRegion, activeGroup, offer, email]);
 
     useEffect(() => {
-        centerActive(brandsRef.current, false);
+        centerActive(brandsRef.current, brandsCentered.current);
+        brandsCentered.current = true;
     }, [brand?.id]);
 
     useEffect(() => {
@@ -228,6 +236,7 @@ export default function Services() {
     }
 
     const theme = themeOf(brand, Math.max(0, (brands || []).findIndex((item) => item.id === brand?.id)));
+    const pageTitle = activeKind === 'subscription' ? 'Подписки' : 'Коды пополнения';
 
     return (
         <div ref={scrollRef} className={style.screen} style={themeVars(theme)}>
@@ -236,7 +245,7 @@ export default function Services() {
                 style={{paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`}}
             >
                 {hasNativeBack ? null : <BackPill className={style.back} onClick={back}/>}
-                <h1 className={style.title}>Коды пополнения</h1>
+                <h1 className={style.title}>{pageTitle}</h1>
             </div>
 
             <div
@@ -281,14 +290,19 @@ export default function Services() {
                                         className={`${style.brand} ${isActive ? style.brandActive : ''}`}
                                         aria-pressed={isActive}
                                         style={themeVars(itemTheme)}
-                                        onClick={() => pickBrand(item)}
+                                        onClick={(event) => {
+                                            centerSelf(event.currentTarget);
+                                            pickBrand(item);
+                                        }}
                                     >
                                         <span className={style.brandTile}>
                                             {item.icon
                                                 ? <img className={style.brandImage} src={item.icon} alt=""/>
                                                 : item.glyph}
                                         </span>
-                                        <span className={style.brandName}>{item.name}</span>
+                                        <span className={style.brandNameBox}>
+                                            <span className={style.brandName}>{item.name}</span>
+                                        </span>
                                     </button>
                                 );
                             })}

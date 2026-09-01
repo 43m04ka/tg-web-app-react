@@ -3,9 +3,12 @@ import TabPane from '../../Elements/WorkTabs/TabPane';
 import f, {Group, Row, Sheet} from '../../Elements/FormLayout/FormLayout';
 import useData from '../../useData';
 import {useFeedback} from '../../Elements/Feedback/Feedback';
+import ImageField from '../../Elements/ImageField/ImageField';
+import FlagPicker from '../../Elements/FlagPicker/FlagPicker';
+import {isFlagName} from '../../Elements/FlagPicker/flags';
 import {useServer} from './useServer';
 import CodeStock from './CodeStock';
-import {KIND_OPTIONS, parsePrice} from './serviceModel';
+import {FULFILLMENT_OPTIONS, KIND_OPTIONS, parsePrice} from './serviceModel';
 import s from './Services.module.scss';
 
 const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
@@ -19,7 +22,10 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
 
     const initial = useMemo(() => ({
         kind: String(source?.kind ?? 'gift_card'),
+        groupName: String(source?.groupName ?? ''),
+        fulfillment: String(source?.fulfillment ?? 'code'),
         regionName: String(source?.regionName ?? 'Россия'),
+        regionIcon: String(source?.regionIcon ?? ''),
         regionFlag: String(source?.regionFlag ?? ''),
         denomination: String(source?.denomination ?? ''),
         price: source?.price === undefined || source?.price === null ? '' : String(source.price),
@@ -32,6 +38,12 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
     const [saving, setSaving] = useState(false);
 
     const handleChange = (key, value) => setValues((prev) => ({...prev, [key]: value}));
+
+    const handleFlag = (flag) => setValues((prev) => ({
+        ...prev,
+        regionIcon: flag.icon,
+        regionName: !prev.regionName.trim() || isFlagName(prev.regionName) ? flag.name : prev.regionName,
+    }));
 
     const changed = useMemo(() => {
         const result = {};
@@ -77,7 +89,10 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
 
         return {
             kind: values.kind,
+            groupName: values.groupName.trim() || null,
+            fulfillment: values.fulfillment,
             regionName,
+            regionIcon: values.regionIcon || null,
             regionFlag: values.regionFlag.trim() || null,
             denomination,
             price,
@@ -182,17 +197,40 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
                             ))}
                         </select>
                     </Row>
+                    <Row label="Тариф" hint="Уровень внутри бренда: «Индивидуальная», «DUO», «Family». Пусто — уровня нет">
+                        <input className={f.input} type="text" placeholder="Индивидуальная"
+                               value={values.groupName}
+                               onChange={(event) => handleChange('groupName', event.target.value)}/>
+                    </Row>
                     <Row label="Номинал" hint="Как покупатель видит его в списке: «1 000 ₸», «1 месяц»">
                         <input className={f.input} type="text" placeholder="1 000 ₸"
                                value={values.denomination}
                                onChange={(event) => handleChange('denomination', event.target.value)}/>
+                    </Row>
+                    <Row label="Выдача" hint="Со склада — код уходит сразу после оплаты. Менеджером — склад не нужен">
+                        <select className={f.input} value={values.fulfillment}
+                                onChange={(event) => handleChange('fulfillment', event.target.value)}>
+                            {FULFILLMENT_OPTIONS.map((option) => (
+                                <option key={option.key} value={option.key}>{option.name}</option>
+                            ))}
+                        </select>
                     </Row>
                     <Row label="Регион" hint="Попадает и в переключатель региона, и в строку активации">
                         <input className={f.input} type="text" placeholder="Казахстан"
                                value={values.regionName}
                                onChange={(event) => handleChange('regionName', event.target.value)}/>
                     </Row>
-                    <Row label="Флаг" hint="Эмодзи флага рядом с названием региона">
+                    <Row label="Флаг" hint="Готовый набор — выбор страны заодно подставит название региона">
+                        <FlagPicker value={values.regionIcon}
+                                    onPick={handleFlag}
+                                    onClear={() => handleChange('regionIcon', '')}/>
+                    </Row>
+                    <Row label="Своя иконка" hint="Если нужного флага нет в наборе. Ужимается до 192px">
+                        <ImageField value={values.regionIcon}
+                                    onChange={(value) => handleChange('regionIcon', value)}
+                                    emptyText="Нет"/>
+                    </Row>
+                    <Row label="Эмодзи" hint="Запасной вариант: показывается, пока флаг не выбран">
                         <input className={`${f.input} ${f.mono}`} type="text" maxLength={4} placeholder="🇰🇿"
                                value={values.regionFlag}
                                onChange={(event) => handleChange('regionFlag', event.target.value)}/>
@@ -225,7 +263,15 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
                     </Row>
                 </Group>
 
-                {isNew ? (
+                {values.fulfillment === 'manual' ? (
+                    <Group title="Склад кодов">
+                        <p className={s['formNote']}>
+                            Позицию оформляет менеджер: склад для неё не нужен и не проверяется.
+                            После оплаты менеджеру приходит уведомление со звуком, покупателю —
+                            подтверждение оплаты и обещание, что с ним свяжутся.
+                        </p>
+                    </Group>
+                ) : isNew ? (
                     <Group title="Склад кодов">
                         <p className={s['formNote']}>
                             Коды можно будет загрузить сразу после создания номинала — склад привязан к нему.

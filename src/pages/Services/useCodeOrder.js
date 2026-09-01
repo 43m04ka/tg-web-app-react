@@ -114,6 +114,7 @@ export function useCodeOrder(userId) {
                     total: pending.total,
                     title: pending.positions?.[0]?.name || 'Код пополнения',
                     quantity: pending.calc?.quantity || 1,
+                    manual: pending.calc?.fulfillment === 'manual',
                     paymentUrl: pending.paymentUrl || null
                 }, {openLink: false});
             })
@@ -145,6 +146,7 @@ export function useCodeOrder(userId) {
                 total: result.total,
                 quantity: result.quantity,
                 title: snapshot?.title || 'Код пополнения',
+                manual: Boolean(snapshot?.manual),
                 paymentUrl: result.paymentUrl || null
             });
 

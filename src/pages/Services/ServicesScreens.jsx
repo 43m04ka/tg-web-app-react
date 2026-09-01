@@ -98,7 +98,9 @@ export function CodeWaiting({order, onOpenAgain, onCancel}) {
                     Окно оплаты открылось в отдельной вкладке — эту страницу закрывать не нужно
                 </span>
                 <span className={style.stateNote}>
-                    Код зарезервирован за вами, пока счёт активен
+                    {order?.manual
+                        ? 'Как только оплата пройдёт, менеджер возьмёт заказ в работу'
+                        : 'Код зарезервирован за вами, пока счёт активен'}
                 </span>
             </div>
 
@@ -123,18 +125,35 @@ export function CodeDone({order, botType, onClose}) {
     return (
         <Shell>
             <div className={`${style.stateIcon} ${style.stateIconDone}`} aria-hidden="true">✓</div>
-            <h1 className={style.stateTitle}>Код отправлен!</h1>
+            <h1 className={style.stateTitle}>{order?.manual ? 'Заказ оплачен!' : 'Код отправлен!'}</h1>
 
-            <Rows order={order} status="Оплачено, код выдан" tone="toneDone"/>
+            <Rows
+                order={order}
+                status={order?.manual ? 'Оплачено, оформляем' : 'Оплачено, код выдан'}
+                tone="toneDone"
+            />
 
             <div className={style.stateText}>
-                <span className={style.stateLead}>
-                    {order?.quantity > 1 ? 'Коды пришли' : 'Код пришёл'} отдельным сообщением в этот же чат
-                </span>
-                <span className={style.stateNote}>
-                    {order?.quantity > 1 ? 'Коды одноразовые' : 'Код одноразовый'} — сохраните
-                    {order?.quantity > 1 ? ' их' : ' его'}, повторно мы не выдадим
-                </span>
+                {order?.manual ? (
+                    <>
+                        <span className={style.stateLead}>
+                            Менеджер уже получил заказ и напишет вам в этот же чат
+                        </span>
+                        <span className={style.stateNote}>
+                            Подписку оформляют вручную — обычно это занимает до часа в рабочее время
+                        </span>
+                    </>
+                ) : (
+                    <>
+                        <span className={style.stateLead}>
+                            {order?.quantity > 1 ? 'Коды пришли' : 'Код пришёл'} отдельным сообщением в этот же чат
+                        </span>
+                        <span className={style.stateNote}>
+                            {order?.quantity > 1 ? 'Коды одноразовые' : 'Код одноразовый'} — сохраните
+                            {order?.quantity > 1 ? ' их' : ' его'}, повторно мы не выдадим
+                        </span>
+                    </>
+                )}
             </div>
 
             <div className={style.stateActions}>
@@ -189,7 +208,7 @@ export function CodeStalled({order, botType, onClose}) {
                     Мы долго не получаем ответ от кассы по этому счёту
                 </span>
                 <span className={style.stateNote}>
-                    Если деньги списались, напишите менеджеру — он выдаст код вручную
+                    Если деньги списались, напишите менеджеру — он оформит заказ вручную
                 </span>
             </div>
 

@@ -4,7 +4,8 @@ import {useFeedback} from '../../Elements/Feedback/Feedback';
 import {useServer} from './useServer';
 import BrandForm from './BrandForm';
 import OfferForm from './OfferForm';
-import {brandStock, kindName, money} from './serviceModel';
+import PlanMatrix from './PlanMatrix';
+import {brandStock, isFromCatalog, isManual, kindName, money} from './serviceModel';
 import s from './Services.module.scss';
 
 const ServicesList = ({onCountChange}) => {
@@ -86,6 +87,26 @@ const ServicesList = ({onCountChange}) => {
         });
     }, [openTab, closeTab, findBrand, load]);
 
+    const openMatrix = useCallback((brand) => {
+        const id = `service-matrix-${brand.id}`;
+
+        openTab({
+            id,
+            title: `${brand.name} · сетка`,
+            subtitle: 'Тарифы и периоды',
+            entity: 'service-matrix',
+            entityId: brand.id,
+            content: (
+                <PlanMatrix
+                    brandId={brand.id}
+                    findBrand={findBrand}
+                    onClose={() => closeTab(id)}
+                    onSaved={load}
+                />
+            ),
+        });
+    }, [openTab, closeTab, findBrand, load]);
+
     const openOffer = useCallback((offer, brand) => {
         const id = offer ? `service-offer-${offer.id}` : `service-offer-new-${brand.id}`;
 
@@ -143,7 +164,9 @@ const ServicesList = ({onCountChange}) => {
                 <p className={s['lead']}>
                     Коды и гифт-карты продаются со склада: покупатель платит — сервер сразу отдаёт ему
                     свободный код и помечает его проданным. Пока счёт не оплачен, код держится в брони
-                    и другому покупателю не достанется.
+                    и другому покупателю не достанется. Подписки чаще оформляет менеджер: склад им не
+                    нужен, после оплаты уведомление уходит человеку. Целую сетку «тариф × период»
+                    удобнее завести кнопкой «Сетка», а не по одной позиции.
                 </p>
 
                 <div className={s['toolbar']}>
@@ -174,10 +197,17 @@ const ServicesList = ({onCountChange}) => {
                                         aria-expanded={isOpen}
                                         onClick={() => toggle(brand.id)}>
                                     <span className={`${s['chevron']} ${isOpen ? s['chevronOpen'] : ''}`}>›</span>
-                                    <span className={s['brandGlyph']}>{brand.glyph}</span>
+                                    {brand.icon
+                                        ? <img className={s['brandIcon']} src={brand.icon} alt=""/>
+                                        : <span className={s['brandGlyph']}>{brand.glyph}</span>}
                                     <span className={s['brandName']}>{brand.name}</span>
                                     {brand.isHidden ? (
                                         <span className={`${s['badge']} ${s['badgeMuted']}`}>скрыт</span>
+                                    ) : null}
+                                    {brand.catalogId ? (
+                                        <span className={`${s['badge']} ${s['badgeLink']}`}>
+                                            каталог #{brand.catalogId}
+                                        </span>
                                     ) : null}
                                 </button>
 
@@ -190,6 +220,10 @@ const ServicesList = ({onCountChange}) => {
                                 </span>
 
                                 <span className={s['brandActions']}>
+                                    <button type="button" className={s['btn']}
+                                            onClick={() => openMatrix(brand)}>
+                                        Сетка
+                                    </button>
                                     <button type="button" className={s['btn']}
                                             onClick={() => openOffer(null, brand)}>
                                         Номинал
@@ -212,6 +246,7 @@ const ServicesList = ({onCountChange}) => {
                                             <thead>
                                                 <tr>
                                                     <th>Номинал</th>
+                                                    <th className={s['groupCol']}>Тариф</th>
                                                     <th className={s['kindCol']}>Тип</th>
                                                     <th className={s['regionCol']}>Регион</th>
                                                     <th className={s['priceCol']}>Цена</th>
@@ -220,7 +255,11 @@ const ServicesList = ({onCountChange}) => {
                                             </thead>
                                             <tbody>
                                                 {(brand.offers || []).map((offer) => (
-                                                    <tr key={offer.id} onClick={() => openOffer(offer, brand)}>
+                                                    <tr key={offer.id}
+                                                        className={isFromCatalog(offer) ? s['rowLinked'] : ''}
+                                                        onClick={() => (isFromCatalog(offer)
+                                                            ? undefined
+                                                            : openOffer(offer, brand))}>
                                                         <td className={s['nameCell']}>
                                                             {offer.denomination}
                                                             {offer.isHidden ? (
@@ -228,10 +267,19 @@ const ServicesList = ({onCountChange}) => {
                                                                     скрыт
                                                                 </span>
                                                             ) : null}
+                                                            {isFromCatalog(offer) ? (
+                                                                <span className={`${s['badge']} ${s['badgeLink']}`}>
+                                                                    из каталога
+                                                                </span>
+                                                            ) : null}
                                                         </td>
+                                                        <td className={s['groupCol']}>{offer.groupName || '—'}</td>
                                                         <td className={s['kindCol']}>{kindName(offer.kind)}</td>
                                                         <td className={s['regionCol']}>
-                                                            {offer.regionFlag ? `${offer.regionFlag} ` : ''}
+                                                            {offer.regionIcon
+                                                                ? <img className={s['regionIcon']}
+                                                                       src={offer.regionIcon} alt=""/>
+                                                                : (offer.regionFlag ? `${offer.regionFlag} ` : '')}
                                                             {offer.regionName}
                                                         </td>
                                                         <td className={s['priceCol']}>
@@ -243,21 +291,29 @@ const ServicesList = ({onCountChange}) => {
                                                             ) : null}
                                                         </td>
                                                         <td className={s['stockCol']}>
-                                                            <span className={`${s['badge']} ${
-                                                                (offer.stock?.available || 0) > 0
-                                                                    ? s['stockFree']
-                                                                    : s['stockEmpty']
-                                                            }`}>
-                                                                {offer.stock?.available || 0}
-                                                            </span>
-                                                            {(offer.stock?.reserved || 0) > 0 ? (
-                                                                <span className={`${s['badge']} ${s['stockHeld']}`}>
-                                                                    {offer.stock.reserved}
+                                                            {isManual(offer) || isFromCatalog(offer) ? (
+                                                                <span className={`${s['badge']} ${s['badgeManual']}`}>
+                                                                    менеджер
                                                                 </span>
-                                                            ) : null}
-                                                            <span className={s['mono']}>
-                                                                {offer.stock?.sold || 0}
-                                                            </span>
+                                                            ) : (
+                                                                <>
+                                                                    <span className={`${s['badge']} ${
+                                                                        (offer.stock?.available || 0) > 0
+                                                                            ? s['stockFree']
+                                                                            : s['stockEmpty']
+                                                                    }`}>
+                                                                        {offer.stock?.available || 0}
+                                                                    </span>
+                                                                    {(offer.stock?.reserved || 0) > 0 ? (
+                                                                        <span className={`${s['badge']} ${s['stockHeld']}`}>
+                                                                            {offer.stock.reserved}
+                                                                        </span>
+                                                                    ) : null}
+                                                                    <span className={s['mono']}>
+                                                                        {offer.stock?.sold || 0}
+                                                                    </span>
+                                                                </>
+                                                            )}
                                                         </td>
                                                     </tr>
                                                 ))}

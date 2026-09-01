@@ -107,13 +107,6 @@
   color: var(--text);
 }
 
-.count {
-  flex: none;
-  font-size: u(13);
-  font-weight: 700;
-  color: var(--text-muted);
-}
-
 .content {
   flex: 1;
   display: flex;
@@ -129,7 +122,7 @@
   gap: u(13);
   margin-left: u(-20);
   margin-right: u(-20);
-  padding: u(2) u(20) u(4);
+  padding: u(6) 0 u(8) u(20);
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
@@ -140,13 +133,19 @@
   display: none;
 }
 
+.brands::after {
+  content: '';
+  flex: none;
+  width: u(20);
+}
+
 .brand {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: u(8);
   flex: none;
-  width: u(64);
+  width: u(76);
 }
 
 .brandTile {
@@ -173,14 +172,23 @@
 }
 
 .brandName {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   max-width: 100%;
   font-size: u(11);
   font-weight: 600;
+  line-height: 1.25;
   text-align: center;
+  overflow-wrap: anywhere;
   color: var(--text-muted);
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+}
+
+.brandImage {
+  width: u(34);
+  height: u(34);
+  object-fit: contain;
 }
 
 .brandActive .brandName {
@@ -231,6 +239,12 @@
   background: oklch(1 0 0 / 0.14);
   font-size: u(22);
   line-height: 1;
+}
+
+.heroImage {
+  width: u(28);
+  height: u(28);
+  object-fit: contain;
 }
 
 .heroTitles {
@@ -355,7 +369,7 @@
   gap: u(9);
   margin-left: u(-20);
   margin-right: u(-20);
-  padding: u(1) u(20) u(4);
+  padding: u(3) 0 u(5) u(20);
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
@@ -364,6 +378,12 @@
 
 .regions::-webkit-scrollbar {
   display: none;
+}
+
+.regions::after {
+  content: '';
+  flex: none;
+  width: u(20);
 }
 
 .region {
@@ -396,6 +416,14 @@
 .regionFlag {
   font-size: u(14);
   line-height: 1;
+}
+
+.regionIcon {
+  width: u(18);
+  height: u(18);
+  flex: none;
+  object-fit: contain;
+  border-radius: u(4);
 }
 
 .offers {
@@ -534,52 +562,99 @@
 .summary {
   display: flex;
   flex-direction: column;
-  gap: u(9);
-  padding: u(14) u(16);
-  border-radius: u(18);
+  gap: u(12);
+  padding: u(6) u(14) u(14);
+  border-radius: u(20);
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
 }
 
-.summaryRow {
+.facts {
   display: flex;
-  align-items: baseline;
+  flex-direction: column;
+}
+
+.fact {
+  display: flex;
+  align-items: center;
+  gap: u(12);
+  padding: u(11) 0;
+}
+
+.fact + .fact {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.factIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: u(34);
+  height: u(34);
+  flex: none;
+  border-radius: u(12);
+  background: var(--accent-surface);
+  color: var(--accent-text);
+}
+
+.factIcon svg {
+  width: u(18);
+  height: u(18);
+}
+
+.factBody {
+  display: flex;
+  flex-direction: column;
+  gap: u(3);
+  min-width: 0;
+}
+
+.factLabel {
+  font-size: u(10);
+  font-weight: 700;
+  letter-spacing: u(0.6);
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.factValue {
+  font-size: u(13.5);
+  font-weight: 600;
+  line-height: 1.3;
+  text-wrap: pretty;
+  color: var(--text);
+}
+
+.total {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: u(12);
-  font-size: u(13);
+  padding: u(12) u(14);
+  border-radius: u(15);
+  background: var(--surface-2);
+}
+
+.totalLabel {
+  font-size: u(13.5);
+  font-weight: 700;
   color: var(--text-secondary);
 }
 
-.summaryValue {
-  font-size: u(13);
-  font-weight: 600;
-  text-align: right;
-  color: var(--text);
-}
-
-.summaryLine {
-  height: 1px;
-  margin: u(2) 0;
-  background: var(--border-subtle);
-}
-
-.summaryTotalLabel {
-  font-size: u(14);
-  font-weight: 700;
-  color: var(--text);
-}
-
-.summaryTotal {
+.totalValue {
   font-size: u(21);
   font-weight: 800;
+  letter-spacing: u(-0.4);
   color: var(--text);
   animation: valueSwap 260ms var(--ease-out);
 }
 
 .legal {
-  margin: 0;
+  margin: 0 auto;
+  max-width: u(300);
   font-size: u(11);
   line-height: 1.5;
+  text-align: center;
   text-wrap: pretty;
   color: var(--text-faint);
 }
@@ -867,7 +942,7 @@
   .stateCard,
   .stateIcon,
   .offerDotOn,
-  .summaryTotal,
+  .totalValue,
   .fieldError,
   .actionError {
     animation: none;

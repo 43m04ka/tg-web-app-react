@@ -10,12 +10,33 @@ import BackPill from '../../shared/ui/BackPill/BackPill';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import {isEmailValid, money} from '../Basket/cartModel';
 import {CodeDone, CodeFail, CodeStalled, CodeWaiting} from './ServicesScreens';
-import {kindLabel, kindsOf, offersOf, regionsOf, stockLabel, toneOf} from './servicesModel';
+import {
+    deliveryLabelOf,
+    denomLabelOf,
+    groupLabelOf,
+    groupsOf,
+    isManual,
+    isSellable,
+    kindLabel,
+    kindsOf,
+    offersOf,
+    priceNoteOf,
+    regionsOf,
+    stockLabel,
+    toneOf
+} from './servicesModel';
 import {useCodeCatalog} from './useCodeCatalog';
 import {SCREEN, useCodeOrder} from './useCodeOrder';
 import style from './Services.module.scss';
 
 const FORM_KEY = 'services:form';
+
+const RegionMark = ({region}) => {
+    if (region?.icon) return <img className={style.regionIcon} src={region.icon} alt=""/>;
+    if (region?.flag) return <span className={style.regionFlag}>{region.flag}</span>;
+
+    return null;
+};
 
 const fullName = (user) => `${user?.first_name || ''} ${user?.last_name || ''}`.trim();
 
@@ -44,6 +65,7 @@ export default function Services() {
     const [brandId, setBrandId] = useState(saved.brandId ?? null);
     const [kind, setKind] = useState(saved.kind ?? null);
     const [regionName, setRegionName] = useState(saved.regionName ?? null);
+    const [groupName, setGroupName] = useState(saved.groupName ?? null);
     const [offerId, setOfferId] = useState(saved.offerId ?? null);
     const [email, setEmail] = useState(saved.email || '');
     const [isTouched, setTouched] = useState(false);
@@ -64,13 +86,16 @@ export default function Services() {
         ? regionName
         : regions[0]?.name || null;
 
+    const groups = useMemo(() => groupsOf(brand, activeKind, activeRegion), [brand, activeKind, activeRegion]);
+    const activeGroup = groups.includes(groupName) ? groupName : groups[0] || null;
+
     const offers = useMemo(
-        () => offersOf(brand, activeKind, activeRegion),
-        [brand, activeKind, activeRegion]
+        () => offersOf(brand, activeKind, activeRegion, activeGroup),
+        [brand, activeKind, activeRegion, activeGroup]
     );
 
     const offer = useMemo(
-        () => offers.find((item) => item.id === offerId) || offers.find((item) => item.stock > 0) || offers[0] || null,
+        () => offers.find((item) => item.id === offerId) || offers.find(isSellable) || offers[0] || null,
         [offers, offerId]
     );
 
@@ -79,10 +104,11 @@ export default function Services() {
             brandId: brand?.id ?? null,
             kind: activeKind,
             regionName: activeRegion,
+            groupName: activeGroup,
             offerId: offer?.id ?? null,
             email
         });
-    }, [brand, activeKind, activeRegion, offer, email]);
+    }, [brand, activeKind, activeRegion, activeGroup, offer, email]);
 
     const back = useCallback(() => {
         hapticImpact('light');
@@ -96,6 +122,7 @@ export default function Services() {
         setBrandId(item.id);
         setKind(null);
         setRegionName(null);
+        setGroupName(null);
         setOfferId(null);
     }, []);
 
@@ -103,12 +130,20 @@ export default function Services() {
         hapticSelection();
         setKind(value);
         setRegionName(null);
+        setGroupName(null);
         setOfferId(null);
     }, []);
 
     const pickRegion = useCallback((value) => {
         hapticSelection();
         setRegionName(value);
+        setGroupName(null);
+        setOfferId(null);
+    }, []);
+
+    const pickGroup = useCallback((value) => {
+        hapticSelection();
+        setGroupName(value);
         setOfferId(null);
     }, []);
 
@@ -118,7 +153,7 @@ export default function Services() {
     }, []);
 
     const isEmailReady = isEmailValid(email);
-    const isStockReady = Boolean(offer) && offer.stock > 0;
+    const isStockReady = isSellable(offer);
     const isReady = Boolean(userId) && isStockReady && isEmailReady;
 
     const blockReason = useMemo(() => {
@@ -146,7 +181,8 @@ export default function Services() {
             offerId: offer.id,
             quantity: 1
         }, {
-            title: [brand?.name, offer.denomination, offer.regionName].filter(Boolean).join(' · ')
+            title: [brand?.name, offer.groupName, offer.denomination].filter(Boolean).join(' · '),
+            manual: isManual(offer)
         });
     }, [isReady, flow, platform, user, email, offer, brand]);
 
@@ -176,7 +212,6 @@ export default function Services() {
             >
                 {hasNativeBack ? null : <BackPill className={style.back} onClick={back}/>}
                 <h1 className={style.title}>Коды пополнения</h1>
-                {offers.length ? <span className={style.count}>{offers.length}</span> : null}
             </div>
 
             <div
@@ -227,7 +262,9 @@ export default function Services() {
                                                 borderColor: isActive ? itemTone.ring : 'transparent'
                                             }}
                                         >
-                                            {item.glyph}
+                                            {item.icon
+                                                ? <img className={style.brandImage} src={item.icon} alt=""/>
+                                                : item.glyph}
                                         </span>
                                         <span className={style.brandName}>{item.name}</span>
                                     </button>
@@ -245,22 +282,28 @@ export default function Services() {
                             <span className={style.heroBlob} aria-hidden="true"/>
 
                             <div className={style.heroTop}>
-                                <span className={style.heroGlyph}>{brand.glyph}</span>
+                                <span className={style.heroGlyph}>
+                                    {brand.icon
+                                        ? <img className={style.heroImage} src={brand.icon} alt=""/>
+                                        : brand.glyph}
+                                </span>
                                 <div className={style.heroTitles}>
-                                    <span className={style.heroKind}>{kindLabel(activeKind)}</span>
+                                    <span className={style.heroKind}>
+                                        {[kindLabel(activeKind), activeGroup].filter(Boolean).join(' · ')}
+                                    </span>
                                     <span className={style.heroName}>{brand.name}</span>
                                 </div>
                             </div>
 
                             <div className={style.heroBottom}>
                                 <div className={style.heroDenom}>
-                                    <span className={style.heroDenomLabel}>Номинал</span>
+                                    <span className={style.heroDenomLabel}>{denomLabelOf(activeKind)}</span>
                                     <span className={style.heroDenomValue}>{offer?.denomination || '—'}</span>
                                 </div>
 
                                 {activeRegion ? (
                                     <span className={style.heroRegion}>
-                                        {regions.find((item) => item.name === activeRegion)?.flag || ''}
+                                        <RegionMark region={regions.find((item) => item.name === activeRegion)}/>
                                         {activeRegion}
                                     </span>
                                 ) : null}
@@ -287,6 +330,26 @@ export default function Services() {
                             </section>
                         ) : null}
 
+                        {groups.length > 1 ? (
+                            <section className={style.block}>
+                                <h2 className={style.blockTitle}>{groupLabelOf(brand)}</h2>
+
+                                <div className={style.kinds}>
+                                    {groups.map((value) => (
+                                        <button
+                                            key={value}
+                                            type="button"
+                                            className={`${style.kind} ${value === activeGroup ? style.kindActive : ''}`}
+                                            aria-pressed={value === activeGroup}
+                                            onClick={() => pickGroup(value)}
+                                        >
+                                            {value}
+                                        </button>
+                                    ))}
+                                </div>
+                            </section>
+                        ) : null}
+
                         {regions.length > 1 ? (
                             <section className={style.block}>
                                 <h2 className={style.blockTitle}>Регион</h2>
@@ -300,7 +363,7 @@ export default function Services() {
                                             aria-pressed={item.name === activeRegion}
                                             onClick={() => pickRegion(item.name)}
                                         >
-                                            {item.flag ? <span className={style.regionFlag}>{item.flag}</span> : null}
+                                            <RegionMark region={item}/>
                                             {item.name}
                                         </button>
                                     ))}
@@ -310,14 +373,14 @@ export default function Services() {
 
                         <section className={style.block}>
                             <div className={style.blockHead}>
-                                <h2 className={style.blockTitle}>Номинал</h2>
-                                <span className={style.blockNote}>Цены за 1 код</span>
+                                <h2 className={style.blockTitle}>{denomLabelOf(activeKind)}</h2>
+                                <span className={style.blockNote}>{priceNoteOf(activeKind)}</span>
                             </div>
 
                             <div className={style.offers}>
                                 {offers.map((item) => {
                                     const isActive = item.id === offer?.id;
-                                    const isOut = item.stock <= 0;
+                                    const isOut = !isSellable(item);
 
                                     return (
                                         <button
@@ -335,7 +398,7 @@ export default function Services() {
                                             <span className={style.offerBody}>
                                                 <span className={style.offerName}>{item.denomination}</span>
                                                 <span className={`${style.offerStock} ${isOut ? style.offerStockOut : ''}`}>
-                                                    {stockLabel(item.stock)}
+                                                    {stockLabel(item)}
                                                 </span>
                                             </span>
 
@@ -370,23 +433,48 @@ export default function Services() {
                         </section>
 
                         <div className={style.summary}>
-                            <div className={style.summaryRow}>
-                                <span>Доставка кода</span>
-                                <span className={style.summaryValue}>Мгновенно, в чат</span>
+                            <div className={style.facts}>
+                                <div className={style.fact}>
+                                    <span className={style.factIcon} aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none">
+                                            <path
+                                                d="M13 2.5 5 13.2h5.6L10 21.5 19 10.8h-5.6z"
+                                                stroke="currentColor"
+                                                strokeWidth="1.7"
+                                                strokeLinejoin="round"
+                                            />
+                                        </svg>
+                                    </span>
+                                    <span className={style.factBody}>
+                                        <span className={style.factLabel}>Доставка</span>
+                                        <span className={style.factValue}>{deliveryLabelOf(offer, brand)}</span>
+                                    </span>
+                                </div>
+
+                                <div className={style.fact}>
+                                    <span className={style.factIcon} aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none">
+                                            <circle cx="8.6" cy="12" r="4.1" stroke="currentColor" strokeWidth="1.7"/>
+                                            <path
+                                                d="M12.7 12H21m-3.4 0v3.1m-3-3.1v2.2"
+                                                stroke="currentColor"
+                                                strokeWidth="1.7"
+                                                strokeLinecap="round"
+                                            />
+                                        </svg>
+                                    </span>
+                                    <span className={style.factBody}>
+                                        <span className={style.factLabel}>Активация</span>
+                                        <span className={style.factValue}>
+                                            {[activeRegion, brand.activationNote || 'без VPN'].filter(Boolean).join(', ')}
+                                        </span>
+                                    </span>
+                                </div>
                             </div>
 
-                            <div className={style.summaryRow}>
-                                <span>Активация</span>
-                                <span className={style.summaryValue}>
-                                    {[activeRegion, brand.activationNote || 'без VPN'].filter(Boolean).join(', ')}
-                                </span>
-                            </div>
-
-                            <div className={style.summaryLine} aria-hidden="true"/>
-
-                            <div className={style.summaryRow}>
-                                <span className={style.summaryTotalLabel}>К оплате</span>
-                                <span key={offer?.price} className={style.summaryTotal}>
+                            <div className={style.total}>
+                                <span className={style.totalLabel}>К оплате</span>
+                                <span key={offer?.price} className={style.totalValue}>
                                     {offer ? money(offer.price) : '—'}
                                 </span>
                             </div>

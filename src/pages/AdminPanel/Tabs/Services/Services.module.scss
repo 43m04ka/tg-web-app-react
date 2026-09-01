@@ -180,6 +180,22 @@
   line-height: 1;
 }
 
+.brandIcon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  border-radius: var(--r-sm);
+}
+
+.regionIcon {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  object-fit: contain;
+  vertical-align: -3px;
+  border-radius: 3px;
+}
+
 .brandName {
   font-weight: 700;
   color: var(--text);
@@ -488,4 +504,195 @@
     opacity: 0.4;
     cursor: not-allowed;
   }
+}
+
+.groupCol {
+  width: 170px;
+  color: var(--text-secondary);
+}
+
+.badgeLink {
+  background: rgba(var(--warning-rgb), 0.14);
+  color: var(--warning);
+}
+
+.badgeManual {
+  background: rgba(var(--warning-rgb), 0.12);
+  color: var(--warning);
+}
+
+.rowLinked {
+  cursor: default;
+
+  td {
+    color: var(--text-secondary);
+  }
+}
+
+.accentField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.accentSwatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.accentSwatch {
+  width: 26px;
+  height: 26px;
+  border: 2px solid transparent;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: transform var(--t-fast), border-color var(--t-fast);
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+.accentSwatchOn {
+  border-color: var(--text);
+}
+
+.accentSwatchNone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-alt);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.accentPreview {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.accentTile {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+
+.matrixScroll {
+  overflow-x: auto;
+  padding-bottom: var(--sp-2);
+}
+
+.matrix {
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 100%;
+
+  th,
+  td {
+    padding: var(--sp-2);
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+  }
+}
+
+.matrixCorner {
+  min-width: 150px;
+  font-size: var(--fs-sm);
+  font-weight: 400;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.matrixHeadCell,
+.matrixRowHead {
+  display: table-cell;
+  min-width: 150px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.matrixHeadCell {
+  background: var(--surface-alt);
+  border-radius: var(--r-md) var(--r-md) 0 0;
+}
+
+.matrixInput {
+  width: 118px;
+  padding: var(--sp-1) var(--sp-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.matrixDrop {
+  width: 22px;
+  height: 22px;
+  margin-left: var(--sp-1);
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(var(--danger-rgb), 0.14);
+    color: var(--danger);
+  }
+}
+
+.matrixCell {
+  min-width: 120px;
+}
+
+.matrixPrice {
+  width: 104px;
+  padding: var(--sp-1) var(--sp-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.matrixOldPrice {
+  margin-top: var(--sp-1);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.matrixId {
+  display: block;
+  margin-top: var(--sp-1);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.matrixAddCol {
+  width: 110px;
+  border-bottom: none;
 }

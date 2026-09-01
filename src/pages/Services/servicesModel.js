@@ -25,17 +25,46 @@ export const kindsOf = (brand) => uniqueBy(brand?.offers || [], (offer) => offer
 export const regionsOf = (brand, kind) => uniqueBy(
     (brand?.offers || []).filter((offer) => offer.kind === kind),
     (offer) => offer.regionName
-).map((offer) => ({name: offer.regionName, flag: offer.regionFlag}));
+).map((offer) => ({name: offer.regionName, flag: offer.regionFlag, icon: offer.regionIcon}));
 
-export const offersOf = (brand, kind, regionName) => (brand?.offers || [])
-    .filter((offer) => offer.kind === kind && offer.regionName === regionName);
+export const groupsOf = (brand, kind, regionName) => uniqueBy(
+    (brand?.offers || []).filter((offer) => offer.kind === kind && offer.regionName === regionName),
+    (offer) => offer.groupName || ''
+).map((offer) => offer.groupName || null).filter(Boolean);
 
-export const stockLabel = (stock) => {
-    const count = Number(stock) || 0;
+export const offersOf = (brand, kind, regionName, groupName) => (brand?.offers || [])
+    .filter((offer) => offer.kind === kind && offer.regionName === regionName)
+    .filter((offer) => (groupName ? offer.groupName === groupName : true));
+
+export const isManual = (offer) => offer?.fulfillment === 'manual';
+
+export const isSellable = (offer) => {
+    if (!offer) return false;
+    if (isManual(offer)) return true;
+
+    return Number(offer.stock) > 0;
+};
+
+export const stockLabel = (offer) => {
+    if (isManual(offer)) return 'Оформит менеджер';
+
+    const count = Number(offer?.stock) || 0;
     if (count <= 0) return 'Нет в наличии';
     if (count <= 3) return `Осталось ${count}`;
 
     return 'В наличии';
+};
+
+export const groupLabelOf = (brand) => brand?.groupLabel || 'Тариф';
+
+export const denomLabelOf = (kind) => (kind === 'subscription' ? 'Период' : 'Номинал');
+
+export const priceNoteOf = (kind) => (kind === 'subscription' ? 'Цена за подписку' : 'Цены за 1 код');
+
+export const deliveryLabelOf = (offer, brand) => {
+    if (isManual(offer)) return brand?.deliveryNote || 'Оформит менеджер после оплаты';
+
+    return 'Мгновенно, в чат';
 };
 
 export const BRAND_TONES = [

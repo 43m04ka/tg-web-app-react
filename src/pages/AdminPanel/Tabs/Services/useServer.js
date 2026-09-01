@@ -44,8 +44,16 @@ export function useServer() {
     const deleteBrand = (authenticationData, brandId) =>
         post('/services/brand/delete', {authenticationData, brandId}, 'Не удалось удалить бренд');
 
+    const getCatalogs = async () => {
+        const data = await get('/services/catalogs', 'Не удалось загрузить список каталогов');
+        return data.result || [];
+    };
+
     const createOffer = (authenticationData, offerData) =>
         post('/services/offer/create', {authenticationData, offerData}, 'Не удалось создать номинал');
+
+    const bulkSaveOffers = (authenticationData, brandId, offers, deleteIds) =>
+        post('/services/offer/bulk', {authenticationData, brandId, offers, deleteIds}, 'Не удалось сохранить сетку');
 
     const updateOffer = (authenticationData, offerId, updateData) =>
         post('/services/offer/update', {authenticationData, offerId, updateData}, 'Не удалось сохранить номинал');
@@ -68,9 +76,9 @@ export function useServer() {
         post('/services/codes/delete', {authenticationData, codeId}, 'Не удалось удалить код');
 
     return {
-        getServiceTree,
+        getServiceTree, getCatalogs,
         createBrand, updateBrand, deleteBrand,
-        createOffer, updateOffer, deleteOffer,
+        createOffer, updateOffer, deleteOffer, bulkSaveOffers,
         getCodes, addCodes, deleteCode,
     };
 }

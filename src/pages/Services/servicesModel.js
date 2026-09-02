@@ -62,6 +62,44 @@ export const stockLabel = (offer) => {
     return 'В наличии';
 };
 
+export const resolveSelection = (brands, selection = {}) => {
+    const list = brands || [];
+    const brand = list.find((item) => item.id === selection.brandId) || list[0] || null;
+
+    const kinds = kindsOf(brand);
+    const kind = kinds.includes(selection.kind) ? selection.kind : kinds[0] || null;
+
+    const regions = regionsOf(brand, kind);
+    const regionName = regions.some((item) => item.name === selection.regionName)
+        ? selection.regionName
+        : regions[0]?.name || null;
+
+    const groups = groupsOf(brand, kind, regionName);
+    const groupKey = groups.some((item) => item.key === selection.groupName)
+        ? selection.groupName
+        : (groups[0]?.key ?? null);
+
+    const offers = offersOf(brand, kind, regionName, groupKey);
+    const offer = offers.find((item) => item.id === selection.offerId)
+        || offers.find(isSellable)
+        || offers[0]
+        || null;
+
+    return {
+        brand,
+        brandIndex: Math.max(0, list.findIndex((item) => item.id === brand?.id)),
+        kinds,
+        kind,
+        regions,
+        regionName,
+        groups,
+        groupKey,
+        groupName: groups.find((item) => item.key === groupKey)?.key || null,
+        offers,
+        offer
+    };
+};
+
 export const groupLabelOf = (brand) => brand?.groupLabel || 'Тариф';
 
 export const denomLabelOf = (kind) => (kind === 'subscription' ? 'Период' : 'Номинал');

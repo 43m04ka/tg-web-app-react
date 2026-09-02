@@ -3,9 +3,9 @@ import {lazy} from 'react';
 export default {
     id: 'steam',
     title: 'Steam',
-    group: 'money',
+    group: 'storefront',
     icon: 'steam',
-    order: 25,
+    order: 65,
     routes: [
         {path: '/steam', element: lazy(() => import('./SteamScreen'))},
     ],

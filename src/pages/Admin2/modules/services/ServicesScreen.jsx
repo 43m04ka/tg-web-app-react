@@ -225,7 +225,7 @@ export default function ServicesScreen() {
                         </div>
                     </Panel>
 
-                    <BrandPreview brand={current}/>
+                    <BrandPreview brands={brands} brandId={current.id} onOpenBrand={openBrand}/>
                 </>
             )}
         </Workspace>

@@ -1,7 +1,7 @@
 .preview {
     display: flex;
     flex-direction: column;
-    flex: 0 0 348px;
+    flex: 0 0 392px;
     min-height: 0;
     border: 1px solid var(--a2-border);
     border-radius: var(--a2-radius-l);
@@ -46,215 +46,22 @@
     gap: 10px;
     min-height: 0;
     padding: 12px;
-    overflow-y: auto;
 }
 
 .phone {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 12px;
-    border: 1px solid var(--a2-border);
-    border-radius: 18px;
-    background: var(--a2-bg);
-}
+    --viewport: 344px;
 
-.hero {
     position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    padding: 14px;
-    border-radius: var(--a2-radius-l);
-    background: var(--a2-card);
+    flex: 1;
+    width: 344px;
+    max-width: 100%;
+    min-height: 420px;
+    margin: 0 auto;
+    border: 1px solid var(--a2-border);
+    border-radius: 22px;
+    background: var(--bg-elevated);
     overflow: hidden;
-}
-
-.heroTint {
-    position: absolute;
-    inset: 0;
-    background: var(--brand);
-    opacity: 0.18;
-}
-
-.heroTop,
-.heroBottom {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.heroBottom {
-    justify-content: space-between;
-}
-
-.heroGlyph,
-.heroIcon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: var(--a2-radius-m);
-    background: var(--a2-plane);
-    font-size: 20px;
-    object-fit: cover;
-}
-
-.heroTitles {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-}
-
-.heroKind {
-    color: var(--a2-text-muted);
-    font-size: var(--a2-size-xs);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-}
-
-.heroName {
-    color: var(--a2-text);
-    font-size: var(--a2-size-xl);
-    font-weight: 600;
-}
-
-.heroDenom {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.heroLabel {
-    color: var(--a2-text-faint);
-    font-size: var(--a2-size-xs);
-}
-
-.heroValue {
-    color: var(--a2-text);
-    font-size: var(--a2-size-l);
-    font-weight: 600;
-}
-
-.heroRegion {
-    color: var(--a2-text-muted);
-    font-size: var(--a2-size-s);
-}
-
-.block {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-}
-
-.blockTitle {
-    color: var(--a2-text-faint);
-    font-size: var(--a2-size-xs);
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-}
-
-.chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-
-.chip {
-    height: 28px;
-    padding: 0 11px;
-    border: 1px solid var(--a2-border);
-    border-radius: 14px;
-    background: var(--a2-card);
-    color: var(--a2-text-muted);
-    font: inherit;
-    font-size: var(--a2-size-s);
-    cursor: pointer;
-    transition: border-color var(--a2-motion) var(--a2-ease), color var(--a2-motion) var(--a2-ease);
-}
-
-.chipOn {
-    border-color: var(--brand);
-    color: var(--a2-text);
-}
-
-.offers {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.offer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 9px 11px;
-    border: 1px solid var(--a2-border);
-    border-radius: var(--a2-radius-m);
-    background: var(--a2-card);
-    color: var(--a2-text);
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
-    transition: border-color var(--a2-motion) var(--a2-ease);
-}
-
-.offerOn {
-    border-color: var(--brand);
-}
-
-.offerName {
-    font-size: var(--a2-size-m);
-}
-
-.offerPrices {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-}
-
-.offerPrice {
-    color: var(--a2-text);
-    font-size: var(--a2-size-m);
-    font-weight: 600;
-}
-
-.offerOld {
-    color: var(--a2-text-faint);
-    font-size: var(--a2-size-s);
-    text-decoration: line-through;
-}
-
-.note,
-.empty {
-    color: var(--a2-text-muted);
-    font-size: var(--a2-size-s);
-    line-height: 1.5;
-}
-
-.total {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 10px;
-    padding-top: 10px;
-    border-top: 1px solid var(--a2-border);
-}
-
-.totalLabel {
-    color: var(--a2-text-muted);
-    font-size: var(--a2-size-m);
-}
-
-.totalValue {
-    color: var(--a2-text);
-    font-size: var(--a2-size-xl);
-    font-weight: 600;
+    isolation: isolate;
 }
 
 .hint {

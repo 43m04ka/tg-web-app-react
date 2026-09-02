@@ -22,6 +22,7 @@ export const keys = {
     serviceCodes: (offerId, status) => ['services', 'codes', offerId, status],
     structure: ['structure'],
     media: ['media'],
+    mediaFolder: (path) => ['media', 'folder', path || ''],
 };
 
 export const invalidatedBy = {

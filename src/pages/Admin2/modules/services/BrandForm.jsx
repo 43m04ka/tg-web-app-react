@@ -6,6 +6,7 @@ import {keys} from '../../platform/resources';
 import {askConfirm, toastFail} from '../../platform/notify';
 import {deleteBrand, updateBrand} from './api';
 import {ICON_SIZE, shrinkImage} from './icon';
+import {MediaPicker, useMediaPicker} from '../media/MediaPicker';
 import style from './ServicesScreen.module.scss';
 
 const FIELDS = ['name', 'glyph', 'accent', 'activationNote', 'deliveryNote', 'groupLabel', 'serialNumber', 'icon'];
@@ -24,6 +25,7 @@ const toDraft = (brand) => ({
 
 export default function BrandForm({brand}) {
     const navigate = useNavigate();
+    const picker = useMediaPicker();
     const [draft, setDraft] = useState(() => toDraft(brand));
 
     useEffect(() => {
@@ -134,10 +136,13 @@ export default function BrandForm({brand}) {
                         />
                         <span>Загрузить иконку</span>
                     </label>
+                    <Button size="s" variant="ghost" onClick={picker.show}>Из медиатеки</Button>
                     {draft.icon ? (
                         <Button size="s" variant="ghost" onClick={() => set('icon', '')}>Убрать</Button>
                     ) : null}
-                    <span className={style.uploadNote}>Картинка ужимается до {ICON_SIZE} px и хранится в базе.</span>
+                    <span className={style.uploadNote}>
+                        Загруженная картинка ужимается до {ICON_SIZE} px и хранится в базе, из медиатеки берётся адрес файла.
+                    </span>
                 </div>
             </div>
 
@@ -150,6 +155,14 @@ export default function BrandForm({brand}) {
             <Note>
                 Пока бренд скрыт, покупатели его не видят — удобно собрать тарифы и склад, а показать одним движением.
             </Note>
+
+            {picker.open ? (
+                <MediaPicker
+                    value={draft.icon}
+                    onPick={(url) => set('icon', url)}
+                    onClose={picker.hide}
+                />
+            ) : null}
 
             <ButtonRow>
                 <Button variant="primary" disabled={!dirty || !draft.name.trim()} loading={save.loading} onClick={onSave}>

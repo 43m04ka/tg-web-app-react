@@ -1,7 +1,7 @@
 .preview {
     display: flex;
     flex-direction: column;
-    flex: 0 0 236px;
+    flex: 0 0 392px;
     min-height: 0;
     border: 1px solid var(--a2-border);
     border-radius: var(--a2-radius-l);
@@ -51,23 +51,23 @@
 .phone {
     position: relative;
     flex: 1;
-    width: 186px;
+    width: 262px;
     max-width: 100%;
     min-height: 420px;
     margin: 0 auto;
     border: 1px solid var(--a2-border);
-    border-radius: 14px;
+    border-radius: 18px;
     background: var(--bg-elevated);
     overflow: hidden;
     isolation: isolate;
 }
 
 .frame {
-    --viewport: 372px;
+    --viewport: 402px;
 
-    width: 372px;
-    height: 200%;
-    transform: scale(0.5);
+    width: 402px;
+    height: 153.9%;
+    transform: scale(0.65);
     transform-origin: top left;
 }
 

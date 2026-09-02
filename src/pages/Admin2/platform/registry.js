@@ -1,4 +1,8 @@
 import overview from '../modules/overview/module';
+import orders from '../modules/orders/module';
+import products from '../modules/products/module';
+import services from '../modules/services/module';
+import settings from '../modules/settings/module';
 import kit from '../modules/kit/module';
 
 export const BASE = '/admin2';
@@ -10,7 +14,7 @@ export const GROUPS = [
     {id: 'tools', title: 'Инструменты'},
 ];
 
-const REGISTERED = [overview, kit];
+const REGISTERED = [overview, orders, products, services, settings, kit];
 
 export const modules = REGISTERED
     .slice()

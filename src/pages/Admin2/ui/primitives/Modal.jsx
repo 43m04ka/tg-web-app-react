@@ -15,7 +15,7 @@ export function Modal({title, subtitle = '', size = 'm', onClose, footer = null,
     }, [onClose]);
 
     return (
-        <div className={style.backdrop} onMouseDown={(event) => {
+        <div className={style.backdrop} data-a2-modal onMouseDown={(event) => {
             if (event.target === event.currentTarget) onClose();
         }}>
             <div className={classes(style.window, style[size])} role="dialog" aria-modal="true">

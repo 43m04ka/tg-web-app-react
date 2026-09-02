@@ -1,0 +1,86 @@
+.pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.switches {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.media {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.media > * {
+    flex: 1;
+    min-width: 0;
+}
+
+.thumb {
+    flex: 0 0 auto;
+    width: 56px;
+    height: 56px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-s);
+    background: var(--a2-card);
+    object-fit: cover;
+}
+
+.offers {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.offer {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 7px 9px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+}
+
+.offerName {
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+}
+
+.offerNote {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+}
+
+.links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-m);
+}
+
+.link {
+    color: var(--a2-accent);
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+.spacer {
+    flex: 1;
+}

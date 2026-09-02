@@ -11,15 +11,16 @@ export default function ContextBar({onOpenPalette}) {
     const {pathname} = useLocation();
     const header = usePageHeaderValue();
     const module = moduleOfPath(pathname);
+    const title = header.title && header.title !== module?.title ? header.title : '';
 
     return (
         <header className={style.bar}>
             <div className={style.crumbs}>
                 <span className={style.module}>{module ? module.title : 'Админка'}</span>
-                {header.title ? (
+                {title ? (
                     <>
                         <Icon name="chevron" size={13}/>
-                        <span className={style.title}>{header.title}</span>
+                        <span className={style.title}>{title}</span>
                     </>
                 ) : null}
                 {header.subtitle ? <span className={style.subtitle}>{header.subtitle}</span> : null}

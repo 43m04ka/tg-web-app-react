@@ -23,6 +23,7 @@ export default function Navigation({theme, onToggleTheme, onSignOut}) {
                             <NavLink
                                 key={item.id}
                                 to={`${BASE}${item.routes[0].path}`}
+                                end={item.routes[0].path === '/'}
                                 className={({isActive}) => `${style.link} ${isActive ? style.active : ''}`}
                             >
                                 <Icon name={item.icon}/>

@@ -1,0 +1,49 @@
+.positions {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.position {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: baseline;
+    gap: 10px;
+    padding: 7px 9px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+    font-size: var(--a2-size-m);
+}
+
+.positionName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.positionMeta {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+}
+
+.codes {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.link {
+    color: var(--a2-accent);
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}

@@ -1,0 +1,314 @@
+.list {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 268px;
+    min-height: 0;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-plane);
+    overflow: hidden;
+}
+
+.listHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--a2-border);
+}
+
+.listTitle {
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+}
+
+.listBody {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px;
+    overflow-y: auto;
+}
+
+.pad {
+    padding: 8px 4px;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 8px;
+    border: none;
+    border-radius: var(--a2-radius-m);
+    background: transparent;
+    color: var(--a2-text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background var(--a2-motion) var(--a2-ease);
+}
+
+.item:hover {
+    background: var(--a2-card);
+}
+
+.itemActive {
+    background: var(--a2-accent-soft);
+}
+
+.itemBody {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.itemName {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.itemNote {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+}
+
+.glyph {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 26px;
+    height: 26px;
+    border-radius: var(--a2-radius-s);
+    background: var(--a2-card);
+    font-size: 15px;
+}
+
+.icon {
+    flex: 0 0 auto;
+    width: 26px;
+    height: 26px;
+    border-radius: var(--a2-radius-s);
+    object-fit: cover;
+}
+
+.tabs {
+    padding: 0 12px;
+    border-bottom: 1px solid var(--a2-border);
+}
+
+.content {
+    flex: 1;
+    min-height: 0;
+    padding: 14px;
+    overflow-y: auto;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.form [role='switch'] {
+    align-self: flex-start;
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.iconRow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+}
+
+.iconPreview {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--a2-radius-m);
+    object-fit: cover;
+}
+
+.iconEmpty {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-plane);
+    font-size: 26px;
+}
+
+.iconActions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.upload {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 10px;
+    border: 1px solid var(--a2-border-strong);
+    border-radius: var(--a2-radius-m);
+    color: var(--a2-text);
+    font-size: var(--a2-size-s);
+    cursor: pointer;
+}
+
+.upload:hover {
+    border-color: var(--a2-accent);
+    color: var(--a2-accent);
+}
+
+.upload input {
+    display: none;
+}
+
+.uploadNote {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+}
+
+.matrix {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.matrixHead,
+.matrixRow {
+    display: grid;
+    grid-template-columns:
+        minmax(90px, 1fr) minmax(110px, 1.2fr) minmax(90px, 1fr)
+        120px 130px 88px 88px 62px 30px;
+    align-items: center;
+    gap: 6px;
+}
+
+.matrixHead {
+    padding: 0 2px 4px;
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.stockCell {
+    display: flex;
+    justify-content: center;
+}
+
+.muted {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-s);
+}
+
+.readonly {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border: 1px dashed var(--a2-border-strong);
+    border-radius: var(--a2-radius-m);
+}
+
+.readonlyTitle {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.readonlyList {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.readonlyList li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: var(--a2-size-m);
+}
+
+.linkRow {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) 140px minmax(0, 1fr) 80px minmax(0, 110px) 30px;
+    align-items: center;
+    gap: 8px;
+}
+
+.linkNote {
+    text-align: right;
+}
+
+.stockHead {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+}
+
+.codes {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.code {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 120px 110px 30px;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+}
+
+.codeStatus {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.pageInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+}

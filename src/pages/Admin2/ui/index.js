@@ -5,3 +5,7 @@ export {Money, Mono, Stat, StatRow, Time} from './primitives/Data';
 export {Tabs} from './primitives/Tabs';
 export {Skeleton, SkeletonRows, Spinner, ProgressBar, EmptyState, ErrorState, Note} from './primitives/Feedback';
 export {Modal} from './primitives/Modal';
+export {Collection} from './Collection/Collection';
+export {useCollectionState} from './Collection/useCollectionState';
+export {Inspector, InspectorSection, InspectorRows} from './Inspector/Inspector';
+export {Workspace, Panel, Grid} from './Layout/Layout';

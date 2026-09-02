@@ -138,10 +138,6 @@ export default function BrandPreview({brands, brandId, onOpenBrand}) {
                         />
                     </div>
                 </div>
-
-                <span className={style.hint}>
-                    Это настоящая страница «Сервисов» с текущими данными бренда. Кнопки оплаты в предпросмотре нет.
-                </span>
             </div>
         </aside>
     );

@@ -14,6 +14,7 @@ export const keys = {
     orderList: (search) => ['orders', 'list', search || ''],
     order: (id) => ['orders', 'card', id],
     priceRules: ['price-rules'],
+    priceRuleSet: (platform) => ['price-rules', platform],
     promo: ['promo'],
     services: ['services'],
     serviceTree: ['services', 'tree'],

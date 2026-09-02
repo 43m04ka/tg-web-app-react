@@ -13,14 +13,7 @@ export default {
         {path: '/services', element: screen},
         {path: '/services/:brandId', element: screen},
     ],
-    commands: [
-        {
-            id: 'services.page',
-            title: 'Сервисы: настройки страницы витрины',
-            icon: 'services',
-            run: ({go}) => go('/services/page'),
-        },
-    ],
+    commands: [],
     search: async (query) => {
         const answer = await fetchTree();
         const needle = query.toLowerCase();

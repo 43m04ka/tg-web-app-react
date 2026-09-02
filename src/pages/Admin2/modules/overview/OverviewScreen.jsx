@@ -5,10 +5,10 @@ import {useResource} from '../../platform/useResource';
 import {summarize, useTasks} from '../../platform/tasks';
 import {usePageHeader} from '../../shell/pageHeader';
 import HeaderActions from '../../shell/HeaderActions';
-import {Badge, Dot} from '../../ui/primitives/Badge';
+import {Badge} from '../../ui/primitives/Badge';
 import {Button} from '../../ui/primitives/Button';
 import {Stat, StatRow} from '../../ui/primitives/Data';
-import {EmptyState, ErrorState, Note, Skeleton} from '../../ui/primitives/Feedback';
+import {EmptyState, ErrorState, Skeleton} from '../../ui/primitives/Feedback';
 import style from './OverviewScreen.module.scss';
 
 const valueOf = (settings, key) => {
@@ -69,20 +69,6 @@ export default function OverviewScreen() {
                 />
             </section>
 
-            <section className={style.section}>
-                <header className={style.head}>
-                    <h2 className={style.title}>Фон</h2>
-                    <span className={style.hint}>
-                        <Dot tone={tasks.error ? 'danger' : 'positive'}/>
-                        {tasks.error ? 'связь с сервером потеряна' : 'опрос раз в 3 секунды'}
-                    </span>
-                </header>
-
-                <Note>
-                    Полоса задач внизу экрана показывает всё, что идёт в фоне: парсы, очередь источников
-                    и итоги завершённых задач. Она общая для всех разделов и не теряет прогресс при переходах.
-                </Note>
-            </section>
         </div>
     );
 }

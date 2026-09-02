@@ -1,38 +1,10 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useMemo} from 'react';
 import {Button, IconButton} from '../primitives/Button';
 import {SearchInput} from '../primitives/Field';
 import {EmptyState, ErrorState, SkeletonRows, Spinner} from '../primitives/Feedback';
 import style from './Collection.module.scss';
 
 const classes = (...list) => list.filter(Boolean).join(' ');
-
-const DENSITY_KEY = 'admin2.density';
-
-const readDensity = () => {
-    try {
-        return localStorage.getItem(DENSITY_KEY) === 'roomy' ? 'roomy' : 'compact';
-    } catch {
-        return 'compact';
-    }
-};
-
-const useDensity = () => {
-    const [density, setDensity] = useState(readDensity);
-
-    const toggle = useCallback(() => {
-        setDensity((current) => {
-            const next = current === 'compact' ? 'roomy' : 'compact';
-            try {
-                localStorage.setItem(DENSITY_KEY, next);
-            } catch {
-                return next;
-            }
-            return next;
-        });
-    }, []);
-
-    return [density, toggle];
-};
 
 function SelectBox({checked, indeterminate = false, onChange, label}) {
     return (
@@ -99,8 +71,6 @@ export function Collection({
     empty = null,
     footNote = '',
 }) {
-    const [density, toggleDensity] = useDensity();
-
     const keys = useMemo(() => (rows || []).map(rowKey), [rows, rowKey]);
     const selected = selection?.ids || [];
     const selectedSet = useMemo(() => new Set(selected), [selected]);
@@ -155,12 +125,6 @@ export function Collection({
                     <div className={style.toolbarTail}>
                         {stale ? <Spinner size={13}/> : null}
                         {actions}
-                        <IconButton
-                            label={density === 'compact' ? 'Просторные строки' : 'Плотные строки'}
-                            onClick={toggleDensity}
-                        >
-                            {density === 'compact' ? '⇕' : '⇳'}
-                        </IconButton>
                     </div>
                 </div>
             ) : null}
@@ -199,7 +163,7 @@ export function Collection({
                         />
                     </div>
                 ) : (
-                    <table className={classes(style.table, style[density])}>
+                    <table className={style.table}>
                         <thead>
                             <tr>
                                 {selection ? (

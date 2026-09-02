@@ -132,6 +132,7 @@ export default function ProductsScreen() {
         {
             id: 'name',
             title: 'Название',
+            width: '34%',
             cell: (row) => (
                 <div className={style.nameCell}>
                     <span className={style.name}>{row.name}</span>

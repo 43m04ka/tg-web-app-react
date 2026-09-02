@@ -17,9 +17,3 @@ export const fetchCodes = ({offerId, status}) => httpGet('/services/codes', {que
 export const addCodes = ({offerId, codes}) => httpPost('/services/codes/add', {offerId, codes});
 
 export const deleteCode = (codeId) => httpPost('/services/codes/delete', {codeId});
-
-export const fetchPages = () => httpPost('/getPages', {});
-
-export const updatePage = ({pageId, updateData}) => httpPost('/updatePageData', {pageId, updateData});
-
-export const createPage = (pageData) => httpPost('/createPage', {pageData});

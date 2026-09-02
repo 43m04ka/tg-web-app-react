@@ -138,7 +138,7 @@ export default function OrdersScreen() {
             title: 'Сумма',
             width: 112,
             align: 'right',
-            cell: (row) => <Money value={row.type === 'steam_topup' ? row.total : row.total}/>,
+            cell: (row) => <Money value={row.total}/>,
         },
         {
             id: 'status',
@@ -173,7 +173,7 @@ export default function OrdersScreen() {
                 search={{
                     value: draftSearch,
                     onChange: setDraftSearch,
-                    placeholder: 'Номер заказа или дата 01.09.2026',
+                    placeholder: 'Номер заказа или дата 2026.09.01',
                 }}
                 filters={(
                     <>
@@ -205,7 +205,7 @@ export default function OrdersScreen() {
                 empty={{
                     title: value.search ? 'По запросу ничего не найдено' : 'Заказов пока нет',
                     text: value.search
-                        ? 'Сервер ищет по точному номеру заказа или по дате. Часть строки в поиске не работает.'
+                        ? 'Сервер ищет по точному номеру заказа или по дате в виде 2026.09.01. Часть строки в поиске не работает.'
                         : 'Список наполняется покупками из бота и с сайта.',
                 }}
                 footNote={

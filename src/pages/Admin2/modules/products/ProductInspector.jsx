@@ -3,6 +3,7 @@ import {
     Badge,
     Button,
     Field,
+    IconButton,
     Input,
     Inspector,
     InspectorRows,
@@ -24,7 +25,7 @@ const TABS = [
     {id: 'main', title: 'Основное'},
     {id: 'prices', title: 'Цены'},
     {id: 'media', title: 'Медиа'},
-    {id: 'links', title: 'Связи'},
+    {id: 'extra', title: 'Дополнительно'},
     {id: 'service', title: 'Служебное'},
 ];
 
@@ -32,8 +33,11 @@ const EDITABLE = [
     'name', 'type', 'typeLabel', 'platform', 'regionActivate', 'genre', 'language', 'description',
     'price', 'oldPrice', 'endDatePromotion',
     'image', 'logoUrl', 'backgroundUrl', 'fourToThreeBannerUrl', 'portraitBannerUrl', 'videoUrl',
+    'publisherName', 'numberPlayers', 'choiceRow', 'choiceColumn',
     'onSale', 'isHidden',
 ];
+
+const LISTS = ['descriptionImages', 'bubbles'];
 
 const NUMERIC = new Set(['price', 'oldPrice']);
 
@@ -46,6 +50,10 @@ const toDraft = (card) => {
         else draft[field] = raw === null || raw === undefined ? '' : String(raw);
     });
 
+    LISTS.forEach((field) => {
+        draft[field] = Array.isArray(card?.[field]) ? card[field].map((item) => String(item)) : [];
+    });
+
     return draft;
 };
 
@@ -54,6 +62,33 @@ const offerLabel = (offer) => {
     const head = offer.tier || offer.branding;
     return `${head} — ${offer.priceRub} ₽${offer.discountText ? ` (${offer.discountText})` : ''}`;
 };
+
+function ListEditor({items, placeholder, addTitle, preview = false, onChange}) {
+    return (
+        <div className={style.list}>
+            {items.map((item, index) => (
+                <div key={index} className={style.listRow}>
+                    {preview && item ? <img className={style.listThumb} src={item} alt="" loading="lazy"/> : null}
+                    <Input
+                        value={item}
+                        placeholder={placeholder}
+                        onChange={(event) => onChange(items.map((current, position) => (
+                            position === index ? event.target.value : current
+                        )))}
+                    />
+                    <IconButton
+                        label="Убрать"
+                        onClick={() => onChange(items.filter((current, position) => position !== index))}
+                    >
+                        ×
+                    </IconButton>
+                </div>
+            ))}
+
+            <Button size="s" variant="secondary" onClick={() => onChange([...items, ''])}>{addTitle}</Button>
+        </div>
+    );
+}
 
 function MediaPreview({label, value, onChange}) {
     return (
@@ -82,6 +117,12 @@ export default function ProductInspector({id, onClose}) {
 
         const base = toDraft(data);
         const patch = {};
+
+        LISTS.forEach((field) => {
+            const cleaned = draft[field].map((item) => item.trim()).filter(Boolean);
+            if (JSON.stringify(cleaned) === JSON.stringify(base[field])) return;
+            patch[field] = cleaned;
+        });
 
         EDITABLE.forEach((field) => {
             if (draft[field] === base[field]) return;
@@ -205,7 +246,7 @@ export default function ProductInspector({id, onClose}) {
                 </>
             ) : tab === 'prices' ? (
                 <>
-                    <InspectorSection title="Цены" note="Сервер отдаёт рубли уже пересчитанными — на клиенте цены не пересчитываются.">
+                    <InspectorSection title="Цены">
                         <div className={style.pair}>
                             <Field label="Цена, ₽">
                                 <Input value={draft.price} onChange={(event) => set('price', event.target.value)} inputMode="decimal"/>
@@ -226,10 +267,7 @@ export default function ProductInspector({id, onClose}) {
                         ]}/>
                     </InspectorSection>
 
-                    <InspectorSection
-                        title="Подписки"
-                        note="Справочные цены для подписчиков. Продаём по цене выше — по ним продавать нельзя."
-                    >
+                    <InspectorSection title="Подписки">
                         {offers.length ? (
                             <ul className={style.offers}>
                                 {offers.map((offer, index) => (
@@ -257,37 +295,45 @@ export default function ProductInspector({id, onClose}) {
                     <Field label="Видео">
                         <Input value={draft.videoUrl} onChange={(event) => set('videoUrl', event.target.value)}/>
                     </Field>
+
+                    <Field label="Скриншоты" hint="Показываются в карточке товара по порядку">
+                        <ListEditor
+                            items={draft.descriptionImages}
+                            placeholder="Ссылка на скриншот"
+                            addTitle="Добавить скриншот"
+                            preview
+                            onChange={(next) => set('descriptionImages', next)}
+                        />
+                    </Field>
                 </InspectorSection>
-            ) : tab === 'links' ? (
+            ) : tab === 'extra' ? (
                 <>
-                    <InspectorSection title="Похожие" note="Связи считает сервер задачей «Пересчитать ассоциации».">
-                        {Array.isArray(data?.similarCard) && data.similarCard.length ? (
-                            <ul className={style.links}>
-                                {data.similarCard.map((item, index) => (
-                                    <li key={index}>{item?.name || item?.serviceId || String(item)}</li>
-                                ))}
-                            </ul>
-                        ) : <Note>Похожих карточек не найдено.</Note>}
+                    <InspectorSection title="Островки" note="Короткие подписи в карточке на витрине: «Русский язык», «Оффлайн», «PS4 и PS5».">
+                        <ListEditor
+                            items={draft.bubbles}
+                            placeholder="Русский язык"
+                            addTitle="Добавить островок"
+                            onChange={(next) => set('bubbles', next)}
+                        />
                     </InspectorSection>
 
-                    <InspectorSection title="Дополнения">
-                        {Array.isArray(data?.conceptAddOns) && data.conceptAddOns.length ? (
-                            <ul className={style.links}>
-                                {data.conceptAddOns.map((item, index) => (
-                                    <li key={index}>{item?.name || String(item)}</li>
-                                ))}
-                            </ul>
-                        ) : <Note>Дополнений нет.</Note>}
-                    </InspectorSection>
-
-                    <InspectorSection title="Издания">
-                        {Array.isArray(data?.conceptProducts) && data.conceptProducts.length ? (
-                            <ul className={style.links}>
-                                {data.conceptProducts.map((item, index) => (
-                                    <li key={index}>{item?.name || String(item)}</li>
-                                ))}
-                            </ul>
-                        ) : <Note>Других изданий нет.</Note>}
+                    <InspectorSection title="Прочее">
+                        <div className={style.pair}>
+                            <Field label="Издатель">
+                                <Input value={draft.publisherName} onChange={(event) => set('publisherName', event.target.value)}/>
+                            </Field>
+                            <Field label="Игроков">
+                                <Input value={draft.numberPlayers} onChange={(event) => set('numberPlayers', event.target.value)}/>
+                            </Field>
+                        </div>
+                        <div className={style.pair}>
+                            <Field label="Строка выбора" hint="Номинал в сетке «Сервисов»">
+                                <Input value={draft.choiceRow} onChange={(event) => set('choiceRow', event.target.value)}/>
+                            </Field>
+                            <Field label="Колонка выбора" hint="Тариф в сетке «Сервисов»">
+                                <Input value={draft.choiceColumn} onChange={(event) => set('choiceColumn', event.target.value)}/>
+                            </Field>
+                        </div>
                     </InspectorSection>
                 </>
             ) : (

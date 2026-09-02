@@ -98,12 +98,12 @@
     white-space: nowrap;
 }
 
-.compact tbody tr {
-    height: var(--a2-row);
+.table tbody tr {
+    height: var(--a2-row-roomy);
 }
 
-.roomy tbody tr {
-    height: var(--a2-row-roomy);
+.table tbody tr:nth-child(even) td {
+    background: var(--a2-stripe);
 }
 
 .right {
@@ -119,21 +119,21 @@
     cursor: pointer;
 }
 
-.row:hover td {
+.table tbody tr.row:hover td {
     background: var(--a2-card);
 }
 
-.row:focus-visible td {
+.table tbody tr.row:focus-visible td {
     background: var(--a2-card);
     box-shadow: inset 0 0 0 1px var(--a2-accent);
 }
 
-.active td {
-    background: var(--a2-accent-soft);
+.table tbody tr.picked td {
+    background: var(--a2-card);
 }
 
-.picked td {
-    background: var(--a2-card);
+.table tbody tr.active td {
+    background: var(--a2-accent-soft);
 }
 
 .pick {

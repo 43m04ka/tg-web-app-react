@@ -34,7 +34,7 @@ const buildUrl = (area, path, query) => {
     const url = new URL(`${API_BASE_URL}${prefix}${path}`);
 
     Object.entries(query || {}).forEach(([key, value]) => {
-        if (value === undefined || value === null || value === '') return;
+        if (value === undefined || value === null) return;
         if (Array.isArray(value)) value.forEach((item) => url.searchParams.append(key, String(item)));
         else url.searchParams.set(key, String(value));
     });

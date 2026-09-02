@@ -28,8 +28,8 @@
     display: flex;
     flex: 1;
     flex-direction: column;
-    gap: 2px;
-    padding: 8px;
+    gap: 8px;
+    padding: 10px;
     overflow-y: auto;
 }
 
@@ -38,26 +38,55 @@
 }
 
 .item {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 7px 8px;
-    border: none;
-    border-radius: var(--a2-radius-m);
-    background: transparent;
+    padding: 10px;
+    border: 1px solid transparent;
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-card);
     color: var(--a2-text);
     font: inherit;
     text-align: left;
     cursor: pointer;
-    transition: background var(--a2-motion) var(--a2-ease);
+    overflow: hidden;
+    transition: border-color var(--a2-motion) var(--a2-ease), transform var(--a2-motion) var(--a2-ease);
 }
 
-.item:hover {
-    background: var(--a2-card);
+.itemTint {
+    position: absolute;
+    inset: 0;
+    background: var(--brand);
+    opacity: 0.14;
+    transition: opacity var(--a2-motion) var(--a2-ease);
+}
+
+.item > *:not(.itemTint) {
+    position: relative;
+}
+
+.item:hover .itemTint {
+    opacity: 0.2;
 }
 
 .itemActive {
-    background: var(--a2-accent-soft);
+    border-color: var(--brand);
+}
+
+.itemActive .itemTint {
+    opacity: 0.28;
+}
+
+.itemDragging {
+    opacity: 0.65;
+    transform: scale(0.99);
+}
+
+.grip {
+    color: var(--a2-text-faint);
+    font-size: 13px;
+    cursor: grab;
 }
 
 .itemBody {
@@ -89,18 +118,18 @@
     align-items: center;
     justify-content: center;
     flex: 0 0 auto;
-    width: 26px;
-    height: 26px;
-    border-radius: var(--a2-radius-s);
-    background: var(--a2-card);
-    font-size: 15px;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-plane);
+    font-size: 17px;
 }
 
 .icon {
     flex: 0 0 auto;
-    width: 26px;
-    height: 26px;
-    border-radius: var(--a2-radius-s);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--a2-radius-m);
     object-fit: cover;
 }
 

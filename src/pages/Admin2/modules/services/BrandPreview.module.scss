@@ -51,10 +51,8 @@
 .phone {
     position: relative;
     flex: 1;
-    width: 262px;
-    max-width: 100%;
+    width: 100%;
     min-height: 420px;
-    margin: 0 auto;
     border: 1px solid var(--a2-border);
     border-radius: 18px;
     background: var(--bg-elevated);
@@ -63,12 +61,10 @@
 }
 
 .frame {
-    --viewport: 402px;
+    --viewport: 474px;
 
-    width: 402px;
-    height: 153.9%;
-    transform: scale(0.65);
-    transform-origin: top left;
+    width: 100%;
+    height: 100%;
 }
 
 .hint {

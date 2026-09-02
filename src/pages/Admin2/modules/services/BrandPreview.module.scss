@@ -1,7 +1,7 @@
 .preview {
     display: flex;
     flex-direction: column;
-    flex: 0 0 392px;
+    flex: 0 0 236px;
     min-height: 0;
     border: 1px solid var(--a2-border);
     border-radius: var(--a2-radius-l);
@@ -49,19 +49,26 @@
 }
 
 .phone {
-    --viewport: 344px;
-
     position: relative;
     flex: 1;
-    width: 344px;
+    width: 186px;
     max-width: 100%;
     min-height: 420px;
     margin: 0 auto;
     border: 1px solid var(--a2-border);
-    border-radius: 22px;
+    border-radius: 14px;
     background: var(--bg-elevated);
     overflow: hidden;
     isolation: isolate;
+}
+
+.frame {
+    --viewport: 372px;
+
+    width: 372px;
+    height: 200%;
+    transform: scale(0.5);
+    transform-origin: top left;
 }
 
 .hint {

@@ -124,17 +124,19 @@ export default function BrandPreview({brands, brandId, onOpenBrand}) {
 
             <div className={style.body}>
                 <div className={style.phone}>
-                    <ServicesView
-                        brands={storefront}
-                        view={view}
-                        email={email}
-                        onEmailChange={setEmail}
-                        onPickBrand={pickBrand}
-                        onPickKind={pickKind}
-                        onPickRegion={pickRegion}
-                        onPickGroup={pickGroup}
-                        onPickOffer={(item) => setOfferId(item.id)}
-                    />
+                    <div className={style.frame}>
+                        <ServicesView
+                            brands={storefront}
+                            view={view}
+                            email={email}
+                            onEmailChange={setEmail}
+                            onPickBrand={pickBrand}
+                            onPickKind={pickKind}
+                            onPickRegion={pickRegion}
+                            onPickGroup={pickGroup}
+                            onPickOffer={(item) => setOfferId(item.id)}
+                        />
+                    </div>
                 </div>
 
                 <span className={style.hint}>

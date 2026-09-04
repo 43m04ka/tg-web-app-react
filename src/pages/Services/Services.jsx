@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import {useSessionStore, selectUserId} from '../../store/useSessionStore';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
 import {useBackButton} from '../../shared/hooks/useBackButton';
@@ -11,6 +11,7 @@ import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import {isEmailValid, money} from '../Basket/cartModel';
 import {CodeDone, CodeFail, CodeStalled, CodeWaiting} from './ServicesScreens';
 import {
+    bestValueOffer,
     denomLabelOf,
     groupLabelOf,
     groupsOf,
@@ -18,6 +19,7 @@ import {
     isSellable,
     kindLabel,
     kindsOf,
+    monthlyPrice,
     offersOf,
     priceNoteOf,
     regionsOf,
@@ -71,6 +73,7 @@ const nativeContact = (user) => {
 
 export default function Services() {
     const navigate = useNavigate();
+    const location = useLocation();
     const {contentSafeAreaInset, safeAreaInset} = useAppInsets();
 
     const userId = useSessionStore(selectUserId);
@@ -80,7 +83,10 @@ export default function Services() {
 
     const {brands, error, retry} = useCodeCatalog();
 
-    const saved = useMemo(() => recallView(FORM_KEY) || {}, []);
+    const target = useMemo(() => location.state || {}, [location.state]);
+    const isSingle = Boolean(target.single);
+
+    const saved = useMemo(() => (isSingle ? target : recallView(FORM_KEY) || {}), [isSingle, target]);
 
     const [brandId, setBrandId] = useState(saved.brandId ?? null);
     const [kind, setKind] = useState(saved.kind ?? null);
@@ -124,6 +130,8 @@ export default function Services() {
     );
 
     useEffect(() => {
+        if (isSingle) return;
+
         rememberView(FORM_KEY, {
             brandId: brand?.id ?? null,
             kind: activeKind,
@@ -132,7 +140,7 @@ export default function Services() {
             offerId: offer?.id ?? null,
             email
         });
-    }, [brand, activeKind, activeRegion, activeGroup, offer, email]);
+    }, [isSingle, brand, activeKind, activeRegion, activeGroup, offer, email]);
 
     useEffect(() => {
         centerActive(brandsRef.current, brandsCentered.current);
@@ -145,8 +153,9 @@ export default function Services() {
 
     const back = useCallback(() => {
         hapticImpact('light');
-        navigate('/');
-    }, [navigate]);
+        if (isSingle) navigate(-1);
+        else navigate('/');
+    }, [isSingle, navigate]);
 
     const hasNativeBack = useBackButton(back, {enabled: flow.screen === SCREEN.NONE});
 
@@ -236,7 +245,10 @@ export default function Services() {
     }
 
     const theme = themeOf(brand, Math.max(0, (brands || []).findIndex((item) => item.id === brand?.id)));
-    const pageTitle = activeKind === 'subscription' ? 'Подписки' : 'Коды пополнения';
+    const pageTitle = isSingle && brand
+        ? brand.name
+        : activeKind === 'subscription' ? 'Подписки' : 'Коды пополнения';
+    const bestOffer = activeKind === 'subscription' ? bestValueOffer(offers) : null;
 
     return (
         <div ref={scrollRef} className={style.screen} style={themeVars(theme)}>
@@ -277,6 +289,7 @@ export default function Services() {
                     />
                 ) : (
                     <>
+                        {isSingle ? null : (
                         <div ref={brandsRef} className={style.brands}>
                             {brands.map((item, index) => {
                                 const itemTheme = themeOf(item, index);
@@ -307,6 +320,7 @@ export default function Services() {
                                 );
                             })}
                         </div>
+                        )}
 
                         <div className={style.hero}>
                             <span className={style.heroBlob} aria-hidden="true"/>
@@ -426,7 +440,12 @@ export default function Services() {
                                                 {isActive ? '✓' : ''}
                                             </span>
 
-                                            <span className={style.offerName}>{item.denomination}</span>
+                                            <span className={style.offerName}>
+                                                {item.denomination}
+                                                {bestOffer && item.id === bestOffer.id ? (
+                                                    <span className={style.offerBadge}>Выгодно</span>
+                                                ) : null}
+                                            </span>
 
                                             <span className={style.offerPrices}>
                                                 <span className={style.offerPrice}>{money(item.price)}</span>
@@ -436,7 +455,7 @@ export default function Services() {
                                             </span>
 
                                             <span className={`${style.offerStock} ${isOut ? style.offerStockOut : ''}`}>
-                                                {stockLabel(item)}
+                                                {monthlyPrice(item) ? `${money(monthlyPrice(item))} в месяц` : stockLabel(item)}
                                             </span>
                                         </button>
                                     );

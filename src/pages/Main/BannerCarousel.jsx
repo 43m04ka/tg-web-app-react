@@ -28,7 +28,7 @@ const bannerProductId = (banner) => {
     return id === null || id === undefined || id === '' ? null : id;
 };
 
-export default function BannerCarousel({items}) {
+export default function BannerCarousel({items, onOpenSubscription}) {
     const {trackRef, active, handleScroll, scrollToSlide} = useCarouselTrack();
     const navigate = useNavigate();
 
@@ -37,17 +37,20 @@ export default function BannerCarousel({items}) {
         const url = banner.data?.url;
         if (!productId && !url) return;
 
-        hapticImpact('light');
-
         if (productId) {
+            if (onOpenSubscription?.(productId)) return;
+
+            hapticImpact('light');
             navigate(`/card/${productId}`);
             return;
         }
 
+        hapticImpact('light');
+
         const tg = getTelegramObject();
         if (typeof tg.openLink === 'function') tg.openLink(url);
         else window.open(url, '_blank', 'noopener');
-    }, [navigate]);
+    }, [navigate, onOpenSubscription]);
 
     // Пока баннеров нет — держим место серыми прямоугольниками и не сворачиваемся.
     // Схлопнуть карусель значило бы дёрнуть вверх всё, что под ней, и дёрнуть обратно,

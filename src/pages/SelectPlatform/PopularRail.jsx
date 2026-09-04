@@ -1,20 +1,22 @@
 import React from 'react';
-import {discountPercent, formatPrice} from '../Main/catalogSections';
+import {discountPercent, formatPrice, shortPlatform} from '../Main/catalogSections';
+import {accentStyle} from './accent';
 import style from './PopularRail.module.scss';
 
-export default function PopularRail({items, onOpen}) {
+export default function PopularRail({items, regionOf, onOpen}) {
     if (!items.length) return null;
 
     return (
         <section className={style.rail}>
             <div className={style.head}>
                 <span className={style.title}>Популярное</span>
-                <span className={style.note}>Хиты со всех витрин</span>
             </div>
 
             <div className={style.row}>
                 {items.map(({id, product}) => {
                     const percent = discountPercent(product.price, product.oldPrice);
+                    const tag = shortPlatform(product.platform) || product.typeLabel;
+                    const region = regionOf?.(product);
 
                     return (
                         <article key={id} className={style.card} onClick={() => onOpen(product)}>
@@ -22,9 +24,23 @@ export default function PopularRail({items, onOpen}) {
                                 className={style.cover}
                                 style={product.image ? {backgroundImage: `url(${product.image})`} : undefined}
                             >
-                                {product.typeLabel ? (
-                                    <span className={style.tag}>{product.typeLabel}</span>
+                                {region ? (
+                                    <span
+                                        className={`${style.regionBadge} ${region.color ? style.regionBadgeTinted : ''}`}
+                                        style={region.color ? accentStyle(region.color) : undefined}
+                                    >
+                                        {region.icon ? (
+                                            <span
+                                                className={style.regionBadgeIcon}
+                                                style={{backgroundImage: `url(${region.icon})`}}
+                                                aria-hidden="true"
+                                            />
+                                        ) : null}
+                                        <span className={style.regionBadgeTitle}>{region.title}</span>
+                                    </span>
                                 ) : null}
+
+                                {tag ? <span className={style.tag}>{tag}</span> : null}
                                 {percent > 0 ? <span className={style.discount}>−{percent}%</span> : null}
                             </span>
 

@@ -1,11 +1,12 @@
 import React from 'react';
 import ProductCard from './ProductCard';
+import SubscriptionRail from './SubscriptionRail';
 import {cleanPath, isBannerBlock} from './catalogSections';
 import style from './CatalogSection.module.scss';
 
 const PREVIEW_LIMIT = 6;
 
-export default function CatalogSection({section, onOpenCatalog, onOpenProduct}) {
+export default function CatalogSection({section, subscription, onOpenCatalog, onOpenProduct, onOpenSubscription}) {
     const {block, path, products} = section;
 
     if (isBannerBlock(block)) {
@@ -24,6 +25,21 @@ export default function CatalogSection({section, onOpenCatalog, onOpenProduct}) 
                 role={clickable ? 'button' : undefined}
                 aria-label={clickable ? block.name || 'Баннер' : undefined}
             />
+        );
+    }
+
+    if (subscription) {
+        return (
+            <section className={style.section}>
+                <div className={style.head}>
+                    {block.imageIcon ? (
+                        <span className={style.icon} style={{backgroundImage: `url(${block.imageIcon})`}} aria-hidden="true"/>
+                    ) : null}
+                    <h2 className={style.title}>{block.name}</h2>
+                </div>
+
+                <SubscriptionRail entry={subscription} onOpen={onOpenSubscription}/>
+            </section>
         );
     }
 

@@ -95,6 +95,7 @@ export default function AppRoutes() {
                 <Route path="/services" element={
                     <RequireStandalonePage type="services"><Services/></RequireStandalonePage>
                 }/>
+                <Route path="/subscription" element={<RequirePage><Services/></RequirePage>}/>
                 <Route path="/catalog/*" element={<RequirePage><Catalog/></RequirePage>}/>
                 <Route path="/card/:id" element={<RequirePage><Product/></RequirePage>}/>
                 <Route path="/search" element={<RequireSearchPage><Search/></RequireSearchPage>}/>

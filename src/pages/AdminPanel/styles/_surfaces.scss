@@ -1,0 +1,31 @@
+@mixin panel-box($color: var(--border)) {
+  border: 1px solid $color;
+}
+
+@mixin panel-box-interactive($hover-color: var(--border-strong)) {
+  @include panel-box;
+  transition: border-color var(--t-base);
+
+  &:hover {
+    border-color: $hover-color;
+  }
+}
+
+@mixin dashed-action {
+  border: 1px dashed var(--border-dashed);
+  background: transparent;
+  transition: border-color var(--t-fast), color var(--t-fast);
+
+  &:hover:not(:disabled) {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
+
+@mixin hairline-top($color: var(--border)) {
+  border-top: 1px solid $color;
+}
+
+@mixin hairline-bottom($color: var(--border)) {
+  border-bottom: 1px solid $color;
+}

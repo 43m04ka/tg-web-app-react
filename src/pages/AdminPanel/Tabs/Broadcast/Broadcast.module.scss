@@ -1,5 +1,5 @@
 @import "src/pages/AdminPanel/AdminPanel.module";
-@import "src/pages/AdminPanel/styles/dashed";
+@import "src/pages/AdminPanel/styles/surfaces";
 
 .screen {
   flex: 1;
@@ -54,7 +54,7 @@
 }
 
 .dropZone {
-  @include dashed-box;
+  @include panel-box;
   border-radius: 12px;
   background: rgba(19, 21, 29, 0.45);
   min-height: 120px;
@@ -225,7 +225,7 @@
   :global(.tg-custom-emoji), [data-tg-emoji-id] {
       position: relative;
       display: inline-block;
-      @include dashed-line-bottom(var(--accent));
+      @include hairline-bottom(var(--accent));
       
       &:hover::after {
           content: "ID: " attr(data-tg-emoji-id);
@@ -736,7 +736,7 @@
   font-weight: 600;
   color: var(--accent);
   background: transparent;
-  @include dashed-box(rgba(var(--accent-rgb), 0.35));
+  @include panel-box(rgba(var(--accent-rgb), 0.35));
   border-radius: 8px;
   cursor: pointer;
 

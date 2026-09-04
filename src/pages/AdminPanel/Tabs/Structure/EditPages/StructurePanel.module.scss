@@ -1,5 +1,5 @@
 @import "src/pages/AdminPanel/AdminPanel.module";
-@import "src/pages/AdminPanel/styles/dashed";
+@import "src/pages/AdminPanel/styles/surfaces";
 
 .panel {
   flex: 1;
@@ -185,7 +185,7 @@
   flex-direction: column;
   padding: var(--sp-2);
   border-radius: var(--r-lg);
-  @include dashed-box;
+  @include panel-box;
   scrollbar-width: thin;
   scrollbar-color: var(--border-strong) transparent;
 
@@ -364,7 +364,7 @@
   gap: var(--sp-2);
   padding: var(--sp-6);
   border-radius: var(--r-lg);
-  @include dashed-box;
+  @include panel-box;
   text-align: center;
 }
 

@@ -6,27 +6,35 @@ import NoticeList from './NoticeBlock/NoticeList';
 import useNoticeItems from './NoticeBlock/useNoticeItems';
 
 const sunIcon = (
-    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2">
-        <circle cx="12" cy="12" r="4" />
-        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" strokeLinecap="round" />
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+        <circle cx="12" cy="12" r="4.7"/>
+        <g stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
+            <path d="M12 2.7v1.8M12 19.5v1.8M5.1 5.1l1.3 1.3M17.6 17.6l1.3 1.3M2.7 12h1.8M19.5 12h1.8M5.1 18.9l1.3-1.3M17.6 6.4l1.3-1.3"/>
+        </g>
     </svg>
 );
 
 const moonIcon = (
-    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" strokeLinecap="round" strokeLinejoin="round" />
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+        <path d="M20.7 14.2A8.6 8.6 0 0 1 9.8 3.3a.9.9 0 0 0-1.2-1.1 9.8 9.8 0 1 0 13.2 13.2.9.9 0 0 0-1.1-1.2Z"/>
     </svg>
 );
 
 const bellIcon = (
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M18 8A6 6 0 1 0 6 8c0 7-3 7-3 14h18c0-7-3-7-3-14" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M13.73 21a2 2 0 0 1-3.46 0" strokeLinecap="round" />
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+        <path d="M12 2.2a5.9 5.9 0 0 0-5.9 5.9c0 3.4-.6 5.2-1.5 6.5a1.2 1.2 0 0 0 1 1.9h12.8a1.2 1.2 0 0 0 1-1.9c-.9-1.3-1.5-3.1-1.5-6.5A5.9 5.9 0 0 0 12 2.2Z"/>
+        <path d="M9.8 18.4a2.4 2.4 0 0 0 4.4 0Z"/>
     </svg>
 );
 
-// Плавающий островок поверх контента: переключение темы + фоновые процессы.
-const AdminDock = ({theme, onToggleTheme}) => {
+const logoutIcon = (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+        <path d="M11.3 3H6.7A3.7 3.7 0 0 0 3 6.7v10.6A3.7 3.7 0 0 0 6.7 21h4.6a1.15 1.15 0 0 0 0-2.3H6.7a1.4 1.4 0 0 1-1.4-1.4V6.7a1.4 1.4 0 0 1 1.4-1.4h4.6a1.15 1.15 0 1 0 0-2.3Z"/>
+        <path d="M16.4 7.6a1.15 1.15 0 0 0-1.6 1.6L16.6 11H10a1.15 1.15 0 1 0 0 2.3h6.6l-1.8 1.8a1.15 1.15 0 0 0 1.6 1.6l3.8-3.8a1.15 1.15 0 0 0 0-1.6Z"/>
+    </svg>
+);
+
+const AdminDock = ({theme, onToggleTheme, onLogout}) => {
     const [notifOpen, setNotifOpen] = useState(false);
     const notifWrapRef = useRef(null);
     const notifAutoCloseRef = useRef(null);
@@ -136,6 +144,21 @@ const AdminDock = ({theme, onToggleTheme}) => {
                     </div>
                 ) : null}
             </div>
+
+            {onLogout ? (
+                <>
+                    <span className={styles['separator']} aria-hidden/>
+                    <button
+                        type="button"
+                        className={`${styles['iconBtn']} ${styles['iconBtnDanger']}`}
+                        onClick={onLogout}
+                        title="Выйти"
+                        aria-label="Выйти"
+                    >
+                        {logoutIcon}
+                    </button>
+                </>
+            ) : null}
         </div>
     );
 };

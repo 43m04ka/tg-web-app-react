@@ -1,5 +1,5 @@
 @import "src/pages/AdminPanel/AdminPanel.module";
-@import "src/pages/AdminPanel/styles/dashed";
+@import "src/pages/AdminPanel/styles/surfaces";
 
 .frame {
   flex: 1;
@@ -179,7 +179,7 @@
   @extend %text;
   padding: 166px;
   border-radius: 12px;
-  @include dashed-box(rgba(var(--danger-rgb), 0.4));
+  @include panel-box(rgba(var(--danger-rgb), 0.4));
   color: #ff6b6b;
   font-size: 14px;
 }

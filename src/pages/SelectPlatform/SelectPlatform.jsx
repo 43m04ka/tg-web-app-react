@@ -10,6 +10,7 @@ import {primeKeyboard} from '../../shared/lib/keyboard';
 import {getTelegramObject} from '../../shared/lib/telegram';
 import {standaloneRoute} from '../../shared/lib/pageRoutes';
 import {glowStyle} from './accent';
+import PopularRail from './PopularRail';
 import PlatformCard from './PlatformCard';
 import PlatformLink from './PlatformLink';
 import style from './SelectPlatform.module.scss';
@@ -43,6 +44,7 @@ export default function SelectPlatform() {
 
     const startPages = useStructureStore((state) => state.startPages);
     const pages = useStructureStore((state) => state.pages);
+    const popularProducts = useStructureStore((state) => state.popularProducts);
     const pageId = useSessionStore((state) => state.pageId);
     const setPageId = useSessionStore((state) => state.setPageId);
 
@@ -80,6 +82,35 @@ export default function SelectPlatform() {
 
         return toGroups(visible.length || !fallback ? visible : itemsOf(fallback));
     }, [startPages, botType, isSettled]);
+
+    const popular = useMemo(() => {
+        if (!Array.isArray(popularProducts) || !isSettled) return [];
+
+        const itemsOf = (platform) => popularProducts
+            .filter((item) => item.platform === platform && item.product)
+            .sort((a, b) => a.serialNumber - b.serialNumber);
+
+        const visible = itemsOf(botType);
+        const fallback = fallbackBotType(botType);
+
+        return visible.length || !fallback ? visible : itemsOf(fallback);
+    }, [popularProducts, botType, isSettled]);
+
+    // Карточка товара живёт внутри страницы: без pageId роутер уводит покупателя
+    // обратно на выбор витрины. Берём страницу каталога товара, а если каталог
+    // ни к одной не привязан — первую обычную страницу витрины.
+    const openProduct = useCallback((product) => {
+        if (pickedId !== null) return;
+
+        hapticImpact('light');
+
+        const fallbackPage = (pages || []).find((page) => !standaloneRoute(page.type));
+        const targetPageId = product.structurePageId ?? pageId ?? fallbackPage?.id ?? null;
+        if (targetPageId === null) return;
+
+        setPageId(targetPageId);
+        navigate(`/card/${product.id}`);
+    }, [navigate, pages, pageId, pickedId, setPageId]);
 
     const openGlobalSearch = useCallback(() => {
         hapticImpact('light');
@@ -196,6 +227,8 @@ export default function SelectPlatform() {
                     </svg>
                 </span>
             </button>
+
+            <PopularRail items={popular} onOpen={openProduct}/>
 
             {groups.map((group) => (
                 <section key={group.key} className={style.group}>

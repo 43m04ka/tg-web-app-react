@@ -8,8 +8,7 @@
   flex-direction: column;
 }
 
-// padding: 0 обязателен — AdminPanel.module подключается сюда через @import,
-// и общий `.header` из него иначе сдвинул бы шапку вправо от списка.
+// padding: 0 — общий `.header` приходит сюда через @import AdminPanel.module
 .header {
   flex-shrink: 0;
   display: flex;
@@ -52,11 +51,6 @@
   flex-wrap: wrap;
 }
 
-.toolbarLabel {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-}
-
 .segmented {
   display: inline-flex;
   padding: 2px;
@@ -65,7 +59,6 @@
   background: var(--surface-alt);
 }
 
-// 28px + 2px обоймы с каждой стороны = 32px, вровень с остальными контролами
 .segment {
   height: 28px;
   padding: 0 var(--sp-3);
@@ -85,7 +78,6 @@
   }
 }
 
-// Начертание активного сегмента не меняем — иначе ширина скачет при переключении
 .segmentActive {
   background: var(--accent-soft);
   color: var(--accent);
@@ -100,6 +92,7 @@
   color: var(--text);
   font-family: var(--font-ui);
   font-size: var(--fs-md);
+  white-space: nowrap;
   cursor: pointer;
   transition: background-color var(--t-fast), border-color var(--t-fast), color var(--t-fast);
 
@@ -121,66 +114,6 @@
     opacity: 0.6;
     cursor: not-allowed;
   }
-}
-
-.btnPrimary {
-  border-color: transparent;
-  background: var(--accent);
-  color: var(--accent-contrast);
-  font-weight: 700;
-
-  &:hover:not(:disabled) {
-    background: var(--accent-hover);
-    border-color: transparent;
-    color: var(--accent-contrast);
-  }
-
-  &:disabled {
-    border-color: var(--border);
-    background: transparent;
-    color: var(--text-muted);
-  }
-}
-
-.btnDanger {
-  border-color: rgba(var(--danger-rgb), 0.45);
-  background: rgba(var(--danger-rgb), 0.12);
-  color: var(--danger);
-
-  &:hover:not(:disabled) {
-    background: rgba(var(--danger-rgb), 0.2);
-    border-color: rgba(var(--danger-rgb), 0.6);
-    color: var(--danger);
-  }
-}
-
-.btnGhost {
-  height: 30px;
-  padding: 0 var(--sp-3);
-  border: none;
-  border-radius: var(--r-md);
-  background: transparent;
-  color: var(--text-muted);
-  font-family: var(--font-ui);
-  font-size: var(--fs-md);
-  cursor: pointer;
-
-  &:hover {
-    color: var(--text);
-  }
-}
-
-// Кнопки «+ Заголовок» и прочие: пунктирные, как все действия добавления
-.addBtn {
-  height: 30px;
-  padding: 0 var(--sp-3);
-  border-radius: var(--r-md);
-  background: transparent;
-  color: var(--text-secondary);
-  font-family: var(--font-ui);
-  font-size: var(--fs-md);
-  cursor: pointer;
-  @include dashed-action;
 }
 
 .split {
@@ -221,14 +154,92 @@
   color: var(--text-muted);
 }
 
-// Узкий экран — половины встают друг под друга, иначе превью телефона
-// сжимается до нечитаемого
 @media (max-width: 1280px) {
   .split {
     grid-template-columns: minmax(0, 1fr);
     grid-auto-rows: minmax(320px, auto);
     overflow-y: auto;
   }
+}
+
+.search {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  height: 30px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.searchNote {
+  flex-shrink: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+// Выдача поиска — временный слой над списком, поэтому ограничена по высоте:
+// двадцать найденных товаров не должны выдавливать сам список за экран
+.results {
+  flex-shrink: 0;
+  max-height: 232px;
+  overflow: auto;
+  border-radius: var(--r-lg);
+  @include panel-box;
+}
+
+.result {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  @include hairline-bottom;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.resultBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.resultTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+  font-size: var(--fs-base);
+}
+
+.resultMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
 }
 
 .listWrap {
@@ -250,14 +261,12 @@
   }
 }
 
-// Внутри блока не заводим ещё одну «коробку»: элементы — строки, разделённые линией
 .row {
   display: flex;
   align-items: center;
   gap: var(--sp-3);
   padding: var(--sp-2) var(--sp-3);
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
+  @include hairline-bottom;
   transition: background-color var(--t-fast);
 
   &:hover {
@@ -276,6 +285,16 @@
   font-size: var(--fs-sm);
   color: var(--text-muted);
   text-align: right;
+}
+
+// Обложка портретная: та же пропорция, что и в карусели у покупателя
+.thumb {
+  flex-shrink: 0;
+  width: 32px;
+  height: 42px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-alt) center / cover no-repeat;
 }
 
 .rowBody {
@@ -309,12 +328,18 @@
   background: var(--accent-soft);
   color: var(--accent);
   font-size: var(--fs-xs);
+  white-space: nowrap;
 }
 
 .mono {
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
   color: var(--text-muted);
+}
+
+.warn {
+  font-size: var(--fs-xs);
+  color: var(--warning);
 }
 
 .rowActions {
@@ -349,87 +374,15 @@
   }
 }
 
+.iconBtnDanger:hover:not(:disabled) {
+  border-color: rgba(var(--danger-rgb), 0.6);
+  color: var(--danger);
+}
+
 .empty {
   margin: 0;
   padding: var(--sp-6) var(--sp-3);
   text-align: center;
   color: var(--text-muted);
   font-size: var(--fs-md);
-}
-
-// ==== Форма элемента ====
-
-.formStatus {
-  margin-right: auto;
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-}
-
-.formNote {
-  margin: 0;
-  font-size: var(--fs-md);
-  color: var(--text-muted);
-}
-
-.formValue {
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-}
-
-.iconField {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-}
-
-.iconPreview {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-  border-radius: var(--r-md);
-  border: 1px solid var(--border);
-  background: var(--surface-alt);
-}
-
-.iconEmpty {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--r-md);
-  border: 1px dashed var(--border-dashed);
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  text-align: center;
-}
-
-.iconUpload {
-  display: inline-flex;
-  align-items: center;
-  height: 30px;
-  padding: 0 var(--sp-3);
-  border-radius: var(--r-md);
-  border: 1px solid var(--border-strong);
-  color: var(--text-secondary);
-  font-size: var(--fs-md);
-  cursor: pointer;
-  transition: background-color var(--t-fast), color var(--t-fast);
-
-  &:hover {
-    background: var(--surface-hover);
-    color: var(--text);
-  }
-}
-
-// Нативный color-input рисуется браузером; сглаживаем только оправу
-.colorInput {
-  width: 56px;
-  height: 30px;
-  padding: 2px;
-  border-radius: var(--r-md);
-  border: 1px solid var(--border);
-  background: var(--surface-alt);
-  cursor: pointer;
 }

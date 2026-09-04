@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
 import AdminSidebar from "./Blocks/AdminSidebar";
-import AdminDock from "./Blocks/AdminDock";
 import EditDirectories from "./Tabs/EditCatalogs/EditDirectories";
 import AP_EditCards from "./Tabs/EditCards/EditCards";
 
@@ -9,6 +8,7 @@ import styles from "./AdminPanel.module.scss";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import EditPages from "./Tabs/Structure/EditPages/EditPages";
 import EditStartPages from "./Tabs/Structure/EditStartPages/EditStartPages";
+import EditPopular from "./Tabs/Structure/EditPopular/EditPopular";
 import SoonScreen from "./Tabs/Soon/SoonScreen";
 import useData from "./useData";
 import History from "./Tabs/HistoryOrders/History";
@@ -63,6 +63,7 @@ const routeGroups = [
         items: [
             {name: 'Страницы и главная', path: 'pages', element: <EditPages/>},
             {name: 'Стартовый экран', path: 'start-menu', element: <EditStartPages/>},
+            {name: 'Популярное на старте', path: 'start-popular', element: <EditPopular/>},
             {name: 'Подсказки в поиске', path: 'search', element: <Search/>},
             {name: 'Акции в "ещё"', path: 'more', element: <InfoBlock/>},
         ],
@@ -104,9 +105,8 @@ const AdminPanel = () => {
                 должно пережить закрытие вкладки, из которой его показали */}
             <FeedbackProvider>
                 <div className={styles['main-division']}>
-                    <AdminDock theme={theme} onToggleTheme={toggleTheme}/>
                     <div className={styles['body']}>
-                        <AdminSidebar routeGroups={routeGroups}/>
+                        <AdminSidebar routeGroups={routeGroups} theme={theme} onToggleTheme={toggleTheme}/>
                         <div className={styles['content']}>
                             <div className={styles['contentOutlet']}>
                                 <Routes>

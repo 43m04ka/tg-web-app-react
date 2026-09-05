@@ -14,13 +14,18 @@ const tiersOf = (offers) => {
         else byKey.set(key, {key, name: offer.groupName || 'Подписка', offers: [offer]});
     });
 
-    return [...byKey.values()].map((tier) => ({
-        ...tier,
-        price: tier.offers.reduce(
-            (low, offer) => (low === null || offer.price < low ? offer.price : low),
+    return [...byKey.values()].map((tier) => {
+        const cheapest = tier.offers.reduce(
+            (low, offer) => (!low || offer.price < low.price ? offer : low),
             null
-        )
-    }));
+        );
+
+        return {
+            ...tier,
+            image: cheapest?.image || tier.offers.find((offer) => offer.image)?.image || null,
+            price: cheapest?.price ?? null
+        };
+    });
 };
 
 const subscriptionGroups = (brands) => {

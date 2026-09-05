@@ -249,6 +249,7 @@ export default function Services() {
         ? brand.name
         : activeKind === 'subscription' ? 'Подписки' : 'Коды пополнения';
     const bestOffer = activeKind === 'subscription' ? bestValueOffer(offers) : null;
+    const heroImage = offer?.image || offers.find((item) => item.image)?.image || null;
 
     return (
         <div ref={scrollRef} className={style.screen} style={themeVars(theme)}>
@@ -322,14 +323,27 @@ export default function Services() {
                         </div>
                         )}
 
-                        <div className={style.hero}>
-                            <span className={style.heroBlob} aria-hidden="true"/>
+                        <div className={`${style.hero} ${heroImage ? style.heroShot : ''}`}>
+                            {heroImage ? (
+                                <>
+                                    <span
+                                        className={style.heroArt}
+                                        style={{backgroundImage: `url(${heroImage})`}}
+                                        aria-hidden="true"
+                                    />
+                                    <span className={style.heroVeil} aria-hidden="true"/>
+                                </>
+                            ) : (
+                                <span className={style.heroBlob} aria-hidden="true"/>
+                            )}
 
                             <div className={style.heroTop}>
-                                <span className={style.heroGlyph}>
-                                    {brand.icon
-                                        ? <img className={style.heroImage} src={brand.icon} alt=""/>
-                                        : brand.glyph}
+                                <span className={`${style.heroGlyph} ${heroImage ? style.heroPoster : ''}`}>
+                                    {heroImage
+                                        ? <img className={style.heroShotImage} src={heroImage} alt=""/>
+                                        : brand.icon
+                                            ? <img className={style.heroImage} src={brand.icon} alt=""/>
+                                            : brand.glyph}
                                 </span>
                                 <div className={style.heroTitles}>
                                     <span className={style.heroKind}>

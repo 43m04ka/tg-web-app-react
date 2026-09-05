@@ -25,24 +25,29 @@ export default function SubscriptionRail({entry, onOpen}) {
                     className={style.tier}
                     onClick={() => onOpen(entry, tier.key)}
                 >
-                    <span className={style.glow} aria-hidden="true"/>
-
-                    <span className={style.head}>
-                        <span className={style.brand}>
-                            {entry.brand.icon ? (
-                                <img className={style.brandIcon} src={entry.brand.icon} alt=""/>
-                            ) : null}
-                            {entry.brand.name}
-                        </span>
-                        <span className={style.name}>{tier.name}</span>
+                    <span
+                        className={style.art}
+                        style={tier.image ? {backgroundImage: `url(${tier.image})`} : undefined}
+                    >
+                        {tier.image ? null : (
+                            <span className={style.plain} aria-hidden="true">
+                                {entry.brand.icon
+                                    ? <img className={style.plainIcon} src={entry.brand.icon} alt=""/>
+                                    : <span className={style.plainGlyph}>{entry.brand.glyph}</span>}
+                            </span>
+                        )}
                     </span>
 
-                    <span className={style.foot}>
-                        <span className={style.priceBox}>
-                            <span className={style.priceLabel}>от</span>
-                            <span className={style.price}>{money(tier.price)}</span>
+                    <span className={style.body}>
+                        <span className={style.name}>{tier.name}</span>
+
+                        <span className={style.foot}>
+                            <span className={style.price}>
+                                <span className={style.priceLabel}>от</span>
+                                {money(tier.price)}
+                            </span>
+                            <span className={style.terms}>{termsNote(tier.offers)}</span>
                         </span>
-                        <span className={style.terms}>{termsNote(tier.offers)}</span>
                     </span>
                 </button>
             ))}

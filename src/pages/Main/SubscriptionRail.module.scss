@@ -17,112 +17,105 @@
 }
 
 .tier {
-  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: u(18);
+  align-items: stretch;
+  gap: u(9);
   flex: none;
-  width: u(168);
-  min-height: u(132);
-  padding: u(14) u(15);
-  border-radius: u(20);
-  overflow: hidden;
+  width: u(206);
+  padding: 0;
+  background: none;
+  border: none;
   text-align: left;
-  background: linear-gradient(140deg, var(--svc) 0%, var(--svc-edge) 100%);
-  border: 1px solid color-mix(in srgb, var(--svc-text) 32%, transparent);
-  box-shadow: 0 u(14) u(26) u(-20) var(--svc-glow);
   scroll-snap-align: start;
   cursor: pointer;
-  transition: transform var(--duration-fast) var(--ease-out);
 }
 
-.tier:active {
-  transform: scale(0.975);
-}
-
-.glow {
-  position: absolute;
-  top: u(-48);
-  right: u(-34);
-  width: u(130);
-  height: u(130);
-  border-radius: 50%;
-  background: radial-gradient(circle, oklch(1 0 0 / 0.24), transparent 70%);
-  pointer-events: none;
-}
-
-.head {
+.art {
   position: relative;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  height: u(154);
+  border-radius: u(16);
+  overflow: hidden;
+  background: linear-gradient(150deg, var(--svc) 0%, var(--svc-edge) 100%) center / cover no-repeat;
+  border: 1px solid color-mix(in srgb, var(--svc-text) 22%, transparent);
+  box-shadow: 0 u(14) u(24) u(-20) var(--svc-glow);
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.tier:active .art {
+  transform: scale(0.97);
+}
+
+.plain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plainIcon {
+  width: u(54);
+  height: u(54);
+  object-fit: contain;
+}
+
+.plainGlyph {
+  font-size: u(40);
+  line-height: 1;
+}
+
+.body {
+  display: flex;
   flex-direction: column;
-  gap: u(6);
+  gap: u(5);
   min-width: 0;
 }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: u(6);
-  font-size: u(10.5);
-  font-weight: 800;
-  letter-spacing: u(0.6);
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--svc-ink) 78%, transparent);
-}
-
-.brandIcon {
-  width: u(15);
-  height: u(15);
-  flex: none;
-  border-radius: u(4);
-  object-fit: cover;
-}
-
 .name {
-  font-size: u(19);
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: u(-0.3);
-  color: var(--svc-ink);
+  font-size: u(13);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .foot {
-  position: relative;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: u(8);
 }
 
-.priceBox {
+.price {
   display: flex;
-  flex-direction: column;
-  gap: u(1);
+  align-items: baseline;
+  gap: u(5);
   min-width: 0;
+  font-size: u(15);
+  font-weight: 800;
+  letter-spacing: u(-0.2);
+  color: var(--text);
 }
 
 .priceLabel {
-  font-size: u(9.5);
+  font-size: u(10);
   font-weight: 700;
-  letter-spacing: u(0.8);
+  letter-spacing: u(0.6);
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--svc-ink) 70%, transparent);
-}
-
-.price {
-  font-size: u(16);
-  font-weight: 800;
-  letter-spacing: u(-0.3);
-  color: var(--svc-ink);
+  color: var(--text-faint);
 }
 
 .terms {
+  flex: none;
   padding: u(3) u(8);
-  border-radius: u(9);
-  background: color-mix(in srgb, var(--svc-ink) 16%, transparent);
+  border-radius: u(8);
+  background: color-mix(in srgb, var(--svc-text) 16%, transparent);
   font-size: u(10.5);
   font-weight: 700;
   white-space: nowrap;
-  color: var(--svc-ink);
+  color: var(--svc-text);
 }

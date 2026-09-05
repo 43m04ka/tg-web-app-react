@@ -3,7 +3,17 @@ const toNumber = (value) => {
     return Number.isFinite(parsed) ? parsed : null;
 };
 
-const tiersOf = (offers) => {
+const postersOf = (products) => {
+    const byProduct = new Map();
+
+    (products || []).forEach((product) => {
+        if (product?.id !== undefined && product?.image) byProduct.set(toNumber(product.id), product.image);
+    });
+
+    return byProduct;
+};
+
+const tiersOf = (offers, posters) => {
     const byKey = new Map();
 
     offers.forEach((offer) => {
@@ -20,9 +30,11 @@ const tiersOf = (offers) => {
             null
         );
 
+        const coverOf = (offer) => offer?.image || posters.get(toNumber(offer?.productId)) || null;
+
         return {
             ...tier,
-            image: cheapest?.image || tier.offers.find((offer) => offer.image)?.image || null,
+            image: coverOf(cheapest) || tier.offers.map(coverOf).find(Boolean) || null,
             price: cheapest?.price ?? null
         };
     });
@@ -47,36 +59,42 @@ const subscriptionGroups = (brands) => {
     return groups;
 };
 
-const withTiers = (group) => (group ? {...group, tiers: tiersOf(group.offers)} : null);
+const withTiers = (group, posters) => (group ? {...group, tiers: tiersOf(group.offers, posters)} : null);
 
-export const catalogEntry = (brands, catalogId) => {
+export const catalogEntry = (brands, catalogId, products) => {
     const id = toNumber(catalogId);
     if (id === null) return null;
 
     for (const group of subscriptionGroups(brands).values()) {
-        if (group.catalogId === id) return withTiers(group);
+        if (group.catalogId === id) return withTiers(group, postersOf(products));
     }
 
     return null;
 };
 
-export const productEntry = (brands, productId) => {
+export const productEntry = (brands, productId, products) => {
     const id = toNumber(productId);
     if (id === null) return null;
 
     for (const group of subscriptionGroups(brands).values()) {
         const offer = group.offers.find((item) => toNumber(item.productId) === id);
-        if (offer) return {...withTiers(group), offer};
+        if (offer) return {...withTiers(group, postersOf(products)), offer};
     }
 
     return null;
 };
 
-export const subscriptionTarget = (entry, tierKey) => ({
-    brandId: entry.brand.id,
-    kind: 'subscription',
-    regionName: entry.regionName,
-    groupName: tierKey ?? entry.offer?.groupName ?? null,
-    offerId: entry.offer?.id ?? null,
-    single: true
-});
+export const subscriptionTarget = (entry, tierKey) => {
+    const groupName = tierKey ?? entry.offer?.groupName ?? null;
+    const tier = entry.tiers?.find((item) => item.key === groupName);
+
+    return {
+        brandId: entry.brand.id,
+        kind: 'subscription',
+        regionName: entry.regionName,
+        groupName,
+        offerId: entry.offer?.id ?? null,
+        poster: tier?.image || entry.tiers?.find((item) => item.image)?.image || null,
+        single: true
+    };
+};

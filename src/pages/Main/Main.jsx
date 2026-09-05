@@ -58,7 +58,8 @@ export default function Main() {
     }, [navigate]);
 
     const subscriptionOf = useCallback((section) => (
-        catalogEntry(brands, section.catalogId) || productEntry(brands, section.products[0]?.id)
+        catalogEntry(brands, section.catalogId, section.products)
+        || productEntry(brands, section.products[0]?.id, section.products)
     ), [brands]);
 
     const openSubscription = useCallback((entry, tierKey) => {
@@ -67,14 +68,14 @@ export default function Main() {
     }, [navigate]);
 
     const openBannerSubscription = useCallback((productId) => {
-        const entry = productEntry(brands, productId);
+        const entry = productEntry(brands, productId, mainPageProducts);
         if (!entry) return false;
 
         hapticImpact('light');
         navigate('/subscription', {state: subscriptionTarget(entry, entry.offer?.groupName ?? null)});
 
         return true;
-    }, [brands, navigate]);
+    }, [brands, mainPageProducts, navigate]);
 
     return (
         <div

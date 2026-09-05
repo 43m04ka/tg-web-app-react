@@ -249,7 +249,7 @@ export default function Services() {
         ? brand.name
         : activeKind === 'subscription' ? 'Подписки' : 'Коды пополнения';
     const bestOffer = activeKind === 'subscription' ? bestValueOffer(offers) : null;
-    const heroImage = offer?.image || offers.find((item) => item.image)?.image || null;
+    const heroImage = offer?.image || offers.find((item) => item.image)?.image || target.poster || null;
 
     return (
         <div ref={scrollRef} className={style.screen} style={themeVars(theme)}>

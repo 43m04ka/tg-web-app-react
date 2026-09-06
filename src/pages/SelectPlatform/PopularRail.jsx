@@ -24,24 +24,29 @@ export default function PopularRail({items, regionOf, onOpen}) {
                                 className={style.cover}
                                 style={product.image ? {backgroundImage: `url(${product.image})`} : undefined}
                             >
-                                {region ? (
-                                    <span
-                                        className={`${style.regionBadge} ${region.color ? style.regionBadgeTinted : ''}`}
-                                        style={region.color ? accentStyle(region.color) : undefined}
-                                    >
-                                        {region.icon ? (
+                                {region || percent > 0 ? (
+                                    <span className={style.topRow}>
+                                        {region ? (
                                             <span
-                                                className={style.regionBadgeIcon}
-                                                style={{backgroundImage: `url(${region.icon})`}}
-                                                aria-hidden="true"
-                                            />
+                                                className={`${style.regionBadge} ${region.color ? style.regionBadgeTinted : ''}`}
+                                                style={region.color ? accentStyle(region.color) : undefined}
+                                            >
+                                                {region.icon ? (
+                                                    <span
+                                                        className={style.regionBadgeIcon}
+                                                        style={{backgroundImage: `url(${region.icon})`}}
+                                                        aria-hidden="true"
+                                                    />
+                                                ) : null}
+                                                <span className={style.regionBadgeTitle}>{region.title}</span>
+                                            </span>
                                         ) : null}
-                                        <span className={style.regionBadgeTitle}>{region.title}</span>
+
+                                        {percent > 0 ? <span className={style.discount}>−{percent}%</span> : null}
                                     </span>
                                 ) : null}
 
                                 {tag ? <span className={style.tag}>{tag}</span> : null}
-                                {percent > 0 ? <span className={style.discount}>−{percent}%</span> : null}
                             </span>
 
                             <span className={style.name}>{product.name}</span>

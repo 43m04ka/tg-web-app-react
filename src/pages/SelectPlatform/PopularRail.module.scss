@@ -66,14 +66,22 @@
   transform: scale(0.96);
 }
 
-.regionBadge {
+.topRow {
   position: absolute;
   top: u(6);
   left: u(6);
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   gap: u(4);
   max-width: calc(100% - #{u(12)});
+}
+
+.regionBadge {
+  display: flex;
+  align-items: center;
+  gap: u(4);
+  max-width: 100%;
   padding: u(2) u(6);
   border-radius: u(6);
   background: oklch(0.14 0.01 264 / 0.8);
@@ -125,9 +133,6 @@
 }
 
 .discount {
-  position: absolute;
-  right: u(6);
-  bottom: u(6);
   padding: u(3) u(6);
   border-radius: u(7);
   background: var(--gold);

@@ -7,8 +7,6 @@ import {useScrollMemory} from '../../shared/hooks/useScrollMemory';
 import {hapticImpact} from '../../shared/lib/haptic';
 import {primeKeyboard} from '../../shared/lib/keyboard';
 import {loadFacets} from '../../shared/api/facetsCache';
-import {catalogEntry, productEntry, subscriptionTarget} from '../../shared/lib/subscriptionCatalogs';
-import {useCodeCatalog} from '../Services/useCodeCatalog';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import BannerCarousel from './BannerCarousel';
 import CatalogSection from './CatalogSection';
@@ -26,8 +24,6 @@ export default function Main() {
     const structureBlocks = useStructureStore((state) => state.structureBlocks);
     const catalogs = useStructureStore((state) => state.catalogs);
     const mainPageProducts = useStructureStore((state) => state.mainPageProducts);
-
-    const {brands} = useCodeCatalog();
 
     const sections = useMemo(
         () => buildSections({structureBlocks, catalogs, mainPageProducts, pageId}),
@@ -57,26 +53,6 @@ export default function Main() {
         navigate(`/card/${product.id}`);
     }, [navigate]);
 
-    const subscriptionOf = useCallback((section) => (
-        catalogEntry(brands, section.catalogId, section.products)
-        || productEntry(brands, section.products[0]?.id, section.products)
-    ), [brands]);
-
-    const openSubscription = useCallback((entry, tierKey) => {
-        hapticImpact('light');
-        navigate('/subscription', {state: subscriptionTarget(entry, tierKey)});
-    }, [navigate]);
-
-    const openBannerSubscription = useCallback((productId) => {
-        const entry = productEntry(brands, productId, mainPageProducts);
-        if (!entry) return false;
-
-        hapticImpact('light');
-        navigate('/subscription', {state: subscriptionTarget(entry, entry.offer?.groupName ?? null)});
-
-        return true;
-    }, [brands, mainPageProducts, navigate]);
-
     return (
         <div
             ref={screenRef}
@@ -94,10 +70,7 @@ export default function Main() {
                 <span className={style.searchText}>Поиск игры, подписки, доната</span>
             </button>
 
-            <BannerCarousel
-                items={selectPageBanners(banners, pageId)}
-                onOpenSubscription={openBannerSubscription}
-            />
+            <BannerCarousel items={selectPageBanners(banners, pageId)}/>
 
             {sections === null ? (
                 <CatalogSkeleton/>
@@ -113,10 +86,8 @@ export default function Main() {
                 <CatalogSection
                     key={section.block.id}
                     section={section}
-                    subscription={subscriptionOf(section)}
                     onOpenCatalog={openCatalog}
                     onOpenProduct={openProduct}
-                    onOpenSubscription={openSubscription}
                 />
             ))}
         </div>

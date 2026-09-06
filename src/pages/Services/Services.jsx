@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {useSessionStore, selectUserId} from '../../store/useSessionStore';
-import {useCartStore, selectCartCount} from '../../store/useCartStore';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
 import {useBackButton} from '../../shared/hooks/useBackButton';
 import {useScrollMemory} from '../../shared/hooks/useScrollMemory';
@@ -10,7 +9,6 @@ import {recallView, rememberView} from '../../shared/lib/viewMemory';
 import BackPill from '../../shared/ui/BackPill/BackPill';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import {isEmailValid, money} from '../Basket/cartModel';
-import ProductBuyBar from '../Product/ProductBuyBar';
 import {CodeDone, CodeFail, CodeStalled, CodeWaiting} from './ServicesScreens';
 import {
     bestValueOffer,
@@ -99,10 +97,6 @@ export default function Services() {
     const [isTouched, setTouched] = useState(false);
 
     const flow = useCodeOrder(userId);
-    const loadCart = useCartStore((state) => state.load);
-    const addToCart = useCartStore((state) => state.add);
-    const setCartCount = useCartStore((state) => state.setCount);
-    const [isAdding, setAdding] = useState(false);
     const scrollRef = useScrollMemory('services', {ready: brands !== null});
     const brandsRef = useRef(null);
     const brandsCentered = useRef(false);
@@ -233,43 +227,6 @@ export default function Services() {
             manual: isManual(offer)
         });
     }, [isReady, flow, platform, user, email, offer, brand]);
-
-    const cartProductId = offer?.productId ?? null;
-    const isCartFlow = cartProductId !== null;
-    const cartCount = useCartStore(selectCartCount(cartProductId));
-
-    useEffect(() => {
-        if (isCartFlow) loadCart(userId);
-    }, [isCartFlow, loadCart, userId]);
-
-    const addSubscriptionToCart = useCallback(async () => {
-        if (!isCartFlow || isAdding) return;
-
-        hapticImpact('medium');
-        setAdding(true);
-
-        try {
-            await addToCart(userId, {
-                id: cartProductId,
-                name: [brand?.name, offer.groupName, offer.denomination].filter(Boolean).join(' · '),
-                price: offer.price,
-                oldPrice: offer.oldPrice ?? null,
-                image: offer.image || target.poster || null
-            });
-        } finally {
-            setAdding(false);
-        }
-    }, [isCartFlow, isAdding, addToCart, userId, cartProductId, brand, offer, target.poster]);
-
-    const changeCartCount = useCallback((next) => {
-        hapticSelection();
-        setCartCount(userId, cartProductId, next);
-    }, [setCartCount, userId, cartProductId]);
-
-    const openBasket = useCallback(() => {
-        hapticImpact('light');
-        navigate('/basket');
-    }, [navigate]);
 
     if (flow.screen === SCREEN.WAITING) {
         return <CodeWaiting order={flow.order} onOpenAgain={flow.openAgain} onCancel={flow.cancel}/>;
@@ -520,7 +477,6 @@ export default function Services() {
                             </div>
                         </section>
 
-                        {isCartFlow ? null : (
                         <section className={style.block}>
                             <h2 className={style.blockTitle}>E-mail для чека</h2>
 
@@ -538,16 +494,13 @@ export default function Services() {
                                 <span className={style.fieldError}>Проверьте адрес почты</span>
                             ) : null}
                         </section>
-                        )}
 
-                        {isCartFlow ? null : (
-                            <div className={style.total}>
-                                <span className={style.totalLabel}>К оплате</span>
-                                <span key={offer?.price} className={style.totalValue}>
-                                    {offer ? money(offer.price) : '—'}
-                                </span>
-                            </div>
-                        )}
+                        <div className={style.total}>
+                            <span className={style.totalLabel}>К оплате</span>
+                            <span key={offer?.price} className={style.totalValue}>
+                                {offer ? money(offer.price) : '—'}
+                            </span>
+                        </div>
 
                         <section className={style.block}>
                             <h2 className={style.blockTitle}>Часто спрашивают</h2>
@@ -568,19 +521,7 @@ export default function Services() {
                 )}
             </div>
 
-            {brand && offers.length && isCartFlow ? (
-                <ProductBuyBar
-                    total={offer?.price ?? 0}
-                    oldTotal={offer?.oldPrice ?? null}
-                    isAvailable={isStockReady}
-                    count={cartCount}
-                    isBusy={isAdding}
-                    bottomInset={safeAreaInset.bottom}
-                    onAdd={addSubscriptionToCart}
-                    onChangeCount={changeCartCount}
-                    onOpenBasket={openBasket}
-                />
-            ) : brand && offers.length ? (
+            {brand && offers.length ? (
                 <div className={style.actionBar}>
                     {blockReason ? <p className={style.actionError}>{blockReason}</p> : null}
                     {flow.error ? <p className={style.actionError}>{flow.error}</p> : null}

@@ -1,13 +1,14 @@
 import React from 'react';
 import ProductCard from './ProductCard';
 import SubscriptionRail from './SubscriptionRail';
-import {cleanPath, isBannerBlock} from './catalogSections';
+import {cleanPath, isBannerBlock, isSubscription} from './catalogSections';
 import style from './CatalogSection.module.scss';
 
 const PREVIEW_LIMIT = 6;
 
-export default function CatalogSection({section, subscription, onOpenCatalog, onOpenProduct, onOpenSubscription}) {
+export default function CatalogSection({section, onOpenCatalog, onOpenProduct}) {
     const {block, path, products} = section;
+    const isSubscriptionShelf = products.length > 0 && products.every(isSubscription);
 
     if (isBannerBlock(block)) {
         const clickable = block.type === 'banner-clickable';
@@ -28,7 +29,7 @@ export default function CatalogSection({section, subscription, onOpenCatalog, on
         );
     }
 
-    if (subscription) {
+    if (isSubscriptionShelf) {
         return (
             <section className={style.section}>
                 <div className={style.head}>
@@ -38,7 +39,13 @@ export default function CatalogSection({section, subscription, onOpenCatalog, on
                     <h2 className={style.title}>{block.name}</h2>
                 </div>
 
-                <SubscriptionRail entry={subscription} onOpen={onOpenSubscription}/>
+                <SubscriptionRail products={products} onOpen={onOpenProduct}/>
+
+                <div className={style.footer}>
+                    <button type="button" className={style.open} onClick={() => onOpenCatalog(path)}>
+                        Открыть каталог
+                    </button>
+                </div>
             </section>
         );
     }

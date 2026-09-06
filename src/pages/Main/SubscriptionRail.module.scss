@@ -39,9 +39,9 @@
   height: u(154);
   border-radius: u(16);
   overflow: hidden;
-  background: linear-gradient(150deg, var(--svc) 0%, var(--svc-edge) 100%) center / cover no-repeat;
-  border: 1px solid color-mix(in srgb, var(--svc-text) 22%, transparent);
-  box-shadow: 0 u(14) u(24) u(-20) var(--svc-glow);
+  background: linear-gradient(160deg, oklch(0.28 0.02 264), oklch(0.17 0.014 264)) center / cover no-repeat;
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 u(14) u(24) u(-20) oklch(0 0 0 / 0.85);
   transition: transform var(--duration-base) var(--ease-out);
 }
 
@@ -55,15 +55,11 @@
   justify-content: center;
 }
 
-.plainIcon {
-  width: u(54);
-  height: u(54);
-  object-fit: contain;
-}
-
 .plainGlyph {
   font-size: u(40);
+  font-weight: 800;
   line-height: 1;
+  color: var(--text-faint);
 }
 
 .body {
@@ -101,21 +97,13 @@
   color: var(--text);
 }
 
-.priceLabel {
-  font-size: u(10);
-  font-weight: 700;
-  letter-spacing: u(0.6);
-  text-transform: uppercase;
-  color: var(--text-faint);
-}
-
 .terms {
   flex: none;
   padding: u(3) u(8);
   border-radius: u(8);
-  background: color-mix(in srgb, var(--svc-text) 16%, transparent);
+  background: var(--surface-3);
   font-size: u(10.5);
   font-weight: 700;
   white-space: nowrap;
-  color: var(--svc-text);
+  color: var(--text-secondary);
 }

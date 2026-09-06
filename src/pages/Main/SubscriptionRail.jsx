@@ -1,56 +1,77 @@
 import React from 'react';
-import {money} from '../Basket/cartModel';
-import {monthsOf, themeOf, themeVars} from '../Services/servicesModel';
+import {formatPrice, isSubscription, subscriptionTerm} from './catalogSections';
 import style from './SubscriptionRail.module.scss';
 
-const termsNote = (offers) => {
-    const months = offers.map(monthsOf).filter((value) => Number.isFinite(value) && value > 0);
-    if (!months.length) return `${offers.length} варианта`;
+const MONTHS = [
+    {re: /(\d+)\s*мес/i, factor: 1},
+    {re: /(\d+)\s*(?:год|года|лет)/i, factor: 12}
+];
 
-    const low = Math.min(...months);
-    const high = Math.max(...months);
+const tierName = (product) => String(product.choiceColumn || product.name || '').trim();
 
-    return low === high ? `${low} мес.` : `${low}–${high} мес.`;
+const monthsOf = (product) => {
+    const text = String(product.choiceRow || product.name || '');
+
+    for (const {re, factor} of MONTHS) {
+        const found = text.match(re);
+        if (found) return Number(found[1]) * factor;
+    }
+
+    return null;
 };
 
-export default function SubscriptionRail({entry, onOpen}) {
-    const theme = themeOf(entry.brand, 0);
+const monthlyNote = (product) => {
+    const months = monthsOf(product);
+    const price = Number(product.price);
 
+    if (!months || months < 2 || !Number.isFinite(price) || price <= 0) return '';
+
+    return `${formatPrice(Math.round(price / months))}/мес`;
+};
+
+export const subscriptionTiles = (products) => (products || [])
+    .filter(isSubscription)
+    .slice()
+    .sort((a, b) => (a.serialNumber ?? 0) - (b.serialNumber ?? 0));
+
+export default function SubscriptionRail({products, onOpen}) {
     return (
-        <div className={style.rail} style={themeVars(theme)}>
-            {entry.tiers.map((tier) => (
-                <button
-                    key={tier.key || entry.brand.name}
-                    type="button"
-                    className={style.tier}
-                    onClick={() => onOpen(entry, tier.key)}
-                >
-                    <span
-                        className={style.art}
-                        style={tier.image ? {backgroundImage: `url(${tier.image})`} : undefined}
+        <div className={style.rail}>
+            {subscriptionTiles(products).map((product) => {
+                const note = monthlyNote(product);
+                const caption = product.image
+                    ? [tierName(product), subscriptionTerm(product) || product.choiceRow].filter(Boolean).join(' · ')
+                    : tierName(product);
+
+                return (
+                    <button
+                        key={product.id}
+                        type="button"
+                        className={style.tier}
+                        onClick={() => onOpen(product)}
                     >
-                        {tier.image ? null : (
-                            <span className={style.plain} aria-hidden="true">
-                                {entry.brand.icon
-                                    ? <img className={style.plainIcon} src={entry.brand.icon} alt=""/>
-                                    : <span className={style.plainGlyph}>{entry.brand.glyph}</span>}
-                            </span>
-                        )}
-                    </span>
-
-                    <span className={style.body}>
-                        <span className={style.name}>{tier.name}</span>
-
-                        <span className={style.foot}>
-                            <span className={style.price}>
-                                <span className={style.priceLabel}>от</span>
-                                {money(tier.price)}
-                            </span>
-                            <span className={style.terms}>{termsNote(tier.offers)}</span>
+                        <span
+                            className={style.art}
+                            style={product.image ? {backgroundImage: `url(${product.image})`} : undefined}
+                        >
+                            {product.image ? null : (
+                                <span className={style.plain} aria-hidden="true">
+                                    <span className={style.plainGlyph}>{caption.slice(0, 1).toUpperCase() || '·'}</span>
+                                </span>
+                            )}
                         </span>
-                    </span>
-                </button>
-            ))}
+
+                        <span className={style.body}>
+                            <span className={style.name}>{caption}</span>
+
+                            <span className={style.foot}>
+                                <span className={style.price}>{formatPrice(product.price)}</span>
+                                {note ? <span className={style.terms}>{note}</span> : null}
+                            </span>
+                        </span>
+                    </button>
+                );
+            })}
         </div>
     );
 }

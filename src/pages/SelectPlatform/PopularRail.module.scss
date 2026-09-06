@@ -126,8 +126,8 @@
 
 .discount {
   position: absolute;
-  top: u(6);
   right: u(6);
+  bottom: u(6);
   padding: u(3) u(6);
   border-radius: u(7);
   background: var(--gold);

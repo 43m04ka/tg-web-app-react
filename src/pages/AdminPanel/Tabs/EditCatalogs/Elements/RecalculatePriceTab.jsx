@@ -3,7 +3,7 @@ import s from './RecalculatePriceTab.module.scss';
 import f, {Group, Sheet} from '../../../Elements/FormLayout/FormLayout';
 import useGlobalData from '../../../legacy/useGlobalData';
 import {API_BASE_URL} from '../../../legacy/baseUrl';
-import {adminBearerHeaders} from '../../../adminAuth';
+import {adminAuthHeadersJson, adminBearerHeaders} from '../../../adminAuth';
 
 export default function RecalculateModalContent({ catalogId, catalogsList, runRef, onLoadingChange}) {
     const [rules, setRules] = useState([]);
@@ -49,7 +49,7 @@ export default function RecalculateModalContent({ catalogId, catalogsList, runRe
         try {
             const res = await fetch(`${API_BASE_URL}/api/catalog/recalculate`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: adminAuthHeadersJson(),
                 body: JSON.stringify({ catalogId, rules })
             });
             const data = await res.json();

@@ -133,7 +133,7 @@ const CatalogList = ({onCountChange}) => {
             for (const id of selectedIds) {
                 const response = await fetch(`${API_BASE_URL}/api/catalog/deleteCatalogProducts`, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: adminAuthHeadersJson(),
                     body: JSON.stringify({catalogId: id}),
                 });
                 const result = await response.json();
@@ -156,7 +156,7 @@ const CatalogList = ({onCountChange}) => {
     const handleExport = async () => {
         if (!singleSelected) return;
         try {
-            const response = await fetch(`${API_BASE_URL}/api/catalog/export/${singleSelected.id}?time=${Date.now()}`);
+            const response = await fetch(`${API_BASE_URL}/api/catalog/export/${singleSelected.id}?time=${Date.now()}`, {headers: adminBearerHeaders()});
             if (!response.ok) {
                 alert('Ошибка при экспорте: ' + response.statusText);
                 return;

@@ -4,6 +4,7 @@ import useData from "../../../useData";
 import PopUpWindow from "../../../Elements/PopUpWindow/PopUpWindow";
 import style from "../../HistoryOrders/History.module.scss";
 import {API_BASE_URL} from '../../../legacy/baseUrl';
+import {adminBearerHeaders} from '../../../adminAuth';
 
 
 
@@ -31,6 +32,7 @@ const ImportData = ({onClose, onReload, catalogList}) => {
             setOnLoad(true)
             const response = await fetch(`${API_BASE_URL}/api/product/import?catalogId=${catalogId}`, {
                 method: 'POST',
+                headers: adminBearerHeaders(),
                 body: formData
             })
 

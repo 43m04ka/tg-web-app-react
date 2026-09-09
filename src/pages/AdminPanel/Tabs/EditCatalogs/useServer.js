@@ -35,10 +35,8 @@ export function useServer() {
     const changeSaleStatusCatalog = async (setResult, authenticationData, catalogId, changeTo) => {
         await fetch(`${API_BASE_URL}/api/catalog/changeSaleStatusCatalog`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({authenticationData: authenticationData, catalogId: catalogId, changeTo: changeTo}),
+            headers: adminAuthHeadersJson(),
+            body: JSON.stringify(withJsonAuth({authenticationData, catalogId, changeTo})),
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {

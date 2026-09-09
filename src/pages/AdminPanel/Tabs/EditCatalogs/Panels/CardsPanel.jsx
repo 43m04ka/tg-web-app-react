@@ -8,6 +8,7 @@ import useData from '../../../useData';
 import s from './Panels.module.scss';
 import t from './CardsPanel.module.scss';
 import {API_BASE_URL} from '../../../legacy/baseUrl';
+import {adminAuthHeadersJson} from '../../../adminAuth';
 
 /** Товары выбранного каталога: постраничный список с теми же действиями, что и в «Товарах». */
 const CardsPanel = ({catalog, subtitle, onClose}) => {
@@ -115,7 +116,7 @@ const CardsPanel = ({catalog, subtitle, onClose}) => {
         for (const id of selectedIds) {
             await fetch(`${API_BASE_URL}/api/catalog/deleteProduct`, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: adminAuthHeadersJson(),
                 body: JSON.stringify({id}),
             });
         }

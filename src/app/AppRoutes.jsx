@@ -12,6 +12,7 @@ import Favorites from '../pages/Account/Favorites';
 import OrderHistory from '../pages/Account/OrderHistory';
 import Steam from '../pages/Steam/Steam';
 import Services from '../pages/Services/Services';
+import Subscription from '../pages/Subscription/Subscription';
 import {useSessionStore} from '../store/useSessionStore';
 import {useStructureStore} from '../store/useStructureStore';
 import {pageTypeOf, standaloneRoute} from '../shared/lib/pageRoutes';
@@ -95,7 +96,7 @@ export default function AppRoutes() {
                 <Route path="/services" element={
                     <RequireStandalonePage type="services"><Services/></RequireStandalonePage>
                 }/>
-                <Route path="/subscription" element={<RequirePage><Services/></RequirePage>}/>
+                <Route path="/subscription/*" element={<RequirePage><Subscription/></RequirePage>}/>
                 <Route path="/catalog/*" element={<RequirePage><Catalog/></RequirePage>}/>
                 <Route path="/card/:id" element={<RequirePage><Product/></RequirePage>}/>
                 <Route path="/search" element={<RequireSearchPage><Search/></RequireSearchPage>}/>

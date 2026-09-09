@@ -6,7 +6,7 @@ import style from './CatalogSection.module.scss';
 
 const PREVIEW_LIMIT = 6;
 
-export default function CatalogSection({section, onOpenCatalog, onOpenProduct}) {
+export default function CatalogSection({section, onOpenCatalog, onOpenSubscriptionCatalog, onOpenProduct}) {
     const {block, path, products} = section;
     const isSubscriptionShelf = products.length > 0 && products.every(isSubscription);
 
@@ -42,8 +42,12 @@ export default function CatalogSection({section, onOpenCatalog, onOpenProduct}) 
                 <SubscriptionRail products={products} onOpen={onOpenProduct}/>
 
                 <div className={style.footer}>
-                    <button type="button" className={style.open} onClick={() => onOpenCatalog(path)}>
-                        Открыть каталог
+                    <button
+                        type="button"
+                        className={style.open}
+                        onClick={() => onOpenSubscriptionCatalog(path)}
+                    >
+                        Все тарифы и сроки
                     </button>
                 </div>
             </section>

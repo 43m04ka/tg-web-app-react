@@ -20,6 +20,7 @@ import {
     sortingLabel
 } from '../../shared/lib/catalogQuery';
 import {cleanPath} from '../Main/catalogSections';
+import {productRoute} from '../../shared/lib/pageRoutes';
 import {FunnelIcon, SortIcon} from './CatalogIcons';
 import ProductGrid, {ProductGridSkeleton} from './ProductGrid';
 import FilterSheet from './FilterSheet';
@@ -125,8 +126,8 @@ export default function Catalog() {
 
     const openProduct = useCallback((product) => {
         hapticImpact('light');
-        navigate(`/card/${product.id}`);
-    }, [navigate]);
+        navigate(productRoute(product, catalogs) || `/card/${product.id}`);
+    }, [navigate, catalogs]);
 
     const openSheet = useCallback(() => {
         hapticImpact('light');

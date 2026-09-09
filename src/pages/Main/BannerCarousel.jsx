@@ -1,8 +1,10 @@
 import React, {useCallback} from 'react';
 import {useNavigate} from 'react-router-dom';
+import {useStructureStore} from '../../store/useStructureStore';
 import {hapticImpact} from '../../shared/lib/haptic';
 import {useCarouselTrack} from '../../shared/hooks/useCarouselTrack';
 import {getTelegramObject} from '../../shared/lib/telegram';
+import {productRoute} from '../../shared/lib/pageRoutes';
 import {discountPercent, formatPrice, formatPromoDate} from './bannerFormat';
 import style from './BannerCarousel.module.scss';
 
@@ -32,6 +34,9 @@ export default function BannerCarousel({items}) {
     const {trackRef, active, handleScroll, scrollToSlide} = useCarouselTrack();
     const navigate = useNavigate();
 
+    const catalogs = useStructureStore((state) => state.catalogs);
+    const mainPageProducts = useStructureStore((state) => state.mainPageProducts);
+
     const openBanner = useCallback((banner) => {
         const productId = bannerProductId(banner);
         const url = banner.data?.url;
@@ -39,7 +44,9 @@ export default function BannerCarousel({items}) {
 
         if (productId) {
             hapticImpact('light');
-            navigate(`/card/${productId}`);
+
+            const product = (mainPageProducts || []).find((item) => String(item.id) === String(productId));
+            navigate(productRoute(product, catalogs) || `/card/${productId}`);
             return;
         }
 
@@ -48,7 +55,7 @@ export default function BannerCarousel({items}) {
         const tg = getTelegramObject();
         if (typeof tg.openLink === 'function') tg.openLink(url);
         else window.open(url, '_blank', 'noopener');
-    }, [navigate]);
+    }, [navigate, catalogs, mainPageProducts]);
 
     // Пока баннеров нет — держим место серыми прямоугольниками и не сворачиваемся.
     // Схлопнуть карусель значило бы дёрнуть вверх всё, что под ней, и дёрнуть обратно,

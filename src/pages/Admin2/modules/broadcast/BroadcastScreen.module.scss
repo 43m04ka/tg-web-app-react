@@ -1,0 +1,429 @@
+.editor {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+}
+
+.tool {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 28px;
+    border: 1px solid transparent;
+    border-radius: var(--a2-radius-s);
+    background: transparent;
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-m);
+    cursor: pointer;
+    transition: background var(--a2-motion) var(--a2-ease),
+                color var(--a2-motion) var(--a2-ease);
+}
+
+.tool:hover:not(:disabled) {
+    background: var(--a2-raised);
+    color: var(--a2-text);
+}
+
+.tool:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.toolOn {
+    background: var(--a2-accent-soft);
+    border-color: var(--a2-accent);
+    color: var(--a2-accent-text);
+}
+
+.toolBold {
+    font-weight: 800;
+}
+
+.toolItalic {
+    font-style: italic;
+}
+
+.toolUnderline {
+    text-decoration: underline;
+}
+
+.toolStrike {
+    text-decoration: line-through;
+}
+
+.toolSplit {
+    width: 1px;
+    height: 18px;
+    margin: 0 2px;
+    background: var(--a2-border);
+}
+
+.emojiWrap {
+    position: relative;
+}
+
+.emojiPop {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 5;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 2px;
+    padding: 6px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-plane);
+    box-shadow: var(--a2-shadow-overlay);
+}
+
+.emoji {
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: var(--a2-radius-s);
+    background: transparent;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.emoji:hover {
+    background: var(--a2-raised);
+}
+
+.area {
+    min-height: 160px;
+    padding: 10px 12px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    line-height: 1.45;
+    outline: none;
+    overflow-wrap: anywhere;
+}
+
+.area:focus {
+    border-color: var(--a2-accent);
+}
+
+.area:empty::before {
+    content: attr(data-placeholder);
+    color: var(--a2-text-faint);
+}
+
+.area a {
+    color: var(--a2-accent-text);
+}
+
+.counterRow {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.counterHint {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+}
+
+.counter {
+    color: var(--a2-text-muted);
+    font-family: var(--a2-font-mono);
+    font-size: var(--a2-size-s);
+}
+
+.counterNear {
+    color: var(--a2-warning);
+}
+
+.counterOver {
+    color: var(--a2-danger);
+    font-weight: 700;
+}
+
+.editorFoot {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.keyboardBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--a2-border);
+}
+
+.blockTitle {
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+}
+
+.keyboard {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.keyboardEmpty {
+    margin: 0;
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+    line-height: 1.4;
+}
+
+.keyboardRow {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+}
+
+.keyboardRowHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.keyboardRowTitle {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+    font-weight: 600;
+}
+
+.keyboardRowTools {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.keyboardButton {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-s);
+    background: var(--a2-plane);
+}
+
+.keyboardGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 200px);
+    gap: 8px;
+}
+
+.keyboardButtonFoot {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.keyboardFoot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.keyboardCount {
+    color: var(--a2-text-faint);
+    font-family: var(--a2-font-mono);
+    font-size: var(--a2-size-xs);
+}
+
+.preview {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.phone {
+    padding: 14px 10px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-bg);
+}
+
+.bubble {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 320px;
+    padding: 10px;
+    border-radius: 14px 14px 14px 4px;
+    background: var(--a2-card);
+    box-shadow: var(--a2-shadow-card);
+}
+
+.bubbleMedia {
+    overflow: hidden;
+    border-radius: var(--a2-radius-s);
+}
+
+.mediaFrame {
+    display: block;
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+}
+
+.bubbleText {
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.bubbleText code,
+.bubbleText pre {
+    padding: 1px 4px;
+    border-radius: 4px;
+    background: var(--a2-raised);
+    font-family: var(--a2-font-mono);
+    font-size: var(--a2-size-s);
+}
+
+.bubbleText span[data-link] {
+    color: var(--a2-accent-text);
+    text-decoration: underline;
+}
+
+.bubbleEmpty {
+    margin: 0;
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-s);
+}
+
+.bubbleKeyboard {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 2px;
+}
+
+.bubbleRow {
+    display: flex;
+    gap: 4px;
+}
+
+.bubbleButton {
+    flex: 1;
+    padding: 7px 8px;
+    border-radius: 8px;
+    background: var(--a2-raised);
+    color: var(--a2-accent-text);
+    font-size: var(--a2-size-s);
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.previewNote {
+    margin: 0;
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    line-height: 1.4;
+}
+
+.send {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.sendBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sendTitle {
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+}
+
+.mediaPick {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px;
+    border: 1px dashed var(--a2-border-strong);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+    cursor: pointer;
+    text-align: center;
+}
+
+.mediaPick:hover {
+    border-color: var(--a2-accent);
+}
+
+.mediaInput {
+    display: none;
+}
+
+.mediaPickText {
+    color: var(--a2-text);
+    font-size: var(--a2-size-s);
+    font-weight: 600;
+}
+
+.mediaPickHint {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    line-height: 1.4;
+}
+
+.mediaCard {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+}
+
+.mediaName {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    color: var(--a2-text);
+    font-size: var(--a2-size-s);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mediaMeta {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    white-space: nowrap;
+}
+
+.sendActions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}

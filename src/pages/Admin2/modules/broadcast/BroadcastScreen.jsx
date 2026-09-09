@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {Button, ErrorState, Panel, SkeletonRows, Workspace} from '../../ui';
 import {usePageHeader} from '../../shell/pageHeader';
 import HeaderActions from '../../shell/HeaderActions';
@@ -66,10 +66,6 @@ export default function BroadcastScreen() {
 
     const stamp = fingerprint(draft, schedule, disablePreview);
     const testDone = testedAs === stamp;
-
-    useEffect(() => {
-        if (testedAs && testedAs !== stamp) setTestedAs(null);
-    }, [stamp, testedAs]);
 
     const setHtml = useCallback((html) => {
         setDraft((prev) => ({...prev, captionHtml: html}));

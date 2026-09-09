@@ -189,3 +189,113 @@
     color: var(--text);
     font-family: var(--font-sans);
 }
+
+.phoneStatic {
+    pointer-events: none;
+}
+
+.bannerArt {
+    flex: none;
+    width: 52px;
+    height: 39px;
+    border-radius: var(--a2-radius-s);
+    background-position: center;
+    background-size: cover;
+}
+
+.found {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+.foundItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-s);
+    background: var(--a2-card);
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.foundItem:hover {
+    border-color: var(--a2-accent);
+}
+
+.foundArt {
+    flex: none;
+    width: 40px;
+    height: 30px;
+    border-radius: 4px;
+    background-color: var(--a2-raised);
+    background-position: center;
+    background-size: cover;
+}
+
+.foundBody {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.foundName {
+    overflow: hidden;
+    color: var(--a2-text);
+    font-size: var(--a2-size-s);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.foundMeta {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+}
+
+.gradients {
+    display: flex;
+    gap: 6px;
+}
+
+.gradient {
+    width: 44px;
+    height: 28px;
+    border: 2px solid transparent;
+    border-radius: var(--a2-radius-s);
+    cursor: pointer;
+}
+
+.gradientOn {
+    border-color: var(--a2-accent);
+}
+
+.tabs {
+    display: flex;
+    gap: 4px;
+}
+
+.tab {
+    padding: 5px 10px;
+    border-radius: var(--a2-radius-s);
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.tab:hover {
+    background: var(--a2-raised);
+    color: var(--a2-text);
+}
+
+.tabOn {
+    background: var(--a2-accent-soft);
+    color: var(--a2-accent-text);
+}

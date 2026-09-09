@@ -24,6 +24,7 @@ import {PRICING_NOTES, groupByBot, hasStructure, typeName} from './pageOptions';
 import BlockInspector from './BlockInspector';
 import PageInspector from './PageInspector';
 import StorefrontPreview from './StorefrontPreview';
+import StorefrontTabs from './StorefrontTabs';
 import style from './StorefrontScreen.module.scss';
 
 export default function StorefrontScreen() {
@@ -54,7 +55,7 @@ export default function StorefrontScreen() {
 
     const openPage = useCallback((next) => {
         setEditing(null);
-        navigate(`/admin2/storefront/${next.id}`);
+        navigate(`/admin2/storefront/page/${next.id}`);
     }, [navigate]);
 
     const reorder = useCallback(async (id, delta) => {
@@ -127,6 +128,7 @@ export default function StorefrontScreen() {
     return (
         <Workspace>
             <HeaderActions>
+                <StorefrontTabs/>
                 <Button size="s" variant="ghost" onClick={pages.refresh}>Обновить</Button>
                 <Button size="s" variant="secondary" onClick={rebuild}>Пересобрать витрину</Button>
             </HeaderActions>

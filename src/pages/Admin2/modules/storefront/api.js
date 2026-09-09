@@ -22,4 +22,14 @@ export const fetchCatalogs = () => httpGet('/allCatalogs', {area: 'catalog'});
 
 export const fetchCatalogIcons = () => httpGet('/catalogIcons');
 
+export const fetchBanners = () => httpPost('/getBannerList', {});
+
+export const createBanner = (bannerData) => httpPost('/createBanner', {bannerData});
+
+export const updateBanner = (id, updateData) => httpPost('/updateBanner', {id, updateData});
+
+export const deleteBanner = (id) => httpPost('/deleteBanner', {id});
+
+export const searchBannerSources = (query) => httpGet('/bannerSources', {query: {query}});
+
 export const refreshStructure = () => httpPost('/refresh-structure-data', {});

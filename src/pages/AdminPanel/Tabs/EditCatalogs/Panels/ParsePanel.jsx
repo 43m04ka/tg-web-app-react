@@ -3,6 +3,7 @@ import TabPane from '../../../Elements/WorkTabs/TabPane';
 import f, {Group, Row, Sheet} from '../../../Elements/FormLayout/FormLayout';
 import s from './Panels.module.scss';
 import {API_BASE_URL} from '../../../legacy/baseUrl';
+import {adminAuthHeadersJson} from '../../../adminAuth';
 
 const PS_FILTER_TYPES = [
     {value: 'FULL_GAME', label: 'Полная игра'},
@@ -279,7 +280,7 @@ const ParsePanel = ({catalog, page, onClose}) => {
 
             const response = await fetch(endpoint, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: adminAuthHeadersJson(),
                 body: JSON.stringify(payload),
             });
 

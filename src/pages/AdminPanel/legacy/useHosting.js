@@ -1,5 +1,6 @@
 import {useCallback, useState} from 'react';
 import {API_BASE_URL} from './baseUrl';
+import {adminAuthHeadersJson, adminBearerHeaders} from '../adminAuth';
 
 const API_BASE = `${API_BASE_URL}/api/hosting`;
 
@@ -15,7 +16,7 @@ export const useHosting = () => {
         setLoading(true);
         clearError();
         try {
-            const response = await fetch(`${API_BASE}/list?path=${path}`);
+            const response = await fetch(`${API_BASE}/list?path=${path}`, {headers: adminBearerHeaders()});
             if (!response.ok) throw new Error('Не удалось прочитать директорию');
             const data = await response.json();
             setItems(data);
@@ -43,6 +44,7 @@ export const useHosting = () => {
         try {
             const response = await fetch(`${API_BASE}/upload`, {
                 method: 'POST',
+                headers: adminBearerHeaders(),
                 body: formData,
             });
 
@@ -67,7 +69,7 @@ export const useHosting = () => {
         try {
             const response = await fetch(`${API_BASE}/${endpoint}`, {
                 method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
+                headers: adminAuthHeadersJson(),
                 body: JSON.stringify({ [bodyKey]: path }),
             });
 
@@ -83,9 +85,7 @@ export const useHosting = () => {
         try {
             const response = await fetch(`${API_BASE}/folder`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json' // ОБЯЗАТЕЛЬНО
-                },
+                headers: adminAuthHeadersJson(),
                 body: JSON.stringify({ folderName, parentPath }),
             });
 

@@ -3,6 +3,7 @@ import s from './RecalculatePriceTab.module.scss';
 import f, {Group, Sheet} from '../../../Elements/FormLayout/FormLayout';
 import useGlobalData from '../../../legacy/useGlobalData';
 import {API_BASE_URL} from '../../../legacy/baseUrl';
+import {adminBearerHeaders} from '../../../adminAuth';
 
 export default function RecalculateModalContent({ catalogId, catalogsList, runRef, onLoadingChange}) {
     const [rules, setRules] = useState([]);
@@ -20,7 +21,7 @@ export default function RecalculateModalContent({ catalogId, catalogsList, runRe
     useEffect(() => {
         if (!platform) return;
         setFetchingRules(true);
-        fetch(`${API_BASE_URL}/api/parsing/price-rules/${platform}`)
+        fetch(`${API_BASE_URL}/api/parsing/price-rules/${platform}`, {headers: adminBearerHeaders()})
             .then(res => res.ok ? res.json() : [])
             .then(data => {
                 setRules(data.length ? data : [{ min: 0, max: 100, type: 'MULTIPLIER', value: 1, ...(platform === 'xbox' && { commission: 0 }) }]);

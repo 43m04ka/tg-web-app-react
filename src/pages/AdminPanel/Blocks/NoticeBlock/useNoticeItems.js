@@ -1,5 +1,6 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {API_BASE_URL} from '../../legacy/baseUrl';
+import {adminBearerHeaders} from '../../adminAuth';
 
 const PARSING_API = `${API_BASE_URL}/api/parsing`;
 
@@ -33,7 +34,7 @@ const useNoticeItems = (options = {}) => {
 
     const fetchNotices = useCallback(async () => {
         try {
-            const response = await fetch(`${PARSING_API}/notices?time=${Date.now()}`);
+            const response = await fetch(`${PARSING_API}/notices?time=${Date.now()}`, {headers: adminBearerHeaders()});
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
             const data = await response.json();
@@ -77,7 +78,7 @@ const useNoticeItems = (options = {}) => {
         setDetailsLoading((prev) => ({...prev, [id]: true}));
 
         try {
-            const response = await fetch(`${PARSING_API}/notices/${id}`);
+            const response = await fetch(`${PARSING_API}/notices/${id}`, {headers: adminBearerHeaders()});
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
             const data = await response.json();
@@ -95,7 +96,7 @@ const useNoticeItems = (options = {}) => {
         setNotices((prev) => prev.filter((notice) => notice.id !== id));
 
         try {
-            await fetch(`${PARSING_API}/notices/${id}/dismiss`, {method: 'POST'});
+            await fetch(`${PARSING_API}/notices/${id}/dismiss`, {method: 'POST', headers: adminBearerHeaders()});
         } catch (err) {
             console.error('Ошибка при закрытии уведомления:', err);
             await fetchNotices();

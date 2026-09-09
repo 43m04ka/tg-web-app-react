@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import s from './Parsing.module.scss';
 import {API_BASE_URL} from '../../legacy/baseUrl';
+import {adminAuthHeadersJson, adminBearerHeaders} from '../../adminAuth';
 import {useFeedback} from '../../Elements/Feedback/Feedback';
 
 const PLATFORMS = [
@@ -73,7 +74,7 @@ const Parsing = () => {
     const load = useCallback(async (key) => {
         setLoading((prev) => ({...prev, [key]: true}));
         try {
-            const response = await fetch(`${API_BASE_URL}/api/parsing/price-rules/${key}`);
+            const response = await fetch(`${API_BASE_URL}/api/parsing/price-rules/${key}`, {headers: adminBearerHeaders()});
             if (!response.ok) throw new Error('Сервер не отдал сетку цен');
 
             const data = await response.json();
@@ -195,7 +196,7 @@ const Parsing = () => {
 
             const response = await fetch(`${API_BASE_URL}/api/parsing/price-rules/${active}`, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: adminAuthHeadersJson(),
                 body: JSON.stringify({rules: payload}),
             });
 

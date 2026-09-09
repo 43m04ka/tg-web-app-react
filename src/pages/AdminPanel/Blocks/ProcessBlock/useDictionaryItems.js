@@ -1,5 +1,6 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {API_BASE_URL} from '../../legacy/baseUrl';
+import {adminAuthHeadersJson, adminBearerHeaders} from '../../adminAuth';
 
 const PARSING_API = `${API_BASE_URL}/api/parsing`;
 
@@ -22,7 +23,7 @@ const useDictionaryItems = (options = {}) => {
 
     const fetchData = useCallback(async () => {
         try {
-            const response = await fetch(`${PARSING_API}/processList?time=${Date.now()}`);
+            const response = await fetch(`${PARSING_API}/processList?time=${Date.now()}`, {headers: adminBearerHeaders()});
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
 
@@ -67,9 +68,7 @@ const useDictionaryItems = (options = {}) => {
         try {
             const response = await fetch(`${PARSING_API}/setNotificationProcess/${id}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: adminAuthHeadersJson(),
                 body: JSON.stringify({notification: notification}),
             });
 
@@ -83,6 +82,7 @@ const useDictionaryItems = (options = {}) => {
         try {
             const response = await fetch(`${PARSING_API}/cancelProcess/${id}`, {
                 method: 'POST',
+                headers: adminBearerHeaders(),
             });
 
             if (!response.ok) throw new Error(`Failed to cancel process`);

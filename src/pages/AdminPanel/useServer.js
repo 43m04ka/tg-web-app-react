@@ -7,9 +7,7 @@ export function useServer() {
     const getCardList = async (setResult, catalogId, listNumber) => {
         fetch(`${URL}/productList?time=${Date.now()}&catalogId=${catalogId}&listNumber=${listNumber}`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: adminAuthHeadersJson(),
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
@@ -35,9 +33,7 @@ export function useServer() {
     const getCatalogList = async (setResult) => {
         await fetch(`${URL}/getCatalogList?time=${Date.now()}`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
+            headers: adminAuthHeadersJson(),
         }).then(async response => {
             let answer = response.json()
             answer.then(async (data) => {
@@ -120,7 +116,7 @@ export function useServer() {
 
         const response = await fetch(`${URL}/products?${params.toString()}`, {
             method: 'GET',
-            headers: {'Content-Type': 'application/json'},
+            headers: adminAuthHeadersJson(),
         });
 
         if (!response.ok) throw new Error('Не удалось загрузить список товаров');
@@ -131,7 +127,7 @@ export function useServer() {
     const getProductFacets = async () => {
         const response = await fetch(`${URL}/products/facets?time=${Date.now()}`, {
             method: 'GET',
-            headers: {'Content-Type': 'application/json'},
+            headers: adminAuthHeadersJson(),
         });
 
         if (!response.ok) throw new Error('Не удалось загрузить фильтры');
@@ -167,9 +163,7 @@ export function useServer() {
     const searchForName = async (setResult, searchString) => {
         await fetch(`${URL}/searchForName?searchString=${searchString}&time=${Date.now()}`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
+            headers: adminAuthHeadersJson(),
         }).then(async response => {
             let answer = response.json()
             answer.then((data) => {
@@ -211,7 +205,7 @@ export function useServer() {
     const getAssociationsSchedule = async () => {
         const response = await fetch(`${URL}/associations/schedule?time=${Date.now()}`, {
             method: 'GET',
-            headers: {'Content-Type': 'application/json'},
+            headers: adminAuthHeadersJson(),
         });
 
         if (!response.ok) throw new Error('Не удалось получить расписание');
@@ -281,7 +275,7 @@ export function useServer() {
     }
 
     const getSystemSettings = async (setResult) => {
-        fetch(`${URL}/settings/public?time=${Date.now()}`, {
+        fetch(`${URL}/settings/all?time=${Date.now()}`, {
             method: 'GET',
             headers: adminAuthHeadersJson(), 
         }).then(async response => {

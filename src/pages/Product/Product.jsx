@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {useNavigate, useParams} from 'react-router-dom';
+import {Navigate, useNavigate, useParams} from 'react-router-dom';
 import {useSessionStore, selectUserId} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
 import {useCartStore, selectCartCount} from '../../store/useCartStore';
@@ -15,7 +15,8 @@ import ProductCard from '../Main/ProductCard';
 import BackPill from '../../shared/ui/BackPill/BackPill';
 import ProductChips from './ProductChips';
 import ProductShare from './ProductShare';
-import {discountPercent} from '../Main/catalogSections';
+import {discountPercent, isSubscription} from '../Main/catalogSections';
+import {subscriptionRoute} from '../../shared/lib/pageRoutes';
 import ProductHero from './ProductHero';
 import ProductEditions from './ProductEditions';
 import ProductAddons from './ProductAddons';
@@ -144,6 +145,15 @@ export default function Product() {
 
     const recommendations = useRecommendations(pageId, excludedIds);
 
+    const isPlan = Boolean(product) && isSubscription(product);
+
+    const planRoute = useMemo(() => {
+        if (!isPlan || !Array.isArray(catalogs)) return null;
+
+        const path = catalogs.find((item) => item.id === product.catalogId)?.path;
+        return path ? subscriptionRoute(path, product.id) : null;
+    }, [isPlan, product, catalogs]);
+
     const offer = useMemo(() => (product ? subscriptionOffer(product) : null), [product]);
 
     const offerRoute = useMemo(() => {
@@ -262,7 +272,7 @@ export default function Product() {
         );
     }
 
-    if (!product) {
+    if (!product || (isPlan && !Array.isArray(catalogs))) {
         return (
             <div className={style.screen}>
                 {floatingBack}
@@ -270,6 +280,8 @@ export default function Product() {
             </div>
         );
     }
+
+    if (planRoute) return <Navigate to={planRoute} replace/>;
 
     const discount = discountPercent(product.price, product.oldPrice);
     const promoUntil = discount > 0 ? promotionLabel(product) : null;

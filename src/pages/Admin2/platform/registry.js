@@ -10,6 +10,7 @@ import prices from '../modules/prices/module';
 import services from '../modules/services/module';
 import media from '../modules/media/module';
 import settings from '../modules/settings/module';
+import access from '../modules/access/module';
 import kit from '../modules/kit/module';
 
 export const BASE = '/admin2';
@@ -21,7 +22,7 @@ export const GROUPS = [
     {id: 'tools', title: 'Инструменты'},
 ];
 
-const REGISTERED = [overview, orders, steam, payments, promo, products, prices, services, storefront, broadcast, media, settings, kit];
+const REGISTERED = [overview, orders, steam, payments, promo, products, prices, services, storefront, broadcast, media, settings, access, kit];
 
 export const modules = REGISTERED
     .slice()

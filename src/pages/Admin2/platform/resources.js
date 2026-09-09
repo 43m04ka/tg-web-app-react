@@ -23,6 +23,9 @@ export const keys = {
     serviceCatalogs: ['services', 'catalogs'],
     serviceCodes: (offerId, status) => ['services', 'codes', offerId, status],
     structure: ['structure'],
+    pages: ['structure', 'pages'],
+    pageBlocks: (pageId, group) => ['structure', 'blocks', pageId, group],
+    previewCards: ['structure', 'preview-cards'],
     media: ['media'],
     mediaFolder: (path) => ['media', 'folder', path || ''],
 };

@@ -7,6 +7,8 @@ import {useScrollMemory} from '../../shared/hooks/useScrollMemory';
 import {hapticImpact, hapticSelection} from '../../shared/lib/haptic';
 import {recallView, rememberView} from '../../shared/lib/viewMemory';
 import {isEmailValid, money} from '../Basket/cartModel';
+import PaymentPicker from '../../shared/ui/PaymentPicker/PaymentPicker';
+import {usePaymentMethods} from '../../shared/hooks/usePaymentMethods';
 import {CodeDone, CodeFail, CodeStalled, CodeWaiting} from './ServicesScreens';
 import {isManual, isSellable, resolveSelection} from './servicesModel';
 import ServicesView from './ServicesView';
@@ -49,6 +51,7 @@ export default function Services() {
     const [isTouched, setTouched] = useState(false);
 
     const flow = useCodeOrder(userId);
+
     const scrollRef = useScrollMemory('services', {ready: brands !== null});
 
     const view = useMemo(
@@ -57,6 +60,8 @@ export default function Services() {
     );
 
     const {brand, offer} = view;
+
+    const payment = usePaymentMethods({platform, scenario: 'services', total: offer?.price ?? 0});
 
     useEffect(() => {
         rememberView(FORM_KEY, {
@@ -138,12 +143,13 @@ export default function Services() {
             username: user?.username || undefined,
             email: email.trim(),
             offerId: offer.id,
+            paymentMethod: payment.method,
             quantity: 1
         }, {
             title: [brand?.name, offer.groupName, offer.denomination].filter(Boolean).join(' · '),
             manual: isManual(offer)
         });
-    }, [isReady, flow, platform, user, email, offer, brand]);
+    }, [isReady, flow, platform, user, email, offer, brand, payment.method]);
 
     if (flow.screen === SCREEN.WAITING) {
         return <CodeWaiting order={flow.order} onOpenAgain={flow.openAgain} onCancel={flow.cancel}/>;
@@ -175,6 +181,15 @@ export default function Services() {
             email={email}
             emailError={isTouched && !isEmailReady ? 'Проверьте адрес почты' : null}
             onEmailChange={setEmail}
+            paymentPicker={payment.hasChoice ? (
+                <PaymentPicker
+                    methods={payment.methods}
+                    method={payment.method}
+                    total={offer?.price ?? 0}
+                    money={money}
+                    onSelect={payment.setMethod}
+                />
+            ) : null}
             onPickBrand={pickBrand}
             onPickKind={pickKind}
             onPickRegion={pickRegion}

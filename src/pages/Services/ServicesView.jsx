@@ -54,6 +54,7 @@ export default function ServicesView({
     bottomInset = 0,
     email = '',
     emailError = null,
+    paymentPicker = null,
     onEmailChange,
     showEmail = true,
     onPickBrand,
@@ -296,6 +297,13 @@ export default function ServicesView({
                                 />
 
                                 {emailError ? <span className={style.fieldError}>{emailError}</span> : null}
+                            </section>
+                        ) : null}
+
+                        {paymentPicker ? (
+                            <section className={style.block}>
+                                <h2 className={style.blockTitle}>Способ оплаты</h2>
+                                {paymentPicker}
                             </section>
                         ) : null}
 

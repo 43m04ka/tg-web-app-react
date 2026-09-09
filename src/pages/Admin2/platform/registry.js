@@ -1,6 +1,7 @@
 import overview from '../modules/overview/module';
 import orders from '../modules/orders/module';
 import steam from '../modules/steam/module';
+import payments from '../modules/payments/module';
 import products from '../modules/products/module';
 import prices from '../modules/prices/module';
 import services from '../modules/services/module';
@@ -17,7 +18,7 @@ export const GROUPS = [
     {id: 'tools', title: 'Инструменты'},
 ];
 
-const REGISTERED = [overview, orders, steam, products, prices, services, media, settings, kit];
+const REGISTERED = [overview, orders, steam, payments, products, prices, services, media, settings, kit];
 
 export const modules = REGISTERED
     .slice()

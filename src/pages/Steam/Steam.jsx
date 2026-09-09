@@ -7,6 +7,8 @@ import {useScrollMemory} from '../../shared/hooks/useScrollMemory';
 import {hapticImpact, hapticSelection} from '../../shared/lib/haptic';
 import {recallView, rememberView} from '../../shared/lib/viewMemory';
 import BackPill from '../../shared/ui/BackPill/BackPill';
+import PaymentPicker from '../../shared/ui/PaymentPicker/PaymentPicker';
+import {usePaymentMethods} from '../../shared/hooks/usePaymentMethods';
 import {isEmailValid, money} from '../Basket/cartModel';
 import {SteamCrediting, SteamDone, SteamFail, SteamStalled, SteamWaiting} from './SteamScreens';
 import {
@@ -56,11 +58,14 @@ export default function Steam() {
 
     const flow = useSteamOrder(userId);
 
+
     const scrollRef = useScrollMemory('steam');
 
     const amount = Number(amountText);
 
     const {quote, isLoading, error: quoteError} = useSteamQuote(amount);
+
+    const payment = usePaymentMethods({platform, scenario: 'steam', total: quote?.total ?? 0});
 
     useEffect(() => {
         rememberView(FORM_KEY, {login, email, amountText});
@@ -108,9 +113,10 @@ export default function Steam() {
             username: user?.username || undefined,
             steamLogin: login.trim(),
             email: email.trim(),
+            paymentMethod: payment.method,
             amount
         });
-    }, [isReady, flow, platform, user, email, login, amount]);
+    }, [isReady, flow, platform, user, email, login, amount, payment.method]);
 
     if (flow.screen === SCREEN.WAITING) {
         return <SteamWaiting order={flow.order} onOpenAgain={flow.openAgain} onCancel={flow.cancel}/>;
@@ -223,6 +229,22 @@ export default function Steam() {
 
                     <span className={style.blockNote}>Введите свою сумму или выберите быстрый вариант</span>
                 </section>
+
+                {payment.hasChoice ? (
+                    <section className={style.block}>
+                        <h2 className={style.blockTitle}>Способ оплаты</h2>
+                        <PaymentPicker
+                            methods={payment.methods}
+                            method={payment.method}
+                            total={quote?.total ?? 0}
+                            money={money}
+                            onSelect={(key) => {
+                                hapticSelection();
+                                payment.setMethod(key);
+                            }}
+                        />
+                    </section>
+                ) : null}
 
                 <div className={style.summary}>
                     <div className={style.summaryRow}>

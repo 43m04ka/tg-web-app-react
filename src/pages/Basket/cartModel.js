@@ -13,14 +13,15 @@ export const pageCartItems = (items, catalogs, pageId) => {
     return items.filter((item) => pageCatalogs.has(item.catalogId));
 };
 
-export const PAYMENT_METHODS = [
+export const FALLBACK_PAYMENT_METHODS = [
     {
         key: 'sbp',
         title: 'СБП',
         note: 'Оплата с помощью Системы быстрых платежей',
         tone: 'sbp',
         icon: 'sbp',
-        isOnline: true
+        flow: 'auto',
+        requiresEmail: true
     },
     {
         key: 'split',
@@ -28,6 +29,8 @@ export const PAYMENT_METHODS = [
         note: 'Яндекс Сплит — это сервис от Яндекса для оплаты покупок частями',
         tone: 'split',
         icon: 'split',
+        flow: 'manual',
+        requiresEmail: false,
         minTotal: SPLIT_MIN_TOTAL,
         schedule: true,
         terms: {label: 'Условия сервиса', url: 'https://yandex.ru/legal/yandexpay_b2c/'}
@@ -38,15 +41,49 @@ export const PAYMENT_METHODS = [
         note: '«Долями» — это сервис оплаты покупок частями от Т‑Банка',
         tone: 'dolyami',
         icon: 'dolyami',
+        flow: 'manual',
+        requiresEmail: false,
         minTotal: SPLIT_MIN_TOTAL,
         schedule: true,
         terms: {label: 'Условия сервиса', url: 'https://dolyame.ru/'}
     }
 ];
 
-export const findMethod = (key) => PAYMENT_METHODS.find((method) => method.key === key) || PAYMENT_METHODS[0];
+export const normalizeMethod = (method) => ({
+    key: method.code,
+    title: method.title,
+    note: method.note || '',
+    tone: method.tone || '',
+    icon: method.icon || '',
+    flow: method.flow === 'auto' ? 'auto' : 'manual',
+    requiresEmail: !!method.requiresEmail,
+    minTotal: method.minTotal || 0,
+    maxTotal: method.maxTotal || 0,
+    schedule: !!method.schedule,
+    terms: method.terms || null
+});
 
-export const isMethodAvailable = (method, total) => !method.minTotal || total >= method.minTotal;
+export const normalizeMethods = (list) => (Array.isArray(list) && list.length
+    ? list.map(normalizeMethod)
+    : FALLBACK_PAYMENT_METHODS);
+
+export const findMethod = (methods, key) => {
+    const list = methods && methods.length ? methods : FALLBACK_PAYMENT_METHODS;
+    return list.find((method) => method.key === key) || list[0];
+};
+
+export const isMethodAvailable = (method, total) => {
+    if (!method) return false;
+    if (method.minTotal && total < method.minTotal) return false;
+    if (method.maxTotal && total > method.maxTotal) return false;
+    return true;
+};
+
+export const methodUnavailableReason = (method, money) => {
+    if (method.minTotal) return `Доступно от ${money(method.minTotal)}`;
+    if (method.maxTotal) return `Доступно до ${money(method.maxTotal)}`;
+    return 'Сейчас недоступно';
+};
 
 const SCHEDULE_STEP_DAYS = 14;
 const SCHEDULE_PARTS = 4;

@@ -2,11 +2,11 @@ import React from 'react';
 import {accentStyle} from './accent';
 import style from './SelectPlatform.module.scss';
 
-export default function PlatformCard({item, isActive, onSelect}) {
+export default function PlatformCard({item, isActive, isTile, onSelect}) {
     return (
         <button
             type="button"
-            className={`${style.card} ${isActive ? style.cardActive : ''}`}
+            className={[style.card, isTile ? style.cardTile : '', isActive ? style.cardActive : ''].join(' ')}
             style={accentStyle(item.color)}
             onClick={onSelect}
             aria-pressed={isActive}

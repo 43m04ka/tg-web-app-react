@@ -9,7 +9,9 @@ import {hapticImpact} from '../../shared/lib/haptic';
 import {primeKeyboard} from '../../shared/lib/keyboard';
 import {getTelegramObject} from '../../shared/lib/telegram';
 import {standaloneRoute} from '../../shared/lib/pageRoutes';
+import {regionIcon, regionLabel} from '../../shared/lib/region';
 import {glowStyle} from './accent';
+import PopularRail from './PopularRail';
 import PlatformCard from './PlatformCard';
 import PlatformLink from './PlatformLink';
 import style from './SelectPlatform.module.scss';
@@ -43,6 +45,7 @@ export default function SelectPlatform() {
 
     const startPages = useStructureStore((state) => state.startPages);
     const pages = useStructureStore((state) => state.pages);
+    const popularProducts = useStructureStore((state) => state.popularProducts);
     const pageId = useSessionStore((state) => state.pageId);
     const setPageId = useSessionStore((state) => state.setPageId);
 
@@ -81,6 +84,52 @@ export default function SelectPlatform() {
         return toGroups(visible.length || !fallback ? visible : itemsOf(fallback));
     }, [startPages, botType, isSettled]);
 
+    const popular = useMemo(() => {
+        if (!Array.isArray(popularProducts) || !isSettled) return [];
+
+        const itemsOf = (platform) => popularProducts
+            .filter((item) => item.platform === platform && item.product)
+            .sort((a, b) => a.serialNumber - b.serialNumber);
+
+        const visible = itemsOf(botType);
+        const fallback = fallbackBotType(botType);
+
+        return visible.length || !fallback ? visible : itemsOf(fallback);
+    }, [popularProducts, botType, isSettled]);
+
+    const regionOfProduct = useMemo(() => {
+        const pageById = new Map((pages || []).map((page) => [page.id, page]));
+        const startPageByPageId = new Map((startPages || []).map((item) => [item.structurePageId, item]));
+
+        return (product) => {
+            const productPageId = product.structurePageId ?? null;
+            if (productPageId === null) return null;
+
+            const page = pageById.get(productPageId) || null;
+            const startPage = startPageByPageId.get(productPageId) || null;
+            if (!page && !startPage) return null;
+
+            return {
+                title: regionLabel(page, startPage),
+                icon: regionIcon(page, startPage),
+                color: startPage?.color || null
+            };
+        };
+    }, [pages, startPages]);
+
+    const openProduct = useCallback((product) => {
+        if (pickedId !== null) return;
+
+        hapticImpact('light');
+
+        const fallbackPage = (pages || []).find((page) => !standaloneRoute(page.type));
+        const targetPageId = product.structurePageId ?? pageId ?? fallbackPage?.id ?? null;
+        if (targetPageId === null) return;
+
+        setPageId(targetPageId);
+        navigate(`/card/${product.id}`);
+    }, [navigate, pages, pageId, pickedId, setPageId]);
+
     const openGlobalSearch = useCallback(() => {
         hapticImpact('light');
         primeKeyboard();
@@ -108,10 +157,11 @@ export default function SelectPlatform() {
         return isEntering ? {style: {animationDelay: `${delay}ms`}} : {};
     };
 
-    const renderChild = (item) => {
+    const renderChild = (item, isTile) => {
         const isPicked = pickedId === item.id;
         const className = [
             style.item,
+            isTile && item.type === 'page' ? '' : style.itemWide,
             isEntering ? style.entering : '',
             isPicked ? style.picked : ''
         ].join(' ');
@@ -126,6 +176,7 @@ export default function SelectPlatform() {
                 <PlatformCard
                     item={{...page, ...item}}
                     isActive={isPicked || item.structurePageId === pageId}
+                    isTile={isTile}
                     onSelect={() => handleSelect(item, page)}
                 />
             );
@@ -172,7 +223,7 @@ export default function SelectPlatform() {
             ) : null}
 
             <h1 className={style.title}>
-                Геймворд — ваш сервис для покупки игр и подписок для <span className={style.ps}>PlayStation</span> и{' '}
+                Геймворд — игры и подписки для <span className={style.ps}>PlayStation</span> и{' '}
                 <span className={style.xbox}>Xbox</span>
             </h1>
 
@@ -184,10 +235,7 @@ export default function SelectPlatform() {
                     </svg>
                 </span>
 
-                <span className={style.searchBody}>
-                    <span className={style.searchTitle}>Поиск</span>
-                    <span className={style.searchNote}>Игры, подписки и донат в одном месте</span>
-                </span>
+                <span className={style.searchTitle}>Поиск по всем витринам</span>
 
                 <span className={style.searchArrow} aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none">
@@ -197,26 +245,35 @@ export default function SelectPlatform() {
                 </span>
             </button>
 
-            {groups.map((group) => (
-                <section key={group.key} className={style.group}>
-                    {group.header ? (
-                        <div className={`${style.item} ${isEntering ? style.entering : ''}`} {...revealProps()}>
-                            <div className={style.sectionHeader}>
-                                {group.header.icon ? (
-                                    <span
-                                        className={style.sectionIcon}
-                                        style={{backgroundImage: `url(${group.header.icon})`}}
-                                        aria-hidden="true"
-                                    />
-                                ) : null}
-                                <span className={style.sectionTitle}>{group.header.text}</span>
-                            </div>
-                        </div>
-                    ) : null}
+            <PopularRail items={popular} regionOf={regionOfProduct} onOpen={openProduct}/>
 
-                    {group.children.map(renderChild)}
-                </section>
-            ))}
+            {groups.map((group) => {
+                const isGrid = group.children.filter((item) => item.type === 'page').length > 1;
+
+                return (
+                    <section key={group.key} className={`${style.group} ${isGrid ? style.groupGrid : ''}`}>
+                        {group.header ? (
+                            <div
+                                className={`${style.item} ${style.itemWide} ${isEntering ? style.entering : ''}`}
+                                {...revealProps()}
+                            >
+                                <div className={style.sectionHeader}>
+                                    {group.header.icon ? (
+                                        <span
+                                            className={style.sectionIcon}
+                                            style={{backgroundImage: `url(${group.header.icon})`}}
+                                            aria-hidden="true"
+                                        />
+                                    ) : null}
+                                    <span className={style.sectionTitle}>{group.header.text}</span>
+                                </div>
+                            </div>
+                        ) : null}
+
+                        {group.children.map((item) => renderChild(item, isGrid))}
+                    </section>
+                );
+            })}
         </div>
     );
 }

@@ -1,6 +1,7 @@
 @import "src/pages/AdminPanel/AdminPanel.module";
 
-.main-division {
+.sidebar {
+  overflow: visible;
   width: var(--sidebar-w);
   min-width: var(--sidebar-w);
   display: flex;
@@ -10,23 +11,25 @@
   border-right: 1px solid var(--border);
   background: var(--surface);
   position: relative;
-  padding: var(--sp-4) var(--sp-3) var(--sp-3);
+  padding: 0;
   gap: 0;
 }
 
-// Шапка навбара: только название, отделено тонкой линией.
 .brand {
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  padding: var(--sp-1) var(--sp-3) var(--sp-4);
-  margin-bottom: var(--sp-2);
+  gap: var(--sp-2);
+  height: var(--topbar-h);
+  padding: 0 var(--sp-4);
   border-bottom: 1px solid var(--border);
 }
 
 .brandTitle {
+  flex: 1;
+  min-width: 0;
   font-family: var(--font-ui);
-  font-size: var(--fs-xl);
+  font-size: var(--fs-lg);
   font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--text);
@@ -35,12 +38,13 @@
   text-overflow: ellipsis;
 }
 
+
 .navScroll {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-bottom: var(--sp-2);
+  padding: var(--sp-3) var(--sp-3) var(--sp-4);
   scrollbar-width: thin;
   scrollbar-color: var(--border-strong) transparent;
 
@@ -64,7 +68,7 @@
 .routeBlockTitle {
   font-family: var(--font-ui);
   font-size: var(--fs-xs);
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -82,7 +86,7 @@
   align-items: center;
   text-align: left;
   padding: 0 var(--sp-3);
-  height: 34px;
+  height: 32px;
   border-radius: var(--r-md);
   border: none;
   background: transparent;
@@ -104,11 +108,6 @@
   }
 }
 
-.navItemHome {
-  color: var(--text);
-  font-weight: 700;
-}
-
 .navItemText {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -124,8 +123,8 @@
     content: '';
     position: absolute;
     left: 0;
-    top: 8px;
-    bottom: 8px;
+    top: 7px;
+    bottom: 7px;
     width: 2px;
     border-radius: var(--r-pill);
     background: var(--accent);
@@ -135,4 +134,14 @@
     background: var(--accent-soft);
     color: var(--accent);
   }
+}
+
+.footer {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  height: 48px;
+  padding: 0 var(--sp-3);
+  border-top: 1px solid var(--border);
 }

@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import {useSessionStore, selectUserId} from '../../store/useSessionStore';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
 import {useBackButton} from '../../shared/hooks/useBackButton';
@@ -10,7 +10,7 @@ import {isEmailValid, money} from '../Basket/cartModel';
 import PaymentPicker from '../../shared/ui/PaymentPicker/PaymentPicker';
 import {usePaymentMethods} from '../../shared/hooks/usePaymentMethods';
 import {CodeDone, CodeFail, CodeStalled, CodeWaiting} from './ServicesScreens';
-import {isManual, isSellable, resolveSelection} from './servicesModel';
+import {bestValueOffer, isManual, isSellable, resolveSelection} from './servicesModel';
 import ServicesView from './ServicesView';
 import {useCodeCatalog} from './useCodeCatalog';
 import {SCREEN, useCodeOrder} from './useCodeOrder';
@@ -31,6 +31,7 @@ const nativeContact = (user) => {
 
 export default function Services() {
     const navigate = useNavigate();
+    const location = useLocation();
     const {contentSafeAreaInset, safeAreaInset} = useAppInsets();
 
     const userId = useSessionStore(selectUserId);
@@ -40,7 +41,10 @@ export default function Services() {
 
     const {brands, error, retry} = useCodeCatalog();
 
-    const saved = useMemo(() => recallView(FORM_KEY) || {}, []);
+    const target = useMemo(() => location.state || {}, [location.state]);
+    const isSingle = Boolean(target.single);
+
+    const saved = useMemo(() => (isSingle ? target : recallView(FORM_KEY) || {}), [isSingle, target]);
 
     const [brandId, setBrandId] = useState(saved.brandId ?? null);
     const [kind, setKind] = useState(saved.kind ?? null);
@@ -64,6 +68,8 @@ export default function Services() {
     const payment = usePaymentMethods({platform, scenario: 'services', total: offer?.price ?? 0});
 
     useEffect(() => {
+        if (isSingle) return;
+
         rememberView(FORM_KEY, {
             brandId: brand?.id ?? null,
             kind: view.kind,
@@ -72,12 +78,13 @@ export default function Services() {
             offerId: offer?.id ?? null,
             email
         });
-    }, [brand, view.kind, view.regionName, view.groupKey, offer, email]);
+    }, [isSingle, brand, view.kind, view.regionName, view.groupKey, offer, email]);
 
     const back = useCallback(() => {
         hapticImpact('light');
-        navigate('/');
-    }, [navigate]);
+        if (isSingle) navigate(-1);
+        else navigate('/');
+    }, [isSingle, navigate]);
 
     const hasNativeBack = useBackButton(back, {enabled: flow.screen === SCREEN.NONE});
 
@@ -172,6 +179,9 @@ export default function Services() {
             scrollRef={scrollRef}
             brands={brands}
             view={view}
+            isSingle={isSingle}
+            poster={target.poster || null}
+            bestOffer={view.kind === 'subscription' ? bestValueOffer(view.offers) : null}
             error={error}
             onRetry={retry}
             onBack={back}

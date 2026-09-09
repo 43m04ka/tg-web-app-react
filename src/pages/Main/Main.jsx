@@ -7,6 +7,7 @@ import {useScrollMemory} from '../../shared/hooks/useScrollMemory';
 import {hapticImpact} from '../../shared/lib/haptic';
 import {primeKeyboard} from '../../shared/lib/keyboard';
 import {loadFacets} from '../../shared/api/facetsCache';
+import {catalogRoute, productRoute, subscriptionRoute} from '../../shared/lib/pageRoutes';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import BannerCarousel from './BannerCarousel';
 import CatalogSection from './CatalogSection';
@@ -45,13 +46,18 @@ export default function Main() {
 
     const openCatalog = useCallback((path) => {
         hapticImpact('light');
-        navigate(`/catalog/${String(path || '').replace(/^\//, '')}`);
+        navigate(catalogRoute(path));
+    }, [navigate]);
+
+    const openSubscriptionCatalog = useCallback((path) => {
+        hapticImpact('light');
+        navigate(subscriptionRoute(path));
     }, [navigate]);
 
     const openProduct = useCallback((product) => {
         hapticImpact('light');
-        navigate(`/card/${product.id}`);
-    }, [navigate]);
+        navigate(productRoute(product, catalogs) || `/card/${product.id}`);
+    }, [navigate, catalogs]);
 
     return (
         <div
@@ -87,6 +93,7 @@ export default function Main() {
                     key={section.block.id}
                     section={section}
                     onOpenCatalog={openCatalog}
+                    onOpenSubscriptionCatalog={openSubscriptionCatalog}
                     onOpenProduct={openProduct}
                 />
             ))}

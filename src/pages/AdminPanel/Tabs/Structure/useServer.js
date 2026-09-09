@@ -171,6 +171,51 @@ export function useServer() {
         await throwIfFailed(response, 'Не удалось удалить элемент');
     };
 
+    // Популярные позиции стартового экрана. Список приходит вместе с товарами:
+    // отдельный запрос за каждым товаром превратил бы открытие вкладки в N запросов
+    const getPopularList = async () => {
+        const response = await fetch(`${URL}/getPopularList`, {
+            method: 'POST',
+            headers: adminAuthHeadersJson(),
+            body: JSON.stringify(withJsonAuth({})),
+        });
+
+        await throwIfFailed(response, 'Не удалось загрузить популярные позиции');
+
+        const data = await response.json().catch(() => ({}));
+        return data.result || [];
+    };
+
+    const createPopular = async (authenticationData, platform, productId) => {
+        const response = await fetch(`${URL}/createPopular`, {
+            method: 'POST',
+            headers: adminAuthHeadersJson(),
+            body: JSON.stringify(withJsonAuth({authenticationData, platform, productId})),
+        });
+
+        await throwIfFailed(response, 'Не удалось добавить позицию');
+    };
+
+    const updatePopular = async (authenticationData, id, updateData) => {
+        const response = await fetch(`${URL}/updatePopular`, {
+            method: 'POST',
+            headers: adminAuthHeadersJson(),
+            body: JSON.stringify(withJsonAuth({authenticationData, id, updateData})),
+        });
+
+        await throwIfFailed(response, 'Не удалось сохранить порядок');
+    };
+
+    const deletePopular = async (authenticationData, id) => {
+        const response = await fetch(`${URL}/deletePopular`, {
+            method: 'POST',
+            headers: adminAuthHeadersJson(),
+            body: JSON.stringify(withJsonAuth({authenticationData, id})),
+        });
+
+        await throwIfFailed(response, 'Не удалось убрать позицию');
+    };
+
     const getBannerList = async () => {
         const response = await fetch(`${URL}/getBannerList`, {
             method: 'POST',
@@ -239,6 +284,10 @@ export function useServer() {
         createStartPage,
         updateStartPage,
         deleteStartPage,
+        getPopularList,
+        createPopular,
+        updatePopular,
+        deletePopular,
         getBannerList,
         createBanner,
         updateBanner,

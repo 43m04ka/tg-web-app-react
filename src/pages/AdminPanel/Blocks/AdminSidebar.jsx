@@ -1,16 +1,24 @@
 import React from 'react';
 import styles from './AdminSidebar.module.scss';
 import {useLocation, useNavigate} from 'react-router-dom';
+import AdminDock from './AdminDock';
+import useData from '../useData';
 
-const AdminSidebar = ({routeGroups}) => {
+const AdminSidebar = ({routeGroups, theme, onToggleTheme}) => {
     const navigator = useNavigate();
     const location = useLocation();
+    const setAuthenticationData = useData((state) => state.setAuthenticationData);
 
     const pathAfterAdmin = location.pathname.replace(/^\/admin-panel\/?/, '').replace(/\/$/, '');
     const activeSlug = (pathAfterAdmin.split('/')[0] || '').trim();
 
+    const onLogout = () => {
+        setAuthenticationData(null);
+        navigator('/admin');
+    };
+
     return (
-        <div className={styles['main-division']}>
+        <nav className={styles['sidebar']}>
             <div className={styles['brand']}>
                 <span className={styles['brandTitle']}>Админ-панель</span>
             </div>
@@ -20,10 +28,11 @@ const AdminSidebar = ({routeGroups}) => {
                     type="button"
                     onClick={() => navigator('')}
                     aria-current={activeSlug === '' ? 'page' : undefined}
-                    className={`${styles['navItem']} ${styles['navItemHome']} ${activeSlug === '' ? styles['navItemActive'] : ''}`}
+                    className={`${styles['navItem']} ${activeSlug === '' ? styles['navItemActive'] : ''}`}
                 >
                     <span className={styles['navItemText']}>Главная</span>
                 </button>
+
                 {routeGroups.map((group) => (
                     <div key={group.name} className={styles['routeBlock']}>
                         <div className={styles['routeBlockTitle']}>{group.name}</div>
@@ -41,7 +50,11 @@ const AdminSidebar = ({routeGroups}) => {
                     </div>
                 ))}
             </div>
-        </div>
+
+            <div className={styles['footer']}>
+                <AdminDock theme={theme} onToggleTheme={onToggleTheme} onLogout={onLogout}/>
+            </div>
+        </nav>
     );
 };
 

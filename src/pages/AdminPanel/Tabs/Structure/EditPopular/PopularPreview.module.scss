@@ -1,0 +1,68 @@
+.frame {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.phone {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 8px 0 16px;
+  overflow: auto;
+}
+
+// Единица витрины считается от ширины «телефона», а не от ширины панели:
+// иначе карточки в превью крупнее, чем у покупателя. cqi берётся у предка,
+// поэтому ширину задаёт оболочка, а переменную — уже её содержимое.
+.phoneShell {
+  width: 100%;
+  max-width: 402px;
+  container-type: inline-size;
+}
+
+.phoneInner {
+  width: 100%;
+  min-height: 360px;
+  box-sizing: border-box;
+  padding: 20px 13px 28px;
+  border-radius: 24px;
+  border: 1px solid var(--border-strong);
+  background:
+    radial-gradient(ellipse 120% 60% at 50% -10%, rgba(80, 90, 140, 0.18) 0%, transparent 55%),
+    #121212;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  --u: calc(1cqi / 4.02);
+
+  // Токены витрины внутри «телефона» возвращаются к своим значениям: в светлой
+  // теме панели те же имена означают тёмный текст, и подписи карточек пропадали
+  // на тёмной подложке превью.
+  --text: oklch(0.985 0.003 264);
+  --text-secondary: oklch(0.91 0.005 264);
+  --text-muted: oklch(0.755 0.008 264);
+  --gold: oklch(0.85 0.16 90);
+  --gold-surface: oklch(0.25 0.05 90);
+}
+
+.heading {
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.24;
+  color: #f2f4f8;
+}
+
+.empty {
+  margin: 0;
+  padding: 24px 0;
+  text-align: center;
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+}

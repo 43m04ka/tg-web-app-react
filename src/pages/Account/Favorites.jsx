@@ -7,6 +7,8 @@ import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import {fetchFavorites} from '../../shared/api/account';
 import {useFavoriteStore} from '../../store/useFavoriteStore';
 import {useProductStore} from '../../store/useProductStore';
+import {useStructureStore} from '../../store/useStructureStore';
+import {productRoute} from '../../shared/lib/pageRoutes';
 import {useAccountList} from './useAccountList';
 import PageHeader from './PageHeader';
 import {formatMoney} from './orderStatus';
@@ -26,6 +28,12 @@ const plural = (count) => {
 export default function Favorites() {
     const navigate = useNavigate();
     const {contentSafeAreaInset, safeAreaInset} = useAppInsets();
+    const catalogs = useStructureStore((state) => state.catalogs);
+
+    const openProduct = useCallback(
+        (product) => navigate(productRoute(product, catalogs) || `/card/${product.id}`),
+        [navigate, catalogs]
+    );
     const {items, error, reload, userId, setItems} = useAccountList(fetchFavorites);
 
     const setFavorite = useFavoriteStore((state) => state.setFavorite);
@@ -117,13 +125,13 @@ export default function Favorites() {
                                 <span
                                     className={style.cover}
                                     style={product.image ? {backgroundImage: `url(${product.image})`} : undefined}
-                                    onClick={() => navigate(`/card/${product.id}`)}
+                                    onClick={() => openProduct(product)}
                                 />
 
                                 <span className={style.favoriteBody}>
                                     <span className={style.favoriteTop}>
                                         <span className={style.favoriteName}
-                                              onClick={() => navigate(`/card/${product.id}`)}>
+                                              onClick={() => openProduct(product)}>
                                             {product.name}
                                         </span>
                                         <button type="button" className={style.heart}

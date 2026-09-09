@@ -93,7 +93,7 @@ $text-size: 14px;
   flex-direction: column;
   min-height: 0;
   box-sizing: border-box;
-  padding: 45px;
+  padding: var(--sp-6) var(--sp-8);
 }
 
 .mainContainer {

@@ -8,6 +8,7 @@ import {
     groupLabelOf,
     isSellable,
     kindLabel,
+    monthlyPrice,
     priceNoteOf,
     servicesFaq,
     stockLabel,
@@ -46,6 +47,9 @@ export default function ServicesView({
     scrollRef,
     brands,
     view,
+    isSingle = false,
+    poster = null,
+    bestOffer = null,
     error = false,
     onRetry,
     onBack,
@@ -80,7 +84,12 @@ export default function ServicesView({
     }, [brand?.id, kind, regionName, groupKey, offer?.id]);
 
     const theme = themeOf(brand, brandIndex);
-    const pageTitle = kind === 'subscription' ? 'Подписки' : 'Коды пополнения';
+
+    const pageTitle = isSingle && brand
+        ? brand.name
+        : kind === 'subscription' ? 'Подписки' : 'Коды пополнения';
+
+    const heroImage = offer?.image || offers.find((item) => item.image)?.image || poster;
 
     return (
         <div ref={scrollRef} className={style.screen} style={themeVars(theme)}>
@@ -115,6 +124,7 @@ export default function ServicesView({
                     />
                 ) : (
                     <>
+                        {isSingle ? null : (
                         <div ref={brandsRef} className={style.brands}>
                             {brands.map((item, index) => {
                                 const itemTheme = themeOf(item, index);
@@ -145,15 +155,29 @@ export default function ServicesView({
                                 );
                             })}
                         </div>
+                        )}
 
-                        <div className={style.hero}>
-                            <span className={style.heroBlob} aria-hidden="true"/>
+                        <div className={`${style.hero} ${heroImage ? style.heroShot : ''}`}>
+                            {heroImage ? (
+                                <>
+                                    <span
+                                        className={style.heroArt}
+                                        style={{backgroundImage: `url(${heroImage})`}}
+                                        aria-hidden="true"
+                                    />
+                                    <span className={style.heroVeil} aria-hidden="true"/>
+                                </>
+                            ) : (
+                                <span className={style.heroBlob} aria-hidden="true"/>
+                            )}
 
                             <div className={style.heroTop}>
-                                <span className={style.heroGlyph}>
-                                    {brand.icon
-                                        ? <img className={style.heroImage} src={brand.icon} alt=""/>
-                                        : brand.glyph}
+                                <span className={`${style.heroGlyph} ${heroImage ? style.heroPoster : ''}`}>
+                                    {heroImage
+                                        ? <img className={style.heroShotImage} src={heroImage} alt=""/>
+                                        : brand.icon
+                                            ? <img className={style.heroImage} src={brand.icon} alt=""/>
+                                            : brand.glyph}
                                 </span>
                                 <div className={style.heroTitles}>
                                     <span className={style.heroKind}>
@@ -264,7 +288,12 @@ export default function ServicesView({
                                                 {isActive ? '✓' : ''}
                                             </span>
 
-                                            <span className={style.offerName}>{item.denomination}</span>
+                                            <span className={style.offerName}>
+                                                {item.denomination}
+                                                {bestOffer && item.id === bestOffer.id ? (
+                                                    <span className={style.offerBadge}>Выгодно</span>
+                                                ) : null}
+                                            </span>
 
                                             <span className={style.offerPrices}>
                                                 <span className={style.offerPrice}>{money(item.price)}</span>
@@ -274,7 +303,9 @@ export default function ServicesView({
                                             </span>
 
                                             <span className={`${style.offerStock} ${isOut ? style.offerStockOut : ''}`}>
-                                                {stockLabel(item)}
+                                                {monthlyPrice(item)
+                                                    ? `${money(monthlyPrice(item))} в месяц`
+                                                    : stockLabel(item)}
                                             </span>
                                         </button>
                                     );

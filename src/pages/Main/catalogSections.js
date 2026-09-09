@@ -33,6 +33,7 @@ export const buildSections = ({structureBlocks, catalogs, mainPageProducts, page
             return {
                 block,
                 path,
+                catalogId: catalogId ?? null,
                 products: catalogId === undefined ? [] : (productsByCatalog.get(catalogId) || [])
             };
         })

@@ -1,0 +1,388 @@
+@import "src/pages/AdminPanel/AdminPanel.module";
+@import "src/pages/AdminPanel/styles/surfaces";
+
+.screen {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+// padding: 0 — общий `.header` приходит сюда через @import AdminPanel.module
+.header {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin: 0 0 var(--sp-4);
+  padding: 0;
+}
+
+.headerTop {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+}
+
+.title {
+  font-family: var(--font-ui);
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin: 0;
+}
+
+.counter {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.headerHint {
+  margin-left: auto;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+}
+
+.segment {
+  height: 28px;
+  padding: 0 var(--sp-3);
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast);
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+.segmentActive {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.btn {
+  height: 30px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--t-fast), border-color var(--t-fast), color var(--t-fast);
+
+  &:hover:not(:disabled) {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  &:disabled {
+    border-color: var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.split {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(360px, 1fr) minmax(360px, 1fr);
+  gap: var(--sp-4);
+}
+
+.pane {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.paneHead {
+  flex-shrink: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  min-height: 24px;
+}
+
+.paneTitle {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.paneSubtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+@media (max-width: 1280px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: minmax(320px, auto);
+    overflow-y: auto;
+  }
+}
+
+.search {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  height: 30px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.searchNote {
+  flex-shrink: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+// Выдача поиска — временный слой над списком, поэтому ограничена по высоте:
+// двадцать найденных товаров не должны выдавливать сам список за экран
+.results {
+  flex-shrink: 0;
+  max-height: 232px;
+  overflow: auto;
+  border-radius: var(--r-lg);
+  @include panel-box;
+}
+
+.result {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  @include hairline-bottom;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.resultBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.resultTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+  font-size: var(--fs-base);
+}
+
+.resultMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.listWrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  border-radius: var(--r-lg);
+  @include panel-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: var(--r-pill);
+  }
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  @include hairline-bottom;
+  transition: background-color var(--t-fast);
+
+  &:hover {
+    background: var(--surface-hover);
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.rowOrder {
+  flex-shrink: 0;
+  width: 20px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  text-align: right;
+}
+
+// Обложка портретная: та же пропорция, что и в карусели у покупателя
+.thumb {
+  flex-shrink: 0;
+  width: 32px;
+  height: 42px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-alt) center / cover no-repeat;
+}
+
+.rowBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rowTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+  font-weight: 700;
+  font-size: var(--fs-base);
+}
+
+.rowMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.warn {
+  font-size: var(--fs-xs);
+  color: var(--warning);
+}
+
+.rowActions {
+  flex-shrink: 0;
+  display: flex;
+  gap: var(--sp-1);
+}
+
+.iconBtn {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+
+  &:hover:not(:disabled) {
+    background: var(--surface-hover);
+    border-color: var(--border);
+    color: var(--text);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.iconBtnDanger:hover:not(:disabled) {
+  border-color: rgba(var(--danger-rgb), 0.6);
+  color: var(--danger);
+}
+
+.empty {
+  margin: 0;
+  padding: var(--sp-6) var(--sp-3);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--fs-md);
+}

@@ -1,12 +1,14 @@
 import React from 'react';
 import ProductCard from './ProductCard';
-import {cleanPath, isBannerBlock} from './catalogSections';
+import SubscriptionRail from './SubscriptionRail';
+import {cleanPath, isBannerBlock, isSubscription} from './catalogSections';
 import style from './CatalogSection.module.scss';
 
 const PREVIEW_LIMIT = 6;
 
-export default function CatalogSection({section, onOpenCatalog, onOpenProduct}) {
+export default function CatalogSection({section, onOpenCatalog, onOpenSubscriptionCatalog, onOpenProduct}) {
     const {block, path, products} = section;
+    const isSubscriptionShelf = products.length > 0 && products.every(isSubscription);
 
     if (isBannerBlock(block)) {
         const clickable = block.type === 'banner-clickable';
@@ -24,6 +26,31 @@ export default function CatalogSection({section, onOpenCatalog, onOpenProduct}) 
                 role={clickable ? 'button' : undefined}
                 aria-label={clickable ? block.name || 'Баннер' : undefined}
             />
+        );
+    }
+
+    if (isSubscriptionShelf) {
+        return (
+            <section className={style.section}>
+                <div className={style.head}>
+                    {block.imageIcon ? (
+                        <span className={style.icon} style={{backgroundImage: `url(${block.imageIcon})`}} aria-hidden="true"/>
+                    ) : null}
+                    <h2 className={style.title}>{block.name}</h2>
+                </div>
+
+                <SubscriptionRail products={products} onOpen={onOpenProduct}/>
+
+                <div className={style.footer}>
+                    <button
+                        type="button"
+                        className={style.open}
+                        onClick={() => onOpenSubscriptionCatalog(path)}
+                    >
+                        Все тарифы и сроки
+                    </button>
+                </div>
+            </section>
         );
     }
 

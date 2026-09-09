@@ -1,4 +1,4 @@
-@import "src/pages/AdminPanel/styles/dashed";
+@import "src/pages/AdminPanel/styles/surfaces";
 .steamSettings {
     width: 100%;
     display: flex;
@@ -26,7 +26,7 @@
 
         &.tariffRow {
             padding-top: 10px;
-            @include dashed-line-top;
+            @include hairline-top;
         }
 
         .labelBlock {

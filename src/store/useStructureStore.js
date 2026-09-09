@@ -6,6 +6,7 @@ import {
     fetchInfoBlocks,
     fetchMainPageProducts,
     fetchPages,
+    fetchPopularProducts,
     fetchStartPages,
     fetchStructureBlocks
 } from '../shared/api/structure';
@@ -21,6 +22,7 @@ const SOURCES = [
     {key: 'banners', initial: 'banners', load: fetchBanners},
     {key: 'structureBlocks', initial: 'structureBlocks', load: fetchStructureBlocks},
     {key: 'mainPageProducts', initial: 'mainPageProducts', load: fetchMainPageProducts},
+    {key: 'popularProducts', initial: 'popularProducts', load: fetchPopularProducts},
     {key: 'catalogs', initial: 'catalogs', load: fetchCatalogs},
     {key: 'infoBlocks', initial: 'infoBlocks', load: fetchInfoBlocks}
 ];

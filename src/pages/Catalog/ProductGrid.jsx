@@ -39,19 +39,25 @@ function GridCard({product, index, animate, regionOf, onOpen}) {
                 className={style.cover}
                 style={product.image ? {backgroundImage: `url(${product.image})`} : undefined}
             >
-                {region ? (
-                    <span
-                        className={`${style.regionBadge} ${region.color ? style.regionBadgeTinted : ''}`}
-                        style={region.color ? accentStyle(region.color) : undefined}
-                    >
-                        {region.icon ? (
+                {region || percent > 0 ? (
+                    <span className={style.topRow}>
+                        {region ? (
                             <span
-                                className={style.regionBadgeIcon}
-                                style={{backgroundImage: `url(${region.icon})`}}
-                                aria-hidden="true"
-                            />
+                                className={`${style.regionBadge} ${region.color ? style.regionBadgeTinted : ''}`}
+                                style={region.color ? accentStyle(region.color) : undefined}
+                            >
+                                {region.icon ? (
+                                    <span
+                                        className={style.regionBadgeIcon}
+                                        style={{backgroundImage: `url(${region.icon})`}}
+                                        aria-hidden="true"
+                                    />
+                                ) : null}
+                                <span className={style.regionBadgeTitle}>{region.title}</span>
+                            </span>
                         ) : null}
-                        <span className={style.regionBadgeTitle}>{region.title}</span>
+
+                        {percent > 0 ? <span className={style.discount}>−{percent}%</span> : null}
                     </span>
                 ) : null}
 
@@ -61,8 +67,6 @@ function GridCard({product, index, animate, regionOf, onOpen}) {
                     ))}
                     {product.typeLabel ? <span className={style.tag}>{product.typeLabel}</span> : null}
                 </div>
-
-                {percent > 0 ? <span className={style.discount}>−{percent}%</span> : null}
 
                 {term ? <span className={style.term}>{term}</span> : null}
             </div>

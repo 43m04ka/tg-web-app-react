@@ -1,20 +1,10 @@
 @import "src/pages/AdminPanel/AdminPanel.module";
 
 .dock {
-  position: fixed;
-  top: var(--sp-4);
-  right: var(--sp-4);
-  z-index: 1500;
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);
-  padding: var(--sp-1);
-  border-radius: var(--r-pill);
-  border: 1px solid var(--border);
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: var(--shadow-md);
+  flex-shrink: 0;
 }
 
 .separator {
@@ -27,8 +17,8 @@
 
 .iconBtn {
   position: relative;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   padding: 0;
   border-radius: var(--r-pill);
   display: inline-flex;
@@ -51,10 +41,15 @@
   }
 }
 
+.iconBtnDanger:hover {
+  background: rgba(var(--danger-rgb), 0.12);
+  color: var(--danger);
+}
+
 .dot {
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 5px;
+  right: 5px;
   width: 6px;
   height: 6px;
   border-radius: var(--r-pill);
@@ -74,9 +69,9 @@
 
 .notifPopover {
   position: absolute;
-  top: calc(100% + var(--sp-3));
-  right: 0;
-  width: min(340px, calc(100vw - 28px));
+  bottom: calc(100% + var(--sp-3));
+  left: calc(var(--sp-4) * -1);
+  width: min(360px, calc(100vw - 28px));
   max-height: min(480px, 72vh);
   display: flex;
   flex-direction: column;

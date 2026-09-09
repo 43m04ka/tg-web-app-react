@@ -283,9 +283,6 @@
 }
 
 .discount {
-  position: absolute;
-  top: u(8);
-  right: u(8);
   padding: u(3) u(6);
   border-radius: u(7);
   background: var(--gold);
@@ -294,14 +291,22 @@
   color: var(--gold-surface);
 }
 
-.regionBadge {
+.topRow {
   position: absolute;
+  top: u(8);
+  left: u(8);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: u(4);
+  max-width: calc(100% - u(16));
+}
+
+.regionBadge {
   display: flex;
   align-items: center;
   gap: u(4);
-  top: u(8);
-  left: u(8);
-  max-width: calc(100% - u(16));
+  max-width: 100%;
   padding: u(2) u(6);
   border-radius: u(6);
   background: oklch(0.14 0.01 264 / 0.8);

@@ -10,6 +10,7 @@ import {useScrollMemory} from '../../shared/hooks/useScrollMemory';
 import {hapticImpact} from '../../shared/lib/haptic';
 import {claimKeyboard} from '../../shared/lib/keyboard';
 import {regionIcon, regionLabel, regionTitle} from '../../shared/lib/region';
+import {productRoute} from '../../shared/lib/pageRoutes';
 import {readSearchForm, writeSearchForm} from '../../shared/lib/searchMemory';
 import {getTelegramObject} from '../../shared/lib/telegram';
 import BackPill from '../../shared/ui/BackPill/BackPill';
@@ -201,8 +202,8 @@ export default function Search() {
             setPageId(productPageId);
         }
 
-        navigate(`/card/${product.id}`);
-    }, [allPages, navigate, trimmed, pageId, pageIdOfProduct, setPageId]);
+        navigate(productRoute(product, catalogs) || `/card/${product.id}`);
+    }, [allPages, navigate, trimmed, pageId, pageIdOfProduct, setPageId, catalogs]);
 
     const submit = useCallback((event) => {
         event.preventDefault();

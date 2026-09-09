@@ -1,223 +1,200 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {useServer} from "./legacy/useServer";
-import {useNavigate} from "react-router-dom";
-import useData from "./useData";
+import React, {useCallback, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useServer} from './legacy/useServer';
+import useData from './useData';
+import useAdminTheme from './useAdminTheme';
+import './styles/adminFonts.css';
 import style from './AP_Authentication.module.scss';
 
-const FLOW_FORMULA = {
-    lineCount: 10,
-    lineWidth: 1,
-    speed: 0.00005,
-    baseOpacity: 0.34,
-    opacityStep: 0.013,
-    waveAmplitudeX: 0.05,
-    waveAmplitudeY: 0.15,
-    waveFrequency: 3,
-    laneSpread: 0.085,
-    phaseShift: 0.22,
-    samples: 56,
-    targetFps: 30,
-    maxDpr: 1.5,
-    shadowBlur: 2
-}
+const sunIcon = (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="4"/>
+        <path
+            d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+            strokeLinecap="round"/>
+    </svg>
+);
+
+const moonIcon = (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+);
+
+const eyeIcon = (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" strokeLinejoin="round"/>
+        <circle cx="12" cy="12" r="2.8"/>
+    </svg>
+);
+
+const eyeOffIcon = (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <path
+            d="M10.6 6.7A9.9 9.9 0 0 1 12 5.5c6.4 0 10 6.5 10 6.5a18 18 0 0 1-3.3 4.1M6.2 8.1A17.7 17.7 0 0 0 2 12s3.6 6.5 10 6.5a9.7 9.7 0 0 0 3.6-.66"
+            strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2M3 3l18 18" strokeLinecap="round"/>
+    </svg>
+);
 
 const ApAuthentication = () => {
     const {authentication} = useServer();
     const navigate = useNavigate();
-    const {setAuthenticationData} = useData()
+    const {setAuthenticationData} = useData();
+    const {theme, toggleTheme} = useAdminTheme();
 
-    const [login, setLogin] = useState('')
-    const [password, setPassword] = useState('')
-    const [error, setError] = useState('')
-    const [isLoading, setIsLoading] = useState(false)
-    const flowCanvasRef = useRef(null)
+    const [login, setLogin] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [isPasswordShown, setPasswordShown] = useState(false);
+    const [isCapsOn, setCapsOn] = useState(false);
 
-    const isAuth = (result) => {
-        if(result) {
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        if (isLoading) return;
+
+        const credentials = {login: login.trim(), password};
+        if (!credentials.login || !credentials.password) {
+            setError('Заполните логин и пароль');
+            return;
+        }
+
+        setError('');
+        setIsLoading(true);
+        await authentication(credentials, (result) => {
+            if (!result) {
+                setError('Неверный логин или пароль');
+                setIsLoading(false);
+                return;
+            }
+            setAuthenticationData(credentials);
             navigate('/admin-panel');
-            setAuthenticationData({login:login, password:password})
-        } else {
-            setError('Неверный логин или пароль')
-            setIsLoading(false)
-        }
-    }
+        });
+    };
 
-    const handleLogin = async () => {
-        if (!login.trim() || !password.trim()) {
-            setError('Пожалуйста, заполните все поля')
-            return
-        }
-        setError('')
-        setIsLoading(true)
-        await authentication({login:login, password:password}, isAuth)
-    }
-
-    const handleKeyPress = (e) => {
-        if (e.key === 'Enter') {
-            handleLogin()
-        }
-    }
-
-    useEffect(() => {
-        const canvas = flowCanvasRef.current
-        if (!canvas) return
-
-        const context = canvas.getContext('2d')
-        if (!context) return
-
-        let animationId = null
-        let width = 0
-        let height = 0
-        let lastDrawTime = 0
-        let isPageVisible = !document.hidden
-
-        const resize = () => {
-            const dpr = Math.min(window.devicePixelRatio || 1, FLOW_FORMULA.maxDpr)
-            width = canvas.offsetWidth
-            height = canvas.offsetHeight
-            canvas.width = Math.floor(width * dpr)
-            canvas.height = Math.floor(height * dpr)
-            context.setTransform(dpr, 0, 0, dpr, 0, 0)
-        }
-
-        const draw = (timestamp) => {
-            if (!isPageVisible) {
-                animationId = window.requestAnimationFrame(draw)
-                return
-            }
-
-            const frameDuration = 1000 / FLOW_FORMULA.targetFps
-            if (timestamp - lastDrawTime < frameDuration) {
-                animationId = window.requestAnimationFrame(draw)
-                return
-            }
-            lastDrawTime = timestamp
-
-            const t = timestamp * FLOW_FORMULA.speed
-            context.clearRect(0, 0, width, height)
-
-            for (let index = 0; index < FLOW_FORMULA.lineCount; index++) {
-                const offset = index - (FLOW_FORMULA.lineCount - 1) / 2
-                const normalized = offset / ((FLOW_FORMULA.lineCount - 1) / 2)
-                const linePhase = t + offset * FLOW_FORMULA.phaseShift
-
-                const startX = width * (0.28 + normalized * 0.02)
-                const startY = height * (1.05 + normalized * FLOW_FORMULA.laneSpread)
-                const endX = width * 1.02
-                const endY = height * (0.18 + normalized * FLOW_FORMULA.laneSpread)
-
-                const samples = FLOW_FORMULA.samples
-                context.beginPath()
-                for (let step = 0; step <= samples; step++) {
-                    const p = step / samples
-                    const easing = p * p * (3 - 2 * p)
-                    const baseX = startX + (endX - startX) * easing
-                    const baseY = startY + (endY - startY) * easing
-
-                    // Stronger lower-left bend + smooth travel to top-right.
-                    const bendCurve = Math.exp(-Math.pow((p - 0.22) / 0.2, 2))
-                    const bendX = -width * 0.11 * bendCurve
-                    const bendY = height * 0.08 * bendCurve
-
-                    // Wavy movement from explicit formula.
-                    const wave = Math.sin((p * FLOW_FORMULA.waveFrequency * Math.PI * 2) + linePhase)
-                    const waveX = wave * width * FLOW_FORMULA.waveAmplitudeX * (1 - p * 0.75)
-                    const waveY = wave * height * FLOW_FORMULA.waveAmplitudeY * (1 - p * 0.85)
-
-                    const x = baseX + bendX + waveX
-                    const y = baseY + bendY + waveY
-
-                    if (step === 0) {
-                        context.moveTo(x, y)
-                    } else {
-                        context.lineTo(x, y)
-                    }
-                }
-
-                context.lineWidth = FLOW_FORMULA.lineWidth
-                context.strokeStyle = `rgba(67, 205, 255, ${FLOW_FORMULA.baseOpacity + index * FLOW_FORMULA.opacityStep})`
-                context.shadowColor = 'rgba(24, 173, 255, 0.5)'
-                context.shadowBlur = FLOW_FORMULA.shadowBlur
-                context.stroke()
-            }
-
-            animationId = window.requestAnimationFrame(draw)
-        }
-
-        const handleVisibilityChange = () => {
-            isPageVisible = !document.hidden
-        }
-
-        resize()
-        animationId = window.requestAnimationFrame(draw)
-        window.addEventListener('resize', resize)
-        document.addEventListener('visibilitychange', handleVisibilityChange)
-
-        return () => {
-            if (animationId) {
-                window.cancelAnimationFrame(animationId)
-            }
-            window.removeEventListener('resize', resize)
-            document.removeEventListener('visibilitychange', handleVisibilityChange)
-        }
-    }, [])
+    const trackCapsLock = useCallback((event) => {
+        if (typeof event.getModifierState !== 'function') return;
+        setCapsOn(event.getModifierState('CapsLock'));
+    }, []);
 
     return (
-        <div className={style['container']}>
-            <div className={style['backgroundMotion']} aria-hidden="true">
-                <canvas ref={flowCanvasRef} className={style['flowCanvas']}></canvas>
-            </div>
-            <div className={style['card']}>
-                <div className={style['title']}>Администратор</div>
+        <div className={style.screen} data-theme={theme}>
+            <div className={style.backdrop} aria-hidden="true"/>
 
-                {error && (
-                    <div className={style['error']}>
-                        <span>⚠</span>
-                        <span>{error}</span>
+            <button
+                type="button"
+                className={style.themeToggle}
+                onClick={toggleTheme}
+                title={theme === 'dark' ? 'Светлая тема' : 'Тёмная тема'}
+                aria-label={theme === 'dark' ? 'Светлая тема' : 'Тёмная тема'}
+            >
+                {theme === 'dark' ? sunIcon : moonIcon}
+            </button>
+
+            <div className={style.layout}>
+                <aside className={style.brand}>
+                    <div className={style.brandMark} aria-hidden="true">GW</div>
+                    <h1 className={style.brandTitle}>Админ-панель</h1>
+                    <p className={style.brandText}>
+                        Управление каталогами, ценами, заказами и витринами магазина.
+                        Доступ по служебной учётной записи.
+                    </p>
+                    <dl className={style.facts}>
+                        <div className={style.fact}>
+                            <dt>Сервер</dt>
+                            <dd>gwstorebot.ru</dd>
+                        </div>
+                        <div className={style.fact}>
+                            <dt>Доступ</dt>
+                            <dd>Только персонал</dd>
+                        </div>
+                    </dl>
+                </aside>
+
+                <main className={style.panel}>
+                    <div className={style.panelHead}>
+                        <span className={style.eyebrow}>Вход в систему</span>
+                        <h2 className={style.panelTitle}>Авторизация</h2>
                     </div>
-                )}
 
-                <div className={style['formGroup']}>
-                    <label className={style['label']}>Логин</label>
-                    <input
-                        type="text"
-                        className={style['input']}
-                        placeholder="Введите логин"
-                        value={login}
-                        onChange={(event) => {
-                            setLogin(event.target.value)
-                            setError('')
-                        }}
-                        onKeyPress={handleKeyPress}
-                        disabled={isLoading}
-                    />
-                </div>
+                    <form className={style.form} onSubmit={handleSubmit} noValidate>
+                        <fieldset className={style.fields} disabled={isLoading}>
+                            <label className={style.field}>
+                                <span className={style.label}>Логин</span>
+                                <input
+                                    type="text"
+                                    className={style.input}
+                                    placeholder="admin"
+                                    value={login}
+                                    autoComplete="username"
+                                    autoFocus
+                                    spellCheck="false"
+                                    autoCapitalize="none"
+                                    onChange={(event) => {
+                                        setLogin(event.target.value);
+                                        setError('');
+                                    }}
+                                />
+                            </label>
 
-                <div className={style['formGroup']}>
-                    <label className={style['label']}>Пароль</label>
-                    <input
-                        type="password"
-                        className={style['input']}
-                        placeholder="Введите пароль"
-                        value={password}
-                        onChange={(event) => {
-                            setPassword(event.target.value)
-                            setError('')
-                        }}
-                        onKeyPress={handleKeyPress}
-                        disabled={isLoading}
-                    />
-                </div>
+                            <label className={style.field}>
+                                <span className={style.label}>Пароль</span>
+                                <span className={style.inputWrap}>
+                                    <input
+                                        type={isPasswordShown ? 'text' : 'password'}
+                                        className={`${style.input} ${style.inputPassword}`}
+                                        placeholder="••••••••"
+                                        value={password}
+                                        autoComplete="current-password"
+                                        onChange={(event) => {
+                                            setPassword(event.target.value);
+                                            setError('');
+                                        }}
+                                        onKeyUp={trackCapsLock}
+                                        onKeyDown={trackCapsLock}
+                                        onBlur={() => setCapsOn(false)}
+                                    />
+                                    <button
+                                        type="button"
+                                        className={style.reveal}
+                                        onClick={() => setPasswordShown((prev) => !prev)}
+                                        tabIndex={-1}
+                                        aria-label={isPasswordShown ? 'Скрыть пароль' : 'Показать пароль'}
+                                        title={isPasswordShown ? 'Скрыть пароль' : 'Показать пароль'}
+                                    >
+                                        {isPasswordShown ? eyeOffIcon : eyeIcon}
+                                    </button>
+                                </span>
+                                {isCapsOn && <span className={style.hint}>Включён Caps Lock</span>}
+                            </label>
+                        </fieldset>
 
-                <div className={style['buttonGroup']}>
-                    <button
-                        className={`${style['button']} ${style['buttonPrimary']} ${isLoading ? style['loading'] : ''}`}
-                        onClick={handleLogin}
-                        disabled={isLoading}
-                    >
-                        {isLoading ? 'Загрузка...' : 'Войти'}
-                    </button>
-                </div>
+                        <div className={style.status} role="status" aria-live="polite">
+                            {error && (
+                                <p className={style.error}>
+                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+                                         strokeWidth="2" aria-hidden="true">
+                                        <circle cx="12" cy="12" r="9"/>
+                                        <path d="M12 7.5v5.5M12 16.2v.2" strokeLinecap="round"/>
+                                    </svg>
+                                    {error}
+                                </p>
+                            )}
+                        </div>
+
+                        <button
+                            type="submit"
+                            className={style.submit}
+                            disabled={isLoading || !login.trim() || !password}
+                        >
+                            <span>{isLoading ? 'Проверяем…' : 'Войти'}</span>
+                            {isLoading && <span className={style.progress} aria-hidden="true"/>}
+                        </button>
+                    </form>
+
+                    <p className={style.legal}>Действия в панели фиксируются в журнале.</p>
+                </main>
             </div>
         </div>
     );

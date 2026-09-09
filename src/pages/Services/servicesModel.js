@@ -45,6 +45,51 @@ export const offersOf = (brand, kind, regionName, groupKey) => (brand?.offers ||
 
 export const isManual = (offer) => offer?.fulfillment === 'manual';
 
+const MONTH_PATTERNS = [
+    {re: /(\d+)\s*(?:мес(?:\.|яц\w*)?)/i, factor: 1},
+    {re: /(\d+)\s*(?:год|года|лет)/i, factor: 12}
+];
+
+export const monthsOf = (offer) => {
+    const text = String(offer?.denomination || '').trim();
+
+    for (const {re, factor} of MONTH_PATTERNS) {
+        const found = text.match(re);
+        if (found) return Number(found[1]) * factor;
+    }
+
+    return null;
+};
+
+export const monthlyPrice = (offer) => {
+    const months = monthsOf(offer);
+    if (!months || months < 1) return null;
+
+    const price = Number(offer?.price);
+    if (!Number.isFinite(price) || price <= 0) return null;
+
+    return Math.round(price / months);
+};
+
+export const bestValueOffer = (offers) => {
+    let best = null;
+    let bestRate = Infinity;
+
+    (offers || []).forEach((offer) => {
+        const months = monthsOf(offer);
+        const price = Number(offer?.price);
+        if (!months || !Number.isFinite(price) || price <= 0) return;
+
+        const rate = price / months;
+        if (rate < bestRate) {
+            bestRate = rate;
+            best = offer;
+        }
+    });
+
+    return best;
+};
+
 export const isSellable = (offer) => {
     if (!offer) return false;
     if (isManual(offer)) return true;

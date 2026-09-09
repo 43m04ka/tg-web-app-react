@@ -49,7 +49,7 @@ export default function OverviewScreen() {
         {refreshMs: 120000}
     );
 
-    const settings = useResource(keys.settings, () => http('/settings/public'));
+    const settings = useResource(keys.settings, () => http('/settings/all'));
     const maintenance = valueOf(settings.data?.settings, 'maintenance_mode');
     const maintenanceUntil = valueOf(settings.data?.settings, 'maintenance_mode_until');
 

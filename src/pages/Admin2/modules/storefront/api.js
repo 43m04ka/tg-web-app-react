@@ -32,4 +32,28 @@ export const deleteBanner = (id) => httpPost('/deleteBanner', {id});
 
 export const searchBannerSources = (query) => httpGet('/bannerSources', {query: {query}});
 
+export const fetchStartPages = () => httpPost('/getStartPageList', {});
+
+export const createStartItem = (startPageData) => httpPost('/createStartPage', {startPageData});
+
+export const updateStartItem = (id, updateData) => httpPost('/updateStartPage', {id, updateData});
+
+export const deleteStartItem = (id) => httpPost('/deleteStartPage', {id});
+
+export const fetchInfoBlocks = () => httpGet('/infoBlocks', {area: 'structure'});
+
+export const createInfoBlock = (infoBlockData) => httpPost('/createInfoBlock', {infoBlockData});
+
+export const updateInfoBlock = (id, updateData) => httpPost('/updateInfoBlock', {id, updateData});
+
+export const deleteInfoBlock = (id) => httpPost('/deleteInfoBlock', {id});
+
+export const fetchClues = () => httpGet('/allClue', {area: 'search'});
+
+export const createClue = (clueData) => httpPost('/createSearchClue', {clueData});
+
+export const updateClue = (id, updateData) => httpPost('/updateSearchClue', {id, updateData});
+
+export const deleteClue = (id) => httpPost('/deleteSearchClue', {id});
+
 export const refreshStructure = () => httpPost('/refresh-structure-data', {});

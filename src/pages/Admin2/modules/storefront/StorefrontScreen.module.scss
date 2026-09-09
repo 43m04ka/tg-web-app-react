@@ -299,3 +299,111 @@
     background: var(--a2-accent-soft);
     color: var(--a2-accent-text);
 }
+
+.startPreview {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 12px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+    overflow-y: auto;
+}
+
+.startGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.startHeader {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.startColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.startGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+}
+
+.startItem {
+    padding: 9px 10px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-s);
+    background: var(--a2-raised);
+    color: var(--a2-text);
+    font-size: var(--a2-size-s);
+    font-weight: 600;
+}
+
+.start_link {
+    border-style: dashed;
+    color: var(--a2-accent-text);
+}
+
+.start_label {
+    border-color: transparent;
+    background: transparent;
+    color: var(--a2-text-faint);
+    font-weight: 400;
+}
+
+.textForm {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+}
+
+.textFormFoot {
+    display: flex;
+    gap: 6px;
+}
+
+.clues {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.clue {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 6px 5px 10px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-full, 999px);
+    background: var(--a2-card);
+    color: var(--a2-text);
+    font-size: var(--a2-size-s);
+}
+
+.clueDrop {
+    width: 18px;
+    height: 18px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--a2-raised);
+    color: var(--a2-text-muted);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.clueDrop:hover {
+    background: var(--a2-danger-soft);
+    color: var(--a2-danger);
+}

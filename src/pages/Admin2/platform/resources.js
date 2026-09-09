@@ -27,6 +27,9 @@ export const keys = {
     pageBlocks: (pageId, group) => ['structure', 'blocks', pageId, group],
     previewCards: ['structure', 'preview-cards'],
     banners: ['structure', 'banners'],
+    startPages: ['structure', 'start-pages'],
+    infoBlocks: ['structure', 'info-blocks'],
+    searchClues: ['structure', 'search-clues'],
     media: ['media'],
     mediaFolder: (path) => ['media', 'folder', path || ''],
 };
@@ -43,6 +46,6 @@ export const invalidatedBy = {
     'promo.write': [keys.promo],
     'payment.write': [keys.paymentRegistry],
     'service.write': [keys.services],
-    'structure.write': [keys.structure, keys.pages, keys.banners],
+    'structure.write': [keys.structure, keys.pages, keys.banners, keys.startPages],
     'media.write': [keys.media],
 };

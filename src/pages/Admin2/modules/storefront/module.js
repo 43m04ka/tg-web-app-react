@@ -2,6 +2,8 @@ import {lazy} from 'react';
 
 const screen = lazy(() => import('./StorefrontScreen'));
 const banners = lazy(() => import('./BannersScreen'));
+const start = lazy(() => import('./StartPagesScreen'));
+const texts = lazy(() => import('./TextsScreen'));
 
 export default {
     id: 'storefront',
@@ -12,6 +14,8 @@ export default {
     routes: [
         {path: '/storefront', element: screen},
         {path: '/storefront/banners', element: banners},
+        {path: '/storefront/start', element: start},
+        {path: '/storefront/texts', element: texts},
         {path: '/storefront/page/:pageId', element: screen},
     ],
     commands: [
@@ -26,6 +30,18 @@ export default {
             title: 'Витрина: баннеры карусели',
             icon: 'storefront',
             run: ({go}) => go('/storefront/banners'),
+        },
+        {
+            id: 'storefront.start',
+            title: 'Витрина: стартовый экран',
+            icon: 'storefront',
+            run: ({go}) => go('/storefront/start'),
+        },
+        {
+            id: 'storefront.texts',
+            title: 'Витрина: инфоблоки и подсказки поиска',
+            icon: 'storefront',
+            run: ({go}) => go('/storefront/texts'),
         },
     ],
 };

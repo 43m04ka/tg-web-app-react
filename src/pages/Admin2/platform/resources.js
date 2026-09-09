@@ -4,6 +4,7 @@ export const keys = {
     notice: (id) => ['notices', id],
     parseQueue: ['parse-queue'],
     settings: ['settings'],
+    overview: (range) => ['overview', range],
     products: ['products'],
     productList: (query) => ['products', 'list', JSON.stringify(query)],
     productFacets: ['products', 'facets'],

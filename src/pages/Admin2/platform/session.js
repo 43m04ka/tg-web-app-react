@@ -47,15 +47,20 @@ export const signIn = async ({login, password}) => {
         return {status: 'signed'};
     }
 
-    if (payload && payload.confirmation) {
-        return {status: 'confirmation', ticket: payload.confirmation};
+    if (payload && payload.answer === 'CODE_SENT' && payload.ticket) {
+        return {
+            status: 'confirmation',
+            ticket: payload.ticket,
+            expiresAt: payload.expiresAt || null,
+            attempts: payload.attempts || null
+        };
     }
 
     return {status: 'failed'};
 };
 
 export const confirmSignIn = async ({ticket, code, login}) => {
-    const payload = await http('/auth/confirm', {method: 'POST', body: {ticket, code}});
+    const payload = await http('/authentication/confirm', {method: 'POST', body: {ticket, code}});
 
     if (!payload || !payload.token) return {status: 'failed'};
 

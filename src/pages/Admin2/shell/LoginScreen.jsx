@@ -11,6 +11,7 @@ export default function LoginScreen() {
     const [password, setPassword] = useState('');
     const [code, setCode] = useState('');
     const [ticket, setTicket] = useState('');
+    const [attempts, setAttempts] = useState(null);
     const [error, setError] = useState('');
     const [busy, setBusy] = useState(false);
 
@@ -24,6 +25,8 @@ export default function LoginScreen() {
 
             if (result.status === 'confirmation') {
                 setTicket(result.ticket);
+                setAttempts(result.attempts);
+                setCode('');
                 setStep('confirmation');
             } else if (result.status !== 'signed') {
                 setError('Сервер не выдал токен');
@@ -45,6 +48,14 @@ export default function LoginScreen() {
             if (result.status !== 'signed') setError('Код не подошёл');
         } catch (failure) {
             setError(failure.message);
+
+            // Билет сгорел или устарел — возвращаем к логину, иначе человек будет
+            // вводить коды в форму, которая уже ничего не примет
+            if (failure.status === 401 && /заново/.test(failure.message || '')) {
+                setStep('credentials');
+                setTicket('');
+                setPassword('');
+            }
         } finally {
             setBusy(false);
         }
@@ -87,7 +98,10 @@ export default function LoginScreen() {
                     </>
                 ) : (
                     <>
-                        <Note tone="accent">Код отправлен в Telegram, он действует несколько минут</Note>
+                        <Note tone="accent">
+                            Шестизначный код отправлен владельцу в Telegram. Он действует пять минут
+                            {attempts ? `, попыток — ${attempts}` : ''}.
+                        </Note>
                         <Field label="Код подтверждения">
                             <Input
                                 value={code}
@@ -107,7 +121,17 @@ export default function LoginScreen() {
                 </Button>
 
                 {step === 'confirmation' ? (
-                    <Button variant="ghost" block onClick={() => setStep('credentials')}>Назад</Button>
+                    <Button
+                        variant="ghost"
+                        block
+                        onClick={() => {
+                            setStep('credentials');
+                            setTicket('');
+                            setError('');
+                        }}
+                    >
+                        Назад
+                    </Button>
                 ) : null}
             </form>
         </div>

@@ -1,8 +1,10 @@
 import {useEffect, useState} from 'react';
 import {http} from './http';
+import {openEventStream} from './eventStream';
 import {getToken} from './token';
 
 const TICK_MS = 3000;
+const SAFETY_TICK_MS = 30000;
 
 const EMPTY = {
     processes: [],
@@ -17,6 +19,7 @@ const listeners = new Set();
 let state = EMPTY;
 let timerId = null;
 let inFlight = false;
+let closeStream = null;
 
 const emit = () => listeners.forEach((listener) => listener(state));
 
@@ -51,9 +54,37 @@ export const loadTasks = async () => {
     return state;
 };
 
-const stop = () => {
+const applyState = (snapshot) => {
+    state = {
+        processes: asArray(snapshot?.processes),
+        notices: asArray(snapshot?.notices),
+        queue: snapshot?.queue && typeof snapshot.queue === 'object' ? snapshot.queue : {},
+        error: null,
+        loadedAt: Date.now(),
+    };
+
+    emit();
+};
+
+const stopPolling = () => {
     if (timerId) clearInterval(timerId);
     timerId = null;
+};
+
+const startPolling = (tick) => {
+    stopPolling();
+    if (!listeners.size) return;
+
+    timerId = setInterval(() => {
+        if (!document.hidden) loadTasks();
+    }, tick);
+};
+
+const stop = () => {
+    stopPolling();
+
+    if (closeStream) closeStream();
+    closeStream = null;
 };
 
 const start = () => {
@@ -61,9 +92,14 @@ const start = () => {
     if (!listeners.size) return;
 
     loadTasks();
-    timerId = setInterval(() => {
-        if (!document.hidden) loadTasks();
-    }, TICK_MS);
+
+    closeStream = openEventStream({
+        onState: applyState,
+        onOpen: () => startPolling(SAFETY_TICK_MS),
+        onClose: () => startPolling(TICK_MS),
+    });
+
+    startPolling(TICK_MS);
 };
 
 const onVisibility = () => {

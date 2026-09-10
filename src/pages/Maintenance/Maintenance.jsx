@@ -28,31 +28,44 @@ const formatRemaining = (until) => {
     return `Ожидаем завершения работ примерно к ${dateLabel} (осталось ~${parts.join(' ')})`;
 };
 
-export default function Maintenance({until}) {
+export default function Maintenance({until, section}) {
     const [remaining, setRemaining] = useState(() => formatRemaining(until));
 
     useEffect(() => {
         setRemaining(formatRemaining(until));
-        if (!until) return;
+        if (!until) return undefined;
 
         const intervalId = setInterval(() => setRemaining(formatRemaining(until)), 30000);
         return () => clearInterval(intervalId);
     }, [until]);
 
     return (
-        <div className={style.screen}>
+        <div className={`${style.screen} ${section ? style.inline : ''}`}>
             <div className={style.card}>
                 <div className={style.badge}>Техническое обслуживание</div>
 
-                <h1 className={style.title}>
-                    Геймворд — сервис покупки игр и подписок для <span className={style.ps}>PlayStation</span> и{' '}
-                    <span className={style.xbox}>Xbox</span>
-                </h1>
+                {section ? (
+                    <>
+                        <h1 className={style.title}>{section} — временно недоступно</h1>
 
-                <p className={style.description}>
-                    Прямо сейчас мы улучшаем систему, чтобы покупки обрабатывались ещё быстрее. Каталог станет доступен
-                    в ближайшее время.
-                </p>
+                        <p className={style.description}>
+                            Мы чиним этот раздел. Остальной магазин работает как обычно — вернитесь на главную
+                            или загляните сюда чуть позже.
+                        </p>
+                    </>
+                ) : (
+                    <>
+                        <h1 className={style.title}>
+                            Геймворд — сервис покупки игр и подписок для <span className={style.ps}>PlayStation</span> и{' '}
+                            <span className={style.xbox}>Xbox</span>
+                        </h1>
+
+                        <p className={style.description}>
+                            Прямо сейчас мы улучшаем систему, чтобы покупки обрабатывались ещё быстрее. Каталог станет
+                            доступен в ближайшее время.
+                        </p>
+                    </>
+                )}
 
                 {remaining ? <div className={style.remaining}>{remaining}</div> : null}
 

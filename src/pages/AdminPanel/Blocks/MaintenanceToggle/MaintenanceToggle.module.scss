@@ -5,6 +5,62 @@
     gap: 10px;
     user-select: none;
 
+    .switchBtn {
+      position: relative;
+      display: inline-flex;
+      align-items: center; 
+      height: 22px; 
+      width: 42px;  
+      flex-shrink: 0;
+      cursor: pointer;
+      border-radius: 9999px;
+      border: none;
+      padding: 0 3px; 
+      transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
+      background-color: var(--border);
+
+      &:focus {
+        outline: none;
+      }
+
+      &.active {
+        background-color: var(--danger);
+        box-shadow: 0 0 0 3px rgba(var(--danger-rgb), 0.18);
+      }
+
+      &.disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      .switchDot {
+        pointer-events: none;
+        display: block;
+        height: 16px; 
+        width: 16px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateX(-10px); 
+
+        &.active {
+          transform: translateX(10px); 
+        }
+      }
+    }
+
+    .untilInput {
+      flex: 1;
+      min-width: 0;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      color: var(--text);
+      font-size: 12px;
+      padding: 4px 6px;
+    }
+
     .toggleRow {
       display: flex;
       align-items: center;
@@ -33,50 +89,6 @@
       }
   
    
-      .switchBtn {
-        position: relative;
-        display: inline-flex;
-        align-items: center; 
-        height: 22px; 
-        width: 42px;  
-        flex-shrink: 0;
-        cursor: pointer;
-        border-radius: 9999px;
-        border: none;
-        padding: 0 3px; 
-        transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
-        background-color: var(--border);
-
-        &:focus {
-          outline: none;
-        }
-
-        &.active {
-          background-color: var(--danger);
-          box-shadow: 0 0 0 3px rgba(var(--danger-rgb), 0.18);
-        }
-  
-        &.disabled {
-          opacity: 0.4;
-          cursor: not-allowed;
-        }
-  
-        .switchDot {
-          pointer-events: none;
-          display: block;
-          height: 16px; 
-          width: 16px;
-          border-radius: 50%;
-          background-color: #ffffff;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-          transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-          transform: translateX(-10px); 
-  
-          &.active {
-            transform: translateX(10px); 
-          }
-        }
-      }
     }
   
     .untilRow {
@@ -92,16 +104,6 @@
         white-space: nowrap;
       }
 
-      .untilInput {
-        flex: 1;
-        min-width: 0;
-        background: var(--surface-alt);
-        border: 1px solid var(--border);
-        border-radius: var(--r-sm);
-        color: var(--text);
-        font-size: 12px;
-        padding: 4px 6px;
-      }
     }
 
     .statusRow {
@@ -135,6 +137,58 @@
         }
       }
     }
+
+    .sections {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    .sectionsHead {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sectionsHint {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    .sectionRow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sectionLabel {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .sectionTitle {
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .sectionHint {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    .sectionRow .untilInput {
+      flex: 0 1 170px;
+    }
   }
   
   :local {
@@ -142,5 +196,7 @@
       0%, 100% { opacity: 1; }
       50% { opacity: .4; }
     }
+
+
   }
   

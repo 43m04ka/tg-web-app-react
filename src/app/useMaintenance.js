@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import {fetchMaintenanceMode} from '../shared/api/settings';
 import {INITIAL_DATA} from '../shared/lib/initialData';
+import {normalizeSections} from '../shared/lib/maintenance';
 
 const BYPASS_STORAGE_KEY = 'maintenance_bypass';
 const ADMIN_PATHS = ['/admin', '/admin-panel'];
@@ -18,7 +19,8 @@ const hasBypass = () => {
 export function useMaintenance() {
     const [mode, setMode] = useState(() => ({
         enabled: !!INITIAL_DATA.maintenance.enabled,
-        until: INITIAL_DATA.maintenance.until || null
+        until: INITIAL_DATA.maintenance.until || null,
+        sections: normalizeSections(INITIAL_DATA.maintenance.sections)
     }));
 
     useEffect(() => {
@@ -28,15 +30,19 @@ export function useMaintenance() {
             if (!next || controller.signal.aborted) return;
             setMode((prev) => ({
                 enabled: next.enabled === null ? prev.enabled : next.enabled,
-                until: next.until
+                until: next.until,
+                sections: normalizeSections(next.sections)
             }));
         });
 
         return () => controller.abort();
     }, []);
 
+    const bypassed = hasBypass();
+
     return {
-        isMaintenance: mode.enabled && !hasBypass(),
-        maintenanceUntil: mode.until
+        isMaintenance: mode.enabled && !bypassed,
+        maintenanceUntil: mode.until,
+        maintenanceSections: bypassed ? {} : mode.sections
     };
 }

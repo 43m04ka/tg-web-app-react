@@ -19,7 +19,7 @@ const normalize = (raw) => {
         popularProducts: pick(data, 'popularProducts'),
         infoBlocks: pick(data, 'infoBlocks'),
         catalogs: pick(data, 'allCatalogs', 'catalogs'),
-        maintenance: pick(data, 'maintenanceMode') || {enabled: false, until: null}
+        maintenance: pick(data, 'maintenanceMode') || {enabled: false, until: null, sections: {}}
     };
 };
 

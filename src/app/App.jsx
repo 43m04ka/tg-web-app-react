@@ -22,7 +22,7 @@ const AdminPanel = lazy(() => import('../pages/AdminPanel/AdminPanel'));
 
 export default function App() {
     const {isReady} = useBootstrap();
-    const {isMaintenance, maintenanceUntil} = useMaintenance();
+    const {isMaintenance, maintenanceUntil, maintenanceSections} = useMaintenance();
     const {pathname} = useLocation();
     const pageId = useSessionStore((state) => state.pageId);
     const pages = useStructureStore((state) => state.pages);
@@ -55,7 +55,7 @@ export default function App() {
         <div className={style.app}>
             <BackButton/>
             <main className={style.content}>
-                <AppRoutes/>
+                <AppRoutes sections={maintenanceSections}/>
             </main>
             {pageId === null || isStandalone ? null : <NavBar/>}
         </div>

@@ -16,6 +16,8 @@ import Subscription from '../pages/Subscription/Subscription';
 import {useSessionStore} from '../store/useSessionStore';
 import {useStructureStore} from '../store/useStructureStore';
 import {pageTypeOf, standaloneRoute} from '../shared/lib/pageRoutes';
+import {closedSection} from '../shared/lib/maintenance';
+import Maintenance from '../pages/Maintenance/Maintenance';
 import style from './AppRoutes.module.scss';
 
 const LEAVE_MS = 150;
@@ -58,7 +60,7 @@ function RequireSearchPage({children}) {
     return location.state?.allPages ? children : <Navigate to="/" replace/>;
 }
 
-export default function AppRoutes() {
+export default function AppRoutes({sections}) {
     const location = useLocation();
     const [shown, setShown] = useState(location);
     const [isLeaving, setLeaving] = useState(false);
@@ -81,6 +83,19 @@ export default function AppRoutes() {
 
         return () => clearTimeout(timerId);
     }, [location, shown]);
+
+    const closed = closedSection(shown.pathname, sections);
+
+    if (closed) {
+        return (
+            <div
+                key={`closed-${closed.id}`}
+                className={`${style.stage} ${isLeaving ? style.leaving : ''}`}
+            >
+                <Maintenance until={closed.until} section={closed.title}/>
+            </div>
+        );
+    }
 
     return (
         <div

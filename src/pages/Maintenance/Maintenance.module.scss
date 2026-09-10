@@ -7,6 +7,14 @@
   background: var(--bg);
 }
 
+.inline {
+  height: auto;
+  min-height: 100%;
+  align-items: flex-start;
+  padding-top: var(--space-6);
+  background: transparent;
+}
+
 .card {
   width: 100%;
   max-width: 440px;

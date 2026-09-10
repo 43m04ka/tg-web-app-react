@@ -1,72 +1,85 @@
-import React from 'react';
-import {formatPrice, isSubscription, subscriptionTerm} from './catalogSections';
+import React, {useMemo} from 'react';
+import {buildPlan} from '../Subscription/subscriptionModel';
+import {pluralOf} from '../../shared/lib/plural';
+import {formatPrice} from './catalogSections';
 import style from './SubscriptionRail.module.scss';
 
-const MONTHS = [
-    {re: /(\d+)\s*мес/i, factor: 1},
-    {re: /(\d+)\s*(?:год|года|лет)/i, factor: 12}
-];
+const PERIOD_WORDS = ['срок', 'срока', 'сроков'];
 
-const tierName = (product) => String(product.choiceColumn || product.name || '').trim();
+const coverOf = (tier) => tier.periods.find((period) => period.product?.image)?.product.image || null;
 
-const monthsOf = (product) => {
-    const text = String(product.choiceRow || product.name || '');
+const entryOf = (tier) => tier.periods.find((period) => period.isAvailable) || tier.periods[0] || null;
 
-    for (const {re, factor} of MONTHS) {
-        const found = text.match(re);
-        if (found) return Number(found[1]) * factor;
-    }
+const priceFrom = (tier) => {
+    if (tier.fromPrice !== null) return tier.fromPrice;
 
-    return null;
+    return tier.periods
+        .map((period) => period.price)
+        .filter((value) => value !== null)
+        .sort((a, b) => a - b)[0] ?? null;
 };
 
-const monthlyNote = (product) => {
-    const months = monthsOf(product);
-    const price = Number(product.price);
+export const railTiers = (products, {catalogPath, title} = {}) =>
+    buildPlan(products, {catalogPath, title})?.tiers || [];
 
-    if (!months || months < 2 || !Number.isFinite(price) || price <= 0) return '';
+export default function SubscriptionRail({products, catalogPath, title, onOpen}) {
+    const tiers = useMemo(
+        () => railTiers(products, {catalogPath, title}),
+        [products, catalogPath, title]
+    );
 
-    return `${formatPrice(Math.round(price / months))}/мес`;
-};
-
-export const subscriptionTiles = (products) => (products || [])
-    .filter(isSubscription)
-    .slice()
-    .sort((a, b) => (a.serialNumber ?? 0) - (b.serialNumber ?? 0));
-
-export default function SubscriptionRail({products, onOpen}) {
     return (
         <div className={style.rail}>
-            {subscriptionTiles(products).map((product) => {
-                const note = monthlyNote(product);
-                const caption = product.image
-                    ? [tierName(product), subscriptionTerm(product) || product.choiceRow].filter(Boolean).join(' · ')
-                    : tierName(product);
+            {tiers.map((tier) => {
+                const entry = entryOf(tier);
+                if (!entry) return null;
+
+                const cover = coverOf(tier);
+                const price = priceFrom(tier);
+                const count = tier.periods.length;
 
                 return (
                     <button
-                        key={product.id}
+                        key={tier.key}
                         type="button"
                         className={style.tier}
-                        onClick={() => onOpen(product)}
+                        style={{'--tier-accent': tier.accent}}
+                        onClick={() => onOpen(entry.product)}
                     >
                         <span
                             className={style.art}
-                            style={product.image ? {backgroundImage: `url(${product.image})`} : undefined}
+                            style={cover ? {backgroundImage: `url(${cover})`} : undefined}
                         >
-                            {product.image ? null : (
+                            {cover ? null : (
                                 <span className={style.plain} aria-hidden="true">
-                                    <span className={style.plainGlyph}>{caption.slice(0, 1).toUpperCase() || '·'}</span>
+                                    <span className={style.plainGlyph}>
+                                        {tier.name.slice(0, 1).toUpperCase() || '·'}
+                                    </span>
                                 </span>
                             )}
                         </span>
 
                         <span className={style.body}>
-                            <span className={style.name}>{caption}</span>
+                            <span className={style.name}>
+                                <span className={style.dot} aria-hidden="true"/>
+                                {tier.name}
+                            </span>
 
                             <span className={style.foot}>
-                                <span className={style.price}>{formatPrice(product.price)}</span>
-                                {note ? <span className={style.terms}>{note}</span> : null}
+                                {price === null ? (
+                                    <span className={style.price}>Нет в наличии</span>
+                                ) : (
+                                    <span className={style.price}>
+                                        <span className={style.from}>от</span>
+                                        {formatPrice(price)}
+                                    </span>
+                                )}
+
+                                {count > 1 ? (
+                                    <span className={style.terms}>
+                                        {count} {pluralOf(count, PERIOD_WORDS)}
+                                    </span>
+                                ) : null}
                             </span>
                         </span>
                     </button>

@@ -92,7 +92,7 @@ export default function AppRoutes({sections}) {
                 key={`closed-${closed.id}`}
                 className={`${style.stage} ${isLeaving ? style.leaving : ''}`}
             >
-                <Maintenance until={closed.until} section={closed.title}/>
+                <Maintenance until={closed.until} section={closed.title} sectionId={closed.id}/>
             </div>
         );
     }

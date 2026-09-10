@@ -352,12 +352,34 @@
 }
 
 .tierName {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: u(6);
+  min-width: 0;
   font-size: u(13.5);
   font-weight: 800;
   color: inherit;
 }
 
+.tierDot {
+  width: u(6);
+  height: u(6);
+  flex: none;
+  border-radius: 50%;
+  background: var(--tier-accent, var(--text-faint));
+  box-shadow: 0 0 u(8) u(-1) var(--tier-accent, transparent);
+  transition: opacity var(--duration-base) var(--ease-out);
+}
+
+.tierActive .tierDot {
+  opacity: 0;
+  width: 0;
+  margin-right: u(-6);
+}
+
 .tierCard .tierName {
+  justify-content: flex-start;
   color: var(--text);
 }
 

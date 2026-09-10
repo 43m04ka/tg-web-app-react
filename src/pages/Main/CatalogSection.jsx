@@ -39,7 +39,12 @@ export default function CatalogSection({section, onOpenCatalog, onOpenSubscripti
                     <h2 className={style.title}>{block.name}</h2>
                 </div>
 
-                <SubscriptionRail products={products} onOpen={onOpenProduct}/>
+                <SubscriptionRail
+                    products={products}
+                    catalogPath={path}
+                    title={block.name}
+                    onOpen={onOpenProduct}
+                />
 
                 <div className={style.footer}>
                     <button

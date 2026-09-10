@@ -1,5 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import {usePlatform} from '../../shared/hooks/usePlatform';
+import {hapticImpact} from '../../shared/lib/haptic';
 import {remainingOf} from '../../shared/lib/maintenance';
 import {supportUrlForBot} from '../More/moreMenu';
 import style from './Maintenance.module.scss';
@@ -21,7 +23,8 @@ function SupportIcon() {
     );
 }
 
-export default function Maintenance({until, section}) {
+export default function Maintenance({until, section, sectionId}) {
+    const navigate = useNavigate();
     const {botType} = usePlatform();
     const supportUrl = supportUrlForBot(botType);
 
@@ -34,6 +37,11 @@ export default function Maintenance({until, section}) {
         const timerId = setInterval(() => setRemaining(remainingOf(until)), TICK_MS);
         return () => clearInterval(timerId);
     }, [until]);
+
+    const goHome = useCallback(() => {
+        hapticImpact('light');
+        navigate('/main');
+    }, [navigate]);
 
     return (
         <div className={`${style.screen} ${section ? style.inline : ''}`}>
@@ -74,6 +82,12 @@ export default function Maintenance({until, section}) {
                         <span className={style.untilValue}>{remaining.at}</span>
                         <span className={style.untilLeft}>осталось ~{remaining.left}</span>
                     </div>
+                ) : null}
+
+                {section && sectionId !== 'main' ? (
+                    <button type="button" className={style.home} onClick={goHome}>
+                        Вернуться на главную
+                    </button>
                 ) : null}
 
                 {supportUrl ? (

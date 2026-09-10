@@ -1,8 +1,11 @@
 import React from 'react';
+import {pluralOf} from '../../shared/lib/plural';
 import {formatPrice} from '../Main/catalogSections';
 import style from './Subscription.module.scss';
 
 const ROW_LIMIT = 4;
+
+const VARIANT_WORDS = ['вариант', 'варианта', 'вариантов'];
 
 export default function SubscriptionPeriods({tier, activeId, onSelect}) {
     const {periods, hint} = tier;
@@ -15,7 +18,7 @@ export default function SubscriptionPeriods({tier, activeId, onSelect}) {
             <div className={style.blockHead}>
                 <h2 className={style.blockTitle}>Срок подписки</h2>
                 {periods.length > 1 ? (
-                    <span className={style.blockNote}>{periods.length} вариантов</span>
+                    <span className={style.blockNote}>{periods.length} {pluralOf(periods.length, VARIANT_WORDS)}</span>
                 ) : null}
             </div>
 

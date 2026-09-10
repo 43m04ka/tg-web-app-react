@@ -4,11 +4,9 @@ import {
     Button,
     ButtonRow,
     ErrorState,
-    Field,
     Grid,
     Input,
     Mono,
-    Note,
     Panel,
     SkeletonRows,
     Toggle,
@@ -137,29 +135,84 @@ export default function SettingsScreen() {
         <Workspace>
             <Panel scroll wide>
                 <div className={style.stack}>
-                    <Grid columns={2}>
-                        <section className={style.card}>
-                            <header className={style.cardHead}>
-                                <span className={style.cardTitle}>Вся витрина</span>
-                                {maintenance ? <Badge tone="danger">закрыта</Badge> : <Badge tone="positive">работает</Badge>}
-                            </header>
+                    <section className={style.card}>
+                        <header className={style.cardHead}>
+                            <span className={style.cardTitle}>Технические работы</span>
+                            {maintenance
+                                ? <Badge tone="danger">вся витрина закрыта</Badge>
+                                : closedCount
+                                    ? <Badge tone="warning">закрыто разделов: {closedCount}</Badge>
+                                    : <Badge tone="positive">всё открыто</Badge>}
+                        </header>
 
-                            <Toggle checked={maintenance} onChange={onMaintenance} label="Закрыть витрину на техработы"/>
-
-                            <Field label="Окончание" hint="Показывается покупателю на заглушке. Пусто — время не задано.">
-                                <div className={style.row}>
-                                    <Input
-                                        type="datetime-local"
-                                        value={until}
-                                        onChange={(event) => setUntil(event.target.value)}
-                                    />
-                                    <Button size="s" variant="secondary" onClick={onUntil} loading={write.loading}>
-                                        Сохранить
-                                    </Button>
+                        <ul className={style.sections}>
+                            <li className={`${maintenance ? style.sectionClosed : style.section} ${style.whole}`}>
+                                <div className={style.sectionText}>
+                                    <span className={style.sectionTitle}>Вся витрина</span>
+                                    <span className={style.sectionHint}>
+                                        Закрывает все разделы разом. Покупатель видит заглушку со временем окончания.
+                                    </span>
                                 </div>
-                            </Field>
-                        </section>
 
+                                {maintenance ? (
+                                    <div className={style.row}>
+                                        <Input
+                                            type="datetime-local"
+                                            value={until}
+                                            title="Окончание работ, МСК"
+                                            onChange={(event) => setUntil(event.target.value)}
+                                        />
+                                        <Button size="s" variant="secondary" onClick={onUntil} loading={write.loading}>
+                                            Сохранить
+                                        </Button>
+                                    </div>
+                                ) : <span className={style.sectionOpen}>открыта</span>}
+
+                                <Toggle checked={maintenance} onChange={onMaintenance}/>
+                            </li>
+                        </ul>
+
+                        <span className={style.scopeLabel}>Или только отдельные разделы · время по МСК</span>
+
+                        <ul className={maintenance ? style.sectionsMuted : style.sections}>
+                            {MAINTENANCE_SECTIONS.map((section) => {
+                                const state = sections[section.id];
+
+                                return (
+                                    <li key={section.id} className={state ? style.sectionClosed : style.section}>
+                                        <div className={style.sectionText}>
+                                            <span className={style.sectionTitle}>{section.title}</span>
+                                            <span className={style.sectionHint}>{section.hint}</span>
+                                        </div>
+
+                                        {state ? (
+                                            <Input
+                                                type="datetime-local"
+                                                value={toMoscowInput(state.until)}
+                                                title="Окончание работ в разделе"
+                                                onChange={(event) => onSectionUntil(section.id, event.target.value)}
+                                                onBlur={() => saveSections(sections)}
+                                            />
+                                        ) : <span className={style.sectionOpen}>открыт</span>}
+
+                                        <Toggle
+                                            checked={Boolean(state)}
+                                            disabled={write.loading}
+                                            onChange={(next) => onSection(section, next)}
+                                        />
+                                    </li>
+                                );
+                            })}
+                        </ul>
+
+                        {maintenance ? (
+                            <span className={style.sectionHint}>
+                                Пока закрыта вся витрина, настройки разделов не действуют — они вступят в силу, когда её откроют.
+                            </span>
+                        ) : null}
+                    </section>
+
+                    <Grid columns={2}>
                         <section className={style.card}>
                             <header className={style.cardHead}>
                                 <span className={style.cardTitle}>Обновление данных</span>
@@ -201,68 +254,22 @@ export default function SettingsScreen() {
                                 </Button>
                             </div>
                         </section>
-                    </Grid>
+                        <section className={style.card}>
+                            <header className={style.cardHead}>
+                                <span className={style.cardTitle}>Сеанс</span>
+                            </header>
 
-                    <section className={style.card}>
-                        <header className={style.cardHead}>
-                            <span className={style.cardTitle}>Разделы на техработах</span>
-                            {closedCount
-                                ? <Badge tone="danger">закрыто: {closedCount}</Badge>
-                                : <Badge tone="positive">все открыты</Badge>}
-                        </header>
-
-                        <Note>
-                            Закрывает отдельную страницу, не трогая остальную витрину. Покупатель увидит
-                            заглушку с кнопкой возврата на главную.
-                        </Note>
-
-                        <ul className={style.sections}>
-                            {MAINTENANCE_SECTIONS.map((section) => {
-                                const state = sections[section.id];
-
-                                return (
-                                    <li key={section.id} className={state ? style.sectionClosed : style.section}>
-                                        <div className={style.sectionText}>
-                                            <span className={style.sectionTitle}>{section.title}</span>
-                                            <span className={style.sectionHint}>{section.hint}</span>
-                                        </div>
-
-                                        {state ? (
-                                            <Input
-                                                type="datetime-local"
-                                                value={toMoscowInput(state.until)}
-                                                title="Окончание работ в разделе"
-                                                onChange={(event) => onSectionUntil(section.id, event.target.value)}
-                                                onBlur={() => saveSections(sections)}
-                                            />
-                                        ) : <span className={style.sectionOpen}>открыт</span>}
-
-                                        <Toggle
-                                            checked={Boolean(state)}
-                                            disabled={write.loading}
-                                            onChange={(next) => onSection(section, next)}
-                                        />
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    </section>
-
-                    <section className={style.card}>
-                        <header className={style.cardHead}>
-                            <span className={style.cardTitle}>Сеанс</span>
-                        </header>
-
-                        <div className={style.session}>
-                            <div className={style.sessionText}>
-                                <span className={style.sessionTitle}>Вы вошли в админку</span>
-                                <span className={style.sessionHint}>
-                                    Сервер: <Mono muted>{API_BASE_URL || 'тот же домен'}</Mono>
-                                </span>
+                            <div className={style.session}>
+                                <div className={style.sessionText}>
+                                    <span className={style.sessionTitle}>Вы вошли в админку</span>
+                                    <span className={style.sessionHint}>
+                                        Сервер: <Mono muted>{API_BASE_URL || 'тот же домен'}</Mono>
+                                    </span>
+                                </div>
+                                <Button variant="danger" onClick={() => signOut()}>Выйти</Button>
                             </div>
-                            <Button variant="danger" onClick={() => signOut()}>Выйти</Button>
-                        </div>
-                    </section>
+                        </section>
+                    </Grid>
                 </div>
             </Panel>
         </Workspace>

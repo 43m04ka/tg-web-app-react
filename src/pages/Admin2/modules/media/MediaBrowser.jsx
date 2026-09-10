@@ -2,7 +2,7 @@ import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {
     Badge,
     Button,
-    ButtonRow,
+    
     EmptyState,
     ErrorState,
     Input,
@@ -126,14 +126,7 @@ export default function MediaBrowser({onPick = null, selected = '', compact = fa
                     {countTitle(entries.folders.length, FOLDER_WORDS)} · {countTitle(entries.files.length, FILE_WORDS)}
                 </span>
 
-                <div className={style.barTools}>
-                    <SearchInput value={search} onChange={setSearch} placeholder="Имя файла"/>
-                    <Button size="s" variant="ghost" onClick={refresh}>Обновить</Button>
-                </div>
-            </div>
-
-            <div className={style.tools}>
-                <ButtonRow>
+                <div className={style.barActions}>
                     <Button size="s" variant="primary" loading={upload.loading} onClick={() => inputRef.current?.click()}>
                         Загрузить файлы
                     </Button>
@@ -153,8 +146,14 @@ export default function MediaBrowser({onPick = null, selected = '', compact = fa
                     {path ? (
                         <Button size="s" variant="ghost" onClick={() => setPath(parentOf(path))}>Наверх</Button>
                     ) : null}
-                </ButtonRow>
+                </div>
+
+                <div className={style.barTools}>
+                    <SearchInput value={search} onChange={setSearch} placeholder="Имя файла"/>
+                    <Button size="s" variant="ghost" onClick={refresh}>Обновить</Button>
+                </div>
             </div>
+
 
             <input
                 ref={inputRef}

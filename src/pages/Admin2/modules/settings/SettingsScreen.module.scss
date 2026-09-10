@@ -175,3 +175,20 @@
     color: var(--a2-text-muted);
     font-size: var(--a2-size-s);
 }
+
+.whole .sectionTitle {
+    font-size: var(--a2-size-l);
+}
+
+.sectionsMuted {
+    composes: sections;
+    opacity: 0.55;
+}
+
+.scopeLabel {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}

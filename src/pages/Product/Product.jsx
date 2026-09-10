@@ -53,6 +53,7 @@ export default function Product() {
 
     const userId = useSessionStore(selectUserId);
     const pageId = useSessionStore((state) => state.pageId);
+    const setPageId = useSessionStore((state) => state.setPageId);
     const catalogs = useStructureStore((state) => state.catalogs);
     const mainPageProducts = useStructureStore((state) => state.mainPageProducts);
 
@@ -144,6 +145,18 @@ export default function Product() {
     }, [productId, editions, addons]);
 
     const recommendations = useRecommendations(pageId, excludedIds);
+
+    const productPageId = useMemo(() => {
+        if (!product || !Array.isArray(catalogs)) return null;
+
+        return catalogs.find((item) => item.id === product.catalogId)?.structurePageId ?? null;
+    }, [product, catalogs]);
+
+    useEffect(() => {
+        if (productPageId === null || productPageId === pageId) return;
+
+        setPageId(productPageId);
+    }, [productPageId, pageId, setPageId]);
 
     const isPlan = Boolean(product) && isSubscription(product);
 

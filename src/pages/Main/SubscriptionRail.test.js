@@ -1,4 +1,4 @@
-import {railTiers} from './SubscriptionRail';
+import {railTiers, termRange} from './SubscriptionRail';
 
 const product = (id, column, row, price) => ({
     id,
@@ -46,6 +46,18 @@ describe('railTiers', () => {
         expect(tiers[0].fromPrice).toBe(1500);
     });
 
+    it('под плиткой диапазон сроков, а не их число', () => {
+        const [essential, deluxe] = railTiers([
+            product(1, 'Essential', '1 месяц', 1500),
+            product(2, 'Essential', '3 месяца', 3600),
+            product(3, 'Essential', '12 месяцев', 7700),
+            product(4, 'Deluxe', '1 месяц', 2300)
+        ], {catalogPath: 'ps_tur_psplus'});
+
+        expect(termRange(essential)).toBe('1–12 мес');
+        expect(termRange(deluxe)).toBe('1 мес');
+    });
+
     it('без подписок список пуст', () => {
         expect(railTiers([{id: 1, type: 'CODE', name: 'Код'}])).toEqual([]);
         expect(railTiers(null)).toEqual([]);
@@ -58,7 +70,7 @@ describe('railTiers', () => {
             product(3, 'Deluxe', '1 месяц', 2300)
         ], {catalogPath: 'ps_tur_psplus'});
 
-        const accents = tiers.map((tier) => tier.accent);
-        expect(new Set(accents).size).toBe(3);
+        expect(new Set(tiers.map((tier) => tier.dot)).size).toBe(3);
+        expect(tiers[2].theme).not.toBeNull();
     });
 });

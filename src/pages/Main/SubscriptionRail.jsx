@@ -1,10 +1,7 @@
 import React, {useMemo} from 'react';
 import {buildPlan} from '../Subscription/subscriptionModel';
-import {pluralOf} from '../../shared/lib/plural';
 import {formatPrice} from './catalogSections';
 import style from './SubscriptionRail.module.scss';
-
-const PERIOD_WORDS = ['срок', 'срока', 'сроков'];
 
 const coverOf = (tier) => tier.periods.find((period) => period.product?.image)?.product.image || null;
 
@@ -17,6 +14,19 @@ const priceFrom = (tier) => {
         .map((period) => period.price)
         .filter((value) => value !== null)
         .sort((a, b) => a - b)[0] ?? null;
+};
+
+export const termRange = (tier) => {
+    const months = tier.periods
+        .map((period) => period.months)
+        .filter((value) => value !== null);
+
+    if (months.length === 0) return tier.periods.length === 1 ? tier.periods[0].label : '';
+
+    const low = Math.min(...months);
+    const high = Math.max(...months);
+
+    return low === high ? `${low} мес` : `${low}–${high} мес`;
 };
 
 export const railTiers = (products, {catalogPath, title} = {}) =>
@@ -36,14 +46,14 @@ export default function SubscriptionRail({products, catalogPath, title, onOpen})
 
                 const cover = coverOf(tier);
                 const price = priceFrom(tier);
-                const count = tier.periods.length;
+                const range = termRange(tier);
 
                 return (
                     <button
                         key={tier.key}
                         type="button"
                         className={style.tier}
-                        style={{'--tier-accent': tier.accent}}
+                        style={{'--tier-dot': tier.dot}}
                         onClick={() => onOpen(entry.product)}
                     >
                         <span
@@ -75,11 +85,7 @@ export default function SubscriptionRail({products, catalogPath, title, onOpen})
                                     </span>
                                 )}
 
-                                {count > 1 ? (
-                                    <span className={style.terms}>
-                                        {count} {pluralOf(count, PERIOD_WORDS)}
-                                    </span>
-                                ) : null}
+                                {range ? <span className={style.terms}>{range}</span> : null}
                             </span>
                         </span>
                     </button>

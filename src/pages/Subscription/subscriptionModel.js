@@ -115,6 +115,8 @@ const buildTier = (brand, name, products) => {
         name: name || brand.name,
         tagline: style?.tagline || null,
         accent: style?.accent || brand.accent,
+        dot: style?.dot || style?.accent || brand.accent,
+        theme: style?.theme || null,
         periods,
         hint: savingHint(periods),
         fromPerMonth,

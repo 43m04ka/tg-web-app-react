@@ -225,7 +225,7 @@ export default function Subscription() {
         );
     }
 
-    const theme = themeOf({accent: tier.accent}, 0);
+    const theme = tier.theme || themeOf({accent: tier.accent}, 0);
     const summary = [tier.name, period?.label].filter(Boolean).join(' · ');
 
     return (
@@ -246,21 +246,6 @@ export default function Subscription() {
                 <SubscriptionTiers tiers={plan.tiers} activeKey={tier.key} onSelect={selectTier}/>
 
                 <SubscriptionPeriods tier={tier} activeId={period?.id ?? null} onSelect={selectPeriod}/>
-
-                {plan.includes.length > 0 ? (
-                    <section className={style.block}>
-                        <h2 className={style.blockTitle}>Что входит</h2>
-
-                        <div className={style.includes}>
-                            {plan.includes.map((line) => (
-                                <span key={line} className={style.include}>
-                                    <span className={style.includeMark} aria-hidden="true">✓</span>
-                                    {line}
-                                </span>
-                            ))}
-                        </div>
-                    </section>
-                ) : null}
 
                 <button type="button" className={style.toCatalog} onClick={openCatalog}>
                     Посмотреть все позиции

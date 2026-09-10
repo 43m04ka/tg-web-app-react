@@ -1,3 +1,15 @@
+const DELUXE_DOT = 'linear-gradient(135deg, #16120c 8%, #F0C463 92%)';
+
+const DELUXE_THEME = {
+    base: '#17130D',
+    edge: '#4A3512',
+    ink: '#F3CB74',
+    text: '#F0C463',
+    ring: 'rgba(240, 196, 99, 0.5)',
+    glow: 'rgba(232, 179, 60, 0.42)',
+    isLight: false
+};
+
 const BRANDS = [
     {
         key: 'psplus',
@@ -10,10 +22,18 @@ const BRANDS = [
             'Каталог игр Extra и Deluxe при выборе тарифа'
         ],
         tiers: {
-            essential: {accent: '#0070D1', tagline: 'Онлайн и игры месяца'},
-            extra: {accent: '#7C5CFA', tagline: 'Каталог сотен игр'},
-            deluxe: {accent: '#E8B33C', tagline: 'Классика и пробные версии'},
-            premium: {accent: '#E8B33C', tagline: 'Классика и пробные версии'}
+            essential: {
+                accent: '#C9CFD9',
+                dot: 'linear-gradient(135deg, #EEF1F5, #8E97A6)',
+                tagline: 'Онлайн и игры месяца'
+            },
+            extra: {
+                accent: '#E8B33C',
+                dot: 'linear-gradient(135deg, #F7D77A, #C98D22)',
+                tagline: 'Каталог сотен игр'
+            },
+            deluxe: {accent: '#F0C463', dot: DELUXE_DOT, theme: DELUXE_THEME, tagline: 'Классика и пробные версии'},
+            premium: {accent: '#F0C463', dot: DELUXE_DOT, theme: DELUXE_THEME, tagline: 'Классика и пробные версии'}
         }
     },
     {

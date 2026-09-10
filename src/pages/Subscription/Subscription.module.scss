@@ -367,8 +367,8 @@
   height: u(6);
   flex: none;
   border-radius: 50%;
-  background: var(--tier-accent, var(--text-faint));
-  box-shadow: 0 0 u(8) u(-1) var(--tier-accent, transparent);
+  background: var(--tier-dot, var(--text-faint));
+  box-shadow: 0 0 0 u(1) oklch(1 0 0 / 0.08);
   transition: opacity var(--duration-base) var(--ease-out);
 }
 

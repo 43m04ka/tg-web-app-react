@@ -23,7 +23,7 @@ export default function SubscriptionTiers({tiers, activeKey, onSelect}) {
                             key={tier.key}
                             type="button"
                             className={`${asCards ? style.tierCard : style.tierPill} ${isActive ? style.tierActive : ''}`}
-                            style={{'--tier-accent': tier.accent}}
+                            style={{'--tier-dot': tier.dot}}
                             aria-pressed={isActive}
                             onClick={() => onSelect(tier.key)}
                         >

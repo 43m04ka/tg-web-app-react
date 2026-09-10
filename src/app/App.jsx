@@ -40,10 +40,11 @@ export default function App() {
         return (
             <Suspense fallback={<Splash/>}>
                 <Routes>
-                    <Route path="/admin" element={<AdminAuth/>}/>
-                    <Route path="/admin-panel/*" element={<AdminPanel/>}/>
+                    <Route path="/admin" element={<Navigate to="/admin2" replace/>}/>
                     <Route path="/admin2/*" element={<Admin2/>}/>
-                    <Route path="*" element={<Navigate to="/admin" replace/>}/>
+                    <Route path="/admin-old" element={<AdminAuth/>}/>
+                    <Route path="/admin-panel/*" element={<AdminPanel/>}/>
+                    <Route path="*" element={<Navigate to="/admin2" replace/>}/>
                 </Routes>
             </Suspense>
         );

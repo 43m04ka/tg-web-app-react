@@ -96,7 +96,7 @@ const AdminPanel = () => {
     }, []);
 
     if(authenticationData === null){
-        navigate('/admin')
+        navigate('/admin-old')
     }
 
     return (

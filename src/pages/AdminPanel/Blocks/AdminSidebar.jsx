@@ -14,7 +14,7 @@ const AdminSidebar = ({routeGroups, theme, onToggleTheme}) => {
 
     const onLogout = () => {
         setAuthenticationData(null);
-        navigator('/admin');
+        navigator('/admin-old');
     };
 
     return (

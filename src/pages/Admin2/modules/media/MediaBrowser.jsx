@@ -17,7 +17,13 @@ import {invalidate} from '../../platform/cache';
 import {askConfirm, toast, toastFail} from '../../platform/notify';
 import {createFolder, deleteFile, deleteFolder, fetchFolder, uploadFiles} from './api';
 import {MAX_FILES, MAX_SIZE_MB, checkFiles, crumbsOf, parentOf, splitEntries} from './mediaModel';
+import {pluralOf} from '../../../../shared/lib/plural';
 import style from './MediaBrowser.module.scss';
+
+const FOLDER_WORDS = ['папка', 'папки', 'папок'];
+const FILE_WORDS = ['файл', 'файла', 'файлов'];
+
+const countTitle = (count, words) => `${count} ${pluralOf(count, words)}`;
 
 const copyAddress = async (url) => {
     try {
@@ -116,6 +122,10 @@ export default function MediaBrowser({onPick = null, selected = '', compact = fa
                     ))}
                 </nav>
 
+                <span className={style.summary}>
+                    {countTitle(entries.folders.length, FOLDER_WORDS)} · {countTitle(entries.files.length, FILE_WORDS)}
+                </span>
+
                 <div className={style.barTools}>
                     <SearchInput value={search} onChange={setSearch} placeholder="Имя файла"/>
                     <Button size="s" variant="ghost" onClick={refresh}>Обновить</Button>
@@ -124,7 +134,7 @@ export default function MediaBrowser({onPick = null, selected = '', compact = fa
 
             <div className={style.tools}>
                 <ButtonRow>
-                    <Button size="s" variant="secondary" loading={upload.loading} onClick={() => inputRef.current?.click()}>
+                    <Button size="s" variant="primary" loading={upload.loading} onClick={() => inputRef.current?.click()}>
                         Загрузить файлы
                     </Button>
                     {path ? (
@@ -175,20 +185,32 @@ export default function MediaBrowser({onPick = null, selected = '', compact = fa
                 {!folder.error && !folder.isLoading ? (
                     <>
                         {entries.folders.length ? (
+                            <section className={style.group}>
+                            <span className={style.groupTitle}>
+                                Папки
+                                <span className={style.groupCount}>{entries.folders.length}</span>
+                            </span>
                             <div className={style.folders}>
                                 {entries.folders.map((item) => (
                                     <div key={item.path} className={style.folder}>
                                         <button type="button" className={style.folderOpen} onClick={() => setPath(item.path)}>
-                                            <span className={style.folderIcon}>▸</span>
+                                            <span className={style.folderIcon}/>
                                             <span className={style.folderName}>{item.name}</span>
                                         </button>
                                         <Button size="s" variant="ghost" onClick={() => onDeleteFolder(item)}>Удалить</Button>
                                     </div>
                                 ))}
                             </div>
+                            </section>
                         ) : null}
 
                         {entries.files.length ? (
+                            <section className={style.group}>
+                            <span className={style.groupTitle}>
+                                Файлы
+                                <span className={style.groupCount}>{entries.files.length}</span>
+                                <span className={style.groupHint}>клик по картинке копирует адрес</span>
+                            </span>
                             <div className={style.grid}>
                                 {entries.files.map((file) => (
                                     <figure
@@ -214,6 +236,7 @@ export default function MediaBrowser({onPick = null, selected = '', compact = fa
                                     </figure>
                                 ))}
                             </div>
+                            </section>
                         ) : null}
 
                         {!entries.folders.length && !entries.files.length ? (

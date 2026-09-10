@@ -146,7 +146,10 @@ export default function StorefrontScreen() {
 
                 {groupByBot(list).map((bucket) => (
                     <div key={bucket.botType} className={style.bucket}>
-                        <span className={style.bucketTitle}>{bucket.title}</span>
+                        <span className={style.bucketTitle}>
+                            {bucket.title}
+                            <span className={style.bucketCount}>{bucket.items.length}</span>
+                        </span>
 
                         {bucket.items.map((page) => (
                             <button
@@ -155,11 +158,16 @@ export default function StorefrontScreen() {
                                 className={`${style.page} ${current?.id === page.id ? style.pageActive : ''}`}
                                 onClick={() => openPage(page)}
                             >
-                                <span className={style.pageName}>{page.name || 'Без названия'}</span>
+                                <span className={style.pageIcon}>{(page.name || '?').trim().slice(0, 1).toUpperCase()}</span>
 
-                                <span className={style.pageMeta}>
-                                    {typeName(page.type)}
-                                    {page.isHidden ? <Badge tone="neutral">скрыта</Badge> : null}
+                                <span className={style.pageText}>
+                                    <span className={style.pageName}>{page.name || 'Без названия'}</span>
+
+                                    <span className={style.pageMeta}>
+                                        {typeName(page.type)}
+                                        <span className={style.pageId}>#{page.id}</span>
+                                        {page.isHidden ? <Badge tone="neutral">скрыта</Badge> : null}
+                                    </span>
                                 </span>
                             </button>
                         ))}

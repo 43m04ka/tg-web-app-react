@@ -1,8 +1,14 @@
+.stack {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
 .card {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 14px;
+    gap: 14px;
+    padding: 16px;
     border: 1px solid var(--a2-border);
     border-radius: var(--a2-radius-l);
     background: var(--a2-card);
@@ -21,7 +27,7 @@
 
 .cardTitle {
     color: var(--a2-text);
-    font-size: var(--a2-size-m);
+    font-size: var(--a2-size-l);
     font-weight: 600;
 }
 
@@ -36,6 +42,96 @@
     min-width: 0;
 }
 
+.action {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-plane);
+}
+
+.actionText {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.actionTitle {
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+}
+
+.actionHint {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+    line-height: 1.4;
+}
+
+.actionPlan {
+    color: var(--a2-accent);
+    font-size: var(--a2-size-s);
+}
+
+.sections {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.section,
+.sectionClosed {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 190px auto;
+    align-items: center;
+    gap: 12px;
+    min-height: 58px;
+    padding: 10px 12px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-plane);
+    transition: border-color var(--a2-motion) var(--a2-ease), background var(--a2-motion) var(--a2-ease);
+}
+
+.sectionClosed {
+    border-color: var(--a2-danger);
+    background: var(--a2-danger-soft);
+}
+
+.sectionText {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.sectionTitle {
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+}
+
+.sectionHint {
+    overflow: hidden;
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-xs);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sectionOpen {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-s);
+    text-align: right;
+}
+
 .info {
     display: flex;
     align-items: baseline;
@@ -45,41 +141,8 @@
     font-size: var(--a2-size-s);
 }
 
-.others {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.other {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 80px minmax(0, 1fr);
-    align-items: baseline;
-    gap: 10px;
-    padding: 6px 8px;
-    border: 1px solid var(--a2-border);
-    border-radius: var(--a2-radius-m);
-    background: var(--a2-plane);
-    font-size: var(--a2-size-m);
-}
-
-.otherType {
-    color: var(--a2-text-faint);
-    font-size: var(--a2-size-xs);
-    text-transform: uppercase;
-}
-
-.otherValue {
-    color: var(--a2-text-muted);
-    overflow-wrap: anywhere;
-}
-
-.extra {
-    display: grid;
-    grid-template-columns: minmax(0, 1.2fr) 120px minmax(0, 1fr) auto;
-    align-items: end;
-    gap: 10px;
+@media (max-width: 1280px) {
+    .sections {
+        grid-template-columns: minmax(0, 1fr);
+    }
 }

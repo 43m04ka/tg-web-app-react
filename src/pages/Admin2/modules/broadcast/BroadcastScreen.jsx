@@ -49,7 +49,8 @@ export default function BroadcastScreen() {
     const [sending, setSending] = useState(null);
 
     const limits = stats.data?.limits || null;
-    const state = stats.data?.state || 'idle';
+    const rawState = stats.data?.state;
+    const state = (rawState && typeof rawState === 'object' ? rawState.status : rawState) || 'idle';
     const busy = state !== 'idle';
 
     const telegramHtml = useMemo(() => htmlToTelegram(draft.captionHtml), [draft.captionHtml]);

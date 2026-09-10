@@ -40,6 +40,7 @@ export default function OverviewScreen() {
     const {running, waiting, noticeCount, alarming} = summarize(tasks);
 
     const [rangeId, setRangeId] = useState('30');
+    const [stockOpen, setStockOpen] = useState(false);
     const range = RANGES.find((item) => item.id === rangeId) || RANGES[1];
     const query = useMemo(() => rangeQuery(range.days), [range.days]);
 
@@ -183,12 +184,24 @@ export default function OverviewScreen() {
             </div>
 
             <section className={style.section}>
-                <header className={style.head}>
+                <button
+                    type="button"
+                    className={style.fold}
+                    aria-expanded={stockOpen}
+                    onClick={() => setStockOpen((value) => !value)}
+                >
                     <h2 className={style.title}>Склады кодов</h2>
+                    {report?.stock?.items?.length ? (
+                        <span className={style.foldBadges}>
+                            {report.stock.empty > 0 ? <Badge tone="danger">пусто: {report.stock.empty}</Badge> : null}
+                            {report.stock.low > 0 ? <Badge tone="warning">на исходе: {report.stock.low}</Badge> : null}
+                        </span>
+                    ) : null}
                     <span className={style.hint}>ручная выдача сюда не попадает</span>
-                </header>
+                    <i className={stockOpen ? style.foldCaretOpen : style.foldCaret}/>
+                </button>
 
-                {report?.stock?.items?.length ? (
+                {!stockOpen ? null : report?.stock?.items?.length ? (
                     <>
                         <Note tone={report.stock.empty > 0 ? 'danger' : 'warning'}>
                             Пусто у {report.stock.empty}, на исходе у {report.stock.low}.

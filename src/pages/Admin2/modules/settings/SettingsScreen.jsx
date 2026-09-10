@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
     Badge,
     Button,
@@ -10,7 +10,6 @@ import {
     Mono,
     Note,
     Panel,
-    Select,
     SkeletonRows,
     Toggle,
     Workspace,
@@ -22,22 +21,10 @@ import {keys} from '../../platform/resources';
 import {askConfirm} from '../../platform/notify';
 import {signOut} from '../../platform/session';
 import {API_BASE_URL} from '../../../../shared/config/env';
+import {MAINTENANCE_SECTIONS, normalizeSections} from '../../../../shared/lib/maintenance';
+import {cancelAssociationsSchedule, fetchAssociationsSchedule, runAssociations} from '../catalogs/api';
 import {fetchSettings, refreshStructure, updateSetting} from './api';
 import style from './SettingsScreen.module.scss';
-
-const KNOWN = new Set([
-    'maintenance_mode',
-    'maintenance_mode_until',
-    'steam_commission_percent',
-    'aurapay_acquiring_percent',
-    'aurapay_payout_percent',
-]);
-
-const TYPE_OPTIONS = [
-    {value: 'string', title: 'строка'},
-    {value: 'number', title: 'число'},
-    {value: 'boolean', title: 'да/нет'},
-];
 
 const toLocalInput = (iso) => {
     if (!iso) return '';
@@ -56,31 +43,45 @@ const fromLocalInput = (text) => {
     return Number.isNaN(date.getTime()) ? '' : date.toISOString();
 };
 
+const sectionsPayload = (sections) => Object.entries(sections).reduce((picked, [id, item]) => {
+    picked[id] = {enabled: true, until: item.until || ''};
+    return picked;
+}, {});
+
 export default function SettingsScreen() {
     usePageHeader('Настройки');
 
     const settings = useResource(keys.settings, fetchSettings);
+    const schedule = useResource(keys.associationsSchedule, fetchAssociationsSchedule);
     const values = settings.data?.settings || {};
 
     const write = useMutation(updateSetting, {invalidates: [keys.settings], done: 'Настройка сохранена'});
-    const rebuild = useMutation(refreshStructure, {done: 'Статика витрины пересобрана'});
+    const rebuild = useMutation(refreshStructure, {done: 'Структура витрины обновлена'});
+    const associations = useMutation(() => runAssociations(), {done: 'Обновление ассоциаций запущено'});
+    const cancelPlan = useMutation(cancelAssociationsSchedule, {
+        invalidates: [keys.associationsSchedule],
+        done: 'Запланированное обновление отменено',
+    });
 
     const [until, setUntil] = useState('');
-    const [extra, setExtra] = useState({key: '', value: '', type: 'string'});
+    const [sections, setSections] = useState({});
 
     useEffect(() => {
         setUntil(toLocalInput(values.maintenance_mode_until?.value));
+        setSections(normalizeSections(values.maintenance_sections?.value));
     }, [settings.data]);
 
     const maintenance = values.maintenance_mode?.value === true;
+    const closedCount = Object.keys(sections).length;
+    const plannedAt = schedule.data?.scheduled ? schedule.data.runAtIso : null;
 
     const onMaintenance = useCallback(async (next) => {
         const answer = await askConfirm({
-            title: next ? 'Включить режим техработ?' : 'Выключить режим техработ?',
+            title: next ? 'Закрыть всю витрину на техработы?' : 'Открыть витрину?',
             text: next
                 ? 'Витрина сразу покажет заглушку всем покупателям, покупки станут недоступны.'
                 : 'Витрина сразу вернётся к обычной работе.',
-            confirmText: next ? 'Включить' : 'Выключить',
+            confirmText: next ? 'Закрыть' : 'Открыть',
             tone: next ? 'danger' : 'accent',
         });
 
@@ -91,23 +92,46 @@ export default function SettingsScreen() {
         write.run({key: 'maintenance_mode_until', value: fromLocalInput(until), type: 'string'});
     }, [write, until]);
 
-    const others = useMemo(() => Object.entries(values)
-        .filter(([key]) => !KNOWN.has(key))
-        .map(([key, item]) => ({key, ...item})), [values]);
+    const saveSections = useCallback((next) => {
+        setSections(next);
+        write.run({key: 'maintenance_sections', value: sectionsPayload(next), type: 'object'});
+    }, [write]);
 
-    const onExtra = useCallback(() => {
-        const key = extra.key.trim();
-        if (!key) return;
+    const onSection = useCallback(async (section, next) => {
+        const answer = await askConfirm({
+            title: next ? `Закрыть «${section.title}»?` : `Открыть «${section.title}»?`,
+            text: next
+                ? 'Покупатели увидят заглушку техработ только в этом разделе, остальная витрина продолжит работать.'
+                : 'Раздел сразу станет доступен покупателям.',
+            confirmText: next ? 'Закрыть раздел' : 'Открыть раздел',
+            tone: next ? 'danger' : 'accent',
+        });
 
-        const value = extra.type === 'number'
-            ? Number(String(extra.value).replace(',', '.'))
-            : extra.type === 'boolean'
-                ? extra.value === 'true'
-                : extra.value;
+        if (!answer) return;
 
-        write.run({key, value, type: extra.type});
-        setExtra({key: '', value: '', type: 'string'});
-    }, [write, extra]);
+        const draft = {...sections};
+        if (next) draft[section.id] = {enabled: true, until: null};
+        else delete draft[section.id];
+
+        saveSections(draft);
+    }, [sections, saveSections]);
+
+    const onSectionUntil = useCallback((id, text) => {
+        setSections((current) => (current[id]
+            ? {...current, [id]: {enabled: true, until: fromLocalInput(text) || null}}
+            : current));
+    }, []);
+
+    const onAssociations = useCallback(async () => {
+        const answer = await askConfirm({
+            title: 'Обновить ассоциации?',
+            text: 'Пересчитываются связи между изданиями и платформами во всех каталогах.',
+            consequence: 'Пересчёт тяжёлый: пока он идёт, сервер отвечает медленнее.',
+            confirmText: 'Обновить',
+        });
+
+        if (answer) associations.run();
+    }, [associations]);
 
     if (settings.error) {
         return (
@@ -128,46 +152,122 @@ export default function SettingsScreen() {
     return (
         <Workspace>
             <Panel scroll wide>
-                <Grid columns={2}>
-                    <div className={style.card}>
-                        <div className={style.cardHead}>
-                            <span className={style.cardTitle}>Режим техработ</span>
-                            {maintenance ? <Badge tone="danger">включён</Badge> : <Badge tone="positive">выключен</Badge>}
-                        </div>
+                <div className={style.stack}>
+                    <Grid columns={2}>
+                        <section className={style.card}>
+                            <header className={style.cardHead}>
+                                <span className={style.cardTitle}>Вся витрина</span>
+                                {maintenance ? <Badge tone="danger">закрыта</Badge> : <Badge tone="positive">работает</Badge>}
+                            </header>
 
-                        <Toggle checked={maintenance} onChange={onMaintenance} label="Витрина закрыта на техработы"/>
+                            <Toggle checked={maintenance} onChange={onMaintenance} label="Закрыть витрину на техработы"/>
 
-                        <Field label="Окончание" hint="Показывается покупателю на заглушке. Пусто — время не задано.">
-                            <div className={style.row}>
-                                <Input
-                                    type="datetime-local"
-                                    value={until}
-                                    onChange={(event) => setUntil(event.target.value)}
-                                />
-                                <Button size="s" onClick={onUntil} loading={write.loading}>Сохранить</Button>
+                            <Field label="Окончание" hint="Показывается покупателю на заглушке. Пусто — время не задано.">
+                                <div className={style.row}>
+                                    <Input
+                                        type="datetime-local"
+                                        value={until}
+                                        onChange={(event) => setUntil(event.target.value)}
+                                    />
+                                    <Button size="s" variant="secondary" onClick={onUntil} loading={write.loading}>
+                                        Сохранить
+                                    </Button>
+                                </div>
+                            </Field>
+                        </section>
+
+                        <section className={style.card}>
+                            <header className={style.cardHead}>
+                                <span className={style.cardTitle}>Обновление данных</span>
+                            </header>
+
+                            <div className={style.action}>
+                                <div className={style.actionText}>
+                                    <span className={style.actionTitle}>Ассоциации</span>
+                                    <span className={style.actionHint}>
+                                        Связи между изданиями и платформами: похожие товары и переключатель версий в карточке.
+                                    </span>
+                                    {plannedAt ? (
+                                        <span className={style.actionPlan}>
+                                            Запланировано на {new Date(plannedAt).toLocaleString('ru-RU')}
+                                        </span>
+                                    ) : null}
+                                </div>
+                                <ButtonRow>
+                                    {plannedAt ? (
+                                        <Button size="s" variant="ghost" loading={cancelPlan.loading} onClick={() => cancelPlan.run()}>
+                                            Отменить план
+                                        </Button>
+                                    ) : null}
+                                    <Button size="s" variant="secondary" loading={associations.loading} onClick={onAssociations}>
+                                        Обновить
+                                    </Button>
+                                </ButtonRow>
                             </div>
-                        </Field>
 
-                        <Note tone={maintenance ? 'warning' : 'neutral'}>
-                            Переключатель действует сразу: статика витрины пересобирается автоматически.
-                        </Note>
-                    </div>
+                            <div className={style.action}>
+                                <div className={style.actionText}>
+                                    <span className={style.actionTitle}>Структура витрины</span>
+                                    <span className={style.actionHint}>
+                                        Пересобирает главную: блоки, баннеры, подборки. Нужна после правок в обход админки.
+                                    </span>
+                                </div>
+                                <Button size="s" variant="secondary" loading={rebuild.loading} onClick={() => rebuild.run()}>
+                                    Обновить
+                                </Button>
+                            </div>
+                        </section>
+                    </Grid>
 
-                    <div className={style.card}>
-                        <div className={style.cardHead}>
-                            <span className={style.cardTitle}>Служебное</span>
-                        </div>
-
-                        <ButtonRow>
-                            <Button variant="secondary" loading={rebuild.loading} onClick={() => rebuild.run()}>
-                                Пересобрать статику витрины
-                            </Button>
-                        </ButtonRow>
+                    <section className={style.card}>
+                        <header className={style.cardHead}>
+                            <span className={style.cardTitle}>Разделы на техработах</span>
+                            {closedCount
+                                ? <Badge tone="danger">закрыто: {closedCount}</Badge>
+                                : <Badge tone="positive">все открыты</Badge>}
+                        </header>
 
                         <Note>
-                            Пересборка нужна, если структура или баннеры правились в обход админки.
-                            В обычной работе сервер делает это сам после каждой правки.
+                            Закрывает отдельную страницу, не трогая остальную витрину. Покупатель увидит
+                            заглушку с кнопкой возврата на главную.
                         </Note>
+
+                        <ul className={style.sections}>
+                            {MAINTENANCE_SECTIONS.map((section) => {
+                                const state = sections[section.id];
+
+                                return (
+                                    <li key={section.id} className={state ? style.sectionClosed : style.section}>
+                                        <div className={style.sectionText}>
+                                            <span className={style.sectionTitle}>{section.title}</span>
+                                            <span className={style.sectionHint}>{section.hint}</span>
+                                        </div>
+
+                                        {state ? (
+                                            <Input
+                                                type="datetime-local"
+                                                value={toLocalInput(state.until)}
+                                                title="Окончание работ в разделе"
+                                                onChange={(event) => onSectionUntil(section.id, event.target.value)}
+                                                onBlur={() => saveSections(sections)}
+                                            />
+                                        ) : <span className={style.sectionOpen}>открыт</span>}
+
+                                        <Toggle
+                                            checked={Boolean(state)}
+                                            disabled={write.loading}
+                                            onChange={(next) => onSection(section, next)}
+                                        />
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </section>
+
+                    <section className={style.card}>
+                        <header className={style.cardHead}>
+                            <span className={style.cardTitle}>Сеанс</span>
+                        </header>
 
                         <div className={style.info}>
                             <span>Сервер</span>
@@ -177,59 +277,7 @@ export default function SettingsScreen() {
                         <ButtonRow>
                             <Button variant="ghost" onClick={() => signOut()}>Выйти из админки</Button>
                         </ButtonRow>
-                    </div>
-                </Grid>
-
-                <div className={style.card}>
-                    <div className={style.cardHead}>
-                        <span className={style.cardTitle}>Прочие настройки</span>
-                    </div>
-
-                    {others.length ? (
-                        <ul className={style.others}>
-                            {others.map((item) => (
-                                <li key={item.key} className={style.other}>
-                                    <Mono>{item.key}</Mono>
-                                    <span className={style.otherType}>{item.type}</span>
-                                    <span className={style.otherValue}>{String(item.value)}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    ) : <Note>Кроме известных настроек в файле ничего нет.</Note>}
-
-                    <div className={style.extra}>
-                        <Field label="Ключ">
-                            <Input
-                                value={extra.key}
-                                placeholder="new_setting_key"
-                                onChange={(event) => setExtra((current) => ({...current, key: event.target.value}))}
-                            />
-                        </Field>
-                        <Field label="Тип">
-                            <Select
-                                options={TYPE_OPTIONS}
-                                value={extra.type}
-                                onChange={(event) => setExtra((current) => ({...current, type: event.target.value, value: ''}))}
-                            />
-                        </Field>
-                        <Field label="Значение">
-                            {extra.type === 'boolean' ? (
-                                <Select
-                                    options={[{value: 'false', title: 'нет'}, {value: 'true', title: 'да'}]}
-                                    value={extra.value || 'false'}
-                                    onChange={(event) => setExtra((current) => ({...current, value: event.target.value}))}
-                                />
-                            ) : (
-                                <Input
-                                    value={extra.value}
-                                    onChange={(event) => setExtra((current) => ({...current, value: event.target.value}))}
-                                />
-                            )}
-                        </Field>
-                        <Button variant="secondary" disabled={!extra.key.trim()} loading={write.loading} onClick={onExtra}>
-                            Добавить
-                        </Button>
-                    </div>
+                    </section>
                 </div>
             </Panel>
         </Workspace>

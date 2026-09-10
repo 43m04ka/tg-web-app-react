@@ -168,3 +168,41 @@
     font-weight: 700;
     white-space: nowrap;
 }
+
+.fold {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.fold:active:not(:disabled) {
+    transform: none;
+}
+
+.foldBadges {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.foldCaret,
+.foldCaretOpen {
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-right: 1.5px solid var(--a2-text-muted);
+    border-bottom: 1.5px solid var(--a2-text-muted);
+    transform: rotate(-45deg);
+    transition: transform var(--a2-motion) var(--a2-ease);
+}
+
+.foldCaretOpen {
+    transform: rotate(45deg);
+}

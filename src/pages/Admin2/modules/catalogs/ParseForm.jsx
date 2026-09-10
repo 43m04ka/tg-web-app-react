@@ -109,25 +109,27 @@ export default function ParseForm({catalog, source, queue, onStarted}) {
 
     return (
         <div className={style.form}>
-            <Tabs items={MODES} value={form.mode} onChange={(mode) => patch({mode})}/>
+            <section className={style.formGroup}>
+                <span className={style.formGroupTitle}>Что парсим</span>
 
-            <Field label="Источник" hint="Определяет, каким разборщиком читать страницы">
-                <Select options={SOURCES} value={form.source} onChange={set('source')}/>
-            </Field>
+                <Tabs items={MODES} value={form.mode} onChange={(mode) => patch({mode})}/>
 
-            {occupied ? <Note tone="warning">{occupied}. Задача встанет в очередь.</Note> : null}
-
-            {isLinks ? (
-                <Field label="Ссылки на карточки" hint="По одной в строке">
-                    <Textarea
-                        rows={6}
-                        value={form.links}
-                        placeholder={'https://store.playstation.com/...\nhttps://store.playstation.com/...'}
-                        onChange={set('links')}
-                    />
+                <Field label="Источник" hint="Определяет, каким разборщиком читать страницы">
+                    <Select options={SOURCES} value={form.source} onChange={set('source')}/>
                 </Field>
-            ) : (
-                <>
+
+                {occupied ? <Note tone="warning">{occupied}. Задача встанет в очередь.</Note> : null}
+
+                {isLinks ? (
+                    <Field label="Ссылки на карточки" hint="По одной в строке">
+                        <Textarea
+                            rows={6}
+                            value={form.links}
+                            placeholder={'https://store.playstation.com/...\nhttps://store.playstation.com/...'}
+                            onChange={set('links')}
+                        />
+                    </Field>
+                ) : (
                     <Field
                         label={isXbox ? 'Ссылка на категорию' : 'Категория'}
                         hint={isXbox
@@ -136,6 +138,12 @@ export default function ParseForm({catalog, source, queue, onStarted}) {
                     >
                         <Input mono value={form.categoryUrl} onChange={set('categoryUrl')}/>
                     </Field>
+                )}
+            </section>
+
+            {isLinks ? null : (
+                <section className={style.formGroup}>
+                    <span className={style.formGroupTitle}>Срез и объём</span>
 
                     {isXbox ? (
                         <>
@@ -154,21 +162,23 @@ export default function ParseForm({catalog, source, queue, onStarted}) {
                                 </ButtonRow>
                             </Field>
 
-                            <Field label="Ограничение" hint={XBOX_LIMIT_HINTS[form.limitMode]}>
-                                <Select options={XBOX_LIMIT_MODES} value={form.limitMode} onChange={set('limitMode')}/>
-                            </Field>
-
-                            {form.limitMode === 'pages' ? (
-                                <Field label="Страниц">
-                                    <Input type="number" min="0" value={form.countPages} onChange={set('countPages')}/>
+                            <div className={style.formRow}>
+                                <Field label="Ограничение" hint={XBOX_LIMIT_HINTS[form.limitMode]}>
+                                    <Select options={XBOX_LIMIT_MODES} value={form.limitMode} onChange={set('limitMode')}/>
                                 </Field>
-                            ) : null}
 
-                            {form.limitMode === 'items' ? (
-                                <Field label="Позиций">
-                                    <Input type="number" min="1" value={form.countItems} onChange={set('countItems')}/>
-                                </Field>
-                            ) : null}
+                                {form.limitMode === 'pages' ? (
+                                    <Field label="Страниц">
+                                        <Input type="number" min="0" value={form.countPages} onChange={set('countPages')}/>
+                                    </Field>
+                                ) : null}
+
+                                {form.limitMode === 'items' ? (
+                                    <Field label="Позиций">
+                                        <Input type="number" min="1" value={form.countItems} onChange={set('countItems')}/>
+                                    </Field>
+                                ) : null}
+                            </div>
 
                             {XBOX_FILTER_GROUPS.map((group) => (
                                 <Field key={group.key} label={group.label}>
@@ -191,15 +201,17 @@ export default function ParseForm({catalog, source, queue, onStarted}) {
                         </>
                     ) : (
                         <>
-                            <Field label="Объём">
-                                <Select options={PS_PAGES} value={form.pagesMode} onChange={set('pagesMode')}/>
-                            </Field>
-
-                            {form.pagesMode === 'limit' ? (
-                                <Field label="Страниц">
-                                    <Input type="number" min="0" value={form.countPages} onChange={set('countPages')}/>
+                            <div className={style.formRow}>
+                                <Field label="Объём">
+                                    <Select options={PS_PAGES} value={form.pagesMode} onChange={set('pagesMode')}/>
                                 </Field>
-                            ) : null}
+
+                                {form.pagesMode === 'limit' ? (
+                                    <Field label="Страниц">
+                                        <Input type="number" min="0" value={form.countPages} onChange={set('countPages')}/>
+                                    </Field>
+                                ) : null}
+                            </div>
 
                             <Field label="Тип товара">
                                 <Chips
@@ -217,62 +229,69 @@ export default function ParseForm({catalog, source, queue, onStarted}) {
                                 />
                             </Field>
 
-                            <Field label="Сортировка">
-                                <Select options={PS_SORT_OPTIONS} value={form.sortName} onChange={set('sortName')}/>
-                            </Field>
+                            <div className={style.formRow}>
+                                <Field label="Сортировка">
+                                    <Select options={PS_SORT_OPTIONS} value={form.sortName} onChange={set('sortName')}/>
+                                </Field>
 
-                            {form.sortName !== 'default' ? (
-                                <Toggle
-                                    checked={form.sortAscending}
-                                    label="По возрастанию"
-                                    onChange={(value) => patch({sortAscending: value})}
-                                />
-                            ) : null}
+                                {form.sortName !== 'default' ? (
+                                    <div className={style.formToggle}>
+                                        <Toggle
+                                            checked={form.sortAscending}
+                                            label="По возрастанию"
+                                            onChange={(value) => patch({sortAscending: value})}
+                                        />
+                                    </div>
+                                ) : null}
+                            </div>
                         </>
                     )}
+                </section>
+            )}
 
+            <section className={style.formGroup}>
+                <span className={style.formGroupTitle}>Параметры</span>
+
+                {isLinks ? null : (
                     <Field
                         label="Дата окончания акции"
                         hint="Проставится всем товарам парса. Пусто — брать из источника."
                     >
                         <Input type="date" value={form.promoDate} onChange={set('promoDate')}/>
                     </Field>
+                )}
+
+                <div className={style.formSwitches}>
+                    {isLinks ? null : (
+                        <Toggle
+                            checked={form.isShallow}
+                            label="Поверхностный парс"
+                            onChange={(value) => patch({isShallow: value, parceAddons: value ? false : form.parceAddons})}
+                        />
+                    )}
 
                     <Toggle
-                        checked={form.isShallow}
-                        label="Поверхностный парс"
-                        onChange={(value) => patch({isShallow: value, parceAddons: value ? false : form.parceAddons})}
+                        checked={form.parceAddons}
+                        label="Забирать дополнения"
+                        disabled={!isLinks && form.isShallow}
+                        onChange={(value) => patch({parceAddons: value})}
                     />
 
-                    {form.isShallow ? (
-                        <Note tone="neutral">
-                            Один запрос на страницу из 24 товаров вместо захода в каждую карточку.
-                            Быстро, но без описаний, картинок и дополнений.
-                        </Note>
-                    ) : null}
-                </>
-            )}
+                    <Toggle
+                        checked={form.safeMode}
+                        label="Безопасный режим"
+                        disabled={!isLinks && form.isShallow}
+                        onChange={(value) => patch({safeMode: value})}
+                    />
+                </div>
 
-            <Toggle
-                checked={form.parceAddons}
-                label="Забирать дополнения"
-                disabled={!isLinks && form.isShallow}
-                onChange={(value) => patch({parceAddons: value})}
-            />
-
-            <Toggle
-                checked={form.safeMode}
-                label="Безопасный режим"
-                disabled={!isLinks && form.isShallow}
-                onChange={(value) => patch({safeMode: value})}
-            />
-
-            {!isLinks && form.isShallow ? (
-                <Note tone="neutral">
-                    Безопасный режим утраивает паузы между заходами в карточки, а поверхностный
-                    парс в них не заходит — здесь он ничего не меняет.
-                </Note>
-            ) : null}
+                {!isLinks && form.isShallow ? (
+                    <Note tone="neutral">
+                        Поверхностный парс делает один запрос на страницу из 24 товаров вместо захода в каждую карточку.
+                        Быстро, но без описаний, картинок и дополнений; безопасный режим здесь ничего не меняет.
+                    </Note>
+                ) : null}
+            </section>
 
             {problem ? <Note tone="danger">{problem}</Note> : null}
 

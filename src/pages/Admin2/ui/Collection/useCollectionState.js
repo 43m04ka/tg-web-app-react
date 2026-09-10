@@ -50,5 +50,10 @@ export function useCollectionState(defaults = {}) {
         [value],
     );
 
-    return {value, patch, reset, dirty};
+    const withQuery = useCallback((path) => {
+        const query = params.toString();
+        return query ? `${path}?${query}` : path;
+    }, [params]);
+
+    return {value, patch, reset, dirty, withQuery};
 }

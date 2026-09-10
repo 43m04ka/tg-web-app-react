@@ -61,7 +61,9 @@ export function Toggle({checked = false, onChange, label = '', disabled = false}
             onClick={() => onChange && onChange(!checked)}
             className={classes(style.toggle, checked && style.toggleOn)}
         >
-            <span className={style.knob}/>
+            <span className={style.track}>
+                <span className={style.knob}/>
+            </span>
             {label ? <span className={style.toggleLabel}>{label}</span> : null}
         </button>
     );

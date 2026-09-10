@@ -32,7 +32,7 @@ export default function CatalogsScreen() {
 
     const navigate = useNavigate();
     const {id} = useParams();
-    const {value, patch} = useCollectionState(DEFAULTS);
+    const {value, patch, withQuery} = useCollectionState(DEFAULTS);
 
     const [isCreating, setCreating] = useState(false);
     const [draft, setDraft] = useState(BLANK);
@@ -100,8 +100,8 @@ export default function CatalogsScreen() {
         [all, id]
     );
 
-    const openCatalog = useCallback((row) => navigate(`/admin2/catalogs/${row.id}`), [navigate]);
-    const closeCatalog = useCallback(() => navigate('/admin2/catalogs'), [navigate]);
+    const openCatalog = useCallback((row) => navigate(withQuery(`/admin2/catalogs/${row.id}`)), [navigate, withQuery]);
+    const closeCatalog = useCallback(() => navigate(withQuery('/admin2/catalogs')), [navigate, withQuery]);
 
     const problem = catalogProblem(draft, {existing: all});
 

@@ -8,7 +8,6 @@ import {
     Money,
     Mono,
     Note,
-    Select,
     Time,
 } from '../../ui';
 import {useResource} from '../../platform/useResource';
@@ -21,12 +20,12 @@ import {
     PAYOUT_TITLES,
     PAYOUT_TONES,
     PLATFORM_TITLES,
-    STATUS_TITLES,
     TYPE_TITLES,
     isTransitionKnown,
     statusTitle,
     statusTone,
 } from './model';
+import StatusMenu from './StatusMenu';
 import style from './OrderInspector.module.scss';
 
 const TABS = [
@@ -35,8 +34,6 @@ const TABS = [
     {id: 'delivery', title: 'Выдача'},
     {id: 'customer', title: 'Покупатель'},
 ];
-
-const STATUS_OPTIONS = Object.entries(STATUS_TITLES).map(([value, title]) => ({value, title}));
 
 const copyText = async (text, done) => {
     try {
@@ -49,7 +46,6 @@ const copyText = async (text, done) => {
 
 export default function OrderInspector({id, onClose}) {
     const [tab, setTab] = useState('main');
-    const [nextStatus, setNextStatus] = useState('');
 
     const card = useResource(keys.order(id), () => fetchOrder(id));
     const order = card.data?.order || null;
@@ -71,7 +67,7 @@ export default function OrderInspector({id, onClose}) {
         done: 'Сообщение отправлено покупателю',
     });
 
-    const onChangeStatus = useCallback(async () => {
+    const onChangeStatus = useCallback(async (nextStatus) => {
         if (!nextStatus || !order) return;
 
         const known = isTransitionKnown(order.status, nextStatus);
@@ -89,11 +85,8 @@ export default function OrderInspector({id, onClose}) {
         if (!answer) return;
 
         const result = await changeStatus.run({orderId: order.id, status: nextStatus});
-        if (result.ok) {
-            setNextStatus('');
-            card.refresh();
-        }
-    }, [nextStatus, order, changeStatus, card]);
+        if (result.ok) card.refresh();
+    }, [order, changeStatus, card]);
 
     const onPayoutManual = useCallback(async () => {
         if (!order) return;
@@ -134,21 +127,11 @@ export default function OrderInspector({id, onClose}) {
             onRetry={card.refresh}
             width="l"
             footer={(
-                <>
-                    <Select
-                        options={[{value: '', title: 'Сменить статус…'}, ...STATUS_OPTIONS]}
-                        value={nextStatus}
-                        onChange={(event) => setNextStatus(event.target.value)}
-                    />
-                    <Button
-                        variant={nextStatus && order && !isTransitionKnown(order.status, nextStatus) ? 'danger' : 'primary'}
-                        disabled={!nextStatus}
-                        loading={changeStatus.loading}
-                        onClick={onChangeStatus}
-                    >
-                        Применить
-                    </Button>
-                </>
+                <StatusMenu
+                    current={order?.status}
+                    disabled={!order || changeStatus.loading}
+                    onPick={onChangeStatus}
+                />
             )}
         >
             {!order ? null : tab === 'main' ? (

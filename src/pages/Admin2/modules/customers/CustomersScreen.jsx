@@ -22,7 +22,7 @@ export default function CustomersScreen() {
 
     const navigate = useNavigate();
     const {id} = useParams();
-    const {value, patch} = useCollectionState(DEFAULTS);
+    const {value, patch, withQuery} = useCollectionState(DEFAULTS);
 
     const [draftSearch, setDraftSearch] = useState(value.search);
 
@@ -97,8 +97,8 @@ export default function CustomersScreen() {
         }
     ]), []);
 
-    const openCustomer = useCallback((row) => navigate(`/admin2/customers/${row.id}`), [navigate]);
-    const closeCustomer = useCallback(() => navigate('/admin2/customers'), [navigate]);
+    const openCustomer = useCallback((row) => navigate(withQuery(`/admin2/customers/${row.id}`)), [navigate, withQuery]);
+    const closeCustomer = useCallback(() => navigate(withQuery('/admin2/customers')), [navigate, withQuery]);
 
     return (
         <Workspace>

@@ -1,11 +1,14 @@
 .bucket {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    margin-bottom: 12px;
+    gap: 6px;
+    margin-bottom: 16px;
 }
 
 .bucketTitle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 0 2px 2px;
     color: var(--a2-text-faint);
     font-size: var(--a2-size-xs);
@@ -16,12 +19,13 @@
 
 .page {
     display: flex;
-    flex-direction: column;
-    gap: 3px;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
     padding: 8px 10px;
-    border: 1px solid transparent;
+    border: 1px solid var(--a2-border);
     border-radius: var(--a2-radius-m);
-    background: transparent;
+    background: var(--a2-card);
     color: inherit;
     text-align: left;
     cursor: pointer;
@@ -30,6 +34,7 @@
 }
 
 .page:hover {
+    border-color: var(--a2-border-strong);
     background: var(--a2-raised);
 }
 
@@ -112,7 +117,7 @@
 
 .preview {
     display: flex;
-    flex: 0 0 420px;
+    flex: 0 0 316px;
     flex-direction: column;
     min-height: 0;
     border: 1px solid var(--a2-border);
@@ -170,7 +175,8 @@
 .phone {
     position: relative;
     flex: 1;
-    width: 100%;
+    align-self: center;
+    width: 278px;
     min-height: 420px;
     border: 1px solid var(--a2-border);
     border-radius: 18px;
@@ -182,12 +188,13 @@
 .phoneScreen {
     --viewport: 394px;
 
-    width: 100%;
-    height: 100%;
+    width: 394px;
+    height: calc(100% / 0.7);
     padding: 10px 0;
     overflow-y: auto;
     color: var(--text);
     font-family: var(--font-sans);
+    zoom: 0.7;
 }
 
 .phoneStatic {
@@ -406,4 +413,46 @@
 .clueDrop:hover {
     background: var(--a2-danger-soft);
     color: var(--a2-danger);
+}
+
+.bucketCount {
+    min-width: 18px;
+    padding: 1px 6px;
+    border-radius: 9px;
+    background: var(--a2-raised);
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-xs);
+    letter-spacing: 0;
+    text-align: center;
+}
+
+.page:active:not(:disabled) {
+    transform: none;
+}
+
+.pageIcon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-accent-soft);
+    color: var(--a2-accent);
+    font-size: var(--a2-size-m);
+    font-weight: 700;
+}
+
+.pageText {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.pageId {
+    color: var(--a2-text-faint);
+    font-family: var(--a2-font-mono);
 }

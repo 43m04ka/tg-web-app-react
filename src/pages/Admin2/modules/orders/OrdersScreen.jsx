@@ -92,7 +92,7 @@ export default function OrdersScreen() {
 
     const navigate = useNavigate();
     const {id} = useParams();
-    const {value, patch} = useCollectionState(DEFAULTS);
+    const {value, patch, withQuery} = useCollectionState(DEFAULTS);
     const [draftSearch, setDraftSearch] = useState(value.search);
 
     useEffect(() => {
@@ -182,8 +182,8 @@ export default function OrdersScreen() {
         },
     ]), []);
 
-    const openOrder = useCallback((row) => navigate(`/admin2/orders/${row.id}`), [navigate]);
-    const closeOrder = useCallback(() => navigate('/admin2/orders'), [navigate]);
+    const openOrder = useCallback((row) => navigate(withQuery(`/admin2/orders/${row.id}`)), [navigate, withQuery]);
+    const closeOrder = useCallback(() => navigate(withQuery('/admin2/orders')), [navigate, withQuery]);
 
     return (
         <Workspace>

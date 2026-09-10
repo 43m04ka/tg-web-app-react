@@ -112,20 +112,24 @@ export function Collection({
         <div className={style.collection}>
             {(search || filters || actions) ? (
                 <div className={style.toolbar}>
-                    {search ? (
-                        <SearchInput
-                            value={search.value}
-                            onChange={search.onChange}
-                            placeholder={search.placeholder || 'Поиск'}
-                        />
-                    ) : null}
+                    <div className={style.toolbarMain}>
+                        {search ? (
+                            <div className={style.toolbarSearch}>
+                                <SearchInput
+                                    value={search.value}
+                                    onChange={search.onChange}
+                                    placeholder={search.placeholder || 'Поиск'}
+                                />
+                            </div>
+                        ) : null}
+
+                        <div className={style.toolbarTail}>
+                            {stale ? <Spinner size={13}/> : null}
+                            {actions}
+                        </div>
+                    </div>
 
                     {filters ? <div className={style.filters}>{filters}</div> : null}
-
-                    <div className={style.toolbarTail}>
-                        {stale ? <Spinner size={13}/> : null}
-                        {actions}
-                    </div>
                 </div>
             ) : null}
 

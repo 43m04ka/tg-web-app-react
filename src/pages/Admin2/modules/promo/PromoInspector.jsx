@@ -198,16 +198,13 @@ export default function PromoInspector({promo, all, isNew, onClose}) {
                 </InspectorSection>
             )}
 
-            <InspectorSection title="Лимит на покупателя">
-                <Note tone="warning">
-                    Сервер это поле не проверяет: значение сохранится, но один и тот же покупатель
-                    применит код столько раз, сколько осталось применений. Ограничение появится
-                    вместе с учётом использований.
-                </Note>
-
+            <InspectorSection
+                title="Лимит на покупателя"
+                note="Сколько раз один покупатель может применить код. Отменённые и неоплаченные заказы не в счёт."
+            >
                 <Field
                     label="Применений на покупателя"
-                    hint="Пока справочно."
+                    hint="0 — без ограничения"
                     error={showError('personalNumberUses')}
                 >
                     <Input

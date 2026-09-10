@@ -46,7 +46,7 @@ export default function ProductsScreen() {
 
     const navigate = useNavigate();
     const {id} = useParams();
-    const {value, patch} = useCollectionState(DEFAULTS);
+    const {value, patch, withQuery} = useCollectionState(DEFAULTS);
     const [draftSearch, setDraftSearch] = useState(value.search);
     const [picked, setPicked] = useState([]);
 
@@ -172,8 +172,8 @@ export default function ProductsScreen() {
         },
     ]), [catalogPathById]);
 
-    const openCard = useCallback((row) => navigate(`/admin2/products/${row.id}`), [navigate]);
-    const closeCard = useCallback(() => navigate('/admin2/products'), [navigate]);
+    const openCard = useCallback((row) => navigate(withQuery(`/admin2/products/${row.id}`)), [navigate, withQuery]);
+    const closeCard = useCallback(() => navigate(withQuery('/admin2/products')), [navigate, withQuery]);
 
     const data = list.data || {};
 

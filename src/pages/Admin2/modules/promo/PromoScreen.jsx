@@ -30,7 +30,7 @@ export default function PromoScreen() {
 
     const navigate = useNavigate();
     const {id} = useParams();
-    const {value, patch} = useCollectionState(DEFAULTS);
+    const {value, patch, withQuery} = useCollectionState(DEFAULTS);
 
     const list = useResource(keys.promo, fetchPromoList);
 
@@ -80,9 +80,9 @@ export default function PromoScreen() {
         }
     ]), []);
 
-    const openPromo = useCallback((row) => navigate(`/admin2/promo/${row.id}`), [navigate]);
-    const closePromo = useCallback(() => navigate('/admin2/promo'), [navigate]);
-    const startNew = useCallback(() => navigate('/admin2/promo/new'), [navigate]);
+    const openPromo = useCallback((row) => navigate(withQuery(`/admin2/promo/${row.id}`)), [navigate, withQuery]);
+    const closePromo = useCallback(() => navigate(withQuery('/admin2/promo')), [navigate, withQuery]);
+    const startNew = useCallback(() => navigate(withQuery('/admin2/promo/new')), [navigate, withQuery]);
 
     const isNew = id === 'new';
     const active = isNew ? null : all.find((promo) => String(promo.id) === String(id)) || null;

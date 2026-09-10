@@ -388,6 +388,21 @@ export default function PaymentsScreen() {
                     </ButtonRow>
                 )}
             >
+                <div className={enforce ? style.enforceOn : style.enforce}>
+                    <div className={style.enforceText}>
+                        <span className={style.enforceTitle}>
+                            Строгая проверка
+                            <Badge tone={enforce ? 'positive' : 'warning'}>{enforce ? 'включена' : 'выключена'}</Badge>
+                        </span>
+                        <span className={style.enforceHint}>
+                            {enforce
+                                ? 'Заказ со способом оплаты вне матрицы отклоняется.'
+                                : 'Мягкий режим: расхождения только пишутся в лог, заказы проходят.'}
+                        </span>
+                    </div>
+                    <Toggle checked={enforce} disabled={writeEnforce.loading} onChange={onToggleEnforce}/>
+                </div>
+
                 <Tabs
                     items={scenarios.map((item) => ({id: item, title: SCENARIO_TITLES[item] || item}))}
                     value={scenario}

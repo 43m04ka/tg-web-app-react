@@ -8,8 +8,7 @@ import {
     InspectorRows,
     InspectorSection,
     Input,
-    Note,
-    Toggle
+    Note
 } from '../../ui';
 import {askConfirm, toast, toastFail} from '../../platform/notify';
 import {invalidate} from '../../platform/cache';
@@ -25,8 +24,7 @@ import {
     importCatalog,
     runAssociations,
     scheduleAssociations,
-    setIndiaExchange,
-    startRecheck
+    setIndiaExchange
 } from './api';
 import {pageTitleOf, saleState, sourceOfPage} from './catalogsModel';
 import {useResource} from '../../platform/useResource';
@@ -35,15 +33,12 @@ import style from './CatalogsScreen.module.scss';
 
 const TABS = [
     {id: 'parse', title: 'Парс'},
-    {id: 'recheck', title: 'Перепроверка'},
     {id: 'service', title: 'Обслуживание'}
 ];
 
 export default function CatalogInspector({catalog, pages, queue, onClose, onRemoved}) {
     const [tab, setTab] = useState('parse');
     const [busy, setBusy] = useState(false);
-    const [limit, setLimit] = useState('50');
-    const [autoFix, setAutoFix] = useState(false);
     const [runAt, setRunAt] = useState('');
 
     const schedule = useResource(keys.associationsSchedule, fetchAssociationsSchedule);
@@ -126,19 +121,6 @@ export default function CatalogInspector({catalog, pages, queue, onClose, onRemo
         if (answer) run(() => setIndiaExchange(catalog.id), 'Источник курса назначен');
     }, [catalog, run]);
 
-    const runRecheck = useCallback(() => {
-        run(
-            () => startRecheck({
-                bdPath: catalog.path,
-                source: source === 'xbox' ? 'xbox' : 'ps',
-                platform: source,
-                limit: Number(limit) || 50,
-                autoFix
-            }),
-            'Перепроверка поставлена в очередь'
-        );
-    }, [run, catalog, source, limit, autoFix]);
-
     const runExpire = useCallback(async (dryRun) => {
         const answer = await run(() => expirePromotions(dryRun), dryRun ? 'Сухой прогон выполнен' : 'Акции сняты');
         if (!answer) return;
@@ -152,7 +134,7 @@ export default function CatalogInspector({catalog, pages, queue, onClose, onRemo
             title: dryRun ? `Под снятие попадает: ${expired}` : `Снято акций: ${expired}`,
             text: [
                 `проверено ${scanned}`,
-                stuck > 0 ? `${stuck} не снять: у позиций нет базовой цены источника, поможет перепарс или перепроверка` : null
+                stuck > 0 ? `${stuck} не снять: у позиций нет базовой цены источника, поможет перепарс` : null
             ].filter(Boolean).join(' · ')
         });
     }, [run]);
@@ -160,7 +142,7 @@ export default function CatalogInspector({catalog, pages, queue, onClose, onRemo
     return (
         <Inspector
             open
-            width="m"
+            width="l"
             title={catalog.path}
             subtitle={pageTitleOf(catalog, pages) || 'Витрина не найдена'}
             badge={<Badge tone={sale.tone}>{sale.title}</Badge>}
@@ -185,34 +167,6 @@ export default function CatalogInspector({catalog, pages, queue, onClose, onRemo
                         queue={queue}
                         onStarted={() => invalidate(keys.parseQueue)}
                     />
-                </InspectorSection>
-            ) : null}
-
-            {tab === 'recheck' ? (
-                <InspectorSection
-                    title="Перепроверка цен"
-                    note="Сверяет цены каталога с источником. Идёт через ту же очередь, что и парс, отчёт забирается из полосы задач."
-                >
-                    <Field label="Сколько позиций сверить" hint="Больше — дольше и заметнее для источника">
-                        <Input type="number" min="1" value={limit} onChange={(event) => setLimit(event.target.value)}/>
-                    </Field>
-
-                    <Toggle
-                        checked={autoFix}
-                        label="Чинить расхождения сразу"
-                        onChange={setAutoFix}
-                    />
-
-                    {autoFix ? (
-                        <Note tone="warning">
-                            Цены разошедшихся позиций будут переписаны без вашего подтверждения.
-                            Для первого прогона надёжнее выключить и посмотреть отчёт.
-                        </Note>
-                    ) : null}
-
-                    <Button variant="primary" disabled={busy} onClick={runRecheck}>
-                        Запустить перепроверку
-                    </Button>
                 </InspectorSection>
             ) : null}
 

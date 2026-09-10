@@ -47,3 +47,146 @@
 .link:hover {
     text-decoration: underline;
 }
+
+.statusMenu {
+    position: relative;
+    flex: 1;
+}
+
+.statusTrigger,
+.statusTriggerOpen {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    width: 100%;
+    height: 34px;
+    padding: 0 12px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+    color: var(--a2-text);
+    font-family: var(--a2-font);
+    font-size: var(--a2-size-m);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color var(--a2-motion) var(--a2-ease), box-shadow var(--a2-motion) var(--a2-ease);
+}
+
+.statusTrigger:hover:not(:disabled) {
+    border-color: var(--a2-border-strong);
+}
+
+.statusTriggerOpen {
+    border-color: var(--a2-accent);
+    box-shadow: 0 0 0 3px var(--a2-accent-soft);
+}
+
+.statusTrigger:active:not(:disabled),
+.statusTriggerOpen:active:not(:disabled) {
+    transform: none;
+}
+
+.statusTriggerText {
+    font-weight: 600;
+}
+
+.statusTriggerHint {
+    margin-left: auto;
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-s);
+}
+
+.statusCaret {
+    flex: none;
+    width: 6px;
+    height: 6px;
+    margin-bottom: 3px;
+    border-right: 1.5px solid var(--a2-text-muted);
+    border-bottom: 1.5px solid var(--a2-text-muted);
+    transform: rotate(45deg);
+}
+
+.statusTriggerOpen .statusCaret {
+    margin: 3px 0 0;
+    transform: rotate(-135deg);
+}
+
+.statusPopover {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: 360px;
+    padding: 6px;
+    overflow-y: auto;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-card);
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+}
+
+.statusGroup {
+    padding: 6px 8px 4px;
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.statusEmpty {
+    padding: 6px 8px;
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+}
+
+.statusOption,
+.statusOptionRisky {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-radius: var(--a2-radius-m);
+    background: transparent;
+    color: var(--a2-text);
+    font-family: var(--a2-font);
+    font-size: var(--a2-size-m);
+    text-align: left;
+    cursor: pointer;
+}
+
+.statusOption:hover {
+    background: var(--a2-accent-soft);
+}
+
+.statusOptionRisky {
+    color: var(--a2-text-muted);
+}
+
+.statusOptionRisky:hover {
+    background: var(--a2-danger-soft);
+    color: var(--a2-text);
+}
+
+.statusOption:active:not(:disabled),
+.statusOptionRisky:active:not(:disabled) {
+    transform: none;
+}
+
+.statusOptionTitle {
+    font-weight: 600;
+}
+
+.statusOptionNote {
+    margin-left: auto;
+    color: var(--a2-danger);
+    font-size: var(--a2-size-xs);
+}

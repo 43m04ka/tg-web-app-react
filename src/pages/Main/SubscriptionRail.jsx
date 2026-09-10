@@ -4,7 +4,10 @@ import {useSubscriptionProducts} from '../Subscription/useSubscriptionProducts';
 import {formatPrice} from './catalogSections';
 import style from './SubscriptionRail.module.scss';
 
-const coverOf = (tier) => tier.periods.find((period) => period.product?.image)?.product.image || null;
+const coverOf = (tier) => {
+    const banner = tier.periods.find((period) => period.product?.fourToThreeBannerUrl)?.product.fourToThreeBannerUrl;
+    return banner || tier.periods.find((period) => period.product?.image)?.product.image || null;
+};
 
 const entryOf = (tier) => tier.periods.find((period) => period.isAvailable) || tier.periods[0] || null;
 

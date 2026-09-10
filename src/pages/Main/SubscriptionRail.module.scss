@@ -40,7 +40,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: u(154);
+  aspect-ratio: 4 / 3;
   border-radius: u(16);
   overflow: hidden;
   background: linear-gradient(160deg, oklch(0.28 0.02 264), oklch(0.17 0.014 264)) center / cover no-repeat;

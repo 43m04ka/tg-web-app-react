@@ -1,78 +1,93 @@
 import React, {useEffect, useState} from 'react';
+import {usePlatform} from '../../shared/hooks/usePlatform';
+import {remainingOf} from '../../shared/lib/maintenance';
+import {supportUrlForBot} from '../More/moreMenu';
 import style from './Maintenance.module.scss';
 
-const formatRemaining = (until) => {
-    if (!until) return null;
+const TICK_MS = 30000;
 
-    const target = new Date(until).getTime();
-    if (Number.isNaN(target)) return null;
-
-    const diffMs = target - Date.now();
-    if (diffMs <= 0) return null;
-
-    const totalMinutes = Math.round(diffMs / 60000);
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-
-    const dateLabel = new Date(until).toLocaleString('ru-RU', {
-        day: 'numeric',
-        month: 'long',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-
-    const parts = [];
-    if (hours > 0) parts.push(`${hours} ч`);
-    if (minutes > 0 || hours === 0) parts.push(`${minutes} мин`);
-
-    return `Ожидаем завершения работ примерно к ${dateLabel} (осталось ~${parts.join(' ')})`;
-};
+function SupportIcon() {
+    return (
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+                d="M4 11a8 8 0 0 1 16 0v5a3 3 0 0 1-3 3h-2"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+            />
+            <rect x="2.5" y="10.5" width="4" height="6.5" rx="2" fill="currentColor"/>
+            <rect x="17.5" y="10.5" width="4" height="6.5" rx="2" fill="currentColor"/>
+        </svg>
+    );
+}
 
 export default function Maintenance({until, section}) {
-    const [remaining, setRemaining] = useState(() => formatRemaining(until));
+    const {botType} = usePlatform();
+    const supportUrl = supportUrlForBot(botType);
+
+    const [remaining, setRemaining] = useState(() => remainingOf(until));
 
     useEffect(() => {
-        setRemaining(formatRemaining(until));
+        setRemaining(remainingOf(until));
         if (!until) return undefined;
 
-        const intervalId = setInterval(() => setRemaining(formatRemaining(until)), 30000);
-        return () => clearInterval(intervalId);
+        const timerId = setInterval(() => setRemaining(remainingOf(until)), TICK_MS);
+        return () => clearInterval(timerId);
     }, [until]);
 
     return (
         <div className={`${style.screen} ${section ? style.inline : ''}`}>
-            <div className={style.card}>
-                <div className={style.badge}>Техническое обслуживание</div>
+            <div className={style.body}>
+                <span className={style.badge}>
+                    <span className={style.pulse} aria-hidden="true"/>
+                    Технические работы
+                </span>
 
                 {section ? (
                     <>
-                        <h1 className={style.title}>{section} — временно недоступно</h1>
+                        <h1 className={style.title}>
+                            {section} <span className={style.soft}>временно недоступны</span>
+                        </h1>
 
-                        <p className={style.description}>
-                            Мы чиним этот раздел. Остальной магазин работает как обычно — вернитесь на главную
+                        <p className={style.text}>
+                            Чиним этот раздел. Остальной магазин работает как обычно — вернитесь на главную
                             или загляните сюда чуть позже.
                         </p>
                     </>
                 ) : (
                     <>
                         <h1 className={style.title}>
-                            Геймворд — сервис покупки игр и подписок для <span className={style.ps}>PlayStation</span> и{' '}
+                            Геймворд — игры и подписки для <span className={style.ps}>PlayStation</span> и{' '}
                             <span className={style.xbox}>Xbox</span>
                         </h1>
 
-                        <p className={style.description}>
-                            Прямо сейчас мы улучшаем систему, чтобы покупки обрабатывались ещё быстрее. Каталог станет
-                            доступен в ближайшее время.
+                        <p className={style.text}>
+                            Прямо сейчас улучшаем систему, чтобы покупки обрабатывались ещё быстрее.
+                            Каталог станет доступен в ближайшее время.
                         </p>
                     </>
                 )}
 
-                {remaining ? <div className={style.remaining}>{remaining}</div> : null}
+                {remaining ? (
+                    <div className={style.until}>
+                        <span className={style.untilLabel}>Рассчитываем закончить</span>
+                        <span className={style.untilValue}>{remaining.at}</span>
+                        <span className={style.untilLeft}>осталось ~{remaining.left}</span>
+                    </div>
+                ) : null}
 
-                <a className={style.support} href="https://t.me" target="_blank" rel="noopener noreferrer">
-                    <span className={style.supportTitle}>Поддержка магазина</span>
-                    <span className={style.supportSub}>Решим любой возникший вопрос</span>
-                </a>
+                {supportUrl ? (
+                    <a className={style.support} href={supportUrl} target="_blank" rel="noopener noreferrer">
+                        <span className={style.supportIcon}><SupportIcon/></span>
+
+                        <span className={style.supportBody}>
+                            <span className={style.supportTitle}>Поддержка магазина</span>
+                            <span className={style.supportSub}>Решим любой возникший вопрос</span>
+                        </span>
+
+                        <span className={style.supportArrow} aria-hidden="true">›</span>
+                    </a>
+                ) : null}
             </div>
         </div>
     );

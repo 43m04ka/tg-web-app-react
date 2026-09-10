@@ -50,3 +50,39 @@ export const closedSection = (pathname, sections) => {
 };
 
 export const closedCount = (sections) => Object.keys(normalizeSections(sections)).length;
+
+const startOfDay = (stamp) => {
+    const date = new Date(stamp);
+    date.setHours(0, 0, 0, 0);
+
+    return date.getTime();
+};
+
+const timeLabel = (stamp) =>
+    new Date(stamp).toLocaleString('ru-RU', {hour: '2-digit', minute: '2-digit'});
+
+const dayLabel = (target, now) => {
+    const days = Math.round((startOfDay(target) - startOfDay(now)) / 86400000);
+
+    if (days <= 0) return 'сегодня';
+    if (days === 1) return 'завтра';
+
+    return new Date(target).toLocaleString('ru-RU', {day: 'numeric', month: 'long'});
+};
+
+export const remainingOf = (until, now = Date.now()) => {
+    if (!until) return null;
+
+    const target = new Date(until).getTime();
+    if (Number.isNaN(target) || target - now <= 0) return null;
+
+    const totalMinutes = Math.round((target - now) / 60000);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    const parts = [];
+    if (hours > 0) parts.push(`${hours} ч`);
+    if (minutes > 0 || hours === 0) parts.push(`${minutes} мин`);
+
+    return {at: `${dayLabel(target, now)} в ${timeLabel(target)}`, left: parts.join(' ')};
+};

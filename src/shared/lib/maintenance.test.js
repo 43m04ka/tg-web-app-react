@@ -1,5 +1,6 @@
 import {
     MAINTENANCE_SECTIONS,
+    remainingOf,
     closedCount,
     closedSection,
     normalizeSections,
@@ -126,5 +127,54 @@ describe('closedCount', () => {
     it('считает только включённые разделы', () => {
         expect(closedCount({basket: {enabled: true}, steam: {enabled: false}, more: true})).toBe(2);
         expect(closedCount(null)).toBe(0);
+    });
+});
+
+describe('remainingOf', () => {
+    const now = new Date('2026-09-10T12:00:00').getTime();
+
+    it('без срока ничего не показывает', () => {
+        expect(remainingOf(null, now)).toBe(null);
+        expect(remainingOf('', now)).toBe(null);
+    });
+
+    it('нечитаемую дату не превращает в Invalid Date', () => {
+        expect(remainingOf('чепуха', now)).toBe(null);
+    });
+
+    it('истёкший срок не показывает как отрицательный остаток', () => {
+        expect(remainingOf(new Date('2026-09-10T11:59:00').toISOString(), now)).toBe(null);
+        expect(remainingOf(new Date('2026-09-10T12:00:00').toISOString(), now)).toBe(null);
+    });
+
+    it('сегодняшний срок называет сегодняшним, а не датой', () => {
+        const answer = remainingOf(new Date('2026-09-10T14:30:00').toISOString(), now);
+
+        expect(answer.at).toBe('сегодня в 14:30');
+        expect(answer.left).toBe('2 ч 30 мин');
+    });
+
+    it('завтрашний срок называет завтрашним даже через час после полуночи', () => {
+        const answer = remainingOf(new Date('2026-09-11T01:00:00').toISOString(), now);
+
+        expect(answer.at).toBe('завтра в 01:00');
+    });
+
+    it('дальний срок называет числом и месяцем', () => {
+        const answer = remainingOf(new Date('2026-09-14T09:15:00').toISOString(), now);
+
+        expect(answer.at).toBe('14 сентября в 09:15');
+    });
+
+    it('меньше часа показывает только минутами', () => {
+        expect(remainingOf(new Date('2026-09-10T12:40:00').toISOString(), now).left).toBe('40 мин');
+    });
+
+    it('ровные часы не дописывают ноль минут', () => {
+        expect(remainingOf(new Date('2026-09-10T15:00:00').toISOString(), now).left).toBe('3 ч');
+    });
+
+    it('меньше минуты показывает нулём минут, а не пустотой', () => {
+        expect(remainingOf(new Date('2026-09-10T12:00:20').toISOString(), now).left).toBe('0 мин');
     });
 });

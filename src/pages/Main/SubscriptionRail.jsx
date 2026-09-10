@@ -1,5 +1,6 @@
 import React, {useMemo} from 'react';
 import {buildPlan} from '../Subscription/subscriptionModel';
+import {useSubscriptionProducts} from '../Subscription/useSubscriptionProducts';
 import {formatPrice} from './catalogSections';
 import style from './SubscriptionRail.module.scss';
 
@@ -33,9 +34,13 @@ export const railTiers = (products, {catalogPath, title} = {}) =>
     buildPlan(products, {catalogPath, title})?.tiers || [];
 
 export default function SubscriptionRail({products, catalogPath, title, onOpen}) {
+    const catalogId = products?.[0]?.catalogId ?? null;
+    const {items} = useSubscriptionProducts(catalogId, products);
+    const source = items?.length ? items : products;
+
     const tiers = useMemo(
-        () => railTiers(products, {catalogPath, title}),
-        [products, catalogPath, title]
+        () => railTiers(source, {catalogPath, title}),
+        [source, catalogPath, title]
     );
 
     return (

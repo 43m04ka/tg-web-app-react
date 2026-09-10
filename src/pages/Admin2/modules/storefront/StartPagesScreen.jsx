@@ -67,6 +67,8 @@ export default function StartPagesScreen() {
             invalidate(keys.startPages);
         } catch (error) {
             toastFail(error.message || 'Не получилось переставить', error.hint || '');
+
+            invalidate(keys.startPages);
         } finally {
             setBusy(false);
         }

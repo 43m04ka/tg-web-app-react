@@ -77,6 +77,8 @@ export default function StorefrontScreen() {
             invalidate(keys.pageBlocks(current.id, group));
         } catch (error) {
             toastFail(error.message || 'Не получилось переставить', error.hint || '');
+
+            invalidate(keys.pageBlocks(current.id, group));
         } finally {
             setBusy(false);
         }

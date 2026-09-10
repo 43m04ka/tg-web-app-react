@@ -101,6 +101,8 @@ export default function PopularScreen() {
             invalidate(keys.popular);
         } catch (error) {
             toastFail(error.message || 'Не получилось переставить', error.hint || '');
+
+            invalidate(keys.popular);
         } finally {
             setBusy(false);
         }

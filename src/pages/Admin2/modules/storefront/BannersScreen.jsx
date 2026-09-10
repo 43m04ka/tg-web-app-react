@@ -56,6 +56,8 @@ export default function BannersScreen() {
             invalidate(keys.banners);
         } catch (error) {
             toastFail(error.message || 'Не получилось переставить', error.hint || '');
+
+            invalidate(keys.banners);
         } finally {
             setBusy(false);
         }

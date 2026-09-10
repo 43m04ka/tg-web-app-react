@@ -47,7 +47,7 @@ export default function CatalogInspector({catalog, pages, queue, onClose, onRemo
     const [runAt, setRunAt] = useState('');
 
     const schedule = useResource(keys.associationsSchedule, fetchAssociationsSchedule);
-    const plannedAt = schedule.data?.runAt || schedule.data?.state?.runAt || null;
+    const plannedAt = schedule.data?.scheduled ? schedule.data.runAtIso : null;
 
     const source = sourceOfPage(catalog, pages) || 'ps';
     const sale = saleState(catalog);
@@ -141,14 +141,20 @@ export default function CatalogInspector({catalog, pages, queue, onClose, onRemo
 
     const runExpire = useCallback(async (dryRun) => {
         const answer = await run(() => expirePromotions(dryRun), dryRun ? 'Сухой прогон выполнен' : 'Акции сняты');
+        if (!answer) return;
 
-        if (answer && dryRun) {
-            toast({
-                tone: 'info',
-                title: 'Сухой прогон',
-                text: `Под снятие попадает позиций: ${answer.affected ?? answer.count ?? 0}`
-            });
-        }
+        const scanned = answer.scanned ?? 0;
+        const expired = answer.expired ?? 0;
+        const stuck = answer.skippedNoSource ?? 0;
+
+        toast({
+            tone: stuck > 0 ? 'warning' : 'info',
+            title: dryRun ? `Под снятие попадает: ${expired}` : `Снято акций: ${expired}`,
+            text: [
+                `проверено ${scanned}`,
+                stuck > 0 ? `${stuck} не снять: у позиций нет базовой цены источника, поможет перепарс или перепроверка` : null
+            ].filter(Boolean).join(' · ')
+        });
     }, [run]);
 
     return (

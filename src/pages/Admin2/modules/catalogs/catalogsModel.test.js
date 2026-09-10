@@ -7,7 +7,8 @@ import {
     recheckSummary,
     saleState,
     sourceOfPage,
-    toParsePayload
+    toParsePayload,
+    toggleIn
 } from './catalogsModel';
 
 const pages = [
@@ -157,5 +158,76 @@ describe('saleState', () => {
         expect(saleState({onSale: 1}).title).toBe('Частично');
         expect(saleState({onSale: 2}).title).toBe('В продаже');
         expect(saleState({}).title).toBe('Неизвестно');
+    });
+});
+
+describe('парс: режимы и фильтры', () => {
+    const cat = {id: 5, path: 'ps_tur_games'};
+    const ps = (patch) => ({...emptyParseForm('ps'), categoryUrl: '/c/1', ...patch});
+    const xbox = (patch) => ({...emptyParseForm('xbox'), ...patch});
+
+    it('поверхностный парс гасит безопасный режим: заходить в карточки он не будет', () => {
+        const payload = toParsePayload(ps({isShallow: true, safeMode: true}), cat);
+
+        expect(payload.isShallow).toBe(true);
+        expect(payload.safeMode).toBe(false);
+    });
+
+    it('поверхностный вместе с дополнениями не пропускается', () => {
+        expect(parseProblem(ps({isShallow: true, parceAddons: true}))).toMatch(/не заходит/);
+    });
+
+    it('при глубоком парсе безопасный режим доживает до запроса', () => {
+        expect(toParsePayload(ps({safeMode: true}), cat).safeMode).toBe(true);
+    });
+
+    it('фильтры PlayStation уходят с префиксами', () => {
+        const payload = toParsePayload(ps({filterTypes: ['FULL_GAME'], filterPlatforms: ['PS5']}), cat);
+
+        expect(payload.filterBy).toEqual(['storeDisplayClassification:FULL_GAME', 'targetPlatforms:PS5']);
+    });
+
+    it('пустые фильтры и сортировка по умолчанию не отправляются вовсе', () => {
+        const payload = toParsePayload(ps({}), cat);
+
+        expect('filterBy' in payload).toBe(false);
+        expect('sortBy' in payload).toBe(false);
+    });
+
+    it('заданная сортировка уходит с направлением', () => {
+        const payload = toParsePayload(ps({sortName: 'productName', sortAscending: true}), cat);
+
+        expect(payload.sortBy).toEqual({name: 'productName', isAscending: true});
+    });
+
+    it('пустые группы фильтров Xbox не уходят: пустой список и отсутствие фильтра — разное', () => {
+        const payload = toParsePayload(xbox({xboxFilters: {PlayWith: ['PC'], Price: [], Genre: []}}), cat);
+
+        expect(payload.filters).toEqual({PlayWith: ['PC']});
+    });
+
+    it('сортировка Xbox по умолчанию в фильтры не попадает', () => {
+        expect('orderby' in toParsePayload(xbox({}), cat).filters).toBe(false);
+        expect(toParsePayload(xbox({xboxSort: 'Price asc'}), cat).filters.orderby).toBe('Price asc');
+    });
+
+    it('дата акции уходит меткой времени, пустая — null', () => {
+        expect(toParsePayload(ps({}), cat).endDataPromotion).toBeNull();
+        expect(typeof toParsePayload(ps({promoDate: '2026-12-31'}), cat).endDataPromotion).toBe('number');
+    });
+
+    it('по умолчанию Xbox парсит весь каталог', () => {
+        const payload = toParsePayload(xbox({}), cat);
+
+        expect(payload.countPages).toBe(0);
+        expect(payload.countItems).toBe(0);
+    });
+});
+
+describe('toggleIn', () => {
+    it('добавляет и убирает значение', () => {
+        expect(toggleIn(['a'], 'b')).toEqual(['a', 'b']);
+        expect(toggleIn(['a', 'b'], 'a')).toEqual(['b']);
+        expect(toggleIn(null, 'a')).toEqual(['a']);
     });
 });

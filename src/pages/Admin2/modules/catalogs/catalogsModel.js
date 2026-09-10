@@ -1,3 +1,5 @@
+import {XBOX_DEFAULT_SORT, emptyXboxFilters} from './parseOptions';
+
 export const PATH_PATTERN = /^[a-z0-9_-]{2,64}$/;
 
 export const SALE_STATES = {
@@ -74,12 +76,30 @@ export const parseProblem = (form) => {
         return null;
     }
 
+    if (form.isShallow && form.parceAddons) {
+        return 'Поверхностный парс не заходит в карточку — дополнения оттуда не взять';
+    }
+
     const category = String(form.categoryUrl || '').trim();
     if (!category) return 'Укажите ссылку или id категории';
     if (/\/pages\/deals/i.test(category)) return PS_CATEGORY_HINT;
     if (form.pagesMode === 'limit' && positive(form.countPages) === null) return 'Число страниц — целое, от нуля';
 
     return null;
+};
+
+const promoStamp = (form) => (form.promoDate ? new Date(form.promoDate).getTime() : null);
+
+const xboxFiltersOf = (form) => {
+    const filters = {};
+
+    Object.entries(form.xboxFilters || {}).forEach(([group, values]) => {
+        if (Array.isArray(values) && values.length > 0) filters[group] = values;
+    });
+
+    if (form.xboxSort && form.xboxSort !== XBOX_DEFAULT_SORT) filters.orderby = form.xboxSort;
+
+    return filters;
 };
 
 export const toParsePayload = (form, catalog) => {
@@ -93,26 +113,46 @@ export const toParsePayload = (form, catalog) => {
         };
     }
 
+    const common = {
+        catalogId: String(form.categoryUrl || '').trim(),
+        bdPath: catalog.path,
+        isShallow: Boolean(form.isShallow),
+        endDataPromotion: promoStamp(form),
+        parceAddons: Boolean(form.parceAddons),
+        safeMode: !form.isShallow && Boolean(form.safeMode)
+    };
+
     if (form.source === 'xbox') {
         return {
-            catalogId: String(form.categoryUrl || '').trim(),
-            bdPath: catalog.path,
+            ...common,
             countPages: form.limitMode === 'pages' ? positive(form.countPages) ?? 0 : 0,
             countItems: form.limitMode === 'items' ? positive(form.countItems) ?? 0 : 0,
-            parceAddons: Boolean(form.parceAddons),
-            safeMode: Boolean(form.safeMode)
+            filters: xboxFiltersOf(form)
         };
     }
 
-    return {
-        catalogId: String(form.categoryUrl || '').trim(),
-        bdPath: catalog.path,
+    const filterBy = [
+        ...(form.filterTypes || []).map((value) => `storeDisplayClassification:${value}`),
+        ...(form.filterPlatforms || []).map((value) => `targetPlatforms:${value}`)
+    ];
+
+    const payload = {
+        ...common,
         countPages: form.pagesMode === 'limit' ? positive(form.countPages) ?? 0 : 0,
-        platform: form.source,
-        parceAddons: Boolean(form.parceAddons),
-        safeMode: Boolean(form.safeMode)
+        platform: form.source
     };
+
+    if (filterBy.length > 0) payload.filterBy = filterBy;
+    if (form.sortName && form.sortName !== 'default') {
+        payload.sortBy = {name: form.sortName, isAscending: Boolean(form.sortAscending)};
+    }
+
+    return payload;
 };
+
+export const toggleIn = (list, value) => ((list || []).includes(value)
+    ? (list || []).filter((item) => item !== value)
+    : [...(list || []), value]);
 
 export const emptyParseForm = (source) => ({
     mode: 'catalog',
@@ -120,11 +160,19 @@ export const emptyParseForm = (source) => ({
     categoryUrl: '',
     pagesMode: 'auto',
     countPages: '',
-    limitMode: 'pages',
+    limitMode: 'all',
     countItems: '',
     links: '',
     parceAddons: false,
-    safeMode: false
+    safeMode: false,
+    isShallow: false,
+    promoDate: '',
+    filterTypes: [],
+    filterPlatforms: [],
+    sortName: 'default',
+    sortAscending: false,
+    xboxFilters: emptyXboxFilters(),
+    xboxSort: XBOX_DEFAULT_SORT
 });
 
 export const queueState = (queue, source) => {

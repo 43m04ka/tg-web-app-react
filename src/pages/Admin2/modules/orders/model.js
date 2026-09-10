@@ -66,9 +66,3 @@ export const statusTone = (status) => STATUS_TONES[status] || 'neutral';
 
 export const isTransitionKnown = (from, to) => (TRANSITIONS[from] || []).includes(to);
 
-export const needsAttention = (order) => {
-    if (!order) return false;
-    if (order.payoutStatus === 'error') return true;
-    if (order.status === 'paid' && order.type !== 'steam_topup') return true;
-    return false;
-};

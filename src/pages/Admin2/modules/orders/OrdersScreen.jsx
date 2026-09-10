@@ -4,6 +4,7 @@ import {
     Badge,
     Button,
     Collection,
+    Input,
     Money,
     Mono,
     Select,
@@ -20,7 +21,6 @@ import {
     PAYOUT_TONES,
     PLATFORM_TITLES,
     TYPE_TITLES,
-    needsAttention,
     statusTitle,
     statusTone,
 } from './model';
@@ -32,8 +32,29 @@ const DEFAULTS = {
     status: '',
     type: '',
     platform: '',
+    payoutStatus: '',
     trouble: '',
+    from: '',
+    to: '',
+    sorting: 'newest',
+    page: 1,
+    pageSize: 50,
 };
+
+const SORT_OPTIONS = [
+    {value: 'newest', title: 'Сначала свежие'},
+    {value: 'oldest', title: 'Сначала старые'},
+    {value: 'expensive', title: 'Сначала дорогие'},
+    {value: 'cheap', title: 'Сначала дешёвые'},
+];
+
+const PAYOUT_OPTIONS = [
+    {value: '', title: 'Выплата: любая'},
+    {value: 'none', title: 'Не запускалась'},
+    {value: 'processing', title: 'Идёт'},
+    {value: 'success', title: 'Зачислено'},
+    {value: 'error', title: 'Ошибка'},
+];
 
 const STATUS_OPTIONS = [
     {value: '', title: 'Статус: любой'},
@@ -85,19 +106,24 @@ export default function OrdersScreen() {
         return () => clearTimeout(timerId);
     }, [draftSearch, value.search, patch]);
 
-    const list = useResource(keys.orderList(value.search), () => fetchOrders(value.search), {refreshMs: 30000});
+    const query = useMemo(() => ({
+        search: value.search,
+        status: value.status,
+        type: value.type,
+        platform: value.platform,
+        payoutStatus: value.payoutStatus,
+        trouble: value.trouble,
+        from: value.from,
+        to: value.to,
+        sorting: value.sorting,
+        page: value.page,
+        pageSize: value.pageSize,
+    }), [value]);
 
-    const rows = useMemo(() => {
-        const all = list.data?.result || [];
+    const list = useResource(keys.orderList(query), () => fetchOrders(query), {refreshMs: 30000});
 
-        return all
-            .filter((order) => (!value.status || order.status === value.status))
-            .filter((order) => (!value.type || order.type === value.type))
-            .filter((order) => (!value.platform || order.platform === value.platform))
-            .filter((order) => (value.trouble !== 'yes' || needsAttention(order)))
-            .slice()
-            .sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt));
-    }, [list.data, value]);
+    const data = list.data || {};
+    const rows = useMemo(() => data.items || [], [data.items]);
 
     const columns = useMemo(() => ([
         {
@@ -173,7 +199,7 @@ export default function OrdersScreen() {
                 search={{
                     value: draftSearch,
                     onChange: setDraftSearch,
-                    placeholder: 'Номер заказа или дата 2026.09.01',
+                    placeholder: 'Номер, контакт, логин Steam, почта, номер платежа',
                 }}
                 filters={(
                     <>
@@ -193,25 +219,51 @@ export default function OrdersScreen() {
                             onChange={(event) => patch({platform: event.target.value})}
                         />
                         <Select
+                            options={PAYOUT_OPTIONS}
+                            value={value.payoutStatus}
+                            onChange={(event) => patch({payoutStatus: event.target.value})}
+                        />
+                        <Select
                             options={TROUBLE_OPTIONS}
                             value={value.trouble}
                             onChange={(event) => patch({trouble: event.target.value})}
+                        />
+                        <Select
+                            options={SORT_OPTIONS}
+                            value={value.sorting}
+                            onChange={(event) => patch({sorting: event.target.value})}
+                        />
+                        <Input
+                            type="date"
+                            value={value.from}
+                            title="Заказы с этого дня"
+                            onChange={(event) => patch({from: event.target.value})}
+                        />
+                        <Input
+                            type="date"
+                            value={value.to}
+                            title="Заказы по этот день включительно"
+                            onChange={(event) => patch({to: event.target.value})}
                         />
                     </>
                 )}
                 actions={(
                     <Button size="s" variant="ghost" onClick={list.refresh}>Обновить</Button>
                 )}
+                pagination={{
+                    page: data.page || value.page,
+                    pages: data.pages || 1,
+                    total: data.total,
+                    pageSize: data.pageSize || value.pageSize,
+                    onPage: (page) => patch({page}, {keepPage: true}),
+                    onPageSize: (pageSize) => patch({pageSize, page: 1}, {keepPage: true}),
+                }}
                 empty={{
-                    title: value.search ? 'По запросу ничего не найдено' : 'Заказов пока нет',
-                    text: value.search
-                        ? 'Сервер ищет по точному номеру заказа или по дате в виде 2026.09.01. Часть строки в поиске не работает.'
+                    title: data.activeFilters ? 'Под фильтры ничего не подошло' : 'Заказов пока нет',
+                    text: data.activeFilters
+                        ? 'Поиск идёт по контакту, логину Steam, почте, номеру платежа и промокоду. Номер заказа — только целиком.'
                         : 'Список наполняется покупками из бота и с сайта.',
                 }}
-                footNote={
-                    'Сервер отдаёт последние 20 заказов либо результат поиска по номеру или дате. '
-                    + 'Фильтры ниже применяются к этой выдаче; сквозные фильтры и пагинация появятся с треком B2.'
-                }
             />
 
             {id ? <OrderInspector id={Number(id)} onClose={closeOrder}/> : null}

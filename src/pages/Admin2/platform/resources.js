@@ -14,7 +14,7 @@ export const keys = {
     catalogs: ['catalogs'],
     catalogList: ['catalogs', 'list'],
     orders: ['orders'],
-    orderList: (search) => ['orders', 'list', search || ''],
+    orderList: (query) => ['orders', 'list', JSON.stringify(query || {})],
     order: (id) => ['orders', 'card', id],
     priceRules: ['price-rules'],
     priceRuleSet: (platform) => ['price-rules', platform],

@@ -1,6 +1,6 @@
 import {httpGet, httpPost} from '../../platform/http';
 
-export const fetchOrders = (search) => httpGet('/getHistoryList', {query: {search: search || ''}});
+export const fetchOrders = (query) => httpGet('/orders', {query});
 
 export const fetchOrder = (orderId) => httpGet('/getOrderData', {query: {orderId}});
 

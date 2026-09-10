@@ -146,3 +146,32 @@
         grid-template-columns: minmax(0, 1fr);
     }
 }
+
+.session {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 12px 14px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-raised);
+}
+
+.sessionText {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.sessionTitle {
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+}
+
+.sessionHint {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+}

@@ -11,10 +11,8 @@
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
-    padding: 10px 12px;
-    border: 1px solid var(--a2-border);
-    border-radius: var(--a2-radius-l);
-    background: var(--a2-card);
+    padding: 0 0 12px;
+    border-bottom: 1px solid var(--a2-border);
 }
 
 .crumbs {
@@ -96,7 +94,7 @@
 
 .folders {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 6px;
 }
 
@@ -280,4 +278,12 @@
 
 .tile:hover {
     border-color: var(--a2-border-strong);
+}
+
+.bar .crumbLast {
+    font-size: var(--a2-size-l);
+}
+
+.folder > button:last-child {
+    flex: none;
 }

@@ -24,24 +24,8 @@ import {API_BASE_URL} from '../../../../shared/config/env';
 import {MAINTENANCE_SECTIONS, normalizeSections} from '../../../../shared/lib/maintenance';
 import {cancelAssociationsSchedule, fetchAssociationsSchedule, runAssociations} from '../catalogs/api';
 import {fetchSettings, refreshStructure, updateSetting} from './api';
-import style from './SettingsScreen.module.scss';
+import style from './SettingsScreen.module.scss';import {fromMoscowInput, toMoscowInput} from '../../platform/moscowTime';
 
-const toLocalInput = (iso) => {
-    if (!iso) return '';
-
-    const date = new Date(iso);
-    if (Number.isNaN(date.getTime())) return '';
-
-    const pad = (value) => String(value).padStart(2, '0');
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-};
-
-const fromLocalInput = (text) => {
-    if (!text) return '';
-
-    const date = new Date(text);
-    return Number.isNaN(date.getTime()) ? '' : date.toISOString();
-};
 
 const sectionsPayload = (sections) => Object.entries(sections).reduce((picked, [id, item]) => {
     picked[id] = {enabled: true, until: item.until || ''};
@@ -67,7 +51,7 @@ export default function SettingsScreen() {
     const [sections, setSections] = useState({});
 
     useEffect(() => {
-        setUntil(toLocalInput(values.maintenance_mode_until?.value));
+        setUntil(toMoscowInput(values.maintenance_mode_until?.value));
         setSections(normalizeSections(values.maintenance_sections?.value));
     }, [settings.data]);
 
@@ -89,7 +73,7 @@ export default function SettingsScreen() {
     }, [write]);
 
     const onUntil = useCallback(() => {
-        write.run({key: 'maintenance_mode_until', value: fromLocalInput(until), type: 'string'});
+        write.run({key: 'maintenance_mode_until', value: fromMoscowInput(until), type: 'string'});
     }, [write, until]);
 
     const saveSections = useCallback((next) => {
@@ -118,7 +102,7 @@ export default function SettingsScreen() {
 
     const onSectionUntil = useCallback((id, text) => {
         setSections((current) => (current[id]
-            ? {...current, [id]: {enabled: true, until: fromLocalInput(text) || null}}
+            ? {...current, [id]: {enabled: true, until: fromMoscowInput(text) || null}}
             : current));
     }, []);
 
@@ -246,7 +230,7 @@ export default function SettingsScreen() {
                                         {state ? (
                                             <Input
                                                 type="datetime-local"
-                                                value={toLocalInput(state.until)}
+                                                value={toMoscowInput(state.until)}
                                                 title="Окончание работ в разделе"
                                                 onChange={(event) => onSectionUntil(section.id, event.target.value)}
                                                 onBlur={() => saveSections(sections)}
@@ -269,14 +253,15 @@ export default function SettingsScreen() {
                             <span className={style.cardTitle}>Сеанс</span>
                         </header>
 
-                        <div className={style.info}>
-                            <span>Сервер</span>
-                            <Mono muted>{API_BASE_URL || 'тот же домен'}</Mono>
+                        <div className={style.session}>
+                            <div className={style.sessionText}>
+                                <span className={style.sessionTitle}>Вы вошли в админку</span>
+                                <span className={style.sessionHint}>
+                                    Сервер: <Mono muted>{API_BASE_URL || 'тот же домен'}</Mono>
+                                </span>
+                            </div>
+                            <Button variant="danger" onClick={() => signOut()}>Выйти</Button>
                         </div>
-
-                        <ButtonRow>
-                            <Button variant="ghost" onClick={() => signOut()}>Выйти из админки</Button>
-                        </ButtonRow>
                     </section>
                 </div>
             </Panel>

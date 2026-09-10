@@ -8,11 +8,7 @@ export default function MediaScreen() {
 
     return (
         <Workspace>
-            <Panel
-                title="Файлы витрины"
-                subtitle="Картинки брендов, баннеров и карточек"
-                scroll
-            >
+            <Panel scroll>
                 <MediaBrowser/>
             </Panel>
         </Workspace>

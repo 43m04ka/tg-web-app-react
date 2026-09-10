@@ -1,14 +1,12 @@
 import React, {useCallback, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import {
     Badge,
     Button,
     ButtonRow,
-    Field,
     Inspector,
-    InspectorRows,
     InspectorSection,
-    Input,
-    Note
+    Input
 } from '../../ui';
 import {askConfirm, toast, toastFail} from '../../platform/notify';
 import {invalidate} from '../../platform/cache';
@@ -26,7 +24,8 @@ import {
     scheduleAssociations,
     setIndiaExchange
 } from './api';
-import {pageTitleOf, saleState, sourceOfPage} from './catalogsModel';
+import {SOURCES, pageTitleOf, saleState, sourceOfPage} from './catalogsModel';
+import {formatMoscow, fromMoscowInput} from '../../platform/moscowTime';
 import {useResource} from '../../platform/useResource';
 import ParseForm from './ParseForm';
 import style from './CatalogsScreen.module.scss';
@@ -36,16 +35,42 @@ const TABS = [
     {id: 'service', title: 'Обслуживание'}
 ];
 
+function ServiceGroup({title, children}) {
+    return (
+        <section className={style.svcGroup}>
+            <span className={style.svcGroupTitle}>{title}</span>
+            <div className={style.svcRows}>{children}</div>
+        </section>
+    );
+}
+
+function ServiceRow({title, hint, danger = false, children, extra = null}) {
+    return (
+        <div className={danger ? style.svcRowDanger : style.svcRow}>
+            <div className={style.svcMain}>
+                <div className={style.svcText}>
+                    <span className={style.svcTitle}>{title}</span>
+                    {hint ? <span className={style.svcHint}>{hint}</span> : null}
+                </div>
+                <div className={style.svcActions}>{children}</div>
+            </div>
+            {extra}
+        </div>
+    );
+}
+
 export default function CatalogInspector({catalog, pages, queue, onClose, onRemoved}) {
     const [tab, setTab] = useState('parse');
     const [busy, setBusy] = useState(false);
     const [runAt, setRunAt] = useState('');
+    const navigate = useNavigate();
 
     const schedule = useResource(keys.associationsSchedule, fetchAssociationsSchedule);
     const plannedAt = schedule.data?.scheduled ? schedule.data.runAtIso : null;
 
     const source = sourceOfPage(catalog, pages) || 'ps';
     const sale = saleState(catalog);
+    const onSale = catalog.onSale === 2;
 
     const run = useCallback(async (action, done) => {
         setBusy(true);
@@ -171,134 +196,87 @@ export default function CatalogInspector({catalog, pages, queue, onClose, onRemo
             ) : null}
 
             {tab === 'service' ? (
-                <>
-                    <InspectorSection title="Состояние">
-                        <InspectorRows
-                            items={[
-                                {label: 'Путь', value: catalog.path},
-                                {label: 'Витрина', value: pageTitleOf(catalog, pages) || '—'},
-                                {label: 'Продажи', value: sale.title},
-                                {
-                                    label: 'Источник курса Индии',
-                                    value: catalog.isExchangeIndiaCatalog ? 'да' : 'нет'
-                                }
-                            ]}
-                        />
-                    </InspectorSection>
-
-                    <InspectorSection title="Продажи">
-                        <Button variant="secondary" disabled={busy} onClick={toggleSale}>
-                            {catalog.onSale === 2 ? 'Снять каталог с продажи' : 'Вернуть каталог в продажу'}
-                        </Button>
-                    </InspectorSection>
-
-                    <InspectorSection
-                        title="Акции"
-                        note="Источник не сообщает об окончании скидки, поэтому просроченные акции снимаются отдельно."
-                    >
-                        <ButtonRow>
-                            <Button size="s" variant="ghost" disabled={busy} onClick={() => runExpire(true)}>
-                                Сухой прогон
-                            </Button>
-                            <Button size="s" variant="secondary" disabled={busy} onClick={() => runExpire(false)}>
-                                Снять закончившиеся
-                            </Button>
-                        </ButtonRow>
-                    </InspectorSection>
-
-                    <InspectorSection
-                        title="Курс Индии"
-                        note="Источник курса может быть только один: назначение снимает флаг с прежнего каталога."
-                    >
-                        <Button
-                            size="s"
-                            variant="ghost"
-                            disabled={busy || catalog.isExchangeIndiaCatalog}
-                            onClick={askIndia}
-                        >
-                            {catalog.isExchangeIndiaCatalog ? 'Уже источник курса' : 'Сделать источником курса'}
-                        </Button>
-                    </InspectorSection>
-
-                    <InspectorSection
-                        title="Похожие карточки"
-                        note="Связи между изданиями и платформами считаются пересчётом. Он тяжёлый, поэтому его можно отложить на ночь."
-                    >
-                        {plannedAt ? (
-                            <Note tone="accent">
-                                Пересчёт запланирован на {new Date(plannedAt).toLocaleString('ru-RU')}.
-                            </Note>
-                        ) : null}
-
-                        <ButtonRow>
-                            <Button
-                                size="s"
-                                variant="secondary"
-                                disabled={busy}
-                                onClick={() => run(() => runAssociations(), 'Пересчёт связей запущен')}
-                            >
-                                Пересчитать сейчас
-                            </Button>
-
-                            {plannedAt ? (
-                                <Button
-                                    size="s"
-                                    variant="ghost"
-                                    disabled={busy}
-                                    onClick={() => run(
-                                        async () => {
-                                            const answer = await cancelAssociationsSchedule();
-                                            invalidate(keys.associationsSchedule);
-                                            return answer;
-                                        },
-                                        'Запланированный пересчёт отменён'
-                                    )}
-                                >
-                                    Отменить запланированный
-                                </Button>
+                <div className={style.svc}>
+                    <div className={style.svcSummary}>
+                        <div className={style.svcFacts}>
+                            <span className={style.svcFact}>
+                                <span className={style.svcFactLabel}>Витрина</span>
+                                {pageTitleOf(catalog, pages) || '—'}
+                            </span>
+                            <span className={style.svcFact}>
+                                <span className={style.svcFactLabel}>Источник</span>
+                                {(SOURCES.find((item) => item.value === source) || {}).title || source}
+                            </span>
+                            <span className={style.svcFact}>
+                                <span className={style.svcFactLabel}>Продажи</span>
+                                <Badge tone={sale.tone}>{sale.title}</Badge>
+                            </span>
+                            {catalog.isExchangeIndiaCatalog ? (
+                                <span className={style.svcFact}>
+                                    <span className={style.svcFactLabel}>Курс</span>
+                                    <Badge tone="accent">источник курса Индии</Badge>
+                                </span>
                             ) : null}
-                        </ButtonRow>
-
-                        <Field label="Отложить пересчёт" hint="Пусто — не планировать">
-                            <Input
-                                type="datetime-local"
-                                value={runAt}
-                                onChange={(event) => setRunAt(event.target.value)}
-                            />
-                        </Field>
+                        </div>
 
                         <Button
                             size="s"
-                            variant="ghost"
-                            disabled={busy || !runAt}
-                            onClick={() => run(
-                                async () => {
-                                    const answer = await scheduleAssociations(new Date(runAt).toISOString());
-                                    invalidate(keys.associationsSchedule);
-                                    setRunAt('');
-                                    return answer;
-                                },
-                                'Пересчёт запланирован'
-                            )}
+                            variant="secondary"
+                            onClick={() => navigate(`/admin2/products?catalogId=${catalog.id}`)}
                         >
-                            Запланировать
+                            Товары каталога →
                         </Button>
-                    </InspectorSection>
+                    </div>
 
-                    <InspectorSection
-                        title="Обмен с Excel"
-                        note="Выгрузка отдаёт товары каталога таблицей, загрузка принимает её обратно. Пригодится для правки цен пачкой."
-                    >
-                        <ButtonRow>
+                    <ServiceGroup title="Витрина">
+                        <ServiceRow
+                            title={onSale ? 'Каталог продаётся' : 'Каталог скрыт'}
+                            hint={onSale
+                                ? 'Товары видны покупателям. Снятие прячет их с витрины, из базы ничего не удаляется.'
+                                : 'Покупатели товары не видят, но они лежат в базе и вернутся одной кнопкой.'}
+                        >
+                            <Button size="s" variant={onSale ? 'ghost' : 'primary'} disabled={busy} onClick={toggleSale}>
+                                {onSale ? 'Снять с продажи' : 'Вернуть в продажу'}
+                            </Button>
+                        </ServiceRow>
+                    </ServiceGroup>
+
+                    <ServiceGroup title="Цены и акции">
+                        <ServiceRow
+                            title="Закончившиеся акции"
+                            hint="Источник не сообщает, когда скидка кончилась. Проверка покажет, сколько позиций попадёт под снятие, ничего не меняя."
+                        >
+                            <Button size="s" variant="ghost" disabled={busy} onClick={() => runExpire(true)}>Проверить</Button>
+                            <Button size="s" variant="secondary" disabled={busy} onClick={() => runExpire(false)}>Снять</Button>
+                        </ServiceRow>
+
+                        {source === 'ps_india' || catalog.isExchangeIndiaCatalog ? (
+                            <ServiceRow
+                                title="Курс рупии"
+                                hint={catalog.isExchangeIndiaCatalog
+                                    ? 'По ценам этого каталога пересчитываются рупии для витрины Индии.'
+                                    : 'Источник курса один на всю витрину: назначение снимет флаг с прежнего каталога.'}
+                            >
+                                <Button size="s" variant="ghost" disabled={busy || catalog.isExchangeIndiaCatalog} onClick={askIndia}>
+                                    {catalog.isExchangeIndiaCatalog ? 'Уже источник' : 'Сделать источником'}
+                                </Button>
+                            </ServiceRow>
+                        ) : null}
+                    </ServiceGroup>
+
+                    <ServiceGroup title="Данные">
+                        <ServiceRow title="Выгрузить в Excel" hint="Все товары каталога одной таблицей — удобно править цены пачкой.">
                             <Button
                                 size="s"
                                 variant="ghost"
                                 disabled={busy}
                                 onClick={() => run(() => exportCatalog(catalog.id, catalog.path), 'Файл выгружен')}
                             >
-                                Выгрузить в Excel
+                                Выгрузить
                             </Button>
+                        </ServiceRow>
 
+                        <ServiceRow title="Загрузить из Excel" hint="Принимает выгруженную таблицу обратно и обновляет товары каталога.">
                             <label className={style.importPick}>
                                 <input
                                     type="file"
@@ -310,18 +288,79 @@ export default function CatalogInspector({catalog, pages, queue, onClose, onRemo
                                         if (file) run(() => importCatalog(catalog.id, file), 'Файл загружен');
                                     }}
                                 />
-                                Загрузить из Excel
+                                Выбрать файл
                             </label>
-                        </ButtonRow>
-                    </InspectorSection>
+                        </ServiceRow>
 
-                    <InspectorSection title="Опасное">
-                        <ButtonRow>
-                            <Button variant="danger" disabled={busy} onClick={askClear}>Очистить каталог</Button>
-                            <Button variant="danger" disabled={busy} onClick={askDelete}>Удалить каталог</Button>
-                        </ButtonRow>
-                    </InspectorSection>
-                </>
+                        <ServiceRow
+                            title="Похожие карточки"
+                            hint={plannedAt
+                                ? `Пересчёт связей запланирован на ${formatMoscow(plannedAt)}. Идёт по всем каталогам сразу.`
+                                : 'Связи между изданиями и платформами по всем каталогам. Пересчёт тяжёлый — его можно отложить на ночь.'}
+                            extra={(
+                                <div className={style.svcSchedule}>
+                                    <span className={style.svcFactLabel}>Отложить до, МСК</span>
+                                    <Input
+                                        type="datetime-local"
+                                        value={runAt}
+                                        onChange={(event) => setRunAt(event.target.value)}
+                                    />
+                                    <Button
+                                        size="s"
+                                        variant="ghost"
+                                        disabled={busy || !runAt}
+                                        onClick={() => run(
+                                            async () => {
+                                                const answer = await scheduleAssociations(fromMoscowInput(runAt));
+                                                invalidate(keys.associationsSchedule);
+                                                setRunAt('');
+                                                return answer;
+                                            },
+                                            'Пересчёт запланирован'
+                                        )}
+                                    >
+                                        Запланировать
+                                    </Button>
+                                    {plannedAt ? (
+                                        <Button
+                                            size="s"
+                                            variant="ghost"
+                                            disabled={busy}
+                                            onClick={() => run(
+                                                async () => {
+                                                    const answer = await cancelAssociationsSchedule();
+                                                    invalidate(keys.associationsSchedule);
+                                                    return answer;
+                                                },
+                                                'Запланированный пересчёт отменён'
+                                            )}
+                                        >
+                                            Отменить план
+                                        </Button>
+                                    ) : null}
+                                </div>
+                            )}
+                        >
+                            <Button
+                                size="s"
+                                variant="secondary"
+                                disabled={busy}
+                                onClick={() => run(() => runAssociations(), 'Пересчёт связей запущен')}
+                            >
+                                Пересчитать сейчас
+                            </Button>
+                        </ServiceRow>
+                    </ServiceGroup>
+
+                    <ServiceGroup title="Опасная зона">
+                        <ServiceRow danger title="Очистить каталог" hint="Удалит все товары, сам каталог останется. Вернуть их можно только перепарсом.">
+                            <Button size="s" variant="danger" disabled={busy} onClick={askClear}>Очистить</Button>
+                        </ServiceRow>
+                        <ServiceRow danger title="Удалить каталог" hint="Вместе со всеми товарами. Блоки витрины, которые вели сюда, опустеют.">
+                            <Button size="s" variant="danger" disabled={busy} onClick={askDelete}>Удалить</Button>
+                        </ServiceRow>
+                    </ServiceGroup>
+                </div>
             ) : null}
         </Inspector>
     );

@@ -195,6 +195,9 @@
     color: var(--text);
     font-family: var(--font-sans);
     zoom: 0.7;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
 .phoneStatic {
@@ -455,4 +458,41 @@
 .pageId {
     color: var(--a2-text-faint);
     font-family: var(--a2-font-mono);
+}
+
+.blockArt {
+    flex: none;
+    width: 64px;
+    height: 36px;
+    border-radius: var(--a2-radius-s);
+    background: var(--a2-raised);
+    object-fit: cover;
+}
+
+.blockIcon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-raised);
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-m);
+    font-weight: 700;
+}
+
+.blockIcon img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+}
+
+.blockMeta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
 }

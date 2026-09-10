@@ -98,3 +98,134 @@
     background: var(--a2-accent-soft);
     color: var(--a2-accent-text);
 }
+
+.svc {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 4px 0;
+}
+
+.svcSummary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-raised);
+}
+
+.svcFacts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+}
+
+.svcFact {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+}
+
+.svcFactLabel {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.svcGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.svcGroupTitle {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.svcRows {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-card);
+    overflow: hidden;
+}
+
+.svcRow,
+.svcRowDanger {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 14px;
+}
+
+.svcRow + .svcRow,
+.svcRow + .svcRowDanger,
+.svcRowDanger + .svcRow,
+.svcRowDanger + .svcRowDanger {
+    border-top: 1px solid var(--a2-border);
+}
+
+.svcRowDanger .svcTitle {
+    color: var(--a2-danger);
+}
+
+.svcMain {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.svcText {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.svcTitle {
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+}
+
+.svcHint {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+    line-height: 1.4;
+}
+
+.svcActions {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 6px;
+}
+
+.svcSchedule {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-raised);
+}
+
+.svcSchedule > input {
+    flex: 1;
+    min-width: 180px;
+}

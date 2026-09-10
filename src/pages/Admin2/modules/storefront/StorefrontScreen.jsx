@@ -18,10 +18,11 @@ import {askConfirm, toast, toastFail} from '../../platform/notify';
 import {invalidate} from '../../platform/cache';
 import {keys} from '../../platform/resources';
 import {useResource} from '../../platform/useResource';
-import {deleteBlock, fetchBlocks, fetchPages, refreshStructure, updateBlock} from './api';
-import {GROUPS, describeBlock, describeTarget, moveBlock, sortBlocks} from './blockKinds';
+import {deleteBlock, fetchBlocks, fetchCatalogs, fetchPages, refreshStructure, updateBlock} from './api';
+import {GROUPS, describeBlock, moveBlock, sortBlocks} from './blockKinds';
 import {PRICING_NOTES, groupByBot, hasStructure, typeName} from './pageOptions';
 import BlockInspector from './BlockInspector';
+import BlockRow from './BlockRow';
 import PageInspector from './PageInspector';
 import StorefrontPreview from './StorefrontPreview';
 import StorefrontTabs from './StorefrontTabs';
@@ -38,6 +39,11 @@ export default function StorefrontScreen() {
     const [isBusy, setBusy] = useState(false);
 
     const pages = useResource(keys.pages, fetchPages);
+    const catalogs = useResource(keys.catalogList, fetchCatalogs);
+    const catalogByPath = useMemo(() => {
+        const list = Array.isArray(catalogs.data) ? catalogs.data : catalogs.data?.result || [];
+        return new Map(list.map((catalog) => [catalog.path, catalog]));
+    }, [catalogs.data]);
     const list = useMemo(() => pages.data?.result || [], [pages.data]);
 
     const current = useMemo(
@@ -233,41 +239,19 @@ export default function StorefrontScreen() {
 
                         <div className={style.blocks}>
                             {rows.map((item, index) => (
-                                <div key={item.id} className={style.block}>
-                                    <span className={style.blockOrder}>{index + 1}</span>
-
-                                    <span className={style.blockBody}>
-                                        <span className={style.blockTitle}>
-                                            {item.name || describeBlock(item, group)}
-                                        </span>
-                                        <span className={style.blockNote}>{describeTarget(item, group)}</span>
-                                    </span>
-
-                                    <span className={style.blockTools}>
-                                        <IconButton
-                                            label="Выше"
-                                            disabled={index === 0 || isBusy}
-                                            onClick={() => reorder(item.id, -1)}
-                                        >
-                                            ↑
-                                        </IconButton>
-                                        <IconButton
-                                            label="Ниже"
-                                            disabled={index === rows.length - 1 || isBusy}
-                                            onClick={() => reorder(item.id, 1)}
-                                        >
-                                            ↓
-                                        </IconButton>
-                                        <Button
-                                            size="s"
-                                            variant="ghost"
-                                            onClick={() => setEditing({kind: 'block', item})}
-                                        >
-                                            Править
-                                        </Button>
-                                        <IconButton label="Убрать" onClick={() => removeBlock(item)}>×</IconButton>
-                                    </span>
-                                </div>
+                                <BlockRow
+                                    key={item.id}
+                                    item={item}
+                                    index={index}
+                                    group={group}
+                                    catalog={catalogByPath.get(item.path) || null}
+                                    isFirst={index === 0}
+                                    isLast={index === rows.length - 1}
+                                    isBusy={isBusy}
+                                    onMove={reorder}
+                                    onEdit={(block) => setEditing({kind: 'block', item: block})}
+                                    onRemove={removeBlock}
+                                />
                             ))}
                         </div>
                     </>

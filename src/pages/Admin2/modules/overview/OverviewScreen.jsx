@@ -24,6 +24,7 @@ import {
     rangeQuery
 } from './overviewModel';
 import style from './OverviewScreen.module.scss';
+import {formatMoscow} from '../../platform/moscowTime';
 
 const valueOf = (settings, key) => {
     const entry = settings?.[key];
@@ -265,7 +266,7 @@ export default function OverviewScreen() {
                             label="Режим"
                             value={settings.isLoading ? <Skeleton width={80} height={18}/> : (maintenance ? 'Техработы' : 'Работает')}
                             tone={maintenance ? 'danger' : 'positive'}
-                            note={maintenance && maintenanceUntil ? `до ${maintenanceUntil}` : ''}
+                            note={maintenance && maintenanceUntil ? `до ${formatMoscow(maintenanceUntil)}` : ''}
                         />
                     </StatRow>
 

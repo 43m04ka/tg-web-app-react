@@ -16,6 +16,7 @@ import {fetchPromoList} from './api';
 import {isExhausted, normalizeCode, percentTitle, sortPromos, usesLeftTitle} from './promoModel';
 import PromoInspector from './PromoInspector';
 import style from './PromoScreen.module.scss';
+import {pluralOf} from '../../../../shared/lib/plural';
 
 const DEFAULTS = {search: '', state: ''};
 
@@ -24,6 +25,8 @@ const STATE_OPTIONS = [
     {value: 'live', title: 'Работают'},
     {value: 'spent', title: 'Исчерпаны'}
 ];
+
+const usesPerBuyer = (count) => `до ${count} ${pluralOf(Number(count), ['раза', 'раз', 'раз'])}`;
 
 export default function PromoScreen() {
     usePageHeader('Промокоды');
@@ -75,7 +78,7 @@ export default function PromoScreen() {
             title: 'На покупателя',
             width: 150,
             cell: (row) => (Number(row.personalNumberUses) > 0
-                ? <span className={style.muted}>{row.personalNumberUses} — не проверяется</span>
+                ? <span>{usesPerBuyer(row.personalNumberUses)}</span>
                 : <span className={style.dash}>—</span>)
         }
     ]), []);

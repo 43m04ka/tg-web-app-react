@@ -79,3 +79,27 @@ export const sortPromos = (list) => (list || []).slice().sort((left, right) => {
 
     return normalizeCode(left.name).localeCompare(normalizeCode(right.name), 'ru');
 });
+
+export const usageTitle = (summary) => {
+    const used = Number(summary?.used) || 0;
+    const tail = used % 10;
+    const hundred = used % 100;
+
+    if (used === 0) return 'ни разу не применяли';
+    if (tail === 1 && hundred !== 11) return `${used} применение`;
+    if (tail >= 2 && tail <= 4 && (hundred < 12 || hundred > 14)) return `${used} применения`;
+
+    return `${used} применений`;
+};
+
+export const moneyTitle = (value) => {
+    if (value === null || value === undefined || value === '') return '—';
+
+    const number = Number(value);
+    return Number.isFinite(number) ? `${number.toLocaleString('ru-RU')} ₽` : '—';
+};
+
+export const dayTitle = (value) => {
+    const time = Date.parse(value);
+    return Number.isFinite(time) ? new Date(time).toLocaleDateString('ru-RU') : '—';
+};

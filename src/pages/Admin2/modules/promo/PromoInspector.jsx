@@ -6,19 +6,24 @@ import {
     Field,
     Input,
     Inspector,
+    InspectorRows,
     InspectorSection,
     Note
 } from '../../ui';
 import {askConfirm} from '../../platform/notify';
 import {keys} from '../../platform/resources';
 import {useMutation} from '../../platform/useMutation';
-import {createPromo, deletePromo, updatePromo} from './api';
+import {useResource} from '../../platform/useResource';
+import {createPromo, deletePromo, fetchPromoUsage, updatePromo} from './api';
 import {
+    dayTitle,
     isDirty,
     isExhausted,
+    moneyTitle,
     normalizeCode,
     toDraft,
     toPayload,
+    usageTitle,
     usesLeftTitle,
     validate
 } from './promoModel';
@@ -36,6 +41,14 @@ export default function PromoInspector({promo, all, isNew, onClose}) {
         () => validate(draft, {existing: all, id: promo?.id ?? null}),
         [draft, all, promo]
     );
+
+    const usage = useResource(
+        keys.promoUsage(promo?.id ?? 0),
+        () => fetchPromoUsage(promo.id),
+        {enabled: !isNew}
+    );
+
+    const summary = usage.data?.summary || null;
 
     const hasErrors = Object.keys(errors).length > 0;
     const dirty = isNew || isDirty(draft, promo);
@@ -164,6 +177,26 @@ export default function PromoInspector({promo, all, isNew, onClose}) {
                     />
                 </Field>
             </InspectorSection>
+
+            {isNew ? null : (
+                <InspectorSection
+                    title="Как пользовались"
+                    note="Считается с того дня, как появился учёт применений. Более ранние покупки в статистику не попали."
+                >
+                    <InspectorRows
+                        items={[
+                            {label: 'Применений', value: usageTitle(summary)},
+                            summary?.used ? {label: 'Отдано скидками', value: moneyTitle(summary.discount)} : null,
+                            summary?.used ? {label: 'Выручка по коду', value: moneyTitle(summary.revenue)} : null,
+                            summary?.used ? {label: 'Средняя скидка', value: moneyTitle(summary.averageDiscount)} : null,
+                            summary?.used ? {label: 'Первое', value: dayTitle(summary.firstAt)} : null,
+                            summary?.used ? {label: 'Последнее', value: dayTitle(summary.lastAt)} : null
+                        ]}
+                    />
+
+                    {usage.error ? <Note tone="warning">Статистику получить не вышло</Note> : null}
+                </InspectorSection>
+            )}
 
             <InspectorSection title="Лимит на покупателя">
                 <Note tone="warning">

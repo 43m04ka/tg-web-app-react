@@ -19,6 +19,7 @@ export const keys = {
     priceRules: ['price-rules'],
     priceRuleSet: (platform) => ['price-rules', platform],
     promo: ['promo'],
+    promoUsage: (id) => ['promo', 'usage', id],
     paymentRegistry: ['payment-registry'],
     broadcast: ['broadcast'],
     services: ['services'],

@@ -1,11 +1,14 @@
 import {
     BLANK,
+    dayTitle,
     isDirty,
     isExhausted,
+    moneyTitle,
     normalizeCode,
     sortPromos,
     toDraft,
     toPayload,
+    usageTitle,
     usesLeftTitle,
     validate
 } from './promoModel';
@@ -116,5 +119,33 @@ describe('usesLeftTitle', () => {
 
     it('показывает остаток с разделителями разрядов', () => {
         expect(usesLeftTitle({totalNumberUses: 1200})).toMatch(/осталось/);
+    });
+});
+
+describe('usageTitle', () => {
+    it('склоняет применения', () => {
+        expect(usageTitle({used: 1})).toBe('1 применение');
+        expect(usageTitle({used: 3})).toBe('3 применения');
+        expect(usageTitle({used: 11})).toBe('11 применений');
+        expect(usageTitle({used: 21})).toBe('21 применение');
+    });
+
+    it('на нуле говорит словами, а не «0 применений»', () => {
+        expect(usageTitle({used: 0})).toBe('ни разу не применяли');
+        expect(usageTitle(null)).toBe('ни разу не применяли');
+    });
+});
+
+describe('moneyTitle и dayTitle', () => {
+    it('отличают ноль от отсутствия данных', () => {
+        expect(moneyTitle(0)).toBe('0 ₽');
+        expect(moneyTitle(null)).toBe('—');
+        expect(moneyTitle(undefined)).toBe('—');
+    });
+
+    it('нечитаемую дату не показывают как Invalid Date', () => {
+        expect(dayTitle('чепуха')).toBe('—');
+        expect(dayTitle(null)).toBe('—');
+        expect(dayTitle('2026-09-10T00:00:00.000Z')).toMatch(/2026/);
     });
 });

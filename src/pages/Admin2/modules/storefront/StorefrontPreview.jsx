@@ -2,6 +2,7 @@ import React, {useCallback, useMemo, useState} from 'react';
 import {IconButton} from '../../ui';
 import {useResource} from '../../platform/useResource';
 import {keys} from '../../platform/resources';
+import BannerCarousel from '../../../Main/BannerCarousel';
 import CatalogSection from '../../../Main/CatalogSection';
 import {buildSections} from '../../../Main/catalogSections';
 import {fetchCatalogs, fetchPreviewCards} from './api';
@@ -25,7 +26,7 @@ const asList = (payload) => {
     return [];
 };
 
-export default function StorefrontPreview({page, blocks}) {
+export default function StorefrontPreview({page, blocks, banners = []}) {
     const [collapsed, setCollapsed] = useState(readCollapsed);
 
     const catalogs = useResource(keys.catalogList, fetchCatalogs, {enabled: !collapsed});
@@ -71,14 +72,15 @@ export default function StorefrontPreview({page, blocks}) {
             <div className={style.previewBody}>
                 {!page ? (
                     <p className={style.previewEmpty}>Выберите страницу слева</p>
-                ) : sections === null || sections.length === 0 ? (
+                ) : (sections === null || sections.length === 0) && banners.length === 0 ? (
                     <p className={style.previewEmpty}>
                         Пока показывать нечего: у блоков нет каталогов с товарами.
                     </p>
                 ) : (
                     <div className={style.phone}>
                         <div className={style.phoneScreen}>
-                            {sections.map((section) => (
+                            {banners.length ? <BannerCarousel items={banners}/> : null}
+                            {(sections || []).map((section) => (
                                 <CatalogSection
                                     key={section.block.id}
                                     section={section}

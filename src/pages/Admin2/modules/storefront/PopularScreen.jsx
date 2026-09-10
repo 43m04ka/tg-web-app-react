@@ -28,13 +28,13 @@ import {
     popularProblem,
     popularTitle
 } from './popularModel';
-import StorefrontTabs from './StorefrontTabs';
+import SectionTabs, {START_TABS} from './SectionTabs';
 import style from './StorefrontScreen.module.scss';
 
 const SEARCH_DELAY = 350;
 
 export default function PopularScreen() {
-    usePageHeader('Витрина');
+    usePageHeader('Стартовый экран');
 
     const [platform, setPlatform] = useState('tg');
     const [query, setQuery] = useState('');
@@ -137,7 +137,7 @@ export default function PopularScreen() {
     return (
         <Workspace>
             <HeaderActions>
-                <StorefrontTabs/>
+                <SectionTabs items={START_TABS}/>
                 <Button size="s" variant="ghost" onClick={popular.refresh}>Обновить</Button>
             </HeaderActions>
 

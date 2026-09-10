@@ -18,36 +18,25 @@ import {invalidate} from '../../platform/cache';
 import {keys} from '../../platform/resources';
 import {useResource} from '../../platform/useResource';
 import {
-    createClue,
     createInfoBlock,
-    deleteClue,
     deleteInfoBlock,
-    fetchClues,
     fetchInfoBlocks,
     updateInfoBlock
 } from './api';
-import StorefrontTabs from './StorefrontTabs';
 import style from './StorefrontScreen.module.scss';
 
 const BLANK_BLOCK = {name: '', body: '', path: ''};
 
 export default function TextsScreen() {
-    usePageHeader('Витрина');
+    usePageHeader('Акции');
 
     const blocks = useResource(keys.infoBlocks, fetchInfoBlocks);
-    const clues = useResource(keys.searchClues, fetchClues);
 
     const [draft, setDraft] = useState(BLANK_BLOCK);
     const [editingId, setEditingId] = useState(null);
-    const [clue, setClue] = useState('');
     const [isBusy, setBusy] = useState(false);
 
     const blockList = useMemo(() => blocks.data?.result || [], [blocks.data]);
-    const clueList = useMemo(
-        () => (clues.data?.result || []).slice().sort((left, right) =>
-            String(left.name || '').localeCompare(String(right.name || ''), 'ru')),
-        [clues.data]
-    );
 
     const reset = useCallback(() => {
         setDraft(BLANK_BLOCK);
@@ -98,45 +87,13 @@ export default function TextsScreen() {
         }
     }, [editingId, reset]);
 
-    const addClue = useCallback(async () => {
-        const name = clue.trim();
-        if (!name || isBusy) return;
-
-        if (clueList.some((item) => String(item.name).toLowerCase() === name.toLowerCase())) {
-            toastFail('Такая подсказка уже есть', '');
-            return;
-        }
-
-        setBusy(true);
-
-        try {
-            await createClue({name});
-            invalidate(keys.searchClues);
-            setClue('');
-        } catch (error) {
-            toastFail(error.message || 'Не получилось добавить', error.hint || '');
-        } finally {
-            setBusy(false);
-        }
-    }, [clue, clueList, isBusy]);
-
-    const removeClue = useCallback(async (item) => {
-        try {
-            await deleteClue(item.id);
-            invalidate(keys.searchClues);
-        } catch (error) {
-            toastFail(error.message || 'Не получилось удалить', error.hint || '');
-        }
-    }, []);
-
     return (
         <Workspace>
             <HeaderActions>
-                <StorefrontTabs/>
                 <Button size="s" variant="ghost" onClick={blocks.refresh}>Обновить</Button>
             </HeaderActions>
 
-            <Panel title="Инфоблоки" subtitle="Тексты для витрины" wide scroll>
+            <Panel title="Акции" subtitle="Тексты акций и инфоблоки витрины" wide scroll>
                 <Note tone="neutral">
                     Блок находят по имени: витрина запрашивает его и рисует тело там, где нужно.
                     Путь — необязательная подсказка, где блок используется.
@@ -215,52 +172,6 @@ export default function TextsScreen() {
                 </div>
             </Panel>
 
-            <Panel title="Подсказки поиска" scroll>
-                <Note tone="neutral">
-                    Слова, по которым поиск чинит опечатку покупателя. Правки у подсказки нет —
-                    неверную проще удалить и завести заново.
-                </Note>
-
-                <div className={style.textForm}>
-                    <Input
-                        value={clue}
-                        placeholder="Например, киберпанк"
-                        onChange={(event) => setClue(event.target.value)}
-                        onKeyDown={(event) => {
-                            if (event.key === 'Enter') addClue();
-                        }}
-                    />
-
-                    <div className={style.textFormFoot}>
-                        <Button size="s" variant="primary" disabled={isBusy || !clue.trim()} onClick={addClue}>
-                            Добавить
-                        </Button>
-                    </div>
-                </div>
-
-                {clues.error ? <ErrorState error={clues.error} onRetry={clues.refresh}/> : null}
-                {clues.isLoading && !clues.data ? <SkeletonRows count={4}/> : null}
-
-                {clues.data && clueList.length === 0 ? (
-                    <EmptyState title="Подсказок нет" text="Поиск будет чинить опечатки только по названиям товаров."/>
-                ) : null}
-
-                <div className={style.clues}>
-                    {clueList.map((item) => (
-                        <span key={item.id} className={style.clue}>
-                            {item.name}
-                            <button
-                                type="button"
-                                className={style.clueDrop}
-                                aria-label={`Удалить ${item.name}`}
-                                onClick={() => removeClue(item)}
-                            >
-                                ×
-                            </button>
-                        </span>
-                    ))}
-                </div>
-            </Panel>
         </Workspace>
     );
 }

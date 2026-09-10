@@ -17,7 +17,7 @@ import {toastFail} from '../../platform/notify';
 import {invalidate} from '../../platform/cache';
 import {keys} from '../../platform/resources';
 import {useResource} from '../../platform/useResource';
-import {fetchPages, fetchStartPages, updateStartItem} from './api';
+import {fetchPages, fetchPopular, fetchStartPages, updateStartItem} from './api';
 import {
     START_PLATFORMS,
     byPlatform,
@@ -28,11 +28,13 @@ import {
     typeTitle
 } from './startModel';
 import StartPageInspector from './StartPageInspector';
-import StorefrontTabs from './StorefrontTabs';
+import SectionTabs, {START_TABS} from './SectionTabs';
+import StartPreview from './StartPreview';
+import {byPlatform as popularOf} from './popularModel';
 import style from './StorefrontScreen.module.scss';
 
 export default function StartPagesScreen() {
-    usePageHeader('Витрина');
+    usePageHeader('Стартовый экран');
 
     const [platform, setPlatform] = useState('tg');
     const [editing, setEditing] = useState(null);
@@ -40,6 +42,11 @@ export default function StartPagesScreen() {
 
     const start = useResource(keys.startPages, fetchStartPages);
     const pages = useResource(keys.pages, fetchPages);
+    const popular = useResource(keys.popular, fetchPopular);
+    const popularRows = useMemo(
+        () => popularOf(popular.data?.result, platform).filter((item) => item.product),
+        [popular.data, platform]
+    );
 
     const all = useMemo(() => start.data?.result || [], [start.data]);
     const rows = useMemo(() => byPlatform(all, platform), [all, platform]);
@@ -85,7 +92,7 @@ export default function StartPagesScreen() {
     return (
         <Workspace>
             <HeaderActions>
-                <StorefrontTabs/>
+                <SectionTabs items={START_TABS}/>
                 <Button size="s" variant="ghost" onClick={start.refresh}>Обновить</Button>
             </HeaderActions>
 
@@ -164,38 +171,14 @@ export default function StartPagesScreen() {
 
             <aside className={style.preview}>
                 <header className={style.previewHead}>
-                    <span className={style.previewTitle}>Как соберётся экран</span>
+                    <span className={style.previewTitle}>Как увидит покупатель</span>
                 </header>
 
                 <div className={style.previewBody}>
                     {groups.length === 0 ? (
                         <p className={style.previewEmpty}>Пока нечего показывать</p>
                     ) : (
-                        <div className={style.startPreview}>
-                            {groups.map((group) => (
-                                <div key={group.key} className={style.startGroup}>
-                                    <span className={style.startHeader}>
-                                        {group.header ? group.header.title : 'Без заголовка'}
-                                    </span>
-
-                                    <div className={
-                                        group.children.filter((item) => item.type === 'page').length > 1
-                                            ? style.startGrid
-                                            : style.startColumn
-                                    }
-                                    >
-                                        {group.children.map((item) => (
-                                            <span
-                                                key={item.id}
-                                                className={`${style.startItem} ${style[`start_${item.type}`] || ''}`}
-                                            >
-                                                {startTitle(item, pageList)}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                        <StartPreview rows={rows} pages={pageList} popular={popularRows}/>
                     )}
                 </div>
             </aside>

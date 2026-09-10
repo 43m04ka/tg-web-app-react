@@ -27,11 +27,11 @@ import style from './StorefrontScreen.module.scss';
 
 const SEARCH_DELAY = 350;
 
-export default function BannerInspector({banner, pages, count, onClose}) {
+export default function BannerInspector({banner, pages, count, pageId = null, onClose}) {
     const isNew = !banner;
 
     const [draft, setDraft] = useState(() => (isNew
-        ? {...toDraft(null), serialNumber: count}
+        ? {...toDraft(null), serialNumber: count, pageId}
         : toDraft(banner)));
 
     const [query, setQuery] = useState('');

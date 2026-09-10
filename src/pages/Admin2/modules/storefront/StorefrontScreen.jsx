@@ -18,15 +18,22 @@ import {askConfirm, toast, toastFail} from '../../platform/notify';
 import {invalidate} from '../../platform/cache';
 import {keys} from '../../platform/resources';
 import {useResource} from '../../platform/useResource';
-import {deleteBlock, fetchBlocks, fetchCatalogs, fetchPages, refreshStructure, updateBlock} from './api';
-import {GROUPS, describeBlock, moveBlock, sortBlocks} from './blockKinds';
+import {deleteBlock, fetchBanners, fetchBlocks, fetchCatalogs, fetchPages, refreshStructure, updateBlock} from './api';
+import {describeBlock, moveBlock, sortBlocks} from './blockKinds';
+import {sortBanners} from './bannerModel';
+import {selectPageBanners} from '../../../Main/bannerFormat';
 import {PRICING_NOTES, groupByBot, hasStructure, typeName} from './pageOptions';
 import BlockInspector from './BlockInspector';
 import BlockRow from './BlockRow';
+import PageBanners from './PageBanners';
 import PageInspector from './PageInspector';
 import StorefrontPreview from './StorefrontPreview';
-import StorefrontTabs from './StorefrontTabs';
 import style from './StorefrontScreen.module.scss';
+
+const PAGE_TABS = [
+    {value: 'body', title: 'Содержимое'},
+    {value: 'banners', title: 'Баннеры'}
+];
 
 export default function StorefrontScreen() {
     usePageHeader('Витрина');
@@ -51,9 +58,16 @@ export default function StorefrontScreen() {
         [list, pageId]
     );
 
+    const banners = useResource(keys.banners, fetchBanners);
+    const allBanners = useMemo(() => sortBanners(banners.data?.result), [banners.data]);
+    const pageBanners = useMemo(
+        () => (current ? selectPageBanners(allBanners, current.id) : []),
+        [allBanners, current]
+    );
+
     const blocks = useResource(
-        keys.pageBlocks(current?.id ?? 0, group),
-        () => fetchBlocks(current.id, group),
+        keys.pageBlocks(current?.id ?? 0, 'body'),
+        () => fetchBlocks(current.id, 'body'),
         {enabled: Boolean(current) && hasStructure(current.type)}
     );
 
@@ -136,7 +150,6 @@ export default function StorefrontScreen() {
     return (
         <Workspace>
             <HeaderActions>
-                <StorefrontTabs/>
                 <Button size="s" variant="ghost" onClick={pages.refresh}>Обновить</Button>
                 <Button size="s" variant="secondary" onClick={rebuild}>Пересобрать витрину</Button>
             </HeaderActions>
@@ -193,7 +206,7 @@ export default function StorefrontScreen() {
                             Настройки страницы
                         </Button>
 
-                        {structural ? (
+                        {structural && group === 'body' ? (
                             <Button size="s" variant="primary" onClick={() => setEditing({kind: 'block', item: null})}>
                                 Добавить блок
                             </Button>
@@ -214,51 +227,55 @@ export default function StorefrontScreen() {
                 ) : (
                     <>
                         <Tabs
-                            items={GROUPS.map((item) => ({id: item.value, title: item.title, count: item.value === group ? rows.length : undefined}))}
+                            items={PAGE_TABS.map((item) => ({id: item.value, title: item.title, count: item.value === 'banners' ? pageBanners.length : rows.length}))}
                             value={group}
                             onChange={setGroup}
                         />
 
-                        {group === 'head' ? (
-                            <Note tone="warning">
-                                Витрина эти блоки не показывает: карусель наверху собирается из
-                                баннеров, а не из блоков страницы. Здесь лежат записи прежней
-                                витрины — править их можно, но покупатель их не увидит.
-                            </Note>
-                        ) : null}
-
-                        {blocks.isLoading && !blocks.data ? <SkeletonRows count={5}/> : null}
-                        {blocks.error ? <ErrorState error={blocks.error} onRetry={blocks.refresh}/> : null}
-
-                        {blocks.data && rows.length === 0 ? (
-                            <EmptyState
-                                title={group === 'head' ? 'Карусель пуста' : 'На странице нет блоков'}
-                                text="Добавьте блок — он появится у покупателя после пересборки витрины."
+                        {group === 'banners' ? (
+                            <PageBanners
+                                page={current}
+                                rows={pageBanners}
+                                total={allBanners.length}
+                                pages={list}
+                                isLoading={banners.isLoading && !banners.data}
                             />
-                        ) : null}
+                        ) : (
+                            <>
+                            {blocks.isLoading && !blocks.data ? <SkeletonRows count={5}/> : null}
+                            {blocks.error ? <ErrorState error={blocks.error} onRetry={blocks.refresh}/> : null}
 
-                        <div className={style.blocks}>
-                            {rows.map((item, index) => (
-                                <BlockRow
-                                    key={item.id}
-                                    item={item}
-                                    index={index}
-                                    group={group}
-                                    catalog={catalogByPath.get(item.path) || null}
-                                    isFirst={index === 0}
-                                    isLast={index === rows.length - 1}
-                                    isBusy={isBusy}
-                                    onMove={reorder}
-                                    onEdit={(block) => setEditing({kind: 'block', item: block})}
-                                    onRemove={removeBlock}
+                            {blocks.data && rows.length === 0 ? (
+                                <EmptyState
+                                    title='На странице нет блоков'
+                                    text="Добавьте блок — он появится у покупателя после пересборки витрины."
                                 />
-                            ))}
-                        </div>
+                            ) : null}
+
+                            <div className={style.blocks}>
+                                {rows.map((item, index) => (
+                                    <BlockRow
+                                        key={item.id}
+                                        item={item}
+                                        index={index}
+                                        group={group}
+                                        catalog={catalogByPath.get(item.path) || null}
+                                        isFirst={index === 0}
+                                        isLast={index === rows.length - 1}
+                                        isBusy={isBusy}
+                                        onMove={reorder}
+                                        onEdit={(block) => setEditing({kind: 'block', item: block})}
+                                        onRemove={removeBlock}
+                                    />
+                                ))}
+                            </div>
+                            </>
+                        )}
                     </>
                 )}
             </Panel>
 
-            <StorefrontPreview page={current} blocks={rows}/>
+            <StorefrontPreview page={current} blocks={rows} banners={pageBanners.filter((item) => !item.isHidden)}/>
 
             {editing?.kind === 'page' ? (
                 <PageInspector

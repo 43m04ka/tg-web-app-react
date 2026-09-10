@@ -496,3 +496,49 @@
     gap: 6px;
     min-width: 0;
 }
+
+.sectionTabs {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-raised);
+}
+
+.sectionTab,
+.sectionTabOn {
+    padding: 5px 14px;
+    border-radius: var(--a2-radius-m);
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background var(--a2-motion) var(--a2-ease), color var(--a2-motion) var(--a2-ease);
+}
+
+.sectionTab:hover {
+    color: var(--a2-text);
+}
+
+.sectionTabOn {
+    background: var(--a2-accent);
+    color: #fff;
+}
+
+.bannerBar {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.bannerBar > :first-child {
+    flex: 1;
+}
+
+.startScreen {
+    display: block;
+    padding: 0;
+}

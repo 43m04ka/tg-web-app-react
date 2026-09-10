@@ -22,7 +22,6 @@ import {hasStructure, typeName, STRUCTURELESS_SECTIONS} from './pageOptions';
 const GROUPS = [
     {key: 'banners', label: 'Карусель', hint: 'Верхняя карусель страницы'},
     {key: 'body', label: 'Тело сайта', hint: 'Каталоги и баннеры под каруселью'},
-    {key: 'head', label: 'Карусель старого бота', hint: 'Слайдер прежнего дизайна — пока жив старый бот'},
 ];
 
 // Баннеры лежат в своей таблице и к structureCatalogs отношения не имеют —

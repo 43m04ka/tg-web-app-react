@@ -3,6 +3,7 @@ export const keys = {
     notices: ['notices'],
     notice: (id) => ['notices', id],
     parseQueue: ['parse-queue'],
+    associationsSchedule: ['associations', 'schedule'],
     settings: ['settings'],
     sessions: ['admin-sessions'],
     overview: (range) => ['overview', range],
@@ -32,6 +33,7 @@ export const keys = {
     startPages: ['structure', 'start-pages'],
     infoBlocks: ['structure', 'info-blocks'],
     searchClues: ['structure', 'search-clues'],
+    popular: ['structure', 'popular'],
     media: ['media'],
     mediaFolder: (path) => ['media', 'folder', path || ''],
 };

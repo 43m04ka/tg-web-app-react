@@ -1,4 +1,4 @@
-import {httpGet, httpPost} from '../../platform/http';
+import {http, httpDownload, httpGet, httpPost} from '../../platform/http';
 
 export const fetchCatalogs = () => httpGet('/allCatalogs', {area: 'catalog', query: {includeStatus: 'true'}});
 
@@ -39,3 +39,28 @@ export const fetchRecheckReports = () => httpGet('/recheck', {area: 'parsing'});
 export const fetchRecheckReport = (id) => httpGet(`/recheck/${id}`, {area: 'parsing'});
 
 export const expirePromotions = (dryRun) => httpPost('/expire-promotions', {dryRun}, {area: 'parsing'});
+
+export const fetchAssociationsSchedule = () => httpGet('/associations/schedule');
+
+export const runAssociations = (catalogId) =>
+    httpPost('/updateAssociations', catalogId ? {catalogId} : {}, {timeoutMs: 120000});
+
+export const scheduleAssociations = (runAt) => httpPost('/associations/schedule', {runAt});
+
+export const cancelAssociationsSchedule = () => httpPost('/associations/schedule/cancel', {});
+
+export const exportCatalog = (catalogId, path) =>
+    httpDownload(`/export/${catalogId}`, {area: 'catalog', filename: `${path || catalogId}.xlsx`});
+
+export const importCatalog = (catalogId, file) => {
+    const form = new FormData();
+    form.append('file', file);
+
+    return http('/import', {
+        method: 'POST',
+        area: 'product',
+        query: {catalogId},
+        form,
+        timeoutMs: 300000
+    });
+};

@@ -6,6 +6,7 @@ const SECTIONS = [
     {id: 'pages', title: 'Страницы', path: '/admin2/storefront'},
     {id: 'banners', title: 'Баннеры', path: '/admin2/storefront/banners'},
     {id: 'start', title: 'Стартовый экран', path: '/admin2/storefront/start'},
+    {id: 'popular', title: 'Популярное', path: '/admin2/storefront/popular'},
     {id: 'texts', title: 'Тексты', path: '/admin2/storefront/texts'},
 ];
 

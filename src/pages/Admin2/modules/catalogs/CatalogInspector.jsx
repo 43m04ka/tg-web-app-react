@@ -15,15 +15,23 @@ import {askConfirm, toast, toastFail} from '../../platform/notify';
 import {invalidate} from '../../platform/cache';
 import {keys} from '../../platform/resources';
 import {
+    cancelAssociationsSchedule,
     changeSaleStatus,
     clearCatalog,
     deleteCatalog,
     expirePromotions,
+    exportCatalog,
+    fetchAssociationsSchedule,
+    importCatalog,
+    runAssociations,
+    scheduleAssociations,
     setIndiaExchange,
     startRecheck
 } from './api';
 import {pageTitleOf, saleState, sourceOfPage} from './catalogsModel';
+import {useResource} from '../../platform/useResource';
 import ParseForm from './ParseForm';
+import style from './CatalogsScreen.module.scss';
 
 const TABS = [
     {id: 'parse', title: 'Парс'},
@@ -36,6 +44,10 @@ export default function CatalogInspector({catalog, pages, queue, onClose, onRemo
     const [busy, setBusy] = useState(false);
     const [limit, setLimit] = useState('50');
     const [autoFix, setAutoFix] = useState(false);
+    const [runAt, setRunAt] = useState('');
+
+    const schedule = useResource(keys.associationsSchedule, fetchAssociationsSchedule);
+    const plannedAt = schedule.data?.runAt || schedule.data?.state?.runAt || null;
 
     const source = sourceOfPage(catalog, pages) || 'ps';
     const sale = saleState(catalog);
@@ -246,6 +258,101 @@ export default function CatalogInspector({catalog, pages, queue, onClose, onRemo
                         >
                             {catalog.isExchangeIndiaCatalog ? 'Уже источник курса' : 'Сделать источником курса'}
                         </Button>
+                    </InspectorSection>
+
+                    <InspectorSection
+                        title="Похожие карточки"
+                        note="Связи между изданиями и платформами считаются пересчётом. Он тяжёлый, поэтому его можно отложить на ночь."
+                    >
+                        {plannedAt ? (
+                            <Note tone="accent">
+                                Пересчёт запланирован на {new Date(plannedAt).toLocaleString('ru-RU')}.
+                            </Note>
+                        ) : null}
+
+                        <ButtonRow>
+                            <Button
+                                size="s"
+                                variant="secondary"
+                                disabled={busy}
+                                onClick={() => run(() => runAssociations(), 'Пересчёт связей запущен')}
+                            >
+                                Пересчитать сейчас
+                            </Button>
+
+                            {plannedAt ? (
+                                <Button
+                                    size="s"
+                                    variant="ghost"
+                                    disabled={busy}
+                                    onClick={() => run(
+                                        async () => {
+                                            const answer = await cancelAssociationsSchedule();
+                                            invalidate(keys.associationsSchedule);
+                                            return answer;
+                                        },
+                                        'Запланированный пересчёт отменён'
+                                    )}
+                                >
+                                    Отменить запланированный
+                                </Button>
+                            ) : null}
+                        </ButtonRow>
+
+                        <Field label="Отложить пересчёт" hint="Пусто — не планировать">
+                            <Input
+                                type="datetime-local"
+                                value={runAt}
+                                onChange={(event) => setRunAt(event.target.value)}
+                            />
+                        </Field>
+
+                        <Button
+                            size="s"
+                            variant="ghost"
+                            disabled={busy || !runAt}
+                            onClick={() => run(
+                                async () => {
+                                    const answer = await scheduleAssociations(new Date(runAt).toISOString());
+                                    invalidate(keys.associationsSchedule);
+                                    setRunAt('');
+                                    return answer;
+                                },
+                                'Пересчёт запланирован'
+                            )}
+                        >
+                            Запланировать
+                        </Button>
+                    </InspectorSection>
+
+                    <InspectorSection
+                        title="Обмен с Excel"
+                        note="Выгрузка отдаёт товары каталога таблицей, загрузка принимает её обратно. Пригодится для правки цен пачкой."
+                    >
+                        <ButtonRow>
+                            <Button
+                                size="s"
+                                variant="ghost"
+                                disabled={busy}
+                                onClick={() => run(() => exportCatalog(catalog.id, catalog.path), 'Файл выгружен')}
+                            >
+                                Выгрузить в Excel
+                            </Button>
+
+                            <label className={style.importPick}>
+                                <input
+                                    type="file"
+                                    accept=".xlsx,.xls"
+                                    className={style.importInput}
+                                    onChange={(event) => {
+                                        const file = event.target.files?.[0] || null;
+                                        event.target.value = '';
+                                        if (file) run(() => importCatalog(catalog.id, file), 'Файл загружен');
+                                    }}
+                                />
+                                Загрузить из Excel
+                            </label>
+                        </ButtonRow>
                     </InspectorSection>
 
                     <InspectorSection title="Опасное">

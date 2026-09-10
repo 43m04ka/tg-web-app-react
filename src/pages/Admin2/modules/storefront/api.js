@@ -57,3 +57,13 @@ export const updateClue = (id, updateData) => httpPost('/updateSearchClue', {id,
 export const deleteClue = (id) => httpPost('/deleteSearchClue', {id});
 
 export const refreshStructure = () => httpPost('/refresh-structure-data', {});
+
+export const fetchPopular = () => httpPost('/getPopularList', {});
+
+export const createPopular = ({platform, productId}) => httpPost('/createPopular', {platform, productId});
+
+export const updatePopular = (id, updateData) => httpPost('/updatePopular', {id, updateData});
+
+export const deletePopular = (id) => httpPost('/deletePopular', {id});
+
+export const searchProducts = (search) => httpGet('/products', {query: {search, pageSize: 20}});

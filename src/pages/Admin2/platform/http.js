@@ -82,7 +82,14 @@ const hintOf = (status) => {
 
 const isIdempotent = (method) => method === 'GET' || method === 'HEAD';
 
-const runOnce = async (url, {method, body, form, signal, timeoutMs}) => {
+const filenameOf = (response) => {
+    const header = response.headers.get('content-disposition') || '';
+    const found = /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(header);
+
+    return found ? decodeURIComponent(found[1]) : 'export.xlsx';
+};
+
+const runOnce = async (url, {method, body, form, signal, timeoutMs, as}) => {
     const controller = new AbortController();
     const timerId = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -106,6 +113,12 @@ const runOnce = async (url, {method, body, form, signal, timeoutMs}) => {
             body: form ?? (body === undefined ? undefined : JSON.stringify(body)),
             signal: controller.signal,
         });
+
+        // Выгрузки отдают файл, а не JSON: читать его как текст значит испортить.
+        // Ошибку сервер всё равно вернёт JSON-ом, поэтому проверку статуса делаем до чтения
+        if (as === 'blob' && response.ok) {
+            return {blob: await response.blob(), filename: filenameOf(response)};
+        }
 
         const payload = await readPayload(response);
 
@@ -136,6 +149,7 @@ export async function http(path, options = {}) {
         query,
         body,
         form,
+        as,
         signal,
         timeoutMs = DEFAULT_TIMEOUT_MS,
     } = options;
@@ -147,7 +161,7 @@ export async function http(path, options = {}) {
 
     for (let attempt = 0; attempt < attempts; attempt += 1) {
         try {
-            return await runOnce(url, {method, body, form, signal, timeoutMs});
+            return await runOnce(url, {method, body, form, signal, timeoutMs, as});
         } catch (error) {
             if (error instanceof HttpError && error.status && error.status < 500) throw error;
             if (signal?.aborted) throw error;
@@ -162,4 +176,20 @@ export async function http(path, options = {}) {
 }
 
 export const httpGet = (path, options) => http(path, {...options, method: 'GET'});
+
+/** Скачивает файл через тот же транспорт: выгрузки закрыты токеном, ссылкой их не взять */
+export const httpDownload = async (path, options = {}) => {
+    const {blob, filename} = await http(path, {...options, method: 'GET', as: 'blob'});
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = options.filename || filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+};
 export const httpPost = (path, body, options) => http(path, {...options, method: 'POST', body});

@@ -1,0 +1,142 @@
+.backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 96px 24px 24px;
+    background: var(--a2-overlay);
+    backdrop-filter: blur(3px);
+    animation: fade var(--a2-motion) var(--a2-ease);
+}
+
+.panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 620px;
+    max-height: 60vh;
+    border: 1px solid var(--a2-border-strong);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-raised);
+    box-shadow: var(--a2-shadow-overlay);
+    animation: rise var(--a2-motion-slow) var(--a2-ease);
+    overflow: hidden;
+}
+
+.inputRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    height: 46px;
+    border-bottom: 1px solid var(--a2-border);
+    color: var(--a2-text-faint);
+}
+
+.input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    color: var(--a2-text);
+    font-family: var(--a2-font);
+    font-size: var(--a2-size-l);
+}
+
+.input:focus {
+    outline: none;
+}
+
+.input::placeholder {
+    color: var(--a2-text-faint);
+}
+
+.pendingTag {
+    padding: 2px 8px;
+    border-radius: 9px;
+    background: var(--a2-accent-soft);
+    color: var(--a2-accent);
+    font-size: var(--a2-size-xs);
+    white-space: nowrap;
+}
+
+.pendingHint {
+    padding: 16px 14px;
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-m);
+}
+
+.list {
+    padding: 6px;
+    overflow-y: auto;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: 34px;
+    padding: 0 8px;
+    border: none;
+    border-radius: var(--a2-radius-m);
+    background: transparent;
+    color: var(--a2-text-muted);
+    font-family: var(--a2-font);
+    font-size: var(--a2-size-m);
+    text-align: left;
+    cursor: pointer;
+}
+
+.rowActive {
+    background: var(--a2-accent-soft);
+    color: var(--a2-accent);
+}
+
+.rowTitle {
+    color: var(--a2-text);
+    white-space: nowrap;
+}
+
+.rowActive .rowTitle {
+    color: var(--a2-accent);
+}
+
+.rowHint {
+    flex: 1;
+    min-width: 0;
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-s);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rowModule {
+    margin-left: auto;
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    white-space: nowrap;
+}
+
+.nothing {
+    padding: 20px 12px;
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-m);
+    text-align: center;
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+}
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}

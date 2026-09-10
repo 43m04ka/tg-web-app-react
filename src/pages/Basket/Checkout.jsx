@@ -13,7 +13,6 @@ import BackPill from '../../shared/ui/BackPill/BackPill';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import {
     ACCOUNT_KINDS,
-    PAYMENT_METHODS,
     accountForm,
     buildAccountData,
     contactHandle,
@@ -24,10 +23,13 @@ import {
     isContactValid,
     isEmailValid,
     isMethodAvailable,
+    methodUnavailableReason,
     money,
+    normalizeMethods,
     pageCartItems,
     splitSchedule
 } from './cartModel';
+import {fetchPaymentMethods} from '../../shared/api/payments';
 import {unitPrice} from './quoteLocal';
 import {useBasketQuote} from './useBasketQuote';
 import {usePromoMemory} from './usePromoMemory';
@@ -83,7 +85,7 @@ function PaymentOption({method, total, isActive, onSelect}) {
                 <span className={style.paymentBody}>
                     <span className={style.paymentTitle}>{method.title}</span>
                     <span className={style.paymentNote}>
-                        {isAvailable ? method.note : `Доступно от ${money(method.minTotal)}`}
+                        {isAvailable ? method.note : methodUnavailableReason(method, money)}
                     </span>
                 </span>
 
@@ -207,10 +209,31 @@ export default function Checkout() {
 
     const total = quote?.total ?? 0;
 
+    const [methods, setMethods] = useState(() => normalizeMethods(null));
+
     useEffect(() => {
-        const current = findMethod(method);
-        if (total > 0 && !isMethodAvailable(current, total)) setMethod('sbp');
-    }, [method, total]);
+        if (!pageId) return undefined;
+
+        const controller = new AbortController();
+
+        fetchPaymentMethods({platform, scenario: 'catalog', pageId}, controller.signal)
+            .then((list) => {
+                if (!controller.signal.aborted) setMethods(normalizeMethods(list));
+            })
+            .catch(() => undefined);
+
+        return () => controller.abort();
+    }, [pageId, platform]);
+
+    useEffect(() => {
+        const current = findMethod(methods, method);
+        const usable = total <= 0 || isMethodAvailable(current, total);
+
+        if (current.key !== method || !usable) {
+            const next = methods.find((option) => isMethodAvailable(option, total)) || methods[0];
+            if (next && next.key !== method) setMethod(next.key);
+        }
+    }, [method, methods, total]);
 
     const back = useCallback(() => {
         hapticImpact('light');
@@ -236,15 +259,16 @@ export default function Checkout() {
         navigate('/basket');
     }, [flow, navigate, reloadCart, userId]);
 
-    const selected = findMethod(method);
-    const isOnline = selected.isOnline;
+    const selected = findMethod(methods, method);
+    const needsEmail = selected.requiresEmail;
+    const isOnline = selected.flow === 'auto';
 
     const contact = hasNativeContact
         ? nativeContact(user)
         : formatContact(channel, contactValue);
 
     const isContactReady = hasNativeContact || isContactValid(channel, contactValue);
-    const isEmailReady = !isOnline || isEmailValid(email);
+    const isEmailReady = !needsEmail || isEmailValid(email);
     const isAccountReady = isAccountFilled(pageType, accountKind, accountValues);
     const isReady = Boolean(userId) && isContactReady && isEmailReady && isAccountReady
         && total > 0 && !isLoading && !error;
@@ -360,7 +384,7 @@ export default function Checkout() {
                     <h2 className={style.blockTitle}>Способ оплаты</h2>
 
                     <div className={style.payments}>
-                        {PAYMENT_METHODS.map((option) => (
+                        {methods.map((option) => (
                             <PaymentOption
                                 key={option.key}
                                 method={option}
@@ -409,7 +433,7 @@ export default function Checkout() {
                             </>
                         )}
 
-                        {isOnline ? (
+                        {needsEmail ? (
                             <label className={style.field}>
                                 <span className={style.fieldLabel}>Почта для чека</span>
                                 <input

@@ -1,0 +1,161 @@
+.inspector {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    min-height: 0;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-plane);
+    box-shadow: var(--a2-shadow-raised);
+    overflow: hidden;
+    animation: slide var(--a2-motion-slow) var(--a2-ease);
+}
+
+.s {
+    width: 360px;
+}
+
+.m {
+    width: 440px;
+}
+
+.l {
+    width: 560px;
+}
+
+.head {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 12px 10px;
+    border-bottom: 1px solid var(--a2-border);
+}
+
+.heading {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.titleRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.title {
+    margin: 0;
+    color: var(--a2-text);
+    font-size: var(--a2-size-l);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.subtitle {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+}
+
+.tabs {
+    padding: 0 10px;
+    border-bottom: 1px solid var(--a2-border);
+}
+
+.body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 0;
+    padding: 14px 12px;
+    overflow-y: auto;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-top: 1px solid var(--a2-border);
+    background: var(--a2-plane);
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sectionHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.sectionTitle {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.sectionNote {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+    line-height: 1.5;
+}
+
+.sectionBody {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.rows {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin: 0;
+}
+
+.rowItem {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--a2-border);
+}
+
+.rowLabel {
+    flex-shrink: 0;
+    width: 132px;
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+}
+
+.rowValue {
+    flex: 1;
+    margin: 0;
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    overflow-wrap: anywhere;
+}
+
+@keyframes slide {
+    from {
+        opacity: 0;
+        transform: translateX(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

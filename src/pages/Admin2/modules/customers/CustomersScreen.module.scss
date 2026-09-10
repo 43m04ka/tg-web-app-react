@@ -1,0 +1,79 @@
+.dash {
+    color: var(--a2-text-faint);
+}
+
+.orders {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.order {
+    display: grid;
+    grid-template-columns: 70px 110px 1fr auto;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-s);
+    background: var(--a2-card);
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.order:hover {
+    border-color: var(--a2-accent);
+}
+
+.orderTotal {
+    text-align: right;
+}
+
+.goods {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.good {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-s);
+    background: var(--a2-card);
+}
+
+.goodArt {
+    flex: none;
+    width: 34px;
+    height: 46px;
+    border-radius: 4px;
+    background-color: var(--a2-raised);
+    background-position: center;
+    background-size: cover;
+}
+
+.goodBody {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.goodName {
+    overflow: hidden;
+    color: var(--a2-text);
+    font-size: var(--a2-size-s);
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.goodNote {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+}

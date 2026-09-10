@@ -1,0 +1,40 @@
+.guard {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+    background: var(--a2-bg);
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 420px;
+    padding: 24px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-plane);
+    text-align: center;
+}
+
+.title {
+    margin: 0;
+    color: var(--a2-text);
+    font-size: var(--a2-size-xl);
+    font-weight: 600;
+}
+
+.text {
+    margin: 0;
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-m);
+    line-height: 1.55;
+}
+
+.width {
+    color: var(--a2-text-faint);
+    font-family: var(--a2-font-mono);
+    font-size: var(--a2-size-s);
+}

@@ -1,0 +1,148 @@
+.tableWrap {
+    overflow-x: auto;
+    margin-top: 12px;
+}
+
+.matrix {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--a2-size-s);
+}
+
+.matrix th,
+.matrix td {
+    border: 1px solid var(--a2-border);
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.matrix thead th {
+    background: var(--a2-card);
+    color: var(--a2-text-muted);
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+.methodHead {
+    min-width: 190px;
+    background: var(--a2-card);
+}
+
+.methodName {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: var(--a2-text);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: left;
+}
+
+.methodName:hover {
+    color: var(--a2-accent);
+}
+
+.methodMeta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+}
+
+.cell {
+    min-width: 150px;
+}
+
+.cellInner {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+}
+
+.cellNote {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: var(--a2-text-muted);
+    font: inherit;
+    font-size: var(--a2-size-xs);
+    cursor: pointer;
+    text-align: left;
+    text-decoration: underline dotted;
+}
+
+.cellNote:hover {
+    color: var(--a2-accent);
+}
+
+.pageTypes {
+    margin-top: 8px;
+}
+
+.editorGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+@media (max-width: 900px) {
+    .editorGrid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.switches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 12px 0;
+}
+
+.methodList {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.methodRow,
+.methodRowActive {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 2fr);
+    gap: 8px;
+    align-items: center;
+    padding: 8px;
+    border: 1px solid transparent;
+    border-radius: var(--a2-radius-s);
+    background: none;
+    color: var(--a2-text-muted);
+    font: inherit;
+    font-size: var(--a2-size-s);
+    text-align: left;
+    cursor: pointer;
+}
+
+.methodRow:hover {
+    background: var(--a2-card);
+}
+
+.methodRowActive {
+    background: var(--a2-accent-soft);
+    border-color: var(--a2-accent);
+}
+
+.methodRowTitle {
+    color: var(--a2-text);
+    font-weight: 700;
+}
+
+.methodRowCode {
+    font-family: var(--a2-font-mono);
+    font-size: var(--a2-size-xs);
+}
+
+.methodRowFlow {
+    text-align: right;
+}

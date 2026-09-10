@@ -1,0 +1,10 @@
+.contact {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dash {
+    color: var(--a2-text-faint);
+}

@@ -1,0 +1,242 @@
+.dock {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: var(--a2-nav-width);
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+}
+
+.bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: var(--a2-dock-height);
+    padding: 0 14px;
+    border: none;
+    border-top: 1px solid var(--a2-border);
+    background: var(--a2-plane);
+    color: var(--a2-text-muted);
+    font-family: var(--a2-font);
+    font-size: var(--a2-size-m);
+    text-align: left;
+    cursor: pointer;
+    transition: color var(--a2-motion) var(--a2-ease);
+}
+
+.bar:hover {
+    color: var(--a2-text);
+}
+
+.barIcon {
+    display: inline-flex;
+    color: var(--a2-text-faint);
+}
+
+.barText {
+    white-space: nowrap;
+}
+
+.barProgress {
+    width: 160px;
+}
+
+.barNotices {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+}
+
+.barError {
+    color: var(--a2-danger);
+    font-size: var(--a2-size-s);
+}
+
+.panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 320px;
+    border-top: 1px solid var(--a2-border);
+    background: var(--a2-plane);
+    box-shadow: var(--a2-shadow-raised);
+    animation: rise var(--a2-motion-slow) var(--a2-ease);
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border-right: 1px solid var(--a2-border);
+}
+
+.column:last-child {
+    border-right: none;
+}
+
+.columnHead {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 34px;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--a2-border);
+}
+
+.columnTitle {
+    color: var(--a2-text);
+    font-size: var(--a2-size-s);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.queueLine {
+    margin-left: auto;
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    white-space: nowrap;
+}
+
+.columnBody {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    overflow-y: auto;
+}
+
+.placeholder {
+    padding: 18px 12px;
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-m);
+    line-height: 1.55;
+    text-align: center;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 9px 10px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+}
+
+.cardCancelled {
+    opacity: 0.7;
+}
+
+.cardHead {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.cardName {
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cardEta {
+    margin-left: auto;
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.cardText {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+    line-height: 1.45;
+}
+
+.cardProgress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cardPercent {
+    width: 38px;
+    color: var(--a2-text-muted);
+    font-family: var(--a2-font-mono);
+    font-size: var(--a2-size-s);
+    text-align: right;
+}
+
+.cardFoot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.notice {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 9px 10px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+}
+
+.noticeHead {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.noticeName {
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.noticeTime {
+    margin-left: auto;
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    font-variant-numeric: tabular-nums;
+}
+
+.noticeText {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+    line-height: 1.45;
+}
+
+.noticeMore {
+    align-self: flex-start;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--a2-accent);
+    font-family: var(--a2-font);
+    font-size: var(--a2-size-s);
+    cursor: pointer;
+}
+
+.noticeMore:hover {
+    text-decoration: underline;
+}
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+}

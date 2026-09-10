@@ -1,0 +1,61 @@
+.dash {
+    color: var(--a2-text-faint);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.importPick {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 10px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-s);
+    background: transparent;
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.importPick:hover {
+    background: var(--a2-raised);
+    color: var(--a2-text);
+}
+
+.importInput {
+    display: none;
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.chip {
+    padding: 5px 9px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-s);
+    background: var(--a2-card);
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-xs);
+    cursor: pointer;
+    transition: background var(--a2-motion) var(--a2-ease),
+                border-color var(--a2-motion) var(--a2-ease),
+                color var(--a2-motion) var(--a2-ease);
+}
+
+.chip:hover {
+    color: var(--a2-text);
+}
+
+.chipOn {
+    border-color: var(--a2-accent);
+    background: var(--a2-accent-soft);
+    color: var(--a2-accent-text);
+}

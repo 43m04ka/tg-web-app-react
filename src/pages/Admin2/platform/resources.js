@@ -14,6 +14,8 @@ export const keys = {
     catalogs: ['catalogs'],
     catalogList: ['catalogs', 'list'],
     orders: ['orders'],
+    customerList: (query) => ['customers', 'list', JSON.stringify(query || {})],
+    customer: (id) => ['customers', 'card', id],
     orderList: (query) => ['orders', 'list', JSON.stringify(query || {})],
     order: (id) => ['orders', 'card', id],
     priceRules: ['price-rules'],

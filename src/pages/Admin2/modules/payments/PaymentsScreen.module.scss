@@ -1,6 +1,5 @@
 .tableWrap {
     overflow-x: auto;
-    margin-top: 12px;
     border: 1px solid var(--a2-border);
     border-radius: var(--a2-radius-l);
 }
@@ -177,7 +176,6 @@
     display: flex;
     align-items: center;
     gap: 14px;
-    margin-bottom: 14px;
     padding: 12px 14px;
     border: 1px solid var(--a2-warning);
     border-radius: var(--a2-radius-l);

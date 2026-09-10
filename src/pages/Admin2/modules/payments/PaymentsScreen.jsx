@@ -92,6 +92,7 @@ function RuleEditor({rule, methodTitle, platform, onChange, onClose}) {
 
     return (
         <Panel
+            scroll
             title={`${methodTitle} · ${PLATFORM_TITLES[platform] || platform}`}
             subtitle="Уточнение правила для этой клетки"
             actions={<Button variant="ghost" onClick={onClose}>Закрыть</Button>}
@@ -145,6 +146,7 @@ function MethodForm({value, isNew, onSubmit, onDelete, saving}) {
 
     return (
         <Panel
+            scroll
             title={isNew ? 'Новый способ оплаты' : form.title || form.code}
             subtitle={isNew ? 'Появится в матрице после сохранения' : `код: ${form.code}`}
             actions={isNew ? null : (
@@ -353,7 +355,7 @@ export default function PaymentsScreen() {
     }, [enforce, writeEnforce]);
 
     if (registry.isLoading) {
-        return <Workspace><Panel title="Оплата"><SkeletonRows count={6}/></Panel></Workspace>;
+        return <Workspace><Panel scroll title="Оплата"><SkeletonRows count={6}/></Panel></Workspace>;
     }
 
     if (registry.error) {
@@ -369,6 +371,7 @@ export default function PaymentsScreen() {
     return (
         <Workspace>
             <Panel
+                scroll
                 title="Доступность по площадкам"
                 subtitle="Где какой способ оплаты видит покупатель"
                 actions={(
@@ -481,16 +484,6 @@ export default function PaymentsScreen() {
                     </div>
                 )}
 
-                <Note tone={enforce ? 'accent' : 'warning'}>
-                    {enforce
-                        ? 'Строгая проверка включена: заказ с методом вне матрицы отклоняется.'
-                        : 'Мягкий режим: расхождения только пишутся в лог, заказы проходят. Включайте строгий, когда лог станет чистым.'}
-                    <ButtonRow>
-                        <Button variant="ghost" onClick={onToggleEnforce} disabled={writeEnforce.loading}>
-                            {enforce ? 'Выключить строгую проверку' : 'Включить строгую проверку'}
-                        </Button>
-                    </ButtonRow>
-                </Note>
             </Panel>
 
             {editing ? (
@@ -504,6 +497,7 @@ export default function PaymentsScreen() {
             ) : null}
 
             <Panel
+                scroll
                 title="Способы оплаты"
                 subtitle="Справочник: название, режим и касса"
                 actions={<Button variant="primary" onClick={() => setSelectedMethod('')}>Добавить</Button>}

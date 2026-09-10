@@ -117,7 +117,7 @@
 
 .preview {
     display: flex;
-    flex: 0 0 316px;
+    flex: 0 0 411px;
     flex-direction: column;
     min-height: 0;
     border: 1px solid var(--a2-border);
@@ -176,7 +176,7 @@
     position: relative;
     flex: 1;
     align-self: center;
-    width: 278px;
+    width: 361px;
     min-height: 420px;
     border: 1px solid var(--a2-border);
     border-radius: 18px;
@@ -186,9 +186,9 @@
 }
 
 .phoneScreen {
-    --viewport: 394px;
+    --viewport: 512px;
 
-    width: 394px;
+    width: 512px;
     height: calc(100% / 0.7);
     padding: 10px 0;
     overflow-y: auto;

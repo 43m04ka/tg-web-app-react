@@ -5,9 +5,9 @@ const screen = lazy(() => import('./BroadcastScreen'));
 export default {
     id: 'broadcast',
     title: 'Рассылка',
-    group: 'storefront',
+    group: 'tools',
     icon: 'broadcast',
-    order: 70,
+    order: 75,
     routes: [
         {path: '/broadcast', element: screen},
     ],

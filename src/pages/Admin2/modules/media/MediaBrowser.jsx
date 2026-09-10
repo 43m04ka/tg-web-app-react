@@ -137,24 +137,23 @@ export default function MediaBrowser({onPick = null, selected = '', compact = fa
                     <Button size="s" variant="primary" loading={upload.loading} onClick={() => inputRef.current?.click()}>
                         Загрузить файлы
                     </Button>
+                    <div className={style.newFolder}>
+                        <Input
+                            value={folderName}
+                            placeholder="Новая папка"
+                            onChange={(event) => setFolderName(event.target.value)}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter') onNewFolder();
+                            }}
+                        />
+                        <Button size="s" variant="ghost" disabled={!folderName.trim()} loading={makeFolder.loading} onClick={onNewFolder}>
+                            Создать
+                        </Button>
+                    </div>
                     {path ? (
                         <Button size="s" variant="ghost" onClick={() => setPath(parentOf(path))}>Наверх</Button>
                     ) : null}
                 </ButtonRow>
-
-                <div className={style.newFolder}>
-                    <Input
-                        value={folderName}
-                        placeholder="Новая папка"
-                        onChange={(event) => setFolderName(event.target.value)}
-                        onKeyDown={(event) => {
-                            if (event.key === 'Enter') onNewFolder();
-                        }}
-                    />
-                    <Button size="s" variant="ghost" disabled={!folderName.trim()} loading={makeFolder.loading} onClick={onNewFolder}>
-                        Создать
-                    </Button>
-                </div>
             </div>
 
             <input

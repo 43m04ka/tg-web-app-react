@@ -7,9 +7,9 @@ export function Workspace({children}) {
     return <div className={style.workspace}>{children}</div>;
 }
 
-export function Panel({title = '', subtitle = '', actions = null, scroll = false, wide = false, children}) {
+export function Panel({title = '', subtitle = '', actions = null, scroll = false, wide = false, grow = null, children}) {
     return (
-        <section className={classes(style.panel, wide && style.wide)}>
+        <section className={classes(style.panel, wide && style.wide)} style={grow === null ? undefined : {flex: grow}}>
             {(title || actions) ? (
                 <header className={style.head}>
                     <div className={style.heading}>

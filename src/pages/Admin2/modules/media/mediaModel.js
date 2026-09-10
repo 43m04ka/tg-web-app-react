@@ -8,7 +8,7 @@ export const crumbsOf = (path) => {
     const parts = String(path || '').split('/').filter(Boolean);
 
     return [
-        {title: 'Медиатека', path: ''},
+        {title: 'Хостинг', path: ''},
         ...parts.map((part, index) => ({title: part, path: parts.slice(0, index + 1).join('/')})),
     ];
 };

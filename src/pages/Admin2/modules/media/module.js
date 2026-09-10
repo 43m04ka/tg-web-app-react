@@ -2,7 +2,7 @@ import {lazy} from 'react';
 
 export default {
     id: 'media',
-    title: 'Медиатека',
+    title: 'Хостинг',
     group: 'tools',
     icon: 'media',
     order: 80,
@@ -12,7 +12,7 @@ export default {
     commands: [
         {
             id: 'media.open',
-            title: 'Медиатека: файлы витрины',
+            title: 'Хостинг: файлы витрины',
             icon: 'media',
             run: ({go}) => go('/media'),
         },

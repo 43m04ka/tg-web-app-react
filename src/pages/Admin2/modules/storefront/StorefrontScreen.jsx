@@ -137,6 +137,7 @@ export default function StorefrontScreen() {
 
             <Panel
                 title="Страницы"
+                grow={0.85}
                 scroll
                 actions={<Button size="s" variant="primary" onClick={() => setEditing({kind: 'page', item: null})}>
                     Новая

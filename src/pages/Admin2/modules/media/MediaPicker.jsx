@@ -15,7 +15,7 @@ export function MediaPicker({value = '', onPick, onClose}) {
     return (
         <Modal
             size="l"
-            title="Медиатека"
+            title="Хостинг"
             subtitle="Выберите картинку или загрузите новую"
             onClose={onClose}
             footer={(

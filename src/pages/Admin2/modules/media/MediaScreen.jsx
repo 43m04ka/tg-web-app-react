@@ -4,7 +4,7 @@ import {usePageHeader} from '../../shell/pageHeader';
 import MediaBrowser from './MediaBrowser';
 
 export default function MediaScreen() {
-    usePageHeader('Медиатека');
+    usePageHeader('Хостинг');
 
     return (
         <Workspace>

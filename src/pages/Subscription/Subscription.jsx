@@ -14,6 +14,7 @@ import {cleanPath} from '../Main/catalogSections';
 import {themeOf} from '../Services/servicesModel';
 import SubscriptionBar from './SubscriptionBar';
 import SubscriptionHero from './SubscriptionHero';
+import SubscriptionInfo, {showsPlayStationInfo} from './SubscriptionInfo';
 import SubscriptionPeriods from './SubscriptionPeriods';
 import SubscriptionTiers from './SubscriptionTiers';
 import {buildPlan, defaultSelection, locate} from './subscriptionModel';
@@ -246,6 +247,8 @@ export default function Subscription() {
                 <SubscriptionTiers tiers={plan.tiers} activeKey={tier.key} onSelect={selectTier}/>
 
                 <SubscriptionPeriods tier={tier} activeId={period?.id ?? null} onSelect={selectPeriod}/>
+
+                {showsPlayStationInfo(plan.brand.key, path) ? <SubscriptionInfo/> : null}
 
                 <button type="button" className={style.toCatalog} onClick={openCatalog}>
                     Посмотреть все позиции

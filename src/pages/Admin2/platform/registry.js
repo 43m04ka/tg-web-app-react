@@ -35,7 +35,7 @@ export const moduleById = (id) => modules.find((item) => item.id === id) || null
 export const navigationGroups = () => GROUPS
     .map((group) => ({
         ...group,
-        items: modules.filter((item) => item.group === group.id && item.routes?.length),
+        items: modules.filter((item) => item.group === group.id && item.routes?.length && !item.hidden),
     }))
     .filter((group) => group.items.length);
 
@@ -44,11 +44,13 @@ export const moduleRoutes = () => modules.flatMap((item) => (item.routes || []).
     moduleId: item.id,
 })));
 
-export const moduleCommands = () => modules.flatMap((item) => (item.commands || []).map((command) => ({
-    ...command,
-    moduleId: item.id,
-    moduleTitle: item.title,
-})));
+export const moduleCommands = () => modules
+    .filter((item) => !item.hidden)
+    .flatMap((item) => (item.commands || []).map((command) => ({
+        ...command,
+        moduleId: item.id,
+        moduleTitle: item.title,
+    })));
 
 export const overviewWidgets = () => modules.flatMap((item) => (item.overview || []).map((widget) => ({
     moduleId: item.id,
@@ -60,7 +62,7 @@ export const moduleSearchers = () => modules
     .map((item) => ({moduleId: item.id, moduleTitle: item.title, search: item.search}));
 
 export const homePath = () => {
-    const first = modules.find((item) => item.routes?.length);
+    const first = modules.find((item) => item.routes?.length && !item.hidden);
     return first ? first.routes[0].path : '/';
 };
 

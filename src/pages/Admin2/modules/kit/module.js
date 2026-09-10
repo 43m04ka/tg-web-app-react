@@ -5,6 +5,7 @@ export default {
     id: 'kit',
     title: 'Компоненты',
     group: 'tools',
+    hidden: true,
     icon: 'kit',
     order: 90,
     routes: [

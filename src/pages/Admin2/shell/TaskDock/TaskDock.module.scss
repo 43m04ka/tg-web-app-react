@@ -59,7 +59,9 @@
 .panel {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    grid-template-rows: minmax(0, 1fr);
     height: 320px;
+    overflow: hidden;
     border-top: 1px solid var(--a2-border);
     background: var(--a2-plane);
     box-shadow: var(--a2-shadow-raised);
@@ -70,6 +72,7 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+    min-height: 0;
     border-right: 1px solid var(--a2-border);
 }
 
@@ -106,8 +109,10 @@
     flex: 1;
     flex-direction: column;
     gap: 8px;
+    min-height: 0;
     padding: 10px 12px;
     overflow-y: auto;
+    overscroll-behavior: contain;
 }
 
 .placeholder {
@@ -239,4 +244,10 @@
         opacity: 0;
         transform: translateY(12px);
     }
+}
+
+.card,
+.notice,
+.placeholder {
+    flex: none;
 }

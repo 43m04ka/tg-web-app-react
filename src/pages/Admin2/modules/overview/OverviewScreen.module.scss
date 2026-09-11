@@ -206,3 +206,13 @@
 .foldCaretOpen {
     transform: rotate(45deg);
 }
+
+.columns > .section > :nth-child(2) {
+    flex: 1;
+    align-items: stretch;
+}
+
+.columns > .section > :nth-child(2) > * {
+    height: 100%;
+    box-sizing: border-box;
+}

@@ -10,7 +10,7 @@ import {hapticImpact, hapticSelection} from '../../shared/lib/haptic';
 import BackPill from '../../shared/ui/BackPill/BackPill';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import ProductCard from '../Main/ProductCard';
-import {discountPercent, shortPlatform} from '../Main/catalogSections';
+import {discountPercent, shortPlatform, subscriptionTerm} from '../Main/catalogSections';
 import {money, pageCartItems, rupees} from './cartModel';
 import {unitOldPrice, unitPrice} from './quoteLocal';
 import {useBasketQuote} from './useBasketQuote';
@@ -24,7 +24,7 @@ function CartRow({item, regionTitle, isRupee, onOpen, onCount}) {
     const price = unitPrice(item);
     const oldPrice = unitOldPrice(item);
     const percent = isRupee ? 0 : discountPercent(price, oldPrice);
-    const meta = [shortPlatform(item.platform), item.typeLabel, regionTitle].filter(Boolean).join(' · ');
+    const meta = [subscriptionTerm(item), shortPlatform(item.platform), item.typeLabel, regionTitle].filter(Boolean).join(' · ');
 
     return (
         <article className={style.row}>

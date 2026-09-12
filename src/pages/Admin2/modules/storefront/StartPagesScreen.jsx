@@ -28,7 +28,6 @@ import {
     typeTitle
 } from './startModel';
 import StartPageInspector from './StartPageInspector';
-import SectionTabs, {START_TABS} from './SectionTabs';
 import StartPreview from './StartPreview';
 import {byPlatform as popularOf} from './popularModel';
 import style from './StorefrontScreen.module.scss';
@@ -90,8 +89,6 @@ export default function StartPagesScreen() {
     }
 
     return (
-        <div className={style.sectionScreen}>
-        <SectionTabs items={START_TABS}/>
         <Workspace>
             <HeaderActions>
                 <Button size="s" variant="ghost" onClick={start.refresh}>Обновить</Button>
@@ -194,6 +191,5 @@ export default function StartPagesScreen() {
                 />
             ) : null}
         </Workspace>
-        </div>
     );
 }

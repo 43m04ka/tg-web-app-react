@@ -1,7 +1,6 @@
 import {lazy} from 'react';
 
 const start = lazy(() => import('../storefront/StartPagesScreen'));
-const popular = lazy(() => import('../storefront/PopularScreen'));
 
 export default {
     id: 'start',
@@ -11,7 +10,6 @@ export default {
     order: 56,
     routes: [
         {path: '/start', element: start},
-        {path: '/start/popular', element: popular},
     ],
     commands: [
         {
@@ -19,12 +17,6 @@ export default {
             title: 'Стартовый экран: страницы',
             icon: 'storefront',
             run: ({go}) => go('/start'),
-        },
-        {
-            id: 'start.popular',
-            title: 'Стартовый экран: популярное',
-            icon: 'storefront',
-            run: ({go}) => go('/start/popular'),
         },
     ],
 };

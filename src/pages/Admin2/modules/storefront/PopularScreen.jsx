@@ -28,13 +28,12 @@ import {
     popularProblem,
     popularTitle
 } from './popularModel';
-import SectionTabs, {START_TABS} from './SectionTabs';
 import style from './StorefrontScreen.module.scss';
 
 const SEARCH_DELAY = 350;
 
 export default function PopularScreen() {
-    usePageHeader('Стартовый экран');
+    usePageHeader('Популярные позиции');
 
     const [platform, setPlatform] = useState('tg');
     const [query, setQuery] = useState('');
@@ -135,8 +134,6 @@ export default function PopularScreen() {
     }
 
     return (
-        <div className={style.sectionScreen}>
-        <SectionTabs items={START_TABS}/>
         <Workspace>
             <HeaderActions>
                 <Button size="s" variant="ghost" onClick={popular.refresh}>Обновить</Button>
@@ -259,6 +256,5 @@ export default function PopularScreen() {
                 </div>
             </Panel>
         </Workspace>
-        </div>
     );
 }

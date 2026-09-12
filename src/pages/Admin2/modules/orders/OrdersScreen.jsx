@@ -34,6 +34,7 @@ const DEFAULTS = {
     platform: '',
     payoutStatus: '',
     trouble: '',
+    cost: '',
     from: '',
     to: '',
     sorting: 'newest',
@@ -82,6 +83,11 @@ const PLATFORM_OPTIONS = [
     {value: 'max', title: 'MAX'},
 ];
 
+const COST_OPTIONS = [
+    {value: '', title: 'Себестоимость: любая'},
+    {value: 'missing', title: 'Без себестоимости'},
+];
+
 const TROUBLE_OPTIONS = [
     {value: '', title: 'Все заказы'},
     {value: 'yes', title: 'Требуют внимания'},
@@ -113,6 +119,7 @@ export default function OrdersScreen() {
         platform: value.platform,
         payoutStatus: value.payoutStatus,
         trouble: value.trouble,
+        cost: value.cost,
         from: value.from,
         to: value.to,
         sorting: value.sorting,
@@ -241,6 +248,11 @@ export default function OrdersScreen() {
                             options={TROUBLE_OPTIONS}
                             value={value.trouble}
                             onChange={(event) => patch({trouble: event.target.value})}
+                        />
+                        <Select
+                            options={COST_OPTIONS}
+                            value={value.cost}
+                            onChange={(event) => patch({cost: event.target.value})}
                         />
                         <Select
                             options={SORT_OPTIONS}

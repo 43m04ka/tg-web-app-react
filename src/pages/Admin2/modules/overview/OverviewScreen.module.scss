@@ -68,9 +68,39 @@
     flex-direction: column;
     gap: 10px;
     padding: 14px;
-    border: 1px solid var(--a2-positive);
+    border: 1px solid var(--a2-border);
     border-radius: var(--a2-radius-l);
-    background: var(--a2-positive-soft);
+    background: var(--a2-plane);
+}
+
+.statLink {
+    display: flex;
+    flex: 1 1 140px;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--a2-radius-m);
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.statLink > * {
+    flex: 1;
+    transition: border-color var(--a2-motion) var(--a2-ease);
+}
+
+.statLink:hover > * {
+    border-color: var(--a2-accent);
+}
+
+.statLink:active:not(:disabled) {
+    transform: none;
+}
+
+.statLink:disabled {
+    cursor: default;
 }
 
 .profitPlatform {

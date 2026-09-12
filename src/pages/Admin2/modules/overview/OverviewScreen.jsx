@@ -118,7 +118,7 @@ export default function OverviewScreen() {
                     <Stat
                         label="Чистая прибыль"
                         value={stats.isLoading && !report ? <Skeleton width={110} height={18}/> : moneyTitle(profit?.profit)}
-                        tone={profit && profit.profit < 0 ? 'danger' : 'positive'}
+                        tone={profit && profit.profit < 0 ? 'danger' : 'default'}
                         note={profit ? `с выручки ${moneyTitle(profit.profitRevenue)}` : ''}
                     />
                     <Stat
@@ -130,12 +130,24 @@ export default function OverviewScreen() {
                         value={stats.isLoading && !report ? <Skeleton width={60} height={18}/> : (profit?.profitOrders ?? 0)}
                         note={profit ? `из ${profit.paidOrders} оплаченных` : ''}
                     />
-                    <Stat
-                        label="Без себестоимости"
-                        value={stats.isLoading && !report ? <Skeleton width={60} height={18}/> : (profit?.noCostOrders ?? 0)}
-                        tone={profit?.noCostOrders ? 'danger' : 'default'}
-                        note="в прибыль не входят"
-                    />
+                    <button
+                        type="button"
+                        className={style.statLink}
+                        disabled={!profit?.noCostOrders}
+                        title="Открыть эти заказы"
+                        onClick={() => openOrders(new URLSearchParams({
+                            cost: 'missing',
+                            from: query.from,
+                            to: query.to,
+                            ...(profitPlatform ? {platform: profitPlatform} : {})
+                        }).toString())}
+                    >
+                        <Stat
+                            label="Без себестоимости"
+                            value={stats.isLoading && !report ? <Skeleton width={60} height={18}/> : (profit?.noCostOrders ?? 0)}
+                            note={profit?.noCostOrders ? 'в прибыль не входят · открыть →' : 'в прибыль не входят'}
+                        />
+                    </button>
                 </StatRow>
 
                 <span className={style.profitHint}>

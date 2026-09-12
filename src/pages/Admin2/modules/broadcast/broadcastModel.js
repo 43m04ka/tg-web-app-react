@@ -3,24 +3,30 @@ export const CAPTION_LIMIT = 1024;
 export const FILE_LIMIT_BYTES = 50 * 1024 * 1024;
 export const SCHEDULE_AHEAD_DAYS = 30;
 
-export const BUTTON_TYPES = [
-    {value: 'url', title: 'Ссылка'},
-    {value: 'web_app', title: 'Мини-приложение'},
-    {value: 'callback_data', title: 'Ответ боту'},
-    {value: 'switch_inline_query', title: 'Поделиться в чат'},
-    {value: 'switch_inline_query_current_chat', title: 'Поделиться здесь'}
+export const BOT_APP_URL = 'https://t.me/gwstore_bot/app';
+
+export const MEDIA_TYPES = [
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'image/webp',
+    'video/mp4',
+    'video/quicktime',
+    'video/webm'
+];
+
+export const MEDIA_ACCEPT = MEDIA_TYPES.join(',');
+
+export const TARGETS = [
+    {value: 'catalog', title: 'Каталог'},
+    {value: 'product', title: 'Игра'},
+    {value: 'url', title: 'Своя ссылка'}
 ];
 
 export const STATE_TITLES = {
     idle: 'Свободно',
     scheduled: 'Запланирована',
     running: 'Идёт отправка'
-};
-
-export const STATE_TONES = {
-    idle: 'positive',
-    scheduled: 'warning',
-    running: 'accent'
 };
 
 export const nextId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
@@ -34,12 +40,11 @@ export const emptyDraft = () => ({
 export const emptyButton = () => ({
     id: nextId(),
     text: '',
-    actionType: 'url',
-    url: '',
-    webAppUrl: '',
-    callback_data: '',
-    switch_inline_query: '',
-    switch_inline_query_current_chat: ''
+    target: 'catalog',
+    catalogPath: '',
+    productId: '',
+    productName: '',
+    url: ''
 });
 
 export const emptyRow = () => ({id: nextId(), buttons: [emptyButton()]});
@@ -48,12 +53,11 @@ export const utf8Length = (value) => new TextEncoder().encode(String(value || ''
 
 export const isVideo = (file) => Boolean(file?.type?.startsWith('video/'));
 
-export const isAllowedMedia = (file) =>
-    Boolean(file?.type) && (file.type.startsWith('image/') || file.type.startsWith('video/'));
+export const isAllowedMedia = (file) => MEDIA_TYPES.includes(String(file?.type || '').toLowerCase());
 
 export const mediaError = (file) => {
     if (!file) return null;
-    if (!isAllowedMedia(file)) return 'Только изображение или видео';
+    if (!isAllowedMedia(file)) return 'Подходят только JPG, PNG, GIF, WEBP или видео MP4, MOV, WEBM';
     if (file.size > FILE_LIMIT_BYTES) return 'Файл тяжелее 50 МБ — Telegram не примет';
 
     return null;
@@ -63,37 +67,16 @@ export const limitFor = (hasMedia, limits) => (hasMedia
     ? limits?.captionHtmlMaxChars ?? CAPTION_LIMIT
     : limits?.messageHtmlMaxChars ?? TEXT_LIMIT);
 
-export const buttonToApi = (button) => {
-    const text = String(button.text || '').trim();
-    if (!text || text.length > 256) return null;
-
-    switch (button.actionType) {
-        case 'url': {
-            const url = String(button.url || '').trim();
-            if (!url || url.length > 2048) return null;
-            if (!/^(https?:\/\/|tg:\/\/)/i.test(url)) return null;
-            return {text, url};
-        }
-        case 'web_app': {
-            const url = String(button.webAppUrl || '').trim();
-            if (!url || !/^https:\/\//i.test(url)) return null;
-            return {text, web_app: {url}};
-        }
-        case 'callback_data': {
-            const data = String(button.callback_data || '').trim();
-            if (!data || utf8Length(data) > 64) return null;
-            return {text, callback_data: data};
-        }
-        case 'switch_inline_query':
-            return {text, switch_inline_query: String(button.switch_inline_query ?? '')};
-        case 'switch_inline_query_current_chat':
-            return {
-                text,
-                switch_inline_query_current_chat: String(button.switch_inline_query_current_chat ?? '')
-            };
-        default:
-            return null;
+export const targetUrl = (button) => {
+    if (button.target === 'catalog') {
+        return button.catalogPath ? `${BOT_APP_URL}?startapp=catalog_${button.catalogPath}` : '';
     }
+
+    if (button.target === 'product') {
+        return button.productId ? `${BOT_APP_URL}?startapp=${button.productId}` : '';
+    }
+
+    return String(button.url || '').trim();
 };
 
 export const buttonProblem = (button) => {
@@ -101,29 +84,21 @@ export const buttonProblem = (button) => {
     if (!text) return 'Без подписи кнопка не отправится';
     if (text.length > 256) return 'Подпись длиннее 256 знаков';
 
-    switch (button.actionType) {
-        case 'url': {
-            const url = String(button.url || '').trim();
-            if (!url) return 'Укажите адрес';
-            if (!/^(https?:\/\/|tg:\/\/)/i.test(url)) return 'Адрес должен начинаться с http://, https:// или tg://';
-            if (url.length > 2048) return 'Адрес длиннее 2048 знаков';
-            return null;
-        }
-        case 'web_app': {
-            const url = String(button.webAppUrl || '').trim();
-            if (!url) return 'Укажите адрес мини-приложения';
-            if (!/^https:\/\//i.test(url)) return 'Мини-приложение открывается только по https://';
-            return null;
-        }
-        case 'callback_data': {
-            const data = String(button.callback_data || '').trim();
-            if (!data) return 'Укажите, что бот получит в ответ';
-            if (utf8Length(data) > 64) return 'Ответ длиннее 64 байт в UTF-8';
-            return null;
-        }
-        default:
-            return null;
-    }
+    if (button.target === 'catalog') return button.catalogPath ? null : 'Выберите каталог';
+    if (button.target === 'product') return button.productId ? null : 'Выберите игру';
+
+    const url = targetUrl(button);
+    if (!url) return 'Укажите адрес';
+    if (!/^(https?:\/\/|tg:\/\/)/i.test(url)) return 'Адрес должен начинаться с http://, https:// или tg://';
+    if (url.length > 2048) return 'Адрес длиннее 2048 знаков';
+
+    return null;
+};
+
+export const buttonToApi = (button) => {
+    if (buttonProblem(button)) return null;
+
+    return {text: String(button.text).trim(), url: targetUrl(button)};
 };
 
 export const buildKeyboard = (rows) => {
@@ -137,11 +112,14 @@ export const buildKeyboard = (rows) => {
 export const countButtons = (rows) =>
     (rows || []).reduce((sum, row) => sum + (row.buttons || []).length, 0);
 
-export const keyboardProblem = (rows, limits) => {
-    const filled = (rows || []).flatMap((row) => (row.buttons || []))
-        .filter((button) => String(button.text || '').trim() || button.url || button.callback_data || button.webAppUrl);
+const isTouched = (button) => Boolean(
+    String(button.text || '').trim() || button.catalogPath || button.productId || String(button.url || '').trim()
+);
 
-    for (const button of filled) {
+export const keyboardProblem = (rows, limits) => {
+    const touched = (rows || []).flatMap((row) => (row.buttons || [])).filter(isTouched);
+
+    for (const button of touched) {
         const problem = buttonProblem(button);
         if (problem) return `Кнопка «${String(button.text || 'без подписи').slice(0, 24)}»: ${problem}`;
     }
@@ -180,6 +158,18 @@ export const readyToSend = ({textLength, limit, media, keyboardRows, schedule, l
     if (badKeyboard) return badKeyboard;
 
     return scheduleProblem(schedule);
+};
+
+export const testVerdict = (summary) => {
+    const total = Number(summary?.total) || 0;
+    const sent = Number(summary?.sent) || 0;
+    const failed = Number(summary?.failed) || 0;
+
+    if (total === 0) return {tone: 'danger', ok: false, title: 'Некому отправлять пробу: список админов пуст'};
+    if (failed === 0) return {tone: 'positive', ok: true, title: `Проба дошла до всех админов: ${sent} из ${total}`};
+    if (sent === 0) return {tone: 'danger', ok: false, title: `Проба не дошла ни до кого из ${total}`};
+
+    return {tone: 'warning', ok: true, title: `Проба дошла до ${sent} из ${total}`};
 };
 
 export const recipientsTitle = (count) => {

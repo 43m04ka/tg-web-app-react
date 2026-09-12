@@ -59,7 +59,7 @@ function ServiceRow({title, hint, danger = false, children, extra = null}) {
     );
 }
 
-export default function CatalogInspector({catalog, pages, queue, onClose, onRemoved}) {
+export default function CatalogInspector({catalog, pages, queue, active = true, onClose, onRemoved}) {
     const [tab, setTab] = useState('parse');
     const [busy, setBusy] = useState(false);
     const [runAt, setRunAt] = useState('');
@@ -166,8 +166,8 @@ export default function CatalogInspector({catalog, pages, queue, onClose, onRemo
 
     return (
         <Inspector
-            open
-            width="l"
+            open={active}
+            width="full"
             title={catalog.path}
             subtitle={pageTitleOf(catalog, pages) || 'Витрина не найдена'}
             badge={<Badge tone={sale.tone}>{sale.title}</Badge>}
@@ -177,7 +177,7 @@ export default function CatalogInspector({catalog, pages, queue, onClose, onRemo
             onClose={onClose}
             footer={(
                 <ButtonRow>
-                    <Button variant="ghost" onClick={onClose}>Закрыть</Button>
+                    <Button variant="ghost" onClick={onClose}>Закрыть вкладку</Button>
                 </ButtonRow>
             )}
         >

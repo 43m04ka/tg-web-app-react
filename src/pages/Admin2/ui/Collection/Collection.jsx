@@ -70,6 +70,7 @@ export function Collection({
     activeKey = null,
     empty = null,
     footNote = '',
+    openLabel = 'Подробнее',
 }) {
     const keys = useMemo(() => (rows || []).map(rowKey), [rows, rowKey]);
     const selected = selection?.ids || [];
@@ -189,6 +190,7 @@ export function Collection({
                                         {column.title}
                                     </th>
                                 ))}
+                                {openLabel && onOpen ? <th className={style.more}/> : null}
                             </tr>
                         </thead>
                         <tbody>
@@ -226,6 +228,20 @@ export function Collection({
                                                 {column.cell(row)}
                                             </td>
                                         ))}
+                                        {openLabel && onOpen ? (
+                                            <td className={style.more}>
+                                                <Button
+                                                    size="s"
+                                                    variant={isActive ? 'primary' : 'secondary'}
+                                                    onClick={(event) => {
+                                                        event.stopPropagation();
+                                                        onOpen(row);
+                                                    }}
+                                                >
+                                                    {openLabel}
+                                                </Button>
+                                            </td>
+                                        ) : null}
                                     </tr>
                                 );
                             })}

@@ -62,7 +62,6 @@ export default function PromoScreen() {
             id: 'percent',
             title: 'Скидка',
             width: 96,
-            align: 'right',
             cell: (row) => percentTitle(row)
         },
         {
@@ -125,10 +124,6 @@ export default function PromoScreen() {
                         ? 'Проверьте написание или заведите новый код.'
                         : 'Заведите первый код — он заработает на витрине сразу после сохранения.'
                 }}
-                footNote={
-                    'Столбец «Осталось» — счётчик применений, а не лимит: он убывает при каждой '
-                    + 'покупке и возвращается, если счёт так и не выставился.'
-                }
             />
 
             {isNew || active ? (

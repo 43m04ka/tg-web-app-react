@@ -8,11 +8,140 @@
 
 .bar {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 10px;
     padding: 0 0 12px;
     border-bottom: 1px solid var(--a2-border);
+}
+
+.barTop {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.actionsCard {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: 10px;
+}
+
+.uploadTile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border: 1px dashed var(--a2-accent);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-accent-soft);
+    color: var(--a2-text);
+    font-family: var(--a2-font);
+    text-align: left;
+    cursor: pointer;
+    transition: background var(--a2-motion) var(--a2-ease), border-color var(--a2-motion) var(--a2-ease);
+}
+
+.uploadTile:hover:not(:disabled) {
+    border-style: solid;
+}
+
+.uploadTile:active:not(:disabled) {
+    transform: none;
+}
+
+.uploadTile:disabled {
+    cursor: progress;
+}
+
+.uploadIcon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--a2-accent);
+    color: var(--a2-accent-text);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.uploadText {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.uploadTitle {
+    font-size: var(--a2-size-m);
+    font-weight: 700;
+}
+
+.uploadHint {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+}
+
+.folderForm {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 8px 8px 14px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-card);
+    transition: border-color var(--a2-motion) var(--a2-ease);
+}
+
+.folderForm:focus-within {
+    border-color: var(--a2-accent);
+    box-shadow: 0 0 0 3px var(--a2-accent-soft);
+}
+
+.folderFormIcon {
+    position: relative;
+    flex: none;
+    width: 24px;
+    height: 17px;
+    margin-top: 4px;
+    border-radius: 3px;
+    background: var(--a2-warning);
+}
+
+.folderFormIcon::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 0;
+    width: 10px;
+    height: 5px;
+    border-radius: 2px 2px 0 0;
+    background: inherit;
+}
+
+.folderInput {
+    flex: 1;
+    min-width: 0;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--a2-text);
+    font-family: var(--a2-font);
+    font-size: var(--a2-size-m);
+}
+
+.folderInput::placeholder {
+    color: var(--a2-text-faint);
+}
+
+.folderForm > button {
+    height: 32px;
+    padding: 0 14px;
 }
 
 .crumbs {

@@ -2,7 +2,7 @@ import {lazy} from 'react';
 
 export default {
     id: 'prices',
-    title: 'Цены',
+    title: 'Сетки цен',
     group: 'goods',
     icon: 'pricing',
     order: 50,
@@ -12,7 +12,7 @@ export default {
     commands: [
         {
             id: 'prices.rules',
-            title: 'Цены: правила наценки',
+            title: 'Сетки цен: правила наценки',
             icon: 'pricing',
             run: ({go}) => go('/prices'),
         },

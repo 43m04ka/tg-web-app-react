@@ -95,8 +95,7 @@ export default function TextsScreen() {
 
             <Panel title="Акции" subtitle="Тексты акций и инфоблоки витрины" wide scroll>
                 <Note tone="neutral">
-                    Блок находят по имени: витрина запрашивает его и рисует тело там, где нужно.
-                    Путь — необязательная подсказка, где блок используется.
+                    Блок находят по имени: витрина запрашивает его и рисует текст там, где нужно.
                 </Note>
 
                 <div className={style.textForm}>
@@ -111,12 +110,6 @@ export default function TextsScreen() {
                         value={draft.body}
                         placeholder="Текст блока"
                         onChange={(event) => setDraft((prev) => ({...prev, body: event.target.value}))}
-                    />
-
-                    <Input
-                        value={draft.path}
-                        placeholder="Где показывается, необязательно"
-                        onChange={(event) => setDraft((prev) => ({...prev, path: event.target.value}))}
                     />
 
                     <div className={style.textFormFoot}>

@@ -1,4 +1,5 @@
 import {
+    BOT_APP_URL,
     buildKeyboard,
     buttonProblem,
     buttonToApi,
@@ -9,6 +10,7 @@ import {
     readyToSend,
     recipientsTitle,
     scheduleProblem,
+    testVerdict,
     utf8Length
 } from './broadcastModel';
 
@@ -27,13 +29,15 @@ describe('limitFor', () => {
 });
 
 describe('mediaError', () => {
-    it('пропускает изображение и видео', () => {
+    it('пропускает то, что примет Telegram', () => {
         expect(mediaError({type: 'image/png', size: 10})).toBeNull();
+        expect(mediaError({type: 'image/webp', size: 10})).toBeNull();
         expect(mediaError({type: 'video/mp4', size: 10})).toBeNull();
     });
 
-    it('отбивает прочие типы', () => {
-        expect(mediaError({type: 'application/pdf', size: 10})).toBe('Только изображение или видео');
+    it('отбивает прочие типы, в том числе редкие картинки', () => {
+        expect(mediaError({type: 'application/pdf', size: 10})).toMatch(/JPG/);
+        expect(mediaError({type: 'image/heic', size: 10})).toMatch(/JPG/);
     });
 
     it('ловит файл тяжелее 50 МБ', () => {
@@ -42,36 +46,40 @@ describe('mediaError', () => {
 });
 
 describe('buttonToApi', () => {
-    it('требует схему у ссылки', () => {
-        expect(buttonToApi(button({text: 'A', url: 'example.com'}))).toBeNull();
-        expect(buttonToApi(button({text: 'A', url: 'https://x.ru'}))).toEqual({text: 'A', url: 'https://x.ru'});
-        expect(buttonToApi(button({text: 'A', url: 'tg://resolve'}))).toEqual({text: 'A', url: 'tg://resolve'});
+    it('ведёт в каталог мини-приложения', () => {
+        expect(buttonToApi(button({text: 'Игры', target: 'catalog', catalogPath: 'ps_tur_games'})))
+            .toEqual({text: 'Игры', url: `${BOT_APP_URL}?startapp=catalog_ps_tur_games`});
     });
 
-    it('открывает мини-приложение только по https', () => {
-        expect(buttonToApi(button({text: 'A', actionType: 'web_app', webAppUrl: 'http://x.ru'}))).toBeNull();
-        expect(buttonToApi(button({text: 'A', actionType: 'web_app', webAppUrl: 'https://x.ru'})))
-            .toEqual({text: 'A', web_app: {url: 'https://x.ru'}});
+    it('ведёт в карточку игры', () => {
+        expect(buttonToApi(button({text: 'Купить', target: 'product', productId: 42})))
+            .toEqual({text: 'Купить', url: `${BOT_APP_URL}?startapp=42`});
     });
 
-    it('меряет callback_data в байтах UTF-8, а не в знаках', () => {
-        const cyrillic = 'а'.repeat(33);
-
-        expect(utf8Length(cyrillic)).toBe(66);
-        expect(buttonToApi(button({text: 'A', actionType: 'callback_data', callback_data: cyrillic}))).toBeNull();
-        expect(buttonToApi(button({text: 'A', actionType: 'callback_data', callback_data: 'a'.repeat(64)}))).toBeTruthy();
+    it('требует схему у своей ссылки', () => {
+        expect(buttonToApi(button({text: 'A', target: 'url', url: 'example.com'}))).toBeNull();
+        expect(buttonToApi(button({text: 'A', target: 'url', url: 'https://x.ru'}))).toEqual({text: 'A', url: 'https://x.ru'});
+        expect(buttonToApi(button({text: 'A', target: 'url', url: 'tg://resolve'}))).toEqual({text: 'A', url: 'tg://resolve'});
     });
 
-    it('не собирает кнопку без подписи', () => {
-        expect(buttonToApi(button({text: '   ', url: 'https://x.ru'}))).toBeNull();
+    it('не собирает кнопку без подписи или без цели', () => {
+        expect(buttonToApi(button({text: '   ', target: 'catalog', catalogPath: 'x'}))).toBeNull();
+        expect(buttonToApi(button({text: 'A', target: 'catalog'}))).toBeNull();
+        expect(buttonToApi(button({text: 'A', target: 'product'}))).toBeNull();
+    });
+});
+
+describe('utf8Length', () => {
+    it('считает байты, а не знаки', () => {
+        expect(utf8Length('а'.repeat(33))).toBe(66);
     });
 });
 
 describe('buildKeyboard', () => {
     it('выбрасывает пустые ряды', () => {
         const rows = [
-            {id: '1', buttons: [button({text: 'A', url: 'https://x.ru'})]},
-            {id: '2', buttons: [button({text: '', url: ''})]}
+            {id: '1', buttons: [button({text: 'A', target: 'url', url: 'https://x.ru'})]},
+            {id: '2', buttons: [button({text: ''})]}
         ];
 
         expect(buildKeyboard(rows)).toHaveLength(1);
@@ -85,20 +93,26 @@ describe('buildKeyboard', () => {
 
 describe('buttonProblem', () => {
     it('называет причину', () => {
-        expect(buttonProblem(button({text: 'A', url: 'ftp://x'}))).toMatch(/http/);
+        expect(buttonProblem(button({text: 'A', target: 'url', url: 'ftp://x'}))).toMatch(/http/);
         expect(buttonProblem(button({text: ''}))).toMatch(/подписи/);
+        expect(buttonProblem(button({text: 'A', target: 'catalog'}))).toMatch(/каталог/);
+        expect(buttonProblem(button({text: 'A', target: 'product'}))).toMatch(/игру/);
     });
 });
 
 describe('keyboardProblem', () => {
     it('ловит перебор по числу кнопок', () => {
-        const rows = [{
-            id: '1',
-            buttons: Array.from({length: 5}, () => button({text: 'A', url: 'https://x.ru'}))
-        }];
+        const rows = Array.from({length: 5}, (item, index) => ({
+            id: String(index),
+            buttons: [button({text: 'A', target: 'url', url: 'https://x.ru'})]
+        }));
 
         expect(keyboardProblem(rows, {inlineKeyboard: {maxButtonsTotal: 3}})).toMatch(/больше/);
         expect(keyboardProblem(rows, {inlineKeyboard: {maxButtonsTotal: 10}})).toBeNull();
+    });
+
+    it('не придирается к нетронутой кнопке', () => {
+        expect(keyboardProblem([{id: '1', buttons: [button({})]}], null)).toBeNull();
     });
 });
 
@@ -132,6 +146,15 @@ describe('readyToSend', () => {
     it('ловит перебор длины', () => {
         expect(readyToSend({...base, textLength: 2000, limit: 1024, media: {type: 'image/png', size: 1}}))
             .toMatch(/длиннее/);
+    });
+});
+
+describe('testVerdict', () => {
+    it('различает полный успех, частичный и провал', () => {
+        expect(testVerdict({total: 2, sent: 2, failed: 0})).toMatchObject({ok: true, tone: 'positive'});
+        expect(testVerdict({total: 2, sent: 1, failed: 1})).toMatchObject({ok: true, tone: 'warning'});
+        expect(testVerdict({total: 2, sent: 0, failed: 2})).toMatchObject({ok: false, tone: 'danger'});
+        expect(testVerdict({total: 0, sent: 0, failed: 0})).toMatchObject({ok: false});
     });
 });
 

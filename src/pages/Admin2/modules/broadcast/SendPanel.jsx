@@ -1,50 +1,53 @@
 import React from 'react';
-import {Badge, Button, Field, Input, Note, Stat, StatRow, Toggle} from '../../ui';
-import {
-    SCHEDULE_AHEAD_DAYS,
-    STATE_TITLES,
-    STATE_TONES,
-    isVideo,
-    mediaError,
-    recipientsTitle
-} from './broadcastModel';
+import {Badge, Button, Field, Input, Note, Stat, StatRow} from '../../ui';
+import {SCHEDULE_AHEAD_DAYS, STATE_TITLES, recipientsTitle, testVerdict} from './broadcastModel';
 import style from './BroadcastScreen.module.scss';
 
-const sizeTitle = (bytes) => {
-    const mb = bytes / (1024 * 1024);
-    return mb >= 1 ? `${mb.toFixed(1)} МБ` : `${Math.round(bytes / 1024)} КБ`;
-};
+function TestReport({report}) {
+    if (!report) return null;
+
+    const verdict = testVerdict(report);
+    const errors = report.errorsSample || [];
+
+    return (
+        <Note tone={verdict.tone === 'positive' ? 'accent' : verdict.tone}>
+            <span className={style.reportTitle}>{verdict.title}</span>
+            {errors.length ? (
+                <ul className={style.reportList}>
+                    {errors.map((item) => (
+                        <li key={item.chatId}>Чат {item.chatId}: {item.message}</li>
+                    ))}
+                </ul>
+            ) : null}
+        </Note>
+    );
+}
 
 export default function SendPanel({
     stats,
     state,
     busy,
-    media,
     schedule,
-    disablePreview,
     problem,
     testDone,
+    testReport,
     sending,
-    onPickMedia,
-    onDropMedia,
     onSchedule,
-    onDisablePreview,
     onSendTest,
     onSendProduction
 }) {
     const production = stats?.productionUniqueRecipients ?? 0;
     const admins = stats?.testAdminRecipients ?? 0;
-    const badMedia = mediaError(media);
 
     return (
         <div className={style.send}>
             <StatRow>
-                <Stat label="Получателей в бою" value={production.toLocaleString('ru-RU')}/>
+                <Stat label="Получателей" value={production.toLocaleString('ru-RU')}/>
                 <Stat label="Админов для пробы" value={admins.toLocaleString('ru-RU')}/>
                 <Stat
                     label="Очередь"
                     value={STATE_TITLES[state] || state || '—'}
-                    tone={state === 'idle' ? 'positive' : 'danger'}
+                    tone={state === 'idle' ? 'positive' : 'accent'}
                 />
             </StatRow>
 
@@ -57,42 +60,11 @@ export default function SendPanel({
             ) : null}
 
             <div className={style.sendBlock}>
-                <span className={style.sendTitle}>Медиа</span>
-
-                {media ? (
-                    <div className={style.mediaCard}>
-                        <span className={style.mediaName}>{media.name}</span>
-                        <span className={style.mediaMeta}>
-                            {isVideo(media) ? 'Видео' : 'Изображение'} · {sizeTitle(media.size)}
-                        </span>
-                        <Button size="s" variant="ghost" onClick={onDropMedia}>Убрать</Button>
-                    </div>
-                ) : (
-                    <label className={style.mediaPick}>
-                        <input
-                            type="file"
-                            accept="image/*,video/*"
-                            className={style.mediaInput}
-                            onChange={(event) => {
-                                const file = event.target.files?.[0] || null;
-                                event.target.value = '';
-                                if (file) onPickMedia(file);
-                            }}
-                        />
-                        <span className={style.mediaPickText}>Выбрать изображение или видео</span>
-                        <span className={style.mediaPickHint}>До 50 МБ. С медиа текст становится подписью, и лимит падает до 1024 знаков.</span>
-                    </label>
-                )}
-
-                {badMedia ? <Note tone="danger">{badMedia}</Note> : null}
-            </div>
-
-            <div className={style.sendBlock}>
-                <span className={style.sendTitle}>Отправка</span>
+                <span className={style.sendTitle}>Когда отправить</span>
 
                 <Field
                     label="Отложить запуск"
-                    hint={`Пусто — уходит сразу. Максимум ${SCHEDULE_AHEAD_DAYS} дней вперёд; до запуска рассылку можно отменить в полосе задач.`}
+                    hint={`Пусто — уходит сразу. Максимум ${SCHEDULE_AHEAD_DAYS} дней вперёд.`}
                 >
                     <Input
                         type="datetime-local"
@@ -100,12 +72,6 @@ export default function SendPanel({
                         onChange={(event) => onSchedule(event.target.value)}
                     />
                 </Field>
-
-                <Toggle
-                    checked={disablePreview}
-                    label="Не разворачивать превью ссылок"
-                    onChange={onDisablePreview}
-                />
             </div>
 
             {problem ? <Note tone="danger">{problem}</Note> : null}
@@ -113,29 +79,31 @@ export default function SendPanel({
             <div className={style.sendActions}>
                 <Button
                     variant="secondary"
-                    disabled={busy || sending || Boolean(problem)}
+                    disabled={busy || Boolean(sending) || Boolean(problem)}
+                    loading={sending === 'test'}
                     onClick={onSendTest}
                 >
-                    {sending === 'test' ? 'Отправляем…' : `Проба на админов (${admins})`}
+                    {sending === 'test' ? 'Отправляем пробу…' : `Проба на админов (${admins})`}
                 </Button>
 
                 <Button
-                    variant="danger"
-                    disabled={busy || sending || Boolean(problem) || !testDone}
+                    variant="primary"
+                    disabled={busy || Boolean(sending) || Boolean(problem) || !testDone}
+                    loading={sending === 'production'}
                     onClick={onSendProduction}
                 >
                     {sending === 'production' ? 'Отправляем…' : `Отправить всем — ${recipientsTitle(production)}`}
                 </Button>
             </div>
 
+            <TestReport report={testReport}/>
+
             {testDone ? (
-                <Badge tone="positive">Проба этого сообщения отправлена</Badge>
+                <Badge tone="positive">Проба этого сообщения дошла</Badge>
             ) : (
-                <Note tone="warning">
-                    Боевая отправка откроется после пробы. Проба уходит только админам, показывает
-                    сообщение ровно таким, каким его получит покупатель, и ловит то, чего не видно
-                    в предпросмотре: битые ссылки, обрезанную подпись, неработающие кнопки.
-                    Любая правка сбрасывает пробу.
+                <Note>
+                    Отправка всем откроется после удачной пробы. Проба уходит только админам и показывает сообщение
+                    таким, каким его получит покупатель. Любая правка сбрасывает пробу.
                 </Note>
             )}
         </div>

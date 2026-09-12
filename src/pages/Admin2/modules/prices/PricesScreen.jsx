@@ -12,7 +12,6 @@ import {
     SkeletonRows,
     Stat,
     StatRow,
-    Tabs,
     Workspace,
 } from '../../ui';
 import {usePageHeader} from '../../shell/pageHeader';
@@ -48,7 +47,7 @@ const ruleTitle = (rule) => {
 };
 
 export default function PricesScreen() {
-    usePageHeader('Цены');
+    usePageHeader('Сетки цен');
 
     const [platform, setPlatform] = useState(PLATFORMS[0].id);
     const [drafts, setDrafts] = useState({});
@@ -152,7 +151,6 @@ export default function PricesScreen() {
             title: `Пересчитать цены каталога «${catalog.path}»?`,
             text: `Ко всем товарам каталога применяются сохранённые правила «${meta.title}». Прежние цены не сохраняются.`,
             confirmText: 'Пересчитать',
-            tone: 'danger',
         });
 
         if (!answer) return;
@@ -169,17 +167,36 @@ export default function PricesScreen() {
         })),
     ], [catalogs.data]);
 
-    const tabs = PLATFORMS.map((item) => ({id: item.id, title: item.title}));
-
     return (
         <Workspace>
             <Panel
                 wide
                 title="Правила наценки"
-                subtitle={`${meta.source}. Диапазон считается как «больше от, не больше до»`}
-                actions={<Tabs items={tabs} value={platform} onChange={setPlatform}/>}
+                subtitle="Диапазон считается как «больше от, не больше до»"
+                actions={(
+                    <div className={style.switch} role="tablist">
+                        {PLATFORMS.map((item) => (
+                            <button
+                                key={item.id}
+                                type="button"
+                                role="tab"
+                                aria-selected={item.id === platform}
+                                className={`${style.switchItem} ${style[`tone_${item.id}`]} ${item.id === platform ? style.switchOn : ''}`}
+                                onClick={() => setPlatform(item.id)}
+                            >
+                                <span className={style.switchDot}/>
+                                {item.title}
+                            </button>
+                        ))}
+                    </div>
+                )}
                 scroll
             >
+                <div className={`${style.banner} ${style[`tone_${platform}`]}`}>
+                    <span className={style.bannerTitle}>{meta.title}</span>
+                    <span className={style.bannerText}>{meta.source}</span>
+                </div>
+
                 {rules.error ? <ErrorState error={rules.error} onRetry={rules.refresh}/> : null}
 
                 {!rules.error && rules.isLoading && !rows ? <SkeletonRows count={6}/> : null}
@@ -329,7 +346,7 @@ export default function PricesScreen() {
                             label="После сохранения"
                             value={after ? `${money.format(after.price)} ₽` : '—'}
                             note={after ? ruleTitle(after.rule) : ''}
-                            tone={before && after && before.price !== after.price ? 'danger' : 'default'}
+                            tone={before && after && before.price !== after.price ? 'accent' : 'default'}
                         />
                     </StatRow>
 

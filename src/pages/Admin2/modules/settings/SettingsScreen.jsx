@@ -20,9 +20,10 @@ import {askConfirm} from '../../platform/notify';
 import {signOut} from '../../platform/session';
 import {API_BASE_URL} from '../../../../shared/config/env';
 import {MAINTENANCE_SECTIONS, normalizeSections} from '../../../../shared/lib/maintenance';
-import {cancelAssociationsSchedule, fetchAssociationsSchedule, runAssociations} from '../catalogs/api';
+import {cancelAssociationsSchedule, fetchAssociationsSchedule, runAssociations, scheduleAssociations} from '../catalogs/api';
 import {fetchSettings, refreshStructure, updateSetting} from './api';
-import style from './SettingsScreen.module.scss';import {fromMoscowInput, toMoscowInput} from '../../platform/moscowTime';
+import {formatMoscow, fromMoscowInput, toMoscowInput} from '../../platform/moscowTime';
+import style from './SettingsScreen.module.scss';
 
 
 const sectionsPayload = (sections) => Object.entries(sections).reduce((picked, [id, item]) => {
@@ -47,6 +48,13 @@ export default function SettingsScreen() {
 
     const [until, setUntil] = useState('');
     const [sections, setSections] = useState({});
+    const [runAt, setRunAt] = useState('');
+
+    const plan = useMutation(scheduleAssociations, {
+        invalidates: [keys.associationsSchedule],
+        done: 'Обновление ассоциаций запланировано',
+        onDone: () => setRunAt(''),
+    });
 
     useEffect(() => {
         setUntil(toMoscowInput(values.maintenance_mode_until?.value));
@@ -218,28 +226,46 @@ export default function SettingsScreen() {
                                 <span className={style.cardTitle}>Обновление данных</span>
                             </header>
 
-                            <div className={style.action}>
-                                <div className={style.actionText}>
-                                    <span className={style.actionTitle}>Ассоциации</span>
-                                    <span className={style.actionHint}>
-                                        Связи между изданиями и платформами: похожие товары и переключатель версий в карточке.
-                                    </span>
-                                    {plannedAt ? (
-                                        <span className={style.actionPlan}>
-                                            Запланировано на {new Date(plannedAt).toLocaleString('ru-RU')}
+                            <div className={style.actionStack}>
+                                <div className={style.actionMain}>
+                                    <div className={style.actionText}>
+                                        <span className={style.actionTitle}>Ассоциации</span>
+                                        <span className={style.actionHint}>
+                                            Связи между изданиями и платформами: похожие товары и переключатель версий в карточке.
                                         </span>
-                                    ) : null}
-                                </div>
-                                <ButtonRow>
-                                    {plannedAt ? (
-                                        <Button size="s" variant="ghost" loading={cancelPlan.loading} onClick={() => cancelPlan.run()}>
-                                            Отменить план
-                                        </Button>
-                                    ) : null}
+                                    </div>
                                     <Button size="s" variant="secondary" loading={associations.loading} onClick={onAssociations}>
-                                        Обновить
+                                        Обновить сейчас
                                     </Button>
-                                </ButtonRow>
+                                </div>
+
+                                <div className={style.schedule}>
+                                    <span className={style.scheduleLabel}>Отложенное обновление, МСК</span>
+                                    {plannedAt ? (
+                                        <div className={style.schedulePlanned}>
+                                            <span className={style.actionPlan}>Запланировано на {formatMoscow(plannedAt)}</span>
+                                            <Button size="s" variant="ghost" loading={cancelPlan.loading} onClick={() => cancelPlan.run()}>
+                                                Отменить план
+                                            </Button>
+                                        </div>
+                                    ) : null}
+                                    <div className={style.row}>
+                                        <Input
+                                            type="datetime-local"
+                                            value={runAt}
+                                            onChange={(event) => setRunAt(event.target.value)}
+                                        />
+                                        <Button
+                                            size="s"
+                                            variant="primary"
+                                            disabled={!runAt}
+                                            loading={plan.loading}
+                                            onClick={() => plan.run(fromMoscowInput(runAt))}
+                                        >
+                                            {plannedAt ? 'Перенести' : 'Запланировать'}
+                                        </Button>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className={style.action}>

@@ -17,6 +17,43 @@
     text-transform: uppercase;
 }
 
+.pageRow {
+    display: flex;
+    align-items: stretch;
+    gap: 6px;
+}
+
+.pageRow > .page {
+    flex: 1;
+    min-width: 0;
+}
+
+.pageSettings {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+    color: var(--a2-text-muted);
+    font-size: 17px;
+    cursor: pointer;
+    transition: background var(--a2-motion) var(--a2-ease), color var(--a2-motion) var(--a2-ease),
+        border-color var(--a2-motion) var(--a2-ease);
+}
+
+.pageSettings:hover {
+    border-color: var(--a2-accent);
+    background: var(--a2-accent-soft);
+    color: var(--a2-accent);
+}
+
+.pageSettings:active:not(:disabled) {
+    transform: none;
+}
+
 .page {
     display: flex;
     align-items: center;
@@ -525,6 +562,67 @@
 .sectionTabOn {
     background: var(--a2-accent);
     color: #fff;
+}
+
+.sectionScreen {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    min-height: 0;
+}
+
+.sectionScreen > :last-child {
+    flex: 1;
+    height: auto;
+    min-height: 0;
+}
+
+.sectionBar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 6px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-plane);
+}
+
+.sectionBarTab,
+.sectionBarOn {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 12px 18px;
+    border: 1px solid transparent;
+    border-radius: var(--a2-radius-m);
+    color: var(--a2-text-muted);
+    text-decoration: none;
+    transition: background var(--a2-motion) var(--a2-ease), border-color var(--a2-motion) var(--a2-ease),
+        color var(--a2-motion) var(--a2-ease);
+}
+
+.sectionBarTab:hover {
+    border-color: var(--a2-accent);
+    background: var(--a2-accent-soft);
+    color: var(--a2-text);
+}
+
+.sectionBarOn {
+    border-color: var(--a2-accent);
+    background: var(--a2-accent);
+    color: #ffffff;
+    box-shadow: 0 6px 18px var(--a2-accent-soft);
+}
+
+.sectionBarTitle {
+    font-size: var(--a2-size-l);
+    font-weight: 700;
+}
+
+.sectionBarHint {
+    font-size: var(--a2-size-s);
+    opacity: 0.8;
 }
 
 .bannerBar {

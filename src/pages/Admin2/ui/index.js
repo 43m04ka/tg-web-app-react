@@ -9,3 +9,4 @@ export {Collection} from './Collection/Collection';
 export {useCollectionState} from './Collection/useCollectionState';
 export {Inspector, InspectorSection, InspectorRows} from './Inspector/Inspector';
 export {Workspace, Panel, Grid} from './Layout/Layout';
+export {DocTabs, TabbedScreen, TabPane, useWorkspaceTabs} from './DocTabs/DocTabs';

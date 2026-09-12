@@ -145,7 +145,6 @@ export default function CustomersScreen() {
                         ? 'Поиск идёт по имени и идентификатору чата.'
                         : 'Запись заводится, когда человек первый раз открывает бота.'
                 }}
-                footNote="Заказы, корзина и избранное открываются в карточке покупателя."
             />
 
             {id ? <CustomerInspector id={Number(id)} onClose={closeCustomer}/> : null}

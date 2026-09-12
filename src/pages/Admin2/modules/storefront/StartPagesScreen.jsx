@@ -90,9 +90,10 @@ export default function StartPagesScreen() {
     }
 
     return (
+        <div className={style.sectionScreen}>
+        <SectionTabs items={START_TABS}/>
         <Workspace>
             <HeaderActions>
-                <SectionTabs items={START_TABS}/>
                 <Button size="s" variant="ghost" onClick={start.refresh}>Обновить</Button>
             </HeaderActions>
 
@@ -193,5 +194,6 @@ export default function StartPagesScreen() {
                 />
             ) : null}
         </Workspace>
+        </div>
     );
 }

@@ -1,5 +1,5 @@
 import React, {useCallback, useMemo, useState} from 'react';
-import {Button, ErrorState, Panel, SkeletonRows, Workspace} from '../../ui';
+import {Button, ErrorState, Note, Panel, SkeletonRows, Toggle, Workspace} from '../../ui';
 import {usePageHeader} from '../../shell/pageHeader';
 import HeaderActions from '../../shell/HeaderActions';
 import {askConfirm, toast, toastFail} from '../../platform/notify';
@@ -10,13 +10,15 @@ import {
     buildKeyboard,
     emptyDraft,
     limitFor,
+    mediaError,
     readyToSend,
-    recipientsTitle
+    recipientsTitle,
+    testVerdict
 } from './broadcastModel';
 import {serializeEditor} from './telegramHtml';
 import KeyboardEditor from './KeyboardEditor';
+import MediaDrop from './MediaDrop';
 import MessageEditor from './MessageEditor';
-import MessagePreview from './MessagePreview';
 import SendPanel from './SendPanel';
 import style from './BroadcastScreen.module.scss';
 
@@ -46,6 +48,7 @@ export default function BroadcastScreen() {
     const [schedule, setSchedule] = useState('');
     const [disablePreview, setDisablePreview] = useState(false);
     const [testedAs, setTestedAs] = useState(null);
+    const [testReport, setTestReport] = useState(null);
     const [sending, setSending] = useState(null);
 
     const limits = stats.data?.limits || null;
@@ -55,6 +58,7 @@ export default function BroadcastScreen() {
 
     const telegramHtml = useMemo(() => htmlToTelegram(draft.captionHtml), [draft.captionHtml]);
     const limit = limitFor(Boolean(draft.media), limits);
+    const badMedia = mediaError(draft.media);
 
     const problem = useMemo(() => readyToSend({
         textLength: telegramHtml.length,
@@ -97,20 +101,25 @@ export default function BroadcastScreen() {
                 scheduledAt: schedule || null
             });
 
-            if (mode === 'test') {
+            if (mode === 'test' && !answer?.summary) {
                 setTestedAs(stamp);
-                toast({
-                    tone: 'positive',
-                    title: 'Проба ушла админам',
-                    text: 'Проверьте сообщение в Telegram, потом открывайте боевую отправку.'
-                });
+                setTestReport(null);
+                toast({tone: 'positive', title: 'Проба ушла админам', text: 'Проверьте сообщение в Telegram.'});
+            } else if (mode === 'test') {
+                const verdict = testVerdict(answer?.summary);
+                setTestReport(answer?.summary || null);
+
+                if (verdict.ok) setTestedAs(stamp);
+
+                if (verdict.tone === 'positive') toast({tone: 'positive', title: verdict.title});
+                else toastFail(verdict.title, 'Причины — под кнопками отправки');
             } else {
                 toast({
                     tone: 'positive',
                     title: answer?.scheduled ? 'Рассылка запланирована' : 'Рассылка запущена',
                     text: answer?.scheduled
                         ? 'До запуска её видно в полосе задач — там же можно отменить.'
-                        : 'Ход отправки виден в полосе задач.'
+                        : 'Ход отправки и итог видны в полосе задач.'
                 });
             }
 
@@ -126,7 +135,7 @@ export default function BroadcastScreen() {
         const count = stats.data?.productionUniqueRecipients ?? 0;
 
         const answer = await askConfirm({
-            title: schedule ? 'Запланировать боевую рассылку?' : 'Отправить всем прямо сейчас?',
+            title: schedule ? 'Запланировать рассылку?' : 'Отправить всем прямо сейчас?',
             text: `Сообщение получат ${recipientsTitle(count)}.`,
             consequence: 'Отменить отправленное невозможно — Telegram не удаляет доставленные сообщения.',
             confirmText: schedule ? 'Запланировать' : 'Отправить',
@@ -150,6 +159,7 @@ export default function BroadcastScreen() {
         setSchedule('');
         setDisablePreview(false);
         setTestedAs(null);
+        setTestReport(null);
     }, []);
 
     if (stats.error && !stats.data) {
@@ -176,12 +186,27 @@ export default function BroadcastScreen() {
             </HeaderActions>
 
             <Panel title="Сообщение" wide scroll>
-                <MessageEditor
-                    html={draft.captionHtml}
-                    limit={limit}
-                    disabled={busy}
-                    onChange={setHtml}
-                />
+                <div className={style.messageStack}>
+                    <MediaDrop media={draft.media} disabled={busy} onPick={pickMedia} onDrop={dropMedia}/>
+
+                    {badMedia ? <Note tone="danger">{badMedia}</Note> : null}
+
+                    <MessageEditor
+                        html={draft.captionHtml}
+                        limit={limit}
+                        disabled={busy}
+                        onChange={setHtml}
+                    />
+
+                    <div className={style.previewToggle}>
+                        <Toggle
+                            checked={disablePreview}
+                            label="Не разворачивать превью ссылок"
+                            disabled={busy}
+                            onChange={setDisablePreview}
+                        />
+                    </div>
+                </div>
 
                 <div className={style.keyboardBlock}>
                     <span className={style.blockTitle}>Кнопки под сообщением</span>
@@ -195,29 +220,17 @@ export default function BroadcastScreen() {
                 </div>
             </Panel>
 
-            <Panel title="Как увидит покупатель" scroll>
-                <MessagePreview
-                    telegramHtml={telegramHtml}
-                    media={draft.media}
-                    keyboardRows={draft.keyboardRows}
-                />
-            </Panel>
-
             <Panel title="Отправка" scroll>
                 <SendPanel
                     stats={stats.data}
                     state={state}
                     busy={busy}
-                    media={draft.media}
                     schedule={schedule}
-                    disablePreview={disablePreview}
                     problem={problem}
                     testDone={testDone}
+                    testReport={testReport}
                     sending={sending}
-                    onPickMedia={pickMedia}
-                    onDropMedia={dropMedia}
                     onSchedule={setSchedule}
-                    onDisablePreview={setDisablePreview}
                     onSendTest={() => send('test')}
                     onSendProduction={sendProduction}
                 />

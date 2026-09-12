@@ -4,6 +4,7 @@ import {
     Button,
     ButtonRow,
     Field,
+    Grid,
     Input,
     Inspector,
     InspectorRows,
@@ -24,7 +25,6 @@ import {
     toDraft,
     toPayload,
     usageTitle,
-    usesLeftTitle,
     validate
 } from './promoModel';
 
@@ -83,8 +83,8 @@ export default function PromoInspector({promo, all, isNew, onClose}) {
     const askRemove = useCallback(async () => {
         const answer = await askConfirm({
             title: `Удалить промокод ${normalizeCode(promo.name)}?`,
-            text: 'Покупатели, которые уже знают код, перестанут получать скидку.',
-            consequence: 'Восстановить не получится — заводите заново.',
+            text: 'Код перестанет давать скидку.',
+            consequence: 'Восстановить не получится.',
             confirmText: 'Удалить',
             tone: 'danger'
         });
@@ -99,7 +99,7 @@ export default function PromoInspector({promo, all, isNew, onClose}) {
             open
             width="s"
             title={isNew ? 'Новый промокод' : normalizeCode(promo.name)}
-            subtitle={isNew ? 'Код заработает сразу после сохранения' : `${draft.percent}% скидки`}
+            subtitle={isNew ? 'Заработает сразу после сохранения' : `Скидка ${draft.percent}%`}
             badge={!isNew && isExhausted(promo)
                 ? <Badge tone="warning">Исчерпан</Badge>
                 : null}
@@ -125,69 +125,71 @@ export default function PromoInspector({promo, all, isNew, onClose}) {
                 </ButtonRow>
             )}
         >
-            <InspectorSection title="Код">
-                <Field
-                    label="Что вводит покупатель"
-                    hint="Латиница, цифры, дефис и подчёркивание. Регистр не важен — сохраним заглавными."
-                    error={showError('name')}
-                    required
-                >
-                    <Input
-                        mono
-                        value={draft.name}
-                        invalid={Boolean(showError('name'))}
-                        placeholder="SUMMER10"
-                        onChange={set('name')}
-                    />
-                </Field>
+            <InspectorSection title="Код и скидка">
+                <Grid columns={2}>
+                    <Field label="Код" hint="Латиница и цифры" error={showError('name')} required>
+                        <Input
+                            mono
+                            value={draft.name}
+                            invalid={Boolean(showError('name'))}
+                            placeholder="SUMMER10"
+                            onChange={set('name')}
+                        />
+                    </Field>
 
-                <Field
-                    label="Скидка, %"
-                    hint="Процент снимается со всей корзины и распределяется по позициям."
-                    error={showError('percent')}
-                    required
-                >
-                    <Input
-                        type="number"
-                        min="1"
-                        max="100"
-                        value={draft.percent}
-                        invalid={Boolean(showError('percent'))}
-                        onChange={set('percent')}
-                    />
-                </Field>
+                    <Field label="Скидка, %" hint="На всю корзину" error={showError('percent')} required>
+                        <Input
+                            type="number"
+                            min="1"
+                            max="100"
+                            value={draft.percent}
+                            invalid={Boolean(showError('percent'))}
+                            onChange={set('percent')}
+                        />
+                    </Field>
+                </Grid>
             </InspectorSection>
 
-            <InspectorSection
-                title="Сколько осталось"
-                note="Это не лимит, а счётчик: каждое применение уменьшает его на единицу, а если счёт так и не выставился — возвращает обратно. Ноль означает, что код больше не сработает."
-            >
-                <Field
-                    label="Осталось применений"
-                    hint={isNew ? 'Поставьте столько, сколько покупок готовы отдать со скидкой.' : usesLeftTitle(promo)}
-                    error={showError('totalNumberUses')}
-                    required
-                >
-                    <Input
-                        type="number"
-                        min="0"
-                        value={draft.totalNumberUses}
-                        invalid={Boolean(showError('totalNumberUses'))}
-                        onChange={set('totalNumberUses')}
-                    />
-                </Field>
+            <InspectorSection title="Лимиты">
+                <Grid columns={2}>
+                    <Field
+                        label="Осталось применений"
+                        hint="0 — код не работает"
+                        error={showError('totalNumberUses')}
+                        required
+                    >
+                        <Input
+                            type="number"
+                            min="0"
+                            value={draft.totalNumberUses}
+                            invalid={Boolean(showError('totalNumberUses'))}
+                            onChange={set('totalNumberUses')}
+                        />
+                    </Field>
+
+                    <Field
+                        label="На одного покупателя"
+                        hint="0 — без ограничений"
+                        error={showError('personalNumberUses')}
+                    >
+                        <Input
+                            type="number"
+                            min="0"
+                            value={draft.personalNumberUses}
+                            invalid={Boolean(showError('personalNumberUses'))}
+                            onChange={set('personalNumberUses')}
+                        />
+                    </Field>
+                </Grid>
             </InspectorSection>
 
             {isNew ? null : (
-                <InspectorSection
-                    title="Как пользовались"
-                    note="Считается с того дня, как появился учёт применений. Более ранние покупки в статистику не попали."
-                >
+                <InspectorSection title="Статистика">
                     <InspectorRows
                         items={[
                             {label: 'Применений', value: usageTitle(summary)},
-                            summary?.used ? {label: 'Отдано скидками', value: moneyTitle(summary.discount)} : null,
-                            summary?.used ? {label: 'Выручка по коду', value: moneyTitle(summary.revenue)} : null,
+                            summary?.used ? {label: 'Скидок на', value: moneyTitle(summary.discount)} : null,
+                            summary?.used ? {label: 'Выручка', value: moneyTitle(summary.revenue)} : null,
                             summary?.used ? {label: 'Средняя скидка', value: moneyTitle(summary.averageDiscount)} : null,
                             summary?.used ? {label: 'Первое', value: dayTitle(summary.firstAt)} : null,
                             summary?.used ? {label: 'Последнее', value: dayTitle(summary.lastAt)} : null
@@ -197,25 +199,6 @@ export default function PromoInspector({promo, all, isNew, onClose}) {
                     {usage.error ? <Note tone="warning">Статистику получить не вышло</Note> : null}
                 </InspectorSection>
             )}
-
-            <InspectorSection
-                title="Лимит на покупателя"
-                note="Сколько раз один покупатель может применить код. Отменённые и неоплаченные заказы не в счёт."
-            >
-                <Field
-                    label="Применений на покупателя"
-                    hint="0 — без ограничения"
-                    error={showError('personalNumberUses')}
-                >
-                    <Input
-                        type="number"
-                        min="0"
-                        value={draft.personalNumberUses}
-                        invalid={Boolean(showError('personalNumberUses'))}
-                        onChange={set('personalNumberUses')}
-                    />
-                </Field>
-            </InspectorSection>
         </Inspector>
     );
 }

@@ -1,3 +1,129 @@
+.messageStack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.previewToggle {
+    display: flex;
+    padding: 10px 12px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+}
+
+.hiddenInput {
+    display: none;
+}
+
+.drop {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    border: 1.5px dashed var(--a2-border-strong);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-card);
+    transition: border-color var(--a2-motion) var(--a2-ease), background var(--a2-motion) var(--a2-ease);
+}
+
+.drop:hover {
+    border-color: var(--a2-accent);
+}
+
+.dropActive {
+    border-color: var(--a2-accent);
+    background: var(--a2-accent-soft);
+}
+
+.dropIcon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--a2-accent-soft);
+    color: var(--a2-accent);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.dropText {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.dropTitle {
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+}
+
+.dropHint {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+    line-height: 1.4;
+}
+
+.mediaCard {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border: 1px solid var(--a2-accent);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-accent-soft);
+}
+
+.mediaThumb {
+    flex: none;
+    width: 96px;
+    height: 64px;
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-raised);
+    overflow: hidden;
+}
+
+.mediaFrame {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mediaBody {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.mediaName {
+    overflow: hidden;
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mediaMeta {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+}
+
+.mediaActions {
+    display: flex;
+    flex: none;
+    gap: 6px;
+}
+
 .editor {
     display: flex;
     flex-direction: column;
@@ -43,7 +169,7 @@
 .toolOn {
     background: var(--a2-accent-soft);
     border-color: var(--a2-accent);
-    color: var(--a2-accent-text);
+    color: var(--a2-accent);
 }
 
 .toolBold {
@@ -103,7 +229,7 @@
 }
 
 .area {
-    min-height: 160px;
+    min-height: 180px;
     padding: 10px 12px;
     border: 1px solid var(--a2-border);
     border-radius: var(--a2-radius-m);
@@ -125,7 +251,7 @@
 }
 
 .area a {
-    color: var(--a2-accent-text);
+    color: var(--a2-accent);
 }
 
 .counterRow {
@@ -163,8 +289,8 @@
 .keyboardBlock {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-top: 16px;
+    gap: 10px;
+    margin-top: 18px;
     padding-top: 16px;
     border-top: 1px solid var(--a2-border);
 }
@@ -188,54 +314,193 @@
     line-height: 1.4;
 }
 
-.keyboardRow {
+.kbButton {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 10px;
+    gap: 10px;
+    padding: 12px;
     border: 1px solid var(--a2-border);
-    border-radius: var(--a2-radius-m);
+    border-radius: var(--a2-radius-l);
     background: var(--a2-card);
 }
 
-.keyboardRowHead {
+.kbHead {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
 }
 
-.keyboardRowTitle {
-    color: var(--a2-text-muted);
-    font-size: var(--a2-size-s);
-    font-weight: 600;
+.kbIndex {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
 }
 
-.keyboardRowTools {
+.kbGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 10px;
+}
+
+.kbTargetField {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 6px;
 }
 
-.keyboardButton {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 10px;
+.kbLabel {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+    font-weight: 500;
+}
+
+.targets {
+    display: inline-flex;
+    gap: 2px;
+    padding: 2px;
     border: 1px solid var(--a2-border);
-    border-radius: var(--a2-radius-s);
+    border-radius: var(--a2-radius-m);
     background: var(--a2-plane);
 }
 
-.keyboardGrid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 200px);
-    gap: 8px;
+.target,
+.targetOn {
+    height: 28px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: var(--a2-radius-s);
+    background: transparent;
+    color: var(--a2-text-muted);
+    font-family: var(--a2-font);
+    font-size: var(--a2-size-s);
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
 }
 
-.keyboardButtonFoot {
+.target:hover:not(:disabled) {
+    color: var(--a2-text);
+}
+
+.targetOn {
+    background: var(--a2-accent);
+    color: var(--a2-accent-text);
+}
+
+.target:active:not(:disabled),
+.targetOn:active:not(:disabled) {
+    transform: none;
+}
+
+.kbProblem {
+    color: var(--a2-warning);
+    font-size: var(--a2-size-s);
+}
+
+.kbLink {
+    overflow: hidden;
+    color: var(--a2-text-faint);
+    font-family: var(--a2-font-mono);
+    font-size: var(--a2-size-xs);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.picked {
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border: 1px solid var(--a2-accent);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-accent-soft);
+}
+
+.pickedName {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pickerBox {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.pickerEmpty {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-s);
+}
+
+.found {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.foundItem {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 6px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-s);
+    background: var(--a2-plane);
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.foundItem:hover {
+    border-color: var(--a2-accent);
+}
+
+.foundItem:active:not(:disabled) {
+    transform: none;
+}
+
+.foundArt {
+    flex: none;
+    width: 40px;
+    height: 30px;
+    border-radius: 4px;
+    background-color: var(--a2-raised);
+    background-position: center;
+    background-size: cover;
+}
+
+.foundBody {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.foundName {
+    overflow: hidden;
+    color: var(--a2-text);
+    font-size: var(--a2-size-s);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.foundMeta {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
 }
 
 .keyboardFoot {
@@ -249,101 +514,6 @@
     color: var(--a2-text-faint);
     font-family: var(--a2-font-mono);
     font-size: var(--a2-size-xs);
-}
-
-.preview {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.phone {
-    padding: 14px 10px;
-    border: 1px solid var(--a2-border);
-    border-radius: var(--a2-radius-l);
-    background: var(--a2-bg);
-}
-
-.bubble {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-width: 320px;
-    padding: 10px;
-    border-radius: 14px 14px 14px 4px;
-    background: var(--a2-card);
-    box-shadow: var(--a2-shadow-card);
-}
-
-.bubbleMedia {
-    overflow: hidden;
-    border-radius: var(--a2-radius-s);
-}
-
-.mediaFrame {
-    display: block;
-    width: 100%;
-    max-height: 220px;
-    object-fit: cover;
-}
-
-.bubbleText {
-    color: var(--a2-text);
-    font-size: var(--a2-size-m);
-    line-height: 1.45;
-    overflow-wrap: anywhere;
-}
-
-.bubbleText code,
-.bubbleText pre {
-    padding: 1px 4px;
-    border-radius: 4px;
-    background: var(--a2-raised);
-    font-family: var(--a2-font-mono);
-    font-size: var(--a2-size-s);
-}
-
-.bubbleText span[data-link] {
-    color: var(--a2-accent-text);
-    text-decoration: underline;
-}
-
-.bubbleEmpty {
-    margin: 0;
-    color: var(--a2-text-faint);
-    font-size: var(--a2-size-s);
-}
-
-.bubbleKeyboard {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-top: 2px;
-}
-
-.bubbleRow {
-    display: flex;
-    gap: 4px;
-}
-
-.bubbleButton {
-    flex: 1;
-    padding: 7px 8px;
-    border-radius: 8px;
-    background: var(--a2-raised);
-    color: var(--a2-accent-text);
-    font-size: var(--a2-size-s);
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.previewNote {
-    margin: 0;
-    color: var(--a2-text-faint);
-    font-size: var(--a2-size-xs);
-    line-height: 1.4;
 }
 
 .send {
@@ -364,66 +534,18 @@
     font-weight: 600;
 }
 
-.mediaPick {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 14px;
-    border: 1px dashed var(--a2-border-strong);
-    border-radius: var(--a2-radius-m);
-    background: var(--a2-card);
-    cursor: pointer;
-    text-align: center;
-}
-
-.mediaPick:hover {
-    border-color: var(--a2-accent);
-}
-
-.mediaInput {
-    display: none;
-}
-
-.mediaPickText {
-    color: var(--a2-text);
-    font-size: var(--a2-size-s);
-    font-weight: 600;
-}
-
-.mediaPickHint {
-    color: var(--a2-text-faint);
-    font-size: var(--a2-size-xs);
-    line-height: 1.4;
-}
-
-.mediaCard {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px;
-    border: 1px solid var(--a2-border);
-    border-radius: var(--a2-radius-m);
-    background: var(--a2-card);
-}
-
-.mediaName {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    color: var(--a2-text);
-    font-size: var(--a2-size-s);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.mediaMeta {
-    color: var(--a2-text-faint);
-    font-size: var(--a2-size-xs);
-    white-space: nowrap;
-}
-
 .sendActions {
     display: flex;
     flex-direction: column;
     gap: 8px;
+}
+
+.reportTitle {
+    display: block;
+    font-weight: 600;
+}
+
+.reportList {
+    margin: 6px 0 0;
+    padding-left: 18px;
 }

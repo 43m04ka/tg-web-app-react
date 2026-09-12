@@ -127,11 +127,14 @@ export default function OrderInspector({id, onClose}) {
             onRetry={card.refresh}
             width="l"
             footer={(
-                <StatusMenu
-                    current={order?.status}
-                    disabled={!order || changeStatus.loading}
-                    onPick={onChangeStatus}
-                />
+                <div className={style.statusBox}>
+                    <span className={style.statusLabel}>Сменить статус заказа</span>
+                    <StatusMenu
+                        current={order?.status}
+                        disabled={!order || changeStatus.loading}
+                        onPick={onChangeStatus}
+                    />
+                </div>
             )}
         >
             {!order ? null : tab === 'main' ? (
@@ -266,14 +269,26 @@ export default function OrderInspector({id, onClose}) {
                     ) : null}
                 </>
             ) : (
-                <InspectorSection
-                    title="Покупатель"
-                    actions={(
-                        <Button size="s" variant="ghost" loading={closedProfile.loading} onClick={() => closedProfile.run(order.id)}>
-                            Написать о закрытом профиле
-                        </Button>
-                    )}
-                >
+                <>
+                <div className={style.closedCard}>
+                    <div className={style.closedText}>
+                        <span className={style.closedTitle}>Не получается написать покупателю?</span>
+                        <span className={style.closedHint}>
+                            Если профиль в Telegram закрыт, отправьте ему сообщение от бота: попросим написать
+                            менеджеру @gwstore_admin, чтобы оформить заказ.
+                        </span>
+                    </div>
+                    <Button
+                        variant="primary"
+                        loading={closedProfile.loading}
+                        disabled={!user?.chatId}
+                        onClick={() => closedProfile.run(order.id)}
+                    >
+                        Написать о закрытом профиле
+                    </Button>
+                </div>
+
+                <InspectorSection title="Покупатель">
                     <InspectorRows items={[
                         {label: 'Контакт', value: order.contact || '—'},
                         {label: 'Почта', value: order.email || '—'},
@@ -288,6 +303,7 @@ export default function OrderInspector({id, onClose}) {
                         },
                     ]}/>
                 </InspectorSection>
+                </>
             )}
         </Inspector>
     );

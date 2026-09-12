@@ -1,0 +1,229 @@
+.screen {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    min-height: 0;
+}
+
+.body {
+    display: flex;
+    flex: 1;
+    gap: 12px;
+    min-height: 0;
+}
+
+.pane {
+    display: flex;
+    flex: 1;
+    gap: 12px;
+    min-width: 0;
+    min-height: 0;
+}
+
+.pane[hidden] {
+    display: none;
+}
+
+.strip {
+    display: flex;
+    flex: none;
+    align-items: stretch;
+    gap: 6px;
+    padding: 6px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-plane);
+}
+
+.listTab,
+.listTabOn {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+    height: 46px;
+    padding: 0 16px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+    color: var(--a2-text-muted);
+    font-family: var(--a2-font);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--a2-motion) var(--a2-ease), color var(--a2-motion) var(--a2-ease),
+        border-color var(--a2-motion) var(--a2-ease);
+}
+
+.listTab:hover {
+    border-color: var(--a2-accent);
+    color: var(--a2-text);
+}
+
+.listTabOn {
+    border-color: var(--a2-accent);
+    background: var(--a2-accent);
+    color: #ffffff;
+}
+
+.listTab:active:not(:disabled),
+.listTabOn:active:not(:disabled) {
+    transform: none;
+}
+
+.listIcon {
+    font-size: 14px;
+}
+
+.listCount {
+    min-width: 20px;
+    padding: 1px 6px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.18);
+    font-size: var(--a2-size-xs);
+    text-align: center;
+}
+
+.listTab .listCount {
+    background: var(--a2-raised);
+}
+
+.split {
+    flex: none;
+    width: 1px;
+    margin: 6px 2px;
+    background: var(--a2-border);
+}
+
+.tabs {
+    display: flex;
+    flex: 1;
+    gap: 4px;
+    min-width: 0;
+    overflow-x: auto;
+}
+
+.tab {
+    position: relative;
+    display: flex;
+    flex: 0 1 230px;
+    align-items: center;
+    gap: 6px;
+    min-width: 130px;
+    height: 46px;
+    padding: 0 6px 0 12px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+    cursor: pointer;
+    user-select: none;
+    transition: background var(--a2-motion) var(--a2-ease), border-color var(--a2-motion) var(--a2-ease),
+        opacity var(--a2-motion) var(--a2-ease);
+}
+
+.tab:hover {
+    border-color: var(--a2-border-strong);
+    background: var(--a2-raised);
+}
+
+.tab:focus-visible {
+    outline: 2px solid var(--a2-accent);
+    outline-offset: 1px;
+}
+
+.tabOn,
+.tabOn:hover {
+    border-color: var(--a2-accent);
+    background: var(--a2-accent-soft);
+    box-shadow: inset 0 -3px 0 var(--a2-accent);
+}
+
+.dragging {
+    opacity: 0.4;
+}
+
+.dropBefore {
+    box-shadow: -3px 0 0 var(--a2-accent);
+}
+
+.dropAfter {
+    box-shadow: 3px 0 0 var(--a2-accent);
+}
+
+.tabText {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.caption {
+    overflow: hidden;
+    color: var(--a2-info);
+    font-family: var(--a2-font-mono);
+    font-size: var(--a2-size-xs);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.title {
+    overflow: hidden;
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tabOn .caption {
+    color: var(--a2-accent);
+}
+
+.dirty {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--a2-warning);
+}
+
+.close {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--a2-text-faint);
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.close:hover {
+    background: var(--a2-danger-soft);
+    color: var(--a2-danger);
+}
+
+.close:active:not(:disabled) {
+    transform: none;
+}
+
+.counter {
+    flex: none;
+    align-self: center;
+    padding: 0 6px;
+    color: var(--a2-text-faint);
+    font-family: var(--a2-font-mono);
+    font-size: var(--a2-size-xs);
+}
+
+.counterFull {
+    color: var(--a2-warning);
+}

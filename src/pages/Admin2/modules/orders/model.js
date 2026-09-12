@@ -57,6 +57,7 @@ export const PLATFORM_TITLES = {
 
 export const PAYMENT_TITLES = {
     sbp: 'СБП',
+    sbp_manager: 'СБП через менеджера',
     split: 'Сплит',
     dolyami: 'Долями',
 };

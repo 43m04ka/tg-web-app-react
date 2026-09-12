@@ -44,6 +44,93 @@
     text-align: right;
 }
 
+.tone_ps {
+    --tone: #3b7bff;
+}
+
+.tone_india {
+    --tone: #f28c28;
+}
+
+.tone_xbox {
+    --tone: #1fa84f;
+}
+
+.switch {
+    display: inline-flex;
+    gap: 4px;
+    padding: 3px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-card);
+}
+
+.switchItem {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 30px;
+    padding: 0 14px;
+    border: 1px solid transparent;
+    border-radius: var(--a2-radius-m);
+    background: transparent;
+    color: var(--a2-text-muted);
+    font-family: var(--a2-font);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--a2-motion) var(--a2-ease), color var(--a2-motion) var(--a2-ease),
+        border-color var(--a2-motion) var(--a2-ease);
+}
+
+.switchItem:hover {
+    border-color: var(--tone);
+    color: var(--a2-text);
+}
+
+.switchItem:active:not(:disabled) {
+    transform: none;
+}
+
+.switchDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--tone);
+}
+
+.switchOn,
+.switchOn:hover {
+    border-color: var(--tone);
+    background: var(--tone);
+    color: #ffffff;
+}
+
+.switchOn .switchDot {
+    background: #ffffff;
+}
+
+.banner {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 10px 14px;
+    border-left: 3px solid var(--tone);
+    border-radius: var(--a2-radius-m);
+    background: color-mix(in srgb, var(--tone) 14%, transparent);
+}
+
+.bannerTitle {
+    color: var(--tone);
+    font-size: var(--a2-size-l);
+    font-weight: 700;
+}
+
+.bannerText {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+}
+
 .card {
     display: flex;
     flex-direction: column;

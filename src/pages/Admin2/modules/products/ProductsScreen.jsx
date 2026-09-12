@@ -4,11 +4,14 @@ import {
     Badge,
     Button,
     Collection,
+    DocTabs,
     Money,
     Mono,
     Select,
-    Workspace,
+    TabPane,
+    TabbedScreen,
     useCollectionState,
+    useWorkspaceTabs,
 } from '../../ui';
 import {usePageHeader} from '../../shell/pageHeader';
 import {useResource} from '../../platform/useResource';
@@ -172,13 +175,47 @@ export default function ProductsScreen() {
         },
     ]), [catalogPathById]);
 
-    const openCard = useCallback((row) => navigate(withQuery(`/admin2/products/${row.id}`)), [navigate, withQuery]);
-    const closeCard = useCallback(() => navigate(withQuery('/admin2/products')), [navigate, withQuery]);
+    const activeId = id ? String(id) : null;
+
+    const go = useCallback(
+        (tabId) => navigate(withQuery(tabId ? `/admin2/products/${tabId}` : '/admin2/products')),
+        [navigate, withQuery]
+    );
+
+    const workspace = useWorkspaceTabs({
+        storageKey: 'a2.tabs.products',
+        activeId,
+        go,
+        fallbackTitle: (tabId) => `Товар #${tabId}`,
+    });
+
+    const openCard = useCallback((row) => {
+        workspace.open({id: String(row.id), title: row.name, catalogId: row.catalogId});
+        go(String(row.id));
+    }, [workspace, go]);
+
+    const shownTabs = useMemo(() => workspace.tabs.map((tab) => ({
+        ...tab,
+        caption: catalogPathById.get(tab.catalogId) || '',
+    })), [workspace.tabs, catalogPathById]);
 
     const data = list.data || {};
 
     return (
-        <Workspace>
+        <TabbedScreen
+            strip={(
+                <DocTabs
+                    listTitle="Все товары"
+                    listCount={data.total ?? null}
+                    tabs={shownTabs}
+                    active={activeId}
+                    onSelect={go}
+                    onClose={(tabId) => workspace.close(tabId)}
+                    onMove={workspace.move}
+                />
+            )}
+        >
+            <TabPane active={!activeId}>
             <Collection
                 columns={columns}
                 rows={data.items || []}
@@ -279,8 +316,17 @@ export default function ProductsScreen() {
                     </Button>
                 )}
             />
+            </TabPane>
 
-            {id ? <ProductInspector id={Number(id)} onClose={closeCard}/> : null}
-        </Workspace>
+            {workspace.tabs.map((tab) => (
+                <ProductInspector
+                    key={tab.id}
+                    id={Number(tab.id)}
+                    active={tab.id === activeId}
+                    onClose={() => workspace.close(tab.id, {confirmed: true})}
+                    onMeta={(meta) => workspace.patch(tab.id, meta)}
+                />
+            ))}
+        </TabbedScreen>
     );
 }

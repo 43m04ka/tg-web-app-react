@@ -13,5 +13,5 @@ export const sendBroadcast = ({mode, text, media, keyboard, disablePreview, sche
     if (keyboard) form.append('inlineKeyboard', JSON.stringify(keyboard));
     if (scheduledAt) form.append('scheduledAt', new Date(scheduledAt).toISOString());
 
-    return http('/broadcast/tg/send', {method: 'POST', form, timeoutMs: 120000});
+    return http('/broadcast/tg/send', {method: 'POST', form, timeoutMs: mode === 'test' ? 330000 : 120000});
 };

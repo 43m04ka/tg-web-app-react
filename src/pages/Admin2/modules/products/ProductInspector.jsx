@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
     Badge,
     Button,
@@ -101,12 +101,18 @@ function MediaPreview({label, value, onChange}) {
     );
 }
 
-export default function ProductInspector({id, onClose}) {
+export default function ProductInspector({id, active = true, onClose, onMeta = null}) {
     const [tab, setTab] = useState('main');
     const [draft, setDraft] = useState(null);
+    const metaRef = useRef(onMeta);
+    metaRef.current = onMeta;
 
     const card = useResource(keys.product(id), () => fetchProduct(id));
     const data = card.data;
+
+    useEffect(() => {
+        if (data && metaRef.current) metaRef.current({title: data.name, catalogId: data.catalogId});
+    }, [data]);
 
     useEffect(() => {
         setDraft(data ? toDraft(data) : null);
@@ -140,6 +146,10 @@ export default function ProductInspector({id, onClose}) {
     }, [draft, data]);
 
     const dirty = Object.keys(changed).length > 0;
+
+    useEffect(() => {
+        if (metaRef.current) metaRef.current({dirty});
+    }, [dirty]);
 
     const save = useMutation(updateCard, {
         invalidates: [keys.products],
@@ -177,6 +187,7 @@ export default function ProductInspector({id, onClose}) {
 
     return (
         <Inspector
+            open={active}
             title={data?.name || `Товар #${id}`}
             subtitle={data ? `#${data.id} · ${data.platform || 'площадка не указана'}` : ''}
             badge={data ? (data.onSale ? <Badge tone="positive">в продаже</Badge> : <Badge tone="warning">снят</Badge>) : null}
@@ -188,7 +199,7 @@ export default function ProductInspector({id, onClose}) {
             loading={card.isLoading}
             error={card.error}
             onRetry={card.refresh}
-            width="l"
+            width="full"
             footer={(
                 <>
                     <Button variant="primary" onClick={onSave} disabled={!dirty} loading={save.loading}>

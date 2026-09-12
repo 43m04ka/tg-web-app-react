@@ -1,17 +1,20 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import {
     Badge,
     Button,
     Collection,
+    DocTabs,
     Field,
     Input,
     Modal,
     Mono,
     Note,
     Select,
-    Workspace,
-    useCollectionState
+    TabPane,
+    TabbedScreen,
+    useCollectionState,
+    useWorkspaceTabs
 } from '../../ui';
 import {usePageHeader} from '../../shell/pageHeader';
 import {toast, toastFail} from '../../platform/notify';
@@ -19,7 +22,7 @@ import {invalidate} from '../../platform/cache';
 import {keys} from '../../platform/resources';
 import {useResource} from '../../platform/useResource';
 import {createCatalog, fetchCatalogs, fetchPages, fetchQueue} from './api';
-import {catalogProblem, pageTitleOf, queueState, saleState, sortCatalogs, sourceOfPage} from './catalogsModel';
+import {catalogProblem, pageTitleOf, saleState, sortCatalogs, sourceOfPage} from './catalogsModel';
 import CatalogInspector from './CatalogInspector';
 import style from './CatalogsScreen.module.scss';
 
@@ -95,13 +98,43 @@ export default function CatalogsScreen() {
         }
     ]), [pageList]);
 
-    const active = useMemo(
-        () => all.find((item) => String(item.id) === String(id)) || null,
-        [all, id]
+    const activeId = id ? String(id) : null;
+
+    const go = useCallback(
+        (tabId) => navigate(withQuery(tabId ? `/admin2/catalogs/${tabId}` : '/admin2/catalogs')),
+        [navigate, withQuery]
     );
 
-    const openCatalog = useCallback((row) => navigate(withQuery(`/admin2/catalogs/${row.id}`)), [navigate, withQuery]);
-    const closeCatalog = useCallback(() => navigate(withQuery('/admin2/catalogs')), [navigate, withQuery]);
+    const workspace = useWorkspaceTabs({
+        storageKey: 'a2.tabs.catalogs',
+        activeId,
+        go,
+        fallbackTitle: (tabId) => `Каталог #${tabId}`,
+    });
+
+    const openCatalog = useCallback((row) => {
+        workspace.open({id: String(row.id), title: row.path});
+        go(String(row.id));
+    }, [workspace, go]);
+
+    const byId = useMemo(() => new Map(all.map((item) => [String(item.id), item])), [all]);
+
+    const shownTabs = useMemo(() => workspace.tabs.map((tab) => {
+        const catalog = byId.get(tab.id);
+        return catalog
+            ? {...tab, title: catalog.path, caption: pageTitleOf(catalog, pageList) || 'витрина не найдена'}
+            : tab;
+    }), [workspace.tabs, byId, pageList]);
+
+    const {drop} = workspace;
+
+    useEffect(() => {
+        if (!catalogs.data || all.length === 0) return;
+
+        const gone = workspace.tabs.filter((tab) => !byId.has(tab.id)).map((tab) => tab.id);
+        if (gone.length) drop(gone);
+        if (activeId && !byId.has(activeId)) go(null);
+    }, [catalogs.data, all, byId, workspace.tabs, drop, activeId, go]);
 
     const problem = catalogProblem(draft, {existing: all});
 
@@ -127,16 +160,21 @@ export default function CatalogsScreen() {
         }
     }, [problem, busy, draft]);
 
-    const psQueue = queueState(queue.data, 'ps');
-    const xboxQueue = queueState(queue.data, 'xbox');
-
-    const queueNote = [
-        psQueue.running ? `PlayStation занят${psQueue.waiting.length ? `, в очереди ${psQueue.waiting.length}` : ''}` : null,
-        xboxQueue.running ? `Xbox занят${xboxQueue.waiting.length ? `, в очереди ${xboxQueue.waiting.length}` : ''}` : null
-    ].filter(Boolean).join(' · ');
-
     return (
-        <Workspace>
+        <TabbedScreen
+            strip={(
+                <DocTabs
+                    listTitle="Все каталоги"
+                    listCount={all.length || null}
+                    tabs={shownTabs}
+                    active={activeId}
+                    onSelect={go}
+                    onClose={(tabId) => workspace.close(tabId)}
+                    onMove={workspace.move}
+                />
+            )}
+        >
+            <TabPane active={!activeId}>
             <Collection
                 columns={columns}
                 rows={rows}
@@ -144,7 +182,7 @@ export default function CatalogsScreen() {
                 stale={catalogs.isStale}
                 error={catalogs.error}
                 onRetry={catalogs.refresh}
-                activeKey={active?.id ?? null}
+                activeKey={null}
                 onOpen={openCatalog}
                 search={{
                     value: value.search,
@@ -168,18 +206,25 @@ export default function CatalogsScreen() {
                     title: value.search ? 'Такого каталога нет' : 'Каталогов нет',
                     text: 'Каталог — это то, куда парсер складывает товары, и то, на что ссылается блок витрины.'
                 }}
-                footNote={queueNote || 'Очереди источников свободны'}
             />
+            </TabPane>
 
-            {active ? (
-                <CatalogInspector
-                    catalog={active}
-                    pages={pageList}
-                    queue={queue.data}
-                    onClose={closeCatalog}
-                    onRemoved={() => invalidate(keys.catalogList)}
-                />
-            ) : null}
+            {workspace.tabs.map((tab) => {
+                const catalog = byId.get(tab.id);
+                if (!catalog) return null;
+
+                return (
+                    <CatalogInspector
+                        key={tab.id}
+                        catalog={catalog}
+                        pages={pageList}
+                        queue={queue.data}
+                        active={tab.id === activeId}
+                        onClose={() => workspace.close(tab.id)}
+                        onRemoved={() => invalidate(keys.catalogList)}
+                    />
+                );
+            })}
 
             {isCreating ? (
                 <Modal
@@ -218,6 +263,6 @@ export default function CatalogsScreen() {
                     {problem ? <Note tone="danger">{problem}</Note> : null}
                 </Modal>
             ) : null}
-        </Workspace>
+        </TabbedScreen>
     );
 }

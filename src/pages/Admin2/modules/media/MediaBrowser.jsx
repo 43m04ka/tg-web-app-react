@@ -2,10 +2,8 @@ import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {
     Badge,
     Button,
-    
     EmptyState,
     ErrorState,
-    Input,
     Note,
     SearchInput,
     SkeletonRows,
@@ -107,50 +105,71 @@ export default function MediaBrowser({onPick = null, selected = '', compact = fa
     return (
         <div className={`${style.browser} ${compact ? style.compact : ''}`}>
             <div className={style.bar}>
-                <nav className={style.crumbs}>
-                    {crumbs.map((crumb, index) => (
-                        <React.Fragment key={crumb.path || 'root'}>
-                            {index ? <span className={style.sep}>/</span> : null}
-                            <button
-                                type="button"
-                                className={`${style.crumb} ${index === crumbs.length - 1 ? style.crumbLast : ''}`}
-                                onClick={() => setPath(crumb.path)}
-                            >
-                                {crumb.title}
-                            </button>
-                        </React.Fragment>
-                    ))}
-                </nav>
+                <div className={style.barTop}>
+                    {path ? (
+                        <Button size="s" variant="secondary" onClick={() => setPath(parentOf(path))}>← Наверх</Button>
+                    ) : null}
 
-                <span className={style.summary}>
-                    {countTitle(entries.folders.length, FOLDER_WORDS)} · {countTitle(entries.files.length, FILE_WORDS)}
-                </span>
+                    <nav className={style.crumbs}>
+                        {crumbs.map((crumb, index) => (
+                            <React.Fragment key={crumb.path || 'root'}>
+                                {index ? <span className={style.sep}>/</span> : null}
+                                <button
+                                    type="button"
+                                    className={`${style.crumb} ${index === crumbs.length - 1 ? style.crumbLast : ''}`}
+                                    onClick={() => setPath(crumb.path)}
+                                >
+                                    {crumb.title}
+                                </button>
+                            </React.Fragment>
+                        ))}
+                    </nav>
 
-                <div className={style.barActions}>
-                    <Button size="s" variant="primary" loading={upload.loading} onClick={() => inputRef.current?.click()}>
-                        Загрузить файлы
-                    </Button>
-                    <div className={style.newFolder}>
-                        <Input
+                    <span className={style.summary}>
+                        {countTitle(entries.folders.length, FOLDER_WORDS)} · {countTitle(entries.files.length, FILE_WORDS)}
+                    </span>
+
+                    <div className={style.barTools}>
+                        <SearchInput value={search} onChange={setSearch} placeholder="Имя файла"/>
+                        <Button size="s" variant="ghost" onClick={refresh}>Обновить</Button>
+                    </div>
+                </div>
+
+                <div className={style.actionsCard}>
+                    <button
+                        type="button"
+                        className={style.uploadTile}
+                        disabled={upload.loading}
+                        onClick={() => inputRef.current?.click()}
+                    >
+                        <span className={style.uploadIcon}>↑</span>
+                        <span className={style.uploadText}>
+                            <span className={style.uploadTitle}>{upload.loading ? 'Загружаем…' : 'Загрузить файлы'}</span>
+                            <span className={style.uploadHint}>или перетащите картинки в окно ниже</span>
+                        </span>
+                    </button>
+
+                    <div className={style.folderForm}>
+                        <span className={style.folderFormIcon}/>
+                        <input
+                            className={style.folderInput}
                             value={folderName}
-                            placeholder="Новая папка"
+                            placeholder="Название новой папки"
                             onChange={(event) => setFolderName(event.target.value)}
                             onKeyDown={(event) => {
                                 if (event.key === 'Enter') onNewFolder();
                             }}
                         />
-                        <Button size="s" variant="ghost" disabled={!folderName.trim()} loading={makeFolder.loading} onClick={onNewFolder}>
-                            Создать
+                        <Button
+                            size="s"
+                            variant="primary"
+                            disabled={!folderName.trim()}
+                            loading={makeFolder.loading}
+                            onClick={onNewFolder}
+                        >
+                            Создать папку
                         </Button>
                     </div>
-                    {path ? (
-                        <Button size="s" variant="ghost" onClick={() => setPath(parentOf(path))}>Наверх</Button>
-                    ) : null}
-                </div>
-
-                <div className={style.barTools}>
-                    <SearchInput value={search} onChange={setSearch} placeholder="Имя файла"/>
-                    <Button size="s" variant="ghost" onClick={refresh}>Обновить</Button>
                 </div>
             </div>
 

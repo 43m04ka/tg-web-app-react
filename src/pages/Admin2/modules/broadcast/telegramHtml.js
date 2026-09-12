@@ -59,7 +59,7 @@ const serializeNode = (node) => {
         case 'h3':
         case 'h4':
         case 'blockquote':
-            return inner ? `${inner}\n` : '\n';
+            return `${node.previousSibling ? '\n' : ''}${inner === '\n' ? '' : inner}`;
         case 'li':
             return inner ? `${inner}\n` : '';
         default:
@@ -69,25 +69,3 @@ const serializeNode = (node) => {
 
 export const serializeEditor = (element) =>
     (element ? serializeChildren(element).replace(/\n{3,}/g, '\n\n').trim() : '');
-
-const PREVIEW_TAGS = {
-    b: ['<strong>', '</strong>'],
-    i: ['<em>', '</em>'],
-    u: ['<u>', '</u>'],
-    s: ['<s>', '</s>'],
-    code: ['<code>', '</code>'],
-    pre: ['<pre>', '</pre>']
-};
-
-export const toPreviewHtml = (telegramHtml) => {
-    let out = String(telegramHtml || '');
-
-    Object.entries(PREVIEW_TAGS).forEach(([tag, [open, close]]) => {
-        out = out.split(`<${tag}>`).join(open).split(`</${tag}>`).join(close);
-    });
-
-    out = out.replace(/<tg-emoji emoji-id="[^"]*">([\s\S]*?)<\/tg-emoji>/g, '$1');
-    out = out.replace(/<a href="([^"]*)">([\s\S]*?)<\/a>/g, '<span data-link="$1">$2</span>');
-
-    return out.split('\n').join('<br/>');
-};

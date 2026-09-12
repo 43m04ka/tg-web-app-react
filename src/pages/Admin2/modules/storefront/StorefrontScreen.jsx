@@ -172,24 +172,35 @@ export default function StorefrontScreen() {
                         </span>
 
                         {bucket.items.map((page) => (
-                            <button
-                                key={page.id}
-                                type="button"
-                                className={`${style.page} ${current?.id === page.id ? style.pageActive : ''}`}
-                                onClick={() => openPage(page)}
-                            >
-                                <span className={style.pageIcon}>{(page.name || '?').trim().slice(0, 1).toUpperCase()}</span>
+                            <div key={page.id} className={style.pageRow}>
+                                <button
+                                    type="button"
+                                    className={`${style.page} ${current?.id === page.id ? style.pageActive : ''}`}
+                                    onClick={() => openPage(page)}
+                                >
+                                    <span className={style.pageIcon}>{(page.name || '?').trim().slice(0, 1).toUpperCase()}</span>
 
-                                <span className={style.pageText}>
-                                    <span className={style.pageName}>{page.name || 'Без названия'}</span>
+                                    <span className={style.pageText}>
+                                        <span className={style.pageName}>{page.name || 'Без названия'}</span>
 
-                                    <span className={style.pageMeta}>
-                                        {typeName(page.type)}
-                                        <span className={style.pageId}>#{page.id}</span>
-                                        {page.isHidden ? <Badge tone="neutral">скрыта</Badge> : null}
+                                        <span className={style.pageMeta}>
+                                            {typeName(page.type)}
+                                            <span className={style.pageId}>#{page.id}</span>
+                                            {page.isHidden ? <Badge tone="neutral">скрыта</Badge> : null}
+                                        </span>
                                     </span>
-                                </span>
-                            </button>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className={style.pageSettings}
+                                    title="Настройки страницы"
+                                    aria-label="Настройки страницы"
+                                    onClick={() => setEditing({kind: 'page', item: page})}
+                                >
+                                    ⚙
+                                </button>
+                            </div>
                         ))}
                     </div>
                 ))}
@@ -200,18 +211,10 @@ export default function StorefrontScreen() {
                 subtitle={current ? typeName(current.type) : ''}
                 wide
                 scroll
-                actions={current ? (
-                    <>
-                        <Button size="s" variant="ghost" onClick={() => setEditing({kind: 'page', item: current})}>
-                            Настройки страницы
-                        </Button>
-
-                        {structural && group === 'body' ? (
-                            <Button size="s" variant="primary" onClick={() => setEditing({kind: 'block', item: null})}>
-                                Добавить блок
-                            </Button>
-                        ) : null}
-                    </>
+                actions={current && structural && group === 'body' ? (
+                    <Button size="s" variant="primary" onClick={() => setEditing({kind: 'block', item: null})}>
+                        Добавить блок
+                    </Button>
                 ) : null}
             >
                 {!current ? (

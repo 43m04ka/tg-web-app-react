@@ -135,9 +135,10 @@ export default function PopularScreen() {
     }
 
     return (
+        <div className={style.sectionScreen}>
+        <SectionTabs items={START_TABS}/>
         <Workspace>
             <HeaderActions>
-                <SectionTabs items={START_TABS}/>
                 <Button size="s" variant="ghost" onClick={popular.refresh}>Обновить</Button>
             </HeaderActions>
 
@@ -258,5 +259,6 @@ export default function PopularScreen() {
                 </div>
             </Panel>
         </Workspace>
+        </div>
     );
 }

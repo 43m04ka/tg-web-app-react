@@ -23,6 +23,39 @@
     width: 560px;
 }
 
+.full {
+    flex: 1;
+    min-width: 0;
+    box-shadow: var(--a2-shadow-card);
+    animation: none;
+}
+
+.full .head {
+    padding: 14px 18px 12px;
+}
+
+.full .title {
+    font-size: var(--a2-size-xl);
+}
+
+.full .tabs {
+    padding: 0 16px;
+}
+
+.full .body {
+    gap: 20px;
+    padding: 18px 24px;
+}
+
+.full .body > * {
+    width: 100%;
+    max-width: 1080px;
+}
+
+.full .footer {
+    padding: 12px 18px;
+}
+
 .head {
     display: flex;
     align-items: flex-start;

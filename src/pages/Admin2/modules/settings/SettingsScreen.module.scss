@@ -52,6 +52,45 @@
     background: var(--a2-plane);
 }
 
+.actionStack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-plane);
+}
+
+.actionMain {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.schedule {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 10px;
+    border-top: 1px solid var(--a2-border);
+}
+
+.scheduleLabel {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.schedulePlanned {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
 .actionText {
     display: flex;
     flex: 1;

@@ -94,7 +94,7 @@ export default function CustomerInspector({id, onClose}) {
             onClose={onClose}
             footer={(
                 <ButtonRow>
-                    <Button variant="ghost" onClick={onClose}>Закрыть</Button>
+                    <Button variant="danger" onClick={onClose}>Закрыть</Button>
                 </ButtonRow>
             )}
         >

@@ -53,6 +53,55 @@
     flex: 1;
 }
 
+.footerGrid {
+    display: grid;
+    flex: 1;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 14px;
+    min-width: 0;
+}
+
+.costBox {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.costLabel {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.costRow {
+    display: flex;
+    gap: 6px;
+}
+
+.costRow > :first-child {
+    flex: 1;
+    min-width: 0;
+    height: 34px;
+}
+
+.costRow > button {
+    height: 34px;
+}
+
+.costHint,
+.costHintEmpty {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-xs);
+}
+
+.costHintEmpty {
+    color: var(--a2-warning);
+}
+
 .statusBox {
     display: flex;
     flex: 1;

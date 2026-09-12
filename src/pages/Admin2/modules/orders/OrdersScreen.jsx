@@ -167,6 +167,20 @@ export default function OrdersScreen() {
             cell: (row) => <Money value={row.total}/>,
         },
         {
+            id: 'cost',
+            title: 'Себестоимость',
+            width: 130,
+            align: 'right',
+            cell: (row) => (row.cost === null || row.cost === undefined
+                ? <span className={style.dash}>—</span>
+                : (
+                    <span className={style.cost}>
+                        {row.costAuto ? <span className={style.auto}>авто</span> : null}
+                        <Money value={row.cost}/>
+                    </span>
+                )),
+        },
+        {
             id: 'status',
             title: 'Статус',
             width: 132,

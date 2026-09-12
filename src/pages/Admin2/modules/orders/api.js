@@ -6,6 +6,8 @@ export const fetchOrder = (orderId) => httpGet('/getOrderData', {query: {orderId
 
 export const setOrderStatus = ({orderId, status}) => httpPost('/order/set-status', {orderId, status});
 
+export const setOrderCost = ({orderId, costPrice}) => httpPost('/order/set-cost', {orderId, costPrice});
+
 export const markPayoutManual = (orderId) => httpPost('/order/payout-manual', {orderId});
 
 export const notifyClosedProfile = (orderId) => httpGet('/sendMassageUndefinedName', {query: {orderId}});

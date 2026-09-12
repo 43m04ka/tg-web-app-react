@@ -1,8 +1,28 @@
 export const RANGES = [
     {id: '7', title: '7 дней', days: 7},
     {id: '30', title: '30 дней', days: 30},
-    {id: '90', title: '90 дней', days: 90}
+    {id: '90', title: '90 дней', days: 90},
+    {id: 'custom', title: 'Свой период', days: null}
 ];
+
+const EMPTY_PROFIT = {profit: 0, profitOrders: 0, profitRevenue: 0, noCostOrders: 0, paidOrders: 0};
+
+export const profitSlice = (report, platform = '') => {
+    if (!report) return null;
+
+    const source = platform
+        ? (report.byPlatform || []).find((row) => row.platform === platform)
+        : report.totals;
+
+    const slice = {...EMPTY_PROFIT, ...(source || {})};
+    const margin = slice.profitRevenue > 0 ? slice.profit / slice.profitRevenue : null;
+
+    return {...slice, margin};
+};
+
+export const periodTitle = (range, query) => (range.days
+    ? `${range.days} дней`
+    : `${dayLabel(query.from)}–${dayLabel(query.to)}`);
 
 export const TYPE_TITLES = {
     catalog: 'Каталог',

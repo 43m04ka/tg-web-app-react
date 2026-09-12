@@ -8,3 +8,18 @@
 .dash {
     color: var(--a2-text-faint);
 }
+
+.cost {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.auto {
+    padding: 1px 5px;
+    border-radius: var(--a2-radius-s);
+    background: var(--a2-info-soft);
+    color: var(--a2-info);
+    font-size: var(--a2-size-xs);
+    font-weight: 600;
+}

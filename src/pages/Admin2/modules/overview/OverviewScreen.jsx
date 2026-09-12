@@ -10,6 +10,7 @@ import {Badge} from '../../ui/primitives/Badge';
 import {Button} from '../../ui/primitives/Button';
 import {Stat, StatRow} from '../../ui/primitives/Data';
 import {EmptyState, ErrorState, Note, Skeleton, SkeletonRows} from '../../ui/primitives/Feedback';
+import {Input, Select} from '../../ui/primitives/Field';
 import {Tabs} from '../../ui/primitives/Tabs';
 import {fetchOverview} from './api';
 import {
@@ -21,8 +22,15 @@ import {
     dayLabel,
     moneyTitle,
     percentTitle,
+    periodTitle,
+    profitSlice,
     rangeQuery
 } from './overviewModel';
+
+const PROFIT_PLATFORMS = [
+    {value: '', title: 'Все площадки'},
+    ...Object.entries(PLATFORM_TITLES).map(([value, title]) => ({value, title}))
+];
 import style from './OverviewScreen.module.scss';
 import {formatMoscow} from '../../platform/moscowTime';
 
@@ -42,13 +50,19 @@ export default function OverviewScreen() {
 
     const [rangeId, setRangeId] = useState('30');
     const [stockOpen, setStockOpen] = useState(false);
+    const [custom, setCustom] = useState(() => rangeQuery(30));
+    const [profitPlatform, setProfitPlatform] = useState('');
     const range = RANGES.find((item) => item.id === rangeId) || RANGES[1];
-    const query = useMemo(() => rangeQuery(range.days), [range.days]);
+    const customBad = !range.days && (!custom.from || !custom.to || custom.from > custom.to);
+    const query = useMemo(
+        () => (range.days ? rangeQuery(range.days) : custom),
+        [range.days, custom]
+    );
 
     const stats = useResource(
-        keys.overview(rangeId),
+        keys.overview(`${rangeId}:${query.from}:${query.to}`),
         () => fetchOverview(query),
-        {refreshMs: 120000}
+        {refreshMs: 120000, enabled: !customBad}
     );
 
     const settings = useResource(keys.settings, () => http('/settings/all'));
@@ -56,6 +70,8 @@ export default function OverviewScreen() {
     const maintenanceUntil = valueOf(settings.data?.settings, 'maintenance_mode_until');
 
     const report = stats.data || null;
+    const period = periodTitle(range, query);
+    const profit = profitSlice(report, profitPlatform);
     const bars = useMemo(() => barHeights(report?.byDay), [report]);
     const attention = attentionRows(report?.attention);
 
@@ -68,10 +84,69 @@ export default function OverviewScreen() {
                 <Button variant="ghost" size="s" onClick={stats.refresh}>Обновить</Button>
             </HeaderActions>
 
+            {range.days ? null : (
+                <section className={style.customRange}>
+                    <span className={style.customLabel}>Период, московские сутки</span>
+                    <Input
+                        type="date"
+                        value={custom.from}
+                        onChange={(event) => setCustom((prev) => ({...prev, from: event.target.value}))}
+                    />
+                    <span className={style.customDash}>—</span>
+                    <Input
+                        type="date"
+                        value={custom.to}
+                        onChange={(event) => setCustom((prev) => ({...prev, to: event.target.value}))}
+                    />
+                    {customBad ? <span className={style.customError}>Начало позже конца</span> : null}
+                </section>
+            )}
+
+            <section className={style.profit}>
+                <header className={style.head}>
+                    <h2 className={style.title}>Чистая прибыль за {period}</h2>
+                    <div className={style.profitPlatform}>
+                        <Select
+                            options={PROFIT_PLATFORMS}
+                            value={profitPlatform}
+                            onChange={(event) => setProfitPlatform(event.target.value)}
+                        />
+                    </div>
+                </header>
+
+                <StatRow>
+                    <Stat
+                        label="Чистая прибыль"
+                        value={stats.isLoading && !report ? <Skeleton width={110} height={18}/> : moneyTitle(profit?.profit)}
+                        tone={profit && profit.profit < 0 ? 'danger' : 'positive'}
+                        note={profit ? `с выручки ${moneyTitle(profit.profitRevenue)}` : ''}
+                    />
+                    <Stat
+                        label="Маржа"
+                        value={stats.isLoading && !report ? <Skeleton width={60} height={18}/> : percentTitle(profit?.margin)}
+                    />
+                    <Stat
+                        label="Заказов в расчёте"
+                        value={stats.isLoading && !report ? <Skeleton width={60} height={18}/> : (profit?.profitOrders ?? 0)}
+                        note={profit ? `из ${profit.paidOrders} оплаченных` : ''}
+                    />
+                    <Stat
+                        label="Без себестоимости"
+                        value={stats.isLoading && !report ? <Skeleton width={60} height={18}/> : (profit?.noCostOrders ?? 0)}
+                        tone={profit?.noCostOrders ? 'danger' : 'default'}
+                        note="в прибыль не входят"
+                    />
+                </StatRow>
+
+                <span className={style.profitHint}>
+                    Считаются оплаченные и выполненные заказы с указанной себестоимостью. У Steam она считается сама.
+                </span>
+            </section>
+
             <section className={style.section}>
                 <StatRow>
                     <Stat
-                        label={`Выручка за ${range.days} дней`}
+                        label={`Выручка за ${period}`}
                         value={stats.isLoading && !report ? <Skeleton width={110} height={18}/> : moneyTitle(report?.totals?.revenue)}
                         note={report ? `скидками отдано ${moneyTitle(report.totals.discount)}` : ''}
                     />

@@ -1,7 +1,8 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
     Badge,
     Button,
+    Input,
     Inspector,
     InspectorRows,
     InspectorSection,
@@ -14,7 +15,7 @@ import {useResource} from '../../platform/useResource';
 import {useMutation} from '../../platform/useMutation';
 import {keys} from '../../platform/resources';
 import {askConfirm, toast, toastFail} from '../../platform/notify';
-import {fetchOrder, markPayoutManual, notifyClosedProfile, setOrderStatus} from './api';
+import {fetchOrder, markPayoutManual, notifyClosedProfile, setOrderCost, setOrderStatus} from './api';
 import {
     PAYMENT_TITLES,
     PAYOUT_TITLES,
@@ -44,6 +45,51 @@ const copyText = async (text, done) => {
     }
 };
 
+const asInput = (value) => (value === null || value === undefined ? '' : String(Number(value)));
+
+function CostEditor({order, saving, onSave}) {
+    const [value, setValue] = useState(asInput(order.costPrice));
+
+    useEffect(() => {
+        setValue(asInput(order.costPrice));
+    }, [order.id, order.costPrice]);
+
+    const dirty = value.trim() !== asInput(order.costPrice);
+    const hasCost = order.cost !== null && order.cost !== undefined;
+
+    return (
+        <div className={style.costBox}>
+            <span className={style.costLabel}>Себестоимость</span>
+            <div className={style.costRow}>
+                <Input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={value}
+                    placeholder={order.costAuto ? `авто: ${order.cost}` : 'не указана'}
+                    onChange={(event) => setValue(event.target.value)}
+                    onKeyDown={(event) => {
+                        if (event.key === 'Enter' && dirty) onSave(value);
+                    }}
+                />
+                <Button variant="primary" disabled={!dirty} loading={saving} onClick={() => onSave(value)}>
+                    Сохранить
+                </Button>
+            </div>
+            <span className={hasCost ? style.costHint : style.costHintEmpty}>
+                {!hasCost
+                    ? 'Не указана — заказ не попадёт в чистую прибыль'
+                    : (
+                        <>
+                            {order.costAuto ? 'Посчитана автоматически · ' : ''}
+                            прибыль <Money value={order.profit}/>
+                        </>
+                    )}
+            </span>
+        </div>
+    );
+}
+
 export default function OrderInspector({id, onClose}) {
     const [tab, setTab] = useState('main');
 
@@ -61,6 +107,12 @@ export default function OrderInspector({id, onClose}) {
     const payout = useMutation(markPayoutManual, {
         invalidates: [keys.orders],
         done: 'Отмечено ручное пополнение',
+    });
+
+    const saveCost = useMutation(setOrderCost, {
+        invalidates: [keys.orders, ['overview']],
+        done: 'Себестоимость сохранена',
+        onDone: () => card.refresh(),
     });
 
     const closedProfile = useMutation(notifyClosedProfile, {
@@ -127,13 +179,23 @@ export default function OrderInspector({id, onClose}) {
             onRetry={card.refresh}
             width="l"
             footer={(
-                <div className={style.statusBox}>
-                    <span className={style.statusLabel}>Сменить статус заказа</span>
-                    <StatusMenu
-                        current={order?.status}
-                        disabled={!order || changeStatus.loading}
-                        onPick={onChangeStatus}
-                    />
+                <div className={style.footerGrid}>
+                    <div className={style.statusBox}>
+                        <span className={style.statusLabel}>Сменить статус заказа</span>
+                        <StatusMenu
+                            current={order?.status}
+                            disabled={!order || changeStatus.loading}
+                            onPick={onChangeStatus}
+                        />
+                    </div>
+
+                    {order ? (
+                        <CostEditor
+                            order={order}
+                            saving={saveCost.loading}
+                            onSave={(costPrice) => saveCost.run({orderId: order.id, costPrice})}
+                        />
+                    ) : null}
                 </div>
             )}
         >

@@ -15,6 +15,7 @@ import {Tabs} from '../../ui/primitives/Tabs';
 import {fetchOverview} from './api';
 import {
     PLATFORM_TITLES,
+    PROFIT_PAGE_TYPES,
     RANGES,
     TYPE_TITLES,
     attentionRows,
@@ -26,11 +27,6 @@ import {
     profitSlice,
     rangeQuery
 } from './overviewModel';
-
-const PROFIT_PLATFORMS = [
-    {value: '', title: 'Все площадки'},
-    ...Object.entries(PLATFORM_TITLES).map(([value, title]) => ({value, title}))
-];
 import style from './OverviewScreen.module.scss';
 import {formatMoscow} from '../../platform/moscowTime';
 
@@ -51,7 +47,7 @@ export default function OverviewScreen() {
     const [rangeId, setRangeId] = useState('30');
     const [stockOpen, setStockOpen] = useState(false);
     const [custom, setCustom] = useState(() => rangeQuery(30));
-    const [profitPlatform, setProfitPlatform] = useState('');
+    const [profitPage, setProfitPage] = useState('');
     const range = RANGES.find((item) => item.id === rangeId) || RANGES[1];
     const customBad = !range.days && (!custom.from || !custom.to || custom.from > custom.to);
     const query = useMemo(
@@ -71,7 +67,7 @@ export default function OverviewScreen() {
 
     const report = stats.data || null;
     const period = periodTitle(range, query);
-    const profit = profitSlice(report, profitPlatform);
+    const profit = profitSlice(report, profitPage);
     const bars = useMemo(() => barHeights(report?.byDay), [report]);
     const attention = attentionRows(report?.attention);
 
@@ -107,9 +103,9 @@ export default function OverviewScreen() {
                     <h2 className={style.title}>Чистая прибыль за {period}</h2>
                     <div className={style.profitPlatform}>
                         <Select
-                            options={PROFIT_PLATFORMS}
-                            value={profitPlatform}
-                            onChange={(event) => setProfitPlatform(event.target.value)}
+                            options={PROFIT_PAGE_TYPES}
+                            value={profitPage}
+                            onChange={(event) => setProfitPage(event.target.value)}
                         />
                     </div>
                 </header>
@@ -139,7 +135,7 @@ export default function OverviewScreen() {
                             cost: 'missing',
                             from: query.from,
                             to: query.to,
-                            ...(profitPlatform ? {platform: profitPlatform} : {})
+                            ...(profitPage ? {pageType: profitPage} : {})
                         }).toString())}
                     >
                         <Stat

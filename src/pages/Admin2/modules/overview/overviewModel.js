@@ -7,11 +7,19 @@ export const RANGES = [
 
 const EMPTY_PROFIT = {profit: 0, profitOrders: 0, profitRevenue: 0, noCostOrders: 0, paidOrders: 0};
 
-export const profitSlice = (report, platform = '') => {
+export const PROFIT_PAGE_TYPES = [
+    {value: '', title: 'Все витрины'},
+    {value: 'steam', title: 'Steam'},
+    {value: 'ps', title: 'PS'},
+    {value: 'ps_india', title: 'PS Индия'},
+    {value: 'xbox', title: 'Xbox'}
+];
+
+export const profitSlice = (report, pageType = '') => {
     if (!report) return null;
 
-    const source = platform
-        ? (report.byPlatform || []).find((row) => row.platform === platform)
+    const source = pageType
+        ? (report.byPageType || []).find((row) => row.pageType === pageType)
         : report.totals;
 
     const slice = {...EMPTY_PROFIT, ...(source || {})};

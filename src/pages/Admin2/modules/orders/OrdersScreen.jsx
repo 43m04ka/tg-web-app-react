@@ -35,6 +35,7 @@ const DEFAULTS = {
     payoutStatus: '',
     trouble: '',
     cost: '',
+    pageType: '',
     from: '',
     to: '',
     sorting: 'newest',
@@ -83,6 +84,15 @@ const PLATFORM_OPTIONS = [
     {value: 'max', title: 'MAX'},
 ];
 
+const PAGE_TYPE_OPTIONS = [
+    {value: '', title: 'Витрина: любая'},
+    {value: 'steam', title: 'Steam'},
+    {value: 'ps', title: 'PS'},
+    {value: 'ps_india', title: 'PS Индия'},
+    {value: 'xbox', title: 'Xbox'},
+    {value: 'services', title: 'Сервисы'},
+];
+
 const COST_OPTIONS = [
     {value: '', title: 'Себестоимость: любая'},
     {value: 'missing', title: 'Без себестоимости'},
@@ -120,6 +130,7 @@ export default function OrdersScreen() {
         payoutStatus: value.payoutStatus,
         trouble: value.trouble,
         cost: value.cost,
+        pageType: value.pageType,
         from: value.from,
         to: value.to,
         sorting: value.sorting,
@@ -248,6 +259,11 @@ export default function OrdersScreen() {
                             options={TROUBLE_OPTIONS}
                             value={value.trouble}
                             onChange={(event) => patch({trouble: event.target.value})}
+                        />
+                        <Select
+                            options={PAGE_TYPE_OPTIONS}
+                            value={value.pageType}
+                            onChange={(event) => patch({pageType: event.target.value})}
                         />
                         <Select
                             options={COST_OPTIONS}

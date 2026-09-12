@@ -1,23 +1,47 @@
+.slot {
+    position: relative;
+    z-index: 45;
+    flex: none;
+    width: var(--a2-nav-offset);
+    height: 100%;
+    transition: width var(--a2-motion-slow) var(--a2-ease);
+}
+
 .nav {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
     display: flex;
     flex-direction: column;
-    width: var(--a2-nav-width);
-    height: 100%;
+    width: var(--a2-rail-width);
+    overflow: hidden;
     border-right: 1px solid var(--a2-border);
     background: var(--a2-plane);
+    transition: width var(--a2-motion-slow) var(--a2-ease), box-shadow var(--a2-motion-slow) var(--a2-ease);
+}
+
+.expanded {
+    width: var(--a2-nav-width);
+}
+
+.floating {
+    box-shadow: var(--a2-shadow-raised);
 }
 
 .brand {
     display: flex;
+    flex: none;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     height: 46px;
-    padding: 0 14px;
+    padding: 0 16px;
     border-bottom: 1px solid var(--a2-border);
 }
 
 .mark {
     display: inline-flex;
+    flex: none;
     align-items: center;
     justify-content: center;
     width: 24px;
@@ -34,6 +58,7 @@
     color: var(--a2-text);
     font-size: var(--a2-size-m);
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .groups {
@@ -41,8 +66,10 @@
     flex: 1;
     flex-direction: column;
     gap: 14px;
-    padding: 12px 8px;
+    padding: 12px 10px;
+    overflow-x: hidden;
     overflow-y: auto;
+    scrollbar-width: thin;
 }
 
 .group {
@@ -52,7 +79,24 @@
 }
 
 .groupTitle {
-    padding: 0 8px 5px;
+    position: relative;
+    padding: 0 10px 5px;
+    white-space: nowrap;
+}
+
+.groupTitle::before {
+    position: absolute;
+    top: calc(50% - 3px);
+    left: 0;
+    width: 36px;
+    height: 1px;
+    background: var(--a2-border);
+    content: '';
+    opacity: 0;
+    transition: opacity var(--a2-motion) var(--a2-ease);
+}
+
+.groupText {
     color: var(--a2-text-faint);
     font-size: var(--a2-size-xs);
     font-weight: 600;
@@ -63,9 +107,9 @@
 .link {
     display: flex;
     align-items: center;
-    gap: 9px;
+    gap: 10px;
     height: 30px;
-    padding: 0 8px;
+    padding: 0 10px;
     border-radius: var(--a2-radius-m);
     color: var(--a2-text-muted);
     font-size: var(--a2-size-m);
@@ -73,12 +117,22 @@
     transition: background var(--a2-motion) var(--a2-ease), color var(--a2-motion) var(--a2-ease);
 }
 
+.link svg {
+    flex: none;
+}
+
 .link:hover {
     background: var(--a2-card);
     color: var(--a2-text);
 }
 
-.active {
+.link:focus-visible {
+    outline: 2px solid var(--a2-accent);
+    outline-offset: -2px;
+}
+
+.active,
+.active:hover {
     background: var(--a2-accent-soft);
     color: var(--a2-accent);
 }
@@ -91,9 +145,52 @@
 
 .footer {
     display: flex;
+    flex: none;
     align-items: center;
     gap: 2px;
     height: var(--a2-dock-height);
-    padding: 0 8px;
+    padding: 0 14px;
     border-top: 1px solid var(--a2-border);
+}
+
+.pin {
+    margin-left: auto;
+}
+
+.brandText,
+.groupText,
+.linkText,
+.footerExtra {
+    transition: opacity var(--a2-motion) var(--a2-ease);
+}
+
+.collapsed .brandText,
+.collapsed .groupText,
+.collapsed .linkText {
+    opacity: 0;
+}
+
+.collapsed .footerExtra {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.collapsed .groupTitle::before {
+    opacity: 1;
+}
+
+.collapsed .groups {
+    scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .slot,
+    .nav,
+    .brandText,
+    .groupText,
+    .linkText,
+    .footerExtra,
+    .groupTitle::before {
+        transition: none;
+    }
 }

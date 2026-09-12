@@ -1,17 +1,41 @@
 import React, {Suspense, useCallback, useEffect, useMemo, useState} from 'react';
-import {Navigate, Route, Routes, useNavigate} from 'react-router-dom';
+import {Navigate, Route, Routes, useLocation, useNavigate} from 'react-router-dom';
 import Navigation from './Navigation';
 import ContextBar from './ContextBar';
 import CommandPalette from './CommandPalette';
 import TaskDock from './TaskDock/TaskDock';
-import {BASE, homePath, moduleRoutes} from '../platform/registry';
+import {BASE, homePath, moduleOfPath, moduleRoutes} from '../platform/registry';
 import {signOut} from '../platform/session';
 import {SkeletonRows} from '../ui/primitives/Feedback';
 import style from './AdminShell.module.scss';
 
+const PIN_KEY = 'a2.nav.pinned';
+
+const readPinned = () => {
+    try {
+        return window.localStorage.getItem(PIN_KEY) === '1';
+    } catch (error) {
+        return false;
+    }
+};
+
 export default function AdminShell({theme, onToggleTheme}) {
     const navigate = useNavigate();
+    const {pathname} = useLocation();
     const [paletteOpen, setPaletteOpen] = useState(false);
+    const [pinned, setPinned] = useState(readPinned);
+
+    const docked = pinned || moduleOfPath(pathname)?.id === 'overview';
+
+    useEffect(() => {
+        try {
+            window.localStorage.setItem(PIN_KEY, pinned ? '1' : '0');
+        } catch (error) {
+            return;
+        }
+    }, [pinned]);
+
+    const togglePin = useCallback(() => setPinned((value) => !value), []);
 
     const routes = useMemo(() => moduleRoutes().map((route) => ({
         ...route,
@@ -47,17 +71,27 @@ export default function AdminShell({theme, onToggleTheme}) {
             run: () => onToggleTheme(),
         },
         {
+            id: 'shell.nav',
+            title: pinned ? 'Сворачивать меню на рабочих экранах' : 'Держать меню раскрытым везде',
+            moduleTitle: 'Оболочка',
+            icon: 'pin',
+            run: togglePin,
+        },
+        {
             id: 'shell.signout',
             title: 'Выйти из админки',
             moduleTitle: 'Оболочка',
             icon: 'exit',
             run: () => signOut(),
         },
-    ], [theme, onToggleTheme]);
+    ], [theme, onToggleTheme, pinned, togglePin]);
 
     return (
-        <div className={style.shell}>
+        <div className={`${style.shell} ${docked ? '' : style.railed}`}>
             <Navigation
+                docked={docked}
+                pinned={pinned}
+                onTogglePin={togglePin}
                 theme={theme}
                 onToggleTheme={onToggleTheme}
                 onSignOut={signOut}

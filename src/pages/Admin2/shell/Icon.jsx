@@ -23,6 +23,7 @@ const PATHS = {
     cancel: 'M10 3.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13z M7.5 7.5l5 5M12.5 7.5l-5 5',
     up: 'M5 12.5 10 7.5l5 5',
     down: 'M5 7.5 10 12.5l5-5',
+    pin: 'M7.5 3.5h5M8.5 3.5v4.2L6 11h8l-2.5-3.3V3.5M10 11v5.5',
 };
 
 export default function Icon({name, size = 16}) {

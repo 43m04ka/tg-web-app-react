@@ -7,6 +7,11 @@
     font-family: var(--a2-font);
     font-size: var(--a2-size-m);
     overflow: hidden;
+    --a2-nav-offset: var(--a2-nav-width);
+}
+
+.railed {
+    --a2-nav-offset: var(--a2-rail-width);
 }
 
 .main {

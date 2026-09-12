@@ -11,18 +11,21 @@ const CLOSE_DELAY = 260;
 export default function Navigation({docked, pinned, onTogglePin, theme, onToggleTheme, onSignOut}) {
     const groups = navigationGroups();
     const [open, setOpen] = useState(false);
+    const navRef = useRef(null);
     const timer = useRef(null);
     const armed = useRef(true);
     const hovering = useRef(false);
+    const picked = useRef(null);
 
     const schedule = useCallback((next, delay) => {
         clearTimeout(timer.current);
         timer.current = setTimeout(() => setOpen(next), delay);
     }, []);
 
-    const collapse = useCallback(() => {
+    const collapse = useCallback(({keepArmed = false} = {}) => {
         clearTimeout(timer.current);
-        armed.current = false;
+        picked.current = null;
+        armed.current = keepArmed;
         setOpen(false);
     }, []);
 
@@ -30,6 +33,13 @@ export default function Navigation({docked, pinned, onTogglePin, theme, onToggle
 
     useEffect(() => {
         clearTimeout(timer.current);
+
+        if (!docked && picked.current && hovering.current) {
+            setOpen(true);
+            return;
+        }
+
+        picked.current = null;
         setOpen(false);
     }, [docked]);
 
@@ -40,11 +50,26 @@ export default function Navigation({docked, pinned, onTogglePin, theme, onToggle
         if (!floating) return undefined;
 
         const onKey = (event) => {
-            if (event.key === 'Escape') collapse();
+            if (event.key === 'Escape') collapse({keepArmed: !hovering.current});
+        };
+
+        const onMove = (event) => {
+            if (picked.current && event.clientX > picked.current.limit) collapse({keepArmed: true});
+        };
+
+        const onPointerDown = (event) => {
+            if (navRef.current && !navRef.current.contains(event.target)) collapse({keepArmed: true});
         };
 
         document.addEventListener('keydown', onKey);
-        return () => document.removeEventListener('keydown', onKey);
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('pointerdown', onPointerDown);
+
+        return () => {
+            document.removeEventListener('keydown', onKey);
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('pointerdown', onPointerDown);
+        };
     }, [floating, collapse]);
 
     const onMouseEnter = () => {
@@ -55,7 +80,7 @@ export default function Navigation({docked, pinned, onTogglePin, theme, onToggle
     const onMouseLeave = () => {
         hovering.current = false;
         armed.current = true;
-        schedule(false, CLOSE_DELAY);
+        if (!picked.current) schedule(false, CLOSE_DELAY);
     };
 
     const onFocus = (event) => {
@@ -65,12 +90,20 @@ export default function Navigation({docked, pinned, onTogglePin, theme, onToggle
     };
 
     const onBlur = (event) => {
-        if (hovering.current || event.currentTarget.contains(event.relatedTarget)) return;
+        if (hovering.current || picked.current || event.currentTarget.contains(event.relatedTarget)) return;
         schedule(false, 0);
     };
 
-    const onPick = () => {
-        if (!docked) collapse();
+    const onPick = (event) => {
+        clearTimeout(timer.current);
+
+        if (event.detail === 0 || !navRef.current) {
+            if (!docked) collapse();
+            return;
+        }
+
+        const rect = navRef.current.getBoundingClientRect();
+        picked.current = {limit: Math.max(rect.right, event.clientX + rect.width / 2)};
     };
 
     const classes = [
@@ -82,6 +115,7 @@ export default function Navigation({docked, pinned, onTogglePin, theme, onToggle
     return (
         <div className={style.slot}>
             <nav
+                ref={navRef}
                 className={classes}
                 aria-label="Разделы админки"
                 onMouseEnter={onMouseEnter}

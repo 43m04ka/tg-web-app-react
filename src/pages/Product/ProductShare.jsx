@@ -11,7 +11,7 @@ const SHARE_NOTICES = {
     failed: 'Не удалось поделиться'
 };
 
-export default function ProductShare({productId, userId, text, link}) {
+export default function ProductShare({productId, text, link}) {
     const [notice, setNotice] = useState(null);
     const timerRef = useRef(0);
 
@@ -25,9 +25,9 @@ export default function ProductShare({productId, userId, text, link}) {
 
     const share = useCallback(async () => {
         hapticImpact('light');
-        const notice = SHARE_NOTICES[await shareProduct({productId, userId, text, link})];
+        const notice = SHARE_NOTICES[await shareProduct({productId, text, link})];
         if (notice) flash(notice);
-    }, [productId, userId, text, link, flash]);
+    }, [productId, text, link, flash]);
 
     const copy = useCallback(async () => {
         hapticImpact('light');

@@ -28,8 +28,11 @@ export const copyText = async (text) => {
     }
 };
 
-export const shareProduct = async ({productId, userId, text, link}) => {
+const telegramUserId = (tg) => tg?.initDataUnsafe?.user?.id ?? null;
+
+export const shareProduct = async ({productId, text, link}) => {
     const tg = getWebApp();
+    const userId = telegramUserId(tg);
 
     if (userId && supportsShareMessage(tg)) {
         const messageId = await prepareShareMessage(productId, userId).catch((error) => {

@@ -345,7 +345,6 @@ export default function Product() {
 
                 <ProductShare
                     productId={product.id}
-                    userId={userId}
                     text={shareText(product, specs, link)}
                     link={link}
                 />

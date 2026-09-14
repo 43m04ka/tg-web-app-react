@@ -1,4 +1,4 @@
-import {isSubscription} from '../Main/catalogSections';
+import {discountPercent, isSubscription} from '../Main/catalogSections';
 
 const EXCEL_EPOCH = Date.UTC(1899, 11, 30);
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -188,11 +188,13 @@ export const productLink = (product, isTg) => (isTg
     : `${window.location.origin}?startapp=${product.id}`);
 
 export const shareText = (product, specs, link) => {
-    const lines = [`${product.name} — ${Number(product.price).toLocaleString('ru-RU')} ₽`];
+    const price = Number(product.price);
+    const lines = [price > 0 ? `${product.name} — ${price.toLocaleString('ru-RU')} ₽` : product.name];
 
-    const until = promotionLabel(product);
-    if (until && hasValue(product.oldPrice)) {
-        lines.push(`скидка действует до ${until}`);
+    const percent = discountPercent(product.price, product.oldPrice);
+    if (percent > 0) {
+        const until = promotionLabel(product);
+        lines.push(until ? `Скидка −${percent}% до ${until}` : `Скидка −${percent}%`);
     }
 
     lines.push('');

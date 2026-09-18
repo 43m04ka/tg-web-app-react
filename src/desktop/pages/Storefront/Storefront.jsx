@@ -5,11 +5,14 @@ import {useStructureStore} from '../../../store/useStructureStore';
 import {usePlatform} from '../../../shared/hooks/usePlatform';
 import {useCatalogProducts} from '../../../pages/Catalog/useCatalogProducts';
 import {createProductOrigin} from '../../../shared/lib/productOrigin';
-import {productRoute} from '../../../shared/lib/pageRoutes';
+import {catalogRoute, productRoute} from '../../../shared/lib/pageRoutes';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
 import {resolveBotType, storefrontList} from '../../model/desktopNav';
 import {storefrontConfig} from '../../model/storefrontConfig';
-import StorefrontCard from './StorefrontCard';
+import {buildHero, buildShelves, mergeOffers} from '../../model/storefrontModel';
+import OfferCard from './OfferCard';
+import Shelf from './Shelf';
+import StorefrontHero from './StorefrontHero';
 import style from './Storefront.module.scss';
 
 const SKELETON_COUNT = 12;
@@ -21,6 +24,10 @@ export default function Storefront() {
     const pages = useStructureStore((store) => store.pages);
     const startPages = useStructureStore((store) => store.startPages);
     const catalogs = useStructureStore((store) => store.catalogs);
+    const structureBlocks = useStructureStore((store) => store.structureBlocks);
+    const mainPageProducts = useStructureStore((store) => store.mainPageProducts);
+    const banners = useStructureStore((store) => store.banners);
+
     const setPageId = useSessionStore((store) => store.setPageId);
 
     const [scopeId, setScopeId] = useState(null);
@@ -32,9 +39,26 @@ export default function Storefront() {
         [startPages, pages, botType]
     );
 
+    const pageIds = useMemo(() => storefronts.map((item) => item.id), [storefronts]);
+
     const effectiveBotType = useMemo(
         () => resolveBotType(startPages, botType),
         [startPages, botType]
+    );
+
+    const originOf = useMemo(
+        () => createProductOrigin({catalogs, pages, startPages}),
+        [catalogs, pages, startPages]
+    );
+
+    const hero = useMemo(
+        () => buildHero({banners, mainPageProducts, originOf, pageIds, scopeId, limit: config.heroSize}),
+        [banners, mainPageProducts, originOf, pageIds, scopeId, config.heroSize]
+    );
+
+    const shelves = useMemo(
+        () => buildShelves({structureBlocks, catalogs, mainPageProducts, originOf, pageIds, scopeId}),
+        [structureBlocks, catalogs, mainPageProducts, originOf, pageIds, scopeId]
     );
 
     const query = useMemo(() => (scopeId === null
@@ -44,19 +68,30 @@ export default function Storefront() {
     const {items, total, hasMore, isLoading, isLoadingMore, error, loadMore, retry} =
         useCatalogProducts(query, {enabled: Array.isArray(startPages)});
 
-    const originOf = useMemo(
-        () => createProductOrigin({catalogs, pages, startPages}),
-        [catalogs, pages, startPages]
+    const catalogOffers = useMemo(
+        () => (items === null ? null : mergeOffers(items, originOf)),
+        [items, originOf]
     );
 
-    const openProduct = useCallback((product) => {
-        const origin = originOf(product);
+    const openOffer = useCallback((offer) => {
+        const origin = offer.origins[0] || originOf(offer.product);
         if (origin) setPageId(origin.pageId);
 
-        navigate(productRoute(product, catalogs) || `/card/${product.id}`);
+        navigate(productRoute(offer.product, catalogs) || `/card/${offer.product.id}`);
     }, [catalogs, navigate, originOf, setPageId]);
 
-    const isFirstLoad = isLoading && !isLoadingMore && items === null;
+    const openHero = useCallback((item) => {
+        if (item.origin) setPageId(item.origin.pageId);
+        navigate(productRoute(item.product, catalogs) || `/card/${item.product.id}`);
+    }, [catalogs, navigate, setPageId]);
+
+    const openCatalog = useCallback((target) => {
+        setPageId(target.pageId);
+        navigate(catalogRoute(target.path));
+    }, [navigate, setPageId]);
+
+    const isFirstLoad = isLoading && !isLoadingMore && catalogOffers === null;
+    const showOrigin = scopeId === null;
 
     return (
         <div className={style.screen}>
@@ -72,7 +107,7 @@ export default function Storefront() {
                     onClick={() => setScopeId(null)}
                 >
                     {config.allChipLabel}
-                    {scopeId === null && total ? <span className={style.chipCount}>{total}</span> : null}
+                    {total ? <span className={style.chipCount}>{total}</span> : null}
                 </button>
 
                 {storefronts.map((item) => (
@@ -94,54 +129,74 @@ export default function Storefront() {
                 ))}
             </div>
 
-            {error && items === null ? (
-                <EmptyState
-                    title="Не удалось загрузить каталог"
-                    text="Проверьте соединение и попробуйте снова"
-                    actionLabel="Повторить"
-                    onAction={retry}
+            <StorefrontHero items={hero} onOpen={openHero}/>
+
+            {(shelves || []).map((shelf) => (
+                <Shelf
+                    key={shelf.key}
+                    shelf={shelf}
+                    size={config.shelfSize}
+                    showOrigin={showOrigin}
+                    onOpen={openOffer}
+                    onOpenCatalog={openCatalog}
                 />
-            ) : null}
+            ))}
 
-            {isFirstLoad ? (
-                <div className={style.grid}>
-                    {Array.from({length: SKELETON_COUNT}, (skeleton, index) => (
-                        <div key={index} className={style.skeleton}/>
-                    ))}
-                </div>
-            ) : null}
+            <section className={style.shelf}>
+                <header className={style.shelfHead}>
+                    <span className={style.shelfTitle}>{config.catalogTitle}</span>
+                    {total ? <span className={style.shelfNote}>{total.toLocaleString('ru-RU')}</span> : null}
+                </header>
 
-            {items !== null ? (
-                <>
-                    {items.length === 0 && !isLoading ? (
-                        <EmptyState title="Пока пусто" text="В этой витрине нет товаров"/>
-                    ) : null}
+                {error && catalogOffers === null ? (
+                    <EmptyState
+                        title="Не удалось загрузить каталог"
+                        text="Проверьте соединение и попробуйте снова"
+                        actionLabel="Повторить"
+                        onAction={retry}
+                    />
+                ) : null}
 
+                {isFirstLoad ? (
                     <div className={style.grid}>
-                        {items.map((product) => (
-                            <StorefrontCard
-                                key={`${product.catalogId}:${product.id}`}
-                                product={product}
-                                origin={scopeId === null ? originOf(product) : null}
-                                onOpen={openProduct}
-                            />
+                        {Array.from({length: SKELETON_COUNT}, (skeleton, index) => (
+                            <div key={index} className={style.skeleton}/>
                         ))}
                     </div>
+                ) : null}
 
-                    {hasMore ? (
-                        <div className={style.more}>
-                            <button
-                                type="button"
-                                className={style.moreButton}
-                                onClick={loadMore}
-                                disabled={isLoadingMore}
-                            >
-                                {isLoadingMore ? 'Загружаем…' : 'Показать ещё'}
-                            </button>
+                {catalogOffers !== null ? (
+                    <>
+                        {catalogOffers.length === 0 && !isLoading ? (
+                            <EmptyState title="Пока пусто" text="В этой витрине нет товаров"/>
+                        ) : null}
+
+                        <div className={style.grid}>
+                            {catalogOffers.map((offer) => (
+                                <OfferCard
+                                    key={offer.key}
+                                    offer={offer}
+                                    showOrigin={showOrigin}
+                                    onOpen={openOffer}
+                                />
+                            ))}
                         </div>
-                    ) : null}
-                </>
-            ) : null}
+
+                        {hasMore ? (
+                            <div className={style.more}>
+                                <button
+                                    type="button"
+                                    className={style.moreButton}
+                                    onClick={loadMore}
+                                    disabled={isLoadingMore}
+                                >
+                                    {isLoadingMore ? 'Загружаем…' : 'Показать ещё'}
+                                </button>
+                            </div>
+                        ) : null}
+                    </>
+                ) : null}
+            </section>
         </div>
     );
 }

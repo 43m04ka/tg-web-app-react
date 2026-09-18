@@ -17,6 +17,7 @@ export const createProductOrigin = ({catalogs, pages, startPages} = {}) => {
 
         return {
             pageId,
+            type: page?.type || null,
             label: regionLabel(page, startPage),
             title: regionTitle(page, startPage),
             icon: regionIcon(page, startPage),

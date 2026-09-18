@@ -21,6 +21,7 @@ const originOf = createProductOrigin({catalogs, pages, startPages});
 test('витрина товара берётся из каталога', () => {
     expect(originOf({catalogId: 100})).toEqual({
         pageId: 1,
+        type: 'ps',
         label: 'PS Турция',
         title: 'Турция',
         icon: '/regions/ps.png',

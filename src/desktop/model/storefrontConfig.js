@@ -1,8 +1,11 @@
 export const DEFAULT_STOREFRONT = Object.freeze({
     title: 'Игры всех витрин',
-    subtitle: 'Каталоги PlayStation, Xbox и Steam в одном списке',
-    sorting: 'discount',
-    allChipLabel: 'Все витрины'
+    subtitle: 'PlayStation Турция, PlayStation Индия и Xbox в одном списке',
+    allChipLabel: 'Все витрины',
+    catalogTitle: 'Весь каталог',
+    sorting: 'default',
+    shelfSize: 6,
+    heroSize: 3
 });
 
 export const storefrontConfig = (settings) => ({

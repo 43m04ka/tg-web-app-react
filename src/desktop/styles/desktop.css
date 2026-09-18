@@ -13,7 +13,7 @@ html[data-view='desktop'] #root {
 
 html[data-view='desktop'] body {
     font-size: var(--d-fs-md);
-    background: var(--bg);
+    background: var(--d-bg);
 }
 
 html[data-view='desktop'] {
@@ -50,7 +50,9 @@ html[data-view='desktop'] button:active:not(:disabled) {
     --d-max: 1280px;
     --d-gutter: 32px;
     --d-topbar: 64px;
+    --d-bg: oklch(0.137 0.008 264);
 
+    --d-fs-2xs: 10px;
     --d-fs-xs: 12px;
     --d-fs-sm: 13px;
     --d-fs-md: 14px;

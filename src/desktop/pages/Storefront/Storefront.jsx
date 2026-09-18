@@ -120,20 +120,27 @@ export default function Storefront() {
                 </h1>
             </header>
 
-            <div className={style.chips}>
+            <div className={style.switcher} role="tablist" aria-label="Витрина">
                 <button
                     type="button"
+                    role="tab"
+                    aria-selected={scopeId === null}
                     className={`${style.chip} ${scopeId === null ? style.chipActive : ''}`}
                     onClick={() => setScopeId(null)}
                 >
-                    {config.allChipLabel}
-                    {scopeId === null && total ? <span className={style.chipCount}>{total}</span> : null}
+                    <span className={style.chipAll} aria-hidden="true">★</span>
+                    <span className={style.chipLabel}>{config.allChipLabel}</span>
+                    {scopeId === null && total ? (
+                        <span className={style.chipCount}>{total.toLocaleString('ru-RU')}</span>
+                    ) : null}
                 </button>
 
                 {storefronts.map((item) => (
                     <button
                         key={item.id}
                         type="button"
+                        role="tab"
+                        aria-selected={scopeId === item.id}
                         className={`${style.chip} ${scopeId === item.id ? style.chipActive : ''}`}
                         onClick={() => setScopeId(item.id)}
                     >
@@ -144,8 +151,10 @@ export default function Storefront() {
                                 aria-hidden="true"
                             />
                         ) : null}
-                        {item.label}
-                        {scopeId === item.id && total ? <span className={style.chipCount}>{total}</span> : null}
+                        <span className={style.chipLabel}>{item.label}</span>
+                        {scopeId === item.id && total ? (
+                            <span className={style.chipCount}>{total.toLocaleString('ru-RU')}</span>
+                        ) : null}
                     </button>
                 ))}
             </div>

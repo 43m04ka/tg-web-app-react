@@ -1,5 +1,4 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {createPortal} from 'react-dom';
 import {useNavigate} from 'react-router-dom';
 import {searchProducts} from '../../shared/api/catalog';
 import {useStructureStore} from '../../store/useStructureStore';
@@ -17,7 +16,7 @@ import style from './SearchBox.module.scss';
 
 const DEBOUNCE_MS = 240;
 const MIN_QUERY = 2;
-const LIMIT = 7;
+const LIMIT = 6;
 const SKELETONS = 4;
 
 const highlight = (text, needle) => {
@@ -212,188 +211,184 @@ export default function SearchBox({onOpenChange}) {
     const showPanel = isOpen && (isSearching || showRecent);
 
     return (
-        <>
-            {isOpen ? createPortal(<div className={style.scrim} aria-hidden="true"/>, document.body) : null}
+        <div className={isOpen ? style.root + ' ' + style.rootOpen : style.root} ref={rootRef}>
+            <form
+                className={style.field}
+                role="search"
+                onSubmit={(event) => {
+                    event.preventDefault();
+                    if (isSearching) openFullSearch();
+                }}
+            >
+                <SearchIcon className={style.icon}/>
 
-            <div className={isOpen ? style.root + ' ' + style.rootOpen : style.root} ref={rootRef}>
-                <form
-                    className={style.field}
-                    role="search"
-                    onSubmit={(event) => {
-                        event.preventDefault();
-                        if (isSearching) openFullSearch();
-                    }}
-                >
-                    <SearchIcon className={style.icon}/>
+                <input
+                    ref={inputRef}
+                    className={style.input}
+                    type="text"
+                    value={query}
+                    placeholder="Поиск игры или подписки"
+                    autoComplete="off"
+                    onChange={(event) => setQuery(event.target.value)}
+                    onFocus={() => setOpen(true)}
+                    onKeyDown={onKeyDown}
+                    aria-label="Поиск по всем витринам"
+                />
 
-                    <input
-                        ref={inputRef}
-                        className={style.input}
-                        type="text"
-                        value={query}
-                        placeholder="Поиск игры или подписки"
-                        autoComplete="off"
-                        onChange={(event) => setQuery(event.target.value)}
-                        onFocus={() => setOpen(true)}
-                        onKeyDown={onKeyDown}
-                        aria-label="Поиск по всем витринам"
-                    />
+                {query ? (
+                    <button
+                        type="button"
+                        className={style.clear}
+                        onClick={() => {
+                            setQuery('');
+                            inputRef.current?.focus();
+                        }}
+                        aria-label="Очистить"
+                    >
+                        ✕
+                    </button>
+                ) : (
+                    <span className={style.hotkey} aria-hidden="true">/</span>
+                )}
+            </form>
 
-                    {query ? (
-                        <button
-                            type="button"
-                            className={style.clear}
-                            onClick={() => {
-                                setQuery('');
-                                inputRef.current?.focus();
-                            }}
-                            aria-label="Очистить"
-                        >
-                            ✕
-                        </button>
-                    ) : (
-                        <span className={style.hotkey} aria-hidden="true">/</span>
-                    )}
-                </form>
-
-                <div className={showPanel ? style.drop + ' ' + style.dropOpen : style.drop} ref={listRef}>
-                    <div className={style.dropInner}>
-                        {showRecent ? (
-                            <div className={style.block}>
-                                <div className={style.blockHead}>
-                                    <span className={style.blockTitle}>Недавние запросы</span>
-                                    <button
-                                        type="button"
-                                        className={style.blockAction}
-                                        onClick={() => setRecent(clearRecentSearches())}
-                                    >
-                                        Очистить
-                                    </button>
-                                </div>
-
-                                <div className={style.recent}>
-                                    {recent.map((value, index) => (
-                                        <span key={value} className={style.recentRow} style={{'--i': index}}>
-                                            <button
-                                                type="button"
-                                                className={style.recentPick}
-                                                onClick={() => pickRecent(value)}
-                                            >
-                                                <span className={style.recentIcon} aria-hidden="true">↺</span>
-                                                {value}
-                                            </button>
-
-                                            <button
-                                                type="button"
-                                                className={style.recentDrop}
-                                                aria-label={'Убрать «' + value + '»'}
-                                                onClick={() => setRecent(forgetSearch(value))}
-                                            >
-                                                ✕
-                                            </button>
-                                        </span>
-                                    ))}
-                                </div>
+            <div className={showPanel ? style.drop + ' ' + style.dropOpen : style.drop} ref={listRef}>
+                <div className={style.dropInner}>
+                    {showRecent ? (
+                        <div className={style.block}>
+                            <div className={style.blockHead}>
+                                <span className={style.blockTitle}>Недавние запросы</span>
+                                <button
+                                    type="button"
+                                    className={style.blockAction}
+                                    onClick={() => setRecent(clearRecentSearches())}
+                                >
+                                    Очистить
+                                </button>
                             </div>
-                        ) : null}
 
-                        {isSearching && isLoading && !hasResults ? (
-                            <div className={style.results}>
-                                {Array.from({length: SKELETONS}, (row, index) => (
-                                    <span key={index} className={style.skeleton} style={{'--i': index}}>
-                                        <span className={style.skeletonCover}/>
-                                        <span className={style.skeletonText}>
-                                            <span className={style.skeletonLine}/>
-                                            <span className={style.skeletonLine + ' ' + style.skeletonLineShort}/>
-                                        </span>
+                            <div className={style.recent}>
+                                {recent.map((value, index) => (
+                                    <span key={value} className={style.recentRow} style={{'--i': index}}>
+                                        <button
+                                            type="button"
+                                            className={style.recentPick}
+                                            onClick={() => pickRecent(value)}
+                                        >
+                                            <span className={style.recentIcon} aria-hidden="true">↺</span>
+                                            {value}
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            className={style.recentDrop}
+                                            aria-label={'Убрать «' + value + '»'}
+                                            onClick={() => setRecent(forgetSearch(value))}
+                                        >
+                                            ✕
+                                        </button>
                                     </span>
                                 ))}
                             </div>
-                        ) : null}
+                        </div>
+                    ) : null}
 
-                        {isSearching && isEmpty ? (
-                            <div className={style.empty}>
-                                <span className={style.emptyIcon} aria-hidden="true">🔍</span>
-                                <span className={style.emptyTitle}>Ничего не нашлось</span>
-                                <span className={style.emptyNote}>
-                                    Проверьте написание — игры в каталоге под оригинальными названиями
+                    {isSearching && isLoading && !hasResults ? (
+                        <div className={style.results}>
+                            {Array.from({length: SKELETONS}, (row, index) => (
+                                <span key={index} className={style.skeleton} style={{'--i': index}}>
+                                    <span className={style.skeletonCover}/>
+                                    <span className={style.skeletonText}>
+                                        <span className={style.skeletonLine}/>
+                                        <span className={style.skeletonLine + ' ' + style.skeletonLineShort}/>
+                                    </span>
                                 </span>
-                                <button type="button" className={style.emptyAction} onClick={() => openFullSearch()}>
-                                    Искать с фильтрами
-                                </button>
+                            ))}
+                        </div>
+                    ) : null}
+
+                    {isSearching && isEmpty ? (
+                        <div className={style.empty}>
+                            <span className={style.emptyIcon} aria-hidden="true">🔍</span>
+                            <span className={style.emptyTitle}>Ничего не нашлось</span>
+                            <span className={style.emptyNote}>
+                                Проверьте написание — игры в каталоге под оригинальными названиями
+                            </span>
+                            <button type="button" className={style.emptyAction} onClick={() => openFullSearch()}>
+                                Искать с фильтрами
+                            </button>
+                        </div>
+                    ) : null}
+
+                    {isSearching && hasResults ? (
+                        <>
+                            <div className={style.results}>
+                                {results.map((offer, index) => {
+                                    const origin = offer.origins[0] || null;
+                                    const more = offer.origins.length - 1;
+
+                                    return (
+                                        <button
+                                            key={offer.key}
+                                            type="button"
+                                            data-row={index}
+                                            className={cursor === index
+                                                ? style.result + ' ' + style.resultOn
+                                                : style.result}
+                                            style={{'--i': index}}
+                                            onMouseEnter={() => setCursor(index)}
+                                            onClick={() => openOffer(offer)}
+                                        >
+                                            <Cover src={offer.product.image} className={style.cover}/>
+
+                                            <span className={style.text}>
+                                                <span className={style.name}>
+                                                    {highlight(offer.product.name, trimmed)}
+                                                </span>
+
+                                                <span className={style.meta}>
+                                                    {origin ? (
+                                                        <span className={style.origin}>
+                                                            {origin.icon ? (
+                                                                <span
+                                                                    className={style.originIcon}
+                                                                    style={{backgroundImage: 'url(' + origin.icon + ')'}}
+                                                                    aria-hidden="true"
+                                                                />
+                                                            ) : null}
+                                                            {origin.label}
+                                                        </span>
+                                                    ) : null}
+
+                                                    {more > 0 ? (
+                                                        <span className={style.moreTag}>ещё {more}</span>
+                                                    ) : null}
+                                                </span>
+                                            </span>
+
+                                            <span className={style.price}>
+                                                {more > 0 ? <span className={style.from}>от </span> : null}
+                                                {formatPrice(offer.price)}
+                                            </span>
+                                        </button>
+                                    );
+                                })}
                             </div>
-                        ) : null}
 
-                        {isSearching && hasResults ? (
-                            <>
-                                <div className={style.results}>
-                                    {results.map((offer, index) => {
-                                        const origin = offer.origins[0] || null;
-                                        const more = offer.origins.length - 1;
-
-                                        return (
-                                            <button
-                                                key={offer.key}
-                                                type="button"
-                                                data-row={index}
-                                                className={cursor === index
-                                                    ? style.result + ' ' + style.resultOn
-                                                    : style.result}
-                                                style={{'--i': index}}
-                                                onMouseEnter={() => setCursor(index)}
-                                                onClick={() => openOffer(offer)}
-                                            >
-                                                <Cover src={offer.product.image} className={style.cover}/>
-
-                                                <span className={style.text}>
-                                                    <span className={style.name}>
-                                                        {highlight(offer.product.name, trimmed)}
-                                                    </span>
-
-                                                    <span className={style.meta}>
-                                                        {origin ? (
-                                                            <span className={style.origin}>
-                                                                {origin.icon ? (
-                                                                    <span
-                                                                        className={style.originIcon}
-                                                                        style={{backgroundImage: 'url(' + origin.icon + ')'}}
-                                                                        aria-hidden="true"
-                                                                    />
-                                                                ) : null}
-                                                                {origin.label}
-                                                            </span>
-                                                        ) : null}
-
-                                                        {more > 0 ? (
-                                                            <span className={style.moreTag}>ещё {more}</span>
-                                                        ) : null}
-                                                    </span>
-                                                </span>
-
-                                                <span className={style.price}>
-                                                    {more > 0 ? <span className={style.from}>от </span> : null}
-                                                    {formatPrice(offer.price)}
-                                                </span>
-                                            </button>
-                                        );
-                                    })}
-                                </div>
-
-                                <button
-                                    type="button"
-                                    data-row={results.length}
-                                    className={cursor === results.length ? style.all + ' ' + style.allOn : style.all}
-                                    onMouseEnter={() => setCursor(results.length)}
-                                    onClick={() => openFullSearch()}
-                                >
-                                    <span>Показать все результаты</span>
-                                    <span className={style.enter} aria-hidden="true">Enter ↵</span>
-                                </button>
-                            </>
-                        ) : null}
-                    </div>
+                            <button
+                                type="button"
+                                data-row={results.length}
+                                className={cursor === results.length ? style.all + ' ' + style.allOn : style.all}
+                                onMouseEnter={() => setCursor(results.length)}
+                                onClick={() => openFullSearch()}
+                            >
+                                <span>Показать все результаты</span>
+                                <span className={style.enter} aria-hidden="true">Enter ↵</span>
+                            </button>
+                        </>
+                    ) : null}
                 </div>
             </div>
-        </>
+        </div>
     );
 }

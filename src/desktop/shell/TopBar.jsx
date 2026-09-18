@@ -9,11 +9,12 @@ import {resetSearchState} from '../../shared/lib/searchMemory';
 import {sectionList, storefrontList} from '../model/desktopNav';
 import {useScrolled} from './useScrolled';
 import {BasketIcon, UserIcon} from './DesktopIcons';
+import logo from '../assets/logo.png';
 import SearchBox from './SearchBox';
 import RegionMenu from './RegionMenu';
 import style from './TopBar.module.scss';
 
-export default function TopBar() {
+export default function TopBar({onSearchOpenChange}) {
     const navigate = useNavigate();
     const {pathname} = useLocation();
     const {botType} = usePlatform();
@@ -37,9 +38,9 @@ export default function TopBar() {
     );
 
     const [pickedId, setPickedId] = useState(null);
-    const [isSearchOpen, setSearchOpen] = useState(false);
 
     const isScrolled = useScrolled();
+    const isStandalone = pathname === '/steam' || pathname === '/services';
 
     useEffect(() => {
         if (storefronts.some((item) => item.id === pageId)) setPickedId(pageId);
@@ -72,14 +73,18 @@ export default function TopBar() {
     }, [go, setPageId]);
 
     return (
-        <header className={[style.bar, isScrolled ? style.barScrolled : '', isSearchOpen ? style.quiet : ''].filter(Boolean).join(' ')}>
+        <header className={isScrolled ? `${style.bar} ${style.barScrolled}` : style.bar}>
             <div className={style.inner}>
                 <button type="button" className={style.logo} onClick={() => go('/')}>
-                    <span className={style.mark}>Г</span>
+                    <span
+                        className={style.mark}
+                        style={{'--logo': `url(${logo})`}}
+                        aria-hidden="true"
+                    />
                     <span className={style.brand}>Геймворд</span>
                 </button>
 
-                <nav className={isSearchOpen ? style.nav + ' ' + style.navQuiet : style.nav}>
+                <nav className={style.nav}>
                     <button
                         type="button"
                         className={`${style.link} ${pathname === '/main' ? style.linkActive : ''}`}
@@ -100,22 +105,24 @@ export default function TopBar() {
                     ))}
                 </nav>
 
-                <SearchBox onOpenChange={setSearchOpen}/>
+                <SearchBox onOpenChange={onSearchOpenChange}/>
 
                 <div className={style.actions}>
                     <RegionMenu items={storefronts} activeId={storefrontId} onSelect={pickStorefront}/>
 
-                    <button
-                        type="button"
-                        className={`${style.action} ${pathname === '/basket' ? style.actionActive : ''}`}
-                        onClick={() => go('/basket')}
-                        aria-label="Корзина"
-                    >
-                        <BasketIcon className={style.actionIcon}/>
-                        {cartSize > 0 ? (
-                            <span key={cartSize} className={style.badge}>{cartSize > 99 ? '99+' : cartSize}</span>
-                        ) : null}
-                    </button>
+                    {isStandalone ? null : (
+                        <button
+                            type="button"
+                            className={`${style.action} ${pathname === '/basket' ? style.actionActive : ''}`}
+                            onClick={() => go('/basket')}
+                            aria-label="Корзина"
+                        >
+                            <BasketIcon className={style.actionIcon}/>
+                            {cartSize > 0 ? (
+                                <span key={cartSize} className={style.badge}>{cartSize > 99 ? '99+' : cartSize}</span>
+                            ) : null}
+                        </button>
+                    )}
 
                     <button
                         type="button"

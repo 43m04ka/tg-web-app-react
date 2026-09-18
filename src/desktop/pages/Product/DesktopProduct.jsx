@@ -15,6 +15,7 @@ import {createProductOrigin} from '../../../shared/lib/productOrigin';
 import {useStructureStore} from '../../../store/useStructureStore';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import {Reveal} from '../../shell/useReveal';
+import Spinner from '../../ui/Spinner';
 import {useDesktopProduct} from './useDesktopProduct';
 import style from './DesktopProduct.module.scss';
 
@@ -242,13 +243,34 @@ export default function DesktopProduct() {
                         <span className={style.unavailable}>Нет в наличии</span>
                     ) : cartCount > 0 ? (
                         <div className={style.counter}>
-                            <button type="button" className={style.counterButton} onClick={() => changeCount(cartCount - 1)}>−</button>
-                            <span className={style.counterValue}>{cartCount}</span>
-                            <button type="button" className={style.counterButton} onClick={() => changeCount(cartCount + 1)}>+</button>
-                            <button type="button" className={style.toBasket} onClick={() => navigate('/basket')}>В корзину</button>
+                            <button
+                                type="button"
+                                className={style.counterButton}
+                                aria-label="Убрать одну штуку"
+                                onClick={() => changeCount(cartCount - 1)}
+                            >
+                                −
+                            </button>
+
+                            <span key={cartCount} className={style.counterValue}>{cartCount}</span>
+
+                            <button
+                                type="button"
+                                className={style.counterButton}
+                                aria-label="Добавить ещё одну штуку"
+                                onClick={() => changeCount(cartCount + 1)}
+                            >
+                                +
+                            </button>
+
+                            <button type="button" className={style.toBasket} onClick={() => navigate('/basket')}>
+                                В корзину
+                                <span className={style.toBasketArrow} aria-hidden="true">→</span>
+                            </button>
                         </div>
                     ) : (
                         <button type="button" className={style.add} onClick={addAllToCart} disabled={isAdding}>
+                            {isAdding ? <Spinner/> : null}
                             {isAdding ? 'Добавляем…' : 'Добавить в корзину'}
                         </button>
                     )}

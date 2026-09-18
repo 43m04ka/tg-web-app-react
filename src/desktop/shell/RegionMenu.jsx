@@ -53,6 +53,8 @@ export default function RegionMenu({items, activeId, onSelect}) {
 
             {isOpen ? (
                 <div className={style.menu} role="listbox">
+                    <span className={style.menuTitle}>Витрина</span>
+
                     {items.map((item, index) => (
                         <button
                             key={item.id}
@@ -70,7 +72,7 @@ export default function RegionMenu({items, activeId, onSelect}) {
                                     aria-hidden="true"
                                 />
                             ) : null}
-                            <span>{item.label}</span>
+                            <span className={style.optionLabel}>{item.label}</span>
                         </button>
                     ))}
                 </div>

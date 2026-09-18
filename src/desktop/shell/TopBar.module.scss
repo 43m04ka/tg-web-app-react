@@ -48,39 +48,26 @@
 }
 
 .mark {
-  width: 30px;
-  height: 30px;
-  border-radius: var(--radius-sm);
+  width: 34px;
+  height: 27px;
+  flex: none;
   background: var(--accent);
-  color: var(--accent-contrast);
-  font-size: var(--d-fs-lg);
-  font-weight: var(--fw-bold);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  -webkit-mask: var(--logo) center / contain no-repeat;
+  mask: var(--logo) center / contain no-repeat;
   transition: transform var(--m-slow) var(--m-spring),
-              box-shadow var(--m-base) var(--m-ease);
+              background-color var(--m-base) var(--m-ease);
 }
 
 .logo:hover .mark {
-  transform: rotate(-7deg) scale(1.06);
-  box-shadow: 0 6px 18px oklch(0.7 0.145 25 / 0.35);
+  transform: scale(1.07);
+  background: var(--accent-hover);
 }
 
 .brand {
   font-size: var(--d-fs-lg);
   font-weight: var(--fw-bold);
   letter-spacing: -0.2px;
-  transition: opacity var(--m-slow) var(--m-ease),
-              max-width var(--m-slow) var(--m-ease);
   white-space: nowrap;
-  overflow: hidden;
-  max-width: 140px;
-}
-
-.quiet .brand {
-  opacity: 0;
-  max-width: 0;
 }
 
 .nav {
@@ -88,19 +75,7 @@
   align-items: center;
   gap: var(--d-gap-5);
   flex: none;
-  transition: opacity var(--m-slow) var(--m-ease),
-              max-width var(--m-slow) var(--m-ease),
-              transform var(--m-slow) var(--m-ease);
-  max-width: 460px;
-  overflow: hidden;
   white-space: nowrap;
-}
-
-.navQuiet {
-  opacity: 0;
-  max-width: 0;
-  transform: translateX(-10px);
-  pointer-events: none;
 }
 
 .link {
@@ -156,11 +131,6 @@
   align-items: center;
   gap: var(--d-gap-2);
   flex: none;
-  transition: opacity var(--m-slow) var(--m-ease);
-}
-
-.quiet .actions {
-  opacity: 0.45;
 }
 
 .action {

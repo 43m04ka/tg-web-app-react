@@ -35,29 +35,33 @@
   animation-delay: 70ms;
 }
 
-.chips {
-  display: flex;
+.switcher {
+  align-self: flex-start;
+  display: inline-flex;
   flex-wrap: wrap;
-  gap: var(--d-gap-2);
+  gap: 4px;
+  padding: 5px;
+  border-radius: 16px;
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
   animation: gw-rise-sm var(--m-slow) var(--m-ease) both;
   animation-delay: 110ms;
 }
 
 .chip {
   position: relative;
-  padding: 9px var(--d-gap-4);
+  height: 48px;
+  padding: 0 var(--d-gap-5);
   display: inline-flex;
   align-items: center;
-  gap: var(--d-gap-2);
-  border-radius: 10px;
-  background: oklch(1 0 0 / 0.042);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-secondary);
-  font-size: var(--d-fs-sm);
-  font-weight: var(--fw-semibold);
+  gap: var(--d-gap-3);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--d-fs-md);
+  font-weight: var(--fw-bold);
   overflow: hidden;
   transition: background-color var(--m-base) var(--m-ease),
-              border-color var(--m-base) var(--m-ease),
               color var(--m-base) var(--m-ease),
               transform var(--m-base) var(--m-spring);
 }
@@ -66,13 +70,14 @@
   content: '';
   position: absolute;
   inset: 0;
+  z-index: 0;
   border-radius: inherit;
   background: var(--accent-surface);
+  box-shadow: inset 0 0 0 1px var(--accent-soft);
   opacity: 0;
-  transform: scale(0.85);
+  transform: scale(0.9);
   transition: opacity var(--m-base) var(--m-ease),
               transform var(--m-base) var(--m-spring);
-  z-index: 0;
 }
 
 .chip > * {
@@ -81,9 +86,8 @@
 }
 
 .chip:hover {
-  background: oklch(1 0 0 / 0.11);
+  background: var(--surface-2);
   color: var(--text);
-  transform: translateY(-2px);
 }
 
 .chip:active {
@@ -91,8 +95,8 @@
 }
 
 .chipActive {
-  border-color: var(--accent-soft);
   color: var(--accent-text);
+  background: transparent;
 }
 
 .chipActive::after {
@@ -101,24 +105,58 @@
 }
 
 .chipIcon {
-  width: 16px;
-  height: 16px;
-  border-radius: var(--radius-xs);
-  background: center / contain no-repeat;
-  position: relative;
-  z-index: 1;
-  transition: transform var(--m-base) var(--m-spring);
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--surface-3) center / 72% no-repeat;
+  transition: transform var(--m-base) var(--m-spring),
+              background-color var(--m-base) var(--m-ease);
 }
 
 .chip:hover .chipIcon {
-  transform: scale(1.12);
+  transform: scale(1.1);
+}
+
+.chipActive .chipIcon {
+  background-color: oklch(1 0 0 / 0.1);
+}
+
+.chipAll {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--surface-3);
+  color: var(--text-faint);
+  font-size: var(--d-fs-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--m-base) var(--m-spring),
+              background-color var(--m-base) var(--m-ease),
+              color var(--m-base) var(--m-ease);
+}
+
+.chip:hover .chipAll {
+  transform: scale(1.1);
+}
+
+.chipActive .chipAll {
+  background: oklch(1 0 0 / 0.1);
+  color: var(--accent-text);
+}
+
+.chipLabel {
+  white-space: nowrap;
+  letter-spacing: -0.1px;
 }
 
 .chipCount {
-  position: relative;
-  z-index: 1;
-  color: var(--text-faint);
-  font-weight: var(--fw-medium);
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  background: oklch(1 0 0 / 0.12);
+  color: inherit;
+  font-size: var(--d-fs-2xs);
+  font-weight: var(--fw-bold);
   animation: gw-pop var(--m-base) var(--m-spring) both;
 }
 

@@ -240,23 +240,25 @@ export default function DesktopMore() {
                             <h2 className={style.sectionTitle}>Акции</h2>
 
                             <div className={style.promos}>
-                                {infoBlocks.slice(0, 4).map((block, index) => (
+                                {infoBlocks.map((block, index) => (
                                     <button
                                         key={block.id ?? index}
                                         type="button"
                                         className={style.promo}
-                                        style={{
-                                            '--i': index,
-                                            backgroundImage: block.image ? `url(${block.image})` : undefined
-                                        }}
-                                        onClick={() => openLink(block.url)}
+                                        style={{'--i': index}}
+                                        disabled={!block.path}
+                                        onClick={() => openLink(block.path)}
                                     >
-                                        <span className={style.promoBody}>
-                                            <span className={style.promoTitle}>{block.title || block.name}</span>
-                                            {block.description ? (
-                                                <span className={style.promoNote}>{block.description}</span>
+                                        <span className={style.promoHead}>
+                                            <span className={style.promoTitle}>{block.name}</span>
+                                            {block.path ? (
+                                                <ExternalIcon className={style.promoArrow}/>
                                             ) : null}
                                         </span>
+
+                                        {block.body ? (
+                                            <span className={style.promoBody}>{block.body}</span>
+                                        ) : null}
                                     </button>
                                 ))}
                             </div>

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useLocation} from 'react-router-dom';
 import './styles/desktop.css';
 import './styles/motion.css';
@@ -11,6 +11,8 @@ export default function DesktopShell({sections}) {
     const {pathname} = useLocation();
     const areaRef = useRef(null);
 
+    const [isSearchOpen, setSearchOpen] = useState(false);
+
     useEffect(() => {
         areaRef.current?.scrollTo({top: 0, behavior: 'instant'});
     }, [pathname]);
@@ -18,7 +20,12 @@ export default function DesktopShell({sections}) {
     return (
         <ScrollAreaContext.Provider value={areaRef}>
             <div className={style.shell}>
-                <TopBar/>
+                <div
+                    className={isSearchOpen ? `${style.scrim} ${style.scrimOn}` : style.scrim}
+                    aria-hidden="true"
+                />
+
+                <TopBar onSearchOpenChange={setSearchOpen}/>
 
                 <main className={style.area} ref={areaRef} data-scrollable="">
                     <div key={pathname} className={style.content}>

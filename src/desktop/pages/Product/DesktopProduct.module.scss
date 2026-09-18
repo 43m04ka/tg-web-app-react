@@ -334,23 +334,35 @@
 }
 
 .add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--d-gap-3);
   height: 52px;
   border-radius: var(--radius-lg);
   background: var(--accent);
   color: var(--accent-contrast);
   font-size: var(--d-fs-lg);
   font-weight: var(--fw-bold);
+  animation: gw-pop var(--m-slow) var(--m-spring) both;
   transition: background-color var(--m-fast) var(--m-ease),
               transform var(--m-base) var(--m-spring),
               box-shadow var(--m-base) var(--m-ease);
 }
 
-.add:active:not(:disabled) {
-  transform: scale(0.98);
-}
-
 .add:hover:not(:disabled) {
   background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px -12px oklch(0.7 0.145 25 / 0.6);
+}
+
+.add:active:not(:disabled) {
+  transform: scale(0.98);
+  box-shadow: none;
+}
+
+.add:disabled {
+  opacity: 0.75;
 }
 
 .unavailable {
@@ -369,6 +381,7 @@
   display: flex;
   align-items: center;
   gap: var(--d-gap-2);
+  animation: gw-pop var(--m-slow) var(--m-spring) both;
 }
 
 .counterButton {
@@ -395,6 +408,7 @@
 }
 
 .counterValue {
+  animation: gw-pop var(--m-base) var(--m-spring) both;
   min-width: 32px;
   text-align: center;
   font-size: var(--d-fs-lg);
@@ -412,12 +426,31 @@
 }
 
 .toBasket {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--d-gap-2);
   transition: background-color var(--m-fast) var(--m-ease),
-              transform var(--m-base) var(--m-spring);
+              transform var(--m-base) var(--m-spring),
+              box-shadow var(--m-base) var(--m-ease);
+}
+
+.toBasket:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px -12px oklch(0.7 0.145 25 / 0.6);
 }
 
 .toBasket:active {
   transform: scale(0.98);
+  box-shadow: none;
+}
+
+.toBasketArrow {
+  transition: transform var(--m-base) var(--m-spring);
+}
+
+.toBasket:hover .toBasketArrow {
+  transform: translateX(4px);
 }
 
 .toBasket:hover {

@@ -17,6 +17,7 @@
   border: 1px solid var(--border-subtle);
   max-height: calc(100vh - var(--d-topbar) - var(--d-gap-10));
   overflow-y: auto;
+  animation: gw-slide-left var(--m-slow) var(--m-ease) both;
 }
 
 .panelHead {
@@ -80,14 +81,20 @@
   color: var(--text-secondary);
   font-size: var(--d-fs-xs);
   font-weight: var(--fw-semibold);
-  transition: background-color var(--duration-fast) var(--ease-out),
-              border-color var(--duration-fast) var(--ease-out),
-              color var(--duration-fast) var(--ease-out);
+  transition: background-color var(--m-base) var(--m-ease),
+              border-color var(--m-base) var(--m-ease),
+              color var(--m-base) var(--m-ease),
+              transform var(--m-base) var(--m-spring);
 }
 
 .option:hover {
   background: oklch(1 0 0 / 0.11);
   color: var(--text);
+  transform: translateY(-1px);
+}
+
+.option:active {
+  transform: scale(0.95);
 }
 
 .optionOn {
@@ -136,7 +143,7 @@
   padding: 2px;
   border-radius: var(--radius-full);
   background: var(--surface-3);
-  transition: background-color var(--duration-base) var(--ease-out);
+  transition: background-color var(--m-base) var(--m-ease);
 }
 
 .switchOn {
@@ -149,7 +156,7 @@
   height: 17px;
   border-radius: 50%;
   background: var(--text);
-  transition: transform var(--duration-base) var(--ease-out);
+  transition: transform var(--m-base) var(--m-spring);
 }
 
 .switchOn .knob {
@@ -181,6 +188,7 @@
   font-size: var(--d-fs-2xl);
   font-weight: var(--fw-bold);
   letter-spacing: -0.5px;
+  animation: gw-rise var(--m-slow) var(--m-ease) both;
 }
 
 .count {
@@ -209,6 +217,13 @@
   font-size: var(--d-fs-sm);
   font-weight: var(--fw-semibold);
   cursor: pointer;
+  transition: background-color var(--m-fast) var(--m-ease),
+              border-color var(--m-fast) var(--m-ease);
+}
+
+.sortSelect:hover {
+  background: oklch(1 0 0 / 0.1);
+  border-color: var(--border);
 }
 
 .sortSelect option {
@@ -233,15 +248,29 @@
   color: var(--accent-text);
   font-size: var(--d-fs-xs);
   font-weight: var(--fw-semibold);
+  animation: gw-pop var(--m-base) var(--m-spring) both;
+  transition: background-color var(--m-fast) var(--m-ease),
+              transform var(--m-base) var(--m-spring);
+}
+
+.chip:hover {
+  transform: translateY(-1px);
+}
+
+.chip:active {
+  transform: scale(0.95);
 }
 
 .chipCross {
   font-size: var(--d-fs-2xs);
   opacity: 0.7;
+  transition: opacity var(--m-fast) var(--m-ease),
+              transform var(--m-base) var(--m-spring);
 }
 
 .chip:hover .chipCross {
   opacity: 1;
+  transform: rotate(90deg);
 }
 
 .grid {
@@ -270,8 +299,15 @@
 .skeleton {
   aspect-ratio: 3 / 4;
   border-radius: var(--radius-md);
-  background: var(--surface-1);
-  animation: pulse 1.2s var(--ease-out) infinite;
+  background: linear-gradient(
+    100deg,
+    var(--surface-1) 20%,
+    var(--surface-2) 42%,
+    var(--surface-1) 64%
+  ) 0 0 / 220% 100%;
+  animation: gw-shimmer 1.4s linear infinite,
+             gw-fade var(--m-base) var(--m-ease) both;
+  animation-delay: 0s, calc(var(--i, 0) * 34ms);
 }
 
 .more {
@@ -281,6 +317,9 @@
 }
 
 .moreButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--d-gap-3);
   height: 44px;
   padding: 0 var(--d-gap-8);
   border-radius: var(--radius-full);
@@ -289,18 +328,21 @@
   color: var(--text);
   font-size: var(--d-fs-md);
   font-weight: var(--fw-semibold);
-  transition: background-color var(--duration-fast) var(--ease-out);
+  transition: background-color var(--m-fast) var(--m-ease),
+              transform var(--m-base) var(--m-spring),
+              box-shadow var(--m-base) var(--m-ease);
 }
 
 .moreButton:hover:not(:disabled) {
   background: var(--surface-3);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.55;
-  }
+.moreButton:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.moreButton:disabled {
+  opacity: 0.75;
 }

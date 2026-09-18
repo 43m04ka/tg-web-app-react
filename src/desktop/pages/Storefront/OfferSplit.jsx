@@ -1,33 +1,96 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 import {discountPercent, formatPrice} from '../../../pages/Main/catalogSections';
+import {useScrollArea} from '../../shell/ScrollAreaContext';
+import Cover from '../../ui/Cover';
 import style from './OfferSplit.module.scss';
 
+const EXIT_MS = 190;
+
 export default function OfferSplit({offer, onPick, onClose}) {
+    const areaRef = useScrollArea();
+
+    const [shown, setShown] = useState(offer);
+    const [isLeaving, setLeaving] = useState(false);
+
+    const timerRef = useRef(null);
+
     useEffect(() => {
+        if (offer) {
+            clearTimeout(timerRef.current);
+            setShown(offer);
+            setLeaving(false);
+        }
+    }, [offer]);
+
+    useEffect(() => () => clearTimeout(timerRef.current), []);
+
+    const leave = useCallback((done) => {
+        setLeaving(true);
+        clearTimeout(timerRef.current);
+
+        timerRef.current = setTimeout(() => {
+            setShown(null);
+            setLeaving(false);
+            done();
+        }, EXIT_MS);
+    }, []);
+
+    const close = useCallback(() => leave(onClose), [leave, onClose]);
+
+    const pick = useCallback((origin) => {
+        clearTimeout(timerRef.current);
+        setShown(null);
+        setLeaving(false);
+        onPick(origin);
+    }, [onPick]);
+
+    useEffect(() => {
+        if (!shown) return undefined;
+
         const onKeyDown = (event) => {
-            if (event.key === 'Escape') onClose();
+            if (event.key === 'Escape') close();
         };
 
         document.addEventListener('keydown', onKeyDown);
         return () => document.removeEventListener('keydown', onKeyDown);
-    }, [onClose]);
+    }, [shown, close]);
 
-    if (!offer) return null;
+    useEffect(() => {
+        const node = areaRef?.current;
+        if (!node || !shown) return undefined;
 
-    const best = offer.origins[0]?.price ?? null;
+        const previous = node.style.overflowY;
+        node.style.overflowY = 'hidden';
+
+        return () => {
+            node.style.overflowY = previous;
+        };
+    }, [areaRef, shown]);
+
+    if (!shown) return null;
+
+    const best = shown.origins[0]?.price ?? null;
 
     return createPortal(
-        <div className={style.overlay} onClick={onClose} role="dialog" aria-modal="true">
-            <div className={style.stage} onClick={(event) => event.stopPropagation()}>
+        <div
+            className={isLeaving ? `${style.overlay} ${style.overlayOut}` : style.overlay}
+            onClick={close}
+            role="dialog"
+            aria-modal="true"
+        >
+            <div
+                className={isLeaving ? `${style.stage} ${style.stageOut}` : style.stage}
+                onClick={(event) => event.stopPropagation()}
+            >
                 <header className={style.head}>
-                    <span className={style.title}>{offer.product.name}</span>
+                    <span className={style.title}>{shown.product.name}</span>
                     <span className={style.note}>Одна игра на разных витринах — выберите свою</span>
                 </header>
 
                 <div className={style.cards}>
-                    {offer.origins.map((origin, index) => {
-                        const product = origin.product || offer.product;
+                    {shown.origins.map((origin, index) => {
+                        const product = origin.product || shown.product;
                         const percent = discountPercent(product.price, product.oldPrice);
                         const isBest = origin.price !== null && origin.price === best;
 
@@ -35,16 +98,16 @@ export default function OfferSplit({offer, onPick, onClose}) {
                             <button
                                 key={origin.pageId}
                                 type="button"
-                                className={`${style.card} ${isBest ? style.cardBest : ''}`}
-                                style={{'--i': index, '--from': `${(index - (offer.origins.length - 1) / 2) * -34}px`}}
-                                onClick={() => onPick(origin)}
+                                className={isBest ? `${style.card} ${style.cardBest}` : style.card}
+                                style={{
+                                    '--i': index,
+                                    '--from': `${(index - (shown.origins.length - 1) / 2) * -34}px`
+                                }}
+                                onClick={() => pick(origin)}
                             >
-                                <span
-                                    className={style.cover}
-                                    style={product.image ? {backgroundImage: `url(${product.image})`} : undefined}
-                                >
+                                <Cover src={product.image} className={style.cover}>
                                     {percent > 0 ? <span className={style.discount}>−{percent}%</span> : null}
-                                </span>
+                                </Cover>
 
                                 <span className={style.region}>
                                     {origin.icon ? (
@@ -59,7 +122,7 @@ export default function OfferSplit({offer, onPick, onClose}) {
 
                                 <span className={style.price}>{formatPrice(origin.price ?? product.price)}</span>
 
-                                {isBest && offer.origins.length > 1 ? (
+                                {isBest && shown.origins.length > 1 ? (
                                     <span className={style.badge}>Выгоднее</span>
                                 ) : null}
                             </button>
@@ -67,7 +130,7 @@ export default function OfferSplit({offer, onPick, onClose}) {
                     })}
                 </div>
 
-                <button type="button" className={style.close} onClick={onClose}>Закрыть</button>
+                <button type="button" className={style.close} onClick={close}>Закрыть</button>
             </div>
         </div>,
         document.body

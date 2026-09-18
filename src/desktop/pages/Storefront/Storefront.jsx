@@ -8,6 +8,8 @@ import {createProductOrigin} from '../../../shared/lib/productOrigin';
 import {catalogRoute, productRoute} from '../../../shared/lib/pageRoutes';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
+import {useReveal} from '../../shell/useReveal';
+import Spinner from '../../ui/Spinner';
 import {useOpenHero} from '../../shell/useOpenHero';
 import {useOfferPicker} from '../../shell/useOfferPicker';
 import {originIndex, resolveBotType, storefrontList} from '../../model/desktopNav';
@@ -93,6 +95,8 @@ export default function Storefront() {
     const picker = useOfferPicker({originOf});
     const openOffer = picker.open;
 
+    const catalogRef = useReveal();
+
     const openHero = useOpenHero();
 
     const openCatalog = useCallback((target) => {
@@ -159,7 +163,7 @@ export default function Storefront() {
                 />
             ))}
 
-            <section className={style.shelf}>
+            <section className={style.shelf} ref={catalogRef} data-reveal="out">
                 <header className={style.shelfHead}>
                     <span className={style.shelfTitle}>{config.catalogTitle}</span>
                     {total ? <span className={style.shelfNote}>{total.toLocaleString('ru-RU')}</span> : null}
@@ -177,7 +181,7 @@ export default function Storefront() {
                 {isFirstLoad ? (
                     <div className={style.grid}>
                         {Array.from({length: SKELETON_COUNT}, (skeleton, index) => (
-                            <div key={index} className={style.skeleton}/>
+                            <div key={index} className={style.skeleton} style={{'--i': index}}/>
                         ))}
                     </div>
                 ) : null}
@@ -188,7 +192,7 @@ export default function Storefront() {
                             <EmptyState title="Пока пусто" text="В этой витрине нет товаров"/>
                         ) : null}
 
-                        <div className={style.grid}>
+                        <div key={scopeId ?? 'all'} className={style.grid}>
                             {catalogOffers.map((offer, index) => (
                                 <OfferCard
                                     key={offer.key}
@@ -208,6 +212,7 @@ export default function Storefront() {
                                     onClick={loadMore}
                                     disabled={isLoadingMore}
                                 >
+                                    {isLoadingMore ? <Spinner/> : null}
                                     {isLoadingMore ? 'Загружаем…' : 'Показать ещё'}
                                 </button>
                             </div>

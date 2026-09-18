@@ -2,7 +2,7 @@ import React, {useEffect, useMemo} from 'react';
 import {Navigate, Route, Routes, useLocation} from 'react-router-dom';
 import DesktopMain from './pages/Main/DesktopMain';
 import DesktopCatalog from './pages/Catalog/DesktopCatalog';
-import Search from '../pages/Search/Search';
+import DesktopSearch from './pages/Search/DesktopSearch';
 import Basket from '../pages/Basket/Basket';
 import Checkout from '../pages/Basket/Checkout';
 import More from '../pages/More/More';
@@ -80,7 +80,7 @@ export default function DesktopRoutes({sections}) {
             <Route path="/subscription/*" element={<EnsurePage><Subscription/></EnsurePage>}/>
             <Route path="/catalog/*" element={<EnsurePage><DesktopCatalog/></EnsurePage>}/>
             <Route path="/card/:id" element={<EnsurePage><DesktopProduct/></EnsurePage>}/>
-            <Route path="/search" element={<EnsurePage><Search/></EnsurePage>}/>
+            <Route path="/search" element={<EnsurePage><DesktopSearch/></EnsurePage>}/>
             <Route path="/basket" element={<EnsurePage><Basket/></EnsurePage>}/>
             <Route path="/checkout" element={<EnsurePage><Checkout/></EnsurePage>}/>
             <Route path="/more" element={<EnsurePage><More/></EnsurePage>}/>

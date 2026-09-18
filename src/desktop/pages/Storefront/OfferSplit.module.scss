@@ -8,7 +8,7 @@
   padding: var(--d-gap-8);
   background: oklch(0.06 0.008 264 / 0.72);
   backdrop-filter: blur(10px) saturate(0.7);
-  animation: veil 240ms var(--ease-out) both;
+  animation: gw-fade var(--m-base) var(--m-ease) both;
 }
 
 .stage {
@@ -16,7 +16,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--d-gap-6);
-  animation: stageIn 300ms var(--ease-spring) both;
+  animation: stageIn var(--m-slow) var(--m-spring) both;
 }
 
 .head {
@@ -53,17 +53,41 @@
   border-radius: var(--radius-lg);
   background: var(--surface-2);
   border: 1px solid var(--border-subtle);
-  animation: split 420ms var(--ease-spring) both;
-  animation-delay: calc(var(--i) * 45ms);
-  transition: transform var(--duration-base) var(--ease-out),
-              border-color var(--duration-base) var(--ease-out),
-              background-color var(--duration-base) var(--ease-out);
+  cursor: pointer;
+  animation: split 420ms var(--m-spring) both;
+  animation-delay: calc(var(--i) * 55ms);
+  transition: transform var(--m-base) var(--m-spring),
+              border-color var(--m-base) var(--m-ease),
+              background-color var(--m-base) var(--m-ease),
+              box-shadow var(--m-base) var(--m-ease);
 }
 
 .card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-7px);
   background: var(--surface-3);
   border-color: var(--border-strong);
+  box-shadow: var(--shadow-lg);
+}
+
+.card:active {
+  transform: translateY(-2px) scale(0.985);
+}
+
+.card .cover {
+  transition: transform var(--m-slow) var(--m-spring);
+}
+
+.card:hover .cover {
+  transform: scale(1.015);
+}
+
+.card .price {
+  transition: transform var(--m-base) var(--m-spring);
+  transform-origin: left center;
+}
+
+.card:hover .price {
+  transform: scale(1.05);
 }
 
 .cardBest {
@@ -75,7 +99,7 @@
   width: 100%;
   aspect-ratio: 3 / 4;
   border-radius: var(--radius-md);
-  background: var(--surface-3) center / cover no-repeat;
+  background: var(--surface-3);
 }
 
 .discount {
@@ -122,6 +146,9 @@
   font-size: var(--d-fs-2xs);
   font-weight: var(--fw-bold);
   box-shadow: var(--shadow-md);
+  z-index: 2;
+  animation: gw-pop var(--m-slow) var(--m-spring) both;
+  animation-delay: 260ms;
 }
 
 .close {
@@ -131,21 +158,18 @@
   color: var(--text-secondary);
   font-size: var(--d-fs-sm);
   font-weight: var(--fw-semibold);
-  transition: background-color var(--duration-fast) var(--ease-out);
+  transition: background-color var(--m-fast) var(--m-ease),
+              transform var(--m-base) var(--m-spring);
 }
 
 .close:hover {
   background: oklch(1 0 0 / 0.14);
   color: var(--text);
+  transform: translateY(-2px);
 }
 
-@keyframes veil {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+.close:active {
+  transform: scale(0.96);
 }
 
 @keyframes stageIn {
@@ -168,6 +192,29 @@
     opacity: 1;
     transform: none;
   }
+}
+
+.overlayOut {
+  animation: gw-fade var(--m-fast) var(--m-ease-in) reverse both;
+}
+
+.stageOut {
+  animation: stageOut var(--m-fast) var(--m-ease-in) both;
+}
+
+@keyframes stageOut {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96) translateY(6px);
+  }
+}
+
+.discount {
+  z-index: 2;
 }
 
 @media (prefers-reduced-motion: reduce) {

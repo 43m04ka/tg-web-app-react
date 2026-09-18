@@ -19,6 +19,7 @@ import {
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
 import {mergeOffers} from '../../model/storefrontModel';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
+import Spinner from '../../ui/Spinner';
 import OfferCard from '../Storefront/OfferCard';
 import OfferSplit from '../Storefront/OfferSplit';
 import {useOfferPicker} from '../../shell/useOfferPicker';
@@ -170,7 +171,7 @@ export default function DesktopCatalog() {
                 {isFirstLoad ? (
                     <div className={style.grid}>
                         {Array.from({length: SKELETON_COUNT}, (skeleton, index) => (
-                            <div key={index} className={style.skeleton}/>
+                            <div key={index} className={style.skeleton} style={{'--i': index}}/>
                         ))}
                     </div>
                 ) : null}
@@ -188,7 +189,7 @@ export default function DesktopCatalog() {
                             />
                         ) : null}
 
-                        <div className={style.grid}>
+                        <div key={sorting} className={style.grid}>
                             {offers.map((offer, index) => (
                                 <OfferCard
                                     key={offer.key}
@@ -209,6 +210,7 @@ export default function DesktopCatalog() {
                                     onClick={loadMore}
                                     disabled={isLoadingMore}
                                 >
+                                    {isLoadingMore ? <Spinner/> : null}
                                     {isLoadingMore ? 'Загружаем…' : 'Показать ещё'}
                                 </button>
                             </div>

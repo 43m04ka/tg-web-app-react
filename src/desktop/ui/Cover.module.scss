@@ -1,0 +1,44 @@
+.cover {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: var(--surface-2);
+  isolation: isolate;
+}
+
+.cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    oklch(1 0 0 / 0.06) 42%,
+    transparent 64%
+  ) 0 0 / 220% 100%;
+  animation: gw-shimmer 1.4s linear infinite;
+  opacity: 1;
+  transition: opacity var(--m-base) var(--m-ease);
+}
+
+.cover[data-ready='yes']::before {
+  opacity: 0;
+  animation: none;
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: transparent center / cover no-repeat;
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity var(--m-slow) var(--m-ease),
+              transform var(--m-lazy) var(--m-ease);
+}
+
+.cover[data-ready='yes'] .image {
+  opacity: 1;
+  transform: none;
+}

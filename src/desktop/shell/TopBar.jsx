@@ -7,6 +7,7 @@ import {usePlatform} from '../../shared/hooks/usePlatform';
 import {pageCartItems} from '../../pages/Basket/cartModel';
 import {resetSearchState} from '../../shared/lib/searchMemory';
 import {sectionList, storefrontList} from '../model/desktopNav';
+import {useScrolled} from './useScrolled';
 import {BasketIcon, UserIcon} from './DesktopIcons';
 import SearchBox from './SearchBox';
 import RegionMenu from './RegionMenu';
@@ -36,6 +37,9 @@ export default function TopBar() {
     );
 
     const [pickedId, setPickedId] = useState(null);
+    const [isSearchOpen, setSearchOpen] = useState(false);
+
+    const isScrolled = useScrolled();
 
     useEffect(() => {
         if (storefronts.some((item) => item.id === pageId)) setPickedId(pageId);
@@ -68,14 +72,14 @@ export default function TopBar() {
     }, [go, setPageId]);
 
     return (
-        <header className={style.bar}>
+        <header className={[style.bar, isScrolled ? style.barScrolled : '', isSearchOpen ? style.quiet : ''].filter(Boolean).join(' ')}>
             <div className={style.inner}>
                 <button type="button" className={style.logo} onClick={() => go('/')}>
                     <span className={style.mark}>Г</span>
                     <span className={style.brand}>Геймворд</span>
                 </button>
 
-                <nav className={style.nav}>
+                <nav className={isSearchOpen ? style.nav + ' ' + style.navQuiet : style.nav}>
                     <button
                         type="button"
                         className={`${style.link} ${pathname === '/main' ? style.linkActive : ''}`}
@@ -96,7 +100,7 @@ export default function TopBar() {
                     ))}
                 </nav>
 
-                <SearchBox/>
+                <SearchBox onOpenChange={setSearchOpen}/>
 
                 <div className={style.actions}>
                     <RegionMenu items={storefronts} activeId={storefrontId} onSelect={pickStorefront}/>
@@ -109,7 +113,7 @@ export default function TopBar() {
                     >
                         <BasketIcon className={style.actionIcon}/>
                         {cartSize > 0 ? (
-                            <span className={style.badge}>{cartSize > 99 ? '99+' : cartSize}</span>
+                            <span key={cartSize} className={style.badge}>{cartSize > 99 ? '99+' : cartSize}</span>
                         ) : null}
                     </button>
 

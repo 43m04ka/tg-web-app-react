@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
+import {useReveal} from '../../shell/useReveal';
 import OfferCard from './OfferCard';
 import style from './Storefront.module.scss';
 
 export default function Shelf({shelf, size, showOrigin, onOpen, onOpenCatalog}) {
     const [isOpen, setOpen] = useState(false);
+    const ref = useReveal();
 
     const hasMore = shelf.offers.length > size;
     const visible = isOpen ? shelf.offers : shelf.offers.slice(0, size);
@@ -14,7 +16,7 @@ export default function Shelf({shelf, size, showOrigin, onOpen, onOpenCatalog}) 
         : () => setOpen((open) => !open);
 
     return (
-        <section className={style.shelf}>
+        <section className={style.shelf} ref={ref} data-reveal="out">
             <header className={style.shelfHead}>
                 <span className={style.shelfTitle}>
                     {shelf.icon ? (
@@ -29,7 +31,22 @@ export default function Shelf({shelf, size, showOrigin, onOpen, onOpenCatalog}) 
 
                 {singlePage || hasMore ? (
                     <button type="button" className={style.shelfAction} onClick={action}>
-                        {singlePage ? 'Смотреть все →' : (isOpen ? 'Свернуть' : `Показать все · ${shelf.offers.length}`)}
+                        {singlePage ? (
+                            <>
+                                Смотреть все
+                                <span className={style.shelfArrow} aria-hidden="true">→</span>
+                            </>
+                        ) : isOpen ? (
+                            <>
+                                Свернуть
+                                <span className={`${style.shelfArrow} ${style.shelfArrowUp}`} aria-hidden="true">→</span>
+                            </>
+                        ) : (
+                            <>
+                                {`Показать все · ${shelf.offers.length}`}
+                                <span className={style.shelfArrow} aria-hidden="true">→</span>
+                            </>
+                        )}
                     </button>
                 ) : null}
             </header>
@@ -39,7 +56,7 @@ export default function Shelf({shelf, size, showOrigin, onOpen, onOpenCatalog}) 
                     <OfferCard
                         key={offer.key}
                         offer={offer}
-                        index={index}
+                        index={index < size ? index : index - size}
                         showOrigin={showOrigin}
                         onOpen={onOpen}
                     />

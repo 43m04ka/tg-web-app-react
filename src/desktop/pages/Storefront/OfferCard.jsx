@@ -1,5 +1,6 @@
 import React from 'react';
 import {discountPercent, formatPrice, shortPlatform, subscriptionTerm} from '../../../pages/Main/catalogSections';
+import Cover from '../../ui/Cover';
 import style from './Storefront.module.scss';
 
 export default function OfferCard({offer, onOpen, showOrigin = true, showAlso = true, index = 0}) {
@@ -13,10 +14,7 @@ export default function OfferCard({offer, onOpen, showOrigin = true, showAlso = 
 
     return (
         <article className={style.card} style={{'--i': index}} onClick={() => onOpen?.(offer)}>
-            <div
-                className={style.cover}
-                style={product.image ? {backgroundImage: `url(${product.image})`} : undefined}
-            >
+            <Cover src={product.image} className={style.cover}>
                 {showOrigin && origin ? (
                     <span className={style.originBadge}>
                         {origin.icon ? (
@@ -32,7 +30,11 @@ export default function OfferCard({offer, onOpen, showOrigin = true, showAlso = 
 
                 {term ? <span className={style.term}>{term}</span> : null}
                 {platform ? <span className={style.platform}>{platform}</span> : null}
-            </div>
+
+                {alsoIn > 0 ? (
+                    <span className={style.splitHint}>Выбрать витрину · {origins.length}</span>
+                ) : null}
+            </Cover>
 
             <span className={style.name}>{product.name}</span>
 

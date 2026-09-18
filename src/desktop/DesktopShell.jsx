@@ -1,6 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import {useLocation} from 'react-router-dom';
 import './styles/desktop.css';
+import './styles/motion.css';
 import TopBar from './shell/TopBar';
 import DesktopRoutes from './DesktopRoutes';
 import {ScrollAreaContext} from './shell/ScrollAreaContext';
@@ -11,7 +12,7 @@ export default function DesktopShell({sections}) {
     const areaRef = useRef(null);
 
     useEffect(() => {
-        areaRef.current?.scrollTo({top: 0});
+        areaRef.current?.scrollTo({top: 0, behavior: 'instant'});
     }, [pathname]);
 
     return (

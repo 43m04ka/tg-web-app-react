@@ -20,13 +20,13 @@
   max-width: var(--d-max);
   margin: 0 auto;
   padding: var(--d-gap-8) var(--d-gutter) var(--d-gap-10);
-  animation: pageIn var(--d-page-in) var(--ease-out) both;
+  animation: pageIn var(--m-slow) var(--m-ease) both;
 }
 
 @keyframes pageIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translate3d(0, 12px, 0);
   }
   to {
     opacity: 1;

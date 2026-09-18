@@ -19,6 +19,8 @@
   border-radius: var(--radius-xl);
   background: var(--surface-2) center / cover no-repeat;
   border: 1px solid var(--border-subtle);
+  overflow: hidden;
+  animation: gw-zoom-in var(--m-lazy) var(--m-ease) both;
 }
 
 .discount {
@@ -31,6 +33,8 @@
   color: var(--gold-surface);
   font-size: var(--d-fs-sm);
   font-weight: var(--fw-bold);
+  animation: gw-pop var(--m-slow) var(--m-spring) both;
+  animation-delay: 160ms;
 }
 
 .block {
@@ -56,6 +60,16 @@
   border-radius: var(--radius-md);
   background: var(--surface-2) center / cover no-repeat;
   border: 1px solid var(--border-subtle);
+  cursor: zoom-in;
+  transition: transform var(--m-base) var(--m-spring),
+              border-color var(--m-base) var(--m-ease),
+              box-shadow var(--m-base) var(--m-ease);
+}
+
+.shot:hover {
+  transform: translateY(-3px) scale(1.015);
+  border-color: var(--border);
+  box-shadow: var(--shadow-md);
 }
 
 .description {
@@ -88,6 +102,14 @@
   border-top: 1px solid var(--border-subtle);
 }
 
+.spec {
+  transition: background-color var(--m-fast) var(--m-ease);
+}
+
+.spec:hover {
+  background: var(--surface-2);
+}
+
 .specLabel {
   font-size: var(--d-fs-sm);
   color: var(--text-muted);
@@ -110,17 +132,26 @@
   flex-direction: column;
   gap: 7px;
   cursor: pointer;
+  animation: gw-rise var(--m-slow) var(--m-ease) both;
+  animation-delay: calc(min(var(--i, 0), 9) * var(--m-stagger));
 }
 
 .recommendationCover {
   aspect-ratio: 3 / 4;
   border-radius: var(--radius-md);
   background: var(--surface-2) center / cover no-repeat;
-  transition: transform var(--duration-base) var(--ease-out);
+  box-shadow: 0 14px 26px -20px oklch(0 0 0 / 0.5);
+  transition: transform var(--m-slow) var(--m-spring),
+              box-shadow var(--m-slow) var(--m-ease);
 }
 
 .recommendation:hover .recommendationCover {
-  transform: translateY(-4px);
+  transform: translateY(-5px) scale(1.015);
+  box-shadow: 0 20px 34px -18px oklch(0 0 0 / 0.66);
+}
+
+.recommendation:active .recommendationCover {
+  transform: translateY(-1px) scale(0.99);
 }
 
 .recommendationName {
@@ -236,7 +267,7 @@
   background: var(--surface-2);
   border: 1px solid transparent;
   text-align: left;
-  transition: background-color var(--duration-fast) var(--ease-out),
+  transition: background-color var(--m-base) var(--m-ease),
               border-color var(--duration-fast) var(--ease-out);
 }
 
@@ -309,7 +340,13 @@
   color: var(--accent-contrast);
   font-size: var(--d-fs-lg);
   font-weight: var(--fw-bold);
-  transition: background-color var(--duration-fast) var(--ease-out);
+  transition: background-color var(--m-fast) var(--m-ease),
+              transform var(--m-base) var(--m-spring),
+              box-shadow var(--m-base) var(--m-ease);
+}
+
+.add:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .add:hover:not(:disabled) {
@@ -344,6 +381,15 @@
   font-weight: var(--fw-bold);
 }
 
+.counterButton {
+  transition: background-color var(--m-fast) var(--m-ease),
+              transform var(--m-base) var(--m-spring);
+}
+
+.counterButton:active {
+  transform: scale(0.9);
+}
+
 .counterButton:hover {
   background: var(--surface-3);
 }
@@ -365,6 +411,15 @@
   font-weight: var(--fw-bold);
 }
 
+.toBasket {
+  transition: background-color var(--m-fast) var(--m-ease),
+              transform var(--m-base) var(--m-spring);
+}
+
+.toBasket:active {
+  transform: scale(0.98);
+}
+
 .toBasket:hover {
   background: var(--accent-hover);
 }
@@ -383,8 +438,20 @@
   color: var(--text-secondary);
   font-size: var(--d-fs-sm);
   font-weight: var(--fw-semibold);
-  transition: background-color var(--duration-fast) var(--ease-out),
+  transition: background-color var(--m-base) var(--m-ease),
               color var(--duration-fast) var(--ease-out);
+}
+
+.favorite,
+.offer {
+  transition: background-color var(--m-fast) var(--m-ease),
+              color var(--m-fast) var(--m-ease),
+              transform var(--m-base) var(--m-spring);
+}
+
+.favorite:active,
+.offer:active {
+  transform: scale(0.96);
 }
 
 .favorite:hover,
@@ -400,15 +467,25 @@
 .skeletonCover {
   aspect-ratio: 16 / 9;
   border-radius: var(--radius-xl);
-  background: var(--surface-1);
-  animation: pulse 1.2s var(--ease-out) infinite;
+  background: linear-gradient(
+    100deg,
+    var(--surface-1) 20%,
+    var(--surface-2) 42%,
+    var(--surface-1) 64%
+  ) 0 0 / 220% 100%;
+  animation: gw-shimmer 1.4s linear infinite;
 }
 
 .skeletonPanel {
   height: 420px;
   border-radius: var(--radius-xl);
-  background: var(--surface-1);
-  animation: pulse 1.2s var(--ease-out) infinite;
+  background: linear-gradient(
+    100deg,
+    var(--surface-1) 20%,
+    var(--surface-2) 42%,
+    var(--surface-1) 64%
+  ) 0 0 / 220% 100%;
+  animation: gw-shimmer 1.4s linear infinite;
 }
 
 @media (max-width: 1180px) {
@@ -422,11 +499,4 @@
   }
 }
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.55;
-  }
-}
+

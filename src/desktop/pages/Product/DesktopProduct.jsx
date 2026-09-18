@@ -14,6 +14,7 @@ import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
 import {createProductOrigin} from '../../../shared/lib/productOrigin';
 import {useStructureStore} from '../../../store/useStructureStore';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
+import {Reveal} from '../../shell/useReveal';
 import {useDesktopProduct} from './useDesktopProduct';
 import style from './DesktopProduct.module.scss';
 
@@ -105,27 +106,27 @@ export default function DesktopProduct() {
                 </div>
 
                 {shots.length ? (
-                    <section className={style.block}>
+                    <Reveal as="section" className={style.block}>
                         <h2 className={style.blockTitle}>Скриншоты</h2>
                         <div className={style.shots}>
                             {shots.map((url) => (
                                 <span key={url} className={style.shot} style={{backgroundImage: `url(${url})`}}/>
                             ))}
                         </div>
-                    </section>
+                    </Reveal>
                 ) : null}
 
                 {lines.length ? (
-                    <section className={style.block}>
+                    <Reveal as="section" className={style.block}>
                         <h2 className={style.blockTitle}>Описание</h2>
                         <div className={style.description}>
                             {lines.map((line, index) => <p key={index}>{line}</p>)}
                         </div>
-                    </section>
+                    </Reveal>
                 ) : null}
 
                 {specs.length ? (
-                    <section className={style.block}>
+                    <Reveal as="section" className={style.block}>
                         <h2 className={style.blockTitle}>Характеристики</h2>
                         <dl className={style.specs}>
                             {specs.map((spec) => (
@@ -135,17 +136,18 @@ export default function DesktopProduct() {
                                 </div>
                             ))}
                         </dl>
-                    </section>
+                    </Reveal>
                 ) : null}
 
                 {recommendations?.length ? (
-                    <section className={style.block}>
+                    <Reveal as="section" className={style.block}>
                         <h2 className={style.blockTitle}>Похожее</h2>
                         <div className={style.recommendations}>
-                            {recommendations.slice(0, 5).map((item) => (
+                            {recommendations.slice(0, 5).map((item, index) => (
                                 <article
                                     key={item.id}
                                     className={style.recommendation}
+                                    style={{'--i': index}}
                                     onClick={() => openProduct(item)}
                                 >
                                     <span
@@ -157,7 +159,7 @@ export default function DesktopProduct() {
                                 </article>
                             ))}
                         </div>
-                    </section>
+                    </Reveal>
                 ) : null}
             </div>
 

@@ -53,13 +53,14 @@ export default function RegionMenu({items, activeId, onSelect}) {
 
             {isOpen ? (
                 <div className={style.menu} role="listbox">
-                    {items.map((item) => (
+                    {items.map((item, index) => (
                         <button
                             key={item.id}
                             type="button"
                             role="option"
                             aria-selected={item.id === activeId}
                             className={`${style.option} ${item.id === activeId ? style.optionActive : ''}`}
+                            style={{'--i': index}}
                             onClick={() => pick(item)}
                         >
                             {item.icon ? (

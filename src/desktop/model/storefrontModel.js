@@ -115,7 +115,47 @@ export const buildShelves = ({
         .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title, 'ru'));
 };
 
-export const buildHero = ({banners, mainPageProducts, originOf, pageIds, scopeId = null, limit = 3} = {}) => {
+const text = (value) => String(value ?? '').trim();
+
+export const heroItem = (banner, {originOf, productById, originByPage} = {}) => {
+    const data = banner?.data || {};
+    const override = data.override || {};
+
+    const title = text(override.title) || text(data.title);
+    const image = text(override.image) || text(data.image);
+    if (!title && !image) return null;
+
+    const productId = data.productId ?? null;
+    const product = productId === null ? null : (productById?.get(String(productId)) || null);
+    const origin = (product ? originOf?.(product) : null) || originByPage?.get(banner.pageId) || null;
+
+    return {
+        id: banner.id,
+        pageId: banner.pageId,
+        origin,
+        title,
+        subtitle: text(data.subtitle),
+        note: text(data.note),
+        image,
+        imageFit: text(override.imageFit) || text(data.imageFit) || 'banner',
+        price: data.price ?? null,
+        oldPrice: data.oldPrice ?? null,
+        promoEndDate: data.promoEndDate || null,
+        productId,
+        product,
+        url: text(data.url)
+    };
+};
+
+export const buildHero = ({
+    banners,
+    mainPageProducts,
+    originOf,
+    originByPage,
+    pageIds,
+    scopeId = null,
+    limit = 3
+} = {}) => {
     if (!Array.isArray(banners)) return [];
 
     const allowed = new Set(scopeId === null ? (pageIds || []) : [scopeId]);
@@ -130,20 +170,13 @@ export const buildHero = ({banners, mainPageProducts, originOf, pageIds, scopeId
         .sort((a, b) => (a.serialNumber ?? 0) - (b.serialNumber ?? 0));
 
     const take = (banner) => {
-        const product = productById.get(String(banner.data?.productId)) || null;
-        if (!product) return;
+        const item = heroItem(banner, {originOf, productById, originByPage});
+        if (!item) return;
 
-        const origin = originOf?.(product) || null;
-        const key = offerKey(product, familyOf(origin?.type));
+        const key = [familyOf(item.origin?.type), normalize(item.title)].join('|');
         if (usedOffers.has(key)) return;
 
-        picked.push({
-            id: banner.id,
-            product,
-            subtitle: banner.data?.subtitle || '',
-            origin
-        });
-
+        picked.push(item);
         usedOffers.add(key);
         usedPages.add(banner.pageId);
     };

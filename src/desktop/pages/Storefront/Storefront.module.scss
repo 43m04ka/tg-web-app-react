@@ -140,6 +140,12 @@
   text-decoration: line-through;
 }
 
+.heroNote {
+  font-size: var(--d-fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--text-muted);
+}
+
 .shelf {
   display: flex;
   flex-direction: column;

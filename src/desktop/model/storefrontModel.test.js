@@ -159,43 +159,119 @@ describe('buildHero', () => {
         product(103, 242, 'Forza Horizon 5', 2490)
     ];
 
+    const originByPage = new Map([
+        [20, {pageId: 20, type: 'ps', label: 'PS Турция'}],
+        [35, {pageId: 35, type: 'ps_india', label: 'PS Индия'}],
+        [28, {pageId: 28, type: 'xbox', label: 'Xbox'}]
+    ]);
+
+    const banner = (id, pageId, serialNumber, data) => ({id, type: 'product', pageId, serialNumber, data});
+
     const banners = [
-        {id: 1, type: 'product', pageId: 20, serialNumber: 1, data: {productId: 101, subtitle: 'Предзаказ'}},
-        {id: 2, type: 'product', pageId: 20, serialNumber: 0, data: {productId: 101, subtitle: 'Ещё раз Турция'}},
-        {id: 3, type: 'product', pageId: 35, serialNumber: 2, data: {productId: 102, subtitle: 'Индия'}},
-        {id: 4, type: 'product', pageId: 28, serialNumber: 3, data: {productId: 103, subtitle: 'Xbox'}},
-        {id: 5, type: 'product', pageId: 28, serialNumber: 4, data: {productId: 999, subtitle: 'Нет товара'}}
+        banner(1, 20, 1, {productId: 101, title: 'GTA VI', subtitle: 'Предзаказ', image: 'gta.jpg'}),
+        banner(2, 20, 0, {productId: 101, title: 'GTA VI', subtitle: 'Ещё раз Турция', image: 'gta.jpg'}),
+        banner(3, 35, 2, {productId: 102, title: 'EA SPORTS FC 26', subtitle: 'Индия', image: 'fc.jpg'}),
+        banner(4, 28, 3, {productId: 103, title: 'Forza Horizon 5', subtitle: 'Xbox', image: 'forza.jpg'}),
+        banner(5, 28, 4, {productId: 999, title: 'Halo', image: 'halo.jpg'})
     ];
 
+    const build = (extra = {}) => buildHero({
+        banners,
+        mainPageProducts,
+        originOf,
+        originByPage,
+        pageIds: [20, 35, 28],
+        ...extra
+    });
+
     it('в промо попадает по одной витрине, пока хватает разных', () => {
-        const hero = buildHero({banners, mainPageProducts, originOf, pageIds: [20, 35, 28]});
+        const hero = build();
 
         expect(hero.map((item) => item.origin.label)).toEqual(['PS Турция', 'PS Индия', 'Xbox']);
         expect(hero[0].subtitle).toBe('Ещё раз Турция');
     });
 
     it('одна игра не занимает два промо, даже если её рекламируют две витрины', () => {
-        const sameGame = [
-            {id: 1, type: 'product', pageId: 20, serialNumber: 0, data: {productId: 101}},
-            {id: 2, type: 'product', pageId: 35, serialNumber: 1, data: {productId: 104}},
-            {id: 3, type: 'product', pageId: 28, serialNumber: 2, data: {productId: 103}}
-        ];
-
         const hero = buildHero({
-            banners: sameGame,
+            banners: [
+                banner(1, 20, 0, {productId: 101, title: 'GTA VI', image: 'gta.jpg'}),
+                banner(2, 35, 1, {productId: 104, title: 'GTA VI', image: 'gta.jpg'}),
+                banner(3, 28, 2, {productId: 103, title: 'Forza Horizon 5', image: 'forza.jpg'})
+            ],
             mainPageProducts: [...mainPageProducts, product(104, 293, 'GTA VI', 7800)],
             originOf,
+            originByPage,
             pageIds: [20, 35, 28]
         });
 
-        expect(hero.map((item) => item.product.name)).toEqual(['GTA VI', 'Forza Horizon 5']);
+        expect(hero.map((item) => item.title)).toEqual(['GTA VI', 'Forza Horizon 5']);
     });
 
-    it('баннер без найденного товара пропускается', () => {
-        const hero = buildHero({banners, mainPageProducts, originOf, pageIds: [28], scopeId: 28});
+    it('баннер рисуется, даже если его товар не загружен в подборки', () => {
+        const hero = build({pageIds: [28], scopeId: 28});
 
-        expect(hero).toHaveLength(1);
-        expect(hero[0].product.name).toBe('Forza Horizon 5');
+        expect(hero.map((item) => item.title)).toEqual(['Forza Horizon 5', 'Halo']);
+
+        const halo = hero[1];
+        expect(halo.product).toBeNull();
+        expect(halo.productId).toBe(999);
+        expect(halo.origin.label).toBe('Xbox');
+    });
+
+    it('из баннера берутся цена, срок акции и кадрирование', () => {
+        const hero = buildHero({
+            banners: [banner(1, 20, 0, {
+                productId: 101,
+                title: 'GTA VI',
+                image: 'gta.jpg',
+                imageFit: 'coverTop',
+                price: 8390,
+                oldPrice: 10350,
+                promoEndDate: '1787785140000'
+            })],
+            mainPageProducts,
+            originOf,
+            originByPage,
+            pageIds: [20]
+        });
+
+        expect(hero[0]).toEqual(expect.objectContaining({
+            price: 8390,
+            oldPrice: 10350,
+            imageFit: 'coverTop',
+            promoEndDate: '1787785140000'
+        }));
+    });
+
+    it('правка из админки перебивает данные баннера', () => {
+        const hero = buildHero({
+            banners: [banner(1, 20, 0, {
+                productId: 101,
+                title: 'Старое название',
+                image: 'old.jpg',
+                override: {title: 'Новое название', image: 'new.jpg', imageFit: 'coverTop'}
+            })],
+            mainPageProducts,
+            originOf,
+            originByPage,
+            pageIds: [20]
+        });
+
+        expect(hero[0]).toEqual(expect.objectContaining({
+            title: 'Новое название',
+            image: 'new.jpg',
+            imageFit: 'coverTop'
+        }));
+    });
+
+    it('баннер без картинки и названия не показывается', () => {
+        expect(buildHero({
+            banners: [banner(1, 20, 0, {productId: 101, subtitle: 'Только подпись'})],
+            mainPageProducts,
+            originOf,
+            originByPage,
+            pageIds: [20]
+        })).toEqual([]);
     });
 
     it('без баннеров промо пустое', () => {

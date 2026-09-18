@@ -1,5 +1,5 @@
 import React from 'react';
-import {discountPercent, formatPrice} from '../../../pages/Main/catalogSections';
+import {discountPercent, formatPrice, formatPromoDate} from '../../../pages/Main/bannerFormat';
 import style from './Storefront.module.scss';
 
 export default function StorefrontHero({items, onOpen}) {
@@ -8,31 +8,38 @@ export default function StorefrontHero({items, onOpen}) {
     return (
         <div className={style.hero}>
             {items.map((item) => {
-                const {product, origin, subtitle} = item;
-                const percent = discountPercent(product.price, product.oldPrice);
+                const percent = discountPercent(item.price, item.oldPrice);
+                const promo = formatPromoDate(item.promoEndDate);
+                const footnote = promo ? `Акция до ${promo}` : item.note;
+                const price = formatPrice(item.price);
 
                 return (
                     <article
                         key={item.id}
                         className={style.heroCard}
-                        style={product.image ? {backgroundImage: `url(${product.image})`} : undefined}
+                        style={item.image ? {
+                            backgroundImage: `url(${item.image})`,
+                            backgroundPosition: item.imageFit === 'coverTop' ? 'top center' : 'center'
+                        } : undefined}
                         onClick={() => onOpen?.(item)}
                     >
                         <div className={style.heroBody}>
-                            {subtitle || origin ? (
-                                <span className={style.heroTag}>{subtitle || origin.label}</span>
+                            {item.subtitle ? <span className={style.heroTag}>{item.subtitle}</span> : null}
+
+                            {item.origin ? <span className={style.heroOrigin}>{item.origin.label}</span> : null}
+
+                            <span className={style.heroName}>{item.title}</span>
+
+                            {price ? (
+                                <span className={style.heroPrices}>
+                                    <span className={style.heroPrice}>{price}</span>
+                                    {percent > 0 ? (
+                                        <span className={style.heroOldPrice}>{formatPrice(item.oldPrice)}</span>
+                                    ) : null}
+                                </span>
                             ) : null}
 
-                            {origin ? <span className={style.heroOrigin}>{origin.label}</span> : null}
-
-                            <span className={style.heroName}>{product.name}</span>
-
-                            <span className={style.heroPrices}>
-                                <span className={style.heroPrice}>{formatPrice(product.price)}</span>
-                                {percent > 0 && product.oldPrice ? (
-                                    <span className={style.heroOldPrice}>{formatPrice(product.oldPrice)}</span>
-                                ) : null}
-                            </span>
+                            {footnote ? <span className={style.heroNote}>{footnote}</span> : null}
                         </div>
                     </article>
                 );

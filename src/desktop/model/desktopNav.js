@@ -61,6 +61,13 @@ export const sectionList = (startPages, pages, botType) => {
         .filter(Boolean);
 };
 
+export const originIndex = (startPages, pages, botType) => new Map(
+    entriesOf(startPages, botType)
+        .map((entry) => decorate(entry, pages))
+        .filter((item) => item.id !== null)
+        .map((item) => [item.id, {...item, pageId: item.id}])
+);
+
 export const defaultStorefrontId = (startPages, pages, botType) =>
     storefrontList(startPages, pages, botType)[0]?.id ?? null;
 

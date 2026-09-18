@@ -7,7 +7,9 @@ import {useCatalogProducts} from '../../../pages/Catalog/useCatalogProducts';
 import {createProductOrigin} from '../../../shared/lib/productOrigin';
 import {catalogRoute, productRoute} from '../../../shared/lib/pageRoutes';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
-import {resolveBotType, storefrontList} from '../../model/desktopNav';
+import {useWindowScrollMemory} from '../../shell/useWindowScrollMemory';
+import {useOpenHero} from '../../shell/useOpenHero';
+import {originIndex, resolveBotType, storefrontList} from '../../model/desktopNav';
 import {storefrontConfig} from '../../model/storefrontConfig';
 import {buildHero, buildShelves, mergeOffers} from '../../model/storefrontModel';
 import OfferCard from './OfferCard';
@@ -51,9 +53,22 @@ export default function Storefront() {
         [catalogs, pages, startPages]
     );
 
+    const originByPage = useMemo(
+        () => originIndex(startPages, pages, botType),
+        [startPages, pages, botType]
+    );
+
     const hero = useMemo(
-        () => buildHero({banners, mainPageProducts, originOf, pageIds, scopeId, limit: config.heroSize}),
-        [banners, mainPageProducts, originOf, pageIds, scopeId, config.heroSize]
+        () => buildHero({
+            banners,
+            mainPageProducts,
+            originOf,
+            originByPage,
+            pageIds,
+            scopeId,
+            limit: config.heroSize
+        }),
+        [banners, mainPageProducts, originOf, originByPage, pageIds, scopeId, config.heroSize]
     );
 
     const shelves = useMemo(
@@ -80,10 +95,7 @@ export default function Storefront() {
         navigate(productRoute(offer.product, catalogs) || `/card/${offer.product.id}`);
     }, [catalogs, navigate, originOf, setPageId]);
 
-    const openHero = useCallback((item) => {
-        if (item.origin) setPageId(item.origin.pageId);
-        navigate(productRoute(item.product, catalogs) || `/card/${item.product.id}`);
-    }, [catalogs, navigate, setPageId]);
+    const openHero = useOpenHero();
 
     const openCatalog = useCallback((target) => {
         setPageId(target.pageId);
@@ -92,6 +104,8 @@ export default function Storefront() {
 
     const isFirstLoad = isLoading && !isLoadingMore && catalogOffers === null;
     const showOrigin = scopeId === null;
+
+    useWindowScrollMemory(`storefront:${scopeId ?? 'all'}`, {ready: catalogOffers !== null});
 
     return (
         <div className={style.screen}>
@@ -107,7 +121,7 @@ export default function Storefront() {
                     onClick={() => setScopeId(null)}
                 >
                     {config.allChipLabel}
-                    {total ? <span className={style.chipCount}>{total}</span> : null}
+                    {scopeId === null && total ? <span className={style.chipCount}>{total}</span> : null}
                 </button>
 
                 {storefronts.map((item) => (
@@ -125,6 +139,7 @@ export default function Storefront() {
                             />
                         ) : null}
                         {item.label}
+                        {scopeId === item.id && total ? <span className={style.chipCount}>{total}</span> : null}
                     </button>
                 ))}
             </div>

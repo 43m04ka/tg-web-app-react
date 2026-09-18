@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo} from 'react';
 import {Navigate, Route, Routes, useLocation} from 'react-router-dom';
-import Main from '../pages/Main/Main';
+import DesktopMain from './pages/Main/DesktopMain';
 import Catalog from '../pages/Catalog/Catalog';
 import Search from '../pages/Search/Search';
 import Basket from '../pages/Basket/Basket';
@@ -74,7 +74,7 @@ export default function DesktopRoutes({sections}) {
     return (
         <Routes location={location}>
             <Route path="/" element={<Storefront/>}/>
-            <Route path="/main" element={<EnsurePage><Main/></EnsurePage>}/>
+            <Route path="/main" element={<EnsurePage><DesktopMain/></EnsurePage>}/>
             <Route path="/steam" element={<EnsureStandalone type="steam"><Steam/></EnsureStandalone>}/>
             <Route path="/services" element={<EnsureStandalone type="services"><Services/></EnsureStandalone>}/>
             <Route path="/subscription/*" element={<EnsurePage><Subscription/></EnsurePage>}/>

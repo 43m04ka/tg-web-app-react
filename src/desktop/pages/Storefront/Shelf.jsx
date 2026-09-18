@@ -7,10 +7,10 @@ export default function Shelf({shelf, size, showOrigin, onOpen, onOpenCatalog}) 
 
     const hasMore = shelf.offers.length > size;
     const visible = isOpen ? shelf.offers : shelf.offers.slice(0, size);
-    const catalogPath = shelf.pages.length === 1 ? shelf.pages[0] : null;
+    const singlePage = shelf.pages.length === 1 ? shelf.pages[0] : null;
 
-    const action = catalogPath
-        ? () => onOpenCatalog?.(catalogPath)
+    const action = singlePage
+        ? () => onOpenCatalog?.(singlePage)
         : () => setOpen((open) => !open);
 
     return (
@@ -27,9 +27,9 @@ export default function Shelf({shelf, size, showOrigin, onOpen, onOpenCatalog}) 
                     {shelf.title}
                 </span>
 
-                {catalogPath || hasMore ? (
+                {singlePage || hasMore ? (
                     <button type="button" className={style.shelfAction} onClick={action}>
-                        {catalogPath ? 'Смотреть все →' : (isOpen ? 'Свернуть' : `Показать все · ${shelf.offers.length}`)}
+                        {singlePage ? 'Смотреть все →' : (isOpen ? 'Свернуть' : `Показать все · ${shelf.offers.length}`)}
                     </button>
                 ) : null}
             </header>

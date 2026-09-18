@@ -3,15 +3,15 @@ import {Navigate, Route, Routes, useLocation} from 'react-router-dom';
 import DesktopMain from './pages/Main/DesktopMain';
 import DesktopCatalog from './pages/Catalog/DesktopCatalog';
 import DesktopSearch from './pages/Search/DesktopSearch';
-import Basket from '../pages/Basket/Basket';
-import Checkout from '../pages/Basket/Checkout';
-import More from '../pages/More/More';
+import DesktopBasket from './pages/Basket/DesktopBasket';
+import DesktopCheckout from './pages/Basket/DesktopCheckout';
+import DesktopMore from './pages/Account/DesktopMore';
+import DesktopFavorites from './pages/Account/DesktopFavorites';
+import DesktopHistory from './pages/Account/DesktopHistory';
+import DesktopSteam from './pages/Steam/DesktopSteam';
+import DesktopServices from './pages/Services/DesktopServices';
+import DesktopSubscription from './pages/Subscription/DesktopSubscription';
 import DesktopProduct from './pages/Product/DesktopProduct';
-import Favorites from '../pages/Account/Favorites';
-import OrderHistory from '../pages/Account/OrderHistory';
-import Steam from '../pages/Steam/Steam';
-import Services from '../pages/Services/Services';
-import Subscription from '../pages/Subscription/Subscription';
 import Maintenance from '../pages/Maintenance/Maintenance';
 import {useSessionStore} from '../store/useSessionStore';
 import {useStructureStore} from '../store/useStructureStore';
@@ -75,17 +75,17 @@ export default function DesktopRoutes({sections}) {
         <Routes location={location}>
             <Route path="/" element={<Storefront/>}/>
             <Route path="/main" element={<EnsurePage><DesktopMain/></EnsurePage>}/>
-            <Route path="/steam" element={<EnsureStandalone type="steam"><Steam/></EnsureStandalone>}/>
-            <Route path="/services" element={<EnsureStandalone type="services"><Services/></EnsureStandalone>}/>
-            <Route path="/subscription/*" element={<EnsurePage><Subscription/></EnsurePage>}/>
+            <Route path="/steam" element={<EnsureStandalone type="steam"><DesktopSteam/></EnsureStandalone>}/>
+            <Route path="/services" element={<EnsureStandalone type="services"><DesktopServices/></EnsureStandalone>}/>
+            <Route path="/subscription/*" element={<EnsurePage><DesktopSubscription/></EnsurePage>}/>
             <Route path="/catalog/*" element={<EnsurePage><DesktopCatalog/></EnsurePage>}/>
             <Route path="/card/:id" element={<EnsurePage><DesktopProduct/></EnsurePage>}/>
             <Route path="/search" element={<EnsurePage><DesktopSearch/></EnsurePage>}/>
-            <Route path="/basket" element={<EnsurePage><Basket/></EnsurePage>}/>
-            <Route path="/checkout" element={<EnsurePage><Checkout/></EnsurePage>}/>
-            <Route path="/more" element={<EnsurePage><More/></EnsurePage>}/>
-            <Route path="/favorites" element={<EnsurePage><Favorites/></EnsurePage>}/>
-            <Route path="/history" element={<EnsurePage><OrderHistory/></EnsurePage>}/>
+            <Route path="/basket" element={<EnsurePage><DesktopBasket/></EnsurePage>}/>
+            <Route path="/checkout" element={<EnsurePage><DesktopCheckout/></EnsurePage>}/>
+            <Route path="/more" element={<EnsurePage><DesktopMore/></EnsurePage>}/>
+            <Route path="/favorites" element={<EnsurePage><DesktopFavorites/></EnsurePage>}/>
+            <Route path="/history" element={<EnsurePage><DesktopHistory/></EnsurePage>}/>
             <Route path="*" element={<Navigate to="/" replace/>}/>
         </Routes>
     );

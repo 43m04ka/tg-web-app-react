@@ -2,7 +2,7 @@ import React from 'react';
 import {discountPercent, formatPrice, shortPlatform, subscriptionTerm} from '../../../pages/Main/catalogSections';
 import style from './Storefront.module.scss';
 
-export default function OfferCard({offer, onOpen, showOrigin = true}) {
+export default function OfferCard({offer, onOpen, showOrigin = true, showAlso = true}) {
     const {product, price, oldPrice, origins} = offer;
 
     const percent = discountPercent(price, oldPrice);
@@ -45,7 +45,7 @@ export default function OfferCard({offer, onOpen, showOrigin = true}) {
                 <span className={style.oldPrice}>{formatPrice(oldPrice)}</span>
             ) : null}
 
-            {alsoIn > 0 ? (
+            {showAlso && alsoIn > 0 ? (
                 <span className={style.alsoIn}>
                     {alsoIn === 1 ? `Ещё на ${origins[1].label}` : `Ещё на ${alsoIn} витринах`}
                 </span>

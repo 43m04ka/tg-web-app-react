@@ -26,7 +26,18 @@ export default function StorefrontHero({items, onOpen}) {
                         <div className={style.heroBody}>
                             {item.subtitle ? <span className={style.heroTag}>{item.subtitle}</span> : null}
 
-                            {item.origin ? <span className={style.heroOrigin}>{item.origin.label}</span> : null}
+                            {item.origin ? (
+                                <span className={style.heroOrigin}>
+                                    {item.origin.icon ? (
+                                        <span
+                                            className={style.heroOriginIcon}
+                                            style={{backgroundImage: `url(${item.origin.icon})`}}
+                                            aria-hidden="true"
+                                        />
+                                    ) : null}
+                                    {item.origin.label}
+                                </span>
+                            ) : null}
 
                             <span className={style.heroName}>{item.title}</span>
 

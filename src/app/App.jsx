@@ -10,6 +10,7 @@ import BackButton from '../shared/ui/BackButton/BackButton';
 import NavBar from '../shared/ui/NavBar/NavBar';
 import Splash from '../shared/ui/Splash/Splash';
 import {useAccentTheme} from '../shared/hooks/useAccentTheme';
+import {useIsDesktop} from '../shared/hooks/useIsDesktop';
 import {useSessionStore} from '../store/useSessionStore';
 import {useStructureStore} from '../store/useStructureStore';
 import {isStandalonePage, pageTypeOf} from '../shared/lib/pageRoutes';
@@ -20,6 +21,7 @@ import style from './App.module.scss';
 const AdminAuth = lazy(() => import('../pages/AdminPanel/AP_Authentication'));
 const AdminPanel = lazy(() => import('../pages/AdminPanel/AdminPanel'));
 const Admin2 = lazy(() => import('../pages/Admin2'));
+const DesktopShell = lazy(() => import('../desktop/DesktopShell'));
 
 export default function App() {
     const {isReady} = useBootstrap();
@@ -29,6 +31,7 @@ export default function App() {
     const pages = useStructureStore((state) => state.pages);
 
     const isStandalone = isStandalonePage(pageTypeOf(pages, pageId));
+    const isDesktop = useIsDesktop();
 
     useAccentTheme();
     useDeepLink(isReady && !isMaintenance);
@@ -53,6 +56,14 @@ export default function App() {
     if (isMaintenance) return <Maintenance until={maintenanceUntil}/>;
 
     if (!isReady) return <Splash/>;
+
+    if (isDesktop) {
+        return (
+            <Suspense fallback={<Splash/>}>
+                <DesktopShell sections={maintenanceSections}/>
+            </Suspense>
+        );
+    }
 
     return (
         <div className={style.app}>

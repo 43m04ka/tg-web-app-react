@@ -1,0 +1,78 @@
+html[data-view='desktop'],
+html[data-view='desktop'] body {
+    height: auto;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+html[data-view='desktop'] #root {
+    height: auto;
+    min-height: 100%;
+}
+
+html[data-view='desktop'] body {
+    font-size: var(--d-fs-md);
+    background: var(--bg);
+}
+
+html[data-view='desktop'] {
+    scrollbar-width: thin;
+    scrollbar-color: var(--surface-4) transparent;
+    -ms-overflow-style: auto;
+}
+
+html[data-view='desktop'] ::-webkit-scrollbar {
+    display: block;
+    width: 10px;
+    height: 10px;
+}
+
+html[data-view='desktop'] ::-webkit-scrollbar-thumb {
+    background: var(--surface-3);
+    border-radius: var(--radius-full);
+    border: 2px solid var(--bg);
+}
+
+html[data-view='desktop'] ::-webkit-scrollbar-thumb:hover {
+    background: var(--surface-4);
+}
+
+html[data-view='desktop'] ::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+html[data-view='desktop'] button:active:not(:disabled) {
+    transform: none;
+}
+
+:root {
+    --d-max: 1280px;
+    --d-gutter: 32px;
+    --d-topbar: 64px;
+
+    --d-fs-xs: 12px;
+    --d-fs-sm: 13px;
+    --d-fs-md: 14px;
+    --d-fs-lg: 16px;
+    --d-fs-xl: 18px;
+    --d-fs-2xl: 22px;
+    --d-fs-3xl: 26px;
+
+    --d-gap-1: 4px;
+    --d-gap-2: 8px;
+    --d-gap-3: 12px;
+    --d-gap-4: 16px;
+    --d-gap-5: 20px;
+    --d-gap-6: 24px;
+    --d-gap-8: 32px;
+    --d-gap-10: 40px;
+
+    --d-card-min: 200px;
+}
+
+@media (max-width: 1360px) {
+    :root {
+        --d-gutter: 24px;
+    }
+}

@@ -1,6 +1,6 @@
 .bar {
-  position: sticky;
-  top: 0;
+  flex: none;
+  position: relative;
   z-index: 40;
   background: var(--bg-overlay);
   backdrop-filter: blur(18px);

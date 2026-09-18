@@ -1,0 +1,179 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--d-gap-8);
+  background: oklch(0.06 0.008 264 / 0.72);
+  backdrop-filter: blur(10px) saturate(0.7);
+  animation: veil 240ms var(--ease-out) both;
+}
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--d-gap-6);
+  animation: stageIn 300ms var(--ease-spring) both;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.title {
+  font-size: var(--d-fs-2xl);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.4px;
+}
+
+.note {
+  font-size: var(--d-fs-sm);
+  color: var(--text-muted);
+}
+
+.cards {
+  display: flex;
+  gap: var(--d-gap-6);
+}
+
+.card {
+  position: relative;
+  width: 214px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--d-gap-2);
+  padding: var(--d-gap-3);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  animation: split 420ms var(--ease-spring) both;
+  animation-delay: calc(var(--i) * 45ms);
+  transition: transform var(--duration-base) var(--ease-out),
+              border-color var(--duration-base) var(--ease-out),
+              background-color var(--duration-base) var(--ease-out);
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+}
+
+.cardBest {
+  border-color: var(--accent-soft);
+}
+
+.cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-md);
+  background: var(--surface-3) center / cover no-repeat;
+}
+
+.discount {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 2px 7px;
+  border-radius: var(--radius-xs);
+  background: var(--gold);
+  color: var(--gold-surface);
+  font-size: var(--d-fs-2xs);
+  font-weight: var(--fw-bold);
+}
+
+.region {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--d-fs-xs);
+  font-weight: var(--fw-bold);
+  color: var(--text-secondary);
+}
+
+.regionIcon {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: center / contain no-repeat;
+}
+
+.price {
+  font-size: var(--d-fs-xl);
+  font-weight: var(--fw-bold);
+}
+
+.badge {
+  position: absolute;
+  top: -10px;
+  right: var(--d-gap-3);
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-size: var(--d-fs-2xs);
+  font-weight: var(--fw-bold);
+  box-shadow: var(--shadow-md);
+}
+
+.close {
+  padding: var(--d-gap-2) var(--d-gap-6);
+  border-radius: var(--radius-full);
+  background: oklch(1 0 0 / 0.08);
+  color: var(--text-secondary);
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-semibold);
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.close:hover {
+  background: oklch(1 0 0 / 0.14);
+  color: var(--text);
+}
+
+@keyframes veil {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes stageIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes split {
+  from {
+    opacity: 0;
+    transform: translateX(var(--from)) scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .stage,
+  .card {
+    animation: none;
+  }
+}

@@ -60,6 +60,10 @@ html[data-view='desktop'] button:active:not(:disabled) {
     --d-fs-xl: 18px;
     --d-fs-2xl: 22px;
     --d-fs-3xl: 26px;
+    --d-fs-4xl: 34px;
+
+    --d-page-in: 260ms;
+    --d-stagger: 38ms;
 
     --d-gap-1: 4px;
     --d-gap-2: 8px;

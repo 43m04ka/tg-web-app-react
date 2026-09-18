@@ -6,7 +6,7 @@ import Search from '../pages/Search/Search';
 import Basket from '../pages/Basket/Basket';
 import Checkout from '../pages/Basket/Checkout';
 import More from '../pages/More/More';
-import Product from '../pages/Product/Product';
+import DesktopProduct from './pages/Product/DesktopProduct';
 import Favorites from '../pages/Account/Favorites';
 import OrderHistory from '../pages/Account/OrderHistory';
 import Steam from '../pages/Steam/Steam';
@@ -79,7 +79,7 @@ export default function DesktopRoutes({sections}) {
             <Route path="/services" element={<EnsureStandalone type="services"><Services/></EnsureStandalone>}/>
             <Route path="/subscription/*" element={<EnsurePage><Subscription/></EnsurePage>}/>
             <Route path="/catalog/*" element={<EnsurePage><DesktopCatalog/></EnsurePage>}/>
-            <Route path="/card/:id" element={<EnsurePage><Product/></EnsurePage>}/>
+            <Route path="/card/:id" element={<EnsurePage><DesktopProduct/></EnsurePage>}/>
             <Route path="/search" element={<EnsurePage><Search/></EnsurePage>}/>
             <Route path="/basket" element={<EnsurePage><Basket/></EnsurePage>}/>
             <Route path="/checkout" element={<EnsurePage><Checkout/></EnsurePage>}/>

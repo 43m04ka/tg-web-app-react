@@ -11,14 +11,37 @@
 }
 
 .title {
-  font-size: var(--d-fs-3xl);
+  max-width: 22ch;
+  font-size: var(--d-fs-4xl);
+  line-height: 1.16;
   font-weight: var(--fw-bold);
-  letter-spacing: -0.6px;
+  letter-spacing: -0.8px;
+  color: oklch(0.97 0.004 264);
+  animation: rise var(--duration-slow) var(--ease-out) backwards;
+}
+
+.ps {
+  color: oklch(0.72 0.15 258);
+}
+
+.xbox {
+  color: oklch(0.78 0.18 148);
 }
 
 .subtitle {
   font-size: var(--d-fs-md);
   color: var(--text-muted);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .chips {
@@ -77,21 +100,22 @@
   aspect-ratio: 16 / 9;
   border-radius: var(--radius-lg);
   background: var(--surface-2) center / cover no-repeat;
-  border: 1px solid var(--border-subtle);
+  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.07);
   overflow: hidden;
   cursor: pointer;
-  transition: transform var(--duration-base) var(--ease-out),
-              border-color var(--duration-base) var(--ease-out);
+  transform: translateZ(0);
+  transition: transform var(--duration-slow) var(--ease-spring),
+              box-shadow var(--duration-slow) var(--ease-out);
 }
 
 .heroCard:hover {
-  transform: translateY(-4px);
-  border-color: var(--border-strong);
+  transform: translateY(-5px);
+  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.16), var(--shadow-lg);
 }
 
 .heroBody {
   position: absolute;
-  inset: 0;
+  inset: -1px;
   padding: var(--d-gap-5);
   display: flex;
   flex-direction: column;
@@ -244,6 +268,8 @@
   flex-direction: column;
   gap: 7px;
   cursor: pointer;
+  animation: cardIn 320ms var(--ease-out) both;
+  animation-delay: calc(min(var(--i, 0), 11) * var(--d-stagger));
 }
 
 .cover {
@@ -253,11 +279,36 @@
   border-radius: var(--radius-md);
   background: var(--surface-2) center / cover no-repeat;
   box-shadow: 0 16px 30px -22px oklch(0 0 0 / 0.5);
-  transition: transform var(--duration-base) var(--ease-out);
+  transform: translateZ(0);
+  transition: transform var(--duration-slow) var(--ease-spring),
+              box-shadow var(--duration-slow) var(--ease-out);
 }
 
 .card:hover .cover {
-  transform: translateY(-4px);
+  transform: translateY(-6px) scale(1.012);
+  box-shadow: 0 22px 38px -20px oklch(0 0 0 / 0.66);
+}
+
+.card:active .cover {
+  transform: translateY(-2px) scale(0.995);
+  transition-duration: var(--duration-fast);
+}
+
+.from {
+  font-size: var(--d-fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--text-muted);
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .originBadge {

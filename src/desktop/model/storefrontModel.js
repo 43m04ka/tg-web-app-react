@@ -41,13 +41,13 @@ export const mergeOffers = (products, originOf) => {
                 product,
                 price,
                 oldPrice: product.oldPrice ?? null,
-                origins: origin ? [{...origin, price}] : []
+                origins: origin ? [{...origin, price, product}] : []
             });
             return;
         }
 
         if (origin && !current.origins.some((item) => item.pageId === origin.pageId)) {
-            current.origins.push({...origin, price});
+            current.origins.push({...origin, price, product});
         }
 
         if (price !== null && (current.price === null || price < current.price)) {

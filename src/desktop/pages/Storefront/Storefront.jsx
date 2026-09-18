@@ -7,14 +7,16 @@ import {useCatalogProducts} from '../../../pages/Catalog/useCatalogProducts';
 import {createProductOrigin} from '../../../shared/lib/productOrigin';
 import {catalogRoute, productRoute} from '../../../shared/lib/pageRoutes';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
-import {useWindowScrollMemory} from '../../shell/useWindowScrollMemory';
+import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import {useOpenHero} from '../../shell/useOpenHero';
+import {useOfferPicker} from '../../shell/useOfferPicker';
 import {originIndex, resolveBotType, storefrontList} from '../../model/desktopNav';
 import {storefrontConfig} from '../../model/storefrontConfig';
 import {buildHero, buildShelves, mergeOffers} from '../../model/storefrontModel';
 import OfferCard from './OfferCard';
 import Shelf from './Shelf';
 import StorefrontHero from './StorefrontHero';
+import OfferSplit from './OfferSplit';
 import style from './Storefront.module.scss';
 
 const SKELETON_COUNT = 12;
@@ -88,12 +90,8 @@ export default function Storefront() {
         [items, originOf]
     );
 
-    const openOffer = useCallback((offer) => {
-        const origin = offer.origins[0] || originOf(offer.product);
-        if (origin) setPageId(origin.pageId);
-
-        navigate(productRoute(offer.product, catalogs) || `/card/${offer.product.id}`);
-    }, [catalogs, navigate, originOf, setPageId]);
+    const picker = useOfferPicker({originOf});
+    const openOffer = picker.open;
 
     const openHero = useOpenHero();
 
@@ -105,13 +103,17 @@ export default function Storefront() {
     const isFirstLoad = isLoading && !isLoadingMore && catalogOffers === null;
     const showOrigin = scopeId === null;
 
-    useWindowScrollMemory(`storefront:${scopeId ?? 'all'}`, {ready: catalogOffers !== null});
+    useScrollMemory(`storefront:${scopeId ?? 'all'}`, {ready: catalogOffers !== null});
 
     return (
         <div className={style.screen}>
+            <OfferSplit offer={picker.picked} onPick={picker.pick} onClose={picker.close}/>
+
             <header className={style.head}>
-                <h1 className={style.title}>{config.title}</h1>
-                <p className={style.subtitle}>{config.subtitle}</p>
+                <h1 className={style.title}>
+                    Геймворд — игры и подписки для <span className={style.ps}>PlayStation</span> и{' '}
+                    <span className={style.xbox}>Xbox</span>
+                </h1>
             </header>
 
             <div className={style.chips}>
@@ -187,10 +189,11 @@ export default function Storefront() {
                         ) : null}
 
                         <div className={style.grid}>
-                            {catalogOffers.map((offer) => (
+                            {catalogOffers.map((offer, index) => (
                                 <OfferCard
                                     key={offer.key}
                                     offer={offer}
+                                    index={index}
                                     showOrigin={showOrigin}
                                     onOpen={openOffer}
                                 />

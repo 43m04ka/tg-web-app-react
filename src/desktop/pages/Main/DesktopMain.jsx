@@ -9,11 +9,13 @@ import {regionLabel} from '../../../shared/lib/region';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
 import {originIndex, storefrontList} from '../../model/desktopNav';
 import {useOpenHero} from '../../shell/useOpenHero';
+import {useOfferPicker} from '../../shell/useOfferPicker';
 import {storefrontConfig} from '../../model/storefrontConfig';
 import {buildHero, buildShelves} from '../../model/storefrontModel';
-import {useWindowScrollMemory} from '../../shell/useWindowScrollMemory';
+import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import Shelf from '../Storefront/Shelf';
 import StorefrontHero from '../Storefront/StorefrontHero';
+import OfferSplit from '../Storefront/OfferSplit';
 import style from '../Storefront/Storefront.module.scss';
 
 export default function DesktopMain() {
@@ -79,7 +81,8 @@ export default function DesktopMain() {
         navigate(productRoute(product, catalogs) || `/card/${product.id}`);
     }, [catalogs, navigate]);
 
-    const openOffer = useCallback((offer) => openProduct(offer.product), [openProduct]);
+    const picker = useOfferPicker({originOf});
+    const openOffer = picker.open;
 
     const openHero = useOpenHero();
 
@@ -88,10 +91,12 @@ export default function DesktopMain() {
         navigate(catalogRoute(target.path));
     }, [navigate, setPageId]);
 
-    useWindowScrollMemory(`main:${pageId}`, {ready: shelves !== null});
+    useScrollMemory(`main:${pageId}`, {ready: shelves !== null});
 
     return (
         <div className={style.screen}>
+            <OfferSplit offer={picker.picked} onPick={picker.pick} onClose={picker.close}/>
+
             <header className={style.head}>
                 <h1 className={style.title}>{regionLabel(page, startPage)}</h1>
                 <p className={style.subtitle}>{config.pageSubtitle}</p>

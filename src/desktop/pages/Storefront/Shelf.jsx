@@ -35,8 +35,14 @@ export default function Shelf({shelf, size, showOrigin, onOpen, onOpenCatalog}) 
             </header>
 
             <div className={style.grid}>
-                {visible.map((offer) => (
-                    <OfferCard key={offer.key} offer={offer} showOrigin={showOrigin} onOpen={onOpen}/>
+                {visible.map((offer, index) => (
+                    <OfferCard
+                        key={offer.key}
+                        offer={offer}
+                        index={index}
+                        showOrigin={showOrigin}
+                        onOpen={onOpen}
+                    />
                 ))}
             </div>
         </section>

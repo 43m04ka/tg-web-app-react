@@ -18,8 +18,10 @@ import {
 } from '../../../shared/lib/catalogQuery';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
 import {mergeOffers} from '../../model/storefrontModel';
-import {useWindowScrollMemory} from '../../shell/useWindowScrollMemory';
+import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import OfferCard from '../Storefront/OfferCard';
+import OfferSplit from '../Storefront/OfferSplit';
+import {useOfferPicker} from '../../shell/useOfferPicker';
 import FilterPanel from './FilterPanel';
 import style from './DesktopCatalog.module.scss';
 
@@ -89,14 +91,10 @@ export default function DesktopCatalog() {
         };
     }, [catalogId]);
 
-    const openOffer = useCallback((offer) => {
-        const origin = offer.origins[0] || originOf(offer.product);
-        if (origin) setPageId(origin.pageId);
+    const picker = useOfferPicker({originOf});
+    const openOffer = picker.open;
 
-        navigate(productRoute(offer.product, catalogs) || `/card/${offer.product.id}`);
-    }, [catalogs, navigate, originOf, setPageId]);
-
-    useWindowScrollMemory(`catalog:${path}`, {ready: offers !== null});
+    useScrollMemory(`catalog:${path}`, {ready: offers !== null});
 
     const chips = describeFilters(filters, facets);
     const activeCount = countActiveFilters(filters);
@@ -116,6 +114,8 @@ export default function DesktopCatalog() {
 
     return (
         <div className={style.screen}>
+            <OfferSplit offer={picker.picked} onPick={picker.pick} onClose={picker.close}/>
+
             <FilterPanel filters={filters} facets={facets} price={price} onChange={setFilters}/>
 
             <div className={style.content}>
@@ -189,10 +189,11 @@ export default function DesktopCatalog() {
                         ) : null}
 
                         <div className={style.grid}>
-                            {offers.map((offer) => (
+                            {offers.map((offer, index) => (
                                 <OfferCard
                                     key={offer.key}
                                     offer={offer}
+                                    index={index}
                                     showOrigin={false}
                                     showAlso={false}
                                     onOpen={openOffer}

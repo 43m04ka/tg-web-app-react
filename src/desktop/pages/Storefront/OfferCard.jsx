@@ -2,7 +2,7 @@ import React from 'react';
 import {discountPercent, formatPrice, shortPlatform, subscriptionTerm} from '../../../pages/Main/catalogSections';
 import style from './Storefront.module.scss';
 
-export default function OfferCard({offer, onOpen, showOrigin = true, showAlso = true}) {
+export default function OfferCard({offer, onOpen, showOrigin = true, showAlso = true, index = 0}) {
     const {product, price, oldPrice, origins} = offer;
 
     const percent = discountPercent(price, oldPrice);
@@ -12,7 +12,7 @@ export default function OfferCard({offer, onOpen, showOrigin = true, showAlso = 
     const alsoIn = origins.length - 1;
 
     return (
-        <article className={style.card} onClick={() => onOpen?.(offer)}>
+        <article className={style.card} style={{'--i': index}} onClick={() => onOpen?.(offer)}>
             <div
                 className={style.cover}
                 style={product.image ? {backgroundImage: `url(${product.image})`} : undefined}
@@ -37,7 +37,10 @@ export default function OfferCard({offer, onOpen, showOrigin = true, showAlso = 
             <span className={style.name}>{product.name}</span>
 
             <span className={style.prices}>
-                <span className={style.price}>{formatPrice(price)}</span>
+                <span className={style.price}>
+                    {alsoIn > 0 ? <span className={style.from}>от </span> : null}
+                    {formatPrice(price)}
+                </span>
                 {percent > 0 ? <span className={style.discount}>−{percent}%</span> : null}
             </span>
 

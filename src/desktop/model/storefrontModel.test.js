@@ -61,6 +61,8 @@ describe('mergeOffers', () => {
         expect(merged[0].oldPrice).toBe(4725);
         expect(merged[0].product.id).toBe(2);
         expect(merged[0].origins.map((item) => item.label)).toEqual(['PS Индия', 'PS Турция']);
+        expect(merged[0].origins.map((item) => item.product.id)).toEqual([2, 1]);
+        expect(merged[0].origins.map((item) => item.price)).toEqual([1890, 4200]);
     });
 
     it('та же игра на Xbox остаётся отдельной карточкой', () => {

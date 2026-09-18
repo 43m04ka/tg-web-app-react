@@ -7,13 +7,14 @@ import {usePlatform} from '../../shared/hooks/usePlatform';
 import {pageCartItems} from '../../pages/Basket/cartModel';
 import {resetSearchState} from '../../shared/lib/searchMemory';
 import {sectionList, storefrontList} from '../model/desktopNav';
-import {BasketIcon, SearchIcon, UserIcon} from './DesktopIcons';
+import {BasketIcon, UserIcon} from './DesktopIcons';
+import SearchBox from './SearchBox';
 import RegionMenu from './RegionMenu';
 import style from './TopBar.module.scss';
 
 export default function TopBar() {
     const navigate = useNavigate();
-    const {pathname, state} = useLocation();
+    const {pathname} = useLocation();
     const {botType} = usePlatform();
 
     const pages = useStructureStore((store) => store.pages);
@@ -66,8 +67,6 @@ export default function TopBar() {
         go('/main');
     }, [go, setPageId]);
 
-    const isGlobalSearch = pathname === '/search' && Boolean(state?.allPages);
-
     return (
         <header className={style.bar}>
             <div className={style.inner}>
@@ -97,14 +96,7 @@ export default function TopBar() {
                     ))}
                 </nav>
 
-                <button
-                    type="button"
-                    className={`${style.search} ${isGlobalSearch ? style.searchActive : ''}`}
-                    onClick={() => go('/search', {state: {allPages: true}, replace: isGlobalSearch})}
-                >
-                    <SearchIcon className={style.searchIcon}/>
-                    <span className={style.searchText}>Поиск игры или подписки</span>
-                </button>
+                <SearchBox/>
 
                 <div className={style.actions}>
                     <RegionMenu items={storefronts} activeId={storefrontId} onSelect={pickStorefront}/>

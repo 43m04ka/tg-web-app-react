@@ -1,24 +1,30 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {useLocation} from 'react-router-dom';
 import './styles/desktop.css';
 import TopBar from './shell/TopBar';
 import DesktopRoutes from './DesktopRoutes';
+import {ScrollAreaContext} from './shell/ScrollAreaContext';
 import style from './DesktopShell.module.scss';
 
 export default function DesktopShell({sections}) {
     const {pathname} = useLocation();
+    const areaRef = useRef(null);
 
     useEffect(() => {
-        window.scrollTo(0, 0);
+        areaRef.current?.scrollTo({top: 0});
     }, [pathname]);
 
     return (
-        <div className={style.shell}>
-            <TopBar/>
+        <ScrollAreaContext.Provider value={areaRef}>
+            <div className={style.shell}>
+                <TopBar/>
 
-            <main className={style.content}>
-                <DesktopRoutes sections={sections}/>
-            </main>
-        </div>
+                <main className={style.area} ref={areaRef} data-scrollable="">
+                    <div key={pathname} className={style.content}>
+                        <DesktopRoutes sections={sections}/>
+                    </div>
+                </main>
+            </div>
+        </ScrollAreaContext.Provider>
     );
 }

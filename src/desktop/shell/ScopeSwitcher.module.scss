@@ -1,117 +1,131 @@
-.track {
+.root {
+  flex: 0 1 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--d-gap-2);
+  width: 372px;
+}
+
+.card {
   position: relative;
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 5px;
-  border-radius: 16px;
-  background: var(--surface-1);
-  border: 1px solid var(--border-subtle);
-  animation: gw-rise-sm var(--m-slow) var(--m-ease) both;
-  transition: border-color var(--m-base) var(--m-ease);
-}
-
-.track:hover {
-  border-color: var(--border);
-}
-
-.indicator {
-  position: absolute;
-  left: 0;
-  top: 5px;
-  bottom: 5px;
-  border-radius: 12px;
-  background: var(--accent);
-  box-shadow: 0 12px 24px -14px oklch(0 0 0 / 0.9),
-              inset 0 1px 0 oklch(1 0 0 / 0.22);
-  opacity: 0;
-  transition: transform var(--m-base) var(--m-ease),
-              width var(--m-base) var(--m-ease),
-              background-color var(--m-lazy) var(--m-ease),
-              opacity var(--m-fast) var(--m-ease);
-}
-
-.indicator[data-on] {
-  opacity: 1;
-}
-
-.tab {
-  position: relative;
-  z-index: 1;
-  height: 44px;
-  padding: 0 var(--d-gap-3);
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 7px;
-  border-radius: 12px;
-  color: var(--text-muted);
-  font-size: var(--d-fs-sm);
-  font-weight: var(--fw-bold);
-  white-space: nowrap;
-  transition: color var(--m-fast) var(--m-ease),
-              transform var(--m-base) var(--m-spring);
+  gap: var(--d-gap-3);
+  padding: 9px var(--d-gap-4) 9px 9px;
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  text-align: left;
+  animation: gw-rise-sm var(--m-slow) var(--m-ease) both;
+  animation-delay: calc(var(--i, 0) * 46ms);
+  transition: background-color var(--m-base) var(--m-ease),
+              border-color var(--m-base) var(--m-ease),
+              transform var(--m-base) var(--m-spring),
+              box-shadow var(--m-base) var(--m-ease);
 }
 
-.tab:hover {
-  color: var(--text);
+.card:hover {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
 }
 
-.tab:active {
-  transform: scale(0.96);
+.card:active {
+  transform: scale(0.98);
 }
 
-.tabOn,
-.tabOn:hover {
-  color: var(--accent-contrast);
-}
-
-.icon {
-  flex: none;
-  width: 22px;
-  height: 22px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform var(--m-slow) var(--m-spring);
-}
-
-.tab:hover .icon {
-  transform: scale(1.1);
-}
-
-.tabOn .icon {
+.cardOn,
+.cardOn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 18px 38px -18px var(--accent),
+              inset 0 1px 0 oklch(1 0 0 / 0.22);
   transform: none;
 }
 
-.iconImage {
+.logo {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  background: var(--surface-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: var(--text-faint);
+  transition: transform var(--m-slow) var(--m-spring),
+              background-color var(--m-base) var(--m-ease),
+              color var(--m-base) var(--m-ease);
+}
+
+.card:hover .logo {
+  transform: scale(1.06);
+}
+
+.cardOn .logo {
+  background: oklch(1 0 0 / 0.16);
+  color: var(--accent-contrast);
+}
+
+.logoImage {
   width: 100%;
   height: 100%;
-  border-radius: 7px;
   background: center / contain no-repeat;
 }
 
-.iconGlyph {
-  width: 17px;
-  height: 17px;
+.logoGlyph {
+  width: 19px;
+  height: 19px;
 }
 
-.label {
-  letter-spacing: -0.1px;
+.body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
 }
 
-.count {
-  min-width: 44px;
-  text-align: right;
+.name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--d-fs-md);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.2px;
+  color: var(--text-secondary);
+  transition: color var(--m-base) var(--m-ease);
+}
+
+.card:hover .name {
+  color: var(--text);
+}
+
+.cardOn .name,
+.cardOn:hover .name {
+  color: var(--accent-contrast);
+}
+
+.note {
   font-size: var(--d-fs-2xs);
-  font-weight: var(--fw-semibold);
-  color: currentColor;
-  opacity: 0.6;
+  font-weight: var(--fw-medium);
+  color: var(--text-faint);
   font-variant-numeric: tabular-nums;
-  transition: opacity var(--m-base) var(--m-ease);
+  transition: color var(--m-base) var(--m-ease);
 }
 
-.tabOn .count {
-  opacity: 0.75;
+.cardOn .note {
+  color: var(--accent-contrast);
+  opacity: 0.86;
+}
+
+@media (max-width: 1080px) {
+  .root {
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(178px, 1fr));
+  }
 }

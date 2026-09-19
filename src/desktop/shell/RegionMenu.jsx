@@ -1,20 +1,9 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {positionsLabel} from '../model/storefrontTotals';
 import {ChevronIcon, GridIcon} from './DesktopIcons';
 import style from './RegionMenu.module.scss';
 
 const ALL = {id: null, label: 'Все витрины', title: 'Все витрины', icon: null};
-
-const positions = (count) => {
-    if (count === null) return 'считаем…';
-
-    const tail = count % 10;
-    const hundred = count % 100;
-    const word = tail === 1 && hundred !== 11
-        ? 'позиция'
-        : (tail >= 2 && tail <= 4 && (hundred < 12 || hundred > 14) ? 'позиции' : 'позиций');
-
-    return `${count.toLocaleString('ru-RU')} ${word}`;
-};
 
 export default function RegionMenu({items, scopeId, onSelect, totals}) {
     const [isOpen, setOpen] = useState(false);
@@ -131,7 +120,7 @@ export default function RegionMenu({items, scopeId, onSelect, totals}) {
 
                             <span className={style.optionBody}>
                                 <span className={style.optionLabel}>{item.label}</span>
-                                <span className={style.optionNote}>{positions(totals?.get(item.id) ?? null)}</span>
+                                <span className={style.optionNote}>{positionsLabel(totals?.get(item.id) ?? null)}</span>
                             </span>
                         </button>
                     ))}

@@ -15,6 +15,18 @@ export const scopeQueries = (storefronts, options) => [
     ...storefronts.map((item) => ({id: item.id, query: scopeQuery(item.id, options)}))
 ];
 
+export const positionsLabel = (count) => {
+    if (count === null) return 'считаем…';
+
+    const tail = count % 10;
+    const hundred = count % 100;
+    const word = tail === 1 && hundred !== 11
+        ? 'позиция'
+        : (tail >= 2 && tail <= 4 && (hundred < 12 || hundred > 14) ? 'позиции' : 'позиций');
+
+    return `${count.toLocaleString('ru-RU')} ${word}`;
+};
+
 const load = (query) => {
     const key = keyOf(query);
     if (totals.has(key)) return;

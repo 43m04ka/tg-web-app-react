@@ -10,6 +10,7 @@ import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
 import {useNearBottom} from '../../../shared/hooks/useNearBottom';
 import {useScrollArea, useScrollMemory} from '../../shell/ScrollAreaContext';
 import {useStorefrontScope} from '../../shell/StorefrontScope';
+import {useOpenSections} from '../../shell/MaintenanceScope';
 import ScopeSwitcher from '../../shell/ScopeSwitcher';
 import {useReveal} from '../../shell/useReveal';
 import {useOpenHero} from '../../shell/useOpenHero';
@@ -50,10 +51,12 @@ export default function Storefront() {
 
     const pageIds = useMemo(() => storefronts.map((item) => item.id), [storefronts]);
 
-    const sections = useMemo(
+    const allSections = useMemo(
         () => sectionList(startPages, pages, botType),
         [startPages, pages, botType]
     );
+
+    const sections = useOpenSections(allSections);
 
     const effectiveBotType = useMemo(
         () => resolveBotType(startPages, botType),

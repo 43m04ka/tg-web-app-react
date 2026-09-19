@@ -3,6 +3,7 @@ import {createRoot} from 'react-dom/client';
 import {MemoryRouter} from 'react-router-dom';
 import TopBar from './TopBar';
 import {StorefrontScopeContext} from './StorefrontScope';
+import {MaintenanceContext} from './MaintenanceScope';
 import {useStructureStore} from '../../store/useStructureStore';
 import {useSessionStore} from '../../store/useSessionStore';
 import {useCartStore} from '../../store/useCartStore';
@@ -45,15 +46,17 @@ afterEach(() => {
     container.remove();
 });
 
-const render = (path = '/main', scopeId = null) => act(() => {
+const render = (path = '/main', scopeId = null, closed = null) => act(() => {
     root.unmount();
     root = createRoot(container);
 
     root.render(
         <MemoryRouter initialEntries={[path]}>
-            <StorefrontScopeContext.Provider value={{scopeId, setScopeId: () => {}}}>
-                <TopBar/>
-            </StorefrontScopeContext.Provider>
+            <MaintenanceContext.Provider value={closed}>
+                <StorefrontScopeContext.Provider value={{scopeId, setScopeId: () => {}}}>
+                    <TopBar/>
+                </StorefrontScopeContext.Provider>
+            </MaintenanceContext.Provider>
         </MemoryRouter>
     );
 });
@@ -140,4 +143,12 @@ test('при уходе в раздел счётчик корзины держи
 
     expect(slot.getAttribute('aria-hidden')).toBe('true');
     expect(cartButton().textContent).toBe('2');
+});
+
+test('закрытый на обслуживание раздел пропадает из меню', () => {
+    render('/main', null, {steam: {enabled: true}});
+
+    const labels = [...container.querySelectorAll('nav button')].map((node) => node.textContent);
+
+    expect(labels).toEqual(['Каталог', 'Коды пополнения']);
 });

@@ -181,7 +181,7 @@ export default function DesktopSearch() {
 
             <header className={style.head}>
                 <h1 className={style.title}>
-                    {scopeName ? `Поиск по витрине ${scopeName}` : 'Поиск по всем витринам'}
+                    {scopeName ? `Поиск в ${scopeName}` : 'Поиск по всем витринам'}
                 </h1>
 
                 <form className={style.field} onSubmit={(event) => event.preventDefault()} role="search">
@@ -201,7 +201,7 @@ export default function DesktopSearch() {
                                 setQuery('');
                             }
                         }}
-                        aria-label={scopeName ? `Поиск по витрине ${scopeName}` : 'Поиск по всем витринам'}
+                        aria-label={scopeName ? `Поиск в ${scopeName}` : 'Поиск по всем витринам'}
                     />
 
                     {isLoading && isSearching ? <Spinner className={style.fieldSpinner}/> : null}
@@ -230,7 +230,7 @@ export default function DesktopSearch() {
                         <span className={style.count}>
                             {mode === 'idle'
                                 ? (scopeName
-                                    ? `Начните вводить название — ищем в витрине ${scopeName}`
+                                    ? `Начните вводить название — ищем в ${scopeName}`
                                     : 'Начните вводить название — поиск идёт по всем витринам сразу')
                                 : offers === null
                                     ? 'Ищем…'

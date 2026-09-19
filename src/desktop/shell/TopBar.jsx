@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {useSessionStore} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
@@ -16,6 +16,7 @@ import SearchBox from './SearchBox';
 import BackLink from '../ui/BackLink';
 import RegionMenu from './RegionMenu';
 import {useStorefrontScope} from './StorefrontScope';
+import {useOpenSections} from './MaintenanceScope';
 import style from './TopBar.module.scss';
 
 export default function TopBar({onSearchOpenChange}) {
@@ -36,10 +37,12 @@ export default function TopBar({onSearchOpenChange}) {
         [startPages, pages, botType]
     );
 
-    const sections = useMemo(
+    const allSections = useMemo(
         () => sectionList(startPages, pages, botType),
         [startPages, pages, botType]
     );
+
+    const sections = useOpenSections(allSections);
 
     const {scopeId, setScopeId} = useStorefrontScope();
 
@@ -86,6 +89,16 @@ export default function TopBar({onSearchOpenChange}) {
         go(section.route);
     }, [go, setPageId]);
 
+    const storefrontIds = useMemo(() => storefronts.map((item) => item.id), [storefronts]);
+
+    useEffect(() => {
+        if (isStandalone) return;
+
+        const target = scopeId ?? (storefrontIds.includes(pageId) ? pageId : storefrontIds[0] ?? null);
+
+        if (target !== null && target !== pageId) setPageId(target);
+    }, [isStandalone, scopeId, pageId, storefrontIds, setPageId]);
+
     const pickStorefront = useCallback((item) => {
         setScopeId(item.id);
         if (item.id !== null) setPageId(item.id);
@@ -94,18 +107,20 @@ export default function TopBar({onSearchOpenChange}) {
     return (
         <header className={isScrolled ? `${style.bar} ${style.barScrolled}` : style.bar}>
             <div className={style.inner}>
-                <div className={style.backSlot} data-hidden={showBack ? undefined : ''}>
-                    <BackLink to="/" label="Назад" className={style.back}/>
-                </div>
+                <div className={style.lead}>
+                    <div className={style.backSlot} data-hidden={showBack ? undefined : ''}>
+                        <BackLink to="/" label="Назад" className={style.back}/>
+                    </div>
 
-                <button type="button" className={style.logo} onClick={() => go('/')}>
-                    <span
-                        className={style.mark}
-                        style={{'--logo': `url(${logo})`}}
-                        aria-hidden="true"
-                    />
-                    <span className={style.brand}>Геймворд</span>
-                </button>
+                    <button type="button" className={style.logo} onClick={() => go('/')}>
+                        <span
+                            className={style.mark}
+                            style={{'--logo': `url(${logo})`}}
+                            aria-hidden="true"
+                        />
+                        <span className={style.brand}>Геймворд</span>
+                    </button>
+                </div>
 
                 <nav className={style.nav} data-hidden={isFocusMode ? '' : undefined}>
                     <button

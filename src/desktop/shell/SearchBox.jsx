@@ -116,8 +116,6 @@ export default function SearchBox({onOpenChange, hidden = false, wide = false}) 
     }, [trimmed, isSearching, scope, originOf]);
 
     useEffect(() => {
-        if (!isOpen) return undefined;
-
         let isAlive = true;
 
         loadFacets(scope)
@@ -129,7 +127,7 @@ export default function SearchBox({onOpenChange, hidden = false, wide = false}) 
         return () => {
             isAlive = false;
         };
-    }, [isOpen, scope]);
+    }, [scope]);
 
     useEffect(() => {
         setCursor(-1);

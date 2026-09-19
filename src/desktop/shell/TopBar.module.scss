@@ -30,30 +30,36 @@
   height: 56px;
 }
 
-.backSlot {
+.lead {
+  position: relative;
   flex: none;
   display: flex;
   align-items: center;
-  max-width: 130px;
+}
+
+.backSlot {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  margin-right: var(--d-gap-4);
+  display: flex;
+  align-items: center;
   opacity: 1;
   visibility: visible;
-  transition: max-width var(--m-slow) var(--m-ease),
-              margin var(--m-slow) var(--m-ease),
-              opacity var(--m-base) var(--m-ease),
+  transform: translateY(-50%);
+  transition: opacity var(--m-base) var(--m-ease),
+              transform var(--m-base) var(--m-spring),
               visibility 0s;
 }
 
 .backSlot[data-hidden] {
-  max-width: 0;
-  margin-right: calc(var(--d-gap-6) * -1);
   opacity: 0;
-  overflow: hidden;
   visibility: hidden;
   pointer-events: none;
-  transition: max-width var(--m-slow) var(--m-ease),
-              margin var(--m-slow) var(--m-ease),
-              opacity var(--m-fast) var(--m-ease),
-              visibility 0s linear var(--m-slow);
+  transform: translate(-8px, -50%);
+  transition: opacity var(--m-base) var(--m-ease),
+              transform var(--m-base) var(--m-ease),
+              visibility 0s linear var(--m-base);
 }
 
 .back {
@@ -285,5 +291,29 @@
 @media (max-width: 1080px) {
   .brand {
     display: none;
+  }
+}
+
+@media (max-width: 1400px) {
+  .backSlot {
+    position: static;
+    margin-right: var(--d-gap-4);
+    max-width: 130px;
+    transform: none;
+    transition: max-width var(--m-slow) var(--m-ease),
+                margin var(--m-slow) var(--m-ease),
+                opacity var(--m-base) var(--m-ease),
+                visibility 0s;
+  }
+
+  .backSlot[data-hidden] {
+    max-width: 0;
+    margin-right: 0;
+    overflow: hidden;
+    transform: none;
+    transition: max-width var(--m-slow) var(--m-ease),
+                margin var(--m-slow) var(--m-ease),
+                opacity var(--m-fast) var(--m-ease),
+                visibility 0s linear var(--m-slow);
   }
 }

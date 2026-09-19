@@ -1,6 +1,6 @@
 import React, {act} from 'react';
 import {createRoot} from 'react-dom/client';
-import {MemoryRouter} from 'react-router-dom';
+import {MemoryRouter, useLocation} from 'react-router-dom';
 import TopBar from './TopBar';
 import {StorefrontScopeContext} from './StorefrontScope';
 import {MaintenanceContext} from './MaintenanceScope';
@@ -30,6 +30,12 @@ const catalogs = [
 
 let container;
 let root;
+let seenPath = null;
+
+function PathProbe() {
+    seenPath = useLocation().pathname;
+    return null;
+}
 
 beforeEach(() => {
     useStructureStore.setState({pages, startPages, catalogs});
@@ -55,6 +61,7 @@ const render = (path = '/main', scopeId = null, closed = null) => act(() => {
             <MaintenanceContext.Provider value={closed}>
                 <StorefrontScopeContext.Provider value={{scopeId, setScopeId: () => {}}}>
                     <TopBar/>
+                    <PathProbe/>
                 </StorefrontScopeContext.Provider>
             </MaintenanceContext.Provider>
         </MemoryRouter>
@@ -151,4 +158,38 @@ test('закрытый на обслуживание раздел пропада
     const labels = [...container.querySelectorAll('nav button')].map((node) => node.textContent);
 
     expect(labels).toEqual(['Каталог', 'Коды пополнения']);
+});
+
+test('смена витрины уводит на главную с карточки и каталога, но не из корзины', () => {
+    const pickStorefront = (label) => {
+        const trigger = [...container.querySelectorAll('button')]
+            .find((node) => node.getAttribute('aria-haspopup') === 'listbox');
+
+        act(() => {
+            trigger.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+        });
+
+        const option = [...container.querySelectorAll('[role="option"]')]
+            .find((node) => node.lastElementChild.firstElementChild.textContent === label);
+
+        act(() => {
+            option.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+        });
+    };
+
+    render('/card/251438');
+    pickStorefront('PS Индия');
+    expect(seenPath).toBe('/');
+
+    render('/catalog/ps_tur_new');
+    pickStorefront('PS Индия');
+    expect(seenPath).toBe('/');
+
+    render('/basket');
+    pickStorefront('PS Индия');
+    expect(seenPath).toBe('/basket');
+
+    render('/search');
+    pickStorefront('PS Индия');
+    expect(seenPath).toBe('/search');
 });

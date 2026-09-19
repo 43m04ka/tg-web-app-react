@@ -60,6 +60,7 @@ export default function TopBar({onSearchOpenChange}) {
     const isStandalone = pathname === '/steam' || pathname === '/services';
     const isCatalog = pathname === '/' || pathname.startsWith('/catalog');
     const isSearchPage = pathname === '/search';
+    const isStorefrontBound = pathname.startsWith('/card/') || pathname.startsWith('/catalog');
 
     const [isSearchOpen, setSearchOpen] = useState(false);
 
@@ -102,7 +103,8 @@ export default function TopBar({onSearchOpenChange}) {
     const pickStorefront = useCallback((item) => {
         setScopeId(item.id);
         if (item.id !== null) setPageId(item.id);
-    }, [setPageId, setScopeId]);
+        if (isStorefrontBound) go('/');
+    }, [go, isStorefrontBound, setPageId, setScopeId]);
 
     return (
         <header className={isScrolled ? `${style.bar} ${style.barScrolled}` : style.bar}>

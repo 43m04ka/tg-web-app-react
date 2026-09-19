@@ -57,10 +57,10 @@ test('в меню остались только найденные раздел�
     expect(labels).toEqual(['Пополнение']);
 });
 
-test('витрина показана в шапке, а корзина считается по ней', () => {
+test('выбор витрины показан в шапке, а корзина считается по странице', () => {
     render();
 
-    expect(container.textContent).toContain('Турция');
+    expect(container.textContent).toContain('Все витрины');
     expect(container.textContent).toContain('Геймворд');
 
     const badge = [...container.querySelectorAll('button span')]
@@ -70,22 +70,34 @@ test('витрина показана в шапке, а корзина счит�
     expect(badge).toHaveLength(1);
 });
 
-test('на разделе пополнения в шапке остаётся витрина, а не пустой выбор', () => {
+test('на разделе пополнения в шапке остаётся выбор витрины, а не пустая кнопка', () => {
     useSessionStore.setState({pageId: 36});
     render();
 
-    expect(container.textContent).toContain('Турция');
-    expect(container.textContent).not.toContain('Витрина');
+    const trigger = [...container.querySelectorAll('button')]
+        .find((node) => node.getAttribute('aria-haspopup') === 'listbox');
+
+    expect(trigger.textContent.trim()).toBe('Все витрины');
 });
 
-test('витрины показаны переключателем, по умолчанию выбраны все', () => {
+test('витрины разворачиваются списком по клику, первым пунктом — все', () => {
     render();
 
-    const tabs = [...container.querySelectorAll('[role="tab"]')].map((node) => node.textContent);
+    const trigger = [...container.querySelectorAll('button')]
+        .find((node) => node.getAttribute('aria-haspopup') === 'listbox');
 
-    expect(tabs).toEqual(['Все', 'PS Турция', 'PS Индия', 'Xbox']);
+    expect(trigger).toBeTruthy();
 
-    const selected = container.querySelector('[role="tab"][aria-selected="true"]');
+    act(() => {
+        trigger.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+    });
 
-    expect(selected.textContent).toBe('Все');
+    const options = [...container.querySelectorAll('[role="option"]')]
+        .map((node) => node.lastElementChild.firstElementChild.textContent);
+
+    expect(options).toEqual(['Все витрины', 'PS Турция', 'PS Индия', 'Xbox']);
+
+    const selected = container.querySelector('[role="option"][aria-selected="true"]');
+
+    expect(selected.lastElementChild.firstElementChild.textContent).toBe('Все витрины');
 });

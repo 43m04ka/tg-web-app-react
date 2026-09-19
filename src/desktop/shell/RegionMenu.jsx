@@ -1,53 +1,100 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ChevronIcon} from './DesktopIcons';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {ChevronIcon, GridIcon} from './DesktopIcons';
 import style from './RegionMenu.module.scss';
 
-export default function RegionMenu({items, activeId, onSelect}) {
+const ALL = {id: null, label: 'Все витрины', title: 'Все витрины', icon: null};
+
+const positions = (count) => {
+    if (count === null) return 'считаем…';
+
+    const tail = count % 10;
+    const hundred = count % 100;
+    const word = tail === 1 && hundred !== 11
+        ? 'позиция'
+        : (tail >= 2 && tail <= 4 && (hundred < 12 || hundred > 14) ? 'позиции' : 'позиций');
+
+    return `${count.toLocaleString('ru-RU')} ${word}`;
+};
+
+export default function RegionMenu({items, scopeId, onSelect, totals}) {
     const [isOpen, setOpen] = useState(false);
+    const [cursor, setCursor] = useState(0);
     const rootRef = useRef(null);
+
+    const options = useMemo(() => [ALL, ...items], [items]);
+    const activeIndex = Math.max(0, options.findIndex((item) => item.id === scopeId));
+    const active = options[activeIndex];
 
     useEffect(() => {
         if (!isOpen) return undefined;
+
+        setCursor(activeIndex);
 
         const onPointerDown = (event) => {
             if (!rootRef.current?.contains(event.target)) setOpen(false);
         };
 
-        const onKeyDown = (event) => {
-            if (event.key === 'Escape') setOpen(false);
-        };
-
         document.addEventListener('pointerdown', onPointerDown);
-        document.addEventListener('keydown', onKeyDown);
 
-        return () => {
-            document.removeEventListener('pointerdown', onPointerDown);
-            document.removeEventListener('keydown', onKeyDown);
-        };
-    }, [isOpen]);
+        return () => document.removeEventListener('pointerdown', onPointerDown);
+    }, [isOpen, activeIndex]);
 
     const pick = useCallback((item) => {
         setOpen(false);
         onSelect(item);
     }, [onSelect]);
 
+    const onKeyDown = useCallback((event) => {
+        if (event.key === 'Escape') {
+            setOpen(false);
+            return;
+        }
+
+        if (!isOpen && (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ')) {
+            if (event.key !== 'Enter' && event.key !== ' ') event.preventDefault();
+            setOpen(true);
+            return;
+        }
+
+        if (!isOpen) return;
+
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+            event.preventDefault();
+            const step = event.key === 'ArrowDown' ? 1 : -1;
+            setCursor((value) => (value + step + options.length) % options.length);
+            return;
+        }
+
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            pick(options[cursor]);
+        }
+    }, [isOpen, options, cursor, pick]);
+
     if (!items.length) return null;
 
-    const active = items.find((item) => item.id === activeId) || null;
-
     return (
-        <div className={style.root} ref={rootRef}>
+        <div className={style.root} ref={rootRef} onKeyDown={onKeyDown}>
             <button
                 type="button"
-                className={`${style.trigger} ${isOpen ? style.triggerOpen : ''}`}
+                className={isOpen ? `${style.trigger} ${style.triggerOpen}` : style.trigger}
                 onClick={() => setOpen((open) => !open)}
                 aria-expanded={isOpen}
                 aria-haspopup="listbox"
             >
-                {active?.icon ? (
-                    <span className={style.icon} style={{backgroundImage: `url(${active.icon})`}} aria-hidden="true"/>
-                ) : null}
-                <span className={style.title}>{active?.title || 'Витрина'}</span>
+                <span className={style.icon}>
+                    {active.icon ? (
+                        <span
+                            className={style.iconImage}
+                            style={{backgroundImage: `url(${active.icon})`}}
+                            aria-hidden="true"
+                        />
+                    ) : (
+                        <GridIcon className={style.iconGlyph}/>
+                    )}
+                </span>
+
+                <span className={style.title}>{active.label}</span>
                 <ChevronIcon className={style.chevron}/>
             </button>
 
@@ -55,24 +102,37 @@ export default function RegionMenu({items, activeId, onSelect}) {
                 <div className={style.menu} role="listbox">
                     <span className={style.menuTitle}>Витрина</span>
 
-                    {items.map((item, index) => (
+                    {options.map((item, index) => (
                         <button
-                            key={item.id}
+                            key={item.id === null ? 'all' : item.id}
                             type="button"
                             role="option"
-                            aria-selected={item.id === activeId}
-                            className={`${style.option} ${item.id === activeId ? style.optionActive : ''}`}
+                            aria-selected={item.id === scopeId}
+                            className={[
+                                style.option,
+                                item.id === scopeId ? style.optionActive : '',
+                                index === cursor ? style.optionCursor : ''
+                            ].filter(Boolean).join(' ')}
                             style={{'--i': index}}
+                            onMouseEnter={() => setCursor(index)}
                             onClick={() => pick(item)}
                         >
-                            {item.icon ? (
-                                <span
-                                    className={style.optionIcon}
-                                    style={{backgroundImage: `url(${item.icon})`}}
-                                    aria-hidden="true"
-                                />
-                            ) : null}
-                            <span className={style.optionLabel}>{item.label}</span>
+                            <span className={style.optionIcon}>
+                                {item.icon ? (
+                                    <span
+                                        className={style.iconImage}
+                                        style={{backgroundImage: `url(${item.icon})`}}
+                                        aria-hidden="true"
+                                    />
+                                ) : (
+                                    <GridIcon className={style.iconGlyph}/>
+                                )}
+                            </span>
+
+                            <span className={style.optionBody}>
+                                <span className={style.optionLabel}>{item.label}</span>
+                                <span className={style.optionNote}>{positions(totals?.get(item.id) ?? null)}</span>
+                            </span>
                         </button>
                     ))}
                 </div>

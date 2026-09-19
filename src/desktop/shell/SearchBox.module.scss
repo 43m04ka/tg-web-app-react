@@ -57,6 +57,10 @@
   color: var(--text);
 }
 
+.input:focus-visible {
+  outline: none;
+}
+
 .input::placeholder {
   color: var(--text-faint);
   transition: opacity var(--m-base) var(--m-ease);

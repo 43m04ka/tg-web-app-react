@@ -3,9 +3,12 @@
   align-self: flex-start;
   display: inline-flex;
   align-items: center;
-  border-radius: 18px;
+  gap: 4px;
+  padding: 5px;
+  border-radius: 16px;
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
+  animation: gw-rise-sm var(--m-slow) var(--m-ease) both;
   transition: border-color var(--m-base) var(--m-ease);
 }
 
@@ -13,74 +16,42 @@
   border-color: var(--border);
 }
 
-.panel {
-  padding: 6px;
-  gap: 4px;
-  animation: gw-rise var(--m-slow) var(--m-ease) both;
-}
-
-.compact {
-  padding: 4px;
-  gap: 2px;
-  border-radius: 14px;
-  flex: none;
-}
-
 .indicator {
   position: absolute;
   left: 0;
-  top: 6px;
-  bottom: 6px;
-  border-radius: 13px;
+  top: 5px;
+  bottom: 5px;
+  border-radius: 12px;
   background: var(--accent);
-  box-shadow: 0 14px 28px -14px oklch(0 0 0 / 0.9),
+  box-shadow: 0 12px 24px -14px oklch(0 0 0 / 0.9),
               inset 0 1px 0 oklch(1 0 0 / 0.22);
   opacity: 0;
-  transition: transform var(--m-slow) var(--m-spring),
-              width var(--m-slow) var(--m-spring),
+  transition: transform var(--m-base) var(--m-ease),
+              width var(--m-base) var(--m-ease),
               background-color var(--m-lazy) var(--m-ease),
-              opacity var(--m-base) var(--m-ease);
+              opacity var(--m-fast) var(--m-ease);
 }
 
 .indicator[data-on] {
   opacity: 1;
 }
 
-.compact .indicator {
-  top: 4px;
-  bottom: 4px;
-  border-radius: 10px;
-  box-shadow: 0 10px 20px -12px oklch(0 0 0 / 0.9),
-              inset 0 1px 0 oklch(1 0 0 / 0.22);
-}
-
 .tab {
   position: relative;
   z-index: 1;
+  height: 44px;
+  padding: 0 var(--d-gap-3);
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
-  border-radius: 13px;
+  gap: 7px;
+  border-radius: 12px;
   color: var(--text-muted);
+  font-size: var(--d-fs-sm);
   font-weight: var(--fw-bold);
   white-space: nowrap;
-  transition: color var(--m-base) var(--m-ease),
+  transition: color var(--m-fast) var(--m-ease),
               transform var(--m-base) var(--m-spring);
-}
-
-.panel .tab {
-  height: 52px;
-  padding: 0 var(--d-gap-5);
-  font-size: var(--d-fs-md);
-  animation: gw-rise-sm var(--m-base) var(--m-ease) both;
-  animation-delay: calc(var(--i, 0) * 34ms);
-}
-
-.compact .tab {
-  height: 34px;
-  padding: 0 10px 0 6px;
-  border-radius: 10px;
-  font-size: var(--d-fs-sm);
 }
 
 .tab:hover {
@@ -98,25 +69,16 @@
 
 .icon {
   flex: none;
+  width: 22px;
+  height: 22px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: transform var(--m-slow) var(--m-spring),
-              opacity var(--m-base) var(--m-ease);
-}
-
-.panel .icon {
-  width: 28px;
-  height: 28px;
-}
-
-.compact .icon {
-  width: 22px;
-  height: 22px;
+  transition: transform var(--m-slow) var(--m-spring);
 }
 
 .tab:hover .icon {
-  transform: scale(1.12);
+  transform: scale(1.1);
 }
 
 .tabOn .icon {
@@ -126,44 +88,30 @@
 .iconImage {
   width: 100%;
   height: 100%;
-  border-radius: 8px;
+  border-radius: 7px;
   background: center / contain no-repeat;
 }
 
 .iconGlyph {
-  width: 74%;
-  height: 74%;
+  width: 17px;
+  height: 17px;
 }
 
 .label {
-  display: block;
-  max-width: 240px;
-  margin-left: 9px;
-  overflow: hidden;
   letter-spacing: -0.1px;
-  transition: max-width var(--m-slow) var(--m-ease),
-              margin var(--m-slow) var(--m-ease),
-              opacity var(--m-base) var(--m-ease);
 }
 
 .count {
-  margin-left: 10px;
-  padding: 3px 9px;
-  border-radius: var(--radius-full);
-  background: oklch(1 0 0 / 0.18);
+  min-width: 44px;
+  text-align: right;
   font-size: var(--d-fs-2xs);
-  font-weight: var(--fw-bold);
-  animation: gw-pop var(--m-base) var(--m-spring) both;
+  font-weight: var(--fw-semibold);
+  color: currentColor;
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+  transition: opacity var(--m-base) var(--m-ease);
 }
 
-.compact .count {
-  display: none;
-}
-
-@media (max-width: 1340px) {
-  .compact .label {
-    max-width: 0;
-    margin-left: 0;
-    opacity: 0;
-  }
+.tabOn .count {
+  opacity: 0.75;
 }

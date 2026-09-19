@@ -16,6 +16,7 @@ import {useOpenHero} from '../../shell/useOpenHero';
 import {useOfferPicker} from '../../shell/useOfferPicker';
 import {originIndex, resolveBotType, storefrontList} from '../../model/desktopNav';
 import {storefrontConfig} from '../../model/storefrontConfig';
+import {scopeQueries, useScopeTotals} from '../../model/storefrontTotals';
 import {buildHero, buildShelves, mergeOffers} from '../../model/storefrontModel';
 import OfferCard from './OfferCard';
 import Shelf from './Shelf';
@@ -94,6 +95,14 @@ export default function Storefront() {
         [items, originOf]
     );
 
+    const scopeTotals = useScopeTotals(
+        useMemo(
+            () => scopeQueries(storefronts, {botType: effectiveBotType, sorting: config.sorting}),
+            [storefronts, effectiveBotType, config.sorting]
+        ),
+        {enabled: storefronts.length > 0}
+    );
+
     const picker = useOfferPicker({originOf});
     const openOffer = picker.open;
 
@@ -132,15 +141,15 @@ export default function Storefront() {
                     Геймворд — игры и подписки для <span className={style.ps}>PlayStation</span> и{' '}
                     <span className={style.xbox}>Xbox</span>
                 </h1>
-            </header>
 
-            <ScopeSwitcher
-                items={storefronts}
-                scopeId={scopeId}
-                onSelect={pickScope}
-                allLabel={config.allChipLabel}
-                total={total}
-            />
+                <ScopeSwitcher
+                    items={storefronts}
+                    scopeId={scopeId}
+                    onSelect={pickScope}
+                    allLabel={config.allChipLabel}
+                    totals={scopeTotals}
+                />
+            </header>
 
             <StorefrontHero items={hero} onOpen={openHero}/>
 

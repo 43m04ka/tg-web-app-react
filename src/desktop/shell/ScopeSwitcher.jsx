@@ -2,14 +2,7 @@ import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useStat
 import {GridIcon} from './DesktopIcons';
 import style from './ScopeSwitcher.module.scss';
 
-export default function ScopeSwitcher({
-    items,
-    scopeId,
-    onSelect,
-    variant = 'panel',
-    allLabel = 'Все витрины',
-    total = null
-}) {
+export default function ScopeSwitcher({items, scopeId, onSelect, allLabel = 'Все витрины', totals}) {
     const trackRef = useRef(null);
     const nodesRef = useRef(new Map());
     const [box, setBox] = useState(null);
@@ -34,7 +27,7 @@ export default function ScopeSwitcher({
 
     useLayoutEffect(() => {
         measure();
-    }, [measure, options.length, total]);
+    }, [measure, options.length, totals]);
 
     useEffect(() => {
         if (typeof ResizeObserver === 'undefined') return undefined;
@@ -50,12 +43,7 @@ export default function ScopeSwitcher({
     if (!items.length) return null;
 
     return (
-        <div
-            className={`${style.track} ${style[variant]}`}
-            role="tablist"
-            aria-label="Витрина"
-            ref={trackRef}
-        >
+        <div className={style.track} role="tablist" aria-label="Витрина" ref={trackRef}>
             <span
                 className={style.indicator}
                 style={box ? {transform: `translateX(${box.x}px)`, width: `${box.w}px`} : undefined}
@@ -63,8 +51,9 @@ export default function ScopeSwitcher({
                 aria-hidden="true"
             />
 
-            {options.map((item, index) => {
+            {options.map((item) => {
                 const isOn = item.id === scopeId;
+                const count = totals?.get(item.id) ?? null;
 
                 return (
                     <button
@@ -72,10 +61,7 @@ export default function ScopeSwitcher({
                         type="button"
                         role="tab"
                         aria-selected={isOn}
-                        aria-label={variant === 'compact' ? item.label : undefined}
-                        title={variant === 'compact' ? item.label : undefined}
                         className={isOn ? `${style.tab} ${style.tabOn}` : style.tab}
-                        style={{'--i': index}}
                         ref={(node) => {
                             if (node) nodesRef.current.set(item.id, node);
                             else nodesRef.current.delete(item.id);
@@ -95,10 +81,7 @@ export default function ScopeSwitcher({
                         </span>
 
                         <span className={style.label}>{item.label}</span>
-
-                        {isOn && total ? (
-                            <span key={total} className={style.count}>{total.toLocaleString('ru-RU')}</span>
-                        ) : null}
+                        <span className={style.count}>{count === null ? '' : count.toLocaleString('ru-RU')}</span>
                     </button>
                 );
             })}

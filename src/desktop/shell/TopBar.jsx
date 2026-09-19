@@ -6,12 +6,14 @@ import {useCartStore} from '../../store/useCartStore';
 import {usePlatform} from '../../shared/hooks/usePlatform';
 import {pageCartItems} from '../../pages/Basket/cartModel';
 import {resetSearchState} from '../../shared/lib/searchMemory';
-import {sectionList, storefrontList} from '../model/desktopNav';
+import {resolveBotType, sectionList, storefrontList} from '../model/desktopNav';
+import {storefrontConfig} from '../model/storefrontConfig';
+import {scopeQueries, useScopeTotals} from '../model/storefrontTotals';
 import {useScrolled} from './useScrolled';
 import {BasketIcon, UserIcon} from './DesktopIcons';
 import logo from '../assets/logo.png';
 import SearchBox from './SearchBox';
-import ScopeSwitcher from './ScopeSwitcher';
+import RegionMenu from './RegionMenu';
 import {useStorefrontScope} from './StorefrontScope';
 import style from './TopBar.module.scss';
 
@@ -39,6 +41,16 @@ export default function TopBar({onSearchOpenChange}) {
     );
 
     const {scopeId, setScopeId} = useStorefrontScope();
+
+    const queries = useMemo(
+        () => scopeQueries(storefronts, {
+            botType: resolveBotType(startPages, botType),
+            sorting: storefrontConfig(null).sorting
+        }),
+        [storefronts, startPages, botType]
+    );
+
+    const totals = useScopeTotals(queries, {enabled: storefronts.length > 0});
 
     const isScrolled = useScrolled();
     const isStandalone = pathname === '/steam' || pathname === '/services';
@@ -89,12 +101,11 @@ export default function TopBar({onSearchOpenChange}) {
                 <SearchBox onOpenChange={onSearchOpenChange}/>
 
                 <div className={style.actions}>
-                    <ScopeSwitcher
+                    <RegionMenu
                         items={storefronts}
                         scopeId={scopeId}
                         onSelect={pickStorefront}
-                        variant="compact"
-                        allLabel="Все"
+                        totals={totals}
                     />
 
                     {isStandalone ? null : (

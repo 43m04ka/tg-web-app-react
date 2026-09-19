@@ -1,64 +1,84 @@
 .root {
   position: relative;
+  flex: 0 1 auto;
+  min-width: 92px;
+  max-width: 238px;
 }
 
 .trigger {
-  height: 40px;
-  padding: 0 var(--d-gap-3) 0 var(--d-gap-2);
+  width: 100%;
+  height: 38px;
+  padding: 0 var(--d-gap-3) 0 5px;
   display: inline-flex;
   align-items: center;
-  gap: var(--d-gap-3);
+  gap: var(--d-gap-2);
   border-radius: var(--radius-full);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
   color: var(--text);
   transition: background-color var(--m-base) var(--m-ease),
               border-color var(--m-base) var(--m-ease),
-              box-shadow var(--m-base) var(--m-ease),
-              transform var(--m-base) var(--m-spring);
+              box-shadow var(--m-base) var(--m-ease);
 }
 
 .trigger:hover {
-  background: var(--surface-3);
-  border-color: var(--border-strong);
-  transform: translateY(-1px);
-}
-
-.trigger:active {
-  transform: scale(0.97);
+  background: var(--surface-2);
+  border-color: var(--border);
 }
 
 .triggerOpen {
-  background: var(--surface-3);
+  background: var(--surface-2);
   border-color: var(--accent);
   box-shadow: 0 0 0 4px oklch(0.7 0.145 25 / 0.14);
 }
 
 .icon {
+  flex: none;
   width: 28px;
   height: 28px;
-  flex: none;
   border-radius: 50%;
-  background: var(--surface-4) center / 68% no-repeat;
-  transition: transform var(--m-base) var(--m-spring);
+  background: var(--surface-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: var(--text-muted);
+  transition: transform var(--m-slow) var(--m-spring);
 }
 
 .trigger:hover .icon {
-  transform: scale(1.08);
+  transform: scale(1.06);
+}
+
+.iconImage {
+  width: 100%;
+  height: 100%;
+  background: center / contain no-repeat;
+}
+
+.iconGlyph {
+  width: 15px;
+  height: 15px;
 }
 
 .title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
   font-size: var(--d-fs-sm);
   font-weight: var(--fw-bold);
-  white-space: nowrap;
   letter-spacing: -0.1px;
 }
 
 .chevron {
+  flex: none;
   width: 15px;
   height: 15px;
   color: var(--text-faint);
-  transition: transform var(--m-base) var(--m-spring),
+  transition: transform var(--m-base) var(--m-ease),
               color var(--m-base) var(--m-ease);
 }
 
@@ -71,18 +91,18 @@
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  min-width: 246px;
+  width: 296px;
   padding: var(--d-gap-2);
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
   border-radius: var(--radius-lg);
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-lg);
   z-index: 50;
   transform-origin: top right;
-  animation: gw-zoom-in var(--m-base) var(--m-spring) both;
+  animation: gw-zoom-in var(--m-base) var(--m-ease) both;
 }
 
 .menuTitle {
@@ -97,47 +117,64 @@
 .option {
   position: relative;
   width: 100%;
-  padding: var(--d-gap-3);
+  padding: var(--d-gap-2) var(--d-gap-3);
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: var(--d-gap-3);
   border-radius: var(--radius-md);
-  font-size: var(--d-fs-md);
-  font-weight: var(--fw-semibold);
   color: var(--text-secondary);
   animation: gw-slide-left var(--m-base) var(--m-ease) both;
-  animation-delay: calc(var(--i, 0) * 26ms);
+  animation-delay: calc(var(--i, 0) * 24ms);
   transition: background-color var(--m-fast) var(--m-ease),
               color var(--m-fast) var(--m-ease);
 }
 
-.option:hover {
+.optionCursor {
   background: var(--surface-2);
   color: var(--text);
 }
 
 .optionActive {
-  background: var(--accent-surface);
   color: var(--accent-text);
 }
 
 .optionIcon {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--surface-3) center / 68% no-repeat;
   flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: var(--text-muted);
   transition: transform var(--m-base) var(--m-spring);
 }
 
-.option:hover .optionIcon {
-  transform: scale(1.1);
+.optionCursor .optionIcon {
+  transform: scale(1.06);
+}
+
+.optionBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
 }
 
 .optionLabel {
-  flex: 1;
-  min-width: 0;
-  text-align: left;
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.1px;
+}
+
+.optionNote {
+  font-size: var(--d-fs-2xs);
+  color: var(--text-faint);
 }
 
 .optionActive::after {

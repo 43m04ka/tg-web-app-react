@@ -55,7 +55,7 @@
   -webkit-mask: var(--logo) center / contain no-repeat;
   mask: var(--logo) center / contain no-repeat;
   transition: transform var(--m-slow) var(--m-spring),
-              background-color var(--m-base) var(--m-ease);
+              background-color var(--m-lazy) var(--m-ease);
 }
 
 .logo:hover .mark {

@@ -310,39 +310,6 @@
   animation-delay: 0s, calc(var(--i, 0) * 34ms);
 }
 
-.more {
-  display: flex;
-  justify-content: center;
-  padding-top: var(--d-gap-4);
-}
-
-.moreButton {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--d-gap-3);
-  height: 44px;
-  padding: 0 var(--d-gap-8);
-  border-radius: var(--radius-full);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-size: var(--d-fs-md);
-  font-weight: var(--fw-semibold);
-  transition: background-color var(--m-fast) var(--m-ease),
-              transform var(--m-base) var(--m-spring),
-              box-shadow var(--m-base) var(--m-ease);
-}
-
-.moreButton:hover:not(:disabled) {
-  background: var(--surface-3);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.moreButton:active:not(:disabled) {
-  transform: scale(0.98);
-}
-
-.moreButton:disabled {
-  opacity: 0.75;
+.sentinel {
+  height: 1px;
 }

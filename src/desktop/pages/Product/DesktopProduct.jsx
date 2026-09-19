@@ -13,6 +13,7 @@ import StarRating from '../../../pages/Product/StarRating';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
 import {createProductOrigin} from '../../../shared/lib/productOrigin';
 import {useStructureStore} from '../../../store/useStructureStore';
+import {HeartIcon} from '../../shell/DesktopIcons';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import {Reveal} from '../../shell/useReveal';
 import Spinner from '../../ui/Spinner';
@@ -280,8 +281,10 @@ export default function DesktopProduct() {
                             type="button"
                             className={`${style.favorite} ${isFavorite ? style.favoriteOn : ''}`}
                             onClick={handleFavorite}
+                            aria-pressed={isFavorite}
                         >
-                            {isFavorite ? '♥ В избранном' : '♡ В избранное'}
+                            <HeartIcon className={style.favoriteIcon}/>
+                            {isFavorite ? 'В избранном' : 'В избранное'}
                         </button>
 
                         {offerRoute ? (

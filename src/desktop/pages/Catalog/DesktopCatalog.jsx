@@ -18,8 +18,8 @@ import {
 } from '../../../shared/lib/catalogQuery';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
 import {mergeOffers} from '../../model/storefrontModel';
-import {useScrollMemory} from '../../shell/ScrollAreaContext';
-import Spinner from '../../ui/Spinner';
+import {useNearBottom} from '../../../shared/hooks/useNearBottom';
+import {useScrollArea, useScrollMemory} from '../../shell/ScrollAreaContext';
 import OfferCard from '../Storefront/OfferCard';
 import OfferSplit from '../Storefront/OfferSplit';
 import {useOfferPicker} from '../../shell/useOfferPicker';
@@ -94,6 +94,14 @@ export default function DesktopCatalog() {
 
     const picker = useOfferPicker({originOf});
     const openOffer = picker.open;
+
+    const areaRef = useScrollArea();
+
+    const sentinelRef = useNearBottom({
+        rootRef: areaRef,
+        enabled: hasMore && !isLoading && !error,
+        onReach: loadMore
+    });
 
     useScrollMemory(`catalog:${path}`, {ready: offers !== null});
 
@@ -200,21 +208,13 @@ export default function DesktopCatalog() {
                                     onOpen={openOffer}
                                 />
                             ))}
+
+                            {isLoadingMore ? Array.from({length: 4}, (skeleton, index) => (
+                                <div key={`more-${index}`} className={style.skeleton} style={{'--i': index}}/>
+                            )) : null}
                         </div>
 
-                        {hasMore ? (
-                            <div className={style.more}>
-                                <button
-                                    type="button"
-                                    className={style.moreButton}
-                                    onClick={loadMore}
-                                    disabled={isLoadingMore}
-                                >
-                                    {isLoadingMore ? <Spinner/> : null}
-                                    {isLoadingMore ? 'Загружаем…' : 'Показать ещё'}
-                                </button>
-                            </div>
-                        ) : null}
+                        <div ref={sentinelRef} className={style.sentinel} aria-hidden="true"/>
                     </>
                 ) : null}
             </div>

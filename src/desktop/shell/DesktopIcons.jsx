@@ -30,3 +30,23 @@ export const ChevronIcon = (props) => (
               strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
 );
+
+export const GridIcon = (props) => (
+    <svg viewBox="0 0 24 24" fill="none" {...props}>
+        <rect x="3.6" y="3.6" width="7" height="7" rx="2.2" fill="currentColor"/>
+        <rect x="13.4" y="3.6" width="7" height="7" rx="2.2" fill="currentColor" opacity="0.62"/>
+        <rect x="3.6" y="13.4" width="7" height="7" rx="2.2" fill="currentColor" opacity="0.62"/>
+        <rect x="13.4" y="13.4" width="7" height="7" rx="2.2" fill="currentColor"/>
+    </svg>
+);
+
+export const HeartIcon = (props) => (
+    <svg viewBox="0 0 24 24" {...props}>
+        <path
+            d="M12 20.4c-.4 0-.8-.14-1.1-.4C7 16.8 3.4 13.7 3.4 10.1A4.7 4.7 0 0 1 12 7.4a4.7 4.7 0 0 1 8.6 2.7c0 3.6-3.6 6.7-7.5 9.9-.3.26-.7.4-1.1.4Z"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinejoin="round"
+        />
+    </svg>
+);

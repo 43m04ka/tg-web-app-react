@@ -49,14 +49,12 @@ const render = () => act(() => {
     );
 });
 
-test('в меню есть каталог и найденные разделы, но не выдуманные', () => {
+test('в меню остались только найденные разделы, без каталога и выдуманных', () => {
     render();
 
     const labels = [...container.querySelectorAll('nav button')].map((node) => node.textContent);
 
-    expect(labels).toContain('Каталог');
-    expect(labels).toContain('Пополнение');
-    expect(labels).not.toContain('Коды');
+    expect(labels).toEqual(['Пополнение']);
 });
 
 test('витрина показана в шапке, а корзина считается по ней', () => {
@@ -80,19 +78,14 @@ test('на разделе пополнения в шапке остаётся в
     expect(container.textContent).not.toContain('Витрина');
 });
 
-test('витрины разворачиваются списком по клику', () => {
+test('витрины показаны переключателем, по умолчанию выбраны все', () => {
     render();
 
-    const trigger = [...container.querySelectorAll('button')]
-        .find((node) => node.getAttribute('aria-haspopup') === 'listbox');
+    const tabs = [...container.querySelectorAll('[role="tab"]')].map((node) => node.textContent);
 
-    expect(trigger).toBeTruthy();
+    expect(tabs).toEqual(['Все', 'PS Турция', 'PS Индия', 'Xbox']);
 
-    act(() => {
-        trigger.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-    });
+    const selected = container.querySelector('[role="tab"][aria-selected="true"]');
 
-    const options = [...container.querySelectorAll('[role="option"]')].map((node) => node.textContent);
-
-    expect(options).toEqual(['PS Турция', 'PS Индия', 'Xbox']);
+    expect(selected.textContent).toBe('Все');
 });

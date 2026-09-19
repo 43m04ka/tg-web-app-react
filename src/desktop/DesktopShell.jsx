@@ -1,10 +1,11 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useLocation} from 'react-router-dom';
 import './styles/desktop.css';
 import './styles/motion.css';
 import TopBar from './shell/TopBar';
 import DesktopRoutes from './DesktopRoutes';
 import {ScrollAreaContext} from './shell/ScrollAreaContext';
+import {StorefrontScopeContext} from './shell/StorefrontScope';
 import style from './DesktopShell.module.scss';
 
 export default function DesktopShell({sections}) {
@@ -12,6 +13,9 @@ export default function DesktopShell({sections}) {
     const areaRef = useRef(null);
 
     const [isSearchOpen, setSearchOpen] = useState(false);
+    const [scopeId, setScopeId] = useState(null);
+
+    const scope = useMemo(() => ({scopeId, setScopeId}), [scopeId]);
 
     useEffect(() => {
         areaRef.current?.scrollTo({top: 0, behavior: 'instant'});
@@ -19,20 +23,22 @@ export default function DesktopShell({sections}) {
 
     return (
         <ScrollAreaContext.Provider value={areaRef}>
-            <div className={style.shell}>
-                <div
-                    className={isSearchOpen ? `${style.scrim} ${style.scrimOn}` : style.scrim}
-                    aria-hidden="true"
-                />
+            <StorefrontScopeContext.Provider value={scope}>
+                <div className={style.shell}>
+                    <div
+                        className={isSearchOpen ? `${style.scrim} ${style.scrimOn}` : style.scrim}
+                        aria-hidden="true"
+                    />
 
-                <TopBar onSearchOpenChange={setSearchOpen}/>
+                    <TopBar onSearchOpenChange={setSearchOpen}/>
 
-                <main className={style.area} ref={areaRef} data-scrollable="">
-                    <div key={pathname} className={style.content}>
-                        <DesktopRoutes sections={sections}/>
-                    </div>
-                </main>
-            </div>
+                    <main className={style.area} ref={areaRef} data-scrollable="">
+                        <div key={pathname} className={style.content}>
+                            <DesktopRoutes sections={sections}/>
+                        </div>
+                    </main>
+                </div>
+            </StorefrontScopeContext.Provider>
         </ScrollAreaContext.Provider>
     );
 }

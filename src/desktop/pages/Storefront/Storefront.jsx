@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useSessionStore} from '../../../store/useSessionStore';
 import {useStructureStore} from '../../../store/useStructureStore';
@@ -7,9 +7,11 @@ import {useCatalogProducts} from '../../../pages/Catalog/useCatalogProducts';
 import {createProductOrigin} from '../../../shared/lib/productOrigin';
 import {catalogRoute, productRoute} from '../../../shared/lib/pageRoutes';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
-import {useScrollMemory} from '../../shell/ScrollAreaContext';
+import {useNearBottom} from '../../../shared/hooks/useNearBottom';
+import {useScrollArea, useScrollMemory} from '../../shell/ScrollAreaContext';
+import {useStorefrontScope} from '../../shell/StorefrontScope';
+import ScopeSwitcher from '../../shell/ScopeSwitcher';
 import {useReveal} from '../../shell/useReveal';
-import Spinner from '../../ui/Spinner';
 import {useOpenHero} from '../../shell/useOpenHero';
 import {useOfferPicker} from '../../shell/useOfferPicker';
 import {originIndex, resolveBotType, storefrontList} from '../../model/desktopNav';
@@ -36,7 +38,7 @@ export default function Storefront() {
 
     const setPageId = useSessionStore((store) => store.setPageId);
 
-    const [scopeId, setScopeId] = useState(null);
+    const {scopeId, setScopeId} = useStorefrontScope();
 
     const config = storefrontConfig(null);
 
@@ -96,6 +98,12 @@ export default function Storefront() {
     const openOffer = picker.open;
 
     const catalogRef = useReveal();
+    const areaRef = useScrollArea();
+
+    const pickScope = useCallback((item) => {
+        setScopeId(item.id);
+        if (item.id !== null) setPageId(item.id);
+    }, [setPageId, setScopeId]);
 
     const openHero = useOpenHero();
 
@@ -106,6 +114,12 @@ export default function Storefront() {
 
     const isFirstLoad = isLoading && !isLoadingMore && catalogOffers === null;
     const showOrigin = scopeId === null;
+
+    const sentinelRef = useNearBottom({
+        rootRef: areaRef,
+        enabled: hasMore && !isLoading && !error,
+        onReach: loadMore
+    });
 
     useScrollMemory(`storefront:${scopeId ?? 'all'}`, {ready: catalogOffers !== null});
 
@@ -120,44 +134,13 @@ export default function Storefront() {
                 </h1>
             </header>
 
-            <div className={style.switcher} role="tablist" aria-label="Витрина">
-                <button
-                    type="button"
-                    role="tab"
-                    aria-selected={scopeId === null}
-                    className={`${style.chip} ${scopeId === null ? style.chipActive : ''}`}
-                    onClick={() => setScopeId(null)}
-                >
-                    <span className={style.chipAll} aria-hidden="true">★</span>
-                    <span className={style.chipLabel}>{config.allChipLabel}</span>
-                    {scopeId === null && total ? (
-                        <span className={style.chipCount}>{total.toLocaleString('ru-RU')}</span>
-                    ) : null}
-                </button>
-
-                {storefronts.map((item) => (
-                    <button
-                        key={item.id}
-                        type="button"
-                        role="tab"
-                        aria-selected={scopeId === item.id}
-                        className={`${style.chip} ${scopeId === item.id ? style.chipActive : ''}`}
-                        onClick={() => setScopeId(item.id)}
-                    >
-                        {item.icon ? (
-                            <span
-                                className={style.chipIcon}
-                                style={{backgroundImage: `url(${item.icon})`}}
-                                aria-hidden="true"
-                            />
-                        ) : null}
-                        <span className={style.chipLabel}>{item.label}</span>
-                        {scopeId === item.id && total ? (
-                            <span className={style.chipCount}>{total.toLocaleString('ru-RU')}</span>
-                        ) : null}
-                    </button>
-                ))}
-            </div>
+            <ScopeSwitcher
+                items={storefronts}
+                scopeId={scopeId}
+                onSelect={pickScope}
+                allLabel={config.allChipLabel}
+                total={total}
+            />
 
             <StorefrontHero items={hero} onOpen={openHero}/>
 
@@ -211,21 +194,13 @@ export default function Storefront() {
                                     onOpen={openOffer}
                                 />
                             ))}
+
+                            {isLoadingMore ? Array.from({length: 4}, (skeleton, index) => (
+                                <div key={`more-${index}`} className={style.skeleton} style={{'--i': index}}/>
+                            )) : null}
                         </div>
 
-                        {hasMore ? (
-                            <div className={style.more}>
-                                <button
-                                    type="button"
-                                    className={style.moreButton}
-                                    onClick={loadMore}
-                                    disabled={isLoadingMore}
-                                >
-                                    {isLoadingMore ? <Spinner/> : null}
-                                    {isLoadingMore ? 'Загружаем…' : 'Показать ещё'}
-                                </button>
-                            </div>
-                        ) : null}
+                        <div ref={sentinelRef} className={style.sentinel} aria-hidden="true"/>
                     </>
                 ) : null}
             </section>

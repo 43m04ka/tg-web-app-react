@@ -19,7 +19,8 @@ import {buildCategories, buildGenres} from '../../../pages/Search/searchSections
 import {clearRecentSearches, forgetSearch, loadRecentSearches, rememberSearch} from '../../../pages/Search/recentSearches';
 import {resolveBotType} from '../../model/desktopNav';
 import {mergeOffers} from '../../model/storefrontModel';
-import {useScrollMemory} from '../../shell/ScrollAreaContext';
+import {useNearBottom} from '../../../shared/hooks/useNearBottom';
+import {useScrollArea, useScrollMemory} from '../../shell/ScrollAreaContext';
 import {useOfferPicker} from '../../shell/useOfferPicker';
 import {Reveal} from '../../shell/useReveal';
 import Spinner from '../../ui/Spinner';
@@ -135,6 +136,14 @@ export default function DesktopSearch() {
         setSorting('default');
         inputRef.current?.focus();
     }, []);
+
+    const areaRef = useScrollArea();
+
+    const sentinelRef = useNearBottom({
+        rootRef: areaRef,
+        enabled: mode === 'browse' && browse.hasMore && !browse.isLoading && !browse.error,
+        onReach: browse.loadMore
+    });
 
     useScrollMemory(`search:${mode}`, {ready: mode === 'idle' || searchOffers !== null || browseOffers !== null});
 
@@ -294,19 +303,15 @@ export default function DesktopSearch() {
                         />
                     ) : null}
 
-                    {mode === 'browse' && browse.hasMore ? (
-                        <div className={style.more}>
-                            <button
-                                type="button"
-                                className={style.moreButton}
-                                onClick={browse.loadMore}
-                                disabled={browse.isLoadingMore}
-                            >
-                                {browse.isLoadingMore ? <Spinner/> : null}
-                                {browse.isLoadingMore ? 'Загружаем…' : 'Показать ещё'}
-                            </button>
+                    {mode === 'browse' && browse.isLoadingMore ? (
+                        <div className={style.grid}>
+                            {Array.from({length: 4}, (row, index) => (
+                                <div key={`more-${index}`} className={style.skeleton} style={{'--i': index}}/>
+                            ))}
                         </div>
                     ) : null}
+
+                    <div ref={sentinelRef} className={style.sentinel} aria-hidden="true"/>
                 </div>
             </div>
         </div>

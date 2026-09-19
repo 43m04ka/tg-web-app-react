@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {useSessionStore} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
@@ -11,7 +11,8 @@ import {useScrolled} from './useScrolled';
 import {BasketIcon, UserIcon} from './DesktopIcons';
 import logo from '../assets/logo.png';
 import SearchBox from './SearchBox';
-import RegionMenu from './RegionMenu';
+import ScopeSwitcher from './ScopeSwitcher';
+import {useStorefrontScope} from './StorefrontScope';
 import style from './TopBar.module.scss';
 
 export default function TopBar({onSearchOpenChange}) {
@@ -37,16 +38,10 @@ export default function TopBar({onSearchOpenChange}) {
         [startPages, pages, botType]
     );
 
-    const [pickedId, setPickedId] = useState(null);
+    const {scopeId, setScopeId} = useStorefrontScope();
 
     const isScrolled = useScrolled();
     const isStandalone = pathname === '/steam' || pathname === '/services';
-
-    useEffect(() => {
-        if (storefronts.some((item) => item.id === pageId)) setPickedId(pageId);
-    }, [pageId, storefronts]);
-
-    const storefrontId = pickedId ?? storefronts[0]?.id ?? null;
 
     const cartSize = pageCartItems(cartItems, catalogs, pageId)?.length ?? 0;
 
@@ -60,17 +55,11 @@ export default function TopBar({onSearchOpenChange}) {
         go(section.route);
     }, [go, setPageId]);
 
-    const openCatalog = useCallback(() => {
-        if (storefrontId === null) return;
-
-        setPageId(storefrontId);
-        go('/main');
-    }, [go, setPageId, storefrontId]);
-
     const pickStorefront = useCallback((item) => {
-        setPageId(item.id);
-        go('/main');
-    }, [go, setPageId]);
+        setScopeId(item.id);
+        if (item.id !== null) setPageId(item.id);
+        go('/');
+    }, [go, setPageId, setScopeId]);
 
     return (
         <header className={isScrolled ? `${style.bar} ${style.barScrolled}` : style.bar}>
@@ -85,14 +74,6 @@ export default function TopBar({onSearchOpenChange}) {
                 </button>
 
                 <nav className={style.nav}>
-                    <button
-                        type="button"
-                        className={`${style.link} ${pathname === '/main' ? style.linkActive : ''}`}
-                        onClick={openCatalog}
-                    >
-                        Каталог
-                    </button>
-
                     {sections.map((section) => (
                         <button
                             key={section.key}
@@ -108,7 +89,13 @@ export default function TopBar({onSearchOpenChange}) {
                 <SearchBox onOpenChange={onSearchOpenChange}/>
 
                 <div className={style.actions}>
-                    <RegionMenu items={storefronts} activeId={storefrontId} onSelect={pickStorefront}/>
+                    <ScopeSwitcher
+                        items={storefronts}
+                        scopeId={scopeId}
+                        onSelect={pickStorefront}
+                        variant="compact"
+                        allLabel="Все"
+                    />
 
                     {isStandalone ? null : (
                         <button

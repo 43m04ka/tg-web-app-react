@@ -466,6 +466,10 @@
 .offer {
   flex: 1;
   height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
   border-radius: var(--radius-md);
   background: var(--surface-2);
   color: var(--text-secondary);
@@ -494,7 +498,35 @@
 }
 
 .favoriteOn {
+  background: var(--accent-surface);
   color: var(--accent-text);
+}
+
+.favoriteOn:hover {
+  background: var(--accent-surface);
+  color: var(--accent-text);
+}
+
+.favoriteIcon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  fill: transparent;
+  transition: fill var(--m-base) var(--m-ease),
+              transform var(--m-base) var(--m-spring);
+}
+
+.favorite:hover .favoriteIcon {
+  transform: scale(1.14);
+}
+
+.favorite:active .favoriteIcon {
+  transform: scale(0.9);
+}
+
+.favoriteOn .favoriteIcon {
+  fill: currentColor;
+  animation: gw-pop var(--m-slow) var(--m-spring) both;
 }
 
 .skeletonCover {

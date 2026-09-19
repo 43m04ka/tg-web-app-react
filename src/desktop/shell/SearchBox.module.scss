@@ -16,10 +16,10 @@
   border-radius: var(--radius-full);
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
-  transition: background-color var(--m-base) var(--m-ease),
+  transition: height var(--m-base) var(--m-spring),
+              background-color var(--m-base) var(--m-ease),
               border-color var(--m-base) var(--m-ease),
-              box-shadow var(--m-base) var(--m-ease),
-              transform var(--m-base) var(--m-spring);
+              box-shadow var(--m-base) var(--m-ease);
 }
 
 .field:hover {
@@ -28,6 +28,7 @@
 }
 
 .rootOpen .field {
+  height: 46px;
   background: var(--surface-2);
   border-color: var(--accent);
   box-shadow: 0 0 0 4px oklch(0.7 0.145 25 / 0.14),

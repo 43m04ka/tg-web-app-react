@@ -291,6 +291,18 @@
   color: var(--gold-surface);
 }
 
+.release {
+  padding: u(3) u(6);
+  border-radius: u(7);
+  background: oklch(0.14 0.01 264 / 0.86);
+  backdrop-filter: blur(u(6));
+  -webkit-backdrop-filter: blur(u(6));
+  font-size: u(10);
+  font-weight: 800;
+  color: var(--gold);
+  white-space: nowrap;
+}
+
 .topRow {
   position: absolute;
   top: u(8);

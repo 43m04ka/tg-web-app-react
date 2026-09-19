@@ -1,9 +1,17 @@
 import React from 'react';
 import {discountPercent, formatPrice, shortPlatform, subscriptionTerm} from '../../../pages/Main/catalogSections';
+import {releaseInfo} from '../../../pages/Product/productView';
 import Cover from '../../ui/Cover';
 import style from './Storefront.module.scss';
 
-export default function OfferCard({offer, onOpen, showOrigin = true, showAlso = true, index = 0}) {
+export default function OfferCard({
+    offer,
+    onOpen,
+    showOrigin = true,
+    showAlso = true,
+    showRelease = false,
+    index = 0
+}) {
     const {product, price, oldPrice, origins} = offer;
 
     const percent = discountPercent(price, oldPrice);
@@ -11,10 +19,14 @@ export default function OfferCard({offer, onOpen, showOrigin = true, showAlso = 
     const term = subscriptionTerm(product);
     const origin = origins[0] || null;
     const alsoIn = origins.length - 1;
+    const release = showRelease ? releaseInfo(product) : null;
+    const preOrder = release?.isPreOrder ? release.label : null;
 
     return (
         <article className={style.card} style={{'--i': index}} onClick={() => onOpen?.(offer)}>
             <Cover src={product.image} className={style.cover}>
+                {preOrder ? <span className={style.release}>Выход {preOrder}</span> : null}
+
                 {showOrigin && origin ? (
                     <span className={style.originBadge}>
                         {origin.icon ? (

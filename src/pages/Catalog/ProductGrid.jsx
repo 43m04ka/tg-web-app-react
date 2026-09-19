@@ -1,5 +1,6 @@
 import React from 'react';
 import {discountPercent, formatPrice, platformList, subscriptionTerm} from '../Main/catalogSections';
+import {releaseInfo} from '../Product/productView';
 import {accentStyle} from '../SelectPlatform/accent';
 import style from './Catalog.module.scss';
 
@@ -22,11 +23,13 @@ export function ProductGridSkeleton({count = 4}) {
 const STAGGER_LIMIT = 8;
 const STAGGER_STEP_MS = 32;
 
-function GridCard({product, index, animate, regionOf, onOpen}) {
+function GridCard({product, index, animate, regionOf, showRelease, onOpen}) {
     const percent = discountPercent(product.price, product.oldPrice);
     const platforms = platformList(product.platform);
     const region = regionOf?.(product);
     const term = subscriptionTerm(product);
+    const release = showRelease ? releaseInfo(product) : null;
+    const preOrder = release?.isPreOrder ? release.label : null;
     const isAnimated = animate && index < STAGGER_LIMIT;
 
     return (
@@ -39,8 +42,10 @@ function GridCard({product, index, animate, regionOf, onOpen}) {
                 className={style.cover}
                 style={product.image ? {backgroundImage: `url(${product.image})`} : undefined}
             >
-                {region || percent > 0 ? (
+                {region || percent > 0 || preOrder ? (
                     <span className={style.topRow}>
+                        {preOrder ? <span className={style.release}>Выход {preOrder}</span> : null}
+
                         {region ? (
                             <span
                                 className={`${style.regionBadge} ${region.color ? style.regionBadgeTinted : ''}`}
@@ -83,7 +88,7 @@ function GridCard({product, index, animate, regionOf, onOpen}) {
     );
 }
 
-export default function ProductGrid({items, animate = true, regionOf, onOpen}) {
+export default function ProductGrid({items, animate = true, regionOf, showRelease = false, onOpen}) {
     return (
         <div className={style.grid}>
             {items.map((product, index) => (
@@ -93,6 +98,7 @@ export default function ProductGrid({items, animate = true, regionOf, onOpen}) {
                     index={index}
                     animate={animate}
                     regionOf={regionOf}
+                    showRelease={showRelease}
                     onOpen={onOpen}
                 />
             ))}

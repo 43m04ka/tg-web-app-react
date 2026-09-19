@@ -2,10 +2,10 @@ import {useEffect, useRef, useState} from 'react';
 import {useProductStore} from '../../store/useProductStore';
 import {peekRecommendations, takeRecommendations} from './recommendQueue';
 
-export function useRecommendations(pageId) {
+export function useRecommendations(pageId, count) {
     const rememberPreviews = useProductStore((state) => state.rememberPreviews);
 
-    const [list, setList] = useState(() => peekRecommendations(pageId));
+    const [list, setList] = useState(() => peekRecommendations(pageId, count));
 
     const takenRef = useRef(null);
 
@@ -17,7 +17,7 @@ export function useRecommendations(pageId) {
 
         let isAlive = true;
 
-        takeRecommendations(pageId).then((batch) => {
+        takeRecommendations(pageId, count).then((batch) => {
             if (!isAlive || batch.length === 0) return;
 
             rememberPreviews(batch);
@@ -27,7 +27,7 @@ export function useRecommendations(pageId) {
         return () => {
             isAlive = false;
         };
-    }, [pageId, rememberPreviews]);
+    }, [pageId, count, rememberPreviews]);
 
     return list;
 }

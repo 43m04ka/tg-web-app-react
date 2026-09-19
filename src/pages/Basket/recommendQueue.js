@@ -46,20 +46,20 @@ export const warmRecommendations = (pageId) => {
     refill(slotFor(pageId), pageId);
 };
 
-export const peekRecommendations = (pageId) => {
+export const peekRecommendations = (pageId, count = VISIBLE) => {
     if (pageId === null || pageId === undefined) return [];
 
-    return slotFor(pageId).queue.slice(0, VISIBLE);
+    return slotFor(pageId).queue.slice(0, count);
 };
 
-export const takeRecommendations = async (pageId) => {
+export const takeRecommendations = async (pageId, count = VISIBLE) => {
     if (pageId === null || pageId === undefined) return [];
 
     const slot = slotFor(pageId);
 
-    if (slot.queue.length < VISIBLE) await refill(slot, pageId);
+    if (slot.queue.length < count) await refill(slot, pageId);
 
-    const batch = slot.queue.splice(0, VISIBLE);
+    const batch = slot.queue.splice(0, count);
 
     refill(slot, pageId);
 

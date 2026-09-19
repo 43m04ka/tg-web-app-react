@@ -313,6 +313,26 @@
   color: var(--text-muted);
 }
 
+.release {
+  position: absolute;
+  z-index: 2;
+  top: 10px;
+  left: 10px;
+  padding: 5px 10px;
+  border-radius: var(--radius-full);
+  background: oklch(0.16 0.012 264 / 0.88);
+  border: 1px solid oklch(1 0 0 / 0.14);
+  font-size: var(--d-fs-2xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.2px;
+  color: var(--gold);
+  transition: transform var(--m-base) var(--m-spring);
+}
+
+.card:hover .release {
+  transform: translateY(-2px);
+}
+
 .originBadge {
   position: absolute;
   z-index: 2;

@@ -279,7 +279,7 @@ export default function Catalog() {
                     </div>
                 ) : (
                     <>
-                        <ProductGrid items={items} animate={!isRestored} onOpen={openProduct}/>
+                        <ProductGrid items={items} animate={!isRestored} showRelease onOpen={openProduct}/>
 
                         {hasMore ? (
                             <div ref={sentinelRef} className={style.more}>

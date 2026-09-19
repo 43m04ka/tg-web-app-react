@@ -549,6 +549,10 @@
   .recommendGrid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
+
+  .recommendGrid > *:nth-child(6) {
+    display: none;
+  }
 }
 
 @media (max-width: 1080px) {

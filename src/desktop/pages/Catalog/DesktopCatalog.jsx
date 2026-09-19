@@ -211,6 +211,7 @@ export default function DesktopCatalog() {
                                     index={index}
                                     showOrigin={false}
                                     showAlso={false}
+                                    showRelease
                                     onOpen={openOffer}
                                 />
                             ))}

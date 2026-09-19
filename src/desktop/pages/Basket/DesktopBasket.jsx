@@ -24,6 +24,9 @@ import OfferSplit from '../Storefront/OfferSplit';
 import DesktopPromo from './DesktopPromo';
 import style from './DesktopBasket.module.scss';
 
+const RECOMMEND_LIMIT = 6;
+const RECOMMEND_BATCH = RECOMMEND_LIMIT * 2;
+
 function CartRow({item, regionTitle, isRupee, index, isLeaving, onOpen, onCount, onDrop}) {
     const price = unitPrice(item);
     const oldPrice = unitOldPrice(item);
@@ -134,7 +137,7 @@ export default function DesktopBasket() {
     const [leavingId, setLeavingId] = useState(null);
 
     const pending = usePendingOrder(userId);
-    const recommendations = useRecommendations(pageId);
+    const recommendations = useRecommendations(pageId, RECOMMEND_BATCH);
 
     const page = useMemo(() => (pages || []).find((item) => item.id === pageId) || null, [pages, pageId]);
     const regionTitle = page?.name || null;
@@ -308,7 +311,7 @@ export default function DesktopBasket() {
                     <h2 className={style.recommendTitle}>Может быть интересно</h2>
 
                     <div className={style.recommendGrid}>
-                        {offers.slice(0, 6).map((offer, index) => (
+                        {offers.slice(0, RECOMMEND_LIMIT).map((offer, index) => (
                             <OfferCard
                                 key={offer.key}
                                 offer={offer}

@@ -1,4 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {usePlatform} from '../../shared/hooks/usePlatform';
 import {hapticImpact} from '../../shared/lib/haptic';
 import {copyText, shareProduct} from '../../shared/lib/shareProduct';
 import style from './Product.module.scss';
@@ -12,6 +13,8 @@ const SHARE_NOTICES = {
 };
 
 export default function ProductShare({productId, text, link}) {
+    const {isTg} = usePlatform();
+
     const [notice, setNotice] = useState(null);
     const timerRef = useRef(0);
 
@@ -36,18 +39,20 @@ export default function ProductShare({productId, text, link}) {
 
     return (
         <div className={style.share}>
-            <button type="button" className={style.shareRow} onClick={share}>
-                <span className={style.shareIcon} aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M12 15V4m0 0L8.2 7.8M12 4l3.8 3.8" stroke="currentColor" strokeWidth="1.9"
-                              strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M5 13.5V18a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4.5" stroke="currentColor"
-                              strokeWidth="1.9" strokeLinecap="round"/>
-                    </svg>
-                </span>
-                <span className={style.shareLabel}>Поделиться карточкой</span>
-                <span className={style.shareChevron} aria-hidden="true">›</span>
-            </button>
+            {isTg ? (
+                <button type="button" className={style.shareRow} onClick={share}>
+                    <span className={style.shareIcon} aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M12 15V4m0 0L8.2 7.8M12 4l3.8 3.8" stroke="currentColor" strokeWidth="1.9"
+                                  strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M5 13.5V18a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4.5" stroke="currentColor"
+                                  strokeWidth="1.9" strokeLinecap="round"/>
+                        </svg>
+                    </span>
+                    <span className={style.shareLabel}>Поделиться карточкой</span>
+                    <span className={style.shareChevron} aria-hidden="true">›</span>
+                </button>
+            ) : null}
 
             <button type="button" className={style.shareRow} onClick={copy}>
                 <span className={style.shareIcon} aria-hidden="true">

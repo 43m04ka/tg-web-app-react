@@ -50,3 +50,20 @@ export const HeartIcon = (props) => (
         />
     </svg>
 );
+
+export const ShareIcon = (props) => (
+    <svg viewBox="0 0 24 24" fill="none" {...props}>
+        <path d="M12 15V4m0 0L8.2 7.8M12 4l3.8 3.8" stroke="currentColor" strokeWidth="1.9"
+              strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M5 13.5V18a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4.5" stroke="currentColor"
+              strokeWidth="1.9" strokeLinecap="round"/>
+    </svg>
+);
+
+export const LinkIcon = (props) => (
+    <svg viewBox="0 0 24 24" fill="none" {...props}>
+        <rect x="9" y="9" width="11" height="11" rx="3" stroke="currentColor" strokeWidth="1.9"/>
+        <path d="M15 6.5A2.5 2.5 0 0 0 12.5 4H7a3 3 0 0 0-3 3v5.5A2.5 2.5 0 0 0 6.5 15"
+              stroke="currentColor" strokeWidth="1.9" strokeLinecap="round"/>
+    </svg>
+);

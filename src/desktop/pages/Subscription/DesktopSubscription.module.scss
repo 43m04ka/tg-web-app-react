@@ -58,7 +58,7 @@
   padding: var(--d-gap-6);
   border-radius: var(--radius-xl);
   background: var(--sub, var(--surface-2));
-  color: var(--sub-text, var(--text));
+  color: var(--sub-ink, var(--text));
   border: 1px solid var(--sub-edge, var(--border-subtle));
   overflow: hidden;
   animation: gw-zoom-in var(--m-lazy) var(--m-ease) both;
@@ -71,7 +71,7 @@
   width: 380px;
   height: 380px;
   border-radius: 50%;
-  background: var(--sub-glow, oklch(1 0 0 / 0.08));
+  background: var(--sub-glow, color-mix(in oklab, currentColor 8%, transparent));
   filter: blur(46px);
   animation: float 9s ease-in-out infinite alternate;
 }
@@ -127,7 +127,7 @@
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: var(--d-gap-4);
   padding-top: var(--d-gap-5);
-  border-top: 1px solid oklch(1 0 0 / 0.16);
+  border-top: 1px solid color-mix(in oklab, currentColor 18%, transparent);
 }
 
 .heroCell {
@@ -506,7 +506,8 @@
 }
 
 .primary {
-  flex: 1;
+  flex: none;
+  width: 100%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -534,6 +535,60 @@
 
 .primary:disabled {
   opacity: 0.55;
+}
+
+.counterRow .primary {
+  flex: 1;
+  width: auto;
+}
+
+.favorite {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-bold);
+  transition: background-color var(--m-fast) var(--m-ease),
+              color var(--m-fast) var(--m-ease),
+              transform var(--m-base) var(--m-spring);
+}
+
+.favorite:hover {
+  background: var(--surface-3);
+  color: var(--text);
+}
+
+.favorite:active {
+  transform: scale(0.97);
+}
+
+.favoriteOn,
+.favoriteOn:hover {
+  background: var(--accent-surface);
+  color: var(--accent-text);
+}
+
+.favoriteIcon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  fill: transparent;
+  transition: fill var(--m-base) var(--m-ease),
+              transform var(--m-base) var(--m-spring);
+}
+
+.favorite:hover .favoriteIcon {
+  transform: scale(1.14);
+}
+
+.favoriteOn .favoriteIcon {
+  fill: currentColor;
+  animation: gw-pop var(--m-slow) var(--m-spring) both;
 }
 
 .skeletonHead,

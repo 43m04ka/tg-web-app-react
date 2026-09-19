@@ -173,7 +173,7 @@
   right: u(-30);
   width: u(150);
   height: u(150);
-  background: oklch(1 0 0 / 0.18);
+  background: color-mix(in oklab, var(--sub-ink) 16%, transparent);
 }
 
 .heroBlobB {
@@ -216,19 +216,56 @@
   animation: subSwap var(--duration-base) var(--ease-out);
 }
 
+.heroActions {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: u(8);
+}
+
 .heroIcon {
   flex: none;
   width: u(34);
   height: u(34);
   border-radius: u(11);
   object-fit: cover;
-  border: 1px solid oklch(1 0 0 / 0.25);
+  border: 1px solid color-mix(in oklab, var(--sub-ink) 25%, transparent);
+}
+
+.heroFav {
+  flex: none;
+  width: u(34);
+  height: u(34);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--sub-ink) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--sub-ink) 22%, transparent);
+  color: var(--sub-ink);
+  transition: background-color var(--duration-base) var(--ease-out),
+              transform var(--duration-base) var(--ease-out);
+}
+
+.heroFav svg {
+  width: u(18);
+  height: u(18);
+}
+
+.heroFav:active {
+  transform: scale(0.9);
+}
+
+.heroFavOn {
+  background: var(--sub-ink);
+  color: var(--sub);
 }
 
 .heroLine {
   position: relative;
   height: 1px;
-  background: oklch(1 0 0 / 0.2);
+  background: color-mix(in oklab, var(--sub-ink) 20%, transparent);
 }
 
 .heroBottom {

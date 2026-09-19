@@ -7,15 +7,19 @@ import {
     descriptionLines,
     eyebrow,
     isPurchasable,
-    promotionLabel
+    productLink,
+    promotionLabel,
+    shareText
 } from '../../../pages/Product/productView';
 import StarRating from '../../../pages/Product/StarRating';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
+import {usePlatform} from '../../../shared/hooks/usePlatform';
 import {createProductOrigin} from '../../../shared/lib/productOrigin';
 import {useStructureStore} from '../../../store/useStructureStore';
 import {HeartIcon} from '../../shell/DesktopIcons';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import {Reveal} from '../../shell/useReveal';
+import ShareActions from '../../ui/ShareActions';
 import Spinner from '../../ui/Spinner';
 import {useDesktopProduct} from './useDesktopProduct';
 import style from './DesktopProduct.module.scss';
@@ -24,6 +28,7 @@ export default function DesktopProduct() {
     const {id} = useParams();
     const productId = Number(id);
     const navigate = useNavigate();
+    const {isTg} = usePlatform();
 
     const pages = useStructureStore((store) => store.pages);
     const startPages = useStructureStore((store) => store.startPages);
@@ -91,6 +96,7 @@ export default function DesktopProduct() {
     const lines = descriptionLines(product.description);
     const origin = originOf(product);
     const shots = (product.descriptionImages || []).slice(0, 6);
+    const link = productLink(product, isTg);
 
     const total = Number(product.price) + selectedAddons.reduce((sum, addon) => sum + Number(addon.price), 0);
     const oldTotal = discount > 0
@@ -295,6 +301,12 @@ export default function DesktopProduct() {
                             </button>
                         ) : null}
                     </div>
+
+                    <ShareActions
+                        productId={product.id}
+                        text={shareText(product, specs, link)}
+                        link={link}
+                    />
                 </div>
             </aside>
         </div>

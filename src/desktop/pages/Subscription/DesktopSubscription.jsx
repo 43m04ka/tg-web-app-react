@@ -3,6 +3,8 @@ import {useNavigate, useParams, useSearchParams} from 'react-router-dom';
 import {selectUserId, useSessionStore} from '../../../store/useSessionStore';
 import {useStructureStore} from '../../../store/useStructureStore';
 import {selectCartCount, useCartStore} from '../../../store/useCartStore';
+import {selectIsFavorite, useFavoriteStore} from '../../../store/useFavoriteStore';
+import {usePlatform} from '../../../shared/hooks/usePlatform';
 import {regionIcon, regionTitle} from '../../../shared/lib/region';
 import {catalogRoute} from '../../../shared/lib/pageRoutes';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
@@ -11,8 +13,11 @@ import {pluralOf} from '../../../shared/lib/plural';
 import {themeOf} from '../../../pages/Services/servicesModel';
 import SubscriptionInfo, {showsPlayStationInfo} from '../../../pages/Subscription/SubscriptionInfo';
 import {buildPlan, defaultSelection, locate} from '../../../pages/Subscription/subscriptionModel';
+import {subscriptionShare} from '../../../pages/Subscription/subscriptionShare';
 import {useSubscriptionProducts} from '../../../pages/Subscription/useSubscriptionProducts';
+import {HeartIcon} from '../../shell/DesktopIcons';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
+import ShareActions from '../../ui/ShareActions';
 import Spinner from '../../ui/Spinner';
 import style from './DesktopSubscription.module.scss';
 
@@ -33,6 +38,7 @@ export default function DesktopSubscription() {
     const params = useParams();
     const navigate = useNavigate();
     const [search] = useSearchParams();
+    const {isTg} = usePlatform();
 
     const path = cleanPath(params['*'] || '');
     const option = search.get('option');
@@ -104,11 +110,22 @@ export default function DesktopSubscription() {
     const setCartCount = useCartStore((state) => state.setCount);
     const cartCount = useCartStore(selectCartCount(productId));
 
+    const loadFavorites = useFavoriteStore((state) => state.load);
+    const toggleFavorite = useFavoriteStore((state) => state.toggle);
+    const isFavorite = useFavoriteStore(selectIsFavorite(productId));
+
     const [isAdding, setIsAdding] = useState(false);
 
     useEffect(() => {
         loadCart(userId);
-    }, [userId, loadCart]);
+        loadFavorites(userId);
+    }, [userId, loadCart, loadFavorites]);
+
+    const handleFavorite = useCallback(() => {
+        if (productId === null) return;
+
+        toggleFavorite(userId, productId);
+    }, [productId, toggleFavorite, userId]);
 
     const selectTier = useCallback((key) => {
         setSelection((prev) => {
@@ -177,6 +194,7 @@ export default function DesktopSubscription() {
 
     const theme = tier.theme || themeOf({accent: tier.accent}, 0);
     const periods = tier.periods;
+    const share = subscriptionShare({tier, period, region, isTg});
 
     return (
         <div className={style.screen} style={themeVars(theme)}>
@@ -408,6 +426,22 @@ export default function DesktopSubscription() {
                             {isAdding ? 'Добавляем…' : 'Добавить в корзину'}
                         </button>
                     )}
+
+                    {productId === null ? null : (
+                        <button
+                            type="button"
+                            className={isFavorite ? `${style.favorite} ${style.favoriteOn}` : style.favorite}
+                            aria-pressed={isFavorite}
+                            onClick={handleFavorite}
+                        >
+                            <HeartIcon className={style.favoriteIcon}/>
+                            {isFavorite ? 'В избранном' : 'В избранное'}
+                        </button>
+                    )}
+
+                    {share ? (
+                        <ShareActions productId={share.productId} text={share.text} link={share.link}/>
+                    ) : null}
                 </aside>
             </div>
         </div>

@@ -3,7 +3,9 @@ import {useNavigate, useParams, useSearchParams} from 'react-router-dom';
 import {selectUserId, useSessionStore} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
 import {selectCartCount, useCartStore} from '../../store/useCartStore';
+import {selectIsFavorite, useFavoriteStore} from '../../store/useFavoriteStore';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
+import {usePlatform} from '../../shared/hooks/usePlatform';
 import {useBackButton} from '../../shared/hooks/useBackButton';
 import {hapticImpact, hapticSelection} from '../../shared/lib/haptic';
 import {regionIcon, regionTitle} from '../../shared/lib/region';
@@ -11,6 +13,7 @@ import {catalogRoute} from '../../shared/lib/pageRoutes';
 import BackPill from '../../shared/ui/BackPill/BackPill';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import {cleanPath} from '../Main/catalogSections';
+import ProductShare from '../Product/ProductShare';
 import {themeOf} from '../Services/servicesModel';
 import SubscriptionBar from './SubscriptionBar';
 import SubscriptionHero from './SubscriptionHero';
@@ -18,6 +21,7 @@ import SubscriptionInfo, {showsPlayStationInfo} from './SubscriptionInfo';
 import SubscriptionPeriods from './SubscriptionPeriods';
 import SubscriptionTiers from './SubscriptionTiers';
 import {buildPlan, defaultSelection, locate} from './subscriptionModel';
+import {subscriptionShare} from './subscriptionShare';
 import {useSubscriptionProducts} from './useSubscriptionProducts';
 import style from './Subscription.module.scss';
 
@@ -37,6 +41,7 @@ export default function Subscription() {
     const navigate = useNavigate();
     const [search] = useSearchParams();
     const {contentSafeAreaInset, safeAreaInset} = useAppInsets();
+    const {isTg} = usePlatform();
 
     const path = cleanPath(params['*'] || '');
     const option = search.get('option');
@@ -109,11 +114,23 @@ export default function Subscription() {
     const setCartCount = useCartStore((state) => state.setCount);
     const cartCount = useCartStore(selectCartCount(productId));
 
+    const loadFavorites = useFavoriteStore((state) => state.load);
+    const toggleFavorite = useFavoriteStore((state) => state.toggle);
+    const isFavorite = useFavoriteStore(selectIsFavorite(productId));
+
     const [isAdding, setIsAdding] = useState(false);
 
     useEffect(() => {
         loadCart(userId);
-    }, [userId, loadCart]);
+        loadFavorites(userId);
+    }, [userId, loadCart, loadFavorites]);
+
+    const handleFavorite = useCallback(() => {
+        if (productId === null) return;
+
+        hapticImpact('light');
+        toggleFavorite(userId, productId);
+    }, [productId, toggleFavorite, userId]);
 
     const goBack = useCallback(() => {
         hapticImpact('light');
@@ -228,6 +245,7 @@ export default function Subscription() {
 
     const theme = tier.theme || themeOf({accent: tier.accent}, 0);
     const summary = [tier.name, period?.label].filter(Boolean).join(' · ');
+    const share = subscriptionShare({tier, period, region, isTg});
 
     return (
         <div className={style.screen} style={themeVars(theme)}>
@@ -242,6 +260,8 @@ export default function Subscription() {
                     tier={tier}
                     period={period}
                     region={region}
+                    isFavorite={isFavorite}
+                    onToggleFavorite={productId === null ? null : handleFavorite}
                 />
 
                 <SubscriptionTiers tiers={plan.tiers} activeKey={tier.key} onSelect={selectTier}/>
@@ -249,6 +269,10 @@ export default function Subscription() {
                 <SubscriptionPeriods tier={tier} activeId={period?.id ?? null} onSelect={selectPeriod}/>
 
                 {showsPlayStationInfo(plan.brand.key, path) ? <SubscriptionInfo/> : null}
+
+                {share ? (
+                    <ProductShare productId={share.productId} text={share.text} link={share.link}/>
+                ) : null}
 
                 <button type="button" className={style.toCatalog} onClick={openCatalog}>
                     Посмотреть все позиции

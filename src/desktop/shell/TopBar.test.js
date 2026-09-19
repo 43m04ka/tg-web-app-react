@@ -41,9 +41,12 @@ afterEach(() => {
     container.remove();
 });
 
-const render = () => act(() => {
+const render = (path = '/main') => act(() => {
+    root.unmount();
+    root = createRoot(container);
+
     root.render(
-        <MemoryRouter initialEntries={['/main']}>
+        <MemoryRouter initialEntries={[path]}>
             <TopBar/>
         </MemoryRouter>
     );
@@ -54,7 +57,7 @@ test('в меню остались только найденные раздел�
 
     const labels = [...container.querySelectorAll('nav button')].map((node) => node.textContent);
 
-    expect(labels).toEqual(['Пополнение', 'Коды']);
+    expect(labels).toEqual(['Каталог', 'Пополнение', 'Коды']);
 });
 
 test('выбор витрины показан в шапке, а корзина считается по странице', () => {
@@ -70,14 +73,24 @@ test('выбор витрины показан в шапке, а корзина 
     expect(badge).toHaveLength(1);
 });
 
-test('на разделе пополнения в шапке остаётся выбор витрины, а не пустая кнопка', () => {
-    useSessionStore.setState({pageId: 36});
+test('на каталоге видны витрины и корзина, в пополнении и кодах они спрятаны', () => {
+    const hiddenSlots = () => [...container.querySelectorAll('[data-slot]')]
+        .filter((node) => node.getAttribute('aria-hidden') === 'true')
+        .map((node) => node.dataset.slot);
+
     render();
 
     const trigger = [...container.querySelectorAll('button')]
         .find((node) => node.getAttribute('aria-haspopup') === 'listbox');
 
     expect(trigger.textContent.trim()).toBe('Все витрины');
+    expect(hiddenSlots()).toEqual([]);
+
+    render('/steam');
+    expect(hiddenSlots()).toEqual(['region', 'cart']);
+
+    render('/services');
+    expect(hiddenSlots()).toEqual(['region', 'cart']);
 });
 
 test('витрины разворачиваются списком по клику, первым пунктом — все', () => {

@@ -54,6 +54,7 @@ export default function TopBar({onSearchOpenChange}) {
 
     const isScrolled = useScrolled();
     const isStandalone = pathname === '/steam' || pathname === '/services';
+    const isCatalog = pathname === '/' || pathname.startsWith('/catalog');
 
     const cartSize = pageCartItems(cartItems, catalogs, pageId)?.length ?? 0;
 
@@ -86,6 +87,14 @@ export default function TopBar({onSearchOpenChange}) {
                 </button>
 
                 <nav className={style.nav}>
+                    <button
+                        type="button"
+                        className={isCatalog ? `${style.link} ${style.linkActive}` : style.link}
+                        onClick={() => go('/')}
+                    >
+                        Каталог
+                    </button>
+
                     {sections.map((section) => (
                         <button
                             key={section.key}
@@ -101,14 +110,26 @@ export default function TopBar({onSearchOpenChange}) {
                 <SearchBox onOpenChange={onSearchOpenChange}/>
 
                 <div className={style.actions}>
-                    <RegionMenu
-                        items={storefronts}
-                        scopeId={scopeId}
-                        onSelect={pickStorefront}
-                        totals={totals}
-                    />
+                    <div
+                        className={style.slot}
+                        data-slot="region"
+                        data-hidden={isStandalone ? '' : undefined}
+                        aria-hidden={isStandalone ? 'true' : undefined}
+                    >
+                        <RegionMenu
+                            items={storefronts}
+                            scopeId={scopeId}
+                            onSelect={pickStorefront}
+                            totals={totals}
+                        />
+                    </div>
 
-                    {isStandalone ? null : (
+                    <div
+                        className={style.slot}
+                        data-slot="cart"
+                        data-hidden={isStandalone ? '' : undefined}
+                        aria-hidden={isStandalone ? 'true' : undefined}
+                    >
                         <button
                             type="button"
                             className={`${style.action} ${pathname === '/basket' ? style.actionActive : ''}`}
@@ -120,7 +141,7 @@ export default function TopBar({onSearchOpenChange}) {
                                 <span key={cartSize} className={style.badge}>{cartSize > 99 ? '99+' : cartSize}</span>
                             ) : null}
                         </button>
-                    )}
+                    </div>
 
                     <button
                         type="button"

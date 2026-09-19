@@ -22,7 +22,6 @@ import Spinner from '../../ui/Spinner';
 import OfferCard from '../Storefront/OfferCard';
 import OfferSplit from '../Storefront/OfferSplit';
 import DesktopPromo from './DesktopPromo';
-import BackLink from '../../ui/BackLink';
 import style from './DesktopBasket.module.scss';
 
 function CartRow({item, regionTitle, isRupee, index, isLeaving, onOpen, onCount, onDrop}) {
@@ -196,8 +195,6 @@ export default function DesktopBasket() {
 
     return (
         <div className={style.screen}>
-            <BackLink to="/" label="Назад к каталогу"/>
-
             <OfferSplit offer={picker.picked} onPick={picker.pick} onClose={picker.close}/>
 
             <header className={style.head}>

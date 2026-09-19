@@ -15,7 +15,6 @@ import {useProfileSummary} from '../../../pages/More/useProfileSummary';
 import {ChevronIcon, ExternalIcon} from '../../../pages/More/MoreIcons';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import {Reveal} from '../../shell/useReveal';
-import BackLink from '../../ui/BackLink';
 import style from './DesktopMore.module.scss';
 
 const PREVIEW_LIMIT = 4;
@@ -88,8 +87,6 @@ export default function DesktopMore() {
 
     return (
         <div className={style.screen}>
-            <BackLink to="/" label="Назад к каталогу"/>
-
             <header className={style.head}>
                 <span className={style.avatar} aria-hidden="true">
                     {name.slice(0, 1).toUpperCase()}

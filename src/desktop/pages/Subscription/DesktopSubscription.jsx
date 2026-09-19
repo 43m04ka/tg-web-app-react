@@ -14,7 +14,6 @@ import {buildPlan, defaultSelection, locate} from '../../../pages/Subscription/s
 import {useSubscriptionProducts} from '../../../pages/Subscription/useSubscriptionProducts';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import Spinner from '../../ui/Spinner';
-import BackLink from '../../ui/BackLink';
 import style from './DesktopSubscription.module.scss';
 
 const VARIANT_WORDS = ['вариант', 'варианта', 'вариантов'];
@@ -181,8 +180,6 @@ export default function DesktopSubscription() {
 
     return (
         <div className={style.screen} style={themeVars(theme)}>
-            <BackLink to="/" label="Назад"/>
-
             <header className={style.head}>
                 <h1 className={style.title}>{plan.title || title || 'Подписки'}</h1>
 

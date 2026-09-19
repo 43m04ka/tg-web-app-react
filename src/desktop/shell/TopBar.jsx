@@ -13,6 +13,7 @@ import {useScrolled} from './useScrolled';
 import {BasketIcon, UserIcon} from './DesktopIcons';
 import logo from '../assets/logo.png';
 import SearchBox from './SearchBox';
+import BackLink from '../ui/BackLink';
 import RegionMenu from './RegionMenu';
 import {useStorefrontScope} from './StorefrontScope';
 import style from './TopBar.module.scss';
@@ -59,7 +60,8 @@ export default function TopBar({onSearchOpenChange}) {
 
     const [isSearchOpen, setSearchOpen] = useState(false);
 
-    const isFocusMode = isSearchOpen || isSearchPage;
+    const isFocusMode = isSearchOpen;
+    const showBack = pathname !== '/' && !isFocusMode;
 
     const onSearchOpen = useCallback((open) => {
         setSearchOpen(open);
@@ -87,12 +89,15 @@ export default function TopBar({onSearchOpenChange}) {
     const pickStorefront = useCallback((item) => {
         setScopeId(item.id);
         if (item.id !== null) setPageId(item.id);
-        go('/');
-    }, [go, setPageId, setScopeId]);
+    }, [setPageId, setScopeId]);
 
     return (
         <header className={isScrolled ? `${style.bar} ${style.barScrolled}` : style.bar}>
             <div className={style.inner}>
+                <div className={style.backSlot} data-hidden={showBack ? undefined : ''}>
+                    <BackLink to="/" label="Назад" className={style.back}/>
+                </div>
+
                 <button type="button" className={style.logo} onClick={() => go('/')}>
                     <span
                         className={style.mark}
@@ -123,7 +128,11 @@ export default function TopBar({onSearchOpenChange}) {
                     ))}
                 </nav>
 
-                <SearchBox onOpenChange={onSearchOpen} hidden={isStandalone} wide={isFocusMode}/>
+                <SearchBox
+                    onOpenChange={onSearchOpen}
+                    hidden={isStandalone || isSearchPage}
+                    wide={isFocusMode}
+                />
 
                 <div className={style.actions} data-hidden={isFocusMode ? '' : undefined}>
                     <div

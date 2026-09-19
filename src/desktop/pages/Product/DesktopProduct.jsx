@@ -18,7 +18,6 @@ import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import {Reveal} from '../../shell/useReveal';
 import Spinner from '../../ui/Spinner';
 import {useDesktopProduct} from './useDesktopProduct';
-import BackLink from '../../ui/BackLink';
 import style from './DesktopProduct.module.scss';
 
 export default function DesktopProduct() {
@@ -62,8 +61,6 @@ export default function DesktopProduct() {
     if (error) {
         return (
             <div className={style.screen}>
-                <BackLink to="/" label="Назад к каталогу"/>
-
                 <EmptyState
                     tone="danger"
                     icon="⚠"
@@ -102,8 +99,6 @@ export default function DesktopProduct() {
 
     return (
         <div className={style.screen}>
-            <BackLink to="/" label="Назад к каталогу"/>
-
             <div className={style.main}>
                 <div
                     className={style.cover}

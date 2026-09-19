@@ -30,7 +30,6 @@ import FilterPanel from '../Catalog/FilterPanel';
 import OfferCard from '../Storefront/OfferCard';
 import OfferSplit from '../Storefront/OfferSplit';
 import {SearchIcon} from '../../shell/DesktopIcons';
-import BackLink from '../../ui/BackLink';
 import style from './DesktopSearch.module.scss';
 
 const SKELETON_COUNT = 10;
@@ -47,7 +46,7 @@ export default function DesktopSearch() {
     const seed = typeof location.state?.query === 'string' ? location.state.query : '';
 
     const [query, setQuery] = useState(seed);
-    const [filters, setFilters] = useState(createFilters);
+    const [filters, setFilters] = useState(() => location.state?.filters || createFilters());
     const [sorting, setSorting] = useState('default');
     const [recent, setRecent] = useState(() => loadRecentSearches());
 
@@ -69,7 +68,8 @@ export default function DesktopSearch() {
 
     useEffect(() => {
         setQuery(seed);
-    }, [seed, location.state?.stamp]);
+        if (location.state?.filters) setFilters(location.state.filters);
+    }, [seed, location.state?.filters, location.state?.stamp]);
 
     useEffect(() => {
         inputRef.current?.focus();
@@ -177,8 +177,6 @@ export default function DesktopSearch() {
 
     return (
         <div className={style.screen}>
-            <BackLink to="/" label="Назад"/>
-
             <OfferSplit offer={picker.picked} onPick={picker.pick} onClose={picker.close}/>
 
             <header className={style.head}>

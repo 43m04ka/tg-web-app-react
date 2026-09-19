@@ -8,6 +8,8 @@ import {createProductOrigin} from '../../shared/lib/productOrigin';
 import {productRoute} from '../../shared/lib/pageRoutes';
 import {formatPrice} from '../../pages/Main/catalogSections';
 import {clearRecentSearches, forgetSearch, loadRecentSearches, rememberSearch} from '../../pages/Search/recentSearches';
+import {loadFacets, peekFacets} from '../../shared/api/facetsCache';
+import {buildCategories, buildGenres} from '../../pages/Search/searchSections';
 import {scopeFilter} from '../model/storefrontTotals';
 import {useStorefrontScope} from './StorefrontScope';
 import {resolveBotType} from '../model/desktopNav';
@@ -73,6 +75,8 @@ export default function SearchBox({onOpenChange, hidden = false, wide = false}) 
         [scopeId, effectiveBotType]
     );
 
+    const [{facets}, setFacetData] = useState(() => peekFacets(scope));
+
     const trimmed = query.trim();
     const isSearching = trimmed.length >= MIN_QUERY;
 
@@ -110,6 +114,22 @@ export default function SearchBox({onOpenChange, hidden = false, wide = false}) 
             clearTimeout(timerId);
         };
     }, [trimmed, isSearching, scope, originOf]);
+
+    useEffect(() => {
+        if (!isOpen) return undefined;
+
+        let isAlive = true;
+
+        loadFacets(scope)
+            .then((value) => {
+                if (isAlive) setFacetData(value);
+            })
+            .catch(() => undefined);
+
+        return () => {
+            isAlive = false;
+        };
+    }, [isOpen, scope]);
 
     useEffect(() => {
         setCursor(-1);
@@ -166,6 +186,12 @@ export default function SearchBox({onOpenChange, hidden = false, wide = false}) 
         navigate('/search', {state: {query: target, stamp: Date.now()}});
     }, [close, navigate, trimmed]);
 
+    const openSection = useCallback((filters) => {
+        close();
+        setQuery('');
+        navigate('/search', {state: {filters, stamp: Date.now()}});
+    }, [close, navigate]);
+
     const openOffer = useCallback((offer) => {
         const origin = offer.origins[0] || originOf(offer.product);
         if (origin) setPageId(origin.pageId);
@@ -216,8 +242,12 @@ export default function SearchBox({onOpenChange, hidden = false, wide = false}) 
         inputRef.current?.focus();
     }, []);
 
+    const categories = useMemo(() => buildCategories(facets), [facets]);
+    const genres = useMemo(() => buildGenres(facets, 8), [facets]);
+
     const showRecent = isOpen && !isSearching && recent.length > 0;
-    const showPanel = isOpen && (isSearching || showRecent);
+    const showBoard = isOpen && !isSearching && (categories.length > 0 || genres.length > 0);
+    const showPanel = isOpen && (isSearching || showRecent || showBoard);
 
     return (
         <div
@@ -281,6 +311,51 @@ export default function SearchBox({onOpenChange, hidden = false, wide = false}) 
 
             <div className={showPanel ? style.drop + ' ' + style.dropOpen : style.drop} ref={listRef}>
                 <div className={style.dropInner}>
+                    {showBoard && categories.length ? (
+                        <div className={style.block}>
+                            <div className={style.blockHead}>
+                                <span className={style.blockTitle}>Категории</span>
+                            </div>
+
+                            <div className={style.tiles}>
+                                {categories.map((tile, index) => (
+                                    <button
+                                        key={tile.type}
+                                        type="button"
+                                        className={style.tile}
+                                        style={{'--i': index}}
+                                        onClick={() => openSection(tile.filters)}
+                                    >
+                                        <span className={style.tileTitle}>{tile.title}</span>
+                                        <span className={style.tileNote}>{tile.note}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    ) : null}
+
+                    {showBoard && genres.length ? (
+                        <div className={style.block}>
+                            <div className={style.blockHead}>
+                                <span className={style.blockTitle}>Жанры</span>
+                            </div>
+
+                            <div className={style.genres}>
+                                {genres.map((genre, index) => (
+                                    <button
+                                        key={genre.value}
+                                        type="button"
+                                        className={style.genre}
+                                        style={{'--i': index}}
+                                        onClick={() => openSection(genre.filters)}
+                                    >
+                                        {genre.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    ) : null}
+
                     {showRecent ? (
                         <div className={style.block}>
                             <div className={style.blockHead}>

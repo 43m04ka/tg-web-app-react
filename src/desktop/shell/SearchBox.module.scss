@@ -217,6 +217,74 @@
   color: var(--accent-text);
 }
 
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--d-gap-2);
+  padding: 0 var(--d-gap-2);
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: var(--d-gap-3);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  text-align: left;
+  animation: gw-rise-sm var(--m-base) var(--m-ease) both;
+  animation-delay: calc(var(--i, 0) * 30ms);
+  transition: background-color var(--m-fast) var(--m-ease),
+              border-color var(--m-fast) var(--m-ease),
+              transform var(--m-base) var(--m-spring);
+}
+
+.tile:hover {
+  background: var(--surface-2);
+  border-color: var(--border);
+  transform: translateY(-2px);
+}
+
+.tileTitle {
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-bold);
+}
+
+.tileNote {
+  font-size: var(--d-fs-2xs);
+  color: var(--text-faint);
+}
+
+.genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 var(--d-gap-2);
+}
+
+.genre {
+  padding: 7px 13px;
+  border-radius: var(--radius-full);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: var(--d-fs-xs);
+  font-weight: var(--fw-semibold);
+  animation: gw-pop var(--m-base) var(--m-spring) both;
+  animation-delay: calc(var(--i, 0) * 22ms);
+  transition: background-color var(--m-fast) var(--m-ease),
+              color var(--m-fast) var(--m-ease),
+              transform var(--m-base) var(--m-spring);
+}
+
+.genre:hover {
+  background: var(--surface-2);
+  color: var(--text);
+  transform: translateY(-2px);
+}
+
 .recent {
   display: flex;
   flex-direction: column;

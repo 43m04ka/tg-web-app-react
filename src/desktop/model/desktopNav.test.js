@@ -35,8 +35,8 @@ test('витрины идут по serialNumber и без standalone-стран�
 
 test('разделы собираются из существующих standalone-страниц, даже мимо стартового меню', () => {
     expect(sectionList(startPages, pages, 'tg')).toEqual([
-        expect.objectContaining({key: 'steam', pageId: 4, route: '/steam', label: 'Пополнение'}),
-        expect.objectContaining({key: 'services', pageId: 5, route: '/services', label: 'Коды'})
+        expect.objectContaining({key: 'steam', pageId: 4, route: '/steam', label: 'Пополнение Стим'}),
+        expect.objectContaining({key: 'services', pageId: 5, route: '/services', label: 'Коды пополнения'})
     ]);
 
     const withoutServices = startPages.filter((item) => item.structurePageId !== 5);

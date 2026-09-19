@@ -4,6 +4,28 @@
   flex: 1 1 auto;
   min-width: 0;
   max-width: 520px;
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition: max-width var(--m-slow) var(--m-ease),
+              opacity var(--m-base) var(--m-ease),
+              transform var(--m-slow) var(--m-spring),
+              visibility 0s;
+}
+
+.rootWide {
+  max-width: 2000px;
+}
+
+.rootHidden {
+  opacity: 0;
+  transform: translateY(-190%);
+  visibility: hidden;
+  pointer-events: none;
+  transition: max-width var(--m-slow) var(--m-ease),
+              opacity var(--m-base) var(--m-ease),
+              transform var(--m-slow) var(--m-ease-in),
+              visibility 0s linear var(--m-slow);
 }
 
 .field {

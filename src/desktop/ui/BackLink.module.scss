@@ -1,0 +1,38 @@
+.back {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--d-gap-2);
+  padding: 7px 14px 7px 11px;
+  border-radius: var(--radius-full);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-semibold);
+  animation: gw-slide-left var(--m-base) var(--m-ease) both;
+  transition: background-color var(--m-fast) var(--m-ease),
+              border-color var(--m-fast) var(--m-ease),
+              color var(--m-fast) var(--m-ease),
+              transform var(--m-base) var(--m-spring);
+}
+
+.back:hover {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--text);
+  transform: translateX(-2px);
+}
+
+.back:active {
+  transform: scale(0.97);
+}
+
+.arrow {
+  font-size: var(--d-fs-md);
+  transition: transform var(--m-base) var(--m-spring);
+}
+
+.back:hover .arrow {
+  transform: translateX(-3px);
+}

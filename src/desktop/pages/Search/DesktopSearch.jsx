@@ -30,6 +30,7 @@ import FilterPanel from '../Catalog/FilterPanel';
 import OfferCard from '../Storefront/OfferCard';
 import OfferSplit from '../Storefront/OfferSplit';
 import {SearchIcon} from '../../shell/DesktopIcons';
+import BackLink from '../../ui/BackLink';
 import style from './DesktopSearch.module.scss';
 
 const SKELETON_COUNT = 10;
@@ -176,10 +177,14 @@ export default function DesktopSearch() {
 
     return (
         <div className={style.screen}>
+            <BackLink to="/" label="Назад"/>
+
             <OfferSplit offer={picker.picked} onPick={picker.pick} onClose={picker.close}/>
 
             <header className={style.head}>
-                <h1 className={style.title}>Поиск по всем витринам</h1>
+                <h1 className={style.title}>
+                    {scopeName ? `Поиск по витрине ${scopeName}` : 'Поиск по всем витринам'}
+                </h1>
 
                 <form className={style.field} onSubmit={(event) => event.preventDefault()} role="search">
                     <SearchIcon className={style.fieldIcon}/>
@@ -198,7 +203,7 @@ export default function DesktopSearch() {
                                 setQuery('');
                             }
                         }}
-                        aria-label="Поиск по всем витринам"
+                        aria-label={scopeName ? `Поиск по витрине ${scopeName}` : 'Поиск по всем витринам'}
                     />
 
                     {isLoading && isSearching ? <Spinner className={style.fieldSpinner}/> : null}

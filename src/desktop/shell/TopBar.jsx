@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useRef} from 'react';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {useSessionStore} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
@@ -55,6 +55,16 @@ export default function TopBar({onSearchOpenChange}) {
     const isScrolled = useScrolled();
     const isStandalone = pathname === '/steam' || pathname === '/services';
     const isCatalog = pathname === '/' || pathname.startsWith('/catalog');
+    const isSearchPage = pathname === '/search';
+
+    const [isSearchOpen, setSearchOpen] = useState(false);
+
+    const isFocusMode = isSearchOpen || isSearchPage;
+
+    const onSearchOpen = useCallback((open) => {
+        setSearchOpen(open);
+        onSearchOpenChange?.(open);
+    }, [onSearchOpenChange]);
 
     const isScoped = scopeId !== null;
     const cartSize = isScoped ? (pageCartItems(cartItems, catalogs, pageId)?.length ?? 0) : 0;
@@ -92,7 +102,7 @@ export default function TopBar({onSearchOpenChange}) {
                     <span className={style.brand}>Геймворд</span>
                 </button>
 
-                <nav className={style.nav}>
+                <nav className={style.nav} data-hidden={isFocusMode ? '' : undefined}>
                     <button
                         type="button"
                         className={isCatalog ? `${style.link} ${style.linkActive}` : style.link}
@@ -113,9 +123,9 @@ export default function TopBar({onSearchOpenChange}) {
                     ))}
                 </nav>
 
-                <SearchBox onOpenChange={onSearchOpenChange}/>
+                <SearchBox onOpenChange={onSearchOpen} hidden={isStandalone} wide={isFocusMode}/>
 
-                <div className={style.actions}>
+                <div className={style.actions} data-hidden={isFocusMode ? '' : undefined}>
                     <div
                         className={style.slot}
                         style={{'--slot': '176px'}}

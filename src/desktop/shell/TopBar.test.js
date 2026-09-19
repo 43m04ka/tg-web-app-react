@@ -66,7 +66,7 @@ test('в меню остались только найденные раздел�
 
     const labels = [...container.querySelectorAll('nav button')].map((node) => node.textContent);
 
-    expect(labels).toEqual(['Каталог', 'Пополнение', 'Коды']);
+    expect(labels).toEqual(['Каталог', 'Пополнение Стим', 'Коды пополнения']);
 });
 
 test('корзина считается по витрине и выключена, пока витрина не выбрана', () => {
@@ -132,7 +132,7 @@ test('при уходе в раздел счётчик корзины держи
 
     act(() => {
         [...container.querySelectorAll('nav button')]
-            .find((node) => node.textContent === 'Пополнение')
+            .find((node) => node.textContent === 'Пополнение Стим')
             .dispatchEvent(new MouseEvent('click', {bubbles: true}));
     });
 

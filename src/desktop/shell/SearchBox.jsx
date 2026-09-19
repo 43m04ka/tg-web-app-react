@@ -36,7 +36,7 @@ const highlight = (text, needle) => {
     ];
 };
 
-export default function SearchBox({onOpenChange}) {
+export default function SearchBox({onOpenChange, hidden = false, wide = false}) {
     const navigate = useNavigate();
     const {botType} = usePlatform();
 
@@ -220,7 +220,17 @@ export default function SearchBox({onOpenChange}) {
     const showPanel = isOpen && (isSearching || showRecent);
 
     return (
-        <div className={isOpen ? style.root + ' ' + style.rootOpen : style.root} ref={rootRef}>
+        <div
+            className={[
+                style.root,
+                isOpen ? style.rootOpen : '',
+                wide ? style.rootWide : '',
+                hidden ? style.rootHidden : ''
+            ].filter(Boolean).join(' ')}
+            data-hidden={hidden ? '' : undefined}
+            aria-hidden={hidden ? 'true' : undefined}
+            ref={rootRef}
+        >
             <form
                 className={style.field}
                 role="search"

@@ -18,6 +18,7 @@ import {
     statusOf
 } from '../../../pages/Account/orderStatus';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
+import BackLink from '../../ui/BackLink';
 import style from './DesktopAccount.module.scss';
 
 const SKELETONS = ['a', 'b', 'c'];
@@ -44,6 +45,8 @@ export default function DesktopHistory() {
 
     return (
         <div className={style.screen}>
+            <BackLink to="/more" label="В профиль"/>
+
             <header className={style.head}>
                 <h1 className={style.title}>Мои заказы</h1>
                 {items?.length ? <span className={style.note}>{items.length}</span> : null}

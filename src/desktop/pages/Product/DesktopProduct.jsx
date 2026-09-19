@@ -18,6 +18,7 @@ import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import {Reveal} from '../../shell/useReveal';
 import Spinner from '../../ui/Spinner';
 import {useDesktopProduct} from './useDesktopProduct';
+import BackLink from '../../ui/BackLink';
 import style from './DesktopProduct.module.scss';
 
 export default function DesktopProduct() {
@@ -60,14 +61,18 @@ export default function DesktopProduct() {
 
     if (error) {
         return (
-            <EmptyState
-                tone="danger"
-                icon="⚠"
-                title="Товар не открылся"
-                text="Возможно, его убрали с витрины или пропала связь"
-                actionLabel="Повторить"
-                onAction={reload}
-            />
+            <div className={style.screen}>
+                <BackLink to="/" label="Назад к каталогу"/>
+
+                <EmptyState
+                    tone="danger"
+                    icon="⚠"
+                    title="Товар не открылся"
+                    text="Возможно, его убрали с витрины или пропала связь"
+                    actionLabel="Повторить"
+                    onAction={reload}
+                />
+            </div>
         );
     }
 
@@ -97,6 +102,8 @@ export default function DesktopProduct() {
 
     return (
         <div className={style.screen}>
+            <BackLink to="/" label="Назад к каталогу"/>
+
             <div className={style.main}>
                 <div
                     className={style.cover}

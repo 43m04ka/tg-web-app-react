@@ -11,6 +11,7 @@ import {formatMoney} from '../../../pages/Account/orderStatus';
 import {discountPercent, shortPlatform} from '../../../pages/Main/catalogSections';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import Cover from '../../ui/Cover';
+import BackLink from '../../ui/BackLink';
 import style from './DesktopAccount.module.scss';
 
 const SKELETONS = ['a', 'b', 'c', 'd', 'e', 'f'];
@@ -68,6 +69,8 @@ export default function DesktopFavorites() {
 
     return (
         <div className={style.screen}>
+            <BackLink to="/more" label="В профиль"/>
+
             <header className={style.head}>
                 <h1 className={style.title}>Избранное</h1>
                 {count ? <span className={style.note}>{count} {plural(count)}</span> : null}

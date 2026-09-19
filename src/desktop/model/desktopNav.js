@@ -3,8 +3,8 @@ import {fallbackBotType} from '../../shared/lib/platform';
 import {regionIcon, regionLabel, regionTitle} from '../../shared/lib/region';
 
 const SECTION_TITLES = {
-    steam: 'Пополнение',
-    services: 'Коды'
+    steam: 'Пополнение Стим',
+    services: 'Коды пополнения'
 };
 
 const SECTION_ORDER = Object.keys(STANDALONE_PAGES);

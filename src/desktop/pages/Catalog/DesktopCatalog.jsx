@@ -24,6 +24,7 @@ import OfferCard from '../Storefront/OfferCard';
 import OfferSplit from '../Storefront/OfferSplit';
 import {useOfferPicker} from '../../shell/useOfferPicker';
 import FilterPanel from './FilterPanel';
+import BackLink from '../../ui/BackLink';
 import style from './DesktopCatalog.module.scss';
 
 const SKELETON_COUNT = 12;
@@ -133,6 +134,8 @@ export default function DesktopCatalog() {
 
     return (
         <div className={style.screen}>
+            <BackLink to="/" label="Назад"/>
+
             <OfferSplit offer={picker.picked} onPick={picker.pick} onClose={picker.close}/>
 
             <FilterPanel filters={filters} facets={facets} price={price} onChange={setFilters}/>

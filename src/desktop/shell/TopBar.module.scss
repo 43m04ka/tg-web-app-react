@@ -161,6 +161,15 @@
   color: var(--text);
 }
 
+.action:disabled,
+.action:disabled:hover {
+  background: transparent;
+  color: var(--text-faint);
+  opacity: 0.45;
+  transform: none;
+  cursor: default;
+}
+
 .actionIcon {
   width: 19px;
   height: 19px;
@@ -193,7 +202,7 @@
   flex: none;
   display: flex;
   align-items: center;
-  max-width: 260px;
+  max-width: var(--slot, 260px);
   opacity: 1;
   transform: none;
   visibility: visible;

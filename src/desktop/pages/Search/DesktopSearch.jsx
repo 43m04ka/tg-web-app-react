@@ -9,17 +9,19 @@ import {
     countActiveFilters,
     createFilters,
     describeFilters,
-    productsPlural,
-    sortingLabel
+    productsPlural
 } from '../../../shared/lib/catalogQuery';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
 import {useCatalogProducts} from '../../../pages/Catalog/useCatalogProducts';
 import {useSearchResults, MIN_QUERY_LENGTH} from '../../../pages/Search/useSearchResults';
 import {buildCategories, buildGenres} from '../../../pages/Search/searchSections';
 import {clearRecentSearches, forgetSearch, loadRecentSearches, rememberSearch} from '../../../pages/Search/recentSearches';
-import {resolveBotType} from '../../model/desktopNav';
+import {resolveBotType, storefrontList} from '../../model/desktopNav';
+import SelectMenu from '../../ui/SelectMenu';
 import {mergeOffers} from '../../model/storefrontModel';
 import {useNearBottom} from '../../../shared/hooks/useNearBottom';
+import {scopeFilter} from '../../model/storefrontTotals';
+import {useStorefrontScope} from '../../shell/StorefrontScope';
 import {useScrollArea, useScrollMemory} from '../../shell/ScrollAreaContext';
 import {useOfferPicker} from '../../shell/useOfferPicker';
 import {Reveal} from '../../shell/useReveal';
@@ -55,9 +57,11 @@ export default function DesktopSearch() {
         [startPages, botType]
     );
 
+    const {scopeId} = useStorefrontScope();
+
     const scope = useMemo(
-        () => ({allPages: true, botType: effectiveBotType}),
-        [effectiveBotType]
+        () => scopeFilter(scopeId, effectiveBotType),
+        [scopeId, effectiveBotType]
     );
 
     const [{facets, price}, setFacetData] = useState(() => peekFacets(scope));
@@ -88,6 +92,11 @@ export default function DesktopSearch() {
         () => createProductOrigin({catalogs, pages, startPages}),
         [catalogs, pages, startPages]
     );
+
+    const scopeName = useMemo(() => (scopeId === null
+        ? null
+        : storefrontList(startPages, pages, botType).find((item) => item.id === scopeId)?.label || null),
+    [scopeId, startPages, pages, botType]);
 
     const trimmed = query.trim();
     const isSearching = trimmed.length >= MIN_QUERY_LENGTH;
@@ -138,6 +147,16 @@ export default function DesktopSearch() {
     }, []);
 
     const areaRef = useScrollArea();
+
+    const formStamp = JSON.stringify({filters, sorting, scopeId});
+    const formStampRef = useRef(formStamp);
+
+    useEffect(() => {
+        if (formStampRef.current === formStamp) return;
+
+        formStampRef.current = formStamp;
+        areaRef?.current?.scrollTo({top: 0, behavior: 'smooth'});
+    }, [formStamp, areaRef]);
 
     const sentinelRef = useNearBottom({
         rootRef: areaRef,
@@ -207,26 +226,24 @@ export default function DesktopSearch() {
                     <div className={style.bar}>
                         <span className={style.count}>
                             {mode === 'idle'
-                                ? 'Начните вводить название — поиск идёт по всем витринам сразу'
+                                ? (scopeName
+                                    ? `Начните вводить название — ищем в витрине ${scopeName}`
+                                    : 'Начните вводить название — поиск идёт по всем витринам сразу')
                                 : offers === null
                                     ? 'Ищем…'
                                     : `${total.toLocaleString('ru-RU')} ${productsPlural(total)}`}
                         </span>
 
                         {mode !== 'idle' ? (
-                            <label className={style.sort}>
+                            <div className={style.sort}>
                                 <span className={style.sortLabel}>Сортировка</span>
-                                <select
-                                    className={style.sortSelect}
+                                <SelectMenu
+                                    options={SORTINGS}
                                     value={sorting}
-                                    onChange={(event) => setSorting(event.target.value)}
-                                    aria-label={`Сортировка: ${sortingLabel(sorting)}`}
-                                >
-                                    {SORTINGS.map((item) => (
-                                        <option key={item.key} value={item.key}>{item.label}</option>
-                                    ))}
-                                </select>
-                            </label>
+                                    onChange={setSorting}
+                                    label="Сортировка"
+                                />
+                            </div>
                         ) : null}
                     </div>
 

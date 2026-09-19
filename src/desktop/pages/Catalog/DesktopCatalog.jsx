@@ -13,12 +13,12 @@ import {
     countActiveFilters,
     createFilters,
     describeFilters,
-    productsPlural,
-    sortingLabel
+    productsPlural
 } from '../../../shared/lib/catalogQuery';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
 import {mergeOffers} from '../../model/storefrontModel';
 import {useNearBottom} from '../../../shared/hooks/useNearBottom';
+import SelectMenu from '../../ui/SelectMenu';
 import {useScrollArea, useScrollMemory} from '../../shell/ScrollAreaContext';
 import OfferCard from '../Storefront/OfferCard';
 import OfferSplit from '../Storefront/OfferSplit';
@@ -97,6 +97,16 @@ export default function DesktopCatalog() {
 
     const areaRef = useScrollArea();
 
+    const formStamp = JSON.stringify({filters, sorting});
+    const formStampRef = useRef(formStamp);
+
+    useEffect(() => {
+        if (formStampRef.current === formStamp) return;
+
+        formStampRef.current = formStamp;
+        areaRef?.current?.scrollTo({top: 0, behavior: 'smooth'});
+    }, [formStamp, areaRef]);
+
     const sentinelRef = useNearBottom({
         rootRef: areaRef,
         enabled: hasMore && !isLoading && !error,
@@ -136,19 +146,15 @@ export default function DesktopCatalog() {
                         </span>
                     </div>
 
-                    <label className={style.sort}>
+                    <div className={style.sort}>
                         <span className={style.sortLabel}>Сортировка</span>
-                        <select
-                            className={style.sortSelect}
+                        <SelectMenu
+                            options={SORTINGS}
                             value={sorting}
-                            onChange={(event) => setSorting(event.target.value)}
-                            aria-label={`Сортировка: ${sortingLabel(sorting)}`}
-                        >
-                            {SORTINGS.map((item) => (
-                                <option key={item.key} value={item.key}>{item.label}</option>
-                            ))}
-                        </select>
-                    </label>
+                            onChange={setSorting}
+                            label="Сортировка"
+                        />
+                    </div>
                 </header>
 
                 {chips.length ? (

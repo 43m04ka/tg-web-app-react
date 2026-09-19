@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback, useMemo, useRef} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {useSessionStore} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
@@ -56,7 +56,13 @@ export default function TopBar({onSearchOpenChange}) {
     const isStandalone = pathname === '/steam' || pathname === '/services';
     const isCatalog = pathname === '/' || pathname.startsWith('/catalog');
 
-    const cartSize = pageCartItems(cartItems, catalogs, pageId)?.length ?? 0;
+    const isScoped = scopeId !== null;
+    const cartSize = isScoped ? (pageCartItems(cartItems, catalogs, pageId)?.length ?? 0) : 0;
+
+    const keptCartRef = useRef(cartSize);
+    if (!isStandalone) keptCartRef.current = cartSize;
+
+    const cartCount = isStandalone ? keptCartRef.current : cartSize;
 
     const go = useCallback((path, options) => {
         if (pathname === '/search') resetSearchState();
@@ -112,6 +118,7 @@ export default function TopBar({onSearchOpenChange}) {
                 <div className={style.actions}>
                     <div
                         className={style.slot}
+                        style={{'--slot': '176px'}}
                         data-slot="region"
                         data-hidden={isStandalone ? '' : undefined}
                         aria-hidden={isStandalone ? 'true' : undefined}
@@ -126,6 +133,7 @@ export default function TopBar({onSearchOpenChange}) {
 
                     <div
                         className={style.slot}
+                        style={{'--slot': '38px'}}
                         data-slot="cart"
                         data-hidden={isStandalone ? '' : undefined}
                         aria-hidden={isStandalone ? 'true' : undefined}
@@ -134,11 +142,13 @@ export default function TopBar({onSearchOpenChange}) {
                             type="button"
                             className={`${style.action} ${pathname === '/basket' ? style.actionActive : ''}`}
                             onClick={() => go('/basket')}
+                            disabled={!isScoped}
+                            title={isScoped ? undefined : 'Выберите витрину'}
                             aria-label="Корзина"
                         >
                             <BasketIcon className={style.actionIcon}/>
-                            {cartSize > 0 ? (
-                                <span key={cartSize} className={style.badge}>{cartSize > 99 ? '99+' : cartSize}</span>
+                            {cartCount > 0 ? (
+                                <span key={cartCount} className={style.badge}>{cartCount > 99 ? '99+' : cartCount}</span>
                             ) : null}
                         </button>
                     </div>

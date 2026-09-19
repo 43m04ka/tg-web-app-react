@@ -8,6 +8,8 @@ import {createProductOrigin} from '../../shared/lib/productOrigin';
 import {productRoute} from '../../shared/lib/pageRoutes';
 import {formatPrice} from '../../pages/Main/catalogSections';
 import {clearRecentSearches, forgetSearch, loadRecentSearches, rememberSearch} from '../../pages/Search/recentSearches';
+import {scopeFilter} from '../model/storefrontTotals';
+import {useStorefrontScope} from './StorefrontScope';
 import {resolveBotType} from '../model/desktopNav';
 import {mergeOffers} from '../model/storefrontModel';
 import Cover from '../ui/Cover';
@@ -64,6 +66,13 @@ export default function SearchBox({onOpenChange}) {
         [startPages, botType]
     );
 
+    const {scopeId} = useStorefrontScope();
+
+    const scope = useMemo(
+        () => scopeFilter(scopeId, effectiveBotType),
+        [scopeId, effectiveBotType]
+    );
+
     const trimmed = query.trim();
     const isSearching = trimmed.length >= MIN_QUERY;
 
@@ -82,7 +91,7 @@ export default function SearchBox({onOpenChange}) {
         setLoading(true);
 
         const timerId = setTimeout(() => {
-            searchProducts({query: trimmed, allPages: true, botType: effectiveBotType, perPage: 24}, controller.signal)
+            searchProducts({query: trimmed, ...scope, perPage: 24}, controller.signal)
                 .then((payload) => {
                     if (controller.signal.aborted) return;
                     const found = Array.isArray(payload?.items) ? payload.items : [];
@@ -100,7 +109,7 @@ export default function SearchBox({onOpenChange}) {
             controller.abort();
             clearTimeout(timerId);
         };
-    }, [trimmed, isSearching, effectiveBotType, originOf]);
+    }, [trimmed, isSearching, scope, originOf]);
 
     useEffect(() => {
         setCursor(-1);
@@ -154,7 +163,7 @@ export default function SearchBox({onOpenChange}) {
 
         close();
         setQuery('');
-        navigate('/search', {state: {allPages: true, query: target, stamp: Date.now()}});
+        navigate('/search', {state: {query: target, stamp: Date.now()}});
     }, [close, navigate, trimmed]);
 
     const openOffer = useCallback((offer) => {
@@ -220,7 +229,15 @@ export default function SearchBox({onOpenChange}) {
                     if (isSearching) openFullSearch();
                 }}
             >
-                <SearchIcon className={style.icon}/>
+                <button
+                    type="button"
+                    className={style.iconButton}
+                    tabIndex={-1}
+                    aria-label="Поставить курсор в поиск"
+                    onClick={() => inputRef.current?.focus()}
+                >
+                    <SearchIcon className={style.icon}/>
+                </button>
 
                 <input
                     ref={inputRef}
@@ -232,7 +249,7 @@ export default function SearchBox({onOpenChange}) {
                     onChange={(event) => setQuery(event.target.value)}
                     onFocus={() => setOpen(true)}
                     onKeyDown={onKeyDown}
-                    aria-label="Поиск по всем витринам"
+                    aria-label="Поиск по витрине"
                 />
 
                 {query ? (

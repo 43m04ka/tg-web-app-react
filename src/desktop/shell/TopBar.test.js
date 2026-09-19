@@ -2,6 +2,7 @@ import React, {act} from 'react';
 import {createRoot} from 'react-dom/client';
 import {MemoryRouter} from 'react-router-dom';
 import TopBar from './TopBar';
+import {StorefrontScopeContext} from './StorefrontScope';
 import {useStructureStore} from '../../store/useStructureStore';
 import {useSessionStore} from '../../store/useSessionStore';
 import {useCartStore} from '../../store/useCartStore';
@@ -21,7 +22,10 @@ const startPages = [
     {id: 4, platform: 'web', type: 'page', structurePageId: 36, serialNumber: 6, title: 'Steam'}
 ];
 
-const catalogs = [{id: 236, path: 'ps_tur_psplus', structurePageId: 20}];
+const catalogs = [
+    {id: 236, path: 'ps_tur_psplus', structurePageId: 20},
+    {id: 900, path: 'steam_top', structurePageId: 36}
+];
 
 let container;
 let root;
@@ -41,16 +45,21 @@ afterEach(() => {
     container.remove();
 });
 
-const render = (path = '/main') => act(() => {
+const render = (path = '/main', scopeId = null) => act(() => {
     root.unmount();
     root = createRoot(container);
 
     root.render(
         <MemoryRouter initialEntries={[path]}>
-            <TopBar/>
+            <StorefrontScopeContext.Provider value={{scopeId, setScopeId: () => {}}}>
+                <TopBar/>
+            </StorefrontScopeContext.Provider>
         </MemoryRouter>
     );
 });
+
+const cartButton = () => [...container.querySelectorAll('button')]
+    .find((node) => node.getAttribute('aria-label') === 'Корзина');
 
 test('в меню остались только найденные разделы, без каталога', () => {
     render();
@@ -60,17 +69,18 @@ test('в меню остались только найденные раздел�
     expect(labels).toEqual(['Каталог', 'Пополнение', 'Коды']);
 });
 
-test('выбор витрины показан в шапке, а корзина считается по странице', () => {
+test('корзина считается по витрине и выключена, пока витрина не выбрана', () => {
     render();
 
     expect(container.textContent).toContain('Все витрины');
     expect(container.textContent).toContain('Геймворд');
+    expect(cartButton().disabled).toBe(true);
+    expect(cartButton().textContent).toBe('');
 
-    const badge = [...container.querySelectorAll('button span')]
-        .map((node) => node.textContent)
-        .filter((text) => text === '2');
+    render('/main', 20);
 
-    expect(badge).toHaveLength(1);
+    expect(cartButton().disabled).toBe(false);
+    expect(cartButton().textContent).toBe('2');
 });
 
 test('на каталоге видны витрины и корзина, в пополнении и кодах они спрятаны', () => {
@@ -113,4 +123,21 @@ test('витрины разворачиваются списком по клик
     const selected = container.querySelector('[role="option"][aria-selected="true"]');
 
     expect(selected.lastElementChild.firstElementChild.textContent).toBe('Все витрины');
+});
+
+test('при уходе в раздел счётчик корзины держится до конца анимации', () => {
+    render('/main', 20);
+
+    expect(cartButton().textContent).toBe('2');
+
+    act(() => {
+        [...container.querySelectorAll('nav button')]
+            .find((node) => node.textContent === 'Пополнение')
+            .dispatchEvent(new MouseEvent('click', {bubbles: true}));
+    });
+
+    const slot = container.querySelector('[data-slot="cart"]');
+
+    expect(slot.getAttribute('aria-hidden')).toBe('true');
+    expect(cartButton().textContent).toBe('2');
 });

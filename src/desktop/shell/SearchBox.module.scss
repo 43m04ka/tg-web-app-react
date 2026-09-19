@@ -35,6 +35,14 @@
               var(--shadow-lg);
 }
 
+.iconButton {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
 .icon {
   width: 17px;
   height: 17px;
@@ -42,6 +50,10 @@
   color: var(--text-faint);
   transition: color var(--m-base) var(--m-ease),
               transform var(--m-slow) var(--m-spring);
+}
+
+.iconButton:hover .icon {
+  color: var(--text-secondary);
 }
 
 .rootOpen .icon {

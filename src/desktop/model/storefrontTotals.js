@@ -6,9 +6,14 @@ const listeners = new Set();
 
 const keyOf = (query) => JSON.stringify(query);
 
-export const scopeQuery = (scopeId, {botType, sorting}) => (scopeId === null
-    ? {allPages: true, botType, sorting}
-    : {pageId: scopeId, sorting});
+export const scopeFilter = (scopeId, botType) => (scopeId === null
+    ? {allPages: true, botType}
+    : {pageId: scopeId});
+
+export const scopeQuery = (scopeId, {botType, sorting}) => ({
+    ...scopeFilter(scopeId, botType),
+    sorting
+});
 
 export const scopeQueries = (storefronts, options) => [
     {id: null, query: scopeQuery(null, options)},

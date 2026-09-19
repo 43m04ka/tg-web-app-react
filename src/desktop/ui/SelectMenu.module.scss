@@ -1,0 +1,104 @@
+.root {
+  position: relative;
+  flex: none;
+}
+
+.trigger {
+  height: 34px;
+  padding: 0 10px 0 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--d-gap-2);
+  border-radius: var(--radius-full);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  color: var(--text);
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  transition: background-color var(--m-fast) var(--m-ease),
+              border-color var(--m-fast) var(--m-ease),
+              box-shadow var(--m-base) var(--m-ease);
+}
+
+.trigger:hover {
+  background: var(--surface-2);
+  border-color: var(--border);
+}
+
+.triggerOpen {
+  background: var(--surface-2);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px oklch(0.7 0.145 25 / 0.14);
+}
+
+.value {
+  letter-spacing: -0.1px;
+}
+
+.chevron {
+  width: 14px;
+  height: 14px;
+  color: var(--text-faint);
+  transition: transform var(--m-base) var(--m-ease),
+              color var(--m-base) var(--m-ease);
+}
+
+.triggerOpen .chevron {
+  transform: rotate(180deg);
+  color: var(--text);
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 232px;
+  padding: var(--d-gap-2);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  z-index: 40;
+  transform-origin: top right;
+  animation: gw-zoom-in var(--m-base) var(--m-ease) both;
+}
+
+.option {
+  position: relative;
+  width: 100%;
+  padding: 9px var(--d-gap-3);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: var(--radius-md);
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  text-align: left;
+  animation: gw-slide-left var(--m-fast) var(--m-ease) both;
+  animation-delay: calc(var(--i, 0) * 18ms);
+  transition: background-color var(--m-fast) var(--m-ease),
+              color var(--m-fast) var(--m-ease);
+}
+
+.optionCursor {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.optionActive {
+  color: var(--accent-text);
+  font-weight: var(--fw-bold);
+}
+
+.optionActive::after {
+  content: '✓';
+  margin-left: auto;
+  padding-left: var(--d-gap-3);
+  font-size: var(--d-fs-xs);
+  font-weight: var(--fw-bold);
+}

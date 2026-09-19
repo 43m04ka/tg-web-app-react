@@ -1,9 +1,9 @@
 .root {
   flex: 0 1 auto;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--d-gap-2);
-  width: 372px;
+  width: 566px;
 }
 
 .card {
@@ -123,9 +123,26 @@
   opacity: 0.86;
 }
 
-@media (max-width: 1080px) {
+@media (max-width: 1240px) {
   .root {
     width: 100%;
     grid-template-columns: repeat(auto-fit, minmax(178px, 1fr));
   }
+}
+
+.arrow {
+  flex: none;
+  font-size: var(--d-fs-sm);
+  color: var(--text-faint);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity var(--m-base) var(--m-ease),
+              transform var(--m-base) var(--m-spring),
+              color var(--m-base) var(--m-ease);
+}
+
+.card:hover .arrow {
+  opacity: 1;
+  transform: none;
+  color: var(--text);
 }

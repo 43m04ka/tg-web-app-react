@@ -33,14 +33,17 @@ test('витрины идут по serialNumber и без standalone-стран�
     expect(list[0].color).toBe('#00f');
 });
 
-test('разделы собираются только из существующих standalone-страниц', () => {
+test('разделы собираются из существующих standalone-страниц, даже мимо стартового меню', () => {
     expect(sectionList(startPages, pages, 'tg')).toEqual([
         expect.objectContaining({key: 'steam', pageId: 4, route: '/steam', label: 'Пополнение'}),
         expect.objectContaining({key: 'services', pageId: 5, route: '/services', label: 'Коды'})
     ]);
 
     const withoutServices = startPages.filter((item) => item.structurePageId !== 5);
-    expect(sectionList(withoutServices, pages, 'tg').map((item) => item.key)).toEqual(['steam']);
+    expect(sectionList(withoutServices, pages, 'tg').map((item) => item.key)).toEqual(['steam', 'services']);
+
+    const withoutServicesPage = pages.filter((page) => page.type !== 'services');
+    expect(sectionList(withoutServices, withoutServicesPage, 'tg').map((item) => item.key)).toEqual(['steam']);
 });
 
 test('витрина по умолчанию — первая в списке', () => {

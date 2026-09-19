@@ -42,12 +42,19 @@ export const storefrontList = (startPages, pages, botType) =>
         .map((entry) => decorate(entry, pages))
         .filter((item) => item.id !== null && !standaloneRoute(item.type));
 
+const sectionFromPages = (pages, type) => {
+    const page = (pages || []).find((candidate) => candidate.type === type && candidate.id != null);
+    return page ? decorate({structurePageId: page.id}, pages) : null;
+};
+
 export const sectionList = (startPages, pages, botType) => {
     const decorated = entriesOf(startPages, botType).map((entry) => decorate(entry, pages));
 
     return SECTION_ORDER
         .map((type) => {
-            const item = decorated.find((candidate) => candidate.type === type);
+            const item = decorated.find((candidate) => candidate.type === type)
+                || sectionFromPages(pages, type);
+
             if (!item) return null;
 
             return {
@@ -55,6 +62,7 @@ export const sectionList = (startPages, pages, botType) => {
                 pageId: item.id,
                 route: standaloneRoute(type),
                 label: SECTION_TITLES[type] || item.label,
+                note: item.label,
                 icon: item.icon
             };
         })

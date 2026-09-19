@@ -49,12 +49,12 @@ const render = () => act(() => {
     );
 });
 
-test('в меню остались только найденные разделы, без каталога и выдуманных', () => {
+test('в меню остались только найденные разделы, без каталога', () => {
     render();
 
     const labels = [...container.querySelectorAll('nav button')].map((node) => node.textContent);
 
-    expect(labels).toEqual(['Пополнение']);
+    expect(labels).toEqual(['Пополнение', 'Коды']);
 });
 
 test('выбор витрины показан в шапке, а корзина считается по странице', () => {

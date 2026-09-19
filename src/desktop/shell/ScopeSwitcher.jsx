@@ -3,7 +3,46 @@ import {positionsLabel} from '../model/storefrontTotals';
 import {GridIcon} from './DesktopIcons';
 import style from './ScopeSwitcher.module.scss';
 
-export default function ScopeSwitcher({items, scopeId, onSelect, allLabel = 'Все витрины', totals}) {
+function Tile({icon, name, note, isOn, isLink, index, onClick}) {
+    return (
+        <button
+            type="button"
+            className={isOn ? `${style.card} ${style.cardOn}` : style.card}
+            aria-pressed={isLink ? undefined : isOn}
+            style={{'--i': index}}
+            onClick={onClick}
+        >
+            <span className={style.logo}>
+                {icon ? (
+                    <span
+                        className={style.logoImage}
+                        style={{backgroundImage: `url(${icon})`}}
+                        aria-hidden="true"
+                    />
+                ) : (
+                    <GridIcon className={style.logoGlyph}/>
+                )}
+            </span>
+
+            <span className={style.body}>
+                <span className={style.name}>{name}</span>
+                <span className={style.note}>{note}</span>
+            </span>
+
+            {isLink ? <span className={style.arrow} aria-hidden="true">→</span> : null}
+        </button>
+    );
+}
+
+export default function ScopeSwitcher({
+    items,
+    scopeId,
+    onSelect,
+    allLabel = 'Все витрины',
+    totals,
+    links = [],
+    onOpenLink
+}) {
     const options = useMemo(
         () => [{id: null, label: allLabel, icon: null}, ...items],
         [items, allLabel]
@@ -12,39 +51,30 @@ export default function ScopeSwitcher({items, scopeId, onSelect, allLabel = 'В�
     if (!items.length) return null;
 
     return (
-        <div className={style.root} role="tablist" aria-label="Витрина">
-            {options.map((item, index) => {
-                const isOn = item.id === scopeId;
+        <div className={style.root}>
+            {options.map((item, index) => (
+                <Tile
+                    key={item.id === null ? 'all' : item.id}
+                    icon={item.icon}
+                    name={item.label}
+                    note={positionsLabel(totals?.get(item.id) ?? null)}
+                    isOn={item.id === scopeId}
+                    index={index}
+                    onClick={() => onSelect(item)}
+                />
+            ))}
 
-                return (
-                    <button
-                        key={item.id === null ? 'all' : item.id}
-                        type="button"
-                        role="tab"
-                        aria-selected={isOn}
-                        className={isOn ? `${style.card} ${style.cardOn}` : style.card}
-                        style={{'--i': index}}
-                        onClick={() => onSelect(item)}
-                    >
-                        <span className={style.logo}>
-                            {item.icon ? (
-                                <span
-                                    className={style.logoImage}
-                                    style={{backgroundImage: `url(${item.icon})`}}
-                                    aria-hidden="true"
-                                />
-                            ) : (
-                                <GridIcon className={style.logoGlyph}/>
-                            )}
-                        </span>
-
-                        <span className={style.body}>
-                            <span className={style.name}>{item.label}</span>
-                            <span className={style.note}>{positionsLabel(totals?.get(item.id) ?? null)}</span>
-                        </span>
-                    </button>
-                );
-            })}
+            {links.map((link, index) => (
+                <Tile
+                    key={link.key}
+                    icon={link.icon}
+                    name={link.label}
+                    note={link.note}
+                    isLink
+                    index={options.length + index}
+                    onClick={() => onOpenLink(link)}
+                />
+            ))}
         </div>
     );
 }

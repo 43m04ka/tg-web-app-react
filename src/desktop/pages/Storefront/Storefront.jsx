@@ -14,7 +14,7 @@ import ScopeSwitcher from '../../shell/ScopeSwitcher';
 import {useReveal} from '../../shell/useReveal';
 import {useOpenHero} from '../../shell/useOpenHero';
 import {useOfferPicker} from '../../shell/useOfferPicker';
-import {originIndex, resolveBotType, storefrontList} from '../../model/desktopNav';
+import {originIndex, resolveBotType, sectionList, storefrontList} from '../../model/desktopNav';
 import {storefrontConfig} from '../../model/storefrontConfig';
 import {scopeQueries, useScopeTotals} from '../../model/storefrontTotals';
 import {buildHero, buildShelves, mergeOffers} from '../../model/storefrontModel';
@@ -49,6 +49,11 @@ export default function Storefront() {
     );
 
     const pageIds = useMemo(() => storefronts.map((item) => item.id), [storefronts]);
+
+    const sections = useMemo(
+        () => sectionList(startPages, pages, botType),
+        [startPages, pages, botType]
+    );
 
     const effectiveBotType = useMemo(
         () => resolveBotType(startPages, botType),
@@ -116,6 +121,11 @@ export default function Storefront() {
 
     const openHero = useOpenHero();
 
+    const openSection = useCallback((section) => {
+        setPageId(section.pageId);
+        navigate(section.route);
+    }, [navigate, setPageId]);
+
     const openCatalog = useCallback((target) => {
         setPageId(target.pageId);
         navigate(catalogRoute(target.path));
@@ -148,6 +158,8 @@ export default function Storefront() {
                     onSelect={pickScope}
                     allLabel={config.allChipLabel}
                     totals={scopeTotals}
+                    links={sections}
+                    onOpenLink={openSection}
                 />
             </header>
 

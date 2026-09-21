@@ -3,13 +3,14 @@ import {useSessionStore} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
 import {applyTheme} from '../lib/theme';
 
-export function useAccentTheme() {
+export function useAccentTheme(enabled = true) {
     const pageId = useSessionStore((state) => state.pageId);
     const startPages = useStructureStore((state) => state.startPages);
 
     const color = startPages?.find((item) => item.structurePageId === pageId)?.color;
 
     useEffect(() => {
+        if (!enabled) return;
         applyTheme(color);
-    }, [color]);
+    }, [color, enabled]);
 }

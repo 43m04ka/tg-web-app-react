@@ -33,7 +33,7 @@ export default function App() {
     const isStandalone = isStandalonePage(pageTypeOf(pages, pageId));
     const isDesktop = useIsDesktop();
 
-    useAccentTheme();
+    useAccentTheme(!isDesktop);
     useDeepLink(isReady && !isMaintenance);
 
     // Раньше /admin проваливался в общий catch-all и уезжал на выбор витрины.

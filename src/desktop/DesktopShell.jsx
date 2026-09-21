@@ -9,6 +9,7 @@ import {selectUserId, useSessionStore} from '../store/useSessionStore';
 import {ScrollAreaContext} from './shell/ScrollAreaContext';
 import {StorefrontScopeContext} from './shell/StorefrontScope';
 import {MaintenanceContext} from './shell/MaintenanceScope';
+import {useDesktopAccent} from './shell/useDesktopAccent';
 import style from './DesktopShell.module.scss';
 
 export default function DesktopShell({sections}) {
@@ -19,6 +20,8 @@ export default function DesktopShell({sections}) {
     const [scopeId, setScopeId] = useState(null);
 
     const scope = useMemo(() => ({scopeId, setScopeId}), [scopeId]);
+
+    useDesktopAccent(scopeId);
 
     const userId = useSessionStore(selectUserId);
     const loadCart = useCartStore((store) => store.load);

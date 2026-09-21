@@ -114,7 +114,7 @@
   gap: var(--d-gap-5);
   flex: 0 1 auto;
   min-width: 0;
-  max-width: 460px;
+  max-width: 760px;
   white-space: nowrap;
 }
 
@@ -284,6 +284,10 @@
 
 @media (max-width: 1280px) {
   .inner {
+    gap: var(--d-gap-4);
+  }
+
+  .nav {
     gap: var(--d-gap-4);
   }
 }

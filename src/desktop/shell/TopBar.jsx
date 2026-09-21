@@ -6,15 +6,13 @@ import {useCartStore} from '../../store/useCartStore';
 import {usePlatform} from '../../shared/hooks/usePlatform';
 import {pageCartItems} from '../../pages/Basket/cartModel';
 import {resetSearchState} from '../../shared/lib/searchMemory';
-import {resolveBotType, sectionList, storefrontList} from '../model/desktopNav';
-import {storefrontConfig} from '../model/storefrontConfig';
-import {scopeQueries, useScopeTotals} from '../model/storefrontTotals';
+import {sectionList, storefrontList} from '../model/desktopNav';
 import {useScrolled} from './useScrolled';
 import {BasketIcon, UserIcon} from './DesktopIcons';
 import logo from '../assets/logo.png';
 import SearchBox from './SearchBox';
 import BackLink from '../ui/BackLink';
-import RegionMenu from './RegionMenu';
+import MenuDrop from './MenuDrop';
 import {useStorefrontScope} from './StorefrontScope';
 import {useOpenSections} from './MaintenanceScope';
 import style from './TopBar.module.scss';
@@ -46,21 +44,10 @@ export default function TopBar({onSearchOpenChange}) {
 
     const {scopeId, setScopeId} = useStorefrontScope();
 
-    const queries = useMemo(
-        () => scopeQueries(storefronts, {
-            botType: resolveBotType(startPages, botType),
-            sorting: storefrontConfig(null).sorting
-        }),
-        [storefronts, startPages, botType]
-    );
-
-    const totals = useScopeTotals(queries, {enabled: storefronts.length > 0});
-
     const isScrolled = useScrolled();
     const isStandalone = pathname === '/steam' || pathname === '/services';
     const isCatalog = pathname === '/' || pathname.startsWith('/catalog');
     const isSearchPage = pathname === '/search';
-    const isStorefrontBound = pathname.startsWith('/card/') || pathname.startsWith('/catalog');
 
     const [isSearchOpen, setSearchOpen] = useState(false);
 
@@ -100,11 +87,16 @@ export default function TopBar({onSearchOpenChange}) {
         if (target !== null && target !== pageId) setPageId(target);
     }, [isStandalone, scopeId, pageId, storefrontIds, setPageId]);
 
+    const openHome = useCallback(() => {
+        setScopeId(null);
+        go('/');
+    }, [go, setScopeId]);
+
     const pickStorefront = useCallback((item) => {
         setScopeId(item.id);
-        if (item.id !== null) setPageId(item.id);
-        if (isStorefrontBound) go('/');
-    }, [go, isStorefrontBound, setPageId, setScopeId]);
+        setPageId(item.id);
+        go('/');
+    }, [go, setPageId, setScopeId]);
 
     return (
         <header className={isScrolled ? `${style.bar} ${style.barScrolled}` : style.bar}>
@@ -127,11 +119,24 @@ export default function TopBar({onSearchOpenChange}) {
                 <nav className={style.nav} data-hidden={isFocusMode ? '' : undefined}>
                     <button
                         type="button"
-                        className={isCatalog ? `${style.link} ${style.linkActive}` : style.link}
-                        onClick={() => go('/')}
+                        className={isCatalog && !isScoped ? `${style.link} ${style.linkActive}` : style.link}
+                        onClick={openHome}
                     >
-                        Каталог
+                        Главная
                     </button>
+
+                    {storefronts.map((item) => (
+                        <button
+                            key={item.id}
+                            type="button"
+                            className={isCatalog && scopeId === item.id
+                                ? `${style.link} ${style.linkActive}`
+                                : style.link}
+                            onClick={() => pickStorefront(item)}
+                        >
+                            {item.label}
+                        </button>
+                    ))}
 
                     {sections.map((section) => (
                         <button
@@ -152,20 +157,7 @@ export default function TopBar({onSearchOpenChange}) {
                 />
 
                 <div className={style.actions} data-hidden={isFocusMode ? '' : undefined}>
-                    <div
-                        className={style.slot}
-                        style={{'--slot': '176px'}}
-                        data-slot="region"
-                        data-hidden={isStandalone ? '' : undefined}
-                        aria-hidden={isStandalone ? 'true' : undefined}
-                    >
-                        <RegionMenu
-                            items={storefronts}
-                            scopeId={scopeId}
-                            onSelect={pickStorefront}
-                            totals={totals}
-                        />
-                    </div>
+                    <MenuDrop/>
 
                     <div
                         className={style.slot}

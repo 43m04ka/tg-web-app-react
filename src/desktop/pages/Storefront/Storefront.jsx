@@ -10,14 +10,11 @@ import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
 import {useNearBottom} from '../../../shared/hooks/useNearBottom';
 import {useScrollArea, useScrollMemory} from '../../shell/ScrollAreaContext';
 import {useStorefrontScope} from '../../shell/StorefrontScope';
-import {useOpenSections} from '../../shell/MaintenanceScope';
-import ScopeSwitcher from '../../shell/ScopeSwitcher';
 import {useReveal} from '../../shell/useReveal';
 import {useOpenHero} from '../../shell/useOpenHero';
 import {useOfferPicker} from '../../shell/useOfferPicker';
-import {originIndex, resolveBotType, sectionList, storefrontList} from '../../model/desktopNav';
+import {originIndex, resolveBotType, storefrontList} from '../../model/desktopNav';
 import {storefrontConfig} from '../../model/storefrontConfig';
-import {scopeQueries, useScopeTotals} from '../../model/storefrontTotals';
 import {buildHero, buildShelves, mergeOffers} from '../../model/storefrontModel';
 import OfferCard from './OfferCard';
 import Shelf from './Shelf';
@@ -51,13 +48,6 @@ export default function Storefront() {
 
     const pageIds = useMemo(() => storefronts.map((item) => item.id), [storefronts]);
 
-    const allSections = useMemo(
-        () => sectionList(startPages, pages, botType),
-        [startPages, pages, botType]
-    );
-
-    const sections = useOpenSections(allSections);
-
     const effectiveBotType = useMemo(
         () => resolveBotType(startPages, botType),
         [startPages, botType]
@@ -81,7 +71,7 @@ export default function Storefront() {
             originByPage,
             pageIds,
             scopeId,
-            limit: config.heroSize
+            limit: Math.max(1, config.heroSize - 1)
         }),
         [banners, mainPageProducts, originOf, originByPage, pageIds, scopeId, config.heroSize]
     );
@@ -103,31 +93,18 @@ export default function Storefront() {
         [items, originOf]
     );
 
-    const scopeTotals = useScopeTotals(
-        useMemo(
-            () => scopeQueries(storefronts, {botType: effectiveBotType, sorting: config.sorting}),
-            [storefronts, effectiveBotType, config.sorting]
-        ),
-        {enabled: storefronts.length > 0}
-    );
-
     const picker = useOfferPicker({originOf});
     const openOffer = picker.open;
 
     const catalogRef = useReveal();
     const areaRef = useScrollArea();
 
-    const pickScope = useCallback((item) => {
-        setScopeId(item.id);
-        if (item.id !== null) setPageId(item.id);
-    }, [setPageId, setScopeId]);
-
     const openHero = useOpenHero();
 
-    const openSection = useCallback((section) => {
-        setPageId(section.pageId);
-        navigate(section.route);
-    }, [navigate, setPageId]);
+    const openHome = useCallback(() => {
+        setScopeId(null);
+        navigate('/');
+    }, [navigate, setScopeId]);
 
     const openCatalog = useCallback((target) => {
         setPageId(target.pageId);
@@ -149,24 +126,7 @@ export default function Storefront() {
         <div className={style.screen}>
             <OfferSplit offer={picker.picked} onPick={picker.pick} onClose={picker.close}/>
 
-            <header className={style.head}>
-                <h1 className={style.title}>
-                    Геймворд — игры и подписки для <span className={style.ps}>PlayStation</span> и{' '}
-                    <span className={style.xbox}>Xbox</span>
-                </h1>
-
-                <ScopeSwitcher
-                    items={storefronts}
-                    scopeId={scopeId}
-                    onSelect={pickScope}
-                    allLabel={config.allChipLabel}
-                    totals={scopeTotals}
-                    links={sections}
-                    onOpenLink={openSection}
-                />
-            </header>
-
-            <StorefrontHero items={hero} onOpen={openHero}/>
+            <StorefrontHero items={hero} onOpen={openHero} onBrand={openHome}/>
 
             {(shelves || []).map((shelf) => (
                 <Shelf

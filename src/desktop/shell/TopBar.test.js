@@ -71,18 +71,18 @@ const render = (path = '/main', scopeId = null, closed = null) => act(() => {
 const cartButton = () => [...container.querySelectorAll('button')]
     .find((node) => node.getAttribute('aria-label') === 'Корзина');
 
-test('в меню остались только найденные разделы, без каталога', () => {
+test('в баре сплошная навигация: главная, витрины и разделы', () => {
     render();
 
     const labels = [...container.querySelectorAll('nav button')].map((node) => node.textContent);
 
-    expect(labels).toEqual(['Каталог', 'Пополнение Стим', 'Коды пополнения']);
+    expect(labels).toEqual(['Главная', 'PS Турция', 'PS Индия', 'Xbox', 'Пополнение Стим', 'Коды пополнения']);
 });
 
 test('корзина считается по витрине и выключена, пока витрина не выбрана', () => {
     render();
 
-    expect(container.textContent).toContain('Все витрины');
+    expect(container.textContent).toContain('Меню');
     expect(container.textContent).toContain('Геймворд');
     expect(cartButton().disabled).toBe(true);
     expect(cartButton().textContent).toBe('');
@@ -93,46 +93,35 @@ test('корзина считается по витрине и выключен�
     expect(cartButton().textContent).toBe('2');
 });
 
-test('на каталоге видны витрины и корзина, в пополнении и кодах они спрятаны', () => {
+test('на каталоге видна корзина, в пополнении и кодах она спрятана', () => {
     const hiddenSlots = () => [...container.querySelectorAll('[data-slot]')]
         .filter((node) => node.getAttribute('aria-hidden') === 'true')
         .map((node) => node.dataset.slot);
 
     render();
-
-    const trigger = [...container.querySelectorAll('button')]
-        .find((node) => node.getAttribute('aria-haspopup') === 'listbox');
-
-    expect(trigger.textContent.trim()).toBe('Все витрины');
     expect(hiddenSlots()).toEqual([]);
 
     render('/steam');
-    expect(hiddenSlots()).toEqual(['region', 'cart']);
+    expect(hiddenSlots()).toEqual(['cart']);
 
     render('/services');
-    expect(hiddenSlots()).toEqual(['region', 'cart']);
+    expect(hiddenSlots()).toEqual(['cart']);
 });
 
-test('витрины разворачиваются списком по клику, первым пунктом — все', () => {
+test('кнопка меню разворачивает выпадающий список', () => {
     render();
 
     const trigger = [...container.querySelectorAll('button')]
-        .find((node) => node.getAttribute('aria-haspopup') === 'listbox');
+        .find((node) => node.getAttribute('aria-haspopup') === 'menu');
 
-    expect(trigger).toBeTruthy();
+    expect(trigger.textContent.trim()).toBe('Меню');
+    expect(container.querySelector('[role="menu"]')).toBe(null);
 
     act(() => {
         trigger.dispatchEvent(new MouseEvent('click', {bubbles: true}));
     });
 
-    const options = [...container.querySelectorAll('[role="option"]')]
-        .map((node) => node.lastElementChild.firstElementChild.textContent);
-
-    expect(options).toEqual(['Все витрины', 'PS Турция', 'PS Индия', 'Xbox']);
-
-    const selected = container.querySelector('[role="option"][aria-selected="true"]');
-
-    expect(selected.lastElementChild.firstElementChild.textContent).toBe('Все витрины');
+    expect(container.querySelector('[role="menu"]')).toBeTruthy();
 });
 
 test('при уходе в раздел счётчик корзины держится до конца анимации', () => {
@@ -157,39 +146,32 @@ test('закрытый на обслуживание раздел пропада
 
     const labels = [...container.querySelectorAll('nav button')].map((node) => node.textContent);
 
-    expect(labels).toEqual(['Каталог', 'Коды пополнения']);
+    expect(labels).toEqual(['Главная', 'PS Турция', 'PS Индия', 'Xbox', 'Коды пополнения']);
 });
 
-test('смена витрины уводит на главную с карточки и каталога, но не из корзины', () => {
-    const pickStorefront = (label) => {
-        const trigger = [...container.querySelectorAll('button')]
-            .find((node) => node.getAttribute('aria-haspopup') === 'listbox');
+test('витрина и главная в баре уводят на главную с любой страницы', () => {
+    const pickNav = (label) => {
+        const link = [...container.querySelectorAll('nav button')]
+            .find((node) => node.textContent === label);
 
         act(() => {
-            trigger.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-        });
-
-        const option = [...container.querySelectorAll('[role="option"]')]
-            .find((node) => node.lastElementChild.firstElementChild.textContent === label);
-
-        act(() => {
-            option.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+            link.dispatchEvent(new MouseEvent('click', {bubbles: true}));
         });
     };
 
     render('/card/251438');
-    pickStorefront('PS Индия');
+    pickNav('PS Индия');
     expect(seenPath).toBe('/');
 
     render('/catalog/ps_tur_new');
-    pickStorefront('PS Индия');
+    pickNav('PS Индия');
     expect(seenPath).toBe('/');
 
     render('/basket');
-    pickStorefront('PS Индия');
-    expect(seenPath).toBe('/basket');
+    pickNav('PS Индия');
+    expect(seenPath).toBe('/');
 
     render('/search');
-    pickStorefront('PS Индия');
-    expect(seenPath).toBe('/search');
+    pickNav('Главная');
+    expect(seenPath).toBe('/');
 });

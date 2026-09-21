@@ -4,24 +4,6 @@
   gap: var(--d-gap-8);
 }
 
-.head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--d-gap-5) var(--d-gap-6);
-}
-
-.title {
-  max-width: 18ch;
-  font-size: var(--d-fs-4xl);
-  line-height: 1.16;
-  font-weight: var(--fw-bold);
-  letter-spacing: -0.8px;
-  color: oklch(0.97 0.004 264);
-  animation: gw-rise var(--m-slow) var(--m-ease) both;
-}
-
 .ps {
   color: oklch(0.72 0.15 258);
 }
@@ -30,17 +12,67 @@
   color: oklch(0.78 0.18 148);
 }
 
-.subtitle {
-  font-size: var(--d-fs-md);
-  color: var(--text-muted);
-  animation: gw-rise-sm var(--m-slow) var(--m-ease) both;
-  animation-delay: 70ms;
-}
-
 .hero {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--d-gap-5);
+}
+
+.brandCard {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  padding: var(--d-gap-6);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--d-gap-3);
+  text-align: left;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(145deg,
+      oklch(0.22 0.03 264) 0%,
+      oklch(0.15 0.02 264) 52%,
+      oklch(0.11 0.01 264) 100%);
+  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.07);
+  overflow: hidden;
+  cursor: pointer;
+  animation: gw-bounce-in var(--m-lazy) var(--m-ease) both;
+  transition: transform var(--m-slow) var(--m-spring),
+              box-shadow var(--m-slow) var(--m-ease);
+}
+
+.brandCard:hover {
+  transform: translateY(-6px);
+  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.16), var(--shadow-lg);
+}
+
+.brandCard:active {
+  transform: translateY(-2px) scale(0.993);
+}
+
+.brandGlow {
+  position: absolute;
+  top: -40%;
+  right: -22%;
+  width: 78%;
+  height: 150%;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+      oklch(0.7 0.145 25 / 0.32) 0%,
+      oklch(0.7 0.145 25 / 0) 68%);
+  transition: transform var(--m-lazy) var(--m-ease);
+}
+
+.brandCard:hover .brandGlow {
+  transform: scale(1.12);
+}
+
+.brandTitle {
+  position: relative;
+  font-size: var(--d-fs-2xl);
+  line-height: 1.18;
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.6px;
+  color: oklch(0.97 0.004 264);
 }
 
 .heroCard {

@@ -56,13 +56,26 @@ function HeroCard({item, index, onOpen}) {
     );
 }
 
-export default function StorefrontHero({items, onOpen}) {
-    if (!items.length) return null;
+export default function StorefrontHero({items, onOpen, onBrand}) {
+    const hasBrand = typeof onBrand === 'function';
+
+    if (!items.length && !hasBrand) return null;
 
     return (
         <div className={style.hero}>
+            {hasBrand ? (
+                <button type="button" className={style.brandCard} style={{'--i': 0}} onClick={onBrand}>
+                    <span className={style.brandGlow} aria-hidden="true"/>
+
+                    <h1 className={style.brandTitle}>
+                        Геймворд — игры и подписки для <span className={style.ps}>PlayStation</span> и{' '}
+                        <span className={style.xbox}>Xbox</span>
+                    </h1>
+                </button>
+            ) : null}
+
             {items.map((item, index) => (
-                <HeroCard key={item.id} item={item} index={index} onOpen={onOpen}/>
+                <HeroCard key={item.id} item={item} index={hasBrand ? index + 1 : index} onOpen={onOpen}/>
             ))}
         </div>
     );

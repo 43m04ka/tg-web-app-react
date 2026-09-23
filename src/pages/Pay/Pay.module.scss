@@ -1,0 +1,72 @@
+@import '../../app/styles/units';
+
+.brand {
+  color: var(--accent-text);
+}
+
+.lead {
+  margin: 0;
+  font-size: u(13);
+  line-height: 1.5;
+  text-wrap: pretty;
+  color: var(--text-muted);
+}
+
+.agree {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: u(12);
+  padding: u(14) u(15);
+  border-radius: u(16);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: border-color var(--duration-base) var(--ease-out);
+}
+
+.agreeBad {
+  border-color: oklch(0.6 0.2 25 / 0.6);
+}
+
+.agreeInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.agreeBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: u(22);
+  height: u(22);
+  flex: none;
+  border-radius: u(7);
+  border: 1.5px solid var(--border-strong);
+  background: var(--surface-2);
+  font-size: u(13);
+  font-weight: 800;
+  color: transparent;
+  transition: background-color var(--duration-base) var(--ease-out),
+              border-color var(--duration-base) var(--ease-out),
+              color var(--duration-base) var(--ease-out);
+}
+
+.agreeInput:checked + .agreeBox {
+  background: linear-gradient(120deg, var(--accent), var(--accent-soft));
+  border-color: transparent;
+  color: var(--accent-contrast);
+}
+
+.agreeInput:focus-visible + .agreeBox {
+  outline: 2px solid var(--accent-soft);
+  outline-offset: 2px;
+}
+
+.agreeText {
+  font-size: u(12.5);
+  line-height: 1.5;
+  text-wrap: pretty;
+  color: var(--text-secondary);
+}

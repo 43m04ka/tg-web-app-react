@@ -13,6 +13,8 @@ import OrderHistory from '../pages/Account/OrderHistory';
 import Steam from '../pages/Steam/Steam';
 import Services from '../pages/Services/Services';
 import Subscription from '../pages/Subscription/Subscription';
+import Pay from '../pages/Pay/Pay';
+import {readPending} from '../pages/Pay/payModel';
 import {useSessionStore} from '../store/useSessionStore';
 import {useStructureStore} from '../store/useStructureStore';
 import {pageTypeOf, standaloneRoute} from '../shared/lib/pageRoutes';
@@ -104,6 +106,8 @@ export default function AppRoutes({sections}) {
         >
             <Routes location={shown}>
                 <Route path="/" element={<SelectPlatform/>}/>
+                <Route path="/pay" element={<Pay/>}/>
+                <Route path="/payment/*" element={<Navigate to={readPending() ? '/pay' : '/'} replace/>}/>
                 <Route path="/main" element={<RequireCatalogPage><Main/></RequireCatalogPage>}/>
                 <Route path="/steam" element={
                     <RequireStandalonePage type="steam"><Steam/></RequireStandalonePage>

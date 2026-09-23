@@ -11,6 +11,8 @@ import DesktopSteam from './pages/Steam/DesktopSteam';
 import DesktopServices from './pages/Services/DesktopServices';
 import DesktopSubscription from './pages/Subscription/DesktopSubscription';
 import DesktopProduct from './pages/Product/DesktopProduct';
+import DesktopPay from './pages/Pay/DesktopPay';
+import {readPending} from '../pages/Pay/payModel';
 import Maintenance from '../pages/Maintenance/Maintenance';
 import {useSessionStore} from '../store/useSessionStore';
 import {useStructureStore} from '../store/useStructureStore';
@@ -74,6 +76,8 @@ export default function DesktopRoutes({sections}) {
         <Routes location={location}>
             <Route path="/" element={<Storefront/>}/>
             <Route path="/main" element={<Navigate to="/" replace/>}/>
+            <Route path="/pay" element={<DesktopPay/>}/>
+            <Route path="/payment/*" element={<Navigate to={readPending() ? '/pay' : '/'} replace/>}/>
             <Route path="/steam" element={<EnsureStandalone type="steam"><DesktopSteam/></EnsureStandalone>}/>
             <Route path="/services" element={<EnsureStandalone type="services"><DesktopServices/></EnsureStandalone>}/>
             <Route path="/subscription/*" element={<EnsurePage><DesktopSubscription/></EnsurePage>}/>

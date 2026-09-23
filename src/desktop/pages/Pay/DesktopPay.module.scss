@@ -1,0 +1,73 @@
+.brand {
+  color: var(--accent-text);
+}
+
+.agree {
+  display: flex;
+  align-items: center;
+  gap: var(--d-gap-3);
+  width: fit-content;
+  max-width: 100%;
+  padding: var(--d-gap-1) 0;
+  text-align: left;
+  cursor: pointer;
+  animation: gw-rise-sm var(--m-slow) var(--m-ease) both;
+}
+
+.agree:focus-visible {
+  outline: none;
+}
+
+.agreeBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 7px;
+  background: var(--surface-1);
+  box-shadow: inset 0 0 0 1.5px var(--border-strong);
+  color: var(--accent-contrast);
+  transition: background-color var(--m-base) var(--m-ease),
+              box-shadow var(--m-base) var(--m-ease);
+}
+
+.agree:hover .agreeBox {
+  box-shadow: inset 0 0 0 1.5px var(--text-faint);
+}
+
+.agree:focus-visible .agreeBox {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.agreeBox svg {
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity var(--m-fast) var(--m-ease),
+              transform var(--m-base) var(--m-spring);
+}
+
+.agreeBoxOn,
+.agree:hover .agreeBoxOn {
+  background: var(--accent);
+  box-shadow: none;
+}
+
+.agreeBoxOn svg {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.agreeBad .agreeBox {
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+
+.agreeText {
+  font-size: var(--d-fs-sm);
+  line-height: 1.5;
+  color: var(--text-secondary);
+}

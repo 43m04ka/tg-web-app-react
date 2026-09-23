@@ -2,7 +2,7 @@ import React, {useCallback, useState} from 'react';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
 import {hapticImpact, hapticSelection} from '../../shared/lib/haptic';
 import {isEmailValid} from '../Basket/cartModel';
-import {amountError, cleanAmount, formatMoney, isAmountValid, MIN_AMOUNT, parseAmount} from './payModel';
+import {amountError, cleanAmount, formatMoney, isAmountValid, parseAmount} from './payModel';
 import {SCREEN, usePayFlow} from './usePayFlow';
 import steam from '../Steam/Steam.module.scss';
 import style from './Pay.module.scss';
@@ -32,6 +32,27 @@ function Rows({payment, status, tone}) {
                 <span className={`${steam.stateValue} ${steam[tone]}`}>{status}</span>
             </div>
         </div>
+    );
+}
+
+function Agree({isChecked, isBad, onToggle}) {
+    return (
+        <button
+            type="button"
+            role="checkbox"
+            aria-checked={isChecked}
+            className={`${style.agree} ${isBad ? style.agreeBad : ''}`}
+            onClick={onToggle}
+        >
+            <span className={`${style.agreeBox} ${isChecked ? style.agreeBoxOn : ''}`} aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none">
+                    <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+            </span>
+            <span className={style.agreeText}>
+                Подтверждаю, что ознакомлен и согласен с условиями покупки в сервисе Геймворд
+            </span>
+        </button>
     );
 }
 
@@ -156,8 +177,6 @@ export default function Pay() {
                 className={steam.content}
                 style={{paddingBottom: `calc(${safeAreaInset.bottom}px + 20 * var(--u))`}}
             >
-                <p className={style.lead}>Игровой дискаунтер</p>
-
                 <section className={steam.block}>
                     <h2 className={steam.blockTitle}>E-mail для чека</h2>
 
@@ -176,58 +195,31 @@ export default function Pay() {
                     ) : null}
                 </section>
 
-                <section className={`${steam.block} ${steam.amountBlock}`}>
-                    <h2 className={steam.blockTitle}>Сумма из заказа</h2>
+                <section className={steam.block}>
+                    <h2 className={steam.blockTitle}>Сумма из заказа для оплаты</h2>
 
-                    <div className={`${steam.amountField} ${isTouched && !isAmountReady ? steam.amountFieldBad : ''}`}>
-                        <input
-                            className={steam.amountInput}
-                            value={amountText}
-                            inputMode="decimal"
-                            placeholder={`от ${MIN_AMOUNT} ₽`}
-                            onChange={(event) => setAmountText(cleanAmount(event.target.value))}
-                        />
-                        <span className={steam.amountCurrency} aria-hidden="true">₽</span>
-                    </div>
+                    <input
+                        className={`${steam.input} ${isTouched && !isAmountReady ? steam.inputBad : ''}`}
+                        value={amountText}
+                        inputMode="decimal"
+                        placeholder="Впишите сумму из заказа"
+                        autoComplete="off"
+                        onChange={(event) => setAmountText(cleanAmount(event.target.value))}
+                    />
 
-                    <span className={steam.blockNote}>Впишите сумму точно как в заказе</span>
+                    {isTouched && !isAmountReady ? (
+                        <span className={`${steam.blockNote} ${steam.blockNoteBad}`}>{amountError(amountText)}</span>
+                    ) : null}
                 </section>
 
-                <div className={steam.summary}>
-                    <div className={steam.summaryRow}>
-                        <span className={steam.summaryTotalLabel}>К оплате</span>
-                        <span key={amountText} className={steam.summaryTotal}>
-                            {isAmountReady ? formatMoney(parseAmount(amountText)) : '—'}
-                        </span>
-                    </div>
-                </div>
-
-                {isEmailReady ? (
-                    <div className={steam.receipt}>
-                        <span className={steam.receiptIcon} aria-hidden="true">✉</span>
-
-                        <span className={steam.receiptBody}>
-                            <span className={steam.receiptTitle}>Чек придёт на почту</span>
-                            <span className={steam.receiptValue}>{email.trim()}</span>
-                        </span>
-                    </div>
-                ) : null}
-
-                <label className={`${style.agree} ${isTouched && !isAgreed ? style.agreeBad : ''}`}>
-                    <input
-                        type="checkbox"
-                        className={style.agreeInput}
-                        checked={isAgreed}
-                        onChange={(event) => {
-                            hapticSelection();
-                            setAgreed(event.target.checked);
-                        }}
-                    />
-                    <span className={style.agreeBox} aria-hidden="true">✓</span>
-                    <span className={style.agreeText}>
-                        Подтверждаю, что ознакомлен и согласен с условиями покупки в сервисе Геймворд
-                    </span>
-                </label>
+                <Agree
+                    isChecked={isAgreed}
+                    isBad={isTouched && !isAgreed}
+                    onToggle={() => {
+                        hapticSelection();
+                        setAgreed((value) => !value);
+                    }}
+                />
             </div>
 
             <div className={steam.actionBar}>

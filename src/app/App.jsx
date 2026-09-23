@@ -60,7 +60,7 @@ export default function App() {
             <main className={style.content}>
                 <AppRoutes sections={maintenanceSections}/>
             </main>
-            {pageId === null || isStandalone ? null : <NavBar/>}
+            {pageId === null || isStandalone || pathname === '/pay' ? null : <NavBar/>}
         </div>
     );
 }

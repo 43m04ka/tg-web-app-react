@@ -147,15 +147,20 @@ export const sortBanners = (list) => (list || []).slice().sort((left, right) => 
     return order !== 0 ? order : (left.id ?? 0) - (right.id ?? 0);
 });
 
-export const moveBanner = (list, id, delta) => {
-    const ordered = sortBanners(list);
-    const from = ordered.findIndex((item) => item.id === id);
+export const moveBanner = (list, id, delta, all = list) => {
+    const visible = sortBanners(list);
+    const from = visible.findIndex((item) => item.id === id);
     const to = from + delta;
 
-    if (from < 0 || to < 0 || to >= ordered.length) return null;
+    if (from < 0 || to < 0 || to >= visible.length) return null;
 
-    const moved = ordered.slice();
-    [moved[from], moved[to]] = [moved[to], moved[from]];
+    const moved = sortBanners(all);
+    const left = moved.findIndex((item) => item.id === visible[from].id);
+    const right = moved.findIndex((item) => item.id === visible[to].id);
+
+    if (left < 0 || right < 0) return null;
+
+    [moved[left], moved[right]] = [moved[right], moved[left]];
 
     return moved.map((item, index) => ({...item, serialNumber: index}));
 };

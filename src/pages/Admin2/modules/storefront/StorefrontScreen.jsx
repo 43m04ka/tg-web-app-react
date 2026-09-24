@@ -239,6 +239,7 @@ export default function StorefrontScreen() {
                             <PageBanners
                                 page={current}
                                 rows={pageBanners}
+                                all={allBanners}
                                 total={allBanners.length}
                                 pages={list}
                                 isLoading={banners.isLoading && !banners.data}

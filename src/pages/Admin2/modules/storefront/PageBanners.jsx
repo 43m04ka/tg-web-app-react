@@ -8,19 +8,20 @@ import {bannerScope, bannerTitle, moveBanner} from './bannerModel';
 import BannerInspector from './BannerInspector';
 import style from './StorefrontScreen.module.scss';
 
-export default function PageBanners({page, rows, total, pages, isLoading}) {
+export default function PageBanners({page, rows, all, total, pages, isLoading}) {
     const [editing, setEditing] = useState(null);
     const [isBusy, setBusy] = useState(false);
 
     const reorder = useCallback(async (id, delta) => {
-        const moved = moveBanner(rows, id, delta);
+        const source = all || rows;
+        const moved = moveBanner(rows, id, delta, source);
         if (!moved || isBusy) return;
 
         setBusy(true);
 
         try {
             const changed = moved.filter((item) => {
-                const before = rows.find((row) => row.id === item.id);
+                const before = source.find((row) => row.id === item.id);
                 return before && before.serialNumber !== item.serialNumber;
             });
 
@@ -33,7 +34,7 @@ export default function PageBanners({page, rows, total, pages, isLoading}) {
             invalidate(keys.banners);
             setBusy(false);
         }
-    }, [rows, isBusy]);
+    }, [rows, all, isBusy]);
 
     const toggleHidden = useCallback(async (item) => {
         try {

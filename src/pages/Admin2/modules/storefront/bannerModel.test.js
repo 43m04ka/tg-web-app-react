@@ -132,6 +132,20 @@ describe('порядок баннеров', () => {
         expect(moveBanner(list, 2, -1).map((item) => item.id)).toEqual([2, 1]);
         expect(moveBanner(list, 1, -1)).toBeNull();
     });
+
+    it('меняет местами соседей витрины, не сбивая чужие баннеры', () => {
+        const all = [
+            {id: 1, pageId: null, serialNumber: 0},
+            {id: 2, pageId: 7, serialNumber: 1},
+            {id: 3, pageId: null, serialNumber: 2}
+        ];
+        const page = all.filter((item) => item.pageId !== 7);
+
+        const moved = moveBanner(page, 3, -1, all);
+
+        expect(moved.map((item) => item.id)).toEqual([3, 2, 1]);
+        expect(moved.map((item) => item.serialNumber)).toEqual([0, 1, 2]);
+    });
 });
 
 describe('подписи', () => {

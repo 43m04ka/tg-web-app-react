@@ -1,5 +1,6 @@
 import React from 'react';
 import logo from '../assets/logo.png';
+import paymentLogos from '../assets/payment-logos.png';
 import style from './SiteFooter.module.scss';
 
 const COLUMNS = [
@@ -39,8 +40,6 @@ const SOCIALS = [
     {label: 'ВКонтакте', short: 'VK', href: 'https://vk.com/gwstore.news'},
     {label: 'WhatsApp', short: 'WA', href: 'https://wa.me/message/X32YKLA4RINTA1'}
 ];
-
-const PAYMENTS = ['МИР', 'СБП', 'VISA', 'Mastercard'];
 
 const external = (href) => (/^https?:/.test(href) ? {target: '_blank', rel: 'noopener noreferrer'} : {});
 
@@ -110,11 +109,11 @@ export default function SiteFooter() {
                         </span>
                     </div>
 
-                    <div className={style.payments}>
-                        {PAYMENTS.map((item) => (
-                            <span key={item} className={style.payment}>{item}</span>
-                        ))}
-                    </div>
+                    <img
+                        className={style.payments}
+                        src={paymentLogos}
+                        alt="МИР, СБП, VISA, Mastercard, PayKeeper"
+                    />
                 </div>
             </div>
         </footer>

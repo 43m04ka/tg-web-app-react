@@ -150,19 +150,10 @@
 }
 
 .payments {
-  display: flex;
-  gap: var(--d-gap-2);
   flex: none;
-}
-
-.payment {
-  padding: 5px 10px;
-  border-radius: var(--radius-sm);
-  background: var(--surface-3);
-  color: var(--text-secondary);
-  font-size: var(--d-fs-2xs);
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.3px;
+  height: 24px;
+  width: auto;
+  opacity: 0.85;
 }
 
 @media (max-width: 1100px) {

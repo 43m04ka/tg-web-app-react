@@ -47,15 +47,6 @@
   letter-spacing: -0.2px;
 }
 
-.tagline {
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: var(--d-fs-xs);
-  font-weight: var(--fw-bold);
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-}
-
 .mail {
   width: fit-content;
   margin-top: var(--d-gap-2);
@@ -81,12 +72,8 @@
 
 .socials {
   display: flex;
-  gap: var(--d-gap-2);
-  margin-top: var(--d-gap-2);
-}
-
-.socials {
   gap: var(--d-gap-4);
+  margin-top: var(--d-gap-2);
 }
 
 .social {

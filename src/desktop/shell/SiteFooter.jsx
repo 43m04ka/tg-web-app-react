@@ -54,14 +54,11 @@ export default function SiteFooter() {
                             <span className={style.brand}>Геймворд</span>
                         </div>
 
-                        <p className={style.tagline}>Игровой дискаунтер</p>
-
                         <a className={style.mail} href="mailto:gwstore@bk.ru">gwstore@bk.ru</a>
 
+                        <p className={style.text}>Прием заказов осуществляется круглосуточно</p>
                         <p className={style.text}>
-                            Приём заказов круглосуточно.
-                            <br/>
-                            Активация и обработка заказов с 10:00 до 22:00 по Мск ежедневно
+                            Активация и обработка заказов осуществляется с 10:00 до 22:00 по МСК ежедневно
                         </p>
 
                         <div className={style.socials}>

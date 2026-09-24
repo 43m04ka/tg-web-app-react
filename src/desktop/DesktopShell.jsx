@@ -2,7 +2,8 @@ import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useLocation} from 'react-router-dom';
 import './styles/desktop.css';
 import './styles/motion.css';
-import TopBar from './shell/TopBar';
+import TopBar from './shell/TopBar';
+import SiteFooter from './shell/SiteFooter';
 import DesktopRoutes from './DesktopRoutes';
 import {useCartStore} from '../store/useCartStore';
 import {selectUserId, useSessionStore} from '../store/useSessionStore';
@@ -50,6 +51,7 @@ export default function DesktopShell({sections}) {
                             <div key={pathname} className={style.content}>
                                 <DesktopRoutes sections={sections}/>
                             </div>
+                            <SiteFooter/>
                         </main>
                     </div>
                 </MaintenanceContext.Provider>

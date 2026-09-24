@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useSessionStore} from '../../../store/useSessionStore';
 import {useStructureStore} from '../../../store/useStructureStore';
@@ -7,12 +7,12 @@ import {useCatalogProducts} from '../../../pages/Catalog/useCatalogProducts';
 import {createProductOrigin} from '../../../shared/lib/productOrigin';
 import {catalogRoute, productRoute} from '../../../shared/lib/pageRoutes';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
-import {useNearBottom} from '../../../shared/hooks/useNearBottom';
-import {useScrollArea, useScrollMemory} from '../../shell/ScrollAreaContext';
+import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import {useStorefrontScope} from '../../shell/StorefrontScope';
 import {useReveal} from '../../shell/useReveal';
 import {useOpenHero} from '../../shell/useOpenHero';
 import {useOfferPicker} from '../../shell/useOfferPicker';
+import {useGridColumns} from '../../shell/useGridColumns';
 import {originIndex, resolveBotType, storefrontList} from '../../model/desktopNav';
 import {storefrontConfig} from '../../model/storefrontConfig';
 import {buildHero, buildShelves, mergeOffers} from '../../model/storefrontModel';
@@ -23,6 +23,7 @@ import OfferSplit from './OfferSplit';
 import style from './Storefront.module.scss';
 
 const SKELETON_COUNT = 12;
+const ROWS_STEP = 3;
 
 export default function Storefront() {
     const navigate = useNavigate();
@@ -97,7 +98,30 @@ export default function Storefront() {
     const openOffer = picker.open;
 
     const catalogRef = useReveal();
-    const areaRef = useScrollArea();
+
+    const columns = useGridColumns();
+    const [rows, setRows] = useState(ROWS_STEP);
+
+    useEffect(() => {
+        setRows(ROWS_STEP);
+    }, [scopeId]);
+
+    const limit = rows * columns;
+    const loadedCount = catalogOffers?.length ?? 0;
+
+    useEffect(() => {
+        if (loadedCount < limit && hasMore && !isLoading && !isLoadingMore && !error) loadMore();
+    }, [loadedCount, limit, hasMore, isLoading, isLoadingMore, error, loadMore]);
+
+    const visibleOffers = useMemo(
+        () => (catalogOffers === null ? null : catalogOffers.slice(0, limit)),
+        [catalogOffers, limit]
+    );
+
+    const canShowMore = loadedCount > limit || hasMore;
+    const isFilling = loadedCount < limit && hasMore;
+
+    const showMore = useCallback(() => setRows((value) => value + ROWS_STEP), []);
 
     const openHero = useOpenHero();
 
@@ -113,12 +137,6 @@ export default function Storefront() {
 
     const isFirstLoad = isLoading && !isLoadingMore && catalogOffers === null;
     const showOrigin = scopeId === null;
-
-    const sentinelRef = useNearBottom({
-        rootRef: areaRef,
-        enabled: hasMore && !isLoading && !error,
-        onReach: loadMore
-    });
 
     useScrollMemory(`storefront:${scopeId ?? 'all'}`, {ready: catalogOffers !== null});
 
@@ -169,7 +187,7 @@ export default function Storefront() {
                         ) : null}
 
                         <div key={scopeId ?? 'all'} className={style.grid}>
-                            {catalogOffers.map((offer, index) => (
+                            {visibleOffers.map((offer, index) => (
                                 <OfferCard
                                     key={offer.key}
                                     offer={offer}
@@ -179,12 +197,16 @@ export default function Storefront() {
                                 />
                             ))}
 
-                            {isLoadingMore ? Array.from({length: 4}, (skeleton, index) => (
+                            {isFilling ? Array.from({length: Math.min(columns, limit - loadedCount)}, (skeleton, index) => (
                                 <div key={`more-${index}`} className={style.skeleton} style={{'--i': index}}/>
                             )) : null}
                         </div>
 
-                        <div ref={sentinelRef} className={style.sentinel} aria-hidden="true"/>
+                        {canShowMore && !isFilling ? (
+                            <button type="button" className={style.more} onClick={showMore}>
+                                Показать ещё
+                            </button>
+                        ) : null}
                     </>
                 ) : null}
             </section>

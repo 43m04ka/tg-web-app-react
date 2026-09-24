@@ -106,7 +106,7 @@ export default function TopBar({onSearchOpenChange}) {
                         <BackLink to="/" label="Назад" className={style.back}/>
                     </div>
 
-                    <button type="button" className={style.logo} onClick={() => go('/')}>
+                    <button type="button" className={style.logo} onClick={openHome}>
                         <span
                             className={style.mark}
                             style={{'--logo': `url(${logo})`}}

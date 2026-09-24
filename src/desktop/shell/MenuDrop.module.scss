@@ -29,6 +29,18 @@
   box-shadow: 0 0 0 4px oklch(0.7 0.145 25 / 0.14);
 }
 
+.burger {
+  flex: none;
+  width: 17px;
+  height: 17px;
+  color: var(--text-secondary);
+  transition: color var(--m-base) var(--m-ease);
+}
+
+.triggerOpen .burger {
+  color: var(--text);
+}
+
 .title {
   font-size: var(--d-fs-sm);
   font-weight: var(--fw-bold);

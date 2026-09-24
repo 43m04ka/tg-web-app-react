@@ -3,7 +3,7 @@
   z-index: 1;
   flex: 1 1 auto;
   min-width: 0;
-  max-width: 1000px;
+  max-width: none;
   opacity: 1;
   transform: none;
   visibility: visible;
@@ -11,10 +11,6 @@
               opacity var(--m-base) var(--m-ease),
               transform var(--m-slow) var(--m-spring),
               visibility 0s;
-}
-
-.rootWide {
-  max-width: 2000px;
 }
 
 .rootHidden {
@@ -102,29 +98,6 @@
 
 .rootOpen .input::placeholder {
   opacity: 0.55;
-}
-
-.hotkey {
-  flex: none;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 5px;
-  border-radius: var(--radius-xs);
-  background: var(--surface-3);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-faint);
-  font-size: var(--d-fs-2xs);
-  font-weight: var(--fw-bold);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity var(--m-base) var(--m-ease),
-              transform var(--m-base) var(--m-ease);
-}
-
-.rootOpen .hotkey {
-  opacity: 0;
-  transform: scale(0.8);
 }
 
 .clear {

@@ -76,7 +76,7 @@ test('в баре сплошная навигация: главная, витр�
 
     const labels = [...container.querySelectorAll('nav button')].map((node) => node.textContent);
 
-    expect(labels).toEqual(['Главная', 'PS Турция', 'PS Индия', 'Xbox', 'Пополнение Стим', 'Коды пополнения']);
+    expect(labels).toEqual(['Главная', 'PlayStation Турция', 'PlayStation Индия', 'Xbox', 'Steam', 'Сервисы']);
 });
 
 test('корзина считается по витрине и выключена, пока витрина не выбрана', () => {
@@ -131,7 +131,7 @@ test('при уходе в раздел счётчик корзины держи
 
     act(() => {
         [...container.querySelectorAll('nav button')]
-            .find((node) => node.textContent === 'Пополнение Стим')
+            .find((node) => node.textContent === 'Steam')
             .dispatchEvent(new MouseEvent('click', {bubbles: true}));
     });
 
@@ -146,7 +146,7 @@ test('закрытый на обслуживание раздел пропада
 
     const labels = [...container.querySelectorAll('nav button')].map((node) => node.textContent);
 
-    expect(labels).toEqual(['Главная', 'PS Турция', 'PS Индия', 'Xbox', 'Коды пополнения']);
+    expect(labels).toEqual(['Главная', 'PlayStation Турция', 'PlayStation Индия', 'Xbox', 'Сервисы']);
 });
 
 test('витрина и главная в баре уводят на главную с любой страницы', () => {
@@ -160,15 +160,15 @@ test('витрина и главная в баре уводят на главн�
     };
 
     render('/card/251438');
-    pickNav('PS Индия');
+    pickNav('PlayStation Индия');
     expect(seenPath).toBe('/');
 
     render('/catalog/ps_tur_new');
-    pickNav('PS Индия');
+    pickNav('PlayStation Индия');
     expect(seenPath).toBe('/');
 
     render('/basket');
-    pickNav('PS Индия');
+    pickNav('PlayStation Индия');
     expect(seenPath).toBe('/');
 
     render('/search');

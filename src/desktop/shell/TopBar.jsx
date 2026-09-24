@@ -6,7 +6,7 @@ import {useCartStore} from '../../store/useCartStore';
 import {usePlatform} from '../../shared/hooks/usePlatform';
 import {pageCartItems} from '../../pages/Basket/cartModel';
 import {resetSearchState} from '../../shared/lib/searchMemory';
-import {sectionList, storefrontList} from '../model/desktopNav';
+import {navLabel, sectionList, storefrontList} from '../model/desktopNav';
 import {useScrolled} from './useScrolled';
 import {BasketIcon, UserIcon} from './DesktopIcons';
 import logo from '../assets/logo.png';
@@ -101,7 +101,7 @@ export default function TopBar({onSearchOpenChange}) {
     return (
         <header className={isScrolled ? `${style.bar} ${style.barScrolled}` : style.bar}>
             <div className={style.inner}>
-                <div className={style.lead}>
+                <div className={style.lead} data-hidden={isFocusMode ? '' : undefined}>
                     <div className={style.backSlot} data-hidden={showBack ? undefined : ''}>
                         <BackLink to="/" label="Назад" className={style.back}/>
                     </div>
@@ -134,7 +134,7 @@ export default function TopBar({onSearchOpenChange}) {
                                 : style.link}
                             onClick={() => pickStorefront(item)}
                         >
-                            {item.label}
+                            {navLabel(item.type, item.label)}
                         </button>
                     ))}
 
@@ -153,7 +153,6 @@ export default function TopBar({onSearchOpenChange}) {
                 <SearchBox
                     onOpenChange={onSearchOpen}
                     hidden={isStandalone || isSearchPage}
-                    wide={isFocusMode}
                 />
 
                 <div className={style.actions} data-hidden={isFocusMode ? '' : undefined}>

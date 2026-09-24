@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ChevronIcon} from './DesktopIcons';
+import {BurgerIcon, ChevronIcon} from './DesktopIcons';
 import style from './MenuDrop.module.scss';
 
 export default function MenuDrop({items = []}) {
@@ -31,6 +31,7 @@ export default function MenuDrop({items = []}) {
                 aria-expanded={isOpen}
                 aria-haspopup="menu"
             >
+                <BurgerIcon className={style.burger}/>
                 <span className={style.title}>Меню</span>
                 <ChevronIcon className={style.chevron}/>
             </button>

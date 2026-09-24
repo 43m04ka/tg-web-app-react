@@ -31,6 +31,12 @@ export const ChevronIcon = (props) => (
     </svg>
 );
 
+export const BurgerIcon = (props) => (
+    <svg viewBox="0 0 24 24" fill="none" {...props}>
+        <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"/>
+    </svg>
+);
+
 export const GridIcon = (props) => (
     <svg viewBox="0 0 24 24" fill="none" {...props}>
         <rect x="3.6" y="3.6" width="7" height="7" rx="2.2" fill="currentColor"/>

@@ -2,10 +2,15 @@ import {STANDALONE_PAGES, standaloneRoute} from '../../shared/lib/pageRoutes';
 import {fallbackBotType} from '../../shared/lib/platform';
 import {regionIcon, regionLabel, regionTitle} from '../../shared/lib/region';
 
-const SECTION_TITLES = {
-    steam: 'Пополнение Стим',
-    services: 'Коды пополнения'
+const NAV_TITLES = {
+    ps: 'PlayStation Турция',
+    ps_india: 'PlayStation Индия',
+    xbox: 'Xbox',
+    steam: 'Steam',
+    services: 'Сервисы'
 };
+
+export const navLabel = (type, fallback) => NAV_TITLES[type] || fallback || 'Витрина';
 
 const SECTION_ORDER = Object.keys(STANDALONE_PAGES);
 
@@ -61,7 +66,7 @@ export const sectionList = (startPages, pages, botType) => {
                 key: type,
                 pageId: item.id,
                 route: standaloneRoute(type),
-                label: SECTION_TITLES[type] || item.label,
+                label: navLabel(type, item.label),
                 note: item.label,
                 icon: item.icon
             };

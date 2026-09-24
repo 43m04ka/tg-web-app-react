@@ -38,7 +38,7 @@ const highlight = (text, needle) => {
     ];
 };
 
-export default function SearchBox({onOpenChange, hidden = false, wide = false}) {
+export default function SearchBox({onOpenChange, hidden = false}) {
     const navigate = useNavigate();
     const {botType} = usePlatform();
 
@@ -252,7 +252,6 @@ export default function SearchBox({onOpenChange, hidden = false, wide = false}) 
             className={[
                 style.root,
                 isOpen ? style.rootOpen : '',
-                wide ? style.rootWide : '',
                 hidden ? style.rootHidden : ''
             ].filter(Boolean).join(' ')}
             data-hidden={hidden ? '' : undefined}
@@ -302,9 +301,7 @@ export default function SearchBox({onOpenChange, hidden = false, wide = false}) 
                     >
                         ✕
                     </button>
-                ) : (
-                    <span className={style.hotkey} aria-hidden="true">/</span>
-                )}
+                ) : null}
             </form>
 
             <div className={showPanel ? style.drop + ' ' + style.dropOpen : style.drop} ref={listRef}>

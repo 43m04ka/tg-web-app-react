@@ -6,6 +6,8 @@ import {useMaintenance} from './useMaintenance';
 import {useDeepLink} from './useDeepLink';
 import AppRoutes from './AppRoutes';
 import Maintenance from '../pages/Maintenance/Maintenance';
+import Pay from '../pages/Pay/Pay';
+import {readPending} from '../pages/Pay/payModel';
 import BackButton from '../shared/ui/BackButton/BackButton';
 import NavBar from '../shared/ui/NavBar/NavBar';
 import Splash from '../shared/ui/Splash/Splash';
@@ -22,6 +24,7 @@ const AdminAuth = lazy(() => import('../pages/AdminPanel/AP_Authentication'));
 const AdminPanel = lazy(() => import('../pages/AdminPanel/AdminPanel'));
 const Admin2 = lazy(() => import('../pages/Admin2'));
 const DesktopShell = lazy(() => import('../desktop/DesktopShell'));
+const StandalonePay = lazy(() => import('../desktop/StandalonePay'));
 
 export default function App() {
     const {isReady} = useBootstrap();
@@ -53,6 +56,22 @@ export default function App() {
         );
     }
 
+    if (pathname.startsWith('/payment') && readPending()) return <Navigate to="/pay" replace/>;
+
+    if (pathname === '/pay') {
+        return isDesktop ? (
+            <Suspense fallback={<Splash/>}>
+                <StandalonePay/>
+            </Suspense>
+        ) : (
+            <div className={style.app}>
+                <main className={style.content}>
+                    <Pay/>
+                </main>
+            </div>
+        );
+    }
+
     if (isMaintenance) return <Maintenance until={maintenanceUntil}/>;
 
     if (!isReady) return <Splash/>;
@@ -71,7 +90,7 @@ export default function App() {
             <main className={style.content}>
                 <AppRoutes sections={maintenanceSections}/>
             </main>
-            {pageId === null || isStandalone || pathname === '/pay' ? null : <NavBar/>}
+            {pageId === null || isStandalone ? null : <NavBar/>}
         </div>
     );
 }

@@ -2,9 +2,7 @@ import {useEffect} from 'react';
 import {useLocation} from 'react-router-dom';
 import {useSessionStore} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
-import {applyTheme} from '../../shared/lib/theme';
-
-const HOME_ACCENT = '#17bfae';
+import {applyNeutralTheme, applyTheme} from '../../shared/lib/theme';
 
 export function useDesktopAccent(scopeId) {
     const {pathname} = useLocation();
@@ -13,9 +11,10 @@ export function useDesktopAccent(scopeId) {
 
     const pageColor = startPages?.find((item) => item.structurePageId === pageId)?.color;
     const isSection = pathname === '/steam' || pathname === '/services';
-    const color = scopeId === null && !isSection ? HOME_ACCENT : pageColor;
+    const isHome = scopeId === null && !isSection;
 
     useEffect(() => {
-        applyTheme(color);
-    }, [color]);
+        if (isHome) applyNeutralTheme();
+        else applyTheme(pageColor);
+    }, [isHome, pageColor]);
 }

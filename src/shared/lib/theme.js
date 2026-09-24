@@ -11,6 +11,20 @@ const RAMP = {
 
 const VARIABLES = Object.keys(RAMP);
 
+const NEUTRAL = {
+    '--accent': 'oklch(0.97 0 0)',
+    '--accent-hover': 'oklch(1 0 0)',
+    '--accent-soft': 'oklch(0.42 0 0)',
+    '--accent-surface': 'oklch(0.22 0 0)',
+    '--accent-text': 'oklch(0.97 0 0)',
+    '--accent-contrast': 'oklch(0.17 0 0)'
+};
+
+export const applyNeutralTheme = () => {
+    const root = document.documentElement;
+    VARIABLES.forEach((name) => root.style.setProperty(name, NEUTRAL[name]));
+};
+
 export const applyTheme = (color) => {
     const root = document.documentElement;
     const source = toOklch(color);

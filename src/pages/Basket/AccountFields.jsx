@@ -1,7 +1,7 @@
 import React from 'react';
 import {hapticImpact} from '../../shared/lib/haptic';
 import {getTelegramObject} from '../../shared/lib/telegram';
-import {ACCOUNT_KINDS, accountForm} from './cartModel';
+import {ACCOUNT_KINDS, accountForm, isAccountForgotten} from './cartModel';
 import style from './Basket.module.scss';
 
 const openGuide = (url) => {
@@ -21,10 +21,11 @@ export default function AccountFields({pageType, kind, values, isTouched, onKind
     if (!form) return null;
 
     const isNew = kind === ACCOUNT_KINDS.NEW;
+    const isForgot = isAccountForgotten(values);
     const shortFields = form.fields.filter((field) => field.short);
     const longFields = form.fields.filter((field) => !field.short);
 
-    const isMissing = (field) => !isNew && isTouched
+    const isMissing = (field) => !isNew && !isForgot && isTouched
         && REQUIRED_KEYS.includes(field.key)
         && String(values[field.key] || '').trim() === '';
 
@@ -64,6 +65,22 @@ export default function AccountFields({pageType, kind, values, isTouched, onKind
                 <div className={`${style.reveal} ${style.revealInline} ${isNew ? '' : style.revealOpen}`}>
                     <div className={style.revealInner}>
                         <div className={style.fields}>
+                            <button
+                                type="button"
+                                className={`${style.forgot} ${isForgot ? style.forgotOn : ''}`}
+                                tabIndex={isNew ? -1 : undefined}
+                                aria-pressed={isForgot}
+                                onClick={() => {
+                                    hapticImpact('light');
+                                    onChange('forgot', !isForgot);
+                                }}
+                            >
+                                <span className={style.forgotBox} aria-hidden="true">✓</span>
+                                <span className={style.forgotText}>
+                                    У меня есть аккаунт, но я не помню данные от него
+                                </span>
+                            </button>
+
                             {longFields.map((field) => (
                                 <input
                                     key={field.key}
@@ -87,8 +104,9 @@ export default function AccountFields({pageType, kind, values, isTouched, onKind
                                             value={values[field.key] || ''}
                                             placeholder={field.placeholder}
                                             maxLength={field.maxLength}
-                                            inputMode="numeric"
                                             autoComplete="off"
+                                            autoCapitalize="none"
+                                            spellCheck="false"
                                             tabIndex={isNew ? -1 : undefined}
                                             onChange={(event) => onChange(field.key, event.target.value)}
                                         />

@@ -7,6 +7,13 @@ import StatusStage, {StatusActions, StatusRows, statusStyle} from '../../ui/Stat
 import steam from '../Steam/DesktopSteam.module.scss';
 import style from './DesktopPay.module.scss';
 
+const PAY_INFO = [
+    'Это официальная оплата на расчетный счет ИП в Альфа Банк, а не перевод. Вы получите чек на электронную почту, которую укажете в форме оплаты.',
+    'Если вписать сумму меньше и оплатить, заказ не будет считаться оплаченным.',
+    'Оплачивая данный заказ Вы принимаете Пользовательское соглашение нашего сервиса.',
+    'Обращаем внимание, что прием платежей в магазине Геймворд.рф осуществляется круглосуточно. Активация заказа происходит в рабочее время — с 10:00 до 22:00 по МСК ежедневно.'
+];
+
 const rowsOf = (payment, status, tone) => [
     {label: 'Платёж №', value: payment?.id},
     {label: 'Сумма', value: formatMoney(payment?.amount)},
@@ -157,6 +164,18 @@ export default function DesktopPay() {
                             Подтверждаю, что ознакомлен и согласен с условиями покупки в сервисе Геймворд
                         </span>
                     </button>
+
+                    <section className={steam.block}>
+                        <h2 className={steam.blockTitle}>Важная информация</h2>
+
+                        <div className={steam.faq}>
+                            {PAY_INFO.map((text, index) => (
+                                <p key={text} className={`${steam.faqItem} ${style.info}`} style={{'--i': index}}>
+                                    {text}
+                                </p>
+                            ))}
+                        </div>
+                    </section>
                 </div>
 
                 <aside className={steam.panel}>

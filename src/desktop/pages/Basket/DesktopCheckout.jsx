@@ -18,6 +18,7 @@ import {
     findMethod,
     formatContact,
     isAccountFilled,
+    isAccountForgotten,
     isContactValid,
     isEmailValid,
     isMethodAvailable,
@@ -131,10 +132,11 @@ function AccountBlock({pageType, kind, values, isTouched, onKind, onChange}) {
     if (!form) return null;
 
     const isNew = kind === ACCOUNT_KINDS.NEW;
+    const isForgot = isAccountForgotten(values);
     const shortFields = form.fields.filter((field) => field.short);
     const longFields = form.fields.filter((field) => !field.short);
 
-    const isMissing = (field) => !isNew && isTouched
+    const isMissing = (field) => !isNew && !isForgot && isTouched
         && REQUIRED_KEYS.includes(field.key)
         && String(values[field.key] || '').trim() === '';
 
@@ -170,6 +172,19 @@ function AccountBlock({pageType, kind, values, isTouched, onKind, onChange}) {
                 <div className={isNew ? style.reveal : `${style.reveal} ${style.revealOpen}`}>
                     <div className={style.revealInner}>
                         <div className={style.fields}>
+                            <button
+                                type="button"
+                                className={isForgot ? `${style.forgot} ${style.forgotOn}` : style.forgot}
+                                tabIndex={isNew ? -1 : undefined}
+                                aria-pressed={isForgot}
+                                onClick={() => onChange('forgot', !isForgot)}
+                            >
+                                <span className={style.forgotBox} aria-hidden="true">✓</span>
+                                <span className={style.forgotText}>
+                                    У меня есть аккаунт, но я не помню данные от него
+                                </span>
+                            </button>
+
                             {longFields.map((field) => (
                                 <input
                                     key={field.key}
@@ -193,8 +208,9 @@ function AccountBlock({pageType, kind, values, isTouched, onKind, onChange}) {
                                             value={values[field.key] || ''}
                                             placeholder={field.placeholder}
                                             maxLength={field.maxLength}
-                                            inputMode="numeric"
                                             autoComplete="off"
+                                            autoCapitalize="none"
+                                            spellCheck="false"
                                             tabIndex={isNew ? -1 : undefined}
                                             onChange={(event) => onChange(field.key, event.target.value)}
                                         />

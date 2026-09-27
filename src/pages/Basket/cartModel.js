@@ -145,32 +145,41 @@ const valueOrDash = (value) => {
     return text === '' ? 'Не указано' : text;
 };
 
+export const isAccountForgotten = (values) => Boolean(values && values.forgot);
+
 export const buildAccountData = (pageType, kind, values) => {
     const form = accountForm(pageType);
 
     if (!form) return 'Аккаунт не требуется.';
     if (kind === ACCOUNT_KINDS.NEW) return `Нет своего аккаунта ${form.service}.`;
 
+    const forgotNote = isAccountForgotten(values)
+        ? `Аккаунт ${form.service} есть, но данные от него покупатель не помнит.`
+        : null;
+
     if (form.service === 'PSN') {
         return [
+            forgotNote,
             `Логин: ${valueOrDash(values.login)}`,
             `Пароль: ${valueOrDash(values.password)}`,
             `Резервные коды: ${valueOrDash(values.code1)}, ${valueOrDash(values.code2)}, ${valueOrDash(values.code3)}`
-        ].join(' \n');
+        ].filter(Boolean).join(' \n');
     }
 
     return [
+        forgotNote,
         `Логин: ${valueOrDash(values.login)}`,
         `Пароль: ${valueOrDash(values.password)}`,
         `Резервная почта: ${valueOrDash(values.mail)}`,
         `Резервный телефон: ${valueOrDash(values.phone)}`
-    ].join(' \n');
+    ].filter(Boolean).join(' \n');
 };
 
 export const isAccountFilled = (pageType, kind, values) => {
     const form = accountForm(pageType);
 
     if (!form || kind === ACCOUNT_KINDS.NEW) return true;
+    if (isAccountForgotten(values)) return true;
 
     return Boolean(String(values.login || '').trim() && String(values.password || '').trim());
 };

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useStructureStore} from '../../store/useStructureStore';
 import {useSessionStore} from '../../store/useSessionStore';
@@ -14,13 +14,40 @@ import {glowStyle} from './accent';
 import PopularRail from './PopularRail';
 import PlatformCard from './PlatformCard';
 import PlatformLink from './PlatformLink';
+import TypingHint from './TypingHint';
 import style from './SelectPlatform.module.scss';
 
 const MIN_FADE_PX = 24;
-const STAGGER_MS = 22;
-const STAGGER_CAP_MS = 170;
 const LEAVE_MS = 265;
-const ENTER_MS = 210;
+const CONTENT_BASE_MS = 360;
+const ITEM_ORDER_CAP = 9;
+const SEARCH_HINT = 'Поиск по всем витринам';
+const EXTRA_HINTS = ['Game Pass', 'PlayStation Plus'];
+const RAIL_ORDER_CAP = 6;
+
+const TITLE_WORDS = [
+    ['Геймворд'],
+    ['—'],
+    ['игры'],
+    ['и'],
+    ['подписки'],
+    ['для'],
+    ['PlayStation', 'ps'],
+    ['и'],
+    ['Xbox', 'xbox']
+];
+
+let introPlayed = false;
+
+const useRevealOrder = (cap) => {
+    const orderRef = useRef(new Map());
+
+    return (key) => {
+        const order = orderRef.current;
+        if (!order.has(key)) order.set(key, Math.min(order.size, cap));
+        return order.get(key);
+    };
+};
 
 const toGroups = (items) => {
     const groups = [];
@@ -50,15 +77,15 @@ export default function SelectPlatform() {
     const setPageId = useSessionStore((state) => state.setPageId);
 
     const [pickedId, setPickedId] = useState(null);
-    const [isEntering, setIsEntering] = useState(true);
+    const [isQuickIntro] = useState(() => introPlayed);
+    const mountedAtRef = useRef(performance.now());
+    const shiftRef = useRef(null);
+    const itemOrder = useRevealOrder(ITEM_ORDER_CAP);
+    const railOrder = useRevealOrder(RAIL_ORDER_CAP);
 
     useEffect(() => {
         getTelegramObject().BackButton?.hide();
-    }, []);
-
-    useEffect(() => {
-        const timerId = setTimeout(() => setIsEntering(false), STAGGER_CAP_MS + ENTER_MS + 120);
-        return () => clearTimeout(timerId);
+        introPlayed = true;
     }, []);
 
     const activeGlow = useMemo(() => {
@@ -96,6 +123,11 @@ export default function SelectPlatform() {
 
         return visible.length || !fallback ? visible : itemsOf(fallback);
     }, [popularProducts, botType, isSettled]);
+
+    const popularNames = useMemo(() => [...new Set([
+        ...popular.map(({product}) => product.name?.trim()).filter(Boolean),
+        ...EXTRA_HINTS
+    ])], [popular]);
 
     const regionOfProduct = useMemo(() => {
         const pageById = new Map((pages || []).map((page) => [page.id, page]));
@@ -151,18 +183,19 @@ export default function SelectPlatform() {
     const fadeHeight = Math.max(fadeZone - safeAreaInset.top, Math.min(fadeZone, MIN_FADE_PX));
     const solidHeight = Math.max(fadeZone - fadeHeight, 0);
 
-    let order = 0;
-    const revealProps = () => {
-        const delay = Math.min(order++ * STAGGER_MS, STAGGER_CAP_MS);
-        return isEntering ? {style: {animationDelay: `${delay}ms`}} : {};
-    };
+    const pace = isQuickIntro ? 0.5 : 1;
+    if (shiftRef.current === null && (groups.length || popular.length)) {
+        shiftRef.current = Math.min(performance.now() - mountedAtRef.current, CONTENT_BASE_MS * pace);
+    }
+
+    const revealProps = (key) => ({style: {'--i': itemOrder(key)}});
 
     const renderChild = (item, isTile) => {
         const isPicked = pickedId === item.id;
         const className = [
             style.item,
+            style.reveal,
             isTile && item.type === 'page' ? '' : style.itemWide,
-            isEntering ? style.entering : '',
             isPicked ? style.picked : ''
         ].join(' ');
 
@@ -187,7 +220,7 @@ export default function SelectPlatform() {
         }
 
         return (
-            <div key={item.id} className={className} {...revealProps()}>
+            <div key={item.id} className={className} {...revealProps(item.id)}>
                 {content}
             </div>
         );
@@ -195,12 +228,19 @@ export default function SelectPlatform() {
 
     return (
         <div
-            className={`${style.screen} ${pickedId !== null ? style.leaving : ''}`}
+            className={[
+                style.screen,
+                isQuickIntro ? style.screenQuick : '',
+                pickedId !== null ? style.leaving : ''
+            ].join(' ')}
             style={{
+                '--shift': `${Math.round(shiftRef.current ?? 0)}ms`,
                 paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`,
                 paddingBottom: `calc(${pageId === null ? safeAreaInset.bottom : 0}px + 32 * var(--u))`
             }}
         >
+            <div className={style.aurora} aria-hidden="true"/>
+
             <div
                 className={`${style.glow} ${activeGlow.backgroundColor ? style.glowVisible : ''}`}
                 style={activeGlow}
@@ -222,12 +262,22 @@ export default function SelectPlatform() {
                 </>
             ) : null}
 
-            <h1 className={style.title}>
-                Геймворд — игры и подписки для <span className={style.ps}>PlayStation</span> и{' '}
-                <span className={style.xbox}>Xbox</span>
+            <h1 className={style.title} aria-label={TITLE_WORDS.map(([word]) => word).join(' ')}>
+                {TITLE_WORDS.map(([word, tone], index) => (
+                    <React.Fragment key={index}>
+                        {index ? ' ' : null}
+                        <span
+                            className={`${style.word} ${tone ? `${style[tone]} ${style.shine}` : ''}`}
+                            style={{'--w': index}}
+                            aria-hidden="true"
+                        >
+                            {word}
+                        </span>
+                    </React.Fragment>
+                ))}
             </h1>
 
-            <button type="button" className={style.search} onClick={openGlobalSearch}>
+            <button type="button" className={style.search} onClick={openGlobalSearch} aria-label={SEARCH_HINT}>
                 <span className={style.searchIcon} aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none">
                         <circle cx="10.6" cy="10.6" r="6.7" stroke="currentColor" strokeWidth="2"/>
@@ -235,7 +285,9 @@ export default function SelectPlatform() {
                     </svg>
                 </span>
 
-                <span className={style.searchTitle}>Поиск по всем витринам</span>
+                <span className={style.searchTitle}>
+                    <TypingHint base={SEARCH_HINT} phrases={popularNames}/>
+                </span>
 
                 <span className={style.searchArrow} aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none">
@@ -245,7 +297,7 @@ export default function SelectPlatform() {
                 </span>
             </button>
 
-            <PopularRail items={popular} regionOf={regionOfProduct} onOpen={openProduct}/>
+            <PopularRail items={popular} regionOf={regionOfProduct} onOpen={openProduct} orderOf={railOrder}/>
 
             {groups.map((group) => {
                 const isGrid = group.children.filter((item) => item.type === 'page').length > 1;
@@ -254,8 +306,8 @@ export default function SelectPlatform() {
                     <section key={group.key} className={`${style.group} ${isGrid ? style.groupGrid : ''}`}>
                         {group.header ? (
                             <div
-                                className={`${style.item} ${style.itemWide} ${isEntering ? style.entering : ''}`}
-                                {...revealProps()}
+                                className={`${style.item} ${style.reveal} ${style.itemWide}`}
+                                {...revealProps(`title:${group.header.id}`)}
                             >
                                 <div className={style.sectionHeader}>
                                     {group.header.icon ? (

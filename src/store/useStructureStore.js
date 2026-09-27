@@ -22,12 +22,28 @@ const SOURCES = [
     {key: 'banners', initial: 'banners', load: fetchBanners},
     {key: 'structureBlocks', initial: 'structureBlocks', load: fetchStructureBlocks},
     {key: 'mainPageProducts', initial: 'mainPageProducts', load: fetchMainPageProducts},
-    {key: 'popularProducts', initial: 'popularProducts', load: fetchPopularProducts},
+    {key: 'popularProducts', initial: 'popularProducts', load: fetchPopularProducts, awaited: true, warm: (items) => warmImages(items.map(({product}) => product?.image))},
     {key: 'catalogs', initial: 'catalogs', load: fetchCatalogs},
     {key: 'infoBlocks', initial: 'infoBlocks', load: fetchInfoBlocks}
 ];
 
 const CRITICAL_COUNT = SOURCES.filter((source) => source.critical).length;
+const WARM_IMAGE_LIMIT = 12;
+const WARM_TIMEOUT_MS = 1500;
+
+function warmImages(urls) {
+    const loads = urls.filter(Boolean).slice(0, WARM_IMAGE_LIMIT).map((url) => new Promise((resolve) => {
+        const image = new Image();
+        image.onload = resolve;
+        image.onerror = resolve;
+        image.src = url;
+    }));
+
+    return Promise.race([
+        Promise.all(loads),
+        new Promise((resolve) => setTimeout(resolve, WARM_TIMEOUT_MS))
+    ]);
+}
 
 const seedFromInjected = () => {
     const seed = {};
@@ -64,9 +80,9 @@ const missingCriticalKeys = (get) =>
     SOURCES.filter((source) => source.critical && !hasItems(get()[source.key])).map(({key}) => key);
 
 async function runLoad(set, get) {
-    const blocking = SOURCES.filter((source) => source.critical && !hasItems(get()[source.key]));
+    const blocking = SOURCES.filter((source) => (source.critical || source.awaited) && !hasItems(get()[source.key]));
 
-    set({status: blocking.length ? 'loading' : 'ready', error: null});
+    set({status: 'loading', error: null});
 
     const fetchOne = async ({key, load, transform}) => {
         const result = await load();
@@ -79,13 +95,15 @@ async function runLoad(set, get) {
 
     await Promise.all(blocking.map(fetchOne));
 
-    if (blocking.length) {
-        const missing = missingCriticalKeys(get);
-        set({
-            status: missing.length === CRITICAL_COUNT ? 'error' : 'ready',
-            error: missing.length ? `Не загружено: ${missing.join(', ')}` : null
-        });
-    }
+    await Promise.all(SOURCES
+        .filter((source) => source.warm && hasItems(get()[source.key]))
+        .map((source) => source.warm(get()[source.key])));
+
+    const missing = missingCriticalKeys(get);
+    set({
+        status: missing.length === CRITICAL_COUNT ? 'error' : 'ready',
+        error: missing.length ? `Не загружено: ${missing.join(', ')}` : null
+    });
 
     await background;
 }

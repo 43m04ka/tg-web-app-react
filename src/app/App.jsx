@@ -7,6 +7,7 @@ import {useDeepLink} from './useDeepLink';
 import AppRoutes from './AppRoutes';
 import Maintenance from '../pages/Maintenance/Maintenance';
 import Pay from '../pages/Pay/Pay';
+import Marketplace from '../pages/Marketplace/Marketplace';
 import {readPending} from '../pages/Pay/payModel';
 import BackButton from '../shared/ui/BackButton/BackButton';
 import NavBar from '../shared/ui/NavBar/NavBar';
@@ -58,15 +59,17 @@ export default function App() {
 
     if (pathname.startsWith('/payment') && readPending()) return <Navigate to="/pay" replace/>;
 
-    if (pathname === '/pay') {
+    if (pathname === '/pay' || pathname === '/activate') {
+        const page = pathname.slice(1);
+
         return isDesktop ? (
             <Suspense fallback={<Splash/>}>
-                <StandalonePay/>
+                <StandalonePay page={page}/>
             </Suspense>
         ) : (
             <div className={style.app}>
                 <main className={style.content}>
-                    <Pay/>
+                    {page === 'activate' ? <Marketplace/> : <Pay/>}
                 </main>
             </div>
         );

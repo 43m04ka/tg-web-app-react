@@ -1002,6 +1002,64 @@
   gap: u(8);
 }
 
+.forgot {
+  display: flex;
+  align-items: center;
+  gap: u(10);
+  padding: u(10) u(12);
+  border-radius: u(13);
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  text-align: left;
+  transition: border-color var(--duration-base) var(--ease-out),
+              background-color var(--duration-base) var(--ease-out);
+}
+
+.forgot:active {
+  transform: scale(0.99);
+}
+
+.forgotOn {
+  border-color: var(--accent-soft);
+  background: var(--accent-surface);
+}
+
+.forgotBox {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: u(20);
+  height: u(20);
+  border-radius: u(6);
+  background: var(--surface-3);
+  border: 1px solid var(--border-subtle);
+  font-size: u(11);
+  font-weight: 800;
+  color: transparent;
+  transition: background-color var(--duration-base) var(--ease-out),
+              border-color var(--duration-base) var(--ease-out),
+              color var(--duration-base) var(--ease-out);
+}
+
+.forgotOn .forgotBox {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.forgotText {
+  font-size: u(12.5);
+  line-height: 1.35;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.forgotOn .forgotText {
+  color: var(--accent-text);
+}
+
 .field {
   display: flex;
   flex-direction: column;

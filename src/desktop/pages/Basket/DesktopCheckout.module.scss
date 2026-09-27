@@ -294,6 +294,65 @@
   gap: var(--d-gap-3);
 }
 
+.forgot {
+  display: flex;
+  align-items: center;
+  gap: var(--d-gap-3);
+  padding: var(--d-gap-3) var(--d-gap-4);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  text-align: left;
+  transition: background-color var(--m-base) var(--m-ease),
+              border-color var(--m-base) var(--m-ease);
+}
+
+.forgot:hover {
+  background: var(--surface-2);
+  border-color: var(--border);
+}
+
+.forgotOn,
+.forgotOn:hover {
+  background: var(--accent-surface);
+  border-color: var(--accent);
+}
+
+.forgotBox {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-xs);
+  background: var(--surface-3);
+  border: 1px solid var(--border-subtle);
+  font-size: var(--d-fs-2xs);
+  font-weight: var(--fw-bold);
+  color: transparent;
+  transition: background-color var(--m-base) var(--m-ease),
+              border-color var(--m-base) var(--m-ease),
+              color var(--m-base) var(--m-ease);
+}
+
+.forgotOn .forgotBox {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.forgotText {
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-medium);
+  line-height: 1.35;
+  color: var(--text-secondary);
+}
+
+.forgotOn .forgotText {
+  color: var(--text);
+}
+
 .field {
   display: flex;
   flex-direction: column;

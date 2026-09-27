@@ -1,0 +1,76 @@
+@import '../../app/styles/units';
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: u(8);
+}
+
+.chip {
+  padding: u(10) u(14);
+  border-radius: u(13);
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  font-size: u(13.5);
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--text-secondary);
+  transition: background-color var(--duration-base) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
+}
+
+.chip:active {
+  transform: scale(0.96);
+}
+
+.chipActive {
+  background: var(--accent-surface);
+  border-color: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.chipBad {
+  border-color: oklch(0.6 0.2 25 / 0.6);
+}
+
+.textarea {
+  height: auto;
+  min-height: u(84);
+  padding: u(13) u(15);
+  line-height: 1.4;
+  resize: none;
+}
+
+.date {
+  color-scheme: dark;
+}
+
+.file {
+  display: flex;
+  align-items: center;
+  gap: u(10);
+  width: 100%;
+  height: u(48);
+  padding: 0 u(15);
+  border-radius: u(15);
+  background: var(--surface-2);
+  border: 1px dashed var(--border-strong);
+  text-align: left;
+}
+
+.fileName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: u(14);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.fileClear {
+  flex: none;
+  font-size: u(13);
+  color: var(--text-muted);
+}

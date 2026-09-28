@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--d-gap-3);
-  animation: gw-rise var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise) var(--m-slow) var(--m-ease) both;
 }
 
 .back {
@@ -52,7 +52,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--d-gap-4);
-  animation: gw-rise-sm var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise-sm) var(--m-slow) var(--m-ease) both;
 }
 
 .blockTitle {
@@ -75,7 +75,7 @@
   font-size: var(--d-fs-sm);
   line-height: 1.55;
   color: var(--text-muted);
-  animation: gw-rise-sm var(--m-base) var(--m-ease) both;
+  animation: global(gw-rise-sm) var(--m-base) var(--m-ease) both;
 }
 
 .payments {
@@ -89,7 +89,7 @@
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
   overflow: hidden;
-  animation: gw-rise var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise) var(--m-slow) var(--m-ease) both;
   animation-delay: calc(var(--i, 0) * var(--m-stagger));
   transition: border-color var(--m-base) var(--m-ease),
               background-color var(--m-base) var(--m-ease),
@@ -357,7 +357,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--d-gap-2);
-  animation: gw-rise-sm var(--m-base) var(--m-ease) both;
+  animation: global(gw-rise-sm) var(--m-base) var(--m-ease) both;
 }
 
 .fieldLabel {
@@ -369,7 +369,7 @@
 .fieldError {
   font-size: var(--d-fs-xs);
   color: var(--accent-text);
-  animation: gw-rise-sm var(--m-base) var(--m-ease) both;
+  animation: global(gw-rise-sm) var(--m-base) var(--m-ease) both;
 }
 
 .input {
@@ -562,7 +562,7 @@
 }
 
 .faqItem {
-  animation: gw-rise-sm var(--m-base) var(--m-ease) both;
+  animation: global(gw-rise-sm) var(--m-base) var(--m-ease) both;
   animation-delay: calc(var(--i, 0) * 40ms);
 }
 
@@ -631,7 +631,7 @@
   border-radius: var(--radius-xl);
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
-  animation: gw-rise var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise) var(--m-slow) var(--m-ease) both;
   animation-delay: 80ms;
 }
 
@@ -653,7 +653,7 @@
   display: flex;
   align-items: baseline;
   gap: var(--d-gap-3);
-  animation: gw-slide-left var(--m-base) var(--m-ease) both;
+  animation: global(gw-slide-left) var(--m-base) var(--m-ease) both;
   animation-delay: calc(var(--i, 0) * 36ms);
 }
 
@@ -674,7 +674,7 @@
   flex: none;
   font-size: var(--d-fs-sm);
   font-weight: var(--fw-semibold);
-  animation: gw-pop var(--m-base) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-base) var(--m-spring) both;
 }
 
 .divider {
@@ -709,14 +709,14 @@
 .totalsFinal {
   font-size: var(--d-fs-2xl);
   font-weight: var(--fw-bold);
-  animation: gw-pop var(--m-slow) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-slow) var(--m-spring) both;
 }
 
 .error {
   font-size: var(--d-fs-xs);
   line-height: 1.5;
   color: var(--accent-text);
-  animation: gw-rise-sm var(--m-base) var(--m-ease) both;
+  animation: global(gw-rise-sm) var(--m-base) var(--m-ease) both;
 }
 
 .primary,

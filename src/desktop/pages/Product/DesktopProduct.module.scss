@@ -20,7 +20,7 @@
   background: var(--surface-2) center / cover no-repeat;
   border: 1px solid var(--border-subtle);
   overflow: hidden;
-  animation: gw-zoom-in var(--m-lazy) var(--m-ease) both;
+  animation: global(gw-zoom-in) var(--m-lazy) var(--m-ease) both;
 }
 
 .discount {
@@ -33,7 +33,7 @@
   color: var(--gold-surface);
   font-size: var(--d-fs-sm);
   font-weight: var(--fw-bold);
-  animation: gw-pop var(--m-slow) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-slow) var(--m-spring) both;
   animation-delay: 160ms;
 }
 
@@ -132,7 +132,7 @@
   flex-direction: column;
   gap: 7px;
   cursor: pointer;
-  animation: gw-rise var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise) var(--m-slow) var(--m-ease) both;
   animation-delay: calc(min(var(--i, 0), 9) * var(--m-stagger));
 }
 
@@ -344,7 +344,7 @@
   color: var(--accent-contrast);
   font-size: var(--d-fs-lg);
   font-weight: var(--fw-bold);
-  animation: gw-pop var(--m-slow) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-slow) var(--m-spring) both;
   transition: background-color var(--m-fast) var(--m-ease),
               transform var(--m-base) var(--m-spring),
               box-shadow var(--m-base) var(--m-ease);
@@ -381,7 +381,7 @@
   display: flex;
   align-items: center;
   gap: var(--d-gap-2);
-  animation: gw-pop var(--m-slow) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-slow) var(--m-spring) both;
 }
 
 .counterButton {
@@ -408,7 +408,7 @@
 }
 
 .counterValue {
-  animation: gw-pop var(--m-base) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-base) var(--m-spring) both;
   min-width: 32px;
   text-align: center;
   font-size: var(--d-fs-lg);
@@ -526,7 +526,7 @@
 
 .favoriteOn .favoriteIcon {
   fill: currentColor;
-  animation: gw-pop var(--m-slow) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-slow) var(--m-spring) both;
 }
 
 .skeletonCover {
@@ -538,7 +538,7 @@
     var(--surface-2) 42%,
     var(--surface-1) 64%
   ) 0 0 / 220% 100%;
-  animation: gw-shimmer 1.4s linear infinite;
+  animation: global(gw-shimmer) 1.4s linear infinite;
 }
 
 .skeletonPanel {
@@ -550,7 +550,7 @@
     var(--surface-2) 42%,
     var(--surface-1) 64%
   ) 0 0 / 220% 100%;
-  animation: gw-shimmer 1.4s linear infinite;
+  animation: global(gw-shimmer) 1.4s linear infinite;
 }
 
 @media (max-width: 1180px) {

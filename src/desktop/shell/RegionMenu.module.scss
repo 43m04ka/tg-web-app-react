@@ -101,7 +101,7 @@
   box-shadow: var(--shadow-lg);
   z-index: 50;
   transform-origin: top right;
-  animation: gw-zoom-in var(--m-base) var(--m-ease) both;
+  animation: global(gw-zoom-in) var(--m-base) var(--m-ease) both;
 }
 
 .menuTitle {
@@ -123,7 +123,7 @@
   gap: var(--d-gap-3);
   border-radius: var(--radius-md);
   color: var(--text-secondary);
-  animation: gw-slide-left var(--m-base) var(--m-ease) both;
+  animation: global(gw-slide-left) var(--m-base) var(--m-ease) both;
   animation-delay: calc(var(--i, 0) * 24ms);
   transition: background-color var(--m-fast) var(--m-ease),
               color var(--m-fast) var(--m-ease);
@@ -189,5 +189,5 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  animation: gw-pop var(--m-base) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-base) var(--m-spring) both;
 }

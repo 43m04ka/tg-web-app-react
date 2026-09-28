@@ -8,7 +8,7 @@
   display: flex;
   align-items: baseline;
   gap: var(--d-gap-4);
-  animation: gw-rise var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise) var(--m-slow) var(--m-ease) both;
 }
 
 .title {
@@ -20,7 +20,7 @@
 .note {
   font-size: var(--d-fs-sm);
   color: var(--text-muted);
-  animation: gw-fade var(--m-slow) var(--m-ease) both;
+  animation: global(gw-fade) var(--m-slow) var(--m-ease) both;
   animation-delay: 80ms;
 }
 
@@ -46,7 +46,7 @@
   display: flex;
   flex-direction: column;
   gap: 7px;
-  animation: gw-rise var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise) var(--m-slow) var(--m-ease) both;
   animation-delay: calc(min(var(--i, 0), 11) * var(--m-stagger));
 }
 
@@ -168,7 +168,7 @@
 .filters {
   display: flex;
   gap: var(--d-gap-2);
-  animation: gw-rise-sm var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise-sm) var(--m-slow) var(--m-ease) both;
   animation-delay: 80ms;
 }
 
@@ -224,7 +224,7 @@
   border-radius: var(--radius-lg);
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
-  animation: gw-rise var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise) var(--m-slow) var(--m-ease) both;
   animation-delay: calc(min(var(--i, 0), 9) * var(--m-stagger));
   transition: background-color var(--m-base) var(--m-ease),
               border-color var(--m-base) var(--m-ease),
@@ -397,7 +397,7 @@
     var(--surface-2) 42%,
     var(--surface-1) 64%
   ) 0 0 / 220% 100%;
-  animation: gw-shimmer 1.4s linear infinite,
+  animation: global(gw-shimmer) 1.4s linear infinite,
              gw-fade var(--m-base) var(--m-ease) both;
   animation-delay: 0s, calc(var(--i, 0) * 40ms);
 }

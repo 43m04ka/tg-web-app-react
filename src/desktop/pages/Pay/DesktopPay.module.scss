@@ -11,7 +11,7 @@
   padding: var(--d-gap-1) 0;
   text-align: left;
   cursor: pointer;
-  animation: gw-rise-sm var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise-sm) var(--m-slow) var(--m-ease) both;
 }
 
 .agree:focus-visible {

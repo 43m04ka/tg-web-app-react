@@ -35,7 +35,7 @@
   box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.07);
   overflow: hidden;
   cursor: pointer;
-  animation: gw-bounce-in var(--m-lazy) var(--m-ease) both;
+  animation: global(gw-bounce-in) var(--m-lazy) var(--m-ease) both;
   transition: transform var(--m-slow) var(--m-spring),
               box-shadow var(--m-slow) var(--m-ease);
 }
@@ -84,7 +84,7 @@
   overflow: hidden;
   cursor: pointer;
   transform: translateZ(0);
-  animation: gw-bounce-in var(--m-lazy) var(--m-ease) both;
+  animation: global(gw-bounce-in) var(--m-lazy) var(--m-ease) both;
   animation-delay: calc(var(--i, 0) * 90ms);
   transition: transform var(--m-slow) var(--m-spring),
               box-shadow var(--m-slow) var(--m-ease);
@@ -314,7 +314,7 @@
   flex-direction: column;
   gap: 7px;
   cursor: pointer;
-  animation: gw-rise var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise) var(--m-slow) var(--m-ease) both;
   animation-delay: calc(min(var(--i, 0), 11) * var(--m-stagger));
 }
 
@@ -528,7 +528,7 @@
     var(--surface-2) 42%,
     var(--surface-1) 64%
   ) 0 0 / 220% 100%;
-  animation: gw-shimmer 1.4s linear infinite,
+  animation: global(gw-shimmer) 1.4s linear infinite,
              gw-fade var(--m-base) var(--m-ease) both;
   animation-delay: 0s, calc(var(--i, 0) * 34ms);
 }

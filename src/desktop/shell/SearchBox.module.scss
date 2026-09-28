@@ -108,7 +108,7 @@
   background: var(--surface-3);
   color: var(--text-muted);
   font-size: var(--d-fs-2xs);
-  animation: gw-pop var(--m-base) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-base) var(--m-spring) both;
   transition: background-color var(--m-fast) var(--m-ease),
               color var(--m-fast) var(--m-ease),
               transform var(--m-fast) var(--m-ease);
@@ -207,7 +207,7 @@
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
   text-align: left;
-  animation: gw-rise-sm var(--m-base) var(--m-ease) both;
+  animation: global(gw-rise-sm) var(--m-base) var(--m-ease) both;
   animation-delay: calc(var(--i, 0) * 30ms);
   transition: background-color var(--m-fast) var(--m-ease),
               border-color var(--m-fast) var(--m-ease),
@@ -245,7 +245,7 @@
   color: var(--text-secondary);
   font-size: var(--d-fs-xs);
   font-weight: var(--fw-semibold);
-  animation: gw-pop var(--m-base) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-base) var(--m-spring) both;
   animation-delay: calc(var(--i, 0) * 22ms);
   transition: background-color var(--m-fast) var(--m-ease),
               color var(--m-fast) var(--m-ease),
@@ -269,7 +269,7 @@
   align-items: center;
   gap: var(--d-gap-2);
   border-radius: var(--radius-md);
-  animation: gw-slide-left var(--m-base) var(--m-ease) both;
+  animation: global(gw-slide-left) var(--m-base) var(--m-ease) both;
   animation-delay: calc(var(--i) * 30ms);
   transition: background-color var(--m-fast) var(--m-ease);
 }
@@ -345,7 +345,7 @@
   padding: var(--d-gap-2);
   border-radius: var(--radius-md);
   text-align: left;
-  animation: gw-slide-left var(--m-base) var(--m-ease) both;
+  animation: global(gw-slide-left) var(--m-base) var(--m-ease) both;
   animation-delay: calc(min(var(--i), 8) * 28ms);
   transition: background-color var(--m-fast) var(--m-ease),
               transform var(--m-fast) var(--m-ease);
@@ -473,7 +473,7 @@
   color: var(--accent-text);
   font-size: var(--d-fs-sm);
   font-weight: var(--fw-bold);
-  animation: gw-rise-sm var(--m-base) var(--m-ease) both;
+  animation: global(gw-rise-sm) var(--m-base) var(--m-ease) both;
   animation-delay: 120ms;
   transition: background-color var(--m-fast) var(--m-ease);
 }
@@ -498,7 +498,7 @@
   align-items: center;
   gap: var(--d-gap-3);
   padding: var(--d-gap-2);
-  animation: gw-fade var(--m-base) var(--m-ease) both;
+  animation: global(gw-fade) var(--m-base) var(--m-ease) both;
   animation-delay: calc(var(--i) * 60ms);
 }
 
@@ -534,7 +534,7 @@
     var(--surface-3) 42%,
     var(--surface-2) 64%
   ) 0 0 / 220% 100%;
-  animation: gw-shimmer 1.4s linear infinite;
+  animation: global(gw-shimmer) 1.4s linear infinite;
 }
 
 .empty {
@@ -544,13 +544,13 @@
   gap: var(--d-gap-2);
   padding: var(--d-gap-8) var(--d-gap-6);
   text-align: center;
-  animation: gw-rise-sm var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise-sm) var(--m-slow) var(--m-ease) both;
 }
 
 .emptyIcon {
   font-size: 26px;
   opacity: 0.65;
-  animation: gw-pop var(--m-slow) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-slow) var(--m-spring) both;
 }
 
 .emptyTitle {

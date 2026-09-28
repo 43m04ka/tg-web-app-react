@@ -17,7 +17,7 @@
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
   text-align: left;
-  animation: gw-rise-sm var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise-sm) var(--m-slow) var(--m-ease) both;
   animation-delay: calc(var(--i, 0) * 46ms);
   transition: background-color var(--m-base) var(--m-ease),
               border-color var(--m-base) var(--m-ease),

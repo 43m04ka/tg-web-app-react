@@ -17,7 +17,7 @@
   border: 1px solid var(--border-subtle);
   max-height: calc(100vh - var(--d-topbar) - var(--d-gap-10));
   overflow-y: auto;
-  animation: gw-slide-left var(--m-slow) var(--m-ease) both;
+  animation: global(gw-slide-left) var(--m-slow) var(--m-ease) both;
 }
 
 .panelHead {
@@ -188,7 +188,7 @@
   font-size: var(--d-fs-2xl);
   font-weight: var(--fw-bold);
   letter-spacing: -0.5px;
-  animation: gw-rise var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise) var(--m-slow) var(--m-ease) both;
 }
 
 .count {
@@ -248,7 +248,7 @@
   color: var(--accent-text);
   font-size: var(--d-fs-xs);
   font-weight: var(--fw-semibold);
-  animation: gw-pop var(--m-base) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-base) var(--m-spring) both;
   transition: background-color var(--m-fast) var(--m-ease),
               transform var(--m-base) var(--m-spring);
 }
@@ -305,7 +305,7 @@
     var(--surface-2) 42%,
     var(--surface-1) 64%
   ) 0 0 / 220% 100%;
-  animation: gw-shimmer 1.4s linear infinite,
+  animation: global(gw-shimmer) 1.4s linear infinite,
              gw-fade var(--m-base) var(--m-ease) both;
   animation-delay: 0s, calc(var(--i, 0) * 34ms);
 }

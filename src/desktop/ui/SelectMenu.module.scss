@@ -64,7 +64,7 @@
   box-shadow: var(--shadow-lg);
   z-index: 40;
   transform-origin: top right;
-  animation: gw-zoom-in var(--m-base) var(--m-ease) both;
+  animation: global(gw-zoom-in) var(--m-base) var(--m-ease) both;
 }
 
 .option {
@@ -79,7 +79,7 @@
   font-weight: var(--fw-medium);
   color: var(--text-secondary);
   text-align: left;
-  animation: gw-slide-left var(--m-fast) var(--m-ease) both;
+  animation: global(gw-slide-left) var(--m-fast) var(--m-ease) both;
   animation-delay: calc(var(--i, 0) * 18ms);
   transition: background-color var(--m-fast) var(--m-ease),
               color var(--m-fast) var(--m-ease);

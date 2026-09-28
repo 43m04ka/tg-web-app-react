@@ -17,7 +17,7 @@
     oklch(1 0 0 / 0.06) 42%,
     transparent 64%
   ) 0 0 / 220% 100%;
-  animation: gw-shimmer 1.4s linear infinite;
+  animation: global(gw-shimmer) 1.4s linear infinite;
   opacity: 1;
   transition: opacity var(--m-base) var(--m-ease);
 }

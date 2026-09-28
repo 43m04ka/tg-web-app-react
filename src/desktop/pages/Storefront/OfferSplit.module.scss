@@ -8,7 +8,7 @@
   padding: var(--d-gap-8);
   background: oklch(0.06 0.008 264 / 0.72);
   backdrop-filter: blur(10px) saturate(0.7);
-  animation: gw-fade var(--m-base) var(--m-ease) both;
+  animation: global(gw-fade) var(--m-base) var(--m-ease) both;
 }
 
 .stage {
@@ -147,7 +147,7 @@
   font-weight: var(--fw-bold);
   box-shadow: var(--shadow-md);
   z-index: 2;
-  animation: gw-pop var(--m-slow) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-slow) var(--m-spring) both;
   animation-delay: 260ms;
 }
 
@@ -195,7 +195,7 @@
 }
 
 .overlayOut {
-  animation: gw-fade var(--m-fast) var(--m-ease-in) reverse both;
+  animation: global(gw-fade) var(--m-fast) var(--m-ease-in) reverse both;
 }
 
 .stageOut {

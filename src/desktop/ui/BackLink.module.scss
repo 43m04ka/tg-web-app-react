@@ -10,7 +10,7 @@
   color: var(--text-muted);
   font-size: var(--d-fs-sm);
   font-weight: var(--fw-semibold);
-  animation: gw-slide-left var(--m-base) var(--m-ease) both;
+  animation: global(gw-slide-left) var(--m-base) var(--m-ease) both;
   transition: background-color var(--m-fast) var(--m-ease),
               border-color var(--m-fast) var(--m-ease),
               color var(--m-fast) var(--m-ease),

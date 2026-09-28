@@ -9,7 +9,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: var(--d-gap-5);
-  animation: gw-rise var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise) var(--m-slow) var(--m-ease) both;
 }
 
 .title {
@@ -31,7 +31,7 @@
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
   box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.03);
-  animation: gw-zoom-in var(--m-slow) var(--m-spring) both;
+  animation: global(gw-zoom-in) var(--m-slow) var(--m-spring) both;
   animation-delay: 60ms;
   transition: border-color var(--m-base) var(--m-ease),
               box-shadow var(--m-base) var(--m-ease),
@@ -87,7 +87,7 @@
   background: var(--surface-3);
   color: var(--text-muted);
   font-size: var(--d-fs-sm);
-  animation: gw-pop var(--m-base) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-base) var(--m-spring) both;
   transition: background-color var(--m-fast) var(--m-ease),
               color var(--m-fast) var(--m-ease),
               transform var(--m-base) var(--m-ease);
@@ -104,7 +104,7 @@
   grid-template-columns: 252px minmax(0, 1fr);
   gap: var(--d-gap-8);
   align-items: start;
-  animation: gw-rise-sm var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise-sm) var(--m-slow) var(--m-ease) both;
   animation-delay: 110ms;
 }
 
@@ -134,7 +134,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--d-gap-2);
-  animation: gw-fade var(--m-base) var(--m-ease) both;
+  animation: global(gw-fade) var(--m-base) var(--m-ease) both;
 }
 
 .sortLabel {
@@ -176,7 +176,7 @@
   color: var(--text-secondary);
   font-size: var(--d-fs-xs);
   font-weight: var(--fw-semibold);
-  animation: gw-pop var(--m-base) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-base) var(--m-spring) both;
   transition: background-color var(--m-fast) var(--m-ease),
               color var(--m-fast) var(--m-ease),
               transform var(--m-fast) var(--m-ease);
@@ -213,7 +213,7 @@
     var(--surface-2) 42%,
     var(--surface-1) 64%
   ) 0 0 / 220% 100%;
-  animation: gw-shimmer 1.4s linear infinite,
+  animation: global(gw-shimmer) 1.4s linear infinite,
              gw-fade var(--m-base) var(--m-ease) both;
   animation-delay: 0s, calc(var(--i) * 34ms);
 }
@@ -270,7 +270,7 @@
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
   text-align: left;
-  animation: gw-rise var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise) var(--m-slow) var(--m-ease) both;
   animation-delay: calc(var(--i) * var(--m-stagger));
   transition: background-color var(--m-base) var(--m-ease),
               border-color var(--m-base) var(--m-ease),
@@ -313,7 +313,7 @@
   color: var(--text-secondary);
   font-size: var(--d-fs-sm);
   font-weight: var(--fw-semibold);
-  animation: gw-pop var(--m-base) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-base) var(--m-spring) both;
   animation-delay: calc(var(--i) * 30ms);
   transition: background-color var(--m-fast) var(--m-ease),
               color var(--m-fast) var(--m-ease),
@@ -338,7 +338,7 @@
   align-items: center;
   gap: var(--d-gap-2);
   border-radius: var(--radius-md);
-  animation: gw-slide-left var(--m-base) var(--m-ease) both;
+  animation: global(gw-slide-left) var(--m-base) var(--m-ease) both;
   animation-delay: calc(var(--i) * 30ms);
   transition: background-color var(--m-fast) var(--m-ease);
 }
@@ -406,13 +406,13 @@
   gap: var(--d-gap-3);
   padding: var(--d-gap-10) 0;
   text-align: center;
-  animation: gw-rise var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise) var(--m-slow) var(--m-ease) both;
 }
 
 .nothingIcon {
   font-size: 40px;
   opacity: 0.6;
-  animation: gw-pop var(--m-lazy) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-lazy) var(--m-spring) both;
 }
 
 .nothingTitle {

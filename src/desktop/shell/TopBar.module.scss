@@ -234,7 +234,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  animation: gw-pop var(--m-slow) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-slow) var(--m-spring) both;
 }
 
 .slot {

@@ -76,5 +76,5 @@
   font-size: var(--d-fs-xs);
   font-weight: var(--fw-semibold);
   color: var(--accent-text);
-  animation: gw-rise-sm var(--m-base) var(--m-ease) both;
+  animation: global(gw-rise-sm) var(--m-base) var(--m-ease) both;
 }

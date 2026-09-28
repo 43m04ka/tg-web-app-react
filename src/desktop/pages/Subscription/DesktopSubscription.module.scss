@@ -8,7 +8,7 @@
   display: flex;
   align-items: center;
   gap: var(--d-gap-4);
-  animation: gw-rise var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise) var(--m-slow) var(--m-ease) both;
 }
 
 .title {
@@ -61,7 +61,7 @@
   color: var(--sub-ink, var(--text));
   border: 1px solid var(--sub-edge, var(--border-subtle));
   overflow: hidden;
-  animation: gw-zoom-in var(--m-lazy) var(--m-ease) both;
+  animation: global(gw-zoom-in) var(--m-lazy) var(--m-ease) both;
 }
 
 .heroGlow {
@@ -110,7 +110,7 @@
   font-size: var(--d-fs-3xl);
   font-weight: var(--fw-bold);
   letter-spacing: -0.6px;
-  animation: gw-rise-sm var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise-sm) var(--m-slow) var(--m-ease) both;
 }
 
 .heroIcon {
@@ -144,14 +144,14 @@
 .heroValue {
   font-size: var(--d-fs-lg);
   font-weight: var(--fw-bold);
-  animation: gw-pop var(--m-base) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-base) var(--m-spring) both;
 }
 
 .block {
   display: flex;
   flex-direction: column;
   gap: var(--d-gap-4);
-  animation: gw-rise-sm var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise-sm) var(--m-slow) var(--m-ease) both;
 }
 
 .blockHead {
@@ -188,7 +188,7 @@
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
   text-align: left;
-  animation: gw-rise var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise) var(--m-slow) var(--m-ease) both;
   animation-delay: calc(var(--i, 0) * var(--m-stagger));
   transition: background-color var(--m-base) var(--m-ease),
               border-color var(--m-base) var(--m-ease),
@@ -260,7 +260,7 @@
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
   text-align: left;
-  animation: gw-rise-sm var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise-sm) var(--m-slow) var(--m-ease) both;
   animation-delay: calc(min(var(--i, 0), 8) * 40ms);
   transition: background-color var(--m-base) var(--m-ease),
               border-color var(--m-base) var(--m-ease),
@@ -407,7 +407,7 @@
   border-radius: var(--radius-xl);
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
-  animation: gw-rise var(--m-slow) var(--m-ease) both;
+  animation: global(gw-rise) var(--m-slow) var(--m-ease) both;
   animation-delay: 80ms;
 }
 
@@ -434,7 +434,7 @@
 .pickValue {
   font-size: var(--d-fs-lg);
   font-weight: var(--fw-bold);
-  animation: gw-pop var(--m-base) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-base) var(--m-spring) both;
 }
 
 .totalRow {
@@ -452,7 +452,7 @@
 .totalValue {
   font-size: var(--d-fs-2xl);
   font-weight: var(--fw-bold);
-  animation: gw-pop var(--m-slow) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-slow) var(--m-spring) both;
 }
 
 .perMonth {
@@ -502,7 +502,7 @@
   text-align: center;
   font-size: var(--d-fs-md);
   font-weight: var(--fw-bold);
-  animation: gw-pop var(--m-base) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-base) var(--m-spring) both;
 }
 
 .primary {
@@ -588,7 +588,7 @@
 
 .favoriteOn .favoriteIcon {
   fill: currentColor;
-  animation: gw-pop var(--m-slow) var(--m-spring) both;
+  animation: global(gw-pop) var(--m-slow) var(--m-spring) both;
 }
 
 .skeletonHead,
@@ -601,7 +601,7 @@
     var(--surface-2) 42%,
     var(--surface-1) 64%
   ) 0 0 / 220% 100%;
-  animation: gw-shimmer 1.4s linear infinite;
+  animation: global(gw-shimmer) 1.4s linear infinite;
 }
 
 .skeletonHead {

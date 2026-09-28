@@ -1,7 +1,7 @@
 // Домен зашит намеренно. Сборка уезжает и на прод, и на тестовый стенд Cloudflare,
 // а данные у них общие — стенд ходит в тот же сервер. Переменная окружения только
 // давала шанс собрать билд с пустым API и заметить это уже в боте.
-const DIRECT_HOSTS = ['gwstore.su', 'www.gwstore.su'];
+const DIRECT_HOSTS = ['gwstore.ru', 'www.gwstore.ru'];
 
 export const API_BASE_URL = typeof window !== 'undefined' && DIRECT_HOSTS.includes(window.location.hostname)
     ? `https://${window.location.hostname}`

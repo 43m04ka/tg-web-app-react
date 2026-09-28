@@ -702,7 +702,7 @@
   height: u(50);
   border-radius: u(16);
   background: linear-gradient(120deg, var(--accent), var(--accent-soft));
-  box-shadow: 0 u(10) u(24) u(-14) color-mix(in oklch, var(--accent) 80%, transparent);
+  box-shadow: 0 u(10) u(24) u(-14) color-mix(in srgb, var(--accent) 80%, transparent);
   font-size: u(15);
   font-weight: 800;
   color: var(--accent-contrast);

@@ -526,7 +526,7 @@
 .primary:hover:not(:disabled) {
   background: var(--accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px -12px oklch(0.7 0.145 25 / 0.6);
+  box-shadow: 0 12px 28px -12px color-mix(in srgb, var(--accent) 60%, transparent);
 }
 
 .primary:active:not(:disabled) {

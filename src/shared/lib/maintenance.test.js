@@ -2,6 +2,7 @@ import {
     MAINTENANCE_SECTIONS,
     remainingOf,
     closedCount,
+    closedDomain,
     closedSection,
     normalizeSections,
     sectionIdOf,
@@ -176,5 +177,20 @@ describe('remainingOf', () => {
 
     it('меньше минуты показывает нулём минут, а не пустотой', () => {
         expect(remainingOf(new Date('2026-09-10T12:00:20').toISOString(), now).left).toBe('0 мин');
+    });
+});
+
+describe('closedDomain', () => {
+    const domains = {'gwstore.ru': {enabled: true, until: '2026-10-01T10:00:00.000Z'}, 'evil.ru': {enabled: true}};
+
+    it('находит закрытый домен, в том числе с www', () => {
+        expect(closedDomain('gwstore.ru', domains)).toEqual({enabled: true, until: '2026-10-01T10:00:00.000Z'});
+        expect(closedDomain('www.gwstore.ru', domains)).not.toBeNull();
+    });
+
+    it('не трогает открытые и неизвестные домены', () => {
+        expect(closedDomain('gwstorebot.ru', domains)).toBeNull();
+        expect(closedDomain('evil.ru', domains)).toBeNull();
+        expect(closedDomain('gwstore.ru', null)).toBeNull();
     });
 });

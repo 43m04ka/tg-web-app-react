@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useState} from 'react';
 import {fetchMaintenanceMode} from '../shared/api/settings';
 import {INITIAL_DATA} from '../shared/lib/initialData';
-import {closedCount, normalizeSections} from '../shared/lib/maintenance';
+import {closedCount, closedDomain, normalizeDomains, normalizeSections} from '../shared/lib/maintenance';
 
 const BYPASS_STORAGE_KEY = 'maintenance_bypass';
 const ADMIN_PATHS = ['/admin', '/admin-panel'];
@@ -21,7 +21,8 @@ export function useMaintenance() {
     const [mode, setMode] = useState(() => ({
         enabled: !!INITIAL_DATA.maintenance.enabled,
         until: INITIAL_DATA.maintenance.until || null,
-        sections: normalizeSections(INITIAL_DATA.maintenance.sections)
+        sections: normalizeSections(INITIAL_DATA.maintenance.sections),
+        domains: normalizeDomains(INITIAL_DATA.maintenance.domains)
     }));
 
     const refresh = useCallback((signal) => fetchMaintenanceMode(signal).then((next) => {
@@ -30,9 +31,12 @@ export function useMaintenance() {
         setMode((prev) => ({
             enabled: next.enabled === null ? prev.enabled : next.enabled,
             until: next.until,
-            sections: normalizeSections(next.sections)
+            sections: normalizeSections(next.sections),
+            domains: normalizeDomains(next.domains)
         }));
     }), []);
+
+    const domain = closedDomain(window.location.hostname, mode.domains);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -40,7 +44,7 @@ export function useMaintenance() {
         return () => controller.abort();
     }, [refresh]);
 
-    const isClosed = mode.enabled || closedCount(mode.sections) > 0;
+    const isClosed = mode.enabled || Boolean(domain) || closedCount(mode.sections) > 0;
 
     useEffect(() => {
         if (!isClosed) return undefined;
@@ -64,8 +68,8 @@ export function useMaintenance() {
     const bypassed = hasBypass();
 
     return {
-        isMaintenance: mode.enabled && !bypassed,
-        maintenanceUntil: mode.until,
+        isMaintenance: (mode.enabled || Boolean(domain)) && !bypassed,
+        maintenanceUntil: mode.enabled ? mode.until : domain?.until || null,
         maintenanceSections: bypassed ? {} : mode.sections
     };
 }

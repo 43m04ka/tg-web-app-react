@@ -19,7 +19,7 @@ import {keys} from '../../platform/resources';
 import {askConfirm} from '../../platform/notify';
 import {signOut} from '../../platform/session';
 import {API_BASE_URL} from '../../../../shared/config/env';
-import {MAINTENANCE_SECTIONS, normalizeSections} from '../../../../shared/lib/maintenance';
+import {MAINTENANCE_DOMAINS, MAINTENANCE_SECTIONS, normalizeDomains, normalizeSections} from '../../../../shared/lib/maintenance';
 import {cancelAssociationsSchedule, fetchAssociationsSchedule, runAssociations, scheduleAssociations} from '../catalogs/api';
 import {fetchSettings, refreshStructure, updateSetting} from './api';
 import {formatMoscow, fromMoscowInput, toMoscowInput} from '../../platform/moscowTime';
@@ -48,6 +48,7 @@ export default function SettingsScreen() {
 
     const [until, setUntil] = useState('');
     const [sections, setSections] = useState({});
+    const [domains, setDomains] = useState({});
     const [runAt, setRunAt] = useState('');
 
     const plan = useMutation(scheduleAssociations, {
@@ -59,10 +60,12 @@ export default function SettingsScreen() {
     useEffect(() => {
         setUntil(toMoscowInput(values.maintenance_mode_until?.value));
         setSections(normalizeSections(values.maintenance_sections?.value));
+        setDomains(normalizeDomains(values.maintenance_domains?.value));
     }, [settings.data]);
 
     const maintenance = values.maintenance_mode?.value === true;
     const closedCount = Object.keys(sections).length;
+    const closedDomains = Object.keys(domains).length;
     const plannedAt = schedule.data?.scheduled ? schedule.data.runAtIso : null;
 
     const onMaintenance = useCallback(async (next) => {
@@ -112,6 +115,36 @@ export default function SettingsScreen() {
             : current));
     }, []);
 
+    const saveDomains = useCallback((next) => {
+        setDomains(next);
+        write.run({key: 'maintenance_domains', value: sectionsPayload(next), type: 'object'});
+    }, [write]);
+
+    const onDomain = useCallback(async (domain, next) => {
+        const answer = await askConfirm({
+            title: next ? `Закрыть ${domain.title}?` : `Открыть ${domain.title}?`,
+            text: next
+                ? 'Покупатели на этом домене увидят заглушку техработ, остальные домены продолжат работать.'
+                : 'Домен сразу вернётся к обычной работе.',
+            confirmText: next ? 'Закрыть домен' : 'Открыть домен',
+            tone: next ? 'danger' : 'accent',
+        });
+
+        if (!answer) return;
+
+        const draft = {...domains};
+        if (next) draft[domain.id] = {enabled: true, until: null};
+        else delete draft[domain.id];
+
+        saveDomains(draft);
+    }, [domains, saveDomains]);
+
+    const onDomainUntil = useCallback((id, text) => {
+        setDomains((current) => (current[id]
+            ? {...current, [id]: {enabled: true, until: fromMoscowInput(text) || null}}
+            : current));
+    }, []);
+
     const onAssociations = useCallback(async () => {
         const answer = await askConfirm({
             title: 'Обновить ассоциации?',
@@ -148,8 +181,8 @@ export default function SettingsScreen() {
                             <span className={style.cardTitle}>Технические работы</span>
                             {maintenance
                                 ? <Badge tone="danger">вся витрина закрыта</Badge>
-                                : closedCount
-                                    ? <Badge tone="warning">закрыто разделов: {closedCount}</Badge>
+                                : closedCount || closedDomains
+                                    ? <Badge tone="warning">закрыто доменов: {closedDomains}, разделов: {closedCount}</Badge>
                                     : <Badge tone="positive">всё открыто</Badge>}
                         </header>
 
@@ -178,6 +211,39 @@ export default function SettingsScreen() {
 
                                 <Toggle checked={maintenance} onChange={onMaintenance}/>
                             </li>
+                        </ul>
+
+                        <span className={style.scopeLabel}>Или только отдельные домены · время по МСК</span>
+
+                        <ul className={maintenance ? style.sectionsMuted : style.sections}>
+                            {MAINTENANCE_DOMAINS.map((domain) => {
+                                const state = domains[domain.id];
+
+                                return (
+                                    <li key={domain.id} className={state ? style.sectionClosed : style.section}>
+                                        <div className={style.sectionText}>
+                                            <span className={style.sectionTitle}>{domain.title}</span>
+                                            <span className={style.sectionHint}>{domain.hint}</span>
+                                        </div>
+
+                                        {state ? (
+                                            <Input
+                                                type="datetime-local"
+                                                value={toMoscowInput(state.until)}
+                                                title="Окончание работ на домене"
+                                                onChange={(event) => onDomainUntil(domain.id, event.target.value)}
+                                                onBlur={() => saveDomains(domains)}
+                                            />
+                                        ) : <span className={style.sectionOpen}>открыт</span>}
+
+                                        <Toggle
+                                            checked={Boolean(state)}
+                                            disabled={write.loading}
+                                            onChange={(next) => onDomain(domain, next)}
+                                        />
+                                    </li>
+                                );
+                            })}
                         </ul>
 
                         <span className={style.scopeLabel}>Или только отдельные разделы · время по МСК</span>
@@ -215,7 +281,7 @@ export default function SettingsScreen() {
 
                         {maintenance ? (
                             <span className={style.sectionHint}>
-                                Пока закрыта вся витрина, настройки разделов не действуют — они вступят в силу, когда её откроют.
+                                Пока закрыта вся витрина, настройки доменов и разделов не действуют — они вступят в силу, когда её откроют.
                             </span>
                         ) : null}
                     </section>

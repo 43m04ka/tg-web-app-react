@@ -10,7 +10,15 @@ export const MAINTENANCE_SECTIONS = [
     {id: 'more', title: 'Ещё', hint: 'Раздел с информационными блоками', paths: ['/more']}
 ];
 
+export const MAINTENANCE_DOMAINS = [
+    {id: 'gwstorebot.ru', title: 'gwstorebot.ru', hint: 'Telegram-приложение и покупатели с VPN'},
+    {id: 'gwstore.ru', title: 'gwstore.ru', hint: 'Основной сайт: браузер, ВК, MAX'},
+    {id: 'gwstore.su', title: 'gwstore.su', hint: 'Перенаправляет на gwstore.ru'},
+    {id: 'xn--b1abecuspq.xn--p1ai', title: 'геймворд.рф', hint: 'Перенаправляет на gwstore.ru'}
+];
+
 const SECTION_IDS = new Set(MAINTENANCE_SECTIONS.map((section) => section.id));
+const DOMAIN_IDS = new Set(MAINTENANCE_DOMAINS.map((domain) => domain.id));
 
 const covers = (pathname, path) => pathname === path || pathname.startsWith(`${path}/`);
 
@@ -24,11 +32,11 @@ export const sectionIdOf = (pathname) => {
 export const sectionTitleOf = (id) =>
     MAINTENANCE_SECTIONS.find((section) => section.id === id)?.title || null;
 
-export const normalizeSections = (raw) => {
+const pickEnabled = (raw, allowed) => {
     const source = raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
 
     return Object.entries(source).reduce((picked, [id, item]) => {
-        if (!SECTION_IDS.has(id)) return picked;
+        if (!allowed.has(id)) return picked;
 
         if (item !== true && item?.enabled !== true) return picked;
 
@@ -37,6 +45,16 @@ export const normalizeSections = (raw) => {
 
         return picked;
     }, {});
+};
+
+export const normalizeSections = (raw) => pickEnabled(raw, SECTION_IDS);
+
+export const normalizeDomains = (raw) => pickEnabled(raw, DOMAIN_IDS);
+
+export const closedDomain = (hostname, domains) => {
+    const id = String(hostname || '').toLowerCase().replace(/^www\./, '');
+
+    return normalizeDomains(domains)[id] || null;
 };
 
 export const closedSection = (pathname, sections) => {

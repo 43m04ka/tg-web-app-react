@@ -1,4 +1,5 @@
 import {API_BASE_URL} from '../config/env';
+import {ensurePaymentNetwork, VPN_BLOCKED} from '../lib/paymentNetwork';
 
 export const fetchSteamQuote = async (amount, signal) => {
     const response = await fetch(
@@ -12,6 +13,8 @@ export const fetchSteamQuote = async (amount, signal) => {
 };
 
 export const createSteamOrder = async (payload) => {
+    if (!(await ensurePaymentNetwork())) return VPN_BLOCKED;
+
     const response = await fetch(`${API_BASE_URL}/api/steam/create`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},

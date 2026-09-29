@@ -64,13 +64,13 @@ export default function DesktopMarketplace() {
                     <section className={steam.block}>
                         <h2 className={steam.blockTitle}>Выберите площадку:</h2>
 
-                        <div className={steam.presets}>
+                        <div className={`${steam.presets} ${style.presets}`}>
                             {MARKETPLACES.map((item, index) => (
                                 <button
                                     key={item.name}
                                     type="button"
                                     style={{'--i': index}}
-                                    className={`${steam.preset} ${style.preset} ${flow.form.marketplace === item.name ? steam.presetActive : ''} ${flow.isTouched && !flow.form.marketplace ? style.presetBad : ''}`}
+                                    className={`${steam.preset} ${style.preset} ${flow.form.marketplace === item.name ? `${steam.presetActive} ${style.presetOn}` : ''} ${flow.isTouched && !flow.form.marketplace ? style.presetBad : ''}`}
                                     onClick={() => flow.update('marketplace', item.name)}
                                 >
                                     <MarketplaceLogo logo={item.logo} className={style.logo}/>

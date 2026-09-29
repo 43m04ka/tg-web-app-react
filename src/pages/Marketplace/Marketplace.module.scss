@@ -27,9 +27,10 @@
 }
 
 .chipActive {
-  background: var(--accent-surface);
-  border-color: var(--accent-soft);
-  color: var(--accent-text);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 26%, transparent), color-mix(in srgb, var(--accent) 6%, transparent));
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 u(8) u(24) u(-8) color-mix(in srgb, var(--accent) 60%, transparent);
+  color: var(--text-primary, var(--text));
 }
 
 .chipBad {

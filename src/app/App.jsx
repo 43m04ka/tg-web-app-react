@@ -62,9 +62,17 @@ export default function App() {
     if (pathname === '/pay' || pathname === '/activate') {
         const page = pathname.slice(1);
 
+        if (isDesktop && page === 'activate') {
+            return isReady ? (
+                <Suspense fallback={<Splash/>}>
+                    <DesktopShell sections={maintenanceSections}/>
+                </Suspense>
+            ) : <Splash/>;
+        }
+
         return isDesktop ? (
             <Suspense fallback={<Splash/>}>
-                <StandalonePay page={page}/>
+                <StandalonePay/>
             </Suspense>
         ) : (
             <div className={style.app}>

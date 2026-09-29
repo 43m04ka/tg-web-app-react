@@ -350,16 +350,6 @@ export default function ServicesView({
                             <Faq items={servicesFaq(brand, regionName, offer)}/>
                         </section>
 
-                        <p className={style.legal}>
-                            Нажимая кнопку, вы соглашаетесь с{' '}
-                            <a href="https://gwstore.su/pk" target="_blank" rel="noreferrer">
-                                условиями обработки персональных данных
-                            </a>{' '}
-                            и{' '}
-                            <a href="https://gwstore.su/privacy" target="_blank" rel="noreferrer">
-                                пользовательским соглашением
-                            </a>.
-                        </p>
                     </>
                 )}
             </div>

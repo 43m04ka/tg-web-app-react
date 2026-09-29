@@ -37,6 +37,7 @@ import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import Spinner from '../../ui/Spinner';
 import DesktopPromo from './DesktopPromo';
 import {DesktopAccepted, DesktopFail, DesktopSuccess, DesktopWaiting} from './CheckoutStates';
+import LegalNote from '../../../shared/ui/LegalNote/LegalNote';
 import style from './DesktopCheckout.module.scss';
 
 const FORM_KEY = 'checkout:form';
@@ -615,16 +616,6 @@ export default function DesktopCheckout() {
                         <Faq items={faqFor(pageType)}/>
                     </section>
 
-                    <p className={style.legal}>
-                        Нажимая кнопку, вы соглашаетесь с{' '}
-                        <a href="https://gwstore.su/pk" target="_blank" rel="noreferrer">
-                            условиями обработки персональных данных
-                        </a>{' '}
-                        и{' '}
-                        <a href="https://gwstore.su/privacy" target="_blank" rel="noreferrer">
-                            пользовательским соглашением
-                        </a>.
-                    </p>
                 </div>
 
                 <aside className={style.panel}>
@@ -678,6 +669,8 @@ export default function DesktopCheckout() {
                         {flow.isSending ? <Spinner/> : null}
                         {flow.isSending ? 'Оформляем…' : isOnline ? 'Перейти к оплате' : 'Оформить заказ'}
                     </button>
+
+                    <LegalNote className={style.legal} action={isOnline ? 'Перейти к оплате' : 'Оформить заказ'}/>
                 </aside>
             </div>
         </div>

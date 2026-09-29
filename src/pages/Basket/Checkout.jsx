@@ -38,6 +38,7 @@ import AccountFields from './AccountFields';
 import ContactField from './ContactField';
 import PromoField from './PromoField';
 import {OrderAccepted, PaymentFail, PaymentSuccess, PaymentWaiting} from './PaymentScreens';
+import LegalNote from '../../shared/ui/LegalNote/LegalNote';
 import style from './Basket.module.scss';
 
 const FORM_KEY = 'checkout:form';
@@ -476,16 +477,6 @@ export default function Checkout() {
                     <Faq items={faqFor(pageType)}/>
                 </section>
 
-                <p className={style.legal}>
-                    Нажимая кнопку, вы соглашаетесь с{' '}
-                    <a href="https://gwstore.su/pk" target="_blank" rel="noreferrer">
-                        условиями обработки персональных данных
-                    </a>{' '}
-                    и{' '}
-                    <a href="https://gwstore.su/privacy" target="_blank" rel="noreferrer">
-                        пользовательским соглашением
-                    </a>.
-                </p>
             </div>
 
             <div className={style.actionBar}>
@@ -517,6 +508,8 @@ export default function Checkout() {
                         ? 'Оформляем…'
                         : isOnline ? 'Перейти к оплате' : 'Оформить заказ'}
                 </button>
+
+                <LegalNote className={style.legal} action={isOnline ? 'Перейти к оплате' : 'Оформить заказ'}/>
             </div>
         </div>
     );

@@ -4,6 +4,7 @@ import {amountError, cleanAmount, formatMoney, isAmountValid, parseAmount} from 
 import {SCREEN, usePayFlow} from '../../../pages/Pay/usePayFlow';
 import Spinner from '../../ui/Spinner';
 import StatusStage, {StatusActions, StatusRows, statusStyle} from '../../ui/StatusStage';
+import LegalNote from '../../../shared/ui/LegalNote/LegalNote';
 import steam from '../Steam/DesktopSteam.module.scss';
 import style from './DesktopPay.module.scss';
 
@@ -198,6 +199,8 @@ export default function DesktopPay() {
                         {flow.isSending ? <Spinner/> : null}
                         {flow.isSending ? 'Создаём счёт…' : 'Перейти к оплате'}
                     </button>
+
+                    <LegalNote className={steam.legal} action="Перейти к оплате"/>
                 </aside>
             </div>
         </div>

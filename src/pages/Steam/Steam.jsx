@@ -25,6 +25,7 @@ import {
 } from './steamModel';
 import {SCREEN, useSteamOrder} from './useSteamOrder';
 import {useSteamQuote} from './useSteamQuote';
+import LegalNote from '../../shared/ui/LegalNote/LegalNote';
 import style from './Steam.module.scss';
 
 const FORM_KEY = 'steam:form';
@@ -287,16 +288,6 @@ export default function Steam() {
                     <Faq items={STEAM_FAQ}/>
                 </section>
 
-                <p className={style.legal}>
-                    Нажимая кнопку, вы соглашаетесь с{' '}
-                    <a href="https://gwstore.su/pk" target="_blank" rel="noreferrer">
-                        условиями обработки персональных данных
-                    </a>{' '}
-                    и{' '}
-                    <a href="https://gwstore.su/privacy" target="_blank" rel="noreferrer">
-                        пользовательским соглашением
-                    </a>.
-                </p>
             </div>
 
             <div className={style.actionBar}>
@@ -313,6 +304,8 @@ export default function Steam() {
                         ? 'Создаём заказ…'
                         : quote ? `Пополнить на ${money(quote.topupAmount)}` : 'Пополнить баланс'}
                 </button>
+
+                <LegalNote className={style.legal} action="Пополнить баланс"/>
             </div>
         </div>
     );

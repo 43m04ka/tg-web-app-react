@@ -1,20 +1,37 @@
 import {useState} from 'react';
 import {getTelegramObject} from '../../shared/lib/telegram';
 import {sendMarketplaceOrder} from '../../shared/api/marketplaceOrder';
+import ozon from '../../shared/assets/marketplaces/ozon.png';
+import wildberries from '../../shared/assets/marketplaces/wildberries.png';
+import yandexMarket from '../../shared/assets/marketplaces/yandex-market.png';
+import megamarket from '../../shared/assets/marketplaces/megamarket.png';
+import avito from '../../shared/assets/marketplaces/avito.png';
 
-export const MARKETPLACES = ['Ozon', 'Wildberries', 'Яндекс Маркет', 'МегаМаркет', 'Avito', 'Другой'];
-
-export const FIELDS = [
-    {key: 'orderNumber', title: 'Номер заказа', placeholder: 'Например, 0472-XXXX', required: true},
-    {key: 'orderDate', title: 'Дата заказа', type: 'date', required: true},
-    {key: 'product', title: 'Что заказали', placeholder: 'Например, PS Plus Extra 3 мес', required: true, wide: true},
-    {key: 'name', title: 'Имя', placeholder: 'Как к вам обращаться', required: true},
-    {key: 'contact', title: 'Telegram / e-mail / телефон', placeholder: '@username', required: true},
-    {key: 'accountData', title: 'Данные для активации', placeholder: 'Логин/ID аккаунта PSN или Xbox', multiline: true, required: true},
-    {key: 'comment', title: 'Комментарий', placeholder: 'Необязательно', multiline: true}
+export const MARKETPLACES = [
+    {name: 'Ozon', logo: ozon},
+    {name: 'Wildberries', logo: wildberries},
+    {name: 'Яндекс Маркет', logo: yandexMarket},
+    {name: 'МегаМаркет', logo: megamarket},
+    {name: 'Avito', logo: avito},
+    {name: 'Другой', logo: null}
 ];
 
-const MAX_FILE_BYTES = 10 * 1024 * 1024;
+export const ORDER_FIELDS = [
+    {key: 'orderNumber', title: 'Номер заказа', placeholder: 'Например, 0472-XXXX'},
+    {key: 'orderDate', title: 'Дата заказа', type: 'date'}
+];
+
+export const NAME_FIELD = {key: 'name', title: 'Ваше имя', placeholder: 'Как к вам обращаться'};
+
+export const CONTACT_FIELDS = [
+    {key: 'telegram', title: 'Telegram', placeholder: '@username'},
+    {key: 'email', title: 'E-mail', placeholder: 'mail@example.com', type: 'email'},
+    {key: 'phone', title: 'Телефон', placeholder: '+7 900 000-00-00', type: 'tel'}
+];
+
+export const SUPPORT_URL = 'https://t.me/gwstore_admin';
+
+const REQUIRED = ['orderNumber', 'orderDate', 'name'];
 
 const initialForm = () => {
     const username = getTelegramObject().initDataUnsafe?.user?.username;
@@ -23,56 +40,38 @@ const initialForm = () => {
         marketplace: '',
         orderNumber: '',
         orderDate: '',
-        product: '',
         name: '',
-        contact: username ? `@${username}` : '',
-        accountData: '',
-        comment: ''
+        telegram: username ? `@${username}` : '',
+        email: '',
+        phone: ''
     };
 };
 
-const readFile = (file) => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(file);
-});
-
 export function useMarketplaceForm() {
     const [form, setForm] = useState(initialForm);
-    const [file, setFile] = useState(null);
-    const [isAgreed, setAgreed] = useState(false);
     const [isTouched, setTouched] = useState(false);
     const [isSending, setSending] = useState(false);
     const [isDone, setDone] = useState(false);
     const [error, setError] = useState('');
 
     const isMissing = (key) => !form[key].trim();
-    const isBad = (key) => isTouched && FIELDS.some((field) => field.key === key && field.required) && isMissing(key);
+    const hasContact = CONTACT_FIELDS.some((field) => !isMissing(field.key));
 
-    const isReady = Boolean(form.marketplace)
-        && FIELDS.every((field) => !field.required || !isMissing(field.key))
-        && isAgreed;
+    const isBad = (key) => isTouched && (REQUIRED.includes(key)
+        ? isMissing(key)
+        : CONTACT_FIELDS.some((field) => field.key === key) && !hasContact);
+
+    const isReady = Boolean(form.marketplace) && REQUIRED.every((key) => !isMissing(key)) && hasContact;
 
     const blockReason = !isTouched || isReady
         ? null
         : !form.marketplace
-            ? 'Выберите маркетплейс'
-            : FIELDS.some((field) => field.required && isMissing(field.key))
+            ? 'Выберите площадку'
+            : REQUIRED.some(isMissing)
                 ? 'Заполните обязательные поля'
-                : 'Подтвердите согласие на обработку данных';
+                : 'Укажите хотя бы один способ связи';
 
     const update = (key, value) => setForm((current) => ({...current, [key]: value}));
-
-    const pickFile = (picked) => {
-        if (picked && picked.size > MAX_FILE_BYTES) {
-            setError('Файл больше 10 МБ');
-            return;
-        }
-
-        setError('');
-        setFile(picked || null);
-    };
 
     const submit = async () => {
         setTouched(true);
@@ -83,11 +82,7 @@ export function useMarketplaceForm() {
         setError('');
 
         try {
-            const attached = file
-                ? {name: file.name, type: file.type, data: await readFile(file)}
-                : null;
-
-            const result = await sendMarketplaceOrder({...form, agree: true, file: attached});
+            const result = await sendMarketplaceOrder({...form, agree: true});
 
             if (!result.ok) {
                 setError(typeof result.error === 'string' && result.httpStatus < 500
@@ -106,16 +101,5 @@ export function useMarketplaceForm() {
         }
     };
 
-    const reset = () => {
-        setForm(initialForm());
-        setFile(null);
-        setAgreed(false);
-        setTouched(false);
-        setDone(false);
-    };
-
-    return {
-        form, file, isAgreed, isTouched, isSending, isDone, isReady, error, blockReason,
-        isBad, update, pickFile, setAgreed, submit, reset
-    };
+    return {form, isTouched, isSending, isDone, isReady, error, blockReason, isBad, update, submit};
 }

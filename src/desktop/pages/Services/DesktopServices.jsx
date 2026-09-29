@@ -25,6 +25,7 @@ import {SCREEN, useCodeOrder} from '../../../pages/Services/useCodeOrder';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import Spinner from '../../ui/Spinner';
 import {CodeDoneDesktop, CodeFailDesktop, CodeStalledDesktop, CodeWaitingDesktop} from './ServicesStates';
+import LegalNote from '../../../shared/ui/LegalNote/LegalNote';
 import style from './DesktopServices.module.scss';
 
 const FORM_KEY = 'services:form';
@@ -452,16 +453,6 @@ export default function DesktopServices() {
                         <Faq items={servicesFaq(brand, view.regionName, offer)}/>
                     </section>
 
-                    <p className={style.legal}>
-                        Нажимая кнопку, вы соглашаетесь с{' '}
-                        <a href="https://gwstore.su/pk" target="_blank" rel="noreferrer">
-                            условиями обработки персональных данных
-                        </a>{' '}
-                        и{' '}
-                        <a href="https://gwstore.su/privacy" target="_blank" rel="noreferrer">
-                            пользовательским соглашением
-                        </a>.
-                    </p>
                 </div>
 
                 <aside className={style.panel}>
@@ -546,6 +537,8 @@ export default function DesktopServices() {
                         {flow.isSending ? <Spinner/> : null}
                         {flow.isSending ? 'Создаём заказ…' : 'Оплатить'}
                     </button>
+
+                    <LegalNote className={style.legal} action="Оплатить"/>
                 </aside>
             </div>
         </div>

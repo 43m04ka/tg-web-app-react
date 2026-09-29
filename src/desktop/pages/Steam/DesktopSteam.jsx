@@ -20,6 +20,7 @@ import {SCREEN, useSteamOrder} from '../../../pages/Steam/useSteamOrder';
 import {useSteamQuote} from '../../../pages/Steam/useSteamQuote';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import Spinner from '../../ui/Spinner';
+import LegalNote from '../../../shared/ui/LegalNote/LegalNote';
 import {
     SteamCreditingDesktop,
     SteamDoneDesktop,
@@ -311,16 +312,6 @@ export default function DesktopSteam() {
                         <Faq items={STEAM_FAQ}/>
                     </section>
 
-                    <p className={style.legal}>
-                        Нажимая кнопку, вы соглашаетесь с{' '}
-                        <a href="https://gwstore.su/pk" target="_blank" rel="noreferrer">
-                            условиями обработки персональных данных
-                        </a>{' '}
-                        и{' '}
-                        <a href="https://gwstore.su/privacy" target="_blank" rel="noreferrer">
-                            пользовательским соглашением
-                        </a>.
-                    </p>
                 </div>
 
                 <aside className={style.panel}>
@@ -372,6 +363,8 @@ export default function DesktopSteam() {
                             ? 'Создаём заказ…'
                             : quote ? `Пополнить на ${money(quote.topupAmount)}` : 'Пополнить баланс'}
                     </button>
+
+                    <LegalNote className={style.legal} action="Пополнить баланс"/>
                 </aside>
             </div>
         </div>

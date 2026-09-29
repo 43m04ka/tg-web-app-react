@@ -14,6 +14,7 @@ import {bestValueOffer, isManual, isSellable, resolveSelection} from './services
 import ServicesView from './ServicesView';
 import {useCodeCatalog} from './useCodeCatalog';
 import {SCREEN, useCodeOrder} from './useCodeOrder';
+import LegalNote from '../../shared/ui/LegalNote/LegalNote';
 import style from './Services.module.scss';
 
 const FORM_KEY = 'services:form';
@@ -221,6 +222,8 @@ export default function Services() {
                             <span className={style.primaryPrice}>{money(offer.price)}</span>
                         ) : null}
                     </button>
+
+                    <LegalNote className={style.legal} action="Оплатить"/>
                 </>
             )}
         />

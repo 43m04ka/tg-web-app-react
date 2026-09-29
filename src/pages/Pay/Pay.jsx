@@ -4,6 +4,7 @@ import {hapticImpact, hapticSelection} from '../../shared/lib/haptic';
 import {isEmailValid} from '../Basket/cartModel';
 import {amountError, cleanAmount, formatMoney, isAmountValid, parseAmount} from './payModel';
 import {SCREEN, usePayFlow} from './usePayFlow';
+import LegalNote from '../../shared/ui/LegalNote/LegalNote';
 import steam from '../Steam/Steam.module.scss';
 import style from './Pay.module.scss';
 
@@ -236,6 +237,8 @@ export default function Pay() {
                         ? 'Создаём счёт…'
                         : isAmountReady ? `Оплатить ${formatMoney(parseAmount(amountText))}` : 'Перейти к оплате'}
                 </button>
+
+                <LegalNote className={steam.legal} action={isAmountReady ? 'Оплатить' : 'Перейти к оплате'}/>
             </div>
         </div>
     );

@@ -56,6 +56,14 @@ export const GuideIcon = (props) => (
     </svg>
 );
 
+export const NewsIcon = (props) => (
+    <svg viewBox="0 0 24 24" {...props}>
+        <path d="M4.6 5.2h11.2v12.6a1.6 1.6 0 0 0 3.2 0V9h-3.2" {...stroke}/>
+        <path d="M4.6 5.2v12.6a1.6 1.6 0 0 0 1.6 1.6h11.2" {...stroke}/>
+        <path d="M7.6 9h5.2M7.6 12.2h5.2M7.6 15.4h3" {...stroke}/>
+    </svg>
+);
+
 export const ChevronIcon = (props) => (
     <svg viewBox="0 0 24 24" {...props}>
         <path d="m9.5 5.5 6.5 6.5-6.5 6.5" {...stroke} strokeWidth={2}/>

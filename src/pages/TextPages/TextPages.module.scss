@@ -1,0 +1,348 @@
+@import '../../app/styles/units';
+
+.mobile {
+  --tp-font: #{u(14.5)};
+
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  display: flex;
+  flex-direction: column;
+  gap: u(16);
+  padding-left: u(20);
+  padding-right: u(20);
+  background: var(--bg-elevated);
+  font-size: var(--tp-font);
+  animation: fade 225ms var(--ease-out) backwards;
+}
+
+.desktop {
+  --tp-font: 15.5px;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--d-gap-6);
+  font-size: var(--tp-font);
+}
+
+.desktopNarrow {
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.sheet {
+  padding: 2.2em 2.6em 2.6em;
+  border: 1px solid var(--border-subtle);
+  border-radius: 24px;
+  background: linear-gradient(180deg, oklch(1 0 0 / 0.045), oklch(1 0 0 / 0.02));
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.05);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--d-gap-4);
+}
+
+.headTitle {
+  margin: 0;
+  font-size: var(--d-fs-3xl);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.6px;
+  color: var(--text);
+}
+
+.article {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1em;
+  min-width: 0;
+  animation: rise 260ms var(--ease-out) backwards;
+}
+
+.meta,
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65em;
+}
+
+.tag {
+  padding: 0.22em 0.7em;
+  border: 1px solid var(--accent-soft);
+  border-radius: 999px;
+  background: var(--accent-surface);
+  font-size: 0.78em;
+  font-weight: var(--fw-semibold);
+  line-height: 1.4;
+  color: var(--accent-text, var(--accent));
+}
+
+.date {
+  font-size: 0.84em;
+  color: var(--text-muted);
+}
+
+.title {
+  margin: 0;
+  font-size: 1.85em;
+  font-weight: var(--fw-bold);
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.mobile .title {
+  font-size: 1.5em;
+}
+
+.cover {
+  display: block;
+  width: 100%;
+  max-height: 30em;
+  border: 1px solid var(--border-subtle);
+  border-radius: 1.1em;
+  background: var(--surface-2);
+  object-fit: cover;
+}
+
+.skeleton,
+.cardSkeleton {
+  background: linear-gradient(100deg, var(--surface-2) 20%, var(--surface-3) 50%, var(--surface-2) 80%);
+  background-size: 220% 100%;
+  animation: shimmer 1.3s linear infinite;
+}
+
+.skeleton {
+  display: block;
+  height: 0.95em;
+  border-radius: 0.5em;
+}
+
+.skeletonTitle {
+  width: 62%;
+  height: 1.9em;
+  margin-bottom: 0.6em;
+}
+
+.listing {
+  display: flex;
+  flex-direction: column;
+  gap: 1.3em;
+  min-width: 0;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55em;
+}
+
+.chip {
+  padding: 0.55em 1em;
+  border: 1px solid var(--border);
+  border-radius: 0.9em;
+  background: var(--surface-2);
+  font-size: 0.88em;
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.chip:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.chipActive,
+.chipActive:hover {
+  border-color: var(--accent-soft);
+  background: var(--accent-surface);
+  color: var(--accent-text, var(--accent));
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.8em;
+}
+
+.desktop .cards {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--d-gap-5);
+}
+
+.card {
+  display: flex;
+  gap: 0.85em;
+  min-width: 0;
+  padding: 0.7em;
+  border: 1px solid var(--border-subtle);
+  border-radius: 1.15em;
+  background: var(--surface-1);
+  color: inherit;
+  text-decoration: none;
+  animation: rise 260ms var(--ease-out) backwards;
+  animation-delay: calc(var(--i, 0) * 28ms);
+  transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
+}
+
+.desktop .card {
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.desktop .card:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+  transform: translateY(-3px);
+}
+
+.cardSkeleton {
+  min-height: 6.2em;
+  animation: shimmer 1.3s linear infinite;
+}
+
+.desktop .cardSkeleton {
+  min-height: 18em;
+}
+
+.cardCover {
+  flex: none;
+  width: 6.4em;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 0.75em;
+  background: var(--surface-3);
+}
+
+.desktop .cardCover {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 0;
+}
+
+.cardCover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 320ms ease;
+}
+
+.desktop .card:hover .cardCover img {
+  transform: scale(1.04);
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+  min-width: 0;
+}
+
+.desktop .cardBody {
+  gap: 0.55em;
+  padding: 1em 1.1em 1.2em;
+}
+
+.cardTitle {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.98em;
+  font-weight: var(--fw-semibold);
+  line-height: 1.32;
+  color: var(--text);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.desktop .cardTitle {
+  font-size: 1.04em;
+}
+
+.cardText {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.86em;
+  line-height: 1.45;
+  color: var(--text-muted);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.mobile .cardText {
+  display: none;
+}
+
+.more {
+  align-self: center;
+  min-height: 2.9em;
+  padding: 0 1.6em;
+  border: 1px solid var(--border);
+  border-radius: 0.95em;
+  background: var(--surface-2);
+  font-size: 0.93em;
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.more:hover:not(:disabled) {
+  border-color: var(--accent-soft);
+  background: var(--accent-surface);
+}
+
+.more:disabled {
+  opacity: 0.6;
+}
+
+@media (max-width: 1100px) {
+  .desktop .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 120% 0;
+  }
+  to {
+    background-position: -120% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile,
+  .article,
+  .card,
+  .skeleton,
+  .cardSkeleton {
+    animation: none;
+  }
+}

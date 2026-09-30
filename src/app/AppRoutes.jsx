@@ -14,6 +14,10 @@ import Steam from '../pages/Steam/Steam';
 import Services from '../pages/Services/Services';
 import Subscription from '../pages/Subscription/Subscription';
 import Pay from '../pages/Pay/Pay';
+import TextPage from '../pages/TextPages/TextPage';
+import TextList from '../pages/TextPages/TextList';
+import LegacyPost from '../pages/TextPages/LegacyPost';
+import {LEGACY_ROUTES} from '../shared/textPages/textPageModel';
 import {readPending} from '../pages/Pay/payModel';
 import {useSessionStore} from '../store/useSessionStore';
 import {useStructureStore} from '../store/useStructureStore';
@@ -124,6 +128,15 @@ export default function AppRoutes({sections}) {
                 <Route path="/more" element={<RequirePage><More/></RequirePage>}/>
                 <Route path="/favorites" element={<RequirePage><Favorites/></RequirePage>}/>
                 <Route path="/history" element={<RequirePage><OrderHistory/></RequirePage>}/>
+                <Route path="/info/:slug" element={<TextPage section="page"/>}/>
+                <Route path="/faq" element={<TextList section="guide"/>}/>
+                <Route path="/faq/:slug" element={<TextPage section="guide"/>}/>
+                <Route path="/news" element={<TextList section="news"/>}/>
+                <Route path="/news/:slug" element={<TextPage section="news"/>}/>
+                <Route path="/tpost/:legacy" element={<LegacyPost/>}/>
+                {LEGACY_ROUTES.map((route) => (
+                    <Route key={route.path} path={route.path} element={<Navigate to={route.to} replace/>}/>
+                ))}
                 <Route path="*" element={<Navigate to="/" replace/>}/>
             </Routes>
         </div>

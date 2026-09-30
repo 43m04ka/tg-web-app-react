@@ -1,7 +1,7 @@
 import React from 'react';
 
-export const PRIVACY_URL = 'https://gwstore.su/pk';
-export const OFFER_URL = 'https://gwstore.su/privacy';
+export const PRIVACY_URL = '/info/pk';
+export const OFFER_URL = '/info/privacy';
 
 export default function LegalNote({action, className}) {
     return (

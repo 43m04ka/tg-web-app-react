@@ -130,7 +130,7 @@ export default function More() {
         <div className={style.legal}>
             {group.items.map((item) => (
                 <button key={item.key} type="button" className={style.legalLink}
-                        onClick={() => openLink(item.url)}>
+                        onClick={() => press(item)}>
                     {item.name}
                 </button>
             ))}

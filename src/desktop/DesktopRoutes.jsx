@@ -13,6 +13,10 @@ import DesktopSubscription from './pages/Subscription/DesktopSubscription';
 import DesktopProduct from './pages/Product/DesktopProduct';
 import DesktopPay from './pages/Pay/DesktopPay';
 import DesktopMarketplace from './pages/Marketplace/DesktopMarketplace';
+import DesktopTextPage from './pages/TextPages/DesktopTextPage';
+import DesktopTextList from './pages/TextPages/DesktopTextList';
+import LegacyPost from '../pages/TextPages/LegacyPost';
+import {LEGACY_ROUTES} from '../shared/textPages/textPageModel';
 import {readPending} from '../pages/Pay/payModel';
 import Maintenance from '../pages/Maintenance/Maintenance';
 import {useSessionStore} from '../store/useSessionStore';
@@ -91,6 +95,15 @@ export default function DesktopRoutes({sections}) {
             <Route path="/more" element={<EnsurePage><DesktopMore/></EnsurePage>}/>
             <Route path="/favorites" element={<EnsurePage><DesktopFavorites/></EnsurePage>}/>
             <Route path="/history" element={<EnsurePage><DesktopHistory/></EnsurePage>}/>
+            <Route path="/info/:slug" element={<DesktopTextPage section="page"/>}/>
+            <Route path="/faq" element={<DesktopTextList section="guide"/>}/>
+            <Route path="/faq/:slug" element={<DesktopTextPage section="guide"/>}/>
+            <Route path="/news" element={<DesktopTextList section="news"/>}/>
+            <Route path="/news/:slug" element={<DesktopTextPage section="news"/>}/>
+            <Route path="/tpost/:legacy" element={<LegacyPost/>}/>
+            {LEGACY_ROUTES.map((route) => (
+                <Route key={route.path} path={route.path} element={<Navigate to={route.to} replace/>}/>
+            ))}
             <Route path="*" element={<Navigate to="/" replace/>}/>
         </Routes>
     );

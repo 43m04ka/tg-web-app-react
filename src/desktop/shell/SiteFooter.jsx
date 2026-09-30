@@ -1,36 +1,28 @@
-import React, {useCallback, useContext} from 'react';
+import React, {useCallback, useContext, useMemo} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {useSessionStore} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
 import {subscriptionRoute} from '../../shared/lib/pageRoutes';
+import {footerLinks} from '../../shared/textPages/textPageModel';
+import {useTextPageLinks} from '../../shared/textPages/useTextPages';
 import {ScrollAreaContext} from './ScrollAreaContext';
 import {useStorefrontScope} from './StorefrontScope';
 import logo from '../assets/logo-full.png';
 import paymentLogos from '../assets/payment-logos.png';
 import style from './SiteFooter.module.scss';
 
-const COLUMNS = [
-    {
-        title: 'Магазин',
-        links: [
-            {label: 'Игры для PlayStation и Xbox', to: '/'},
-            {label: 'PS Plus', to: subscriptionRoute('ps_tur_psplus'), catalog: 'ps_tur_psplus'},
-            {label: 'Game Pass', to: subscriptionRoute('xbox_us_gamepass'), catalog: 'xbox_us_gamepass'},
-            {label: 'Новости', href: 'https://vk.com/gwstore.news'},
-            {label: 'Приложение в Telegram', href: 'https://t.me/gwstore_bot'}
-        ]
-    },
-    {
-        title: 'Покупателям',
-        links: [
-            {label: 'FAQ'},
-            {label: 'Контакты'},
-            {label: 'Оплата и доставка'},
-            {label: 'Политика конфиденциальности'},
-            {label: 'Правовая информация'}
-        ]
-    }
-];
+const STORE_COLUMN = {
+    title: 'Магазин',
+    links: [
+        {label: 'Игры для PlayStation и Xbox', to: '/'},
+        {label: 'PS Plus', to: subscriptionRoute('ps_tur_psplus'), catalog: 'ps_tur_psplus'},
+        {label: 'Game Pass', to: subscriptionRoute('xbox_us_gamepass'), catalog: 'xbox_us_gamepass'},
+        {label: 'Новости', to: '/news'},
+        {label: 'Приложение в Telegram', href: 'https://t.me/gwstore_bot'}
+    ]
+};
+
+const GUIDES_LINK = {label: 'Инструкции', to: '/faq'};
 
 const SOCIALS = [
     {label: 'ВКонтакте', href: 'https://vk.ru/gwstoreru', path: 'm9.489.004.729-.003h3.564l.73.003.914.01.433.007.418.011.403.014.388.016.374.021.36.025.345.03.333.033c1.74.196 2.933.616 3.833 1.516.9.9 1.32 2.092 1.516 3.833l.034.333.029.346.025.36.02.373.025.588.012.41.013.644.009.915.004.98-.001 3.313-.003.73-.01.914-.007.433-.011.418-.014.403-.016.388-.021.374-.025.36-.03.345-.033.333c-.196 1.74-.616 2.933-1.516 3.833-.9.9-2.092 1.32-3.833 1.516l-.333.034-.346.029-.36.025-.373.02-.588.025-.41.012-.644.013-.915.009-.98.004-3.313-.001-.73-.003-.914-.01-.433-.007-.418-.011-.403-.014-.388-.016-.374-.021-.36-.025-.345-.03-.333-.033c-1.74-.196-2.933-.616-3.833-1.516-.9-.9-1.32-2.092-1.516-3.833l-.034-.333-.029-.346-.025-.36-.02-.373-.025-.588-.012-.41-.013-.644-.009-.915-.004-.98.001-3.313.003-.73.01-.914.007-.433.011-.418.014-.403.016-.388.021-.374.025-.36.03-.345.033-.333c.196-1.74.616-2.933 1.516-3.833.9-.9 2.092-1.32 3.833-1.516l.333-.034.346-.029.36-.025.373-.02.588-.025.41-.012.644-.013.915-.009ZM6.79 7.3H4.05c.13 6.24 3.25 9.99 8.72 9.99h.31v-3.57c2.01.2 3.53 1.67 4.14 3.57h2.84c-.78-2.84-2.83-4.41-4.11-5.01 1.28-.74 3.08-2.54 3.51-4.98h-2.58c-.56 1.98-2.22 3.78-3.8 3.95V7.3H10.5v6.92c-1.6-.4-3.62-2.34-3.71-6.92Z'},
@@ -50,6 +42,12 @@ export default function SiteFooter() {
 
     const catalogs = useStructureStore((store) => store.catalogs);
     const setPageId = useSessionStore((store) => store.setPageId);
+    const textPages = useTextPageLinks();
+
+    const columns = useMemo(() => [
+        STORE_COLUMN,
+        {title: 'Покупателям', links: [GUIDES_LINK, ...footerLinks(textPages)]}
+    ], [textPages]);
 
     const openLink = useCallback((event, link) => {
         event.preventDefault();
@@ -97,7 +95,7 @@ export default function SiteFooter() {
                     </div>
 
                     <nav className={style.columns}>
-                        {COLUMNS.map((column) => (
+                        {columns.map((column) => (
                             <div key={column.title} className={style.column}>
                                 <span className={style.heading}>{column.title}</span>
                                 {column.links.map((link) => (link.to || link.href ? (

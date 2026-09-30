@@ -39,6 +39,9 @@ export const keys = {
     popular: ['structure', 'popular'],
     media: ['media'],
     mediaFolder: (path) => ['media', 'folder', path || ''],
+    textPages: ['text-pages'],
+    textPageList: (section) => ['text-pages', 'list', section],
+    textPage: (id) => ['text-pages', 'card', id],
 };
 
 export const invalidatedBy = {

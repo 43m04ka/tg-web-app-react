@@ -10,6 +10,7 @@ import storefront from '../modules/storefront/module';
 import start from '../modules/start/module';
 import deals from '../modules/deals/module';
 import popular from '../modules/popular/module';
+import pages from '../modules/pages/module';
 import products from '../modules/products/module';
 import catalogs from '../modules/catalogs/module';
 import prices from '../modules/prices/module';
@@ -28,7 +29,7 @@ export const GROUPS = [
     {id: 'tools', title: 'Инструменты'},
 ];
 
-const REGISTERED = [overview, orders, marketplace, customers, steam, payments, promo, products, catalogs, prices, services, storefront, start, popular, deals, broadcast, media, settings, access, kit];
+const REGISTERED = [overview, orders, marketplace, customers, steam, payments, promo, products, catalogs, prices, services, storefront, start, popular, pages, deals, broadcast, media, settings, access, kit];
 
 export const modules = REGISTERED
     .slice()

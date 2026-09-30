@@ -3,6 +3,7 @@ import {
     CommunityIcon,
     GuideIcon,
     HeartIcon,
+    NewsIcon,
     OrdersIcon,
     SupportIcon
 } from './MoreIcons';
@@ -57,7 +58,7 @@ export const MENU_GROUPS = [
                 key: 'faq-ps',
                 name: 'Инструкции для PS4 / PS5',
                 bots: ['vk-ps', 'vk-xbox', 'tg', 'web'],
-                url: 'https://gwstore.su/faq_playstation',
+                to: '/faq?tag=ps',
                 Icon: GuideIcon,
                 color: '#4f8dfd'
             },
@@ -65,9 +66,17 @@ export const MENU_GROUPS = [
                 key: 'faq-xbox',
                 name: 'Инструкции для Xbox',
                 bots: ['vk-xbox', 'vk-ps', 'tg', 'web'],
-                url: 'https://gwstore.su/faq_xbox',
+                to: '/faq?tag=xbox',
                 Icon: GuideIcon,
                 color: '#2fbf5e'
+            },
+            {
+                key: 'news',
+                name: 'Новости',
+                bots: ['vk-xbox', 'vk-ps', 'tg', 'web'],
+                to: '/news',
+                Icon: NewsIcon,
+                color: '#f5a524'
             }
         ]
     },
@@ -122,13 +131,13 @@ export const MENU_GROUPS = [
                 key: 'terms',
                 name: 'Пользовательское соглашение',
                 bots: ['vk-xbox', 'vk-ps', 'tg', 'web'],
-                url: 'https://gwstore.su/privacy'
+                to: '/info/privacy'
             },
             {
                 key: 'privacy',
                 name: 'Политика конфиденциальности',
                 bots: ['vk-xbox', 'vk-ps', 'tg', 'web'],
-                url: 'https://gwstore.su/pk'
+                to: '/info/pk'
             }
         ]
     }

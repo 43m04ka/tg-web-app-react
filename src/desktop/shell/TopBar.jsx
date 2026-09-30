@@ -7,6 +7,8 @@ import {usePlatform} from '../../shared/hooks/usePlatform';
 import {pageCartItems} from '../../pages/Basket/cartModel';
 import {resetSearchState} from '../../shared/lib/searchMemory';
 import {navLabel, sectionList, storefrontList} from '../model/desktopNav';
+import {menuLinks} from '../../shared/textPages/textPageModel';
+import {useTextPageLinks} from '../../shared/textPages/useTextPages';
 import {useScrolled} from './useScrolled';
 import {BasketIcon, UserIcon} from './DesktopIcons';
 import logo from '../assets/logo-full.png';
@@ -92,6 +94,14 @@ export default function TopBar({onSearchOpenChange}) {
         go('/');
     }, [go, setScopeId]);
 
+    const textPages = useTextPageLinks();
+
+    const menuItems = useMemo(() => [
+        {key: 'news', label: 'Новости', to: '/news'},
+        {key: 'guides', label: 'Инструкции', to: '/faq'},
+        ...menuLinks(textPages)
+    ].map((item) => ({key: item.key, label: item.label, onSelect: () => go(item.to)})), [go, textPages]);
+
     const pickStorefront = useCallback((item) => {
         setScopeId(item.id);
         setPageId(item.id);
@@ -151,7 +161,7 @@ export default function TopBar({onSearchOpenChange}) {
                 />
 
                 <div className={style.actions} data-hidden={isFocusMode ? '' : undefined}>
-                    <MenuDrop/>
+                    <MenuDrop items={menuItems}/>
 
                     <div
                         className={style.slot}

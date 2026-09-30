@@ -35,7 +35,7 @@ export default function StartPreview({rows, pages, popular}) {
     return (
         <div className={style.phone}>
             <div className={`${style.phoneScreen} ${style.startScreen}`}>
-                <div className={client.screen} style={{paddingTop: 'calc(14 * var(--u))', paddingBottom: 'calc(32 * var(--u))'}}>
+                <div className={client.screen} style={{paddingTop: 'calc(14 * var(--u))', paddingBottom: 'calc(32 * var(--u))', overflow: 'visible', overscrollBehavior: 'auto'}}>
                     <h1 className={client.title}>
                         Геймворд — игры и подписки для <span className={client.ps}>PlayStation</span> и{' '}
                         <span className={client.xbox}>Xbox</span>

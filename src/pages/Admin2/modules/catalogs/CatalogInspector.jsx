@@ -28,10 +28,12 @@ import {SOURCES, pageTitleOf, saleState, sourceOfPage} from './catalogsModel';
 import {formatMoscow, fromMoscowInput} from '../../platform/moscowTime';
 import {useResource} from '../../platform/useResource';
 import ParseForm from './ParseForm';
+import CatalogPrices from './CatalogPrices';
 import style from './CatalogsScreen.module.scss';
 
 const TABS = [
     {id: 'parse', title: 'Парс'},
+    {id: 'prices', title: 'Цены'},
     {id: 'service', title: 'Обслуживание'}
 ];
 
@@ -194,6 +196,8 @@ export default function CatalogInspector({catalog, pages, queue, active = true, 
                     />
                 </InspectorSection>
             ) : null}
+
+            {tab === 'prices' ? <CatalogPrices catalog={catalog} source={sourceOfPage(catalog, pages)}/> : null}
 
             {tab === 'service' ? (
                 <div className={style.svc}>

@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {BurgerIcon, ChevronIcon} from './DesktopIcons';
 import style from './MenuDrop.module.scss';
 
-export default function MenuDrop({items = []}) {
+export default function MenuDrop({groups = [], onSelect}) {
     const [isOpen, setOpen] = useState(false);
     const rootRef = useRef(null);
 
@@ -38,20 +38,25 @@ export default function MenuDrop({items = []}) {
 
             {isOpen ? (
                 <div className={style.menu} role="menu">
-                    {items.length ? items.map((item, index) => (
-                        <button
-                            key={item.key}
-                            type="button"
-                            role="menuitem"
-                            className={style.option}
-                            style={{'--i': index}}
-                            onClick={() => {
-                                setOpen(false);
-                                item.onSelect?.();
-                            }}
-                        >
-                            {item.label}
-                        </button>
+                    {groups.length ? groups.map((group) => (
+                        <div key={group.key} className={style.group} role="group" aria-label={group.title}>
+                            <span className={style.heading}>{group.title}</span>
+
+                            {group.items.map((item) => (
+                                <button
+                                    key={item.key}
+                                    type="button"
+                                    role="menuitem"
+                                    className={style.option}
+                                    onClick={() => {
+                                        setOpen(false);
+                                        onSelect?.(item);
+                                    }}
+                                >
+                                    {item.label}
+                                </button>
+                            ))}
+                        </div>
                     )) : (
                         <span className={style.empty}>Раздел наполняется</span>
                     )}

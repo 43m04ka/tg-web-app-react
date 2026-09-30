@@ -1,7 +1,6 @@
 import React, {useCallback, useMemo, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useSessionStore} from '../../store/useSessionStore';
-import {useStructureStore} from '../../store/useStructureStore';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
 import {hapticImpact} from '../../shared/lib/haptic';
 import {getTelegramObject} from '../../shared/lib/telegram';
@@ -15,7 +14,6 @@ import {
 } from '../Account/orderStatus';
 import {ChevronIcon, ExternalIcon} from './MoreIcons';
 import {menuForBot} from './moreMenu';
-import PromoCarousel from './PromoCarousel';
 import {useProfileSummary} from './useProfileSummary';
 import style from './More.module.scss';
 
@@ -40,7 +38,6 @@ export default function More() {
 
     const user = useSessionStore((state) => state.user);
     const botType = useSessionStore((state) => state.botType);
-    const infoBlocks = useStructureStore((state) => state.infoBlocks);
 
     const {orders, favorites, isLoading} = useProfileSummary();
 
@@ -172,13 +169,6 @@ export default function More() {
                     </button>
                 ))}
             </div>
-
-            {infoBlocks?.length ? (
-                <section className={style.section}>
-                    <h2 className={style.sectionTitle}>Акции</h2>
-                    <PromoCarousel items={infoBlocks} onOpen={openLink}/>
-                </section>
-            ) : null}
 
             {groups.filter((group) => group.kind === 'list').map((group) => (
                 <section key={group.key} className={style.section}>

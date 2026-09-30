@@ -21,9 +21,6 @@ export const fetchBanners = (signal) =>
 export const fetchPopularProducts = (signal) =>
     safeRequestResult('/api/structure/popularProducts', {signal, retries: 2}).then(bySerialNumber);
 
-export const fetchInfoBlocks = (signal) =>
-    safeRequestResult('/api/structure/infoBlocks', {signal, retries: 2});
-
 export const fetchCatalogs = (signal, {includeStatus = false} = {}) =>
     safeRequestResult('/api/catalog/allCatalogs', {
         signal,

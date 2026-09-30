@@ -1,7 +1,6 @@
 import React, {useCallback, useMemo, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useSessionStore} from '../../../store/useSessionStore';
-import {useStructureStore} from '../../../store/useStructureStore';
 import {
     formatMoney,
     formatOrderDate,
@@ -37,7 +36,6 @@ export default function DesktopMore() {
 
     const user = useSessionStore((state) => state.user);
     const botType = useSessionStore((state) => state.botType);
-    const infoBlocks = useStructureStore((state) => state.infoBlocks);
 
     const {orders, favorites, isLoading} = useProfileSummary();
 
@@ -231,36 +229,6 @@ export default function DesktopMore() {
                                         </button>
                                     );
                                 })}
-                            </div>
-                        </Reveal>
-                    ) : null}
-
-                    {infoBlocks?.length ? (
-                        <Reveal as="section" className={style.section}>
-                            <h2 className={style.sectionTitle}>Акции</h2>
-
-                            <div className={style.promos}>
-                                {infoBlocks.map((block, index) => (
-                                    <button
-                                        key={block.id ?? index}
-                                        type="button"
-                                        className={style.promo}
-                                        style={{'--i': index}}
-                                        disabled={!block.path}
-                                        onClick={() => openLink(block.path)}
-                                    >
-                                        <span className={style.promoHead}>
-                                            <span className={style.promoTitle}>{block.name}</span>
-                                            {block.path ? (
-                                                <ExternalIcon className={style.promoArrow}/>
-                                            ) : null}
-                                        </span>
-
-                                        {block.body ? (
-                                            <span className={style.promoBody}>{block.body}</span>
-                                        ) : null}
-                                    </button>
-                                ))}
                             </div>
                         </Reveal>
                     ) : null}

@@ -40,14 +40,6 @@ export const updateStartItem = (id, updateData) => httpPost('/updateStartPage', 
 
 export const deleteStartItem = (id) => httpPost('/deleteStartPage', {id});
 
-export const fetchInfoBlocks = () => httpGet('/infoBlocks', {area: 'structure'});
-
-export const createInfoBlock = (infoBlockData) => httpPost('/createInfoBlock', {infoBlockData});
-
-export const updateInfoBlock = (id, updateData) => httpPost('/updateInfoBlock', {id, updateData});
-
-export const deleteInfoBlock = (id) => httpPost('/deleteInfoBlock', {id});
-
 export const fetchClues = () => httpGet('/allClue', {area: 'search'});
 
 export const createClue = (clueData) => httpPost('/createSearchClue', {clueData});

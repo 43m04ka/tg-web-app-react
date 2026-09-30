@@ -15,7 +15,6 @@ import History from "./Tabs/HistoryOrders/History";
 import Promo from "./Tabs/Promo/Promo";
 import Services from "./Tabs/Services/Services";
 import Search from "./Tabs/Search/Search";
-import InfoBlock from "./Tabs/InfoBloks/InfoBlock";
 import AdminGallery from "./Tabs/Hosting/AdminGallary";
 import Parsing from "./Tabs/Parsing/Parsing";
 import Broadcast from "./Tabs/Broadcast/Broadcast";
@@ -65,7 +64,6 @@ const routeGroups = [
             {name: 'Стартовый экран', path: 'start-menu', element: <EditStartPages/>},
             {name: 'Популярное на старте', path: 'start-popular', element: <EditPopular/>},
             {name: 'Подсказки в поиске', path: 'search', element: <Search/>},
-            {name: 'Акции в "ещё"', path: 'more', element: <InfoBlock/>},
         ],
     },
     {

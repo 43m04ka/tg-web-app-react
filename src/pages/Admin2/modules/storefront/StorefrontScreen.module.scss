@@ -406,20 +406,7 @@
     font-weight: 400;
 }
 
-.textForm {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 10px;
-    border: 1px solid var(--a2-border);
-    border-radius: var(--a2-radius-m);
-    background: var(--a2-card);
-}
 
-.textFormFoot {
-    display: flex;
-    gap: 6px;
-}
 
 .clues {
     display: flex;

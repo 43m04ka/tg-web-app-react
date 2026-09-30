@@ -34,7 +34,6 @@ export const keys = {
     previewCards: ['structure', 'preview-cards'],
     banners: ['structure', 'banners'],
     startPages: ['structure', 'start-pages'],
-    infoBlocks: ['structure', 'info-blocks'],
     searchClues: ['structure', 'search-clues'],
     popular: ['structure', 'popular'],
     media: ['media'],

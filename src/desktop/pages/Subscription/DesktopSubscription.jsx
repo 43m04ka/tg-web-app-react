@@ -17,6 +17,8 @@ import {subscriptionShare} from '../../../pages/Subscription/subscriptionShare';
 import {useSubscriptionProducts} from '../../../pages/Subscription/useSubscriptionProducts';
 import {HeartIcon} from '../../shell/DesktopIcons';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
+import {useCrumbTrail} from '../../shell/useCrumbTrail';
+import Crumbs from '../../ui/Crumbs';
 import ShareActions from '../../ui/ShareActions';
 import Spinner from '../../ui/Spinner';
 import style from './DesktopSubscription.module.scss';
@@ -60,6 +62,8 @@ export default function DesktopSubscription() {
         () => (structureBlocks || []).find((block) => cleanPath(block.path) === path)?.name || null,
         [structureBlocks, path]
     );
+
+    const trail = useCrumbTrail({catalogPath: path});
 
     const seed = useMemo(
         () => (mainPageProducts || []).filter((product) => product.catalogId === catalogId),
@@ -198,6 +202,8 @@ export default function DesktopSubscription() {
 
     return (
         <div className={style.screen} style={themeVars(theme)}>
+            <Crumbs trail={trail}/>
+
             <header className={style.head}>
                 <h1 className={style.title}>{plan.title || title || 'Подписки'}</h1>
 

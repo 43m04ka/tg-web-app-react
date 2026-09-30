@@ -243,6 +243,12 @@ function AccountBlock({pageType, kind, values, isTouched, onKind, onChange}) {
     );
 }
 
+const DESKTOP_CHANNELS = CONTACT_CHANNELS.filter((option) => option.key !== 'vk');
+
+const desktopChannel = (key) => (DESKTOP_CHANNELS.some((option) => option.key === key)
+    ? key
+    : DESKTOP_CHANNELS[0].key);
+
 function ContactBlock({channel, value, isTouched, onChannel, onChange}) {
     const active = findChannel(channel);
     const isValid = isContactValid(active.key, value);
@@ -251,7 +257,7 @@ function ContactBlock({channel, value, isTouched, onChannel, onChange}) {
     return (
         <div className={style.contact}>
             <div className={style.channels} role="tablist">
-                {CONTACT_CHANNELS.map((option) => {
+                {DESKTOP_CHANNELS.map((option) => {
                     const Icon = CHANNEL_ICONS[option.key];
                     const isActive = option.key === active.key;
 
@@ -368,7 +374,7 @@ export default function DesktopCheckout() {
     const [method, setMethod] = useState(saved.method || 'sbp');
     const [accountKind, setAccountKind] = useState(saved.accountKind || ACCOUNT_KINDS.NEW);
     const [accountValues, setAccountValues] = useState(saved.accountValues || {});
-    const [channel, setChannel] = useState(saved.channel || (isVk ? 'vk' : 'telegram'));
+    const [channel, setChannel] = useState(() => desktopChannel(saved.channel));
     const [contactValue, setContactValue] = useState(saved.contactValue || '');
     const [email, setEmail] = useState(saved.email || '');
     const [isTouched, setTouched] = useState(false);

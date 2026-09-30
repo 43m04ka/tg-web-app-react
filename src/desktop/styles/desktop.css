@@ -44,7 +44,7 @@ html[data-view='desktop'] button:active:not(:disabled) {
 :root {
     --d-max: 1280px;
     --d-gutter: 32px;
-    --d-topbar: 64px;
+    --d-topbar: 56px;
     --d-bg: oklch(0.137 0.008 264);
 
     --d-fs-2xs: 10px;

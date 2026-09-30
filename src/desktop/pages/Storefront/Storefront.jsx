@@ -18,6 +18,7 @@ import {storefrontConfig} from '../../model/storefrontConfig';
 import {buildHero, buildShelves, mergeOffers} from '../../model/storefrontModel';
 import OfferCard from './OfferCard';
 import Shelf from './Shelf';
+import SubscriptionShelf, {groupShelves} from './SubscriptionShelf';
 import StorefrontHero from './StorefrontHero';
 import OfferSplit from './OfferSplit';
 import style from './Storefront.module.scss';
@@ -81,6 +82,8 @@ export default function Storefront() {
         () => buildShelves({structureBlocks, catalogs, mainPageProducts, originOf, pageIds, scopeId}),
         [structureBlocks, catalogs, mainPageProducts, originOf, pageIds, scopeId]
     );
+
+    const shelfEntries = useMemo(() => groupShelves(shelves), [shelves]);
 
     const query = useMemo(() => (scopeId === null
         ? {allPages: true, botType: effectiveBotType, sorting: config.sorting}
@@ -146,16 +149,24 @@ export default function Storefront() {
 
             <StorefrontHero items={hero} onOpen={openHero} onBrand={openHome}/>
 
-            {(shelves || []).map((shelf) => (
+            {shelfEntries.map((entry) => (entry.kind === 'subscriptions' ? (
+                <SubscriptionShelf
+                    key={entry.key}
+                    items={entry.items}
+                    family={entry.family}
+                    onOpen={openOffer}
+                    onOpenCatalog={openCatalog}
+                />
+            ) : (
                 <Shelf
-                    key={shelf.key}
-                    shelf={shelf}
+                    key={entry.key}
+                    shelf={entry.shelf}
                     size={config.shelfSize}
                     showOrigin={showOrigin}
                     onOpen={openOffer}
                     onOpenCatalog={openCatalog}
                 />
-            ))}
+            )))}
 
             <section className={style.shelf} ref={catalogRef} data-reveal="out">
                 <header className={style.shelfHead}>

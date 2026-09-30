@@ -23,6 +23,8 @@ import {useScrollArea, useScrollMemory} from '../../shell/ScrollAreaContext';
 import OfferCard from '../Storefront/OfferCard';
 import OfferSplit from '../Storefront/OfferSplit';
 import {useOfferPicker} from '../../shell/useOfferPicker';
+import {useCrumbTrail} from '../../shell/useCrumbTrail';
+import Crumbs from '../../ui/Crumbs';
 import FilterPanel from './FilterPanel';
 import style from './DesktopCatalog.module.scss';
 
@@ -49,6 +51,8 @@ export default function DesktopCatalog() {
         () => (structureBlocks || []).find((block) => cleanPath(block.path) === path)?.name || 'Каталог',
         [structureBlocks, path]
     );
+
+    const trail = useCrumbTrail({catalogPath: path});
 
     const formKey = `desktop:catalog:${path}`;
     const saved = useRef(recallView(formKey)).current;
@@ -138,6 +142,8 @@ export default function DesktopCatalog() {
             <FilterPanel filters={filters} facets={facets} price={price} onChange={setFilters}/>
 
             <div className={style.content}>
+                <Crumbs trail={trail}/>
+
                 <header className={style.head}>
                     <div className={style.headText}>
                         <h1 className={style.title}>{title}</h1>

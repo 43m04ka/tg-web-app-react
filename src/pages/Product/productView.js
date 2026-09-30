@@ -43,14 +43,23 @@ export const releaseInfo = (product) => {
     };
 };
 
-export const promotionLabel = (product) => {
+export const promotionEnd = (product) => {
     const raw = product?.endDatePromotion;
     if (!hasValue(raw)) return null;
 
     const asNumber = Number(raw);
     const date = Number.isNaN(asNumber) ? new Date(raw) : new Date(asNumber);
 
-    return Number.isNaN(date.getTime()) ? String(raw) : date.toLocaleDateString('ru-RU');
+    return Number.isNaN(date.getTime()) ? null : date;
+};
+
+export const promotionLabel = (product) => {
+    const raw = product?.endDatePromotion;
+    if (!hasValue(raw)) return null;
+
+    const date = promotionEnd(product);
+
+    return date ? date.toLocaleDateString('ru-RU') : String(raw);
 };
 
 export const isRussianLanguage = (language) =>

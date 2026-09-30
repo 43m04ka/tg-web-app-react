@@ -23,11 +23,6 @@
   display: flex;
   align-items: center;
   gap: var(--d-gap-6);
-  transition: height var(--m-slow) var(--m-ease);
-}
-
-.barScrolled .inner {
-  height: 56px;
 }
 
 .lead {

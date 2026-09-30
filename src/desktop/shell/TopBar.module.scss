@@ -82,24 +82,15 @@
 }
 
 .mark {
-  width: 34px;
-  height: 27px;
+  display: block;
+  width: auto;
+  height: 44px;
   flex: none;
-  background: var(--text);
-  -webkit-mask: var(--logo) center / contain no-repeat;
-  mask: var(--logo) center / contain no-repeat;
   transition: transform var(--m-slow) var(--m-spring);
 }
 
 .logo:hover .mark {
   transform: scale(1.07);
-}
-
-.brand {
-  font-size: var(--d-fs-lg);
-  font-weight: var(--fw-bold);
-  letter-spacing: -0.2px;
-  white-space: nowrap;
 }
 
 .nav {
@@ -290,12 +281,6 @@
 
   .nav {
     gap: var(--d-gap-4);
-  }
-}
-
-@media (max-width: 1080px) {
-  .brand {
-    display: none;
   }
 }
 

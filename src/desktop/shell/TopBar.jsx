@@ -9,7 +9,7 @@ import {resetSearchState} from '../../shared/lib/searchMemory';
 import {navLabel, sectionList, storefrontList} from '../model/desktopNav';
 import {useScrolled} from './useScrolled';
 import {BasketIcon, UserIcon} from './DesktopIcons';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo-full.png';
 import SearchBox from './SearchBox';
 import BackLink from '../ui/BackLink';
 import MenuDrop from './MenuDrop';
@@ -107,12 +107,7 @@ export default function TopBar({onSearchOpenChange}) {
                     </div>
 
                     <button type="button" className={style.logo} onClick={openHome}>
-                        <span
-                            className={style.mark}
-                            style={{'--logo': `url(${logo})`}}
-                            aria-hidden="true"
-                        />
-                        <span className={style.brand}>Геймворд</span>
+                        <img className={style.mark} src={logo} alt="Геймворд"/>
                     </button>
                 </div>
 

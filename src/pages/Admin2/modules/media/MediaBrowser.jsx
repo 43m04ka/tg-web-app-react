@@ -4,6 +4,7 @@ import {
     Button,
     EmptyState,
     ErrorState,
+    IconButton,
     Note,
     SearchInput,
     SkeletonRows,
@@ -214,7 +215,7 @@ export default function MediaBrowser({onPick = null, selected = '', compact = fa
                                             <span className={style.folderIcon}/>
                                             <span className={style.folderName}>{item.name}</span>
                                         </button>
-                                        <Button size="s" variant="ghost" onClick={() => onDeleteFolder(item)}>Удалить</Button>
+                                        <IconButton label="Удалить папку" onClick={() => onDeleteFolder(item)}>×</IconButton>
                                     </div>
                                 ))}
                             </div>

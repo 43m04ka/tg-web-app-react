@@ -9,11 +9,11 @@
   width: 440px;
   max-width: calc(100vw - var(--d-gutter) * 2);
   padding: var(--d-gap-4) var(--d-gap-4) var(--d-gap-4) var(--d-gap-5);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  background: linear-gradient(180deg, oklch(0.22 0.014 264), oklch(0.17 0.012 264));
-  box-shadow: 0 18px 48px oklch(0.05 0.01 264 / 0.55), inset 0 1px 0 oklch(1 0 0 / 0.06);
-  animation: rise 260ms var(--m-ease, ease-out) both;
+  border: 1px solid var(--border-subtle);
+  border-radius: 24px;
+  background: linear-gradient(180deg, oklch(1 0 0 / 0.05), oklch(1 0 0 / 0.02)), var(--bg-elevated);
+  box-shadow: 0 24px 56px oklch(0.05 0.01 264 / 0.6), inset 0 1px 0 oklch(1 0 0 / 0.05);
+  animation: rise var(--m-base) var(--m-ease) both;
 }
 
 .icon {
@@ -23,9 +23,9 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  border-radius: 14px;
-  background: var(--gold-surface);
-  color: var(--gold);
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  color: var(--accent);
 }
 
 .text {
@@ -39,7 +39,7 @@
 .title {
   color: var(--text);
   font-size: var(--d-fs-lg);
-  font-weight: 600;
+  font-weight: var(--fw-bold);
 }
 
 .note {
@@ -51,21 +51,25 @@
 
 .ok {
   flex: none;
-  height: 40px;
-  padding: 0 24px;
+  height: 44px;
+  padding: 0 var(--d-gap-6);
   border: 0;
-  border-radius: 12px;
-  background: linear-gradient(180deg, oklch(0.86 0.15 90), oklch(0.74 0.15 80));
-  color: oklch(0.2 0.03 80);
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  color: var(--accent-contrast);
   font-family: inherit;
   font-size: var(--d-fs-md);
-  font-weight: 600;
+  font-weight: var(--fw-bold);
   cursor: pointer;
-  transition: filter 160ms ease;
+  transition: background-color var(--m-fast) var(--m-ease), transform var(--m-base) var(--m-spring);
 }
 
 .ok:hover {
-  filter: brightness(1.08);
+  background: var(--accent-hover);
+}
+
+.ok:active {
+  transform: scale(0.97);
 }
 
 @keyframes rise {

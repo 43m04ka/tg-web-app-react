@@ -188,8 +188,8 @@ export function DocTabs({listTitle, listCount = null, tabs, active, limit = 10, 
                             onDragEnd={reset}
                         >
                             <span className={style.tabText}>
-                                <span className={style.caption}>{tab.caption || '…'}</span>
                                 <span className={style.title}>{tab.title}</span>
+                                {tab.caption ? <span className={style.caption}>{tab.caption}</span> : null}
                             </span>
 
                             {tab.dirty ? <span className={style.dirty} title="Есть несохранённые правки"/> : null}

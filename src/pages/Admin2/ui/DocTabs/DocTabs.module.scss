@@ -98,7 +98,7 @@
     display: flex;
     flex: 1;
     align-items: flex-end;
-    gap: 2px;
+    gap: 4px;
     min-width: 0;
     overflow-x: auto;
     scrollbar-width: none;
@@ -118,10 +118,10 @@
     height: 46px;
     margin-bottom: -1px;
     padding: 2px 8px 0 14px;
-    border: 1px solid transparent;
+    border: 1px solid var(--a2-border);
     border-bottom: 0;
     border-radius: var(--a2-radius-m) var(--a2-radius-m) 0 0;
-    background: transparent;
+    background: var(--a2-card);
     cursor: pointer;
     user-select: none;
     transition: background var(--a2-motion) var(--a2-ease), border-color var(--a2-motion) var(--a2-ease),
@@ -141,6 +141,7 @@
 }
 
 .tab:hover {
+    border-color: var(--a2-border-strong);
     background: var(--a2-raised);
 }
 

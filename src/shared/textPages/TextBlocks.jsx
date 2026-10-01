@@ -1,6 +1,7 @@
 import React, {useMemo} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {embedUrl, isInternalLink, parseInline, parseText, safeLink} from './richText';
+import {sectionNumber} from './tocModel';
 import style from './TextBlocks.module.scss';
 
 function useLinkProps() {
@@ -70,12 +71,24 @@ function RichText({text, linkProps}) {
     });
 }
 
-function Block({block, linkProps}) {
-    if (block.type === 'heading') {
-        return block.level === 3
-            ? <h3 className={style.subheading}>{block.text}</h3>
-            : <h2 className={style.heading}>{block.text}</h2>;
-    }
+function Heading({block, anchor}) {
+    const Tag = block.level === 3 ? 'h3' : 'h2';
+    const className = block.level === 3 ? style.subheading : style.heading;
+
+    if (!anchor) return <Tag className={className}>{block.text}</Tag>;
+
+    const number = sectionNumber(anchor.number);
+
+    return (
+        <Tag id={anchor.id} className={`${className} ${style.anchored}`}>
+            {number ? <span className={style.number}>{number}</span> : null}
+            <span>{anchor.title}</span>
+        </Tag>
+    );
+}
+
+function Block({block, anchor, linkProps}) {
+    if (block.type === 'heading') return <Heading block={block} anchor={anchor}/>;
 
     if (block.type === 'text') {
         return <div className={style.text}><RichText text={block.text} linkProps={linkProps}/></div>;
@@ -151,12 +164,24 @@ function Block({block, linkProps}) {
     return null;
 }
 
-export default function TextBlocks({blocks}) {
+export default function TextBlocks({blocks, from = 0, to, anchors}) {
     const linkProps = useLinkProps();
+
+    const anchorByIndex = useMemo(
+        () => new Map((anchors || []).map((anchor) => [anchor.blockIndex, anchor])),
+        [anchors]
+    );
 
     return (
         <div className={style.blocks}>
-            {(blocks || []).map((block, index) => <Block key={index} block={block} linkProps={linkProps}/>)}
+            {(blocks || []).slice(from, to).map((block, index) => (
+                <Block
+                    key={from + index}
+                    block={block}
+                    anchor={anchorByIndex.get(from + index)}
+                    linkProps={linkProps}
+                />
+            ))}
         </div>
     );
 }

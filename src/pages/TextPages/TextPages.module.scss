@@ -99,6 +99,84 @@
   font-size: 1.5em;
 }
 
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin-top: -0.2em;
+}
+
+.fact {
+  padding: 0.3em 0.75em;
+  border: 1px solid var(--border);
+  border-radius: 0.55em;
+  background: var(--surface-1);
+  font-size: 0.78em;
+  font-weight: var(--fw-medium, 500);
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.intro {
+  max-width: 46em;
+}
+
+.tocLayout {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4em;
+  padding-top: 1.4em;
+}
+
+.tocLayout::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent-soft), var(--border-subtle) 40%, transparent);
+}
+
+.tocSide {
+  min-width: 0;
+}
+
+.mobile .tocSide {
+  padding: 1em 0.8em 0.8em;
+  border: 1px solid var(--border-subtle);
+  border-radius: 1.1em;
+  background: var(--surface-1);
+}
+
+.desktop .withToc .title {
+  font-size: 2.3em;
+}
+
+.desktop .tocLayout {
+  display: grid;
+  grid-template-columns: 15.5em minmax(0, 1fr);
+  gap: 2.6em;
+  align-items: start;
+  padding-top: 1.8em;
+}
+
+.desktop .tocSide {
+  position: sticky;
+  top: var(--d-gap-6);
+  max-height: calc(100vh - var(--d-topbar, 56px) - 2 * var(--d-gap-6));
+  overflow-y: auto;
+  scrollbar-width: thin;
+  margin-left: -0.85em;
+}
+
+.desktopWide {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
 .cover {
   display: block;
   width: 100%;

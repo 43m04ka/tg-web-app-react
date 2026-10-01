@@ -28,6 +28,35 @@
   font-size: 1.14em;
 }
 
+.anchored {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  scroll-margin-top: 1.2em;
+}
+
+.number {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.05em;
+  height: 2.05em;
+  padding: 0 0.4em;
+  border: 1px solid var(--accent-soft);
+  border-radius: 0.6em;
+  background: var(--accent-surface);
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, monospace;
+  font-size: 0.62em;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0;
+  color: var(--accent-text, var(--accent));
+}
+
+.subheading.anchored .number {
+  font-size: 0.78em;
+}
+
 .blocks > .heading:first-child,
 .blocks > .subheading:first-child {
   margin-top: 0;

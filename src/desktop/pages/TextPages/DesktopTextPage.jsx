@@ -2,6 +2,7 @@ import React, {useCallback, useMemo, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import TextPageArticle from '../../../pages/TextPages/TextPageArticle';
 import {SECTION_ROUTES, SECTION_TITLES} from '../../../shared/textPages/textPageModel';
+import {hasToc} from '../../../shared/textPages/tocModel';
 import Crumbs from '../../ui/Crumbs';
 import style from '../../../pages/TextPages/TextPages.module.scss';
 
@@ -10,9 +11,13 @@ export default function DesktopTextPage({section}) {
     const {slug} = useParams();
 
     const [title, setTitle] = useState('');
+    const [wide, setWide] = useState(false);
 
     const openHome = useCallback(() => navigate('/'), [navigate]);
-    const onLoaded = useCallback((page) => setTitle(page.title), []);
+    const onLoaded = useCallback((page) => {
+        setTitle(page.title);
+        setWide(hasToc(page.blocks));
+    }, []);
 
     const trail = useMemo(() => [
         {key: 'home', label: 'Главная', onClick: openHome},
@@ -23,7 +28,7 @@ export default function DesktopTextPage({section}) {
     ].filter(Boolean), [navigate, openHome, section, title]);
 
     return (
-        <div className={`${style.desktop} ${style.desktopNarrow}`}>
+        <div className={`${style.desktop} ${wide ? style.desktopWide : style.desktopNarrow}`}>
             <Crumbs trail={trail}/>
 
             <div className={style.sheet}>

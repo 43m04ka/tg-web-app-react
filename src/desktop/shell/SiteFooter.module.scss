@@ -74,7 +74,7 @@
 }
 
 .social:hover {
-  color: var(--text);
+  color: var(--brand, var(--text));
   transform: translateY(-1px);
 }
 

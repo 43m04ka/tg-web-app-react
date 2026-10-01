@@ -62,8 +62,16 @@ describe('buttonToApi', () => {
         expect(buttonToApi(button({text: 'A', target: 'url', url: 'tg://resolve'}))).toEqual({text: 'A', url: 'tg://resolve'});
     });
 
+    it('добавляет эмодзи к подписи и цвет кнопки', () => {
+        expect(buttonToApi(button({text: 'Скидки', emoji: '🔥', style: 'danger', target: 'url', url: 'https://x.ru'})))
+            .toEqual({text: '🔥 Скидки', url: 'https://x.ru', style: 'danger'});
+        expect(buttonToApi(button({text: 'A', style: 'rainbow', target: 'url', url: 'https://x.ru'})))
+            .toEqual({text: 'A', url: 'https://x.ru'});
+    });
+
     it('не собирает кнопку без подписи или без цели', () => {
         expect(buttonToApi(button({text: '   ', target: 'catalog', catalogPath: 'x'}))).toBeNull();
+        expect(buttonToApi(button({text: ' ', emoji: '🔥', target: 'catalog', catalogPath: 'x'}))).toBeNull();
         expect(buttonToApi(button({text: 'A', target: 'catalog'}))).toBeNull();
         expect(buttonToApi(button({text: 'A', target: 'product'}))).toBeNull();
     });

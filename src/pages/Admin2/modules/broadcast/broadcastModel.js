@@ -23,6 +23,15 @@ export const TARGETS = [
     {value: 'url', title: 'Своя ссылка'}
 ];
 
+export const BUTTON_STYLES = [
+    {value: '', title: 'Обычная'},
+    {value: 'primary', title: 'Синяя'},
+    {value: 'success', title: 'Зелёная'},
+    {value: 'danger', title: 'Красная'}
+];
+
+export const BUTTON_EMOJI = ['🔥', '⚡', '🎮', '🎁', '💥', '⭐', '💎', '💰', '🛒', '✅', '👉', '❤️'];
+
 export const STATE_TITLES = {
     idle: 'Свободно',
     scheduled: 'Запланирована',
@@ -41,6 +50,8 @@ export const emptyButton = () => ({
     id: nextId(),
     text: '',
     target: 'catalog',
+    style: '',
+    emoji: '',
     catalogPath: '',
     productId: '',
     productName: '',
@@ -79,8 +90,15 @@ export const targetUrl = (button) => {
     return String(button.url || '').trim();
 };
 
-export const buttonProblem = (button) => {
+export const buttonLabel = (button) => {
     const text = String(button.text || '').trim();
+    if (!text) return '';
+
+    return button.emoji ? `${button.emoji} ${text}` : text;
+};
+
+export const buttonProblem = (button) => {
+    const text = buttonLabel(button);
     if (!text) return 'Без подписи кнопка не отправится';
     if (text.length > 256) return 'Подпись длиннее 256 знаков';
 
@@ -98,7 +116,10 @@ export const buttonProblem = (button) => {
 export const buttonToApi = (button) => {
     if (buttonProblem(button)) return null;
 
-    return {text: String(button.text).trim(), url: targetUrl(button)};
+    const out = {text: buttonLabel(button), url: targetUrl(button)};
+    if (BUTTON_STYLES.some((item) => item.value && item.value === button.style)) out.style = button.style;
+
+    return out;
 };
 
 export const buildKeyboard = (rows) => {

@@ -4,10 +4,26 @@ import {useResource} from '../../platform/useResource';
 import {keys} from '../../platform/resources';
 import {fetchCatalogs} from '../catalogs/api';
 import {searchProducts} from '../storefront/api';
-import {TARGETS, buttonProblem, countButtons, emptyRow, targetUrl} from './broadcastModel';
+import {
+    BUTTON_EMOJI,
+    BUTTON_STYLES,
+    TARGETS,
+    buttonLabel,
+    buttonProblem,
+    countButtons,
+    emptyRow,
+    targetUrl
+} from './broadcastModel';
 import style from './BroadcastScreen.module.scss';
 
 const SEARCH_DELAY = 350;
+
+const STYLE_CLASS = {
+    '': style.tone,
+    primary: style.tonePrimary,
+    success: style.toneSuccess,
+    danger: style.toneDanger
+};
 
 function ProductPicker({button, disabled, onPick}) {
     const [query, setQuery] = useState('');
@@ -160,6 +176,64 @@ export default function KeyboardEditor({rows, disabled, limits, onChange}) {
                                     ))}
                                 </div>
                             </div>
+                        </div>
+
+                        <div className={style.kbLook}>
+                            <div className={style.kbTargetField}>
+                                <span className={style.kbLabel}>Цвет</span>
+                                <div className={style.targets} role="radiogroup">
+                                    {BUTTON_STYLES.map((item) => (
+                                        <button
+                                            key={item.value || 'default'}
+                                            type="button"
+                                            role="radio"
+                                            aria-checked={(button.style || '') === item.value}
+                                            disabled={disabled}
+                                            className={(button.style || '') === item.value ? style.targetOn : style.target}
+                                            onClick={() => patch(row.id, {style: item.value})}
+                                        >
+                                            <span className={`${style.swatch} ${STYLE_CLASS[item.value]}`} />
+                                            {item.title}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className={style.kbTargetField}>
+                                <span className={style.kbLabel}>Эмодзи перед подписью</span>
+                                <div className={style.emojiRow} role="radiogroup">
+                                    <button
+                                        type="button"
+                                        role="radio"
+                                        aria-checked={!button.emoji}
+                                        disabled={disabled}
+                                        className={!button.emoji ? style.emojiOn : style.emoji}
+                                        onClick={() => patch(row.id, {emoji: ''})}
+                                    >
+                                        Без
+                                    </button>
+                                    {BUTTON_EMOJI.map((emoji) => (
+                                        <button
+                                            key={emoji}
+                                            type="button"
+                                            role="radio"
+                                            aria-checked={button.emoji === emoji}
+                                            disabled={disabled}
+                                            className={button.emoji === emoji ? style.emojiOn : style.emoji}
+                                            onClick={() => patch(row.id, {emoji})}
+                                        >
+                                            {emoji}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={style.kbPreview}>
+                            <span className={style.kbLabel}>Так увидят в Telegram</span>
+                            <span className={`${style.tgButton} ${STYLE_CLASS[button.style || '']}`}>
+                                {buttonLabel(button) || 'Подпись кнопки'}
+                            </span>
                         </div>
 
                         {button.target === 'catalog' ? (

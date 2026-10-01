@@ -200,7 +200,7 @@ export default function DesktopSteam() {
 
                 <div className={style.heroText}>
                     <h1 className={style.title}>Пополнение Steam</h1>
-                    <p className={style.subtitle}>Для России и стран СНГ · зачислим обычно за 5–15 минут</p>
+                    <p className={style.subtitle}>Россия · зачисление 1-2 минуты</p>
                 </div>
             </header>
 

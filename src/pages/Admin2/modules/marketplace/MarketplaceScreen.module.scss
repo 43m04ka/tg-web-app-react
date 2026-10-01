@@ -1,0 +1,59 @@
+.order {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.orderMain {
+    overflow: hidden;
+    color: var(--a2-text);
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.muted {
+    overflow: hidden;
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.statuses {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.file {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.fileImage {
+    display: block;
+    max-width: 100%;
+    max-height: 360px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    object-fit: contain;
+}
+
+.fileLink {
+    color: var(--a2-accent);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.fileLink:hover {
+    text-decoration: underline;
+}

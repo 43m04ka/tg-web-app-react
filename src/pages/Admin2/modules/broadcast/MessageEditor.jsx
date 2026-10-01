@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Button, Note} from '../../ui';
 import {serializeEditor} from './telegramHtml';
+import {EmojiPanel, useDismiss} from './EmojiPicker';
 import style from './BroadcastScreen.module.scss';
 
 const COMMANDS = [
@@ -10,7 +11,6 @@ const COMMANDS = [
     {id: 'strikeThrough', command: 'strikeThrough', label: 'З', title: 'Зачёркнутый', className: 'toolStrike'}
 ];
 
-const EMOJI = ['👍', '🔥', '❤️', '🎉', '✅', '⚠️', '📌', '🛒', '💳', '📦', '🎮', '⚡'];
 
 const readFormatState = () => {
     try {
@@ -43,6 +43,10 @@ export default function MessageEditor({html, limit, disabled, onChange}) {
     const [format, setFormat] = useState(readFormatState);
     const [length, setLength] = useState(0);
     const [emojiOpen, setEmojiOpen] = useState(false);
+    const emojiRef = useRef(null);
+    const closeEmoji = useCallback(() => setEmojiOpen(false), []);
+
+    useDismiss(emojiOpen, emojiRef, closeEmoji);
 
     const refreshFormat = useCallback(() => {
         if (!selectionInside(editorRef.current)) return;
@@ -154,7 +158,7 @@ export default function MessageEditor({html, limit, disabled, onChange}) {
 
                 <span className={style.toolSplit}/>
 
-                <div className={style.emojiWrap}>
+                <div className={style.emojiWrap} ref={emojiRef}>
                     <button
                         type="button"
                         title="Эмодзи"
@@ -167,19 +171,7 @@ export default function MessageEditor({html, limit, disabled, onChange}) {
                     </button>
 
                     {emojiOpen ? (
-                        <div className={style.emojiPop}>
-                            {EMOJI.map((emoji) => (
-                                <button
-                                    key={emoji}
-                                    type="button"
-                                    className={style.emoji}
-                                    onMouseDown={(event) => event.preventDefault()}
-                                    onClick={() => addEmoji(emoji)}
-                                >
-                                    {emoji}
-                                </button>
-                            ))}
-                        </div>
+                        <EmojiPanel className={style.emojiPanelText} onPick={addEmoji}/>
                     ) : null}
                 </div>
             </div>

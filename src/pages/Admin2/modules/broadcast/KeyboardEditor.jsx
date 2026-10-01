@@ -5,7 +5,6 @@ import {keys} from '../../platform/resources';
 import {fetchCatalogs} from '../catalogs/api';
 import {searchProducts} from '../storefront/api';
 import {
-    BUTTON_EMOJI,
     BUTTON_STYLES,
     TARGETS,
     buttonLabel,
@@ -14,6 +13,7 @@ import {
     emptyRow,
     targetUrl
 } from './broadcastModel';
+import EmojiPicker from './EmojiPicker';
 import style from './BroadcastScreen.module.scss';
 
 const SEARCH_DELAY = 350;
@@ -201,31 +201,11 @@ export default function KeyboardEditor({rows, disabled, limits, onChange}) {
 
                             <div className={style.kbTargetField}>
                                 <span className={style.kbLabel}>Эмодзи перед подписью</span>
-                                <div className={style.emojiRow} role="radiogroup">
-                                    <button
-                                        type="button"
-                                        role="radio"
-                                        aria-checked={!button.emoji}
-                                        disabled={disabled}
-                                        className={!button.emoji ? style.emojiOn : style.emoji}
-                                        onClick={() => patch(row.id, {emoji: ''})}
-                                    >
-                                        Без
-                                    </button>
-                                    {BUTTON_EMOJI.map((emoji) => (
-                                        <button
-                                            key={emoji}
-                                            type="button"
-                                            role="radio"
-                                            aria-checked={button.emoji === emoji}
-                                            disabled={disabled}
-                                            className={button.emoji === emoji ? style.emojiOn : style.emoji}
-                                            onClick={() => patch(row.id, {emoji})}
-                                        >
-                                            {emoji}
-                                        </button>
-                                    ))}
-                                </div>
+                                <EmojiPicker
+                                    value={button.emoji}
+                                    disabled={disabled}
+                                    onChange={(emoji) => patch(row.id, {emoji})}
+                                />
                             </div>
                         </div>
 

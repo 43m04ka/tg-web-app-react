@@ -41,6 +41,9 @@ export const keys = {
     textPages: ['text-pages'],
     textPageList: (section) => ['text-pages', 'list', section],
     textPage: (id) => ['text-pages', 'card', id],
+    marketplaceOrders: ['marketplace-orders'],
+    marketplaceOrderList: (query) => ['marketplace-orders', 'list', query],
+    marketplaceOrder: (id) => ['marketplace-orders', 'card', id],
 };
 
 export const invalidatedBy = {

@@ -2,7 +2,7 @@ import React from 'react';
 import {LOGO_PATH, LOGO_VIEW_BOX} from '../assets/logoPath';
 import style from './LogoDrum.module.scss';
 
-const COLORS = ['#ffffff', '#69ce6e', '#2474d7'];
+const COLORS = ['#ffffff', '#69ce6e', '#2474d7', '#975a5b', '#676767'];
 
 export default function LogoDrum({className = ''}) {
     return (

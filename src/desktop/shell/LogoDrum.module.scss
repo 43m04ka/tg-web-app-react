@@ -19,7 +19,7 @@
   opacity: 0;
   backface-visibility: hidden;
   transform-origin: 50% 50%;
-  animation: drum calc(var(--drum-step) * 3) linear infinite both;
+  animation: drum calc(var(--drum-step) * 5) linear infinite both;
   will-change: transform, opacity, filter;
 }
 
@@ -35,6 +35,14 @@
   animation-delay: calc(var(--drum-step) * 2 - var(--drum-move));
 }
 
+.face:nth-child(4) {
+  animation-delay: calc(var(--drum-step) * 3 - var(--drum-move));
+}
+
+.face:nth-child(5) {
+  animation-delay: calc(var(--drum-step) * 4 - var(--drum-move));
+}
+
 @keyframes drum {
   0% {
     opacity: 0;
@@ -43,20 +51,20 @@
     animation-timing-function: cubic-bezier(0.75, 0, 0.2, 1.22);
   }
 
-  4.52% {
+  2.712% {
     opacity: 1;
     filter: brightness(1);
     transform: translateZ(calc(var(--drum-radius) * -1)) rotateX(0deg) translateZ(var(--drum-radius));
   }
 
-  33.333% {
+  20% {
     opacity: 1;
     filter: brightness(1);
     transform: translateZ(calc(var(--drum-radius) * -1)) rotateX(0deg) translateZ(var(--drum-radius));
     animation-timing-function: cubic-bezier(0.75, 0, 0.2, 1.22);
   }
 
-  37.853%,
+  22.712%,
   100% {
     opacity: 0;
     filter: brightness(0.35);

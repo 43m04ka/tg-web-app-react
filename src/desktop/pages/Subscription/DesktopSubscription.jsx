@@ -359,7 +359,6 @@ export default function DesktopSubscription() {
 
                             {tier.hint ? (
                                 <p className={style.hint}>
-                                    <span className={style.hintMark} aria-hidden="true">📉</span>
                                     {tier.hint}
                                 </p>
                             ) : null}

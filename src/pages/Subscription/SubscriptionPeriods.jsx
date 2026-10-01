@@ -76,7 +76,6 @@ export default function SubscriptionPeriods({tier, activeId, onSelect}) {
 
             {hint ? (
                 <p className={style.hint}>
-                    <span className={style.hintMark} aria-hidden="true">📉</span>
                     {hint}
                 </p>
             ) : null}

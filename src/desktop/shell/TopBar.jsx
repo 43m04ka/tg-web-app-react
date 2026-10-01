@@ -9,10 +9,10 @@ import {resetSearchState} from '../../shared/lib/searchMemory';
 import {navLabel, sectionList, storefrontList} from '../model/desktopNav';
 import {useScrolled} from './useScrolled';
 import {BasketIcon, UserIcon} from './DesktopIcons';
-import logo from '../assets/logo-full.png';
 import SearchBox from './SearchBox';
 import BackLink from '../ui/BackLink';
 import MenuDrop from './MenuDrop';
+import LogoDrum from './LogoDrum';
 import {useSiteMenu} from './useSiteMenu';
 import {useStorefrontScope} from './StorefrontScope';
 import {useOpenSections} from './MaintenanceScope';
@@ -110,7 +110,7 @@ export default function TopBar({onSearchOpenChange}) {
                     </div>
 
                     <button type="button" className={style.logo} onClick={openHome}>
-                        <img className={style.mark} src={logo} alt="Геймворд"/>
+                        <LogoDrum className={style.mark}/>
                     </button>
                 </div>
 

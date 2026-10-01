@@ -1,0 +1,66 @@
+.drum {
+  --drum-step: 2.4s;
+  --drum-move: 0.6s;
+
+  position: relative;
+  display: block;
+  flex: none;
+  aspect-ratio: 1066.5 / 561.5;
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  animation: drum calc(var(--drum-step) * 3) linear infinite both;
+  will-change: transform, opacity;
+}
+
+.face:nth-child(1) {
+  animation-delay: calc(var(--drum-move) * -1);
+}
+
+.face:nth-child(2) {
+  animation-delay: calc(var(--drum-step) - var(--drum-move));
+}
+
+.face:nth-child(3) {
+  animation-delay: calc(var(--drum-step) * 2 - var(--drum-move));
+}
+
+@keyframes drum {
+  0% {
+    opacity: 0;
+    transform: translateY(-55%) scale(0.55);
+    animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  8.333% {
+    opacity: 1;
+    transform: none;
+  }
+
+  33.333% {
+    opacity: 1;
+    transform: none;
+    animation-timing-function: cubic-bezier(0.6, 0, 0.8, 0.3);
+  }
+
+  41.667%,
+  100% {
+    opacity: 0;
+    transform: translateY(55%) scale(0.55);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .face {
+    animation: none;
+  }
+
+  .face:nth-child(1) {
+    opacity: 1;
+  }
+}

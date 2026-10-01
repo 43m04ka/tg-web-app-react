@@ -19,6 +19,7 @@ import {useResource} from '../../platform/useResource';
 import {MediaPicker, useMediaPicker} from '../media/MediaPicker';
 import {deleteTextPage, fetchTextPage, saveTextPage} from './api';
 import BlockEditor from './BlockEditor';
+import PagePreview from './PagePreview';
 import {
     BLOCK_KINDS,
     SECTION_OPTIONS,
@@ -192,60 +193,64 @@ export default function PageEditor({id, section, onClose, onSaved}) {
             )}
         >
             {tab === 'content' ? (
-                <>
-                    <InspectorSection title="Заголовок">
-                        <Field error={showError('title')}>
-                            <Input
-                                value={draft.title}
-                                invalid={Boolean(showError('title'))}
-                                placeholder="Заголовок страницы"
-                                onChange={(event) => set('title', event.target.value)}
-                            />
-                        </Field>
-                    </InspectorSection>
+                <div className={style.split}>
+                    <div className={style.splitMain}>
+                        <InspectorSection title="Заголовок">
+                            <Field error={showError('title')}>
+                                <Input
+                                    value={draft.title}
+                                    invalid={Boolean(showError('title'))}
+                                    placeholder="Заголовок страницы"
+                                    onChange={(event) => set('title', event.target.value)}
+                                />
+                            </Field>
+                        </InspectorSection>
 
-                    <InspectorSection
-                        title={`Блоки · ${draft.blocks.length}`}
-                        note="Страница собирается из блоков сверху вниз. Блок можно свернуть, поднять, опустить или вставить новый под ним."
-                        actions={draft.blocks.length > 1 ? (
-                            <Button size="s" variant="ghost" onClick={toggleAll}>
-                                {allCollapsed ? 'Развернуть все' : 'Свернуть все'}
-                            </Button>
-                        ) : null}
-                    >
-                        <div className={style.blocks}>
-                            {draft.blocks.map((block, index) => (
-                                <React.Fragment key={block.uid}>
-                                    <BlockEditor
-                                        block={block}
-                                        index={index}
-                                        total={draft.blocks.length}
-                                        collapsed={collapsed.has(block.uid)}
-                                        onToggle={() => toggleBlock(block.uid)}
-                                        onChange={(patch) => setBlocks((blocks) => blocks.map((item) => (
-                                            item.uid === block.uid ? {...item, ...patch} : item
-                                        )))}
-                                        onMove={(shift) => setBlocks((blocks) => moveItem(blocks, index, shift))}
-                                        onRemove={() => setBlocks((blocks) => blocks.filter((item) => item.uid !== block.uid))}
-                                        onInsert={() => setInsertAfter(insertAfter === block.uid ? null : block.uid)}
-                                    />
-
-                                    {insertAfter === block.uid ? (
-                                        <KindPicker
-                                            onPick={(type) => addBlock(type, index + 1)}
-                                            onCancel={() => setInsertAfter(null)}
+                        <InspectorSection
+                            title={`Блоки · ${draft.blocks.length}`}
+                            note="Страница собирается из блоков сверху вниз. Блок можно свернуть, поднять, опустить или вставить новый под ним."
+                            actions={draft.blocks.length > 1 ? (
+                                <Button size="s" variant="ghost" onClick={toggleAll}>
+                                    {allCollapsed ? 'Развернуть все' : 'Свернуть все'}
+                                </Button>
+                            ) : null}
+                        >
+                            <div className={style.blocks}>
+                                {draft.blocks.map((block, index) => (
+                                    <React.Fragment key={block.uid}>
+                                        <BlockEditor
+                                            block={block}
+                                            index={index}
+                                            total={draft.blocks.length}
+                                            collapsed={collapsed.has(block.uid)}
+                                            onToggle={() => toggleBlock(block.uid)}
+                                            onChange={(patch) => setBlocks((blocks) => blocks.map((item) => (
+                                                item.uid === block.uid ? {...item, ...patch} : item
+                                            )))}
+                                            onMove={(shift) => setBlocks((blocks) => moveItem(blocks, index, shift))}
+                                            onRemove={() => setBlocks((blocks) => blocks.filter((item) => item.uid !== block.uid))}
+                                            onInsert={() => setInsertAfter(insertAfter === block.uid ? null : block.uid)}
                                         />
-                                    ) : null}
-                                </React.Fragment>
-                            ))}
 
-                            <div className={style.append}>
-                                <span className={style.appendTitle}>Добавить блок в конец</span>
-                                <KindPicker onPick={(type) => addBlock(type, draft.blocks.length)}/>
+                                        {insertAfter === block.uid ? (
+                                            <KindPicker
+                                                onPick={(type) => addBlock(type, index + 1)}
+                                                onCancel={() => setInsertAfter(null)}
+                                            />
+                                        ) : null}
+                                    </React.Fragment>
+                                ))}
+
+                                <div className={style.append}>
+                                    <span className={style.appendTitle}>Добавить блок в конец</span>
+                                    <KindPicker onPick={(type) => addBlock(type, draft.blocks.length)}/>
+                                </div>
                             </div>
-                        </div>
-                    </InspectorSection>
-                </>
+                        </InspectorSection>
+                    </div>
+
+                    <PagePreview draft={draft} updatedAt={page?.updatedAt}/>
+                </div>
             ) : (
                 <>
                     <InspectorSection title="Адрес и раздел">

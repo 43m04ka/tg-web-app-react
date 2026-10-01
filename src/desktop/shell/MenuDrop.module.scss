@@ -189,6 +189,9 @@
 }
 
 .columnTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--d-gap-2);
   margin-bottom: var(--d-gap-2);
   font-size: var(--d-fs-md);
   font-weight: var(--fw-bold);
@@ -270,4 +273,19 @@
   padding: var(--d-gap-3);
   font-size: var(--d-fs-sm);
   color: var(--text-faint);
+}
+
+.flag {
+  flex: none;
+  width: 22px;
+  height: 15px;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 12%);
+}
+
+.logo {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
 }

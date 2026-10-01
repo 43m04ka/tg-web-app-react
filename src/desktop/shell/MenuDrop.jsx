@@ -1,6 +1,23 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {BurgerIcon, ChevronIcon, MenuIcon} from './DesktopIcons';
+import {BurgerIcon, ChevronIcon, FlagIcon, MenuIcon} from './DesktopIcons';
 import style from './MenuDrop.module.scss';
+
+const LOGOS = {
+    ps: 'ps.png',
+    xbox: 'xbox.png'
+};
+
+function ColumnBadge({badge}) {
+    if (!badge) return null;
+
+    if (badge.startsWith('flag-')) {
+        return <FlagIcon className={style.flag} code={badge.slice(5)} aria-hidden="true"/>;
+    }
+
+    return LOGOS[badge]
+        ? <img className={style.logo} src={`${process.env.PUBLIC_URL || ''}/regions/${LOGOS[badge]}`} alt=""/>
+        : null;
+}
 
 export default function MenuDrop({groups = [], onSelect}) {
     const [isOpen, setOpen] = useState(false);
@@ -85,7 +102,10 @@ export default function MenuDrop({groups = [], onSelect}) {
                                         <div className={style.columns}>
                                             {active.columns.map((column) => (
                                                 <div key={column.key} className={style.column}>
-                                                    <span className={style.columnTitle}>{column.title}</span>
+                                                    <span className={style.columnTitle}>
+                                                        <ColumnBadge badge={column.badge}/>
+                                                        {column.title}
+                                                    </span>
 
                                                     {column.links.map((link) => (
                                                         <button

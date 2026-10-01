@@ -146,3 +146,27 @@ export const MenuIcon = ({name, ...props}) => (
         {MENU_PATHS[name] || MENU_PATHS.gamepad}
     </svg>
 );
+
+const FLAGS = {
+    tr: (
+        <>
+            <rect width="30" height="20" fill="#e30a17"/>
+            <circle cx="11.2" cy="10" r="5" fill="#fff"/>
+            <circle cx="12.45" cy="10" r="4" fill="#e30a17"/>
+            <polygon fill="#fff" points="14.00,10.00 15.75,9.38 15.80,7.53 16.92,9.00 18.70,8.47 17.65,10.00 18.70,11.53 16.92,11.00 15.80,12.47 15.75,10.62"/>
+        </>
+    ),
+    in: (
+        <>
+            <rect width="30" height="20" fill="#fff"/>
+            <rect width="30" height="6.67" fill="#ff9933"/>
+            <rect y="13.33" width="30" height="6.67" fill="#138808"/>
+            <circle cx="15" cy="10" r="2.6" fill="none" stroke="#000080" strokeWidth="0.6"/>
+            <circle cx="15" cy="10" r="0.6" fill="#000080"/>
+        </>
+    )
+};
+
+export const FlagIcon = ({code, ...props}) => (
+    <svg viewBox="0 0 30 20" {...props}>{FLAGS[code]}</svg>
+);

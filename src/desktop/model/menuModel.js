@@ -13,6 +13,11 @@ const REGION_TITLES = {
     ps_india: 'Регион Индия'
 };
 
+const REGION_BADGES = {
+    ps: 'flag-tr',
+    ps_india: 'flag-in'
+};
+
 const PS_TYPES = ['ps', 'ps_india'];
 
 const endsWithAny = (path, ends) => ends.some((end) => String(path || '').endsWith(`_${end}`));
@@ -69,6 +74,7 @@ export const menuGroups = ({storefronts, sections, catalogs, blocks, pageLinks})
             columns: psShops.map((item) => ({
                 key: item.id,
                 title: REGION_TITLES[item.type] || item.label,
+                badge: REGION_BADGES[item.type] || 'ps',
                 links: [allGames(item), ...collectionsOf(blocks, item)]
             }))
         } : null,
@@ -80,6 +86,7 @@ export const menuGroups = ({storefronts, sections, catalogs, blocks, pageLinks})
             columns: psPlus.map((column) => ({
                 key: column.shop.id,
                 title: REGION_TITLES[column.shop.type] || column.shop.label,
+                badge: REGION_BADGES[column.shop.type] || 'ps',
                 links: column.links
             }))
         } : null,
@@ -88,7 +95,7 @@ export const menuGroups = ({storefronts, sections, catalogs, blocks, pageLinks})
             key: 'xbox-games',
             icon: 'xbox',
             label: 'Игры для Xbox',
-            columns: [{key: xbox.id, title: 'Xbox', links: [allGames(xbox), ...collectionsOf(blocks, xbox)]}]
+            columns: [{key: xbox.id, title: 'Xbox', badge: 'xbox', links: [allGames(xbox), ...collectionsOf(blocks, xbox)]}]
         } : null,
         gamePass ? {...gamePass, key: 'game-pass', icon: 'ticket', label: 'Подписка Game Pass', note: 'Game Pass Ultimate для Xbox'} : null,
         steam ? {key: 'steam', icon: 'wallet', label: 'Пополнение Steam', note: 'Пополнение баланса Steam', action: 'section', section: steam} : null,

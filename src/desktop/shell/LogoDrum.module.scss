@@ -1,13 +1,13 @@
 .drum {
-  --drum-step: 2.4s;
-  --drum-move: 0.7s;
-  --drum-radius: 22px;
+  --drum-step: 2.95s;
+  --drum-move: 0.4s;
+  --drum-radius: 40px;
 
   position: relative;
   display: block;
   flex: none;
   aspect-ratio: 1066.5 / 561.5;
-  perspective: 260px;
+  perspective: 340px;
   transform-style: preserve-3d;
 }
 
@@ -40,10 +40,10 @@
     opacity: 0;
     filter: brightness(0.35);
     transform: translateZ(calc(var(--drum-radius) * -1)) rotateX(90deg) translateZ(var(--drum-radius));
-    animation-timing-function: cubic-bezier(0.55, 0, 0.25, 1.18);
+    animation-timing-function: cubic-bezier(0.75, 0, 0.2, 1.22);
   }
 
-  9.722% {
+  4.52% {
     opacity: 1;
     filter: brightness(1);
     transform: translateZ(calc(var(--drum-radius) * -1)) rotateX(0deg) translateZ(var(--drum-radius));
@@ -53,10 +53,10 @@
     opacity: 1;
     filter: brightness(1);
     transform: translateZ(calc(var(--drum-radius) * -1)) rotateX(0deg) translateZ(var(--drum-radius));
-    animation-timing-function: cubic-bezier(0.55, 0, 0.25, 1.18);
+    animation-timing-function: cubic-bezier(0.75, 0, 0.2, 1.22);
   }
 
-  43.056%,
+  37.853%,
   100% {
     opacity: 0;
     filter: brightness(0.35);

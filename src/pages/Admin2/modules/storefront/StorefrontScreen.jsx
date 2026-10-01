@@ -22,7 +22,7 @@ import {deleteBlock, fetchBanners, fetchBlocks, fetchCatalogs, fetchPages, refre
 import {describeBlock, moveBlock, sortBlocks} from './blockKinds';
 import {sortBanners} from './bannerModel';
 import {selectPageBanners} from '../../../Main/bannerFormat';
-import {PRICING_NOTES, groupByBot, hasStructure, typeName} from './pageOptions';
+import {PRICING_NOTES, hasStructure, isMainPage, pageGroups, typeName} from './pageOptions';
 import BlockInspector from './BlockInspector';
 import BlockRow from './BlockRow';
 import PageBanners from './PageBanners';
@@ -75,7 +75,7 @@ export default function StorefrontScreen() {
 
     const openPage = useCallback((next) => {
         setEditing(null);
-        navigate(`/admin2/storefront/page/${next.id}`);
+        navigate(`/admin/storefront/page/${next.id}`);
     }, [navigate]);
 
     const reorder = useCallback(async (id, delta) => {
@@ -164,8 +164,8 @@ export default function StorefrontScreen() {
             >
                 {pages.isLoading && !pages.data ? <SkeletonRows count={6}/> : null}
 
-                {groupByBot(list).map((bucket) => (
-                    <div key={bucket.botType} className={style.bucket}>
+                {pageGroups(list).map((bucket) => (
+                    <div key={bucket.key} className={style.bucket}>
                         <span className={style.bucketTitle}>
                             {bucket.title}
                             <span className={style.bucketCount}>{bucket.items.length}</span>
@@ -186,20 +186,22 @@ export default function StorefrontScreen() {
                                         <span className={style.pageMeta}>
                                             {typeName(page.type)}
                                             <span className={style.pageId}>#{page.id}</span>
-                                            {page.isHidden ? <Badge tone="neutral">скрыта</Badge> : null}
+                                            {page.isHidden && !isMainPage(page) ? <Badge tone="neutral">скрыта</Badge> : null}
                                         </span>
                                     </span>
                                 </button>
 
-                                <button
-                                    type="button"
-                                    className={style.pageSettings}
-                                    title="Настройки страницы"
-                                    aria-label="Настройки страницы"
-                                    onClick={() => setEditing({kind: 'page', item: page})}
-                                >
-                                    ⚙
-                                </button>
+                                {isMainPage(page) ? null : (
+                                    <button
+                                        type="button"
+                                        className={style.pageSettings}
+                                        title="Настройки страницы"
+                                        aria-label="Настройки страницы"
+                                        onClick={() => setEditing({kind: 'page', item: page})}
+                                    >
+                                        ⚙
+                                    </button>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -285,7 +287,7 @@ export default function StorefrontScreen() {
                 <PageInspector
                     page={editing.item}
                     onClose={() => setEditing(null)}
-                    onRemoved={() => navigate('/admin2/storefront')}
+                    onRemoved={() => navigate('/admin/storefront')}
                 />
             ) : null}
 

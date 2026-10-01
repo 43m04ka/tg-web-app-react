@@ -83,7 +83,7 @@ test('корзина считается по витрине и выключен�
     render();
 
     expect(container.textContent).toContain('Меню');
-    expect(container.textContent).toContain('Геймворд');
+    expect(container.querySelector('[aria-label="Геймворд"]')).not.toBeNull();
     expect(cartButton().disabled).toBe(true);
     expect(cartButton().textContent).toBe('');
 

@@ -32,7 +32,7 @@ describe('sectionIdOf', () => {
 
     it('выбор площадки и админка ни к какому разделу не относятся', () => {
         expect(sectionIdOf('/')).toBe(null);
-        expect(sectionIdOf('/admin-panel/orders')).toBe(null);
+        expect(sectionIdOf('/admin/orders')).toBe(null);
     });
 
     it('отбрасывает строку запроса', () => {

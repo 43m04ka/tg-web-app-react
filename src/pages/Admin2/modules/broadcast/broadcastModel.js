@@ -5,6 +5,18 @@ export const SCHEDULE_AHEAD_DAYS = 30;
 
 export const BOT_APP_URL = 'https://t.me/gwstore_bot/app';
 
+export const FOOTER_LINKS = [
+    {title: 'Поддержка', url: 'https://t.me/gwstore_admin'},
+    {title: 'Геймворд | PlayStation Store', url: 'https://t.me/gwstore_playstation'}
+];
+
+export const footerHtml = (hasText) => [
+    hasText ? '<br><br>' : '',
+    '• ',
+    FOOTER_LINKS.map((link) => `<a href="${link.url}">${link.title}</a>`).join(' • '),
+    ' •'
+].join('');
+
 export const MEDIA_TYPES = [
     'image/jpeg',
     'image/png',
@@ -179,6 +191,11 @@ export const readyToSend = ({textLength, limit, media, keyboardRows, schedule, l
     if (badKeyboard) return badKeyboard;
 
     return scheduleProblem(schedule);
+};
+
+export const adminTitle = (admin) => {
+    if (admin?.username) return `@${String(admin.username).replace(/^@/, '')}`;
+    return admin?.name || `Чат ${admin?.chatId ?? ''}`;
 };
 
 export const testVerdict = (summary) => {

@@ -69,12 +69,19 @@ export const buildShelves = ({
     mainPageProducts,
     originOf,
     pageIds,
-    scopeId = null
+    scopeId = null,
+    mainPageId = null
 } = {}) => {
     if (!Array.isArray(structureBlocks) || !Array.isArray(catalogs)) return null;
 
-    const allowed = new Set(scopeId === null ? (pageIds || []) : [scopeId]);
-    const catalogIdByPath = new Map(catalogs.map((catalog) => [catalog.path, catalog.id]));
+    const catalogByPath = new Map(catalogs.map((catalog) => [catalog.path, catalog]));
+    const storefronts = new Set(pageIds || []);
+
+    const useMain = scopeId === null && mainPageId !== null && structureBlocks.some((block) =>
+        block.structurePageId === mainPageId && block.group === 'body' && isCatalogBlock(block)
+        && storefronts.has(catalogByPath.get(cleanPath(block.path))?.structurePageId));
+
+    const allowed = new Set(useMain ? [mainPageId] : (scopeId === null ? (pageIds || []) : [scopeId]));
 
     const productsByCatalog = new Map();
     (mainPageProducts || []).forEach((product) => {
@@ -92,8 +99,12 @@ export const buildShelves = ({
             const title = String(block.name || '').trim();
             if (!title) return;
 
-            const catalogId = catalogIdByPath.get(cleanPath(block.path));
-            if (catalogId === undefined) return;
+            const catalog = catalogByPath.get(cleanPath(block.path));
+            if (!catalog) return;
+            if (useMain && !storefronts.has(catalog.structurePageId)) return;
+
+            const catalogId = catalog.id;
+            const pageId = useMain ? catalog.structurePageId : block.structurePageId;
 
             const key = normalize(title);
             const order = block.serialNumber ?? 0;
@@ -105,7 +116,7 @@ export const buildShelves = ({
             const group = groups.get(key);
             group.order = Math.min(group.order, order);
             if (!group.icon && block.icon) group.icon = block.icon;
-            group.pages.push({pageId: block.structurePageId, path: cleanPath(block.path), type: block.type});
+            group.pages.push({pageId, path: cleanPath(block.path), type: block.type});
             group.products.push(...(productsByCatalog.get(catalogId) || []));
         });
 
@@ -154,11 +165,15 @@ export const buildHero = ({
     originByPage,
     pageIds,
     scopeId = null,
+    mainPageId = null,
     limit = 3
 } = {}) => {
     if (!Array.isArray(banners)) return [];
 
-    const allowed = new Set(scopeId === null ? (pageIds || []) : [scopeId]);
+    const useMain = scopeId === null && mainPageId !== null
+        && banners.some((banner) => banner.type === 'product' && banner.pageId === mainPageId);
+
+    const allowed = new Set(useMain ? [mainPageId] : (scopeId === null ? (pageIds || []) : [scopeId]));
     const productById = new Map((mainPageProducts || []).map((product) => [String(product.id), product]));
 
     const picked = [];

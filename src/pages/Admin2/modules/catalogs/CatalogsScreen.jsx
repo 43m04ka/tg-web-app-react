@@ -101,7 +101,7 @@ export default function CatalogsScreen() {
     const activeId = id ? String(id) : null;
 
     const go = useCallback(
-        (tabId) => navigate(withQuery(tabId ? `/admin2/catalogs/${tabId}` : '/admin2/catalogs')),
+        (tabId) => navigate(withQuery(tabId ? `/admin/catalogs/${tabId}` : '/admin/catalogs')),
         [navigate, withQuery]
     );
 

@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Button, Note} from '../../ui';
 import {serializeEditor} from './telegramHtml';
+import {FOOTER_LINKS, footerHtml} from './broadcastModel';
 import {EmojiPanel, useDismiss} from './EmojiPicker';
 import style from './BroadcastScreen.module.scss';
 
@@ -99,6 +100,24 @@ export default function MessageEditor({html, limit, disabled, onChange}) {
         runCommand('createLink', url.trim());
     }, [runCommand]);
 
+    const addFooter = useCallback(() => {
+        const element = editorRef.current;
+        if (!element) return;
+        if (element.textContent.includes(FOOTER_LINKS[1].title)) return;
+
+        element.focus();
+
+        const range = document.createRange();
+        range.selectNodeContents(element);
+        range.collapse(false);
+
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        runCommand('insertHTML', footerHtml(Boolean(element.textContent.trim())));
+    }, [runCommand]);
+
     const addEmoji = useCallback((emoji) => {
         setEmojiOpen(false);
         runCommand('insertText', emoji);
@@ -154,6 +173,17 @@ export default function MessageEditor({html, limit, disabled, onChange}) {
                     onClick={() => runCommand('removeFormat')}
                 >
                     ✕
+                </button>
+
+                <button
+                    type="button"
+                    title="Добавить подвал: Поддержка и канал Геймворд"
+                    disabled={disabled}
+                    className={`${style.tool} ${style.toolWide}`}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={addFooter}
+                >
+                    Подвал
                 </button>
 
                 <span className={style.toolSplit}/>

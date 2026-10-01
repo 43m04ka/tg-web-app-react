@@ -97,8 +97,8 @@ export default function CustomersScreen() {
         }
     ]), []);
 
-    const openCustomer = useCallback((row) => navigate(withQuery(`/admin2/customers/${row.id}`)), [navigate, withQuery]);
-    const closeCustomer = useCallback(() => navigate(withQuery('/admin2/customers')), [navigate, withQuery]);
+    const openCustomer = useCallback((row) => navigate(withQuery(`/admin/customers/${row.id}`)), [navigate, withQuery]);
+    const closeCustomer = useCallback(() => navigate(withQuery('/admin/customers')), [navigate, withQuery]);
 
     return (
         <Workspace>

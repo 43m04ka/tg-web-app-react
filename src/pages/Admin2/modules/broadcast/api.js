@@ -2,7 +2,7 @@ import {http, httpPost} from '../../platform/http';
 
 export const fetchBroadcastStats = () => httpPost('/broadcast/tg/stats', {});
 
-export const sendBroadcast = ({mode, text, media, keyboard, disablePreview, scheduledAt}) => {
+export const sendBroadcast = ({mode, text, media, keyboard, disablePreview, scheduledAt, testChatIds}) => {
     const form = new FormData();
 
     form.append('mode', mode);
@@ -12,6 +12,7 @@ export const sendBroadcast = ({mode, text, media, keyboard, disablePreview, sche
     if (media) form.append('media', media);
     if (keyboard) form.append('inlineKeyboard', JSON.stringify(keyboard));
     if (scheduledAt) form.append('scheduledAt', new Date(scheduledAt).toISOString());
+    if (testChatIds) form.append('testChatIds', JSON.stringify(testChatIds));
 
     return http('/broadcast/tg/send', {method: 'POST', form, timeoutMs: mode === 'test' ? 330000 : 120000});
 };

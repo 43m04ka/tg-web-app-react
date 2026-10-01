@@ -14,14 +14,13 @@ import {askConfirm} from '../../platform/notify';
 import {keys} from '../../platform/resources';
 import {useMutation} from '../../platform/useMutation';
 import {createPage, deletePage, updatePage} from './api';
-import {BOT_OPTIONS, PRICING_NOTES, TYPE_OPTIONS, typeName} from './pageOptions';
+import {PRICING_NOTES, TYPE_OPTIONS, typeName} from './pageOptions';
 
 const toDraft = (page) => ({
     name: page?.name ?? '',
     link: page?.link ?? '',
     barIcon: page?.barIcon ?? '',
     type: page?.type ?? 'other',
-    botType: page?.botType ?? 'tg',
     serialNumber: page?.serialNumber ?? 0,
     isHidden: Boolean(page?.isHidden)
 });
@@ -31,7 +30,6 @@ const toPayload = (draft) => ({
     link: draft.link.trim(),
     barIcon: draft.barIcon.trim(),
     type: draft.type,
-    botType: draft.botType,
     serialNumber: Number(draft.serialNumber) || 0,
     isHidden: draft.isHidden ? 1 : 0
 });
@@ -126,12 +124,8 @@ export default function PageInspector({page, onClose, onRemoved}) {
 
             <InspectorSection
                 title="Где показывается"
-                note="Площадка определяет, в каком боте или на каком сайте видна страница."
+                note="В каком боте или на сайте видна витрина, задаётся в разделе «Стартовые страницы»."
             >
-                <Field label="Площадка">
-                    <Select options={BOT_OPTIONS} value={draft.botType} onChange={set('botType')}/>
-                </Field>
-
                 <Field label="Порядок" hint="Меньше — выше в списке">
                     <Input type="number" value={draft.serialNumber} onChange={set('serialNumber')}/>
                 </Field>

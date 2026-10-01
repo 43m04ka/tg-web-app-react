@@ -36,7 +36,7 @@ export default function BrandForm({brand}) {
     const remove = useMutation(deleteBrand, {
         invalidates: [keys.services],
         done: 'Бренд удалён',
-        onDone: () => navigate('/admin2/services'),
+        onDone: () => navigate('/admin/services'),
     });
 
     const dirty = useMemo(() => {

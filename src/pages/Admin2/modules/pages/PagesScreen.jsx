@@ -82,12 +82,12 @@ export default function PagesScreen() {
         }
     ].filter(Boolean), [section]);
 
-    const open = useCallback((row) => navigate(withQuery(`/admin2/pages/${row.id}`)), [navigate, withQuery]);
-    const close = useCallback(() => navigate(withQuery('/admin2/pages')), [navigate, withQuery]);
-    const startNew = useCallback(() => navigate(withQuery('/admin2/pages/new')), [navigate, withQuery]);
+    const open = useCallback((row) => navigate(withQuery(`/admin/pages/${row.id}`)), [navigate, withQuery]);
+    const close = useCallback(() => navigate(withQuery('/admin/pages')), [navigate, withQuery]);
+    const startNew = useCallback(() => navigate(withQuery('/admin/pages/new')), [navigate, withQuery]);
 
     const onSaved = useCallback((page, wasNew) => {
-        if (wasNew && page?.id) navigate(withQuery(`/admin2/pages/${page.id}`), {replace: true});
+        if (wasNew && page?.id) navigate(withQuery(`/admin/pages/${page.id}`), {replace: true});
     }, [navigate, withQuery]);
 
     if (id) {

@@ -4,7 +4,7 @@ import {INITIAL_DATA} from '../shared/lib/initialData';
 import {closedCount, closedDomain, normalizeDomains, normalizeSections} from '../shared/lib/maintenance';
 
 const BYPASS_STORAGE_KEY = 'maintenance_bypass';
-const ADMIN_PATHS = ['/admin', '/admin-panel'];
+const ADMIN_PATHS = ['/admin'];
 const POLL_MS = 30000;
 
 const hasBypass = () => {

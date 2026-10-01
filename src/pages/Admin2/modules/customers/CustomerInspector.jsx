@@ -137,7 +137,7 @@ export default function CustomerInspector({id, onClose}) {
                                     key={order.id}
                                     type="button"
                                     className={style.order}
-                                    onClick={() => navigate(`/admin2/orders/${order.id}`)}
+                                    onClick={() => navigate(`/admin/orders/${order.id}`)}
                                 >
                                     <Mono>{`#${order.id}`}</Mono>
                                     <Time value={order.createdAt}/>

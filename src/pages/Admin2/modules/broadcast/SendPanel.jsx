@@ -1,6 +1,6 @@
 import React from 'react';
 import {Badge, Button, Field, Input, Note, Stat, StatRow} from '../../ui';
-import {SCHEDULE_AHEAD_DAYS, STATE_TITLES, recipientsTitle, testVerdict} from './broadcastModel';
+import {SCHEDULE_AHEAD_DAYS, STATE_TITLES, adminTitle, recipientsTitle, testVerdict} from './broadcastModel';
 import style from './BroadcastScreen.module.scss';
 
 function TestReport({report}) {
@@ -31,13 +31,16 @@ export default function SendPanel({
     problem,
     testDone,
     testReport,
+    testAdmins = [],
+    testChatIds = [],
+    onToggleTestAdmin,
     sending,
     onSchedule,
     onSendTest,
     onSendProduction
 }) {
     const production = stats?.productionUniqueRecipients ?? 0;
-    const admins = stats?.testAdminRecipients ?? 0;
+    const admins = testAdmins.length ? testChatIds.length : stats?.testAdminRecipients ?? 0;
 
     return (
         <div className={style.send}>
@@ -57,6 +60,26 @@ export default function SendPanel({
                         ? 'Рассылка уже идёт. Вторую сервер не примет — дождитесь конца.'
                         : 'Рассылка запланирована. Отмените её в полосе задач, чтобы отправить другую.'}
                 </Note>
+            ) : null}
+
+            {testAdmins.length ? (
+                <div className={style.sendBlock}>
+                    <span className={style.sendTitle}>Кому уйдёт проба</span>
+
+                    <div className={style.testAdmins}>
+                        {testAdmins.map((admin) => (
+                            <label key={admin.chatId} className={style.testAdmin}>
+                                <input
+                                    type="checkbox"
+                                    checked={testChatIds.includes(admin.chatId)}
+                                    disabled={Boolean(sending)}
+                                    onChange={() => onToggleTestAdmin?.(admin.chatId)}
+                                />
+                                <span>{adminTitle(admin)}</span>
+                            </label>
+                        ))}
+                    </div>
+                </div>
             ) : null}
 
             <div className={style.sendBlock}>
@@ -79,7 +102,7 @@ export default function SendPanel({
             <div className={style.sendActions}>
                 <Button
                     variant="secondary"
-                    disabled={busy || Boolean(sending) || Boolean(problem)}
+                    disabled={busy || Boolean(sending) || Boolean(problem) || admins === 0}
                     loading={sending === 'test'}
                     onClick={onSendTest}
                 >

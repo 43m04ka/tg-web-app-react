@@ -226,7 +226,7 @@ export default function CatalogInspector({catalog, pages, queue, active = true, 
                         <Button
                             size="s"
                             variant="secondary"
-                            onClick={() => navigate(`/admin2/products?catalogId=${catalog.id}`)}
+                            onClick={() => navigate(`/admin/products?catalogId=${catalog.id}`)}
                         >
                             Товары каталога →
                         </Button>

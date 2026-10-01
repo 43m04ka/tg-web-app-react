@@ -7,14 +7,6 @@ export const TYPE_OPTIONS = [
     {value: 'other', title: 'Без полей'},
 ];
 
-export const BOT_OPTIONS = [
-    {value: 'tg', title: 'Telegram'},
-    {value: 'vk-xbox', title: 'VK Xbox'},
-    {value: 'vk-ps', title: 'VK PS'},
-    {value: 'web', title: 'Веб'},
-    {value: 'test', title: 'Тест'},
-];
-
 export const TYPES_WITHOUT_STRUCTURE = ['steam', 'services'];
 
 export const hasStructure = (type) => !TYPES_WITHOUT_STRUCTURE.includes(type);
@@ -25,26 +17,22 @@ export const PRICING_NOTES = {
     services: 'Оплата как у PlayStation и Xbox, но витрина собирается брендами, а не блоками.',
 };
 
-export const typeName = (value) => TYPE_OPTIONS.find((option) => option.value === value)?.title || value || '—';
+export const MAIN_TYPE = 'main';
 
-export const botName = (value) => BOT_OPTIONS.find((option) => option.value === value)?.title || value || '—';
+export const isMainPage = (page) => page?.type === MAIN_TYPE;
 
-export const sortPages = (list) => (list || []).slice().sort((left, right) => {
-    const bot = String(left.botType || '').localeCompare(String(right.botType || ''));
-    if (bot !== 0) return bot;
+export const typeName = (value) => (value === MAIN_TYPE
+    ? 'Первая страница сайта'
+    : TYPE_OPTIONS.find((option) => option.value === value)?.title || value || '—');
 
-    return (left.serialNumber ?? 0) - (right.serialNumber ?? 0);
-});
+export const sortPages = (list) => (list || []).slice()
+    .sort((left, right) => (left.serialNumber ?? 0) - (right.serialNumber ?? 0) || left.id - right.id);
 
-export const groupByBot = (pages) => {
-    const buckets = new Map();
+export const pageGroups = (pages) => {
+    const sorted = sortPages(pages);
 
-    sortPages(pages).forEach((page) => {
-        const key = page.botType || 'tg';
-        const bucket = buckets.get(key);
-        if (bucket) bucket.push(page);
-        else buckets.set(key, [page]);
-    });
-
-    return [...buckets.entries()].map(([botType, items]) => ({botType, title: botName(botType), items}));
+    return [
+        {key: 'main', title: 'Главная', items: sorted.filter(isMainPage)},
+        {key: 'storefronts', title: 'Витрины', items: sorted.filter((page) => !isMainPage(page))}
+    ].filter((group) => group.items.length);
 };

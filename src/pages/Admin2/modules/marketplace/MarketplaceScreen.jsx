@@ -279,8 +279,8 @@ export default function MarketplaceScreen() {
         {id: 'status', title: 'Статус', width: 120, cell: (row) => <StatusBadge status={row.status}/>}
     ], []);
 
-    const open = useCallback((row) => navigate(withQuery(`/admin2/marketplace/${row.id}`)), [navigate, withQuery]);
-    const close = useCallback(() => navigate(withQuery('/admin2/marketplace')), [navigate, withQuery]);
+    const open = useCallback((row) => navigate(withQuery(`/admin/marketplace/${row.id}`)), [navigate, withQuery]);
+    const close = useCallback(() => navigate(withQuery('/admin/marketplace')), [navigate, withQuery]);
 
     return (
         <Workspace>

@@ -19,7 +19,7 @@ import settings from '../modules/settings/module';
 import access from '../modules/access/module';
 import kit from '../modules/kit/module';
 
-export const BASE = '/admin2';
+export const BASE = '/admin';
 
 export const GROUPS = [
     {id: 'money', title: 'Деньги'},

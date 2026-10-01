@@ -12,11 +12,13 @@ import {
 
 const visibleOnly = (pages) => (Array.isArray(pages) ? pages.filter((page) => page.isHidden !== 1) : null);
 
+const mainPageOf = (pages) => ({mainPageId: (pages || []).find((page) => page.type === 'main')?.id ?? null});
+
 const withoutPattern = (items) =>
     Array.isArray(items) ? items.map(({pattern, ...rest}) => rest) : null;
 
 const SOURCES = [
-    {key: 'pages', initial: 'pages', load: fetchPages, transform: visibleOnly, critical: true},
+    {key: 'pages', initial: 'pages', load: fetchPages, transform: visibleOnly, derive: mainPageOf, critical: true},
     {key: 'startPages', initial: 'startPages', load: fetchStartPages, transform: withoutPattern, critical: true},
     {key: 'banners', initial: 'banners', load: fetchBanners},
     {key: 'structureBlocks', initial: 'structureBlocks', load: fetchStructureBlocks},
@@ -46,9 +48,10 @@ function warmImages(urls) {
 const seedFromInjected = () => {
     const seed = {};
 
-    SOURCES.forEach(({key, initial, transform}) => {
+    SOURCES.forEach(({key, initial, transform, derive}) => {
         const injected = INITIAL_DATA[initial];
         seed[key] = hasItems(injected) ? (transform ? transform(injected) : injected) : null;
+        if (derive) Object.assign(seed, derive(hasItems(injected) ? injected : []));
     });
 
     return seed;
@@ -82,9 +85,9 @@ async function runLoad(set, get) {
 
     set({status: 'loading', error: null});
 
-    const fetchOne = async ({key, load, transform}) => {
+    const fetchOne = async ({key, load, transform, derive}) => {
         const result = await load();
-        if (hasItems(result)) set({[key]: transform ? transform(result) : result});
+        if (hasItems(result)) set({[key]: transform ? transform(result) : result, ...(derive ? derive(result) : null)});
     };
 
     const background = Promise.all(

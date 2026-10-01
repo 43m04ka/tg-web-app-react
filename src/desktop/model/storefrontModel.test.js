@@ -124,6 +124,29 @@ describe('buildShelves', () => {
         scopeId
     });
 
+    it('главная со своими полками заменяет сборку из витрин и ведёт на страницу каталога', () => {
+        const shelves = buildShelves({
+            structureBlocks: [
+                ...structureBlocks,
+                {id: 9, group: 'body', type: 'ordinary', name: 'Хиты главной', path: 'ps_tur_deals', structurePageId: 99, serialNumber: 1}
+            ],
+            catalogs,
+            mainPageProducts,
+            originOf,
+            pageIds: [20, 35, 28],
+            mainPageId: 99
+        });
+
+        expect(shelves.map((shelf) => shelf.title)).toEqual(['Хиты главной']);
+        expect(shelves[0].pages).toEqual([{pageId: 20, path: 'ps_tur_deals', type: 'ordinary'}]);
+    });
+
+    it('пустая главная не мешает сборке из витрин', () => {
+        const shelves = buildShelves({structureBlocks, catalogs, mainPageProducts, originOf, pageIds: [20, 35, 28], mainPageId: 99});
+
+        expect(shelves.map((shelf) => shelf.title)).toEqual(['Популярное', 'Скидки недели']);
+    });
+
     it('одноимённые полки разных витрин сходятся в одну секцию', () => {
         const shelves = build();
 

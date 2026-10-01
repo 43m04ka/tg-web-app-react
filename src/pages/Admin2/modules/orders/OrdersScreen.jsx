@@ -214,8 +214,8 @@ export default function OrdersScreen() {
         },
     ]), []);
 
-    const openOrder = useCallback((row) => navigate(withQuery(`/admin2/orders/${row.id}`)), [navigate, withQuery]);
-    const closeOrder = useCallback(() => navigate(withQuery('/admin2/orders')), [navigate, withQuery]);
+    const openOrder = useCallback((row) => navigate(withQuery(`/admin/orders/${row.id}`)), [navigate, withQuery]);
+    const closeOrder = useCallback(() => navigate(withQuery('/admin/orders')), [navigate, withQuery]);
 
     return (
         <Workspace>

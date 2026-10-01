@@ -195,6 +195,13 @@
     background: var(--a2-border);
 }
 
+.toolWide {
+    width: auto;
+    padding: 0 10px;
+    font-size: var(--a2-size-s);
+    font-weight: 600;
+}
+
 .emojiWrap {
     position: relative;
 }
@@ -709,4 +716,33 @@
 .reportList {
     margin: 6px 0 0;
     padding-left: 18px;
+}
+
+.testAdmins {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.testAdmin {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-plane);
+    color: var(--a2-text);
+    font-size: var(--a2-size-s);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.testAdmin input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--a2-accent);
+    cursor: pointer;
 }

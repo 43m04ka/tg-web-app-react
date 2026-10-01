@@ -88,6 +88,20 @@ export default function BroadcastScreen() {
         setDraft((prev) => ({...prev, media: null}));
     }, []);
 
+    const testAdmins = useMemo(() => stats.data?.testAdmins || [], [stats.data]);
+    const [testOff, setTestOff] = useState(() => new Set());
+    const testChatIds = useMemo(
+        () => testAdmins.map((admin) => admin.chatId).filter((chatId) => !testOff.has(chatId)),
+        [testAdmins, testOff]
+    );
+
+    const toggleTestAdmin = useCallback((chatId) => setTestOff((current) => {
+        const next = new Set(current);
+        if (next.has(chatId)) next.delete(chatId);
+        else next.add(chatId);
+        return next;
+    }), []);
+
     const send = useCallback(async (mode) => {
         setSending(mode);
 
@@ -98,7 +112,8 @@ export default function BroadcastScreen() {
                 media: draft.media,
                 keyboard: buildKeyboard(draft.keyboardRows),
                 disablePreview,
-                scheduledAt: schedule || null
+                scheduledAt: schedule || null,
+                testChatIds: mode === 'test' && testAdmins.length ? testChatIds : undefined
             });
 
             if (mode === 'test' && !answer?.summary) {
@@ -129,7 +144,7 @@ export default function BroadcastScreen() {
         } finally {
             setSending(null);
         }
-    }, [telegramHtml, draft, disablePreview, schedule, stamp, stats]);
+    }, [telegramHtml, draft, disablePreview, schedule, stamp, stats, testAdmins.length, testChatIds]);
 
     const sendProduction = useCallback(async () => {
         const count = stats.data?.productionUniqueRecipients ?? 0;
@@ -229,6 +244,9 @@ export default function BroadcastScreen() {
                     problem={problem}
                     testDone={testDone}
                     testReport={testReport}
+                    testAdmins={testAdmins}
+                    testChatIds={testChatIds}
+                    onToggleTestAdmin={toggleTestAdmin}
                     sending={sending}
                     onSchedule={setSchedule}
                     onSendTest={() => send('test')}

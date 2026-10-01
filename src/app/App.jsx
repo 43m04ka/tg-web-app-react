@@ -21,8 +21,6 @@ import style from './App.module.scss';
 
 // Админка грузится отдельным чанком: она весит больше самой витрины, а покупателю
 // не нужна никогда.
-const AdminAuth = lazy(() => import('../pages/AdminPanel/AP_Authentication'));
-const AdminPanel = lazy(() => import('../pages/AdminPanel/AdminPanel'));
 const Admin2 = lazy(() => import('../pages/Admin2'));
 const DesktopShell = lazy(() => import('../desktop/DesktopShell'));
 const StandalonePay = lazy(() => import('../desktop/StandalonePay'));
@@ -30,7 +28,7 @@ const StandalonePay = lazy(() => import('../desktop/StandalonePay'));
 export default function App() {
     const {isReady} = useBootstrap();
     const {isMaintenance, maintenanceUntil, maintenanceSections} = useMaintenance();
-    const {pathname} = useLocation();
+    const {pathname, search} = useLocation();
     const pageId = useSessionStore((state) => state.pageId);
     const pages = useStructureStore((state) => state.pages);
 
@@ -47,11 +45,8 @@ export default function App() {
         return (
             <Suspense fallback={<Splash/>}>
                 <Routes>
-                    <Route path="/admin" element={<Navigate to="/admin2" replace/>}/>
-                    <Route path="/admin2/*" element={<Admin2/>}/>
-                    <Route path="/admin-old" element={<AdminAuth/>}/>
-                    <Route path="/admin-panel/*" element={<AdminPanel/>}/>
-                    <Route path="*" element={<Navigate to="/admin2" replace/>}/>
+                    <Route path="/admin/*" element={<Admin2/>}/>
+                    <Route path="*" element={<Navigate to={`/admin${pathname.replace(/^\/admin[^/]*/, '')}${search}`} replace/>}/>
                 </Routes>
             </Suspense>
         );

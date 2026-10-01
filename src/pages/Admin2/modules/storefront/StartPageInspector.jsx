@@ -13,6 +13,7 @@ import {askConfirm} from '../../platform/notify';
 import {keys} from '../../platform/resources';
 import {useMutation} from '../../platform/useMutation';
 import {createStartItem, deleteStartItem, updateStartItem} from './api';
+import {isMainPage} from './pageOptions';
 import {
     START_PLATFORMS,
     START_TYPES,
@@ -74,9 +75,9 @@ export default function StartPageInspector({item, platform, pages, count, onClos
     const pageOptions = useMemo(() => ([
         {value: '', title: 'Не выбрана'},
         ...(pages || [])
-            .filter((page) => page.botType === draft.platform)
+            .filter((page) => !isMainPage(page))
             .map((page) => ({value: String(page.id), title: page.name || `Витрина №${page.id}`}))
-    ]), [pages, draft.platform]);
+    ]), [pages]);
 
     const isPage = draft.type === 'page';
     const isLink = draft.type === 'link';

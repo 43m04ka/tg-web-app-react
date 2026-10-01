@@ -71,7 +71,7 @@ export default function OverviewScreen() {
     const bars = useMemo(() => barHeights(report?.byDay), [report]);
     const attention = attentionRows(report?.attention);
 
-    const openOrders = (filter) => navigate(`/admin2/orders${filter ? `?${filter}` : ''}`);
+    const openOrders = (filter) => navigate(`/admin/orders${filter ? `?${filter}` : ''}`);
 
     return (
         <div className={style.screen}>
@@ -307,7 +307,7 @@ export default function OverviewScreen() {
                             ))}
                         </div>
 
-                        <Button size="s" variant="ghost" onClick={() => navigate('/admin2/services')}>
+                        <Button size="s" variant="ghost" onClick={() => navigate('/admin/services')}>
                             Открыть склады
                         </Button>
                     </>

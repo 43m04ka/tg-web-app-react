@@ -178,7 +178,7 @@ export default function ProductsScreen() {
     const activeId = id ? String(id) : null;
 
     const go = useCallback(
-        (tabId) => navigate(withQuery(tabId ? `/admin2/products/${tabId}` : '/admin2/products')),
+        (tabId) => navigate(withQuery(tabId ? `/admin/products/${tabId}` : '/admin/products')),
         [navigate, withQuery]
     );
 

@@ -76,11 +76,11 @@ export default function ServicesScreen() {
         done: 'Бренд создан',
         onDone: (result) => {
             const id = result?.result?.id;
-            if (id) navigate(`/admin2/services/${id}`);
+            if (id) navigate(`/admin/services/${id}`);
         },
     });
 
-    const openBrand = useCallback((id) => navigate(`/admin2/services/${id}`), [navigate]);
+    const openBrand = useCallback((id) => navigate(`/admin/services/${id}`), [navigate]);
 
     const setTab = useCallback((next) => {
         setParams((current) => {

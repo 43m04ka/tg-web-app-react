@@ -82,9 +82,9 @@ export default function PromoScreen() {
         }
     ]), []);
 
-    const openPromo = useCallback((row) => navigate(withQuery(`/admin2/promo/${row.id}`)), [navigate, withQuery]);
-    const closePromo = useCallback(() => navigate(withQuery('/admin2/promo')), [navigate, withQuery]);
-    const startNew = useCallback(() => navigate(withQuery('/admin2/promo/new')), [navigate, withQuery]);
+    const openPromo = useCallback((row) => navigate(withQuery(`/admin/promo/${row.id}`)), [navigate, withQuery]);
+    const closePromo = useCallback(() => navigate(withQuery('/admin/promo')), [navigate, withQuery]);
+    const startNew = useCallback(() => navigate(withQuery('/admin/promo/new')), [navigate, withQuery]);
 
     const isNew = id === 'new';
     const active = isNew ? null : all.find((promo) => String(promo.id) === String(id)) || null;

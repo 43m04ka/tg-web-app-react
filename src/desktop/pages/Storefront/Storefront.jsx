@@ -36,6 +36,7 @@ export default function Storefront() {
     const structureBlocks = useStructureStore((store) => store.structureBlocks);
     const mainPageProducts = useStructureStore((store) => store.mainPageProducts);
     const banners = useStructureStore((store) => store.banners);
+    const mainPageId = useStructureStore((store) => store.mainPageId);
 
     const setPageId = useSessionStore((store) => store.setPageId);
 
@@ -73,14 +74,15 @@ export default function Storefront() {
             originByPage,
             pageIds,
             scopeId,
+            mainPageId,
             limit: Math.max(1, config.heroSize - 1)
         }),
-        [banners, mainPageProducts, originOf, originByPage, pageIds, scopeId, config.heroSize]
+        [banners, mainPageProducts, originOf, originByPage, pageIds, scopeId, mainPageId, config.heroSize]
     );
 
     const shelves = useMemo(
-        () => buildShelves({structureBlocks, catalogs, mainPageProducts, originOf, pageIds, scopeId}),
-        [structureBlocks, catalogs, mainPageProducts, originOf, pageIds, scopeId]
+        () => buildShelves({structureBlocks, catalogs, mainPageProducts, originOf, pageIds, scopeId, mainPageId}),
+        [structureBlocks, catalogs, mainPageProducts, originOf, pageIds, scopeId, mainPageId]
     );
 
     const shelfEntries = useMemo(() => groupShelves(shelves), [shelves]);

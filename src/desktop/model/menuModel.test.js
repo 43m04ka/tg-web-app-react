@@ -9,6 +9,9 @@ const storefronts = [
 const catalogs = [
     {path: 'ps_tur_psplus', structurePageId: 20},
     {path: 'ps_tur_eaplay', structurePageId: 20},
+    {path: 'ps_tur_gtaplus', structurePageId: 20},
+    {path: 'ps_tur_ubisoft', structurePageId: 20},
+    {path: 'ps_tur_gta6', structurePageId: 20},
     {path: 'ps_ind_psplus', structurePageId: 35},
     {path: 'xbox_us_gamepass', structurePageId: 28}
 ];
@@ -45,7 +48,7 @@ describe('menuGroups', () => {
     it('раскладывает подборки PlayStation по регионам без подписок и баннеров', () => {
         const ps = build()[0].items[0];
 
-        expect(ps.columns.map((column) => column.title)).toEqual(['Турция', 'Индия']);
+        expect(ps.columns.map((column) => column.title)).toEqual(['Регион Турция', 'Регион Индия']);
         expect(ps.columns[0].links.map((link) => link.label)).toEqual(['Все игры', 'Популярное', 'Новинки']);
         expect(ps.columns[0].links[1].to).toBe('/catalog/ps_tur_popular');
     });
@@ -54,7 +57,8 @@ describe('menuGroups', () => {
         const plus = build()[0].items[1];
 
         expect(menuTarget(plus)).toBe('/subscription/ps_tur_psplus');
-        expect(plus.columns[0].links.map((link) => link.label)).toEqual(['PS Plus', 'EA Play']);
+        expect(plus.columns[0].links.map((link) => link.label)).toEqual(['PlayStation Plus', 'EA Play', 'Ubisoft+', 'GTA+']);
+        expect(plus.columns[1].links.map((link) => link.label)).toEqual(['PlayStation Plus']);
     });
 
     it('прячет закрытые разделы и добавляет страницы из меню без дублей', () => {

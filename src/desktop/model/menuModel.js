@@ -1,24 +1,28 @@
 import {catalogRoute, subscriptionRoute} from '../../shared/lib/pageRoutes';
 
 const SUBSCRIPTIONS = [
-    {suffix: 'psplus', label: 'PS Plus'},
-    {suffix: 'eaplay', label: 'EA Play'},
-    {suffix: 'gamepass', label: 'Game Pass'}
+    {suffix: 'psplus', label: 'PlayStation Plus', ends: ['psplus']},
+    {suffix: 'eaplay', label: 'EA Play', ends: ['eaplay']},
+    {suffix: 'ubisoft', label: 'Ubisoft+', ends: ['ubisoft', 'ubisoftplus', 'ubisoft_plus']},
+    {suffix: 'gtaplus', label: 'GTA+', ends: ['gtaplus', 'gta_plus']},
+    {suffix: 'gamepass', label: 'Game Pass', ends: ['gamepass']}
 ];
 
 const REGION_TITLES = {
-    ps: 'Турция',
-    ps_india: 'Индия'
+    ps: 'Регион Турция',
+    ps_india: 'Регион Индия'
 };
 
 const PS_TYPES = ['ps', 'ps_india'];
 
-const isSubscriptionPath = (path) => SUBSCRIPTIONS.some(({suffix}) => String(path || '').endsWith(`_${suffix}`));
+const endsWithAny = (path, ends) => ends.some((end) => String(path || '').endsWith(`_${end}`));
+
+const isSubscriptionPath = (path) => SUBSCRIPTIONS.some(({ends}) => endsWithAny(path, ends));
 
 const subscriptionsOf = (catalogs, shop) => SUBSCRIPTIONS
-    .map(({suffix, label}) => {
+    .map(({suffix, label, ends}) => {
         const catalog = (catalogs || []).find((item) =>
-            item.structurePageId === shop.id && String(item.path || '').endsWith(`_${suffix}`));
+            item.structurePageId === shop.id && endsWithAny(item.path, ends));
 
         return catalog
             ? {key: `${shop.id}-${suffix}`, suffix, label, action: 'scoped', shop, to: subscriptionRoute(catalog.path)}

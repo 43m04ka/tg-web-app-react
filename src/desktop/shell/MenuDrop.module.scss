@@ -66,14 +66,11 @@
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  width: 560px;
+  width: min(880px, calc(100vw - 2 * var(--d-gap-6)));
   max-height: calc(100vh - var(--d-topbar) - var(--d-gap-6));
   overflow-y: auto;
-  padding: var(--d-gap-3);
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  align-items: start;
-  gap: var(--d-gap-4) var(--d-gap-3);
+  grid-template-columns: 300px minmax(0, 1fr);
   border-radius: var(--radius-lg);
   background: var(--bg-elevated);
   border: 1px solid var(--border);
@@ -81,6 +78,14 @@
   z-index: 50;
   transform-origin: top right;
   animation: global(gw-zoom-in) var(--m-base) var(--m-ease) both;
+}
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--d-gap-3);
+  padding: var(--d-gap-3);
+  border-right: 1px solid var(--border-subtle);
 }
 
 .group {
@@ -94,17 +99,17 @@
   padding: var(--d-gap-1) var(--d-gap-3) var(--d-gap-2);
   font-size: var(--d-fs-xs);
   font-weight: var(--fw-bold);
-  letter-spacing: 0.4px;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
   color: var(--text-faint);
 }
 
 .option {
   width: 100%;
-  padding: var(--d-gap-2) var(--d-gap-3);
+  padding: 6px var(--d-gap-2) 6px 6px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  gap: var(--d-gap-3);
   border-radius: var(--radius-md);
   font-size: var(--d-fs-sm);
   font-weight: var(--fw-medium);
@@ -114,9 +119,150 @@
               color var(--m-base) var(--m-ease);
 }
 
-.option:hover {
+.optionOn {
   background: var(--surface-2);
   color: var(--text);
+}
+
+.optionIcon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  transition: background-color var(--m-base) var(--m-ease),
+              color var(--m-base) var(--m-ease);
+}
+
+.optionIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.optionOn .optionIcon {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+}
+
+.optionLabel {
+  flex: 1;
+  min-width: 0;
+}
+
+.optionArrow {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--text-faint);
+  transform: rotate(-90deg);
+}
+
+.optionOn .optionArrow {
+  color: var(--text);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--d-gap-5);
+  min-width: 0;
+  padding: var(--d-gap-5) var(--d-gap-6);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: var(--d-gap-5) var(--d-gap-6);
+  align-items: start;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+}
+
+.columnTitle {
+  margin-bottom: var(--d-gap-2);
+  font-size: var(--d-fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.link {
+  padding: 5px 0;
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-muted);
+  text-align: left;
+  transition: color var(--m-base) var(--m-ease);
+}
+
+.link:hover {
+  color: var(--text);
+}
+
+.more {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--accent);
+  transition: gap var(--m-base) var(--m-ease);
+}
+
+.more:hover {
+  gap: 7px;
+}
+
+.moreArrow {
+  width: 15px;
+  height: 15px;
+  transform: rotate(-90deg);
+}
+
+.lone {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--d-gap-2);
+}
+
+.loneIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: var(--d-gap-2);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+}
+
+.loneIcon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.loneTitle {
+  font-size: var(--d-fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.loneNote {
+  margin-bottom: var(--d-gap-2);
+  font-size: var(--d-fs-sm);
+  color: var(--text-muted);
 }
 
 .empty {

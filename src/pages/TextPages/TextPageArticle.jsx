@@ -81,7 +81,7 @@ export default function TextPageArticle({slug, section, onMissing, onLoaded}) {
         );
     }
 
-    const edition = page.section === 'news' ? '' : dateTitle(page.updatedAt);
+    const edition = page.section === 'news' ? '' : dateTitle(page.publishedAt || page.updatedAt);
     const intro = introLength(page.blocks, entries);
 
     return (

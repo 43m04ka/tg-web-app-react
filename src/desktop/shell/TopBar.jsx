@@ -7,14 +7,13 @@ import {usePlatform} from '../../shared/hooks/usePlatform';
 import {pageCartItems} from '../../pages/Basket/cartModel';
 import {resetSearchState} from '../../shared/lib/searchMemory';
 import {navLabel, sectionList, storefrontList} from '../model/desktopNav';
-import {menuGroups} from '../model/menuModel';
-import {useTextPageLinks} from '../../shared/textPages/useTextPages';
 import {useScrolled} from './useScrolled';
 import {BasketIcon, UserIcon} from './DesktopIcons';
 import logo from '../assets/logo-full.png';
 import SearchBox from './SearchBox';
 import BackLink from '../ui/BackLink';
 import MenuDrop from './MenuDrop';
+import {useSiteMenu} from './useSiteMenu';
 import {useStorefrontScope} from './StorefrontScope';
 import {useOpenSections} from './MaintenanceScope';
 import style from './TopBar.module.scss';
@@ -94,28 +93,13 @@ export default function TopBar({onSearchOpenChange}) {
         go('/');
     }, [go, setScopeId]);
 
-    const textPages = useTextPageLinks();
-
     const pickStorefront = useCallback((item) => {
         setScopeId(item.id);
         setPageId(item.id);
         go('/');
     }, [go, setPageId, setScopeId]);
 
-    const selectMenuItem = useCallback((item) => {
-        if (item.action === 'storefront') pickStorefront(item.shop);
-        else if (item.action === 'section') openSection(item.section);
-        else if (item.action === 'subscription') {
-            setScopeId(item.shop.id);
-            setPageId(item.shop.id);
-            go(item.to);
-        } else go(item.to);
-    }, [go, openSection, pickStorefront, setPageId, setScopeId]);
-
-    const menu = useMemo(
-        () => menuGroups({storefronts, sections, catalogs, textPages}),
-        [storefronts, sections, catalogs, textPages]
-    );
+    const {groups: menu, select: selectMenuItem} = useSiteMenu();
 
     return (
         <header className={isScrolled ? `${style.bar} ${style.barScrolled}` : style.bar}>

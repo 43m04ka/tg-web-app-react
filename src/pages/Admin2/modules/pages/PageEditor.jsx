@@ -304,17 +304,27 @@ export default function PageEditor({id, section, onClose, onSaved}) {
                                 <>
                                     <Toggle
                                         checked={draft.showInFooter}
-                                        label="Ссылка в подвале, колонка «Покупателям»"
+                                        label="Ссылка в подвале, нижняя строка"
                                         onChange={(value) => set('showInFooter', value)}
                                     />
                                     <Toggle
                                         checked={draft.showInMenu}
-                                        label="Ссылка в меню верхней панели"
+                                        label="Ссылка в меню верхней панели, раздел «Покупателям»"
                                         onChange={(value) => set('showInMenu', value)}
                                     />
                                 </>
                             ) : null}
                         </div>
+
+                        {draft.section === 'news' ? null : (
+                            <Field label="Редакция от" hint="Дата в шапке страницы. Пусто — дата последнего сохранения">
+                                <Input
+                                    type="date"
+                                    value={String(draft.publishedAt || '').slice(0, 10)}
+                                    onChange={(event) => set('publishedAt', event.target.value ? `${event.target.value}T12:00` : '')}
+                                />
+                            </Field>
+                        )}
 
                         {draft.section === 'page' ? null : (
                             <Note tone="neutral">

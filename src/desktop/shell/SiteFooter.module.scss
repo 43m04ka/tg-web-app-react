@@ -98,8 +98,10 @@
 .heading {
   margin-bottom: var(--d-gap-1);
   color: var(--text);
-  font-size: var(--d-fs-sm);
+  font-size: var(--d-fs-xs);
   font-weight: var(--fw-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .link,
@@ -144,4 +146,22 @@
   .columns {
     gap: var(--d-gap-8);
   }
+}
+
+.legalLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--d-gap-1) var(--d-gap-4);
+}
+
+.legalLink {
+  color: var(--text-faint);
+  text-decoration: none;
+  transition: color var(--m-base) var(--m-ease);
+}
+
+.legalLink:hover {
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }

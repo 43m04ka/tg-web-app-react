@@ -458,6 +458,17 @@
   opacity: 0;
 }
 
+.kind {
+  margin-bottom: -4px;
+  font-size: var(--d-fs-2xs);
+  font-weight: var(--fw-semibold);
+  line-height: 1.2;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .name {
   font-size: var(--d-fs-sm);
   font-weight: var(--fw-semibold);

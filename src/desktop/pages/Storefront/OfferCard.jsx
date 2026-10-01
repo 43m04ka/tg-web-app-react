@@ -21,6 +21,7 @@ export default function OfferCard({
     const alsoIn = origins.length - 1;
     const release = showRelease ? releaseInfo(product) : null;
     const preOrder = release?.isPreOrder ? release.label : null;
+    const kind = String(product.typeLabel || '').trim();
 
     return (
         <article className={style.card} style={{'--i': index}} onClick={() => onOpen?.(offer)}>
@@ -48,6 +49,7 @@ export default function OfferCard({
                 ) : null}
             </Cover>
 
+            {kind ? <span className={style.kind}>{kind}</span> : null}
             <span className={style.name}>{product.name}</span>
 
             <span className={style.prices}>

@@ -277,7 +277,7 @@ export default function Checkout() {
     const blockReason = useMemo(() => {
         if (!isTouched || isReady) return null;
         if (!userId) return 'Не удалось определить ваш профиль — перезапустите приложение';
-        if (!isAccountReady) return 'Заполните логин и пароль от аккаунта выше';
+        if (!isAccountReady) return 'Заполните данные от аккаунта';
         if (!isContactReady) return 'Укажите контакт для связи';
         if (!isEmailReady) return 'Укажите почту для чека';
 

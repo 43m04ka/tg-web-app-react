@@ -104,7 +104,7 @@ export default function DesktopPay() {
         <div className={steam.screen}>
             <header className={steam.head}>
                 <h1 className={steam.title}>
-                    Оплата <span className={style.brand}>Геймворд</span>
+                    Оплата заказа в магазине <span className={style.brand}>Геймворд.рф</span>
                 </h1>
             </header>
 

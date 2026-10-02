@@ -174,7 +174,7 @@ export default function Pay() {
                 className={steam.header}
                 style={{paddingTop: `calc(${contentSafeAreaInset.top}px + 14 * var(--u))`}}
             >
-                <h1 className={steam.title}>Оплата <span className={style.brand}>Геймворд</span></h1>
+                <h1 className={steam.title}>Оплата заказа в магазине <span className={style.brand}>Геймворд.рф</span></h1>
             </div>
 
             <div

@@ -1,5 +1,31 @@
 @import '../../app/styles/units';
 
+@keyframes errorRise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, u(8), 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes errorShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(u(-4));
+  }
+  50% {
+    transform: translateX(u(4));
+  }
+  75% {
+    transform: translateX(u(-2));
+  }
+}
+
 .screen {
   height: 100%;
   overflow-y: auto;
@@ -688,10 +714,37 @@
 }
 
 .actionError {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: u(9);
   margin: 0;
+  padding: u(10) u(12);
+  border-radius: u(13);
+  background: color-mix(in oklch, var(--danger) 14%, transparent);
+  border: 1px solid color-mix(in oklch, var(--danger) 42%, transparent);
   font-size: u(12);
-  color: oklch(0.78 0.16 25);
-  animation: valueSwap 260ms var(--ease-out);
+  font-weight: 600;
+  line-height: 1.45;
+  text-align: left;
+  color: oklch(0.84 0.08 25);
+  animation: errorRise 260ms var(--ease-out) both;
+}
+
+.actionError::before {
+  content: '!';
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: u(17);
+  height: u(17);
+  margin-top: u(0.5);
+  border-radius: 50%;
+  background: var(--danger);
+  font-size: u(11);
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
 }
 
 .primary {
@@ -1075,7 +1128,7 @@
 .fieldError {
   font-size: u(11.5);
   color: oklch(0.78 0.16 25);
-  animation: valueSwap 220ms var(--ease-out);
+  animation: errorRise 220ms var(--ease-out) both;
 }
 
 .input {
@@ -1107,6 +1160,7 @@
 
 .inputBad {
   border-color: oklch(0.6 0.2 25 / 0.6);
+  animation: errorShake 320ms var(--ease-out) both;
 }
 
 .contact {
@@ -1189,6 +1243,7 @@
 
 .contactInputBad {
   border-color: oklch(0.6 0.2 25 / 0.6);
+  animation: errorShake 320ms var(--ease-out) both;
 }
 
 .contactPrefix {

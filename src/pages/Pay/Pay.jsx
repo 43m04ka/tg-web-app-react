@@ -1,6 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
-import {hapticImpact, hapticSelection} from '../../shared/lib/haptic';
+import {hapticImpact} from '../../shared/lib/haptic';
 import {isEmailValid} from '../Basket/cartModel';
 import {amountError, cleanAmount, formatMoney, isAmountValid, PAY_INFO, parseAmount} from './payModel';
 import {SCREEN, usePayFlow} from './usePayFlow';
@@ -37,27 +37,6 @@ function Rows({payment, status, tone}) {
     );
 }
 
-function Agree({isChecked, isBad, onToggle}) {
-    return (
-        <button
-            type="button"
-            role="checkbox"
-            aria-checked={isChecked}
-            className={`${style.agree} ${isBad ? style.agreeBad : ''}`}
-            onClick={onToggle}
-        >
-            <span className={`${style.agreeBox} ${isChecked ? style.agreeBoxOn : ''}`} aria-hidden="true">
-                <svg viewBox="0 0 16 16" fill="none">
-                    <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-            </span>
-            <span className={style.agreeText}>
-                Подтверждаю, что ознакомлен и согласен с условиями покупки в сервисе Геймворд
-            </span>
-        </button>
-    );
-}
-
 function Shell({children}) {
     return (
         <div className={steam.stateScreen}>
@@ -72,20 +51,17 @@ export default function Pay() {
 
     const [email, setEmail] = useState('');
     const [amountText, setAmountText] = useState('');
-    const [isAgreed, setAgreed] = useState(false);
     const [isTouched, setTouched] = useState(false);
 
     const isEmailReady = isEmailValid(email);
     const isAmountReady = isAmountValid(amountText);
-    const isReady = isEmailReady && isAmountReady && isAgreed;
+    const isReady = isEmailReady && isAmountReady;
 
     const blockReason = !isTouched || isReady
         ? null
         : !isEmailReady
             ? 'Укажите почту для чека'
-            : !isAmountReady
-                ? amountError(amountText)
-                : 'Подтвердите согласие с условиями покупки';
+            : amountError(amountText);
 
     const network = usePaymentNetwork();
 
@@ -215,15 +191,6 @@ export default function Pay() {
                         <span className={`${steam.blockNote} ${steam.blockNoteBad}`}>{amountError(amountText)}</span>
                     ) : null}
                 </section>
-
-                <Agree
-                    isChecked={isAgreed}
-                    isBad={isTouched && !isAgreed}
-                    onToggle={() => {
-                        hapticSelection();
-                        setAgreed((value) => !value);
-                    }}
-                />
 
                 <section className={steam.block}>
                     <h2 className={steam.blockTitle}>Важная информация</h2>

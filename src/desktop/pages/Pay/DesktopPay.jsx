@@ -21,20 +21,17 @@ export default function DesktopPay() {
 
     const [email, setEmail] = useState('');
     const [amountText, setAmountText] = useState('');
-    const [isAgreed, setAgreed] = useState(false);
     const [isTouched, setTouched] = useState(false);
 
     const isEmailReady = isEmailValid(email);
     const isAmountReady = isAmountValid(amountText);
-    const isReady = isEmailReady && isAmountReady && isAgreed;
+    const isReady = isEmailReady && isAmountReady;
 
     const blockReason = !isTouched || isReady
         ? null
         : !isEmailReady
             ? 'Укажите почту для чека'
-            : !isAmountReady
-                ? amountError(amountText)
-                : 'Подтвердите согласие с условиями покупки';
+            : amountError(amountText);
 
     const network = usePaymentNetwork();
 
@@ -144,23 +141,6 @@ export default function DesktopPay() {
                             <span className={`${steam.blockNote} ${steam.blockNoteBad}`}>{amountError(amountText)}</span>
                         ) : null}
                     </section>
-
-                    <button
-                        type="button"
-                        role="checkbox"
-                        aria-checked={isAgreed}
-                        className={isTouched && !isAgreed ? `${style.agree} ${style.agreeBad}` : style.agree}
-                        onClick={() => setAgreed((value) => !value)}
-                    >
-                        <span className={isAgreed ? `${style.agreeBox} ${style.agreeBoxOn}` : style.agreeBox} aria-hidden="true">
-                            <svg viewBox="0 0 16 16" fill="none">
-                                <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                        </span>
-                        <span className={style.agreeText}>
-                            Подтверждаю, что ознакомлен и согласен с условиями покупки в сервисе Геймворд
-                        </span>
-                    </button>
 
                     <section className={steam.block}>
                         <h2 className={steam.blockTitle}>Важная информация</h2>

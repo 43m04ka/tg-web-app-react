@@ -1,9 +1,9 @@
 import {API_BASE_URL} from '../config/env';
-import {ensurePaymentNetwork, VPN_BLOCKED} from '../lib/paymentNetwork';
+import {preparePaymentNetwork} from '../lib/paymentNetwork';
 import {apiFetch} from './client';
 
 export const createFreePayment = async ({email, amount}) => {
-    if (!(await ensurePaymentNetwork())) return VPN_BLOCKED;
+    await preparePaymentNetwork();
 
     const response = await fetch(`${API_BASE_URL}/api/payment/free`, {
         method: 'POST',

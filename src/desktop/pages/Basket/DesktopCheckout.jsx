@@ -473,7 +473,7 @@ export default function DesktopCheckout() {
     const submit = useCallback(() => {
         setTouched(true);
 
-        if (!isReady || flow.isSending || !network.isReady) return;
+        if (!isReady || flow.isSending) return;
 
         const handle = hasNativeContact
             ? user?.username
@@ -505,9 +505,9 @@ export default function DesktopCheckout() {
             promo: quote?.promo || null,
             paymentTitle: selected.title,
             total
-        }, {online: isOnline});
+        });
     }, [
-        network.isReady, isOnline, accountKind, accountValues, channel, contact, contactValue, email, flow, hasNativeContact,
+        accountKind, accountValues, channel, contact, contactValue, email, flow, hasNativeContact,
         isReady, isVk, method, pageId, pageItems, pageType, platform, quote, selected, total, user, vkGroupId
     ]);
 
@@ -674,7 +674,7 @@ export default function DesktopCheckout() {
                     <button
                         type="button"
                         className={style.primary}
-                        disabled={flow.isSending || isLoading || Boolean(error) || !network.isReady}
+                        disabled={flow.isSending || isLoading || Boolean(error)}
                         onClick={submit}
                     >
                         {flow.isSending ? <Spinner/> : null}

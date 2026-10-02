@@ -21,57 +21,56 @@ beforeEach(() => {
     global.fetch = jest.fn();
 });
 
-describe('checkRussianNetwork', () => {
-    it('верит только ответу ru: true', async () => {
-        const {checkRussianNetwork} = load();
+describe('checkNetwork', () => {
+    it('российская сеть только при ru: true, страну передаёт дальше', async () => {
+        const {checkNetwork} = load();
 
-        global.fetch.mockReturnValueOnce(answer({ru: true}));
-        expect(await checkRussianNetwork()).toBe(true);
+        global.fetch.mockReturnValueOnce(answer({country: 'RU', ru: true}));
+        expect(await checkNetwork()).toEqual({isRu: true, code: 'RU'});
 
-        global.fetch.mockReturnValueOnce(answer({ru: false}));
-        expect(await checkRussianNetwork()).toBe(false);
+        global.fetch.mockReturnValueOnce(answer({country: 'NL', ru: false}));
+        expect(await checkNetwork()).toEqual({isRu: false, code: 'NL'});
 
         global.fetch.mockReturnValueOnce(answer({}, false));
-        expect(await checkRussianNetwork()).toBe(false);
+        expect(await checkNetwork()).toEqual({isRu: false, code: null});
     });
 
-    it('недоступный сервер считает включённым VPN', async () => {
-        const {checkRussianNetwork} = load();
+    it('недоступный сервер считает зарубежной сетью без страны', async () => {
+        const {checkNetwork} = load();
         global.fetch.mockReturnValueOnce(Promise.reject(new Error('network')));
 
-        expect(await checkRussianNetwork()).toBe(false);
+        expect(await checkNetwork()).toEqual({isRu: false, code: null});
     });
 });
 
 describe('refreshNetwork', () => {
     it('российская сеть переключает API на прямой домен', async () => {
-        const {refreshNetwork, getNetworkState, NET} = load();
-        global.fetch.mockReturnValue(answer({ru: true}));
+        const {refreshNetwork, getNetwork, NET} = load();
+        global.fetch.mockReturnValue(answer({country: 'RU', ru: true}));
 
         expect(await refreshNetwork()).toBe(NET.RU);
-        expect(getNetworkState()).toBe(NET.RU);
+        expect(getNetwork()).toEqual({state: NET.RU, country: 'RU'});
         expect(env.setDirectApi).toHaveBeenLastCalledWith(true);
     });
 
-    it('включённый VPN возвращает API на gwstorebot.ru и оповещает подписчиков', async () => {
-        const {refreshNetwork, subscribeNetwork, wasForeignSeen, NET} = load();
+    it('зарубежная сеть возвращает API на gwstorebot.ru и оповещает подписчиков', async () => {
+        const {refreshNetwork, subscribeNetwork, NET} = load();
         const listener = jest.fn();
         subscribeNetwork(listener);
 
-        global.fetch.mockReturnValueOnce(answer({ru: true}));
+        global.fetch.mockReturnValueOnce(answer({country: 'RU', ru: true}));
         await refreshNetwork();
 
-        global.fetch.mockReturnValueOnce(answer({ru: false}));
+        global.fetch.mockReturnValueOnce(answer({country: 'DE', ru: false}));
         expect(await refreshNetwork()).toBe(NET.FOREIGN);
 
         expect(env.setDirectApi).toHaveBeenLastCalledWith(false);
-        expect(listener).toHaveBeenLastCalledWith(NET.FOREIGN);
-        expect(wasForeignSeen()).toBe(true);
+        expect(listener).toHaveBeenLastCalledWith({state: NET.FOREIGN, country: 'DE'});
     });
 
     it('одновременные проверки делают один запрос', async () => {
         const {refreshNetwork} = load();
-        global.fetch.mockReturnValue(answer({ru: true}));
+        global.fetch.mockReturnValue(answer({country: 'RU', ru: true}));
 
         await Promise.all([refreshNetwork(), refreshNetwork(), refreshNetwork()]);
 
@@ -79,43 +78,45 @@ describe('refreshNetwork', () => {
     });
 });
 
+describe('isVpnSuspected', () => {
+    it('не предупреждает в России и СНГ, предупреждает в остальных случаях', () => {
+        const {isVpnSuspected, NET} = load();
+
+        expect(isVpnSuspected({state: NET.RU, country: 'RU'})).toBe(false);
+        expect(isVpnSuspected({state: NET.FOREIGN, country: 'KZ'})).toBe(false);
+        expect(isVpnSuspected({state: NET.FOREIGN, country: 'BY'})).toBe(false);
+        expect(isVpnSuspected({state: NET.CHECKING, country: null})).toBe(false);
+        expect(isVpnSuspected({state: NET.FOREIGN, country: 'NL'})).toBe(true);
+        expect(isVpnSuspected({state: NET.FOREIGN, country: null})).toBe(true);
+    });
+});
+
 describe('reportDirectFailure', () => {
     it('сбой прямого домена сразу уводит запросы на gwstorebot.ru', async () => {
-        const {refreshNetwork, reportDirectFailure, getNetworkState, NET} = load();
+        const {refreshNetwork, reportDirectFailure, getNetwork, NET} = load();
 
-        global.fetch.mockReturnValueOnce(answer({ru: true}));
+        global.fetch.mockReturnValueOnce(answer({country: 'RU', ru: true}));
         await refreshNetwork();
 
-        global.fetch.mockReturnValue(answer({ru: false}));
+        global.fetch.mockReturnValue(answer({country: 'NL', ru: false}));
         reportDirectFailure();
 
-        expect(getNetworkState()).toBe(NET.FOREIGN);
+        expect(getNetwork().state).toBe(NET.FOREIGN);
         expect(env.setDirectApi).toHaveBeenLastCalledWith(false);
     });
 });
 
-describe('ensurePaymentNetwork', () => {
-    it('в российской сети пускает к оплате', async () => {
-        const {ensurePaymentNetwork} = load();
-        global.fetch.mockReturnValue(answer({ru: true}));
+describe('preparePaymentNetwork', () => {
+    it('перед оплатой обновляет маршрут, но оплату не блокирует', async () => {
+        const {preparePaymentNetwork, getNetwork, NET} = load();
 
-        expect(await ensurePaymentNetwork()).toBe(true);
-    });
+        global.fetch.mockReturnValueOnce(answer({country: 'NL', ru: false}));
+        await expect(preparePaymentNetwork()).resolves.toBeUndefined();
+        expect(getNetwork().state).toBe(NET.FOREIGN);
 
-    it('под VPN не пускает к оплате', async () => {
-        const {ensurePaymentNetwork} = load();
-        global.fetch.mockReturnValue(answer({ru: false}));
-
-        expect(await ensurePaymentNetwork()).toBe(false);
-    });
-
-    it('проверяет сеть перед каждой оплатой', async () => {
-        const {ensurePaymentNetwork} = load();
-
-        global.fetch.mockReturnValueOnce(answer({ru: true}));
-        expect(await ensurePaymentNetwork()).toBe(true);
-
-        global.fetch.mockReturnValueOnce(answer({ru: false}));
-        expect(await ensurePaymentNetwork()).toBe(false);
+        global.fetch.mockReturnValueOnce(answer({country: 'RU', ru: true}));
+        await preparePaymentNetwork();
+        expect(getNetwork().state).toBe(NET.RU);
+        expect(env.setDirectApi).toHaveBeenLastCalledWith(true);
     });
 });

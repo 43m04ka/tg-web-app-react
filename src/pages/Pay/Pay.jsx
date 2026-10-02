@@ -92,11 +92,11 @@ export default function Pay() {
     const submit = useCallback(() => {
         setTouched(true);
 
-        if (!isReady || flow.isSending || !network.isReady) return;
+        if (!isReady || flow.isSending) return;
 
         hapticImpact('medium');
         flow.submit({email: email.trim(), amount: parseAmount(amountText)});
-    }, [isReady, network.isReady, flow, email, amountText]);
+    }, [isReady, flow, email, amountText]);
 
     if (flow.screen === SCREEN.WAITING) {
         return (
@@ -235,7 +235,7 @@ export default function Pay() {
                 <button
                     type="button"
                     className={steam.primary}
-                    disabled={flow.isSending || !network.isReady}
+                    disabled={flow.isSending}
                     onClick={submit}
                 >
                     {flow.isSending

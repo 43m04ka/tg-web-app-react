@@ -1,9 +1,9 @@
 import {API_BASE_URL} from '../config/env';
-import {ensurePaymentNetwork, VPN_BLOCKED} from '../lib/paymentNetwork';
+import {preparePaymentNetwork} from '../lib/paymentNetwork';
 import {apiFetch, request} from './client';
 
-export const createOrder = async (payload, {online = true} = {}) => {
-    if (online && !(await ensurePaymentNetwork())) return VPN_BLOCKED;
+export const createOrder = async (payload) => {
+    await preparePaymentNetwork();
 
     const response = await fetch(`${API_BASE_URL}/api/order/create`, {
         method: 'POST',

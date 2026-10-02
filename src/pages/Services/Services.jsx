@@ -144,7 +144,7 @@ export default function Services() {
     const submit = useCallback(() => {
         setTouched(true);
 
-        if (!isReady || flow.isSending || !network.isReady) return;
+        if (!isReady || flow.isSending) return;
 
         hapticImpact('medium');
 
@@ -160,7 +160,7 @@ export default function Services() {
             title: [brand?.name, offer.groupName, offer.denomination].filter(Boolean).join(' · '),
             manual: isManual(offer)
         });
-    }, [isReady, network.isReady, flow, platform, user, email, offer, brand, payment.method]);
+    }, [isReady, flow, platform, user, email, offer, brand, payment.method]);
 
     if (flow.screen === SCREEN.WAITING) {
         return <CodeWaiting order={flow.order} onOpenAgain={flow.openAgain} onCancel={flow.cancel}/>;
@@ -219,7 +219,7 @@ export default function Services() {
                     <button
                         type="button"
                         className={style.primary}
-                        disabled={flow.isSending || !network.isReady}
+                        disabled={flow.isSending}
                         onClick={submit}
                     >
                         {flow.isSending ? 'Создаём заказ…' : 'Оплатить'}

@@ -168,7 +168,7 @@ export default function DesktopServices() {
     const submit = useCallback(() => {
         setTouched(true);
 
-        if (!isReady || flow.isSending || !network.isReady) return;
+        if (!isReady || flow.isSending) return;
 
         flow.submit({
             platform,
@@ -182,7 +182,7 @@ export default function DesktopServices() {
             title: [brand?.name, offer.groupName, offer.denomination].filter(Boolean).join(' · '),
             manual: isManual(offer)
         });
-    }, [isReady, network.isReady, flow, platform, user, email, offer, brand, payment.method]);
+    }, [isReady, flow, platform, user, email, offer, brand, payment.method]);
 
     if (flow.screen === SCREEN.WAITING) {
         return <CodeWaitingDesktop order={flow.order} onOpenAgain={flow.openAgain} onCancel={flow.cancel}/>;
@@ -536,7 +536,7 @@ export default function DesktopServices() {
                     <button
                         type="button"
                         className={style.primary}
-                        disabled={flow.isSending || !offers.length || !network.isReady}
+                        disabled={flow.isSending || !offers.length}
                         onClick={submit}
                     >
                         {flow.isSending ? <Spinner/> : null}

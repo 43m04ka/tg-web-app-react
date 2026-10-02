@@ -7,17 +7,14 @@
   display: flex;
   align-items: center;
   gap: u(12);
-  padding: u(12) u(30) u(12) u(14);
+  padding: u(12) u(14);
   text-align: left;
   border-radius: var(--radius-lg);
   border: 1px solid color-mix(in oklch, var(--gate-tone) 38%, transparent);
   background: color-mix(in oklch, var(--gate-tone) 12%, transparent);
-  transition: background var(--duration-base) ease, border-color var(--duration-base) ease;
+  animation: gateRise 260ms var(--ease-out) both;
 }
 
-.gateOk {
-  --gate-tone: var(--success);
-}
 
 .icon {
   flex: none;
@@ -36,10 +33,6 @@
   }
 }
 
-.gateOk .icon {
-  color: var(--bg-elevated);
-  background: var(--gate-tone);
-}
 
 .body {
   min-width: 0;
@@ -60,16 +53,6 @@
   color: var(--text-secondary);
 }
 
-.pulse {
-  position: absolute;
-  top: u(10);
-  right: u(10);
-  width: u(8);
-  height: u(8);
-  border-radius: 50%;
-  background: var(--gate-tone);
-  animation: blink 1.4s ease-in-out infinite;
-}
 
 @keyframes pop {
   from {
@@ -82,11 +65,14 @@
   }
 }
 
-@keyframes blink {
-  0%, 100% {
-    opacity: 0.25;
+
+@keyframes gateRise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, u(8), 0);
   }
-  50% {
+  to {
     opacity: 1;
+    transform: none;
   }
 }

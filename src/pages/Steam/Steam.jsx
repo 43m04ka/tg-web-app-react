@@ -107,7 +107,7 @@ export default function Steam() {
     const submit = useCallback(() => {
         setTouched(true);
 
-        if (!isReady || flow.isSending || !network.isReady) return;
+        if (!isReady || flow.isSending) return;
 
         hapticImpact('medium');
 
@@ -120,7 +120,7 @@ export default function Steam() {
             paymentMethod: payment.method,
             amount
         });
-    }, [isReady, network.isReady, flow, platform, user, email, login, amount, payment.method]);
+    }, [isReady, flow, platform, user, email, login, amount, payment.method]);
 
     if (flow.screen === SCREEN.WAITING) {
         return <SteamWaiting order={flow.order} onOpenAgain={flow.openAgain} onCancel={flow.cancel}/>;
@@ -302,7 +302,7 @@ export default function Steam() {
                 <button
                     type="button"
                     className={style.primary}
-                    disabled={flow.isSending || isLoading || !network.isReady}
+                    disabled={flow.isSending || isLoading}
                     onClick={submit}
                 >
                     {flow.isSending

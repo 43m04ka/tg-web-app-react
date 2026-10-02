@@ -1,7 +1,7 @@
 jest.mock('../config/env', () => ({
     DIRECT_API_URL: 'https://gwstore.ru',
     IS_TUNNEL_HOST: true,
-    switchToDirectApi: jest.fn()
+    setDirectApi: jest.fn()
 }));
 
 const env = require('../config/env');
@@ -17,7 +17,7 @@ const load = () => {
 };
 
 beforeEach(() => {
-    env.switchToDirectApi.mockClear();
+    env.setDirectApi.mockClear();
     global.fetch = jest.fn();
 });
 
@@ -43,30 +43,79 @@ describe('checkRussianNetwork', () => {
     });
 });
 
+describe('refreshNetwork', () => {
+    it('российская сеть переключает API на прямой домен', async () => {
+        const {refreshNetwork, getNetworkState, NET} = load();
+        global.fetch.mockReturnValue(answer({ru: true}));
+
+        expect(await refreshNetwork()).toBe(NET.RU);
+        expect(getNetworkState()).toBe(NET.RU);
+        expect(env.setDirectApi).toHaveBeenLastCalledWith(true);
+    });
+
+    it('включённый VPN возвращает API на gwstorebot.ru и оповещает подписчиков', async () => {
+        const {refreshNetwork, subscribeNetwork, wasForeignSeen, NET} = load();
+        const listener = jest.fn();
+        subscribeNetwork(listener);
+
+        global.fetch.mockReturnValueOnce(answer({ru: true}));
+        await refreshNetwork();
+
+        global.fetch.mockReturnValueOnce(answer({ru: false}));
+        expect(await refreshNetwork()).toBe(NET.FOREIGN);
+
+        expect(env.setDirectApi).toHaveBeenLastCalledWith(false);
+        expect(listener).toHaveBeenLastCalledWith(NET.FOREIGN);
+        expect(wasForeignSeen()).toBe(true);
+    });
+
+    it('одновременные проверки делают один запрос', async () => {
+        const {refreshNetwork} = load();
+        global.fetch.mockReturnValue(answer({ru: true}));
+
+        await Promise.all([refreshNetwork(), refreshNetwork(), refreshNetwork()]);
+
+        expect(global.fetch).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe('reportDirectFailure', () => {
+    it('сбой прямого домена сразу уводит запросы на gwstorebot.ru', async () => {
+        const {refreshNetwork, reportDirectFailure, getNetworkState, NET} = load();
+
+        global.fetch.mockReturnValueOnce(answer({ru: true}));
+        await refreshNetwork();
+
+        global.fetch.mockReturnValue(answer({ru: false}));
+        reportDirectFailure();
+
+        expect(getNetworkState()).toBe(NET.FOREIGN);
+        expect(env.setDirectApi).toHaveBeenLastCalledWith(false);
+    });
+});
+
 describe('ensurePaymentNetwork', () => {
-    it('в российской сети сразу пускает и переключает API на прямой домен', async () => {
+    it('в российской сети пускает к оплате', async () => {
         const {ensurePaymentNetwork} = load();
         global.fetch.mockReturnValue(answer({ru: true}));
 
         expect(await ensurePaymentNetwork()).toBe(true);
-        expect(env.switchToDirectApi).toHaveBeenCalledTimes(1);
     });
 
-    it('под VPN ждёт окно и пускает после подтверждения', async () => {
-        const {ensurePaymentNetwork, subscribePaymentGate} = load();
+    it('под VPN не пускает к оплате', async () => {
+        const {ensurePaymentNetwork} = load();
         global.fetch.mockReturnValue(answer({ru: false}));
-        subscribePaymentGate(({resolve}) => resolve(true));
-
-        expect(await ensurePaymentNetwork()).toBe(true);
-        expect(env.switchToDirectApi).toHaveBeenCalledTimes(1);
-    });
-
-    it('отмена в окне не пускает к оплате', async () => {
-        const {ensurePaymentNetwork, subscribePaymentGate} = load();
-        global.fetch.mockReturnValue(answer({ru: false}));
-        subscribePaymentGate(({resolve}) => resolve(false));
 
         expect(await ensurePaymentNetwork()).toBe(false);
-        expect(env.switchToDirectApi).not.toHaveBeenCalled();
+    });
+
+    it('проверяет сеть перед каждой оплатой', async () => {
+        const {ensurePaymentNetwork} = load();
+
+        global.fetch.mockReturnValueOnce(answer({ru: true}));
+        expect(await ensurePaymentNetwork()).toBe(true);
+
+        global.fetch.mockReturnValueOnce(answer({ru: false}));
+        expect(await ensurePaymentNetwork()).toBe(false);
     });
 });

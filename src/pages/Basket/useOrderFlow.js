@@ -108,14 +108,14 @@ export function useOrderFlow(userId) {
         };
     }, [userId, watch]);
 
-    const submit = useCallback(async (payload, snapshotData) => {
+    const submit = useCallback(async (payload, snapshotData, {online = true} = {}) => {
         if (isSending) return null;
 
         setSending(true);
         setError('');
 
         try {
-            const result = await createOrder({...payload, userId});
+            const result = await createOrder({...payload, userId}, {online});
 
             if (!result.ok) {
                 setError(result.error || 'Не удалось оформить заказ. Попробуйте ещё раз.');

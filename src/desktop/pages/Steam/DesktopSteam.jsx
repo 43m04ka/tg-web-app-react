@@ -22,6 +22,7 @@ import {LOGIN_CHECK, useSteamLoginCheck} from '../../../pages/Steam/useSteamLogi
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import Spinner from '../../ui/Spinner';
 import LegalNote from '../../../shared/ui/LegalNote/LegalNote';
+import VpnGate, {usePaymentNetwork} from '../../../shared/ui/VpnGate/VpnGate';
 import {
     SteamCreditingDesktop,
     SteamDoneDesktop,
@@ -143,10 +144,12 @@ export default function DesktopSteam() {
         return null;
     }, [isTouched, isReady, userId, isLoginReady, loginCheck, isEmailReady, isAmountReady, quoteError, amountText, isConfirmed]);
 
+    const network = usePaymentNetwork();
+
     const submit = useCallback(() => {
         setTouched(true);
 
-        if (!isReady || flow.isSending) return;
+        if (!isReady || flow.isSending || !network.isReady) return;
 
         flow.submit({
             platform,
@@ -157,7 +160,7 @@ export default function DesktopSteam() {
             paymentMethod: payment.method,
             amount
         });
-    }, [isReady, flow, platform, user, email, login, amount, payment.method]);
+    }, [isReady, network.isReady, flow, platform, user, email, login, amount, payment.method]);
 
     if (flow.screen === SCREEN.WAITING) {
         return <SteamWaitingDesktop order={flow.order} onOpenAgain={flow.openAgain} onCancel={flow.cancel}/>;
@@ -428,10 +431,12 @@ export default function DesktopSteam() {
                     {blockReason && blockReason !== quoteError ? <p className={style.error}>{blockReason}</p> : null}
                     {flow.error ? <p className={style.error}>{flow.error}</p> : null}
 
+                    <VpnGate network={network}/>
+
                     <button
                         type="button"
                         className={style.primary}
-                        disabled={flow.isSending || isLoading}
+                        disabled={flow.isSending || isLoading || !network.isReady}
                         onClick={submit}
                     >
                         {flow.isSending ? <Spinner/> : null}

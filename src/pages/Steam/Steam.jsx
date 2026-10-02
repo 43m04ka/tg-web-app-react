@@ -26,6 +26,7 @@ import {
 import {SCREEN, useSteamOrder} from './useSteamOrder';
 import {useSteamQuote} from './useSteamQuote';
 import LegalNote from '../../shared/ui/LegalNote/LegalNote';
+import VpnGate, {usePaymentNetwork} from '../../shared/ui/VpnGate/VpnGate';
 import style from './Steam.module.scss';
 
 const FORM_KEY = 'steam:form';
@@ -101,10 +102,12 @@ export default function Steam() {
         setAmountText(String(value));
     }, []);
 
+    const network = usePaymentNetwork();
+
     const submit = useCallback(() => {
         setTouched(true);
 
-        if (!isReady || flow.isSending) return;
+        if (!isReady || flow.isSending || !network.isReady) return;
 
         hapticImpact('medium');
 
@@ -117,7 +120,7 @@ export default function Steam() {
             paymentMethod: payment.method,
             amount
         });
-    }, [isReady, flow, platform, user, email, login, amount, payment.method]);
+    }, [isReady, network.isReady, flow, platform, user, email, login, amount, payment.method]);
 
     if (flow.screen === SCREEN.WAITING) {
         return <SteamWaiting order={flow.order} onOpenAgain={flow.openAgain} onCancel={flow.cancel}/>;
@@ -294,10 +297,12 @@ export default function Steam() {
                 {blockReason ? <p className={style.actionError}>{blockReason}</p> : null}
                 {flow.error ? <p className={style.actionError}>{flow.error}</p> : null}
 
+                <VpnGate network={network}/>
+
                 <button
                     type="button"
                     className={style.primary}
-                    disabled={flow.isSending || isLoading}
+                    disabled={flow.isSending || isLoading || !network.isReady}
                     onClick={submit}
                 >
                     {flow.isSending

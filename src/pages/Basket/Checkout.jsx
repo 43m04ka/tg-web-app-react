@@ -39,6 +39,7 @@ import ContactField from './ContactField';
 import PromoField from './PromoField';
 import {OrderAccepted, PaymentFail, PaymentSuccess, PaymentWaiting} from './PaymentScreens';
 import LegalNote from '../../shared/ui/LegalNote/LegalNote';
+import VpnGate, {usePaymentNetwork} from '../../shared/ui/VpnGate/VpnGate';
 import style from './Basket.module.scss';
 
 const FORM_KEY = 'checkout:form';
@@ -284,10 +285,12 @@ export default function Checkout() {
         return null;
     }, [isTouched, isReady, userId, isAccountReady, isContactReady, isEmailReady]);
 
+    const network = usePaymentNetwork(isOnline);
+
     const submit = useCallback(() => {
         setTouched(true);
 
-        if (!isReady || flow.isSending) return;
+        if (!isReady || flow.isSending || !network.isReady) return;
 
         hapticImpact('medium');
 
@@ -321,9 +324,9 @@ export default function Checkout() {
             promo: quote?.promo || null,
             paymentTitle: selected.title,
             total
-        });
+        }, {online: isOnline});
     }, [
-        accountKind, accountValues, channel, contact, contactValue, email, flow, hasNativeContact,
+        network.isReady, isOnline, accountKind, accountValues, channel, contact, contactValue, email, flow, hasNativeContact,
         isReady, isVk, method, pageId, pageItems, pageType, platform, quote, selected, total, user, vkGroupId
     ]);
 
@@ -498,10 +501,12 @@ export default function Checkout() {
                     </button>
                 ) : null}
 
+                <VpnGate network={network}/>
+
                 <button
                     type="button"
                     className={style.primary}
-                    disabled={flow.isSending || isLoading || Boolean(error)}
+                    disabled={flow.isSending || isLoading || Boolean(error) || !network.isReady}
                     onClick={submit}
                 >
                     {flow.isSending

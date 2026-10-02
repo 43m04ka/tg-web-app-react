@@ -1,9 +1,9 @@
 import {API_BASE_URL} from '../config/env';
 import {ensurePaymentNetwork, VPN_BLOCKED} from '../lib/paymentNetwork';
-import {request} from './client';
+import {apiFetch, request} from './client';
 
-export const createOrder = async (payload) => {
-    if (!(await ensurePaymentNetwork())) return VPN_BLOCKED;
+export const createOrder = async (payload, {online = true} = {}) => {
+    if (online && !(await ensurePaymentNetwork())) return VPN_BLOCKED;
 
     const response = await fetch(`${API_BASE_URL}/api/order/create`, {
         method: 'POST',
@@ -20,7 +20,7 @@ export const fetchOrderStatus = (orderId, signal) =>
     request('/api/payment/status', {query: {id: orderId}, signal, retries: 0});
 
 export const cancelOrderPayment = async (orderId, userId) => {
-    const response = await fetch(`${API_BASE_URL}/api/payment/cancel`, {
+    const response = await apiFetch('/api/payment/cancel', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({orderId, userId})

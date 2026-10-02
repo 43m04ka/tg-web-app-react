@@ -5,6 +5,7 @@ import {SCREEN, usePayFlow} from '../../../pages/Pay/usePayFlow';
 import Spinner from '../../ui/Spinner';
 import StatusStage, {StatusActions, StatusRows, statusStyle} from '../../ui/StatusStage';
 import LegalNote from '../../../shared/ui/LegalNote/LegalNote';
+import VpnGate, {usePaymentNetwork} from '../../../shared/ui/VpnGate/VpnGate';
 import steam from '../Steam/DesktopSteam.module.scss';
 import style from './DesktopPay.module.scss';
 
@@ -42,13 +43,15 @@ export default function DesktopPay() {
                 ? amountError(amountText)
                 : 'Подтвердите согласие с условиями покупки';
 
+    const network = usePaymentNetwork();
+
     const submit = useCallback(() => {
         setTouched(true);
 
-        if (!isReady || flow.isSending) return;
+        if (!isReady || flow.isSending || !network.isReady) return;
 
         flow.submit({email: email.trim(), amount: parseAmount(amountText)});
-    }, [isReady, flow, email, amountText]);
+    }, [isReady, network.isReady, flow, email, amountText]);
 
     if (flow.screen === SCREEN.WAITING) {
         return (
@@ -190,10 +193,12 @@ export default function DesktopPay() {
                     {blockReason ? <p className={steam.error}>{blockReason}</p> : null}
                     {flow.error ? <p className={steam.error}>{flow.error}</p> : null}
 
+                    <VpnGate network={network}/>
+
                     <button
                         type="button"
                         className={steam.primary}
-                        disabled={flow.isSending}
+                        disabled={flow.isSending || !network.isReady}
                         onClick={submit}
                     >
                         {flow.isSending ? <Spinner/> : null}

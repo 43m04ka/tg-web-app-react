@@ -26,6 +26,7 @@ import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import Spinner from '../../ui/Spinner';
 import {CodeDoneDesktop, CodeFailDesktop, CodeStalledDesktop, CodeWaitingDesktop} from './ServicesStates';
 import LegalNote from '../../../shared/ui/LegalNote/LegalNote';
+import VpnGate, {usePaymentNetwork} from '../../../shared/ui/VpnGate/VpnGate';
 import style from './DesktopServices.module.scss';
 
 const FORM_KEY = 'services:form';
@@ -162,10 +163,12 @@ export default function DesktopServices() {
         return null;
     }, [isTouched, isReady, userId, offer, isStockReady, isEmailReady]);
 
+    const network = usePaymentNetwork();
+
     const submit = useCallback(() => {
         setTouched(true);
 
-        if (!isReady || flow.isSending) return;
+        if (!isReady || flow.isSending || !network.isReady) return;
 
         flow.submit({
             platform,
@@ -179,7 +182,7 @@ export default function DesktopServices() {
             title: [brand?.name, offer.groupName, offer.denomination].filter(Boolean).join(' · '),
             manual: isManual(offer)
         });
-    }, [isReady, flow, platform, user, email, offer, brand, payment.method]);
+    }, [isReady, network.isReady, flow, platform, user, email, offer, brand, payment.method]);
 
     if (flow.screen === SCREEN.WAITING) {
         return <CodeWaitingDesktop order={flow.order} onOpenAgain={flow.openAgain} onCancel={flow.cancel}/>;
@@ -528,10 +531,12 @@ export default function DesktopServices() {
                     {blockReason ? <p className={style.error}>{blockReason}</p> : null}
                     {flow.error ? <p className={style.error}>{flow.error}</p> : null}
 
+                    <VpnGate network={network}/>
+
                     <button
                         type="button"
                         className={style.primary}
-                        disabled={flow.isSending || !offers.length}
+                        disabled={flow.isSending || !offers.length || !network.isReady}
                         onClick={submit}
                     >
                         {flow.isSending ? <Spinner/> : null}

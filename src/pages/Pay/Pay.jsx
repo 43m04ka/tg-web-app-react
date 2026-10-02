@@ -5,6 +5,7 @@ import {isEmailValid} from '../Basket/cartModel';
 import {amountError, cleanAmount, formatMoney, isAmountValid, parseAmount} from './payModel';
 import {SCREEN, usePayFlow} from './usePayFlow';
 import LegalNote from '../../shared/ui/LegalNote/LegalNote';
+import VpnGate, {usePaymentNetwork} from '../../shared/ui/VpnGate/VpnGate';
 import steam from '../Steam/Steam.module.scss';
 import style from './Pay.module.scss';
 
@@ -86,14 +87,16 @@ export default function Pay() {
                 ? amountError(amountText)
                 : 'Подтвердите согласие с условиями покупки';
 
+    const network = usePaymentNetwork();
+
     const submit = useCallback(() => {
         setTouched(true);
 
-        if (!isReady || flow.isSending) return;
+        if (!isReady || flow.isSending || !network.isReady) return;
 
         hapticImpact('medium');
         flow.submit({email: email.trim(), amount: parseAmount(amountText)});
-    }, [isReady, flow, email, amountText]);
+    }, [isReady, network.isReady, flow, email, amountText]);
 
     if (flow.screen === SCREEN.WAITING) {
         return (
@@ -227,10 +230,12 @@ export default function Pay() {
                 {blockReason ? <p className={steam.actionError}>{blockReason}</p> : null}
                 {flow.error ? <p className={steam.actionError}>{flow.error}</p> : null}
 
+                <VpnGate network={network}/>
+
                 <button
                     type="button"
                     className={steam.primary}
-                    disabled={flow.isSending}
+                    disabled={flow.isSending || !network.isReady}
                     onClick={submit}
                 >
                     {flow.isSending

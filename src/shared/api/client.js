@@ -1,4 +1,5 @@
-import {API_BASE_URL} from '../config/env';
+import {API_BASE_URL, DIRECT_API_URL, IS_TUNNEL_HOST} from '../config/env';
+import {reportDirectFailure} from '../lib/paymentNetwork';
 
 const DEFAULT_TIMEOUT_MS = 12000;
 const DEFAULT_RETRIES = 1;
@@ -33,6 +34,22 @@ const withTimeout = (signal, timeoutMs) => {
     return {signal: controller.signal, dispose: () => clearTimeout(timerId)};
 };
 
+const isDirectNetworkError = (url, error) =>
+    IS_TUNNEL_HOST && error.status === null && url.startsWith(DIRECT_API_URL);
+
+export async function apiFetch(path, init = {}) {
+    const url = `${API_BASE_URL}${path}`;
+
+    try {
+        return await fetch(url, init);
+    } catch (error) {
+        if (!IS_TUNNEL_HOST || !url.startsWith(DIRECT_API_URL) || init.signal?.aborted) throw error;
+
+        reportDirectFailure();
+        return fetch(`${API_BASE_URL}${path}`, init);
+    }
+}
+
 export async function request(path, {
     method = 'GET',
     query,
@@ -42,10 +59,13 @@ export async function request(path, {
     retries = DEFAULT_RETRIES,
     cache = false
 } = {}) {
-    const url = buildUrl(path, cache ? query : {...query, time: Date.now()});
+    const params = cache ? query : {...query, time: Date.now()};
+    let url = '';
     let lastError = null;
+    let fellBack = false;
 
     for (let attempt = 0; attempt <= retries; attempt++) {
+        url = buildUrl(path, params);
         const timeout = withTimeout(signal, timeoutMs);
 
         try {
@@ -67,6 +87,12 @@ export async function request(path, {
                 : new ApiError(error.message || 'Network error', {url, cause: error});
 
             if (signal?.aborted) throw lastError;
+
+            if (!fellBack && isDirectNetworkError(url, lastError)) {
+                fellBack = true;
+                reportDirectFailure();
+                attempt -= 1;
+            }
         } finally {
             timeout.dispose();
         }

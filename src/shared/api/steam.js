@@ -1,9 +1,10 @@
 import {API_BASE_URL} from '../config/env';
 import {ensurePaymentNetwork, VPN_BLOCKED} from '../lib/paymentNetwork';
+import {apiFetch} from './client';
 
 export const fetchSteamQuote = async (amount, signal) => {
-    const response = await fetch(
-        `${API_BASE_URL}/api/steam/quote?amount=${encodeURIComponent(amount)}&time=${Date.now()}`,
+    const response = await apiFetch(
+        `/api/steam/quote?amount=${encodeURIComponent(amount)}&time=${Date.now()}`,
         {signal}
     );
 
@@ -27,7 +28,7 @@ export const createSteamOrder = async (payload) => {
 };
 
 export const checkSteamLogin = async (login, platform, signal) => {
-    const response = await fetch(`${API_BASE_URL}/api/steam/check-login`, {
+    const response = await apiFetch('/api/steam/check-login', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({login, platform}),

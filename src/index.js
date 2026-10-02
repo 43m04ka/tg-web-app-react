@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {BrowserRouter} from 'react-router-dom';
 import App from './app/App';
-import VpnGate from './shared/ui/VpnGate/VpnGate';
 import {initVk} from './shared/lib/vk';
 import {configureTelegramViewport} from './shared/lib/telegram';
 import {startInsets} from './shared/lib/insets';
+import {startNetworkWatch} from './shared/lib/paymentNetwork';
 
 try {
     window.indexedDB?.deleteDatabase('gw-cache');
@@ -17,12 +17,12 @@ try {
 initVk();
 configureTelegramViewport();
 startInsets();
+startNetworkWatch();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <BrowserRouter>
             <App/>
-            <VpnGate/>
         </BrowserRouter>
     </React.StrictMode>
 );

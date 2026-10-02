@@ -397,6 +397,8 @@ export default function DesktopSteam() {
                         </div>
                     </div>
 
+                    <span className={style.auto}>Пополнение происходит автоматически после оплаты</span>
+
                     <div className={style.summaryRow}>
                         <span className={style.summaryLabel}>
                             {percent > 0 ? `Комиссия сервиса ${percent}%` : 'Комиссия сервиса'}
@@ -446,8 +448,6 @@ export default function DesktopSteam() {
                     </button>
 
                     <LegalNote className={style.legal} action="Оплатить"/>
-
-                    <span className={style.auto}>Пополнение происходит автоматически после оплаты</span>
                 </aside>
             </div>
         </div>

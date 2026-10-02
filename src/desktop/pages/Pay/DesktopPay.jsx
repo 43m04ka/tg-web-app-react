@@ -1,6 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import {isEmailValid} from '../../../pages/Basket/cartModel';
-import {amountError, cleanAmount, formatMoney, isAmountValid, parseAmount} from '../../../pages/Pay/payModel';
+import {amountError, cleanAmount, formatMoney, isAmountValid, PAY_INFO, parseAmount} from '../../../pages/Pay/payModel';
 import {SCREEN, usePayFlow} from '../../../pages/Pay/usePayFlow';
 import Spinner from '../../ui/Spinner';
 import StatusStage, {StatusActions, StatusRows, statusStyle} from '../../ui/StatusStage';
@@ -8,13 +8,6 @@ import LegalNote from '../../../shared/ui/LegalNote/LegalNote';
 import VpnGate, {usePaymentNetwork} from '../../../shared/ui/VpnGate/VpnGate';
 import steam from '../Steam/DesktopSteam.module.scss';
 import style from './DesktopPay.module.scss';
-
-const PAY_INFO = [
-    'Это официальная оплата на расчетный счет ИП в Альфа Банк, а не перевод. Вы получите чек на электронную почту, которую укажете в форме оплаты.',
-    'Если вписать сумму меньше и оплатить, заказ не будет считаться оплаченным.',
-    'Оплачивая данный заказ Вы принимаете Пользовательское соглашение нашего сервиса.',
-    'Обращаем внимание, что прием платежей в магазине Геймворд.рф осуществляется круглосуточно. Активация заказа происходит в рабочее время — с 10:00 до 22:00 по МСК ежедневно.'
-];
 
 const rowsOf = (payment, status, tone) => [
     {label: 'Платёж №', value: payment?.id},

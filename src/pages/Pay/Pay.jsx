@@ -2,7 +2,7 @@ import React, {useCallback, useState} from 'react';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
 import {hapticImpact, hapticSelection} from '../../shared/lib/haptic';
 import {isEmailValid} from '../Basket/cartModel';
-import {amountError, cleanAmount, formatMoney, isAmountValid, parseAmount} from './payModel';
+import {amountError, cleanAmount, formatMoney, isAmountValid, PAY_INFO, parseAmount} from './payModel';
 import {SCREEN, usePayFlow} from './usePayFlow';
 import LegalNote from '../../shared/ui/LegalNote/LegalNote';
 import VpnGate, {usePaymentNetwork} from '../../shared/ui/VpnGate/VpnGate';
@@ -224,6 +224,16 @@ export default function Pay() {
                         setAgreed((value) => !value);
                     }}
                 />
+
+                <section className={steam.block}>
+                    <h2 className={steam.blockTitle}>Важная информация</h2>
+
+                    <div className={steam.faq}>
+                        {PAY_INFO.map((text) => (
+                            <p key={text} className={`${steam.faqItem} ${style.info}`}>{text}</p>
+                        ))}
+                    </div>
+                </section>
             </div>
 
             <div className={steam.actionBar}>

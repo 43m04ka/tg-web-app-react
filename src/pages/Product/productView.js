@@ -194,7 +194,7 @@ const BOT_APP_URL = 'https://t.me/gwstore_bot/app';
 
 export const productLink = (product, isTg) => (isTg
     ? `${BOT_APP_URL}?startapp=${product.id}`
-    : `${window.location.origin}?startapp=${product.id}`);
+    : `${window.location.origin}/card/${product.id}`);
 
 export const shareText = (product, specs, link) => {
     const price = Number(product.price);

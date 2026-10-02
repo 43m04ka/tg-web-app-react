@@ -1,3 +1,5 @@
+import {rewriteUploads} from './uploads';
+
 const PLACEHOLDER = '__JSON_DATA_PLACEHOLDER__';
 
 const pick = (source, ...keys) => {
@@ -27,7 +29,7 @@ const parse = () => {
     if (typeof raw === 'undefined' || raw === PLACEHOLDER) return normalize({});
 
     try {
-        return normalize(typeof raw === 'string' ? JSON.parse(raw) : raw);
+        return normalize(rewriteUploads(typeof raw === 'string' ? JSON.parse(raw) : raw));
     } catch (error) {
         console.error('[initialData] parse failed:', error);
         return normalize({});

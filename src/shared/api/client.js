@@ -1,5 +1,6 @@
 import {API_BASE_URL, DIRECT_API_URL, IS_TUNNEL_HOST} from '../config/env';
 import {reportDirectFailure} from '../lib/paymentNetwork';
+import {rewriteUploads} from '../lib/uploads';
 
 const DEFAULT_TIMEOUT_MS = 12000;
 const DEFAULT_RETRIES = 1;
@@ -80,7 +81,7 @@ export async function request(path, {
                 throw new ApiError(`HTTP ${response.status}`, {status: response.status, url});
             }
 
-            return await response.json();
+            return rewriteUploads(await response.json());
         } catch (error) {
             lastError = error instanceof ApiError
                 ? error

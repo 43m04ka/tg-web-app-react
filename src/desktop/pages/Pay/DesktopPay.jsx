@@ -1,6 +1,16 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {isEmailValid} from '../../../pages/Basket/cartModel';
-import {amountError, cleanAmount, formatMoney, isAmountValid, PAY_INFO, parseAmount} from '../../../pages/Pay/payModel';
+import {
+    amountError,
+    canPasteAmount,
+    cleanAmount,
+    formatMoney,
+    isAmountValid,
+    PAY_INFO,
+    parseAmount,
+    payBlockReason,
+    readClipboardAmount
+} from '../../../pages/Pay/payModel';
 import {SCREEN, usePayFlow} from '../../../pages/Pay/usePayFlow';
 import Spinner from '../../ui/Spinner';
 import StatusStage, {StatusActions, StatusRows, statusStyle} from '../../ui/StatusStage';
@@ -10,11 +20,21 @@ import steam from '../Steam/DesktopSteam.module.scss';
 import style from './DesktopPay.module.scss';
 
 const rowsOf = (payment, status, tone) => [
-    {label: 'Платёж №', value: payment?.id},
-    {label: 'Сумма', value: formatMoney(payment?.amount)},
-    payment?.email ? {label: 'Чек на почту', value: payment.email} : null,
-    {label: 'Статус', value: status, tone}
+    {label: '№ платежа', value: payment?.id},
+    {label: 'Сумма заказа', value: formatMoney(payment?.amount)},
+    payment?.email ? {label: 'Почта для чека', value: payment.email} : null,
+    {label: 'Статус платежа', value: status, tone}
 ];
+
+function PasteIcon() {
+    return (
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="5" y="4.5" width="14" height="16.5" rx="3" stroke="currentColor" strokeWidth="1.8"/>
+            <path d="M9 4.5V4a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 4v.5" stroke="currentColor" strokeWidth="1.8"/>
+            <path d="M9 11h6M9 15h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+        </svg>
+    );
+}
 
 export default function DesktopPay() {
     const flow = usePayFlow();
@@ -27,13 +47,22 @@ export default function DesktopPay() {
     const isAmountReady = isAmountValid(amountText);
     const isReady = isEmailReady && isAmountReady;
 
-    const blockReason = !isTouched || isReady
-        ? null
-        : !isEmailReady
-            ? 'Укажите почту для чека'
-            : amountError(amountText);
+    const blockReason = !isTouched || isReady ? null : payBlockReason(isEmailReady, amountText);
 
     const network = usePaymentNetwork();
+
+    const amountRef = useRef(null);
+
+    const pasteAmount = useCallback(async () => {
+        const value = await readClipboardAmount();
+
+        if (!value) {
+            amountRef.current?.focus();
+            return;
+        }
+
+        setAmountText(value);
+    }, []);
 
     const submit = useCallback(() => {
         setTouched(true);
@@ -48,16 +77,16 @@ export default function DesktopPay() {
             <StatusStage
                 tone="waiting"
                 icon={<Spinner className={statusStyle.iconSpinner}/>}
-                title="Ждём оплату"
-                lead="Статус обновится сам, как только банк подтвердит перевод"
-                note="Если окно оплаты закрылось, откройте его снова"
+                title="Ожидаем оплату"
+                lead="Статус платежа изменится автоматически после подтверждения оплаты банком"
+                note="Если случайно закрыли окно оплаты, его можно открыть по кнопке ниже"
             >
                 <StatusRows rows={rowsOf(flow.payment, 'Ожидает оплаты', 'toneWaiting')}/>
 
                 <StatusActions>
                     {flow.payment?.paymentUrl ? (
                         <button type="button" className={statusStyle.primary} onClick={flow.openAgain}>
-                            Открыть оплату снова
+                            Открыть окно оплаты
                         </button>
                     ) : null}
 
@@ -71,7 +100,7 @@ export default function DesktopPay() {
 
     if (flow.screen === SCREEN.DONE) {
         return (
-            <StatusStage tone="done" icon="✓" title="Оплата прошла!" lead="Спасибо! Чек придёт на указанную почту">
+            <StatusStage tone="done" icon="✓" title="Оплата прошла!" lead="Благодарим за платеж! Менеджер уже оформляет Ваш заказ.">
                 <StatusRows rows={rowsOf(flow.payment, 'Оплачено', 'toneDone')}/>
 
                 <StatusActions>
@@ -128,14 +157,24 @@ export default function DesktopPay() {
                     <section className={steam.block}>
                         <h2 className={steam.blockTitle}>Сумма из заказа для оплаты</h2>
 
-                        <input
-                            className={isTouched && !isAmountReady ? `${steam.input} ${steam.inputBad}` : steam.input}
-                            value={amountText}
-                            inputMode="decimal"
-                            placeholder="Впишите сумму из заказа"
-                            autoComplete="off"
-                            onChange={(event) => setAmountText(cleanAmount(event.target.value))}
-                        />
+                        <div className={style.field}>
+                            <input
+                                ref={amountRef}
+                                className={`${steam.input} ${style.fieldInput} ${isTouched && !isAmountReady ? steam.inputBad : ''}`}
+                                value={amountText}
+                                inputMode="decimal"
+                                placeholder="Впишите сумму из заказа"
+                                autoComplete="off"
+                                onChange={(event) => setAmountText(cleanAmount(event.target.value))}
+                            />
+
+                            {canPasteAmount() ? (
+                                <button type="button" className={style.paste} onClick={pasteAmount}>
+                                    <PasteIcon/>
+                                    Вставить
+                                </button>
+                            ) : null}
+                        </div>
 
                         {isTouched && !isAmountReady ? (
                             <span className={`${steam.blockNote} ${steam.blockNoteBad}`}>{amountError(amountText)}</span>

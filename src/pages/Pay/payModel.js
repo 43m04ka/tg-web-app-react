@@ -32,6 +32,25 @@ export const amountError = (value) => {
     return null;
 };
 
+export const payBlockReason = (isEmailReady, amountText) => {
+    const amount = amountError(amountText);
+
+    if (!isEmailReady && amount) return 'Укажите почту для чека и сумму из заказа';
+    if (!isEmailReady) return 'Укажите почту для чека';
+
+    return amount;
+};
+
+export const canPasteAmount = () => typeof navigator !== 'undefined' && Boolean(navigator.clipboard?.readText);
+
+export const readClipboardAmount = async () => {
+    try {
+        return cleanAmount(await navigator.clipboard.readText());
+    } catch {
+        return '';
+    }
+};
+
 export const readPending = () => {
     try {
         return JSON.parse(window.localStorage.getItem(PENDING_KEY) || 'null');

@@ -1,8 +1,18 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {useAppInsets} from '../../shared/hooks/useAppInsets';
-import {hapticImpact} from '../../shared/lib/haptic';
+import {hapticImpact, hapticSelection} from '../../shared/lib/haptic';
 import {isEmailValid} from '../Basket/cartModel';
-import {amountError, cleanAmount, formatMoney, isAmountValid, PAY_INFO, parseAmount} from './payModel';
+import {
+    amountError,
+    canPasteAmount,
+    cleanAmount,
+    formatMoney,
+    isAmountValid,
+    PAY_INFO,
+    parseAmount,
+    payBlockReason,
+    readClipboardAmount
+} from './payModel';
 import {SCREEN, usePayFlow} from './usePayFlow';
 import LegalNote from '../../shared/ui/LegalNote/LegalNote';
 import VpnGate, {usePaymentNetwork} from '../../shared/ui/VpnGate/VpnGate';
@@ -13,27 +23,37 @@ function Rows({payment, status, tone}) {
     return (
         <div className={steam.stateRows}>
             <div className={steam.stateRow}>
-                <span>Платёж №</span>
+                <span>№ платежа</span>
                 <span className={steam.stateValue}>{payment?.id}</span>
             </div>
 
             <div className={steam.stateRow}>
-                <span>Сумма</span>
+                <span>Сумма заказа</span>
                 <span className={steam.stateValue}>{formatMoney(payment?.amount)}</span>
             </div>
 
             {payment?.email ? (
                 <div className={steam.stateRow}>
-                    <span>Чек на почту</span>
+                    <span>Почта для чека</span>
                     <span className={steam.stateValue}>{payment.email}</span>
                 </div>
             ) : null}
 
             <div className={steam.stateRow}>
-                <span>Статус</span>
+                <span>Статус платежа</span>
                 <span className={`${steam.stateValue} ${steam[tone]}`}>{status}</span>
             </div>
         </div>
+    );
+}
+
+function PasteIcon() {
+    return (
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="5" y="4.5" width="14" height="16.5" rx="3" stroke="currentColor" strokeWidth="1.8"/>
+            <path d="M9 4.5V4a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 4v.5" stroke="currentColor" strokeWidth="1.8"/>
+            <path d="M9 11h6M9 15h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+        </svg>
     );
 }
 
@@ -57,13 +77,23 @@ export default function Pay() {
     const isAmountReady = isAmountValid(amountText);
     const isReady = isEmailReady && isAmountReady;
 
-    const blockReason = !isTouched || isReady
-        ? null
-        : !isEmailReady
-            ? 'Укажите почту для чека'
-            : amountError(amountText);
+    const blockReason = !isTouched || isReady ? null : payBlockReason(isEmailReady, amountText);
 
     const network = usePaymentNetwork();
+
+    const amountRef = useRef(null);
+
+    const pasteAmount = useCallback(async () => {
+        const value = await readClipboardAmount();
+
+        if (!value) {
+            amountRef.current?.focus();
+            return;
+        }
+
+        hapticSelection();
+        setAmountText(value);
+    }, []);
 
     const submit = useCallback(() => {
         setTouched(true);
@@ -78,19 +108,19 @@ export default function Pay() {
         return (
             <Shell>
                 <div className={steam.spinner} aria-hidden="true"/>
-                <h1 className={steam.stateTitle}>Ждём оплату</h1>
+                <h1 className={steam.stateTitle}>Ожидаем оплату</h1>
 
                 <Rows payment={flow.payment} status="Ожидает оплаты" tone="toneWaiting"/>
 
                 <div className={steam.stateText}>
-                    <span className={steam.stateLead}>Статус обновится сам, как только банк подтвердит перевод</span>
-                    <span className={steam.stateNote}>Если окно оплаты закрылось, откройте его снова</span>
+                    <span className={steam.stateLead}>Статус платежа изменится автоматически после подтверждения оплаты банком</span>
+                    <span className={steam.stateNote}>Если случайно закрыли окно оплаты, его можно открыть по кнопке ниже</span>
                 </div>
 
                 <div className={steam.stateActions}>
                     {flow.payment?.paymentUrl ? (
                         <button type="button" className={steam.statePrimary} onClick={flow.openAgain}>
-                            Открыть оплату снова
+                            Открыть окно оплаты
                         </button>
                     ) : null}
 
@@ -111,7 +141,7 @@ export default function Pay() {
                 <Rows payment={flow.payment} status="Оплачено" tone="toneDone"/>
 
                 <div className={steam.stateText}>
-                    <span className={steam.stateLead}>Спасибо! Чек придёт на указанную почту</span>
+                    <span className={steam.stateLead}>Благодарим за платеж! Менеджер уже оформляет Ваш заказ.</span>
                 </div>
 
                 <div className={steam.stateActions}>
@@ -178,14 +208,24 @@ export default function Pay() {
                 <section className={steam.block}>
                     <h2 className={steam.blockTitle}>Сумма из заказа для оплаты</h2>
 
-                    <input
-                        className={`${steam.input} ${isTouched && !isAmountReady ? steam.inputBad : ''}`}
-                        value={amountText}
-                        inputMode="decimal"
-                        placeholder="Впишите сумму из заказа"
-                        autoComplete="off"
-                        onChange={(event) => setAmountText(cleanAmount(event.target.value))}
-                    />
+                    <div className={style.field}>
+                        <input
+                            ref={amountRef}
+                            className={`${steam.input} ${style.fieldInput} ${isTouched && !isAmountReady ? steam.inputBad : ''}`}
+                            value={amountText}
+                            inputMode="decimal"
+                            placeholder="Впишите сумму из заказа"
+                            autoComplete="off"
+                            onChange={(event) => setAmountText(cleanAmount(event.target.value))}
+                        />
+
+                        {canPasteAmount() ? (
+                            <button type="button" className={style.paste} onClick={pasteAmount}>
+                                <PasteIcon/>
+                                Вставить
+                            </button>
+                        ) : null}
+                    </div>
 
                     {isTouched && !isAmountReady ? (
                         <span className={`${steam.blockNote} ${steam.blockNoteBad}`}>{amountError(amountText)}</span>

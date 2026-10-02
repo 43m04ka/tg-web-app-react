@@ -9,3 +9,43 @@
   line-height: 1.6;
   color: var(--text-secondary);
 }
+
+.field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.fieldInput {
+  padding-right: 136px;
+}
+
+.paste {
+  position: absolute;
+  top: 50%;
+  right: 7px;
+  display: flex;
+  align-items: center;
+  gap: var(--d-gap-2);
+  height: 36px;
+  padding: 0 var(--d-gap-4);
+  border-radius: var(--radius-sm);
+  background: var(--accent-surface);
+  color: var(--accent-text);
+  font-size: var(--d-fs-sm);
+  font-weight: 700;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background-color var(--m-base) var(--m-ease),
+              color var(--m-base) var(--m-ease);
+}
+
+.paste:hover {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.paste svg {
+  width: 16px;
+  height: 16px;
+}

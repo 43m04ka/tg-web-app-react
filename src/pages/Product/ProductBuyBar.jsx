@@ -21,9 +21,7 @@ export default function ProductBuyBar({
         >
             {member ? (
                 <div className={`${style.buyMember} ${style[`buyMember_${member.brand}`] || ''}`}>
-                    <span className={style.buyMemberMark} aria-hidden="true"/>
-                    <span className={style.buyMemberText}>По подписке {member.name}</span>
-                    {member.percent ? <span className={style.buyMemberPercent}>−{member.percent}%</span> : null}
+                    <span className={style.buyMemberText}>С подпиской {member.name}</span>
                     <span className={style.buyMemberPrice}>{formatPrice(member.value)}</span>
                 </div>
             ) : null}

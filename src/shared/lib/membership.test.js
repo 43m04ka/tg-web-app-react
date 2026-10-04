@@ -48,7 +48,7 @@ test('скидка EA Play показывается процентом', () => {
 
     expect(membershipBadge(product)).toEqual({brand: 'eaplay', kind: 'discount', label: '−10% EA Play'});
     expect(membershipPlaque(product).title).toBe('Скидка 10% по подписке EA Play');
-    expect(memberPrice(product)).toEqual({value: 10080, brand: 'eaplay', name: 'EA Play', percent: 10, label: 'с EA Play'});
+    expect(memberPrice(product)).toEqual({value: 10080, brand: 'eaplay', name: 'EA Play', label: 'с EA Play'});
     expect(memberPrice({...product, price: 9000})).toBeNull();
 });
 

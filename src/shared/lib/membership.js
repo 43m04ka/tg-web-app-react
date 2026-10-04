@@ -146,7 +146,7 @@ const describe = (offer) => {
     if (offer.kind === 'discount') {
         return {
             title: offer.percent ? `Скидка ${offer.percent}% по подписке ${offer.brand.name}` : `Дешевле по подписке ${offer.brand.name}`,
-            note: offer.priceRub && offer.priceRub > 0 ? 'Цена для подписчиков — у кнопки покупки' : 'Скидка для подписчиков'
+            note: offer.priceRub && offer.priceRub > 0 ? null : 'Скидка для подписчиков'
         };
     }
 
@@ -175,7 +175,7 @@ export const membershipPlaque = (product, now = Date.now()) => {
 
     return {
         title,
-        note: extra.length ? `${note}. Также: ${extra.join(', ')}` : note,
+        note: extra.length ? [note, `Также: ${extra.join(', ')}`].filter(Boolean).join('. ') : note,
         brand: main.brand.style,
         catalogSuffix: main.brand.catalogSuffix
     };
@@ -187,6 +187,6 @@ export const memberPrice = (product, now = Date.now()) => {
         .find((item) => item.kind === 'discount' && item.priceRub > 0 && (!shopPrice || item.priceRub < shopPrice));
 
     return offer
-        ? {value: offer.priceRub, brand: offer.brand.key, name: offer.brand.name, percent: offer.percent || null, label: `с ${offer.brand.name}`}
+        ? {value: offer.priceRub, brand: offer.brand.key, name: offer.brand.name, label: `с ${offer.brand.name}`}
         : null;
 };

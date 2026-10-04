@@ -1084,66 +1084,30 @@
 .buyMember {
   flex: 0 0 100%;
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: u(8);
-  height: u(34);
-  padding: 0 u(12) 0 u(10);
-  border-radius: u(11);
-  background: linear-gradient(100deg, oklch(0.34 0.075 85 / 0.55), oklch(0.22 0.035 80 / 0.35));
-  border: 1px solid oklch(0.86 0.14 88 / 0.22);
+  padding: 0 u(2) u(2);
+  border-bottom: 1px dashed var(--border-subtle);
   --member: oklch(0.86 0.14 88);
-  animation: buySwap var(--duration-slow) var(--ease-spring);
 }
 
 .buyMember_eaplay {
-  background: linear-gradient(100deg, oklch(0.32 0.1 285 / 0.75), oklch(0.3 0.11 355 / 0.55));
-  border-color: oklch(0.74 0.17 20 / 0.28);
-  --member: oklch(0.8 0.15 20);
+  --member: oklch(0.78 0.15 20);
 }
 
 .buyMember_gtaplus {
-  background: linear-gradient(100deg, oklch(0.36 0.09 145 / 0.6), oklch(0.24 0.05 160 / 0.4));
-  border-color: oklch(0.8 0.17 140 / 0.25);
   --member: oklch(0.82 0.17 140);
-}
-
-.buyMemberMark {
-  flex: none;
-  width: u(16);
-  height: u(16);
-  background: url('../../shared/assets/subscriptions/logoPS.png') center / contain no-repeat;
-}
-
-.buyMember_eaplay .buyMemberMark {
-  background-image: url('../../shared/assets/subscriptions/logoEA.png');
-}
-
-.buyMember_gtaplus .buyMemberMark {
-  width: u(8);
-  height: u(8);
-  border-radius: 50%;
-  background: var(--member);
 }
 
 .buyMemberText {
   flex: 1;
   min-width: 0;
   font-size: u(12.5);
-  font-weight: 700;
-  color: oklch(0.95 0.005 264);
+  font-weight: 600;
+  color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.buyMemberPercent {
-  flex: none;
-  padding: u(2) u(6);
-  border-radius: u(6);
-  background: var(--member);
-  font-size: u(10.5);
-  font-weight: 900;
-  color: oklch(0.18 0.03 20);
 }
 
 .buyMemberPrice {

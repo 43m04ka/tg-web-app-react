@@ -39,6 +39,7 @@ import {
     subscriptionOffer
 } from './productView';
 import style from './Product.module.scss';
+import {memberPrice} from '../../shared/lib/membership';
 
 const PARALLAX_RATIO = 0.32;
 const PARALLAX_LIMIT = 260;
@@ -364,6 +365,7 @@ export default function Product() {
             <ProductBuyBar
                 total={total}
                 oldTotal={oldTotal}
+                member={selectedAddons.length ? null : memberPrice(product)}
                 isAvailable={isPurchasable(product)}
                 count={cartCount}
                 isBusy={isAdding}

@@ -17,6 +17,8 @@ import {subscriptionShare} from '../../../pages/Subscription/subscriptionShare';
 import {useSubscriptionProducts} from '../../../pages/Subscription/useSubscriptionProducts';
 import {useSubscriptionInfo} from '../../../pages/Subscription/useSubscriptionInfo';
 import SubscriptionContents from '../../../pages/Subscription/SubscriptionContents';
+import SubscriptionGames from '../../../pages/Subscription/SubscriptionGames';
+import {useScrollArea} from '../../shell/ScrollAreaContext';
 import {HeartIcon} from '../../shell/DesktopIcons';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import {useCrumbTrail} from '../../shell/useCrumbTrail';
@@ -41,7 +43,9 @@ const monthsMatch = (one, two) => one.months !== null && one.months === two.mont
 export default function DesktopSubscription() {
     const params = useParams();
     const navigate = useNavigate();
-    const [search] = useSearchParams();
+    const [search, setSearch] = useSearchParams();
+    const gamesView = search.get('games');
+    const areaRef = useScrollArea();
     const {isTg} = usePlatform();
 
     const path = cleanPath(params['*'] || '');
@@ -170,6 +174,14 @@ export default function DesktopSubscription() {
 
     const openCatalog = useCallback(() => navigate(catalogRoute(path)), [navigate, path]);
 
+    const switchGames = useCallback((section) => {
+        const next = new URLSearchParams(search);
+        if (section) next.set('games', section);
+        else next.delete('games');
+        setSearch(next);
+        areaRef?.current?.scrollTo({top: 0});
+    }, [search, setSearch, areaRef]);
+
     const isMissing = Array.isArray(catalogs) && catalogId === null;
     const isEmpty = items !== null && plan === null;
 
@@ -220,168 +232,176 @@ export default function DesktopSubscription() {
 
             <div className={style.body}>
                 <div className={style.main}>
-                    <div className={style.hero}>
-                        <span className={style.heroGlow} aria-hidden="true"/>
-
-                        <div className={style.heroTop}>
-                            <div className={style.heroTitles}>
-                                <span className={style.heroBrand}>{plan.brand.name}</span>
-                                <span className={style.heroTier}>{tier.name}</span>
-                            </div>
-
-                            {region?.icon ? (
-                                <img className={style.heroIcon} src={region.icon} alt="" aria-hidden="true"/>
-                            ) : null}
-                        </div>
-
-                        <div className={style.heroGrid}>
-                            <div className={style.heroCell}>
-                                <span className={style.heroLabel}>{tier.tagline ? 'Тариф включает' : 'Срок'}</span>
-                                <span className={style.heroValue}>{tier.tagline || period?.label || '—'}</span>
-                            </div>
-
-                            <div className={style.heroCell}>
-                                <span className={style.heroLabel}>Цена за месяц</span>
-                                <span className={style.heroValue}>
-                                    {period?.perMonth ? `${formatPrice(period.perMonth)} / мес` : '—'}
-                                </span>
-                            </div>
-
-                            {region ? (
-                                <div className={style.heroCell}>
-                                    <span className={style.heroLabel}>Регион</span>
-                                    <span className={style.heroValue}>{region.title}</span>
-                                </div>
-                            ) : null}
-                        </div>
-                    </div>
-
-                    {plan.tiers.length > 1 ? (
-                        <section className={style.block}>
-                            <h2 className={style.blockTitle}>
-                                {plan.tiers.length <= 2 ? 'Куда активируем' : 'Тариф'}
-                            </h2>
-
-                            <div className={style.tiers}>
-                                {plan.tiers.map((item, index) => {
-                                    const isActive = item.key === tier.key;
-                                    const from = item.fromPerMonth ?? item.fromPrice;
-
-                                    return (
-                                        <button
-                                            key={item.key}
-                                            type="button"
-                                            className={isActive ? `${style.tier} ${style.tierActive}` : style.tier}
-                                            style={{'--tier-dot': item.dot, '--i': index}}
-                                            aria-pressed={isActive}
-                                            onClick={() => selectTier(item.key)}
-                                        >
-                                            <span className={style.tierName}>
-                                                <span className={style.tierDot} aria-hidden="true"/>
-                                                {item.name}
-                                            </span>
-
-                                            {item.tagline ? (
-                                                <span className={style.tierNote}>{item.tagline}</span>
-                                            ) : null}
-
-                                            {from ? (
-                                                <span className={style.tierFrom}>
-                                                    от {formatPrice(from)}{item.fromPerMonth ? ' / мес' : ''}
-                                                </span>
-                                            ) : null}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </section>
-                    ) : null}
-
-                    {periods.length ? (
-                        <section className={style.block}>
-                            <div className={style.blockHead}>
-                                <h2 className={style.blockTitle}>Срок подписки</h2>
-                                {periods.length > 1 ? (
-                                    <span className={style.blockNote}>
-                                        {periods.length} {pluralOf(periods.length, VARIANT_WORDS)}
-                                    </span>
-                                ) : null}
-                            </div>
-
-                            <div className={style.periods}>
-                                {periods.map((item, index) => {
-                                    const isActive = item.id === period?.id;
-
-                                    return (
-                                        <button
-                                            key={item.id}
-                                            type="button"
-                                            className={[
-                                                style.period,
-                                                isActive ? style.periodActive : '',
-                                                item.isAvailable ? '' : style.periodLocked
-                                            ].filter(Boolean).join(' ')}
-                                            style={{'--i': index}}
-                                            disabled={!item.isAvailable}
-                                            aria-pressed={isActive}
-                                            onClick={() => selectPeriod(item.id)}
-                                        >
-                                            <span className={isActive ? `${style.tick} ${style.tickOn}` : style.tick}>
-                                                ✓
-                                            </span>
-
-                                            <span className={style.periodBody}>
-                                                <span className={style.periodTitle}>
-                                                    {item.label}
-                                                    {item.badge ? (
-                                                        <span className={style.badge}>{item.badge}</span>
-                                                    ) : null}
-                                                </span>
-
-                                                <span className={style.periodNote}>
-                                                    {item.isAvailable
-                                                        ? (item.perMonth
-                                                            ? `${formatPrice(item.perMonth)} / мес`
-                                                            : 'Разовая оплата')
-                                                        : 'Нет в продаже'}
-                                                </span>
-                                            </span>
-
-                                            <span className={style.periodPrices}>
-                                                <span className={style.periodPrice}>{formatPrice(item.price)}</span>
-                                                {item.oldPrice ? (
-                                                    <span className={style.periodOldPrice}>
-                                                        {formatPrice(item.oldPrice)}
-                                                    </span>
-                                                ) : null}
-                                            </span>
-                                        </button>
-                                    );
-                                })}
-                            </div>
-
-                            {tier.hint ? (
-                                <p className={style.hint}>
-                                    {tier.hint}
-                                </p>
-                            ) : null}
-                        </section>
-                    ) : null}
-
-                    {info ? (
-                        <SubscriptionContents
+                    {gamesView && info ? (
+                        <SubscriptionGames
                             info={info}
                             tierName={tier.name}
+                            initialSection={gamesView}
                             onOpenProduct={(id) => navigate(`/card/${id}`)}
+                            onBack={() => switchGames(null)}
                         />
-                    ) : null}
+                    ) : (
+                        <>
+                            <div className={style.hero}>
+                                <span className={style.heroGlow} aria-hidden="true"/>
 
-                    {showsPlayStationInfo(plan.brand.key, path) ? <SubscriptionInfo withAbout={!info}/> : null}
+                                <div className={style.heroTop}>
+                                    <div className={style.heroTitles}>
+                                        <span className={style.heroBrand}>{plan.brand.name}</span>
+                                        <span className={style.heroTier}>{tier.name}</span>
+                                    </div>
 
-                    <button type="button" className={style.toCatalog} onClick={openCatalog}>
-                        Посмотреть все позиции
-                        <span className={style.toCatalogArrow} aria-hidden="true">→</span>
-                    </button>
+                                    {region?.icon ? (
+                                        <img className={style.heroIcon} src={region.icon} alt="" aria-hidden="true"/>
+                                    ) : null}
+                                </div>
+
+                                <div className={style.heroGrid}>
+                                    <div className={style.heroCell}>
+                                        <span className={style.heroLabel}>{tier.tagline ? 'Тариф включает' : 'Срок'}</span>
+                                        <span className={style.heroValue}>{tier.tagline || period?.label || '—'}</span>
+                                    </div>
+
+                                    <div className={style.heroCell}>
+                                        <span className={style.heroLabel}>Цена за месяц</span>
+                                        <span className={style.heroValue}>
+                                            {period?.perMonth ? `${formatPrice(period.perMonth)} / мес` : '—'}
+                                        </span>
+                                    </div>
+
+                                    {region ? (
+                                        <div className={style.heroCell}>
+                                            <span className={style.heroLabel}>Регион</span>
+                                            <span className={style.heroValue}>{region.title}</span>
+                                        </div>
+                                    ) : null}
+                                </div>
+                            </div>
+
+                            {plan.tiers.length > 1 ? (
+                                <section className={style.block}>
+                                    <h2 className={style.blockTitle}>
+                                        {plan.tiers.length <= 2 ? 'Куда активируем' : 'Тариф'}
+                                    </h2>
+
+                                    <div className={style.tiers}>
+                                        {plan.tiers.map((item, index) => {
+                                            const isActive = item.key === tier.key;
+                                            const from = item.fromPerMonth ?? item.fromPrice;
+
+                                            return (
+                                                <button
+                                                    key={item.key}
+                                                    type="button"
+                                                    className={isActive ? `${style.tier} ${style.tierActive}` : style.tier}
+                                                    style={{'--tier-dot': item.dot, '--i': index}}
+                                                    aria-pressed={isActive}
+                                                    onClick={() => selectTier(item.key)}
+                                                >
+                                                    <span className={style.tierName}>
+                                                        <span className={style.tierDot} aria-hidden="true"/>
+                                                        {item.name}
+                                                    </span>
+
+                                                    {item.tagline ? (
+                                                        <span className={style.tierNote}>{item.tagline}</span>
+                                                    ) : null}
+
+                                                    {from ? (
+                                                        <span className={style.tierFrom}>
+                                                            от {formatPrice(from)}{item.fromPerMonth ? ' / мес' : ''}
+                                                        </span>
+                                                    ) : null}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </section>
+                            ) : null}
+
+                            {periods.length ? (
+                                <section className={style.block}>
+                                    <div className={style.blockHead}>
+                                        <h2 className={style.blockTitle}>Срок подписки</h2>
+                                        {periods.length > 1 ? (
+                                            <span className={style.blockNote}>
+                                                {periods.length} {pluralOf(periods.length, VARIANT_WORDS)}
+                                            </span>
+                                        ) : null}
+                                    </div>
+
+                                    <div className={style.periods}>
+                                        {periods.map((item, index) => {
+                                            const isActive = item.id === period?.id;
+
+                                            return (
+                                                <button
+                                                    key={item.id}
+                                                    type="button"
+                                                    className={[
+                                                        style.period,
+                                                        isActive ? style.periodActive : '',
+                                                        item.isAvailable ? '' : style.periodLocked
+                                                    ].filter(Boolean).join(' ')}
+                                                    style={{'--i': index}}
+                                                    disabled={!item.isAvailable}
+                                                    aria-pressed={isActive}
+                                                    onClick={() => selectPeriod(item.id)}
+                                                >
+                                                    <span className={isActive ? `${style.tick} ${style.tickOn}` : style.tick}>
+                                                        ✓
+                                                    </span>
+
+                                                    <span className={style.periodBody}>
+                                                        <span className={style.periodTitle}>
+                                                            {item.label}
+                                                            {item.badge ? (
+                                                                <span className={style.badge}>{item.badge}</span>
+                                                            ) : null}
+                                                        </span>
+
+                                                        <span className={style.periodNote}>
+                                                            {item.isAvailable
+                                                                ? (item.perMonth
+                                                                    ? `${formatPrice(item.perMonth)} / мес`
+                                                                    : 'Разовая оплата')
+                                                                : 'Нет в продаже'}
+                                                        </span>
+                                                    </span>
+
+                                                    <span className={style.periodPrices}>
+                                                        <span className={style.periodPrice}>{formatPrice(item.price)}</span>
+                                                        {item.oldPrice ? (
+                                                            <span className={style.periodOldPrice}>
+                                                                {formatPrice(item.oldPrice)}
+                                                            </span>
+                                                        ) : null}
+                                                    </span>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+
+                                    {tier.hint ? (
+                                        <p className={style.hint}>
+                                            {tier.hint}
+                                        </p>
+                                    ) : null}
+                                </section>
+                            ) : null}
+
+                            {info ? (
+                                <SubscriptionContents info={info} tierName={tier.name} onOpenGames={switchGames}/>
+                            ) : null}
+
+                            {showsPlayStationInfo(plan.brand.key, path) ? <SubscriptionInfo withAbout={!info}/> : null}
+
+                            <button type="button" className={style.toCatalog} onClick={openCatalog}>
+                                Посмотреть все позиции
+                                <span className={style.toCatalogArrow} aria-hidden="true">→</span>
+                            </button>
+                        </>
+                    )}
                 </div>
 
                 <aside className={style.panel}>

@@ -975,3 +975,18 @@
   font-weight: 600;
   color: oklch(0.88 0.02 264);
 }
+
+.memberPrice {
+  margin-top: calc(-1 * var(--d-gap-2));
+  font-size: var(--d-fs-sm);
+  font-weight: 800;
+  color: oklch(0.86 0.14 88);
+}
+
+.memberPrice_eaplay {
+  color: oklch(0.74 0.17 20);
+}
+
+.memberPrice_gtaplus {
+  color: oklch(0.8 0.17 140);
+}

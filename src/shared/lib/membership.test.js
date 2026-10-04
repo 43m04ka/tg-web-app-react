@@ -1,4 +1,4 @@
-import {membershipBadge, membershipOffers, membershipPlaque, offerKind} from './membership';
+import {memberPrice, membershipBadge, membershipOffers, membershipPlaque, offerKind} from './membership';
 
 const catalogOffer = {
     branding: 'PS_PLUS',
@@ -47,7 +47,9 @@ test('скидка EA Play показывается процентом', () => {
     const product = {price: 11200, subscriptionOffers: [eaDiscount]};
 
     expect(membershipBadge(product)).toEqual({brand: 'eaplay', kind: 'discount', label: '−10% EA Play'});
-    expect(membershipPlaque(product).title).toMatch(/^10\s080 ₽ по подписке EA Play$/);
+    expect(membershipPlaque(product).title).toBe('Скидка 10% по подписке EA Play');
+    expect(memberPrice(product)).toEqual({value: 10080, brand: 'eaplay', label: 'с EA Play'});
+    expect(memberPrice({...product, price: 9000})).toBeNull();
 });
 
 test('игра месяца с прошедшей датой больше не считается бесплатной', () => {

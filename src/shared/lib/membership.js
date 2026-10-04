@@ -144,10 +144,9 @@ const describe = (offer) => {
     }
 
     if (offer.kind === 'discount') {
-        const rub = offer.priceRub && offer.priceRub > 0 ? `${offer.priceRub.toLocaleString('ru-RU')} ₽` : null;
         return {
-            title: rub ? `${rub} по подписке ${offer.brand.name}` : `Дешевле по подписке ${offer.brand.name}`,
-            note: offer.percent ? `Скидка ${offer.percent}% для подписчиков` : 'Скидка для подписчиков'
+            title: offer.percent ? `Скидка ${offer.percent}% по подписке ${offer.brand.name}` : `Дешевле по подписке ${offer.brand.name}`,
+            note: offer.priceRub && offer.priceRub > 0 ? 'Цена для подписчиков — у кнопки покупки' : 'Скидка для подписчиков'
         };
     }
 
@@ -180,4 +179,12 @@ export const membershipPlaque = (product, now = Date.now()) => {
         brand: main.brand.style,
         catalogSuffix: main.brand.catalogSuffix
     };
+};
+
+export const memberPrice = (product, now = Date.now()) => {
+    const shopPrice = numberOrNull(product?.price);
+    const offer = membershipOffers(product, now)
+        .find((item) => item.kind === 'discount' && item.priceRub > 0 && (!shopPrice || item.priceRub < shopPrice));
+
+    return offer ? {value: offer.priceRub, brand: offer.brand.key, label: `с ${offer.brand.name}`} : null;
 };

@@ -31,6 +31,7 @@ import {useDesktopProduct} from './useDesktopProduct';
 import {useCountdown} from './useCountdown';
 import {useRegionOffers} from './useRegionOffers';
 import style from './DesktopProduct.module.scss';
+import {memberPrice} from '../../../shared/lib/membership';
 
 export default function DesktopProduct() {
     const {id} = useParams();
@@ -146,6 +147,7 @@ export default function DesktopProduct() {
     const art = product.backgroundUrl || product.image || null;
 
     const total = Number(product.price) + selectedAddons.reduce((sum, addon) => sum + Number(addon.price), 0);
+    const member = selectedAddons.length ? null : memberPrice(product);
     const oldTotal = discount > 0
         ? Number(product.oldPrice) + selectedAddons.reduce((sum, addon) => sum + Number(addon.oldPrice || addon.price), 0)
         : null;
@@ -358,6 +360,12 @@ export default function DesktopProduct() {
                             <span key={total} className={style.price}>{formatPrice(total)}</span>
                             {discount > 0 ? <span className={style.pricePercent}>−{discount}%</span> : null}
                         </div>
+
+                        {member ? (
+                            <span className={`${style.memberPrice} ${style[`memberPrice_${member.brand}`] || ''}`}>
+                                {formatPrice(member.value)} {member.label}
+                            </span>
+                        ) : null}
 
                         {oldTotal ? (
                             <div className={style.priceNotes}>

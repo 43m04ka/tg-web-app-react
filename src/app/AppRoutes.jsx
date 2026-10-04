@@ -72,7 +72,10 @@ export default function AppRoutes({sections}) {
     const [isLeaving, setLeaving] = useState(false);
 
     useEffect(() => {
-        if (location.pathname === shown.pathname) return undefined;
+        if (location.pathname === shown.pathname) {
+            if (location.search !== shown.search) setShown(location);
+            return undefined;
+        }
 
         if (location.state?.skipLeave) {
             setShown(location);

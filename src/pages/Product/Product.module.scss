@@ -1080,6 +1080,22 @@
   text-decoration: line-through;
 }
 
+.buyMember {
+  margin-top: u(2);
+  font-size: u(11);
+  font-weight: 800;
+  white-space: nowrap;
+  color: oklch(0.86 0.14 88);
+}
+
+.buyMember_eaplay {
+  color: oklch(0.74 0.17 20);
+}
+
+.buyMember_gtaplus {
+  color: oklch(0.8 0.17 140);
+}
+
 .buyAction,
 .buyDisabled {
   flex: 1;

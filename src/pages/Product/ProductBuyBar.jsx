@@ -5,6 +5,7 @@ import style from './Product.module.scss';
 export default function ProductBuyBar({
     total,
     oldTotal,
+    member,
     isAvailable,
     count,
     isBusy,
@@ -21,6 +22,11 @@ export default function ProductBuyBar({
             <div className={style.buyPrices}>
                 <span key={total} className={style.buyPrice}>{formatPrice(total)}</span>
                 {oldTotal ? <span className={style.buyOldPrice}>{formatPrice(oldTotal)}</span> : null}
+                {member ? (
+                    <span className={`${style.buyMember} ${style[`buyMember_${member.brand}`] || ''}`}>
+                        {formatPrice(member.value)} {member.label}
+                    </span>
+                ) : null}
             </div>
 
             {!isAvailable ? (

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useNavigate, useParams, useSearchParams} from 'react-router-dom';
 import {selectUserId, useSessionStore} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
@@ -19,6 +19,7 @@ import SubscriptionBar from './SubscriptionBar';
 import SubscriptionHero from './SubscriptionHero';
 import SubscriptionInfo, {showsPlayStationInfo} from './SubscriptionInfo';
 import SubscriptionContents from './SubscriptionContents';
+import SubscriptionGames from './SubscriptionGames';
 import SubscriptionPeriods from './SubscriptionPeriods';
 import SubscriptionTiers from './SubscriptionTiers';
 import {buildPlan, defaultSelection, locate} from './subscriptionModel';
@@ -41,7 +42,9 @@ const monthsMatch = (one, two) => one.months !== null && one.months === two.mont
 export default function Subscription() {
     const params = useParams();
     const navigate = useNavigate();
-    const [search] = useSearchParams();
+    const [search, setSearch] = useSearchParams();
+    const screenRef = useRef(null);
+    const gamesView = search.get('games');
     const {contentSafeAreaInset, safeAreaInset} = useAppInsets();
     const {isTg} = usePlatform();
 
@@ -192,6 +195,18 @@ export default function Subscription() {
         navigate(catalogRoute(path));
     }, [navigate, path]);
 
+    const switchGames = useCallback((section) => {
+        hapticImpact('light');
+        const next = new URLSearchParams(search);
+        if (section) next.set('games', section);
+        else next.delete('games');
+        setSearch(next);
+    }, [search, setSearch]);
+
+    useEffect(() => {
+        screenRef.current?.scrollTo({top: 0});
+    }, [gamesView]);
+
     const isMissing = Array.isArray(catalogs) && catalogId === null;
     const isEmpty = items !== null && plan === null;
 
@@ -251,43 +266,51 @@ export default function Subscription() {
     const share = subscriptionShare({tier, period, region, isTg});
 
     return (
-        <div className={style.screen} style={themeVars(theme)}>
+        <div ref={screenRef} className={style.screen} style={themeVars(theme)}>
             {head}
 
             <div
                 className={style.content}
                 style={{paddingBottom: `calc(${safeAreaInset.bottom}px + 16 * var(--u))`}}
             >
-                <SubscriptionHero
-                    brandName={plan.brand.name}
-                    tier={tier}
-                    period={period}
-                    region={region}
-                    isFavorite={isFavorite}
-                    onToggleFavorite={productId === null ? null : handleFavorite}
-                />
-
-                <SubscriptionTiers tiers={plan.tiers} activeKey={tier.key} onSelect={selectTier}/>
-
-                <SubscriptionPeriods tier={tier} activeId={period?.id ?? null} onSelect={selectPeriod}/>
-
-                {info ? (
-                    <SubscriptionContents
+                {gamesView && info ? (
+                    <SubscriptionGames
                         info={info}
                         tierName={tier.name}
+                        initialSection={gamesView}
                         onOpenProduct={(id) => navigate(`/card/${id}`)}
+                        onBack={() => switchGames(null)}
                     />
-                ) : null}
+                ) : (
+                    <>
+                        <SubscriptionHero
+                            brandName={plan.brand.name}
+                            tier={tier}
+                            period={period}
+                            region={region}
+                            isFavorite={isFavorite}
+                            onToggleFavorite={productId === null ? null : handleFavorite}
+                        />
 
-                {showsPlayStationInfo(plan.brand.key, path) ? <SubscriptionInfo withAbout={!info}/> : null}
+                        <SubscriptionTiers tiers={plan.tiers} activeKey={tier.key} onSelect={selectTier}/>
 
-                {share ? (
-                    <ProductShare productId={share.productId} text={share.text} link={share.link}/>
-                ) : null}
+                        <SubscriptionPeriods tier={tier} activeId={period?.id ?? null} onSelect={selectPeriod}/>
 
-                <button type="button" className={style.toCatalog} onClick={openCatalog}>
-                    Посмотреть все позиции
-                </button>
+                        {info ? (
+                            <SubscriptionContents info={info} tierName={tier.name} onOpenGames={switchGames}/>
+                        ) : null}
+
+                        {showsPlayStationInfo(plan.brand.key, path) ? <SubscriptionInfo withAbout={!info}/> : null}
+
+                        {share ? (
+                            <ProductShare productId={share.productId} text={share.text} link={share.link}/>
+                        ) : null}
+
+                        <button type="button" className={style.toCatalog} onClick={openCatalog}>
+                            Посмотреть все позиции
+                        </button>
+                    </>
+                )}
             </div>
 
             <SubscriptionBar

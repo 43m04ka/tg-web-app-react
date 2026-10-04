@@ -1,13 +1,8 @@
 import {discountPercent, isSubscription} from '../Main/catalogSections';
+import {membershipPlaque} from '../../shared/lib/membership';
 
 const EXCEL_EPOCH = Date.UTC(1899, 11, 30);
 const DAY_MS = 24 * 60 * 60 * 1000;
-
-const SUBSCRIPTION_BRANDS = {
-    PS_PLUS: {catalogSuffix: 'psplus', brand: 'Ps', name: 'PS Plus', freeTitle: 'Бесплатно в PS Plus'},
-    EA_ACCESS: {catalogSuffix: 'eaplay', brand: 'Ea', name: 'EA Play', freeTitle: 'Включено в EA Play'},
-    EA_PLAY: {catalogSuffix: 'eaplay', brand: 'Ea', name: 'EA Play', freeTitle: 'Включено в EA Play'}
-};
 
 export const hasValue = (value) => {
     if (value === null || value === undefined) return false;
@@ -132,60 +127,7 @@ export const editionLabels = (names) => {
     return parts.map((item) => item.slice(common).join(' ') || item.join(' '));
 };
 
-const numberOrNull = (value) => {
-    const parsed = Number(value);
-    return Number.isFinite(parsed) ? parsed : null;
-};
-
-const isActiveOffer = (offer, now) =>
-    Boolean(SUBSCRIPTION_BRANDS[offer?.branding]) && (!offer.endTime || offer.endTime > now);
-
-const offerWeight = (offer) => {
-    const rub = numberOrNull(offer.priceRub);
-    if (rub !== null) return rub;
-
-    const price = numberOrNull(offer.price);
-    return price !== null ? price : Number.POSITIVE_INFINITY;
-};
-
-export const subscriptionOffer = (product) => {
-    const offers = product?.subscriptionOffers;
-    if (!Array.isArray(offers) || offers.length === 0) return null;
-
-    const now = Date.now();
-    const active = offers.filter((item) => isActiveOffer(item, now));
-    if (active.length === 0) return null;
-
-    const offer = active.reduce((best, item) => (offerWeight(item) < offerWeight(best) ? item : best));
-    const meta = SUBSCRIPTION_BRANDS[offer.branding];
-
-    const rub = numberOrNull(offer.priceRub);
-    const price = numberOrNull(offer.price);
-    const isFree = rub === 0 || (rub === null && price === 0);
-
-    if (isFree) {
-        return {
-            title: meta.freeTitle,
-            brand: meta.brand,
-            note: null,
-            catalogSuffix: meta.catalogSuffix
-        };
-    }
-
-    const shopPrice = numberOrNull(product.price);
-    if (rub !== null && shopPrice !== null && shopPrice > 0 && rub >= shopPrice) return null;
-
-    const title = rub !== null && rub > 0
-        ? `${rub.toLocaleString('ru-RU')} ₽ по подписке ${meta.name}`
-        : `Дешевле по подписке ${meta.name}`;
-
-    return {
-        title,
-        brand: meta.brand,
-        note: hasValue(offer.discountText) ? String(offer.discountText).trim() : null,
-        catalogSuffix: meta.catalogSuffix
-    };
-};
+export const subscriptionOffer = (product) => membershipPlaque(product);
 
 export const isPurchasable = (product) =>
     Boolean(product?.onSale) && Number(product?.price) > 0;

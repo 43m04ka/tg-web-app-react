@@ -18,7 +18,7 @@ const ABOUT = [
 export const showsPlayStationInfo = (brandKey, path) =>
     PS_BRANDS.includes(brandKey) && !/xbox/i.test(String(path || ''));
 
-export default function SubscriptionInfo() {
+export default function SubscriptionInfo({withAbout = true}) {
     return (
         <>
             <section className={style.block}>
@@ -36,7 +36,7 @@ export default function SubscriptionInfo() {
                 </div>
             </section>
 
-            <section className={style.block}>
+            {withAbout ? <section className={style.block}>
                 <div className={style.blockHead}>
                     <h2 className={style.blockTitle}>О подписках</h2>
                 </div>
@@ -51,7 +51,7 @@ export default function SubscriptionInfo() {
                         </div>
                     ))}
                 </div>
-            </section>
+            </section> : null}
         </>
     );
 }

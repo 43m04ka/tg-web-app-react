@@ -1,0 +1,59 @@
+@import '../../../app/styles/units';
+
+.badge {
+  position: absolute;
+  top: u(8);
+  right: u(8);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: u(4);
+  max-width: calc(100% - u(16));
+  padding: u(3) u(7) u(3) u(5);
+  border-radius: u(7);
+  font-size: u(9.5);
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: 0 u(2) u(8) oklch(0 0 0 / 0.35);
+}
+
+.mark {
+  flex: none;
+  width: u(11);
+  height: u(11);
+  background: center / contain no-repeat;
+}
+
+.psplus {
+  background: linear-gradient(100deg, oklch(0.86 0.16 88), oklch(0.78 0.16 75));
+  color: oklch(0.2 0.04 70);
+}
+
+.psplus .mark {
+  background-image: url('../../assets/subscriptions/logoPS.png');
+  filter: brightness(0.2);
+}
+
+.eaplay {
+  background: linear-gradient(100deg, oklch(0.62 0.21 25), oklch(0.5 0.2 350));
+  color: oklch(0.99 0 0);
+}
+
+.eaplay .mark {
+  background-image: url('../../assets/subscriptions/logoEA.png');
+}
+
+.gtaplus {
+  background: linear-gradient(100deg, oklch(0.78 0.17 140), oklch(0.62 0.16 150));
+  color: oklch(0.18 0.04 150);
+}
+
+.gtaplus .mark {
+  width: u(6);
+  height: u(6);
+  border-radius: 50%;
+  background: currentColor;
+}

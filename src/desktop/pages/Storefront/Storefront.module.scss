@@ -569,3 +569,18 @@
 .more:active {
   transform: scale(0.99);
 }
+
+.membership.membership {
+  top: 10px;
+  right: 10px;
+  gap: 5px;
+  max-width: calc(100% - 20px);
+  padding: 5px 10px 5px 8px;
+  border-radius: var(--radius-full);
+  font-size: var(--d-fs-2xs);
+}
+
+.membership.membership > span {
+  width: 13px;
+  height: 13px;
+}

@@ -15,6 +15,8 @@ import SubscriptionInfo, {showsPlayStationInfo} from '../../../pages/Subscriptio
 import {buildPlan, defaultSelection, locate} from '../../../pages/Subscription/subscriptionModel';
 import {subscriptionShare} from '../../../pages/Subscription/subscriptionShare';
 import {useSubscriptionProducts} from '../../../pages/Subscription/useSubscriptionProducts';
+import {useSubscriptionInfo} from '../../../pages/Subscription/useSubscriptionInfo';
+import SubscriptionContents from '../../../pages/Subscription/SubscriptionContents';
 import {HeartIcon} from '../../shell/DesktopIcons';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import {useCrumbTrail} from '../../shell/useCrumbTrail';
@@ -71,6 +73,7 @@ export default function DesktopSubscription() {
     );
 
     const {items, error, retry} = useSubscriptionProducts(catalogId, seed);
+    const info = useSubscriptionInfo(catalogId);
 
     const plan = useMemo(() => buildPlan(items, {catalogPath: path, title}), [items, path, title]);
 
@@ -365,7 +368,15 @@ export default function DesktopSubscription() {
                         </section>
                     ) : null}
 
-                    {showsPlayStationInfo(plan.brand.key, path) ? <SubscriptionInfo/> : null}
+                    {info ? (
+                        <SubscriptionContents
+                            info={info}
+                            tierName={tier.name}
+                            onOpenProduct={(id) => navigate(`/card/${id}`)}
+                        />
+                    ) : null}
+
+                    {showsPlayStationInfo(plan.brand.key, path) ? <SubscriptionInfo withAbout={!info}/> : null}
 
                     <button type="button" className={style.toCatalog} onClick={openCatalog}>
                         Посмотреть все позиции

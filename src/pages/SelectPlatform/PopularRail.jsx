@@ -2,6 +2,7 @@ import React from 'react';
 import {discountPercent, formatPrice, shortPlatform} from '../Main/catalogSections';
 import {accentStyle} from './accent';
 import fireIcon from '../../shared/assets/icons/fire.png';
+import MembershipBadge from '../../shared/ui/MembershipBadge/MembershipBadge';
 import style from './PopularRail.module.scss';
 
 export default function PopularRail({items, regionOf, onOpen, orderOf}) {
@@ -55,6 +56,8 @@ export default function PopularRail({items, regionOf, onOpen, orderOf}) {
                                     ) : null}
 
                                     {tag ? <span className={style.tag}>{tag}</span> : null}
+
+                                    <MembershipBadge product={product}/>
                                 </span>
 
                                 <span className={style.name}>{product.name}</span>

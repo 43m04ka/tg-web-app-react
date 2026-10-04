@@ -14,6 +14,7 @@ import products from '../modules/products/module';
 import catalogs from '../modules/catalogs/module';
 import prices from '../modules/prices/module';
 import services from '../modules/services/module';
+import subscriptions from '../modules/subscriptions/module';
 import media from '../modules/media/module';
 import settings from '../modules/settings/module';
 import access from '../modules/access/module';
@@ -28,7 +29,7 @@ export const GROUPS = [
     {id: 'tools', title: 'Инструменты'},
 ];
 
-const REGISTERED = [overview, orders, marketplace, customers, steam, payments, promo, products, catalogs, prices, services, storefront, start, popular, pages, broadcast, media, settings, access, kit];
+const REGISTERED = [overview, orders, marketplace, customers, steam, payments, promo, products, catalogs, prices, services, subscriptions, storefront, start, popular, pages, broadcast, media, settings, access, kit];
 
 export const modules = REGISTERED
     .slice()

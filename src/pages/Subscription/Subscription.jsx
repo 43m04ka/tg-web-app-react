@@ -18,10 +18,12 @@ import {themeOf} from '../Services/servicesModel';
 import SubscriptionBar from './SubscriptionBar';
 import SubscriptionHero from './SubscriptionHero';
 import SubscriptionInfo, {showsPlayStationInfo} from './SubscriptionInfo';
+import SubscriptionContents from './SubscriptionContents';
 import SubscriptionPeriods from './SubscriptionPeriods';
 import SubscriptionTiers from './SubscriptionTiers';
 import {buildPlan, defaultSelection, locate} from './subscriptionModel';
 import {subscriptionShare} from './subscriptionShare';
+import {useSubscriptionInfo} from './useSubscriptionInfo';
 import {useSubscriptionProducts} from './useSubscriptionProducts';
 import style from './Subscription.module.scss';
 
@@ -70,6 +72,7 @@ export default function Subscription() {
     );
 
     const {items, error, retry} = useSubscriptionProducts(catalogId, seed);
+    const info = useSubscriptionInfo(catalogId);
 
     const plan = useMemo(
         () => buildPlan(items, {catalogPath: path, title}),
@@ -268,7 +271,15 @@ export default function Subscription() {
 
                 <SubscriptionPeriods tier={tier} activeId={period?.id ?? null} onSelect={selectPeriod}/>
 
-                {showsPlayStationInfo(plan.brand.key, path) ? <SubscriptionInfo/> : null}
+                {info ? (
+                    <SubscriptionContents
+                        info={info}
+                        tierName={tier.name}
+                        onOpenProduct={(id) => navigate(`/card/${id}`)}
+                    />
+                ) : null}
+
+                {showsPlayStationInfo(plan.brand.key, path) ? <SubscriptionInfo withAbout={!info}/> : null}
 
                 {share ? (
                     <ProductShare productId={share.productId} text={share.text} link={share.link}/>

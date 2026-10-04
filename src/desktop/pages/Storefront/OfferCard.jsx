@@ -2,6 +2,7 @@ import React from 'react';
 import {discountPercent, formatPrice, shortPlatform, subscriptionTerm} from '../../../pages/Main/catalogSections';
 import {releaseInfo} from '../../../pages/Product/productView';
 import Cover from '../../ui/Cover';
+import MembershipBadge from '../../../shared/ui/MembershipBadge/MembershipBadge';
 import style from './Storefront.module.scss';
 
 export default function OfferCard({
@@ -43,6 +44,8 @@ export default function OfferCard({
 
                 {term ? <span className={style.term}>{term}</span> : null}
                 {platform ? <span className={style.platform}>{platform}</span> : null}
+
+                <MembershipBadge product={product} className={style.membership}/>
 
                 {alsoIn > 0 ? (
                     <span className={style.splitHint}>Выбрать витрину · {origins.length}</span>

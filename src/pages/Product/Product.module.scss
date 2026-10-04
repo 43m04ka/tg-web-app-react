@@ -620,6 +620,24 @@
   background: linear-gradient(100deg, oklch(0.28 0.08 285), oklch(0.26 0.09 355));
 }
 
+.offerGta {
+  background: linear-gradient(100deg, oklch(0.36 0.09 145), oklch(0.24 0.05 160));
+}
+
+.offerGta .offerMark::after {
+  content: 'GTA+';
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: u(8);
+  background: oklch(0.8 0.17 140);
+  color: oklch(0.2 0.05 150);
+  font-size: u(9);
+  font-weight: 900;
+  rotate: 13deg;
+}
+
 .offerMark,
 .offerSpark,
 .offerDust {

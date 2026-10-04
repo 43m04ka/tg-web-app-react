@@ -243,3 +243,9 @@
   color: oklch(1 0 0);
   white-space: nowrap;
 }
+
+.membership.membership {
+  right: auto;
+  left: u(8);
+  max-width: calc(100% - u(70));
+}

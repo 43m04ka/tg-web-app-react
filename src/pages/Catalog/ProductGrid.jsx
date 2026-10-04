@@ -2,6 +2,7 @@ import React from 'react';
 import {discountPercent, formatPrice, platformList, subscriptionTerm} from '../Main/catalogSections';
 import {releaseInfo} from '../Product/productView';
 import {accentStyle} from '../SelectPlatform/accent';
+import MembershipBadge from '../../shared/ui/MembershipBadge/MembershipBadge';
 import style from './Catalog.module.scss';
 
 const SKELETON_KEYS = ['a', 'b', 'c', 'd'];
@@ -74,6 +75,8 @@ function GridCard({product, index, animate, regionOf, showRelease, onOpen}) {
                 </div>
 
                 {term ? <span className={style.term}>{term}</span> : null}
+
+                <MembershipBadge product={product}/>
             </div>
 
             <span className={style.name}>{product.name}</span>

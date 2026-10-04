@@ -25,6 +25,7 @@ export const keys = {
     paymentRegistry: ['payment-registry'],
     broadcast: ['broadcast'],
     services: ['services'],
+    subscriptionInfo: ['subscription-info'],
     serviceTree: ['services', 'tree'],
     serviceCatalogs: ['services', 'catalogs'],
     serviceCodes: (offerId, status) => ['services', 'codes', offerId, status],

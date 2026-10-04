@@ -53,6 +53,7 @@ export default function DesktopProduct() {
         addons,
         selectedAddonIds,
         selectedAddons,
+        offer,
         offerRoute,
         recommendations,
         cartCount,
@@ -378,6 +379,18 @@ export default function DesktopProduct() {
                                     В регионе {bestRegion.label} дешевле на <b>{formatPrice(cheaperBy)}</b>
                                 </span>
                                 <span className={style.cheaperArrow} aria-hidden="true">→</span>
+                            </button>
+                        ) : null}
+
+                        {offer ? (
+                            <button
+                                type="button"
+                                className={`${style.membership} ${style[`membership${offer.brand}`] || ''}`}
+                                onClick={offerRoute ? () => navigate(offerRoute) : undefined}
+                                disabled={!offerRoute}
+                            >
+                                <span className={style.membershipTitle}>{offer.title}</span>
+                                {offer.note ? <span className={style.membershipNote}>{offer.note}</span> : null}
                             </button>
                         ) : null}
 

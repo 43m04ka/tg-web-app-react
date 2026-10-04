@@ -1,0 +1,81 @@
+.body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+}
+
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.groupTitle {
+    margin: 4px 0 0;
+    font-size: var(--a2-size-s);
+    font-weight: 700;
+    color: var(--a2-text);
+}
+
+.tier,
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+    border: 1px solid var(--a2-border);
+}
+
+.tierHead,
+.sectionHead {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.sectionHead > :first-child {
+    flex: 1 1 220px;
+}
+
+.tierName {
+    font-weight: 700;
+    color: var(--a2-text);
+}
+
+.plans {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.benefits,
+.preview,
+.hint {
+    font-size: var(--a2-size-xs);
+    line-height: 1.45;
+    color: var(--a2-text-faint);
+}
+
+.change {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 10px;
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+    border: 1px solid var(--a2-border);
+}
+
+.changeName {
+    font-weight: 600;
+    color: var(--a2-text);
+}
+
+.changeValue {
+    font-size: var(--a2-size-xs);
+    color: var(--a2-text-faint);
+}

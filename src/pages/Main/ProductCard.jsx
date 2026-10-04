@@ -1,5 +1,6 @@
 import React from 'react';
 import {discountPercent, formatPrice, platformList, subscriptionTerm} from './catalogSections';
+import MembershipBadge from '../../shared/ui/MembershipBadge/MembershipBadge';
 import style from './CatalogSection.module.scss';
 
 export default function ProductCard({product, onOpen}) {
@@ -25,6 +26,8 @@ export default function ProductCard({product, onOpen}) {
                 {percent > 0 ? <span className={style.discount}>−{percent}%</span> : null}
 
                 {term ? <span className={style.term}>{term}</span> : null}
+
+                <MembershipBadge product={product} className={style.membership}/>
             </div>
 
             <span className={style.name}>{product.name}</span>

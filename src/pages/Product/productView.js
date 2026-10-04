@@ -108,25 +108,6 @@ export const descriptionLines = (description) =>
         .map((line) => line.trim())
         .filter(Boolean);
 
-const words = (name) => String(name || '').trim().split(/\s+/).filter(Boolean);
-
-export const editionLabels = (names) => {
-    const parts = names.map(words);
-    if (parts.length === 0) return [];
-
-    const shortest = Math.min(...parts.map((item) => item.length));
-
-    let common = 0;
-    while (
-        common < shortest - 1 &&
-        parts.every((item) => item[common].toLowerCase() === parts[0][common].toLowerCase())
-        ) {
-        common += 1;
-    }
-
-    return parts.map((item) => item.slice(common).join(' ') || item.join(' '));
-};
-
 export const subscriptionOffer = (product) => membershipPlaque(product);
 
 export const isPurchasable = (product) =>

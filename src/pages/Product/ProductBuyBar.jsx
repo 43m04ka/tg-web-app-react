@@ -16,11 +16,11 @@ export default function ProductBuyBar({
 }) {
     return (
         <div
-            className={style.buyBar}
+            className={`${style.buyBar} ${member ? style[`buyBar_${member.brand}`] || '' : ''}`}
             style={{paddingBottom: `calc(${bottomInset}px + 14 * var(--u))`}}
         >
             {member ? (
-                <div className={`${style.buyMember} ${style[`buyMember_${member.brand}`] || ''}`}>
+                <div className={style.buyMember}>
                     <span className={style.buyMemberText}>С подпиской {member.name}</span>
                     <span className={style.buyMemberPrice}>{formatPrice(member.value)}</span>
                 </div>

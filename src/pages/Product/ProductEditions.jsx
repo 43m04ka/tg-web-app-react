@@ -1,57 +1,60 @@
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 import {formatPrice} from '../Main/catalogSections';
 import style from './Product.module.scss';
 
-const FIT_LIMIT = 3;
+const PAIR_LIMIT = 2;
 
 export default function ProductEditions({editions, activeId, onSelect}) {
-    const trackRef = useRef(null);
-
-    const isScrollable = editions.length > FIT_LIMIT;
-
-    useEffect(() => {
-        if (!isScrollable) return;
-
-        const track = trackRef.current;
-        const active = track?.querySelector('[data-active="true"]');
-        if (!track || !active) return;
-
-        const left = active.offsetLeft - track.offsetLeft
-            - (track.clientWidth - active.clientWidth) / 2;
-
-        if (typeof track.scrollTo === 'function') track.scrollTo({left, behavior: 'smooth'});
-        else track.scrollLeft = left;
-    }, [activeId, isScrollable]);
-
     if (editions.length < 2) return null;
 
-    const active = editions.find((edition) => edition.product.id === activeId);
+    const isPair = editions.length <= PAIR_LIMIT;
 
     return (
         <section className={style.section}>
             <div className={style.sectionHead}>
                 <h2 className={style.sectionTitle}>Издание</h2>
-                {active ? <span className={style.sectionNote}>{active.label}</span> : null}
             </div>
 
-            <div
-                ref={trackRef}
-                className={`${style.editions} ${isScrollable ? style.editionsScroll : style.editionsFit}`}
-            >
+            <div className={isPair ? style.editionsPair : style.editionsList}>
                 {editions.map(({product, label}) => {
                     const isActive = product.id === activeId;
+
+                    if (isPair) {
+                        return (
+                            <button
+                                key={product.id}
+                                type="button"
+                                className={`${style.edition} ${isActive ? style.editionActive : ''}`}
+                                onClick={() => onSelect(product)}
+                                aria-pressed={isActive}
+                            >
+                                <span className={style.editionName}>{label}</span>
+                                <span className={style.editionPrice}>{formatPrice(product.price)}</span>
+                            </button>
+                        );
+                    }
 
                     return (
                         <button
                             key={product.id}
                             type="button"
-                            data-active={isActive}
-                            className={`${style.edition} ${isActive ? style.editionActive : ''}`}
+                            className={`${style.editionRow} ${isActive ? style.editionRowActive : ''}`}
                             onClick={() => onSelect(product)}
                             aria-pressed={isActive}
                         >
-                            <span className={style.editionName}>{label}</span>
-                            <span className={style.editionPrice}>{formatPrice(product.price)}</span>
+                            <span className={style.editionRadio} aria-hidden="true"/>
+
+                            <span
+                                className={style.addonCover}
+                                style={product.image ? {backgroundImage: `url(${product.image})`} : undefined}
+                                aria-hidden="true"
+                            />
+
+                            <span className={style.addonBody}>
+                                <span className={style.addonName}>{label}</span>
+                            </span>
+
+                            <span className={style.addonPrice}>{formatPrice(product.price)}</span>
                         </button>
                     );
                 })}

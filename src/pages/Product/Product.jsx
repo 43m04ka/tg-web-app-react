@@ -21,6 +21,7 @@ import ProductHero from './ProductHero';
 import ProductEditions from './ProductEditions';
 import ProductAddons from './ProductAddons';
 import ProductOffer from './ProductOffer';
+import ProductCheaper from './ProductCheaper';
 import ProductDescription from './ProductDescription';
 import ProductGallery from './ProductGallery';
 import ProductSpecs from './ProductSpecs';
@@ -32,7 +33,6 @@ import {useProduct, useRecommendations} from './useProduct';
 import {
     buildChips,
     buildSpecs,
-    editionLabels,
     eyebrow,
     isPurchasable,
     promotionLabel,
@@ -40,6 +40,7 @@ import {
 } from './productView';
 import style from './Product.module.scss';
 import {memberPrice} from '../../shared/lib/membership';
+import {useRegionOffers} from '../../desktop/pages/Product/useRegionOffers';
 
 const PARALLAX_RATIO = 0.32;
 const PARALLAX_LIMIT = 260;
@@ -128,9 +129,7 @@ export default function Product() {
             .filter((item, index, all) => all.findIndex((other) => other.id === item.id) === index)
             .sort((a, b) => Number(a.price) - Number(b.price));
 
-        const labels = editionLabels(list.map((item) => item.name));
-
-        return list.map((item, index) => ({product: item, label: labels[index]}));
+        return list.map((item) => ({product: item, label: item.name}));
     }, [product]);
 
     const addons = useMemo(
@@ -146,6 +145,7 @@ export default function Product() {
     }, [productId, editions, addons]);
 
     const recommendations = useRecommendations(pageId, excludedIds);
+    const regions = useRegionOffers(product);
 
     const productPageId = useMemo(() => {
         if (!product || !Array.isArray(catalogs)) return null;
@@ -255,6 +255,13 @@ export default function Product() {
         navigate('/basket');
     }, [navigate]);
 
+    const switchRegion = useCallback((region) => {
+        if (!region || region.isCurrent) return;
+        hapticSelection();
+        setPageId(region.pageId);
+        navigate(`/card/${region.product.id}`, {replace: true});
+    }, [navigate, setPageId]);
+
     const openCatalog = useCallback((route) => {
         hapticImpact('light');
         navigate(route);
@@ -335,6 +342,8 @@ export default function Product() {
                 <ProductEditions editions={editions} activeId={productId} onSelect={selectEdition}/>
 
                 <ProductAddons addons={addons} selectedIds={selectedAddonIds} onToggle={toggleAddon}/>
+
+                <ProductCheaper regions={regions} onSwitch={switchRegion}/>
 
                 <ProductOffer offer={offer} route={offerRoute} onOpen={openCatalog}/>
 

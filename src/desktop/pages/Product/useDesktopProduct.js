@@ -5,7 +5,7 @@ import {useStructureStore} from '../../../store/useStructureStore';
 import {selectCartCount, useCartStore} from '../../../store/useCartStore';
 import {selectIsFavorite, useFavoriteStore} from '../../../store/useFavoriteStore';
 import {useProduct, useRecommendations} from '../../../pages/Product/useProduct';
-import {editionLabels, subscriptionOffer} from '../../../pages/Product/productView';
+import {subscriptionOffer} from '../../../pages/Product/productView';
 import {isSubscription} from '../../../pages/Main/catalogSections';
 import {subscriptionRoute} from '../../../shared/lib/pageRoutes';
 
@@ -54,9 +54,7 @@ export function useDesktopProduct(productId) {
             .filter((item, index, all) => all.findIndex((other) => other.id === item.id) === index)
             .sort((a, b) => Number(a.price) - Number(b.price));
 
-        const labels = editionLabels(list.map((item) => item.name));
-
-        return list.map((item, index) => ({product: item, label: labels[index]}));
+        return list.map((item) => ({product: item, label: item.name}));
     }, [product]);
 
     const addons = useMemo(

@@ -86,7 +86,6 @@ export default function SubscriptionsScreen() {
     };
 
     const lastRun = summary || info.data?.lastRun || null;
-    const priceChanges = lastRun?.prices?.changes || [];
 
     return (
         <Workspace>
@@ -249,19 +248,6 @@ export default function SubscriptionsScreen() {
 
                         {lastRun.errors.map((error) => <Note key={error} tone="danger">{error}</Note>)}
 
-                        <h3 className={style.groupTitle}>Старая цена товаров-подписок</h3>
-                        <span className={style.hint}>
-                            Официальная цена Sony переводится в рубли сеткой цен и ставится старой ценой, только если она выше нашей. Наша цена не меняется.
-                        </span>
-
-                        {priceChanges.length ? priceChanges.map((change) => (
-                            <div key={change.id} className={style.change}>
-                                <span className={style.changeName}>{`${change.name} · ${change.row} · ${REGION_TITLES[change.region]}`}</span>
-                                <span className={style.changeValue}>
-                                    {`Sony ${change.official} → ${change.officialRub ?? '—'} ₽; наша ${change.price} ₽; старая ${change.previous ?? '—'} → ${change.oldPrice ?? 'нет'}`}
-                                </span>
-                            </div>
-                        )) : <span className={style.hint}>При этом обновлении старые цены не менялись.</span>}
                     </div>
                 ) : (
                     <span className={style.hint}>С момента запуска сервера обновлений ещё не было.</span>

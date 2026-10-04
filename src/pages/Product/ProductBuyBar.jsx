@@ -19,14 +19,18 @@ export default function ProductBuyBar({
             className={style.buyBar}
             style={{paddingBottom: `calc(${bottomInset}px + 14 * var(--u))`}}
         >
+            {member ? (
+                <div className={`${style.buyMember} ${style[`buyMember_${member.brand}`] || ''}`}>
+                    <span className={style.buyMemberMark} aria-hidden="true"/>
+                    <span className={style.buyMemberText}>По подписке {member.name}</span>
+                    {member.percent ? <span className={style.buyMemberPercent}>−{member.percent}%</span> : null}
+                    <span className={style.buyMemberPrice}>{formatPrice(member.value)}</span>
+                </div>
+            ) : null}
+
             <div className={style.buyPrices}>
                 <span key={total} className={style.buyPrice}>{formatPrice(total)}</span>
                 {oldTotal ? <span className={style.buyOldPrice}>{formatPrice(oldTotal)}</span> : null}
-                {member ? (
-                    <span className={`${style.buyMember} ${style[`buyMember_${member.brand}`] || ''}`}>
-                        {formatPrice(member.value)} {member.label}
-                    </span>
-                ) : null}
             </div>
 
             {!isAvailable ? (

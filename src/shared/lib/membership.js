@@ -186,5 +186,7 @@ export const memberPrice = (product, now = Date.now()) => {
     const offer = membershipOffers(product, now)
         .find((item) => item.kind === 'discount' && item.priceRub > 0 && (!shopPrice || item.priceRub < shopPrice));
 
-    return offer ? {value: offer.priceRub, brand: offer.brand.key, label: `с ${offer.brand.name}`} : null;
+    return offer
+        ? {value: offer.priceRub, brand: offer.brand.key, name: offer.brand.name, percent: offer.percent || null, label: `с ${offer.brand.name}`}
+        : null;
 };

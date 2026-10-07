@@ -23,18 +23,6 @@ import StorefrontHero from './StorefrontHero';
 import OfferSplit from './OfferSplit';
 import style from './Storefront.module.scss';
 
-const TAGLINE = [
-    ['Геймворд'],
-    ['—'],
-    ['игры'],
-    ['и'],
-    ['подписки'],
-    ['для'],
-    ['PlayStation', 'ps'],
-    ['и'],
-    ['Xbox', 'xbox']
-];
-
 const SKELETON_COUNT = 12;
 const ROWS_STEP = 3;
 
@@ -163,20 +151,6 @@ export default function Storefront() {
 
             <StorefrontHero items={hero} onOpen={openHero}/>
 
-            <h1 className={style.tagline} aria-label={TAGLINE.map(([word]) => word).join(' ')}>
-                {TAGLINE.map(([word, tone], index) => (
-                    <React.Fragment key={index}>
-                        {index ? ' ' : null}
-                        <span
-                            className={`${style.taglineWord} ${tone ? `${style[tone]} ${style.shine}` : ''}`}
-                            style={{'--w': index}}
-                            aria-hidden="true"
-                        >
-                            {word}
-                        </span>
-                    </React.Fragment>
-                ))}
-            </h1>
 
             {config.steps.length ? (
                 <ol className={style.steps}>

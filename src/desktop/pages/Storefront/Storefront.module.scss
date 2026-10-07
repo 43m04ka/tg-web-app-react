@@ -4,18 +4,6 @@
   gap: var(--d-gap-8);
 }
 
-.ps {
-  --tone: oklch(0.72 0.15 258);
-  --tone-hi: oklch(0.94 0.06 250);
-  color: var(--tone);
-}
-
-.xbox {
-  --tone: oklch(0.78 0.18 148);
-  --tone-hi: oklch(0.96 0.08 140);
-  color: var(--tone);
-}
-
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
@@ -766,49 +754,6 @@
 .membership.membership > span {
   width: 13px;
   height: 13px;
-}
-
-.tagline {
-  font-size: var(--d-fs-4xl);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.6px;
-  color: oklch(0.97 0.004 264);
-}
-
-.taglineWord {
-  display: inline-block;
-  animation: taglineIn 720ms var(--m-ease) backwards;
-  animation-delay: calc(40ms + var(--w) * 42ms);
-}
-
-.shine {
-  background: linear-gradient(100deg, var(--tone) 42%, var(--tone-hi) 50%, var(--tone) 58%) 100% 0 / 250% 100% no-repeat;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation-name: taglineIn, taglineShimmer;
-  animation-duration: 720ms, 1300ms;
-  animation-timing-function: var(--m-ease), cubic-bezier(0.45, 0, 0.25, 1);
-  animation-fill-mode: backwards, none;
-  animation-delay: calc(40ms + var(--w) * 42ms), calc(560ms + var(--w) * 90ms);
-}
-
-@keyframes taglineIn {
-  from {
-    opacity: 0;
-    transform: translateY(0.5em) rotate(2.5deg);
-  }
-}
-
-@keyframes taglineShimmer {
-  from {
-    background-position: 100% 0;
-  }
-
-  to {
-    background-position: 0 0;
-  }
 }
 
 .steps {

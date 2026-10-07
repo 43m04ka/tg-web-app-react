@@ -106,9 +106,10 @@
 .link {
   position: relative;
   padding: 4px 0;
-  font-size: var(--d-fs-md);
-  font-weight: var(--fw-medium);
-  color: var(--text-muted);
+  font-size: var(--d-fs-lg);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.2px;
+  color: var(--text-secondary);
   transition: color var(--m-base) var(--m-ease),
               transform var(--m-base) var(--m-ease);
 }

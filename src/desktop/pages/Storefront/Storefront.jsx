@@ -23,6 +23,18 @@ import StorefrontHero from './StorefrontHero';
 import OfferSplit from './OfferSplit';
 import style from './Storefront.module.scss';
 
+const TAGLINE = [
+    ['Геймворд'],
+    ['—'],
+    ['игры'],
+    ['и'],
+    ['подписки'],
+    ['для'],
+    ['PlayStation', 'ps'],
+    ['и'],
+    ['Xbox', 'xbox']
+];
+
 const SKELETON_COUNT = 12;
 const ROWS_STEP = 3;
 
@@ -151,10 +163,34 @@ export default function Storefront() {
 
             <StorefrontHero items={hero} onOpen={openHero}/>
 
-            <h1 className={style.tagline}>
-                Геймворд — игры и подписки для <span className={style.ps}>PlayStation</span> и{' '}
-                <span className={style.xbox}>Xbox</span>
+            <h1 className={style.tagline} aria-label={TAGLINE.map(([word]) => word).join(' ')}>
+                {TAGLINE.map(([word, tone], index) => (
+                    <React.Fragment key={index}>
+                        {index ? ' ' : null}
+                        <span
+                            className={`${style.taglineWord} ${tone ? `${style[tone]} ${style.shine}` : ''}`}
+                            style={{'--w': index}}
+                            aria-hidden="true"
+                        >
+                            {word}
+                        </span>
+                    </React.Fragment>
+                ))}
             </h1>
+
+            {config.steps.length ? (
+                <ol className={style.steps}>
+                    {config.steps.map((step, index) => (
+                        <li key={step.title} className={style.step} style={{'--i': index}}>
+                            <span className={style.stepNumber}>{index + 1}</span>
+                            <span className={style.stepBody}>
+                                <span className={style.stepTitle}>{step.title}</span>
+                                <span className={style.stepText}>{step.text}</span>
+                            </span>
+                        </li>
+                    ))}
+                </ol>
+            ) : null}
 
             {shelfEntries.map((entry) => (entry.kind === 'subscriptions' ? (
                 <SubscriptionShelf

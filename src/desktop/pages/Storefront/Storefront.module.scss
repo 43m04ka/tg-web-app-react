@@ -5,11 +5,15 @@
 }
 
 .ps {
-  color: oklch(0.72 0.15 258);
+  --tone: oklch(0.72 0.15 258);
+  --tone-hi: oklch(0.94 0.06 250);
+  color: var(--tone);
 }
 
 .xbox {
-  color: oklch(0.78 0.18 148);
+  --tone: oklch(0.78 0.18 148);
+  --tone-hi: oklch(0.96 0.08 140);
+  color: var(--tone);
 }
 
 .hero {
@@ -765,13 +769,97 @@
 }
 
 .tagline {
-  font-family: var(--d-font-display);
-  font-size: var(--d-fs-3xl);
+  font-size: var(--d-fs-4xl);
   font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: -0.3px;
-  text-align: center;
+  line-height: 1.2;
+  letter-spacing: -0.6px;
   color: oklch(0.97 0.004 264);
+}
+
+.taglineWord {
+  display: inline-block;
+  animation: taglineIn 720ms var(--m-ease) backwards;
+  animation-delay: calc(40ms + var(--w) * 42ms);
+}
+
+.shine {
+  background: linear-gradient(100deg, var(--tone) 42%, var(--tone-hi) 50%, var(--tone) 58%) 100% 0 / 250% 100% no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation-name: taglineIn, taglineShimmer;
+  animation-duration: 720ms, 1300ms;
+  animation-timing-function: var(--m-ease), cubic-bezier(0.45, 0, 0.25, 1);
+  animation-fill-mode: backwards, none;
+  animation-delay: calc(40ms + var(--w) * 42ms), calc(560ms + var(--w) * 90ms);
+}
+
+@keyframes taglineIn {
+  from {
+    opacity: 0;
+    transform: translateY(0.5em) rotate(2.5deg);
+  }
+}
+
+@keyframes taglineShimmer {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: 0 0;
+  }
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--d-gap-8);
+  padding: var(--d-gap-6) 0;
+  border-block: 1px solid var(--border-subtle);
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--d-gap-4);
+  animation: global(gw-rise) var(--m-slow) var(--m-ease) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+.stepNumber {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: oklch(1 0 0 / 0.03);
+  color: var(--accent-text);
+  font-family: var(--d-font-display);
+  font-size: var(--d-fs-md);
+  font-weight: 700;
+}
+
+.stepBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 4px;
+}
+
+.stepTitle {
+  font-size: var(--d-fs-lg);
+  font-weight: var(--fw-bold);
+  line-height: 1.3;
+}
+
+.stepText {
+  font-size: var(--d-fs-sm);
+  line-height: 1.5;
+  color: var(--text-muted);
 }
 
 .filterBar {

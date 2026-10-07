@@ -91,7 +91,7 @@
 }
 
 .cardBest {
-  border-color: var(--accent-soft);
+  border-color: color-mix(in oklch, var(--success) 45%, transparent);
 }
 
 .cover {
@@ -141,11 +141,11 @@
   right: var(--d-gap-3);
   padding: 3px 9px;
   border-radius: var(--radius-full);
-  background: var(--accent);
-  color: var(--accent-contrast);
+  background: var(--success);
+  color: oklch(0.2 0.05 148);
   font-size: var(--d-fs-2xs);
   font-weight: var(--fw-bold);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 2px 12px -4px var(--success);
   z-index: 2;
   animation: global(gw-pop) var(--m-slow) var(--m-spring) both;
   animation-delay: 260ms;

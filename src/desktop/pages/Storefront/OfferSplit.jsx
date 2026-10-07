@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
-import {discountPercent, formatPrice} from '../../../pages/Main/catalogSections';
+import {discountPercent, formatPrice, isSubscription} from '../../../pages/Main/catalogSections';
 import {useScrollArea} from '../../shell/ScrollAreaContext';
 import Cover from '../../ui/Cover';
 import style from './OfferSplit.module.scss';
@@ -71,6 +71,8 @@ export default function OfferSplit({offer, onPick, onClose}) {
     if (!shown) return null;
 
     const best = shown.origins[0]?.price ?? null;
+    const worst = Math.max(...shown.origins.map((origin) => origin.price ?? 0));
+    const saving = best !== null ? discountPercent(best, worst) : 0;
 
     return createPortal(
         <div
@@ -85,7 +87,9 @@ export default function OfferSplit({offer, onPick, onClose}) {
             >
                 <header className={style.head}>
                     <span className={style.title}>{shown.product.name}</span>
-                    <span className={style.note}>Одна игра на разных витринах — выберите свою</span>
+                    <span className={style.note}>
+                        {isSubscription(shown.product) ? 'Одна подписка' : 'Одна игра'} на разных витринах — выберите свою
+                    </span>
                 </header>
 
                 <div className={style.cards}>
@@ -123,7 +127,7 @@ export default function OfferSplit({offer, onPick, onClose}) {
                                 <span className={style.price}>{formatPrice(origin.price ?? product.price)}</span>
 
                                 {isBest && shown.origins.length > 1 ? (
-                                    <span className={style.badge}>Выгоднее</span>
+                                    <span className={style.badge}>{saving > 0 ? `Выгоднее на ${saving}%` : 'Выгоднее'}</span>
                                 ) : null}
                             </button>
                         );

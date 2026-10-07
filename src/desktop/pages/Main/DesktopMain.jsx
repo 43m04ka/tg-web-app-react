@@ -67,9 +67,9 @@ export default function DesktopMain() {
             originByPage,
             pageIds,
             scopeId: pageId,
-            limit: config.heroSize
+            limit: Infinity
         }),
-        [banners, mainPageProducts, originOf, originByPage, pageIds, pageId, config.heroSize]
+        [banners, mainPageProducts, originOf, originByPage, pageIds, pageId]
     );
 
     const shelves = useMemo(
@@ -102,7 +102,7 @@ export default function DesktopMain() {
                 <p className={style.subtitle}>{config.pageSubtitle}</p>
             </header>
 
-            <StorefrontHero items={hero} onOpen={openHero}/>
+            <StorefrontHero items={hero} onOpen={openHero} perView={config.heroSize}/>
 
             {shelves !== null && shelves.length === 0 ? (
                 <EmptyState title="Витрина пустует" text="Полки этой площадки пока не заполнены"/>

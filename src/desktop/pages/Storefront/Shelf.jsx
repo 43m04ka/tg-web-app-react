@@ -58,6 +58,7 @@ export default function Shelf({shelf, size, showOrigin, onOpen, onOpenCatalog}) 
                         offer={offer}
                         index={index < size ? index : index - size}
                         showOrigin={showOrigin}
+                        showRelease
                         onOpen={onOpen}
                     />
                 ))}

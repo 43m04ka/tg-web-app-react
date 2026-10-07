@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {formatPrice, isSubscription} from '../../../pages/Main/catalogSections';
 import {buildPlan} from '../../../pages/Subscription/subscriptionModel';
+import {brandOf} from '../../../pages/Subscription/subscriptionBrands';
 import {themeOf} from '../../../pages/Services/servicesModel';
 import {pluralOf} from '../../../shared/lib/plural';
 import {useReveal} from '../../shell/useReveal';
@@ -95,7 +96,8 @@ const shelfCards = ({plan, terms, offerById}, months) => {
 
     if (plan.tiers.length === 1) {
         const [tier] = plan.tiers;
-        const note = [brandNote, sameText(tier.name, brand.name) ? null : tier.name].filter(Boolean).join(' · ');
+        const label = brand.key === 'other' ? null : plan.title;
+        const note = [label, sameText(tier.name, plan.title) ? null : tier.name].filter(Boolean).join(' · ');
 
         return terms
             .map((term) => ({key: `${tier.key}:${term}`, tier, period: periodOf(tier, term), title: termLabel(term)}))
@@ -118,27 +120,46 @@ const shelfCards = ({plan, terms, offerById}, months) => {
     });
 };
 
-const brandCards = (items, months) => items.map(({shelf, model}) => {
+const brandGroups = (plan) => {
+    const groups = new Map();
+
+    plan.tiers.forEach((tier) => {
+        const own = brandOf([tier.name]);
+        const brand = own.key === 'other' ? plan.brand : own;
+        const group = groups.get(brand.key);
+        const shown = brand === plan.brand ? tier : {...tier, accent: brand.accent, theme: null};
+
+        if (group) group.tiers.push(shown);
+        else groups.set(brand.key, {brand, tiers: [shown]});
+    });
+
+    return [...groups.values()];
+};
+
+const brandCards = (items, months) => items.flatMap(({shelf, model}) => {
     const {plan, offerById} = model;
+    const groups = brandGroups(plan);
 
-    const best = plan.tiers
-        .map((tier) => ({tier, period: periodOf(tier, months)}))
-        .filter((item) => item.period)
-        .sort((a, b) => a.period.price - b.period.price)[0] || null;
+    return groups.map(({brand, tiers}) => {
+        const best = tiers
+            .map((tier) => ({tier, period: periodOf(tier, months)}))
+            .filter((item) => item.period)
+            .sort((a, b) => a.period.price - b.period.price)[0] || null;
 
-    const tier = best?.tier || plan.tiers[0];
-    const period = best?.period || null;
+        const tier = best?.tier || tiers[0];
+        const period = best?.period || null;
 
-    return {
-        key: shelf.key,
-        tier,
-        period,
-        brand: plan.brand,
-        title: plan.brand.key === 'other' ? shelf.title : plan.brand.name,
-        note: null,
-        isFrom: plan.tiers.length > 1,
-        offer: period ? offerById.get(period.id) || null : null
-    };
+        return {
+            key: groups.length > 1 ? `${shelf.key}:${brand.key}` : shelf.key,
+            tier,
+            period,
+            brand,
+            title: brand.key === 'other' ? shelf.title : brand.name,
+            note: null,
+            isFrom: tiers.length > 1,
+            offer: period ? offerById.get(period.id) || null : null
+        };
+    });
 });
 
 const buildView = (items, tab, picked) => {

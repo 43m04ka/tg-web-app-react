@@ -75,9 +75,9 @@ export default function Storefront() {
             pageIds,
             scopeId,
             mainPageId,
-            limit: Math.max(1, config.heroSize - 1)
+            limit: Infinity
         }),
-        [banners, mainPageProducts, originOf, originByPage, pageIds, scopeId, mainPageId, config.heroSize]
+        [banners, mainPageProducts, originOf, originByPage, pageIds, scopeId, mainPageId]
     );
 
     const shelves = useMemo(
@@ -149,7 +149,7 @@ export default function Storefront() {
         <div className={style.screen}>
             <OfferSplit offer={picker.picked} onPick={picker.pick} onClose={picker.close}/>
 
-            <StorefrontHero items={hero} onOpen={openHero} onBrand={openHome}/>
+            <StorefrontHero items={hero} onOpen={openHero} onBrand={openHome} perView={config.heroSize}/>
 
             {shelfEntries.map((entry) => (entry.kind === 'subscriptions' ? (
                 <SubscriptionShelf
@@ -206,6 +206,7 @@ export default function Storefront() {
                                     offer={offer}
                                     index={index}
                                     showOrigin={showOrigin}
+                                    showRelease
                                     onOpen={openOffer}
                                 />
                             ))}

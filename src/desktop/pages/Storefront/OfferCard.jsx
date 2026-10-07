@@ -9,7 +9,6 @@ export default function OfferCard({
     offer,
     onOpen,
     showOrigin = true,
-    showAlso = true,
     showRelease = false,
     index = 0
 }) {
@@ -27,7 +26,11 @@ export default function OfferCard({
     return (
         <article className={style.card} style={{'--i': index}} onClick={() => onOpen?.(offer)}>
             <Cover src={product.image} className={style.cover}>
-                {preOrder ? <span className={style.release}>Выход {preOrder}</span> : null}
+                {preOrder ? (
+                    <span className={showOrigin && origin ? `${style.release} ${style.releaseLow}` : style.release}>
+                        {preOrder}
+                    </span>
+                ) : null}
 
                 {showOrigin && origin ? (
                     <span className={style.originBadge}>
@@ -65,12 +68,6 @@ export default function OfferCard({
 
             {percent > 0 && oldPrice ? (
                 <span className={style.oldPrice}>{formatPrice(oldPrice)}</span>
-            ) : null}
-
-            {showAlso && alsoIn > 0 ? (
-                <span className={style.alsoIn}>
-                    {alsoIn === 1 ? `Ещё на ${origins[1].label}` : `Ещё на ${alsoIn} витринах`}
-                </span>
             ) : null}
         </article>
     );

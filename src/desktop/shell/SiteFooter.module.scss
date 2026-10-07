@@ -155,13 +155,12 @@
 }
 
 .legalLink {
-  color: var(--text-faint);
-  text-decoration: none;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
   transition: color var(--m-base) var(--m-ease);
 }
 
 .legalLink:hover {
-  color: var(--text-secondary);
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  color: var(--text);
 }

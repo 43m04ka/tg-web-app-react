@@ -14,8 +14,91 @@
 
 .hero {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--d-gap-5);
+}
+
+.heroViewport {
+  position: relative;
+  min-width: 0;
+}
+
+.heroTrack {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - (var(--per-view) - 1) * var(--d-gap-5)) / var(--per-view));
+  column-gap: var(--d-gap-5);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-block: 8px;
+  margin-block: -8px;
+}
+
+.heroTrack::-webkit-scrollbar {
+  display: none;
+}
+
+.heroTrack > * {
+  scroll-snap-align: start;
+}
+
+.heroArrow {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid oklch(1 0 0 / 0.14);
+  border-radius: var(--radius-full);
+  background: oklch(0.15 0.01 264 / 0.78);
+  backdrop-filter: blur(10px);
+  color: var(--text);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(-50%) scale(0.9);
+  box-shadow: var(--shadow-md);
+  transition: opacity var(--m-base) var(--m-ease),
+              transform var(--m-base) var(--m-spring),
+              background-color var(--m-base) var(--m-ease);
+}
+
+.heroArrow svg {
+  width: 22px;
+  height: 22px;
+}
+
+.heroArrowPrev {
+  left: -14px;
+}
+
+.heroArrowPrev svg {
+  transform: rotate(90deg);
+}
+
+.heroArrowNext {
+  right: -14px;
+}
+
+.heroArrowNext svg {
+  transform: rotate(-90deg);
+}
+
+.heroViewport:hover .heroArrow {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+
+.heroArrow:hover {
+  background: oklch(0.22 0.01 264 / 0.9);
+}
+
+.heroViewport:hover .heroArrow:disabled {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .brandCard {
@@ -361,6 +444,10 @@
   transition: transform var(--m-base) var(--m-spring);
 }
 
+.releaseLow {
+  top: 42px;
+}
+
 .card:hover .release {
   transform: translateY(-2px);
 }
@@ -489,6 +576,7 @@
   display: flex;
   align-items: baseline;
   gap: 7px;
+  margin-top: auto;
 }
 
 .price {
@@ -517,17 +605,6 @@
   font-weight: var(--fw-semibold);
   color: var(--text-faint);
   text-decoration: line-through;
-}
-
-.alsoIn {
-  font-size: var(--d-fs-2xs);
-  font-weight: var(--fw-semibold);
-  color: var(--text-faint);
-  transition: color var(--m-base) var(--m-ease);
-}
-
-.card:hover .alsoIn {
-  color: var(--accent-text);
 }
 
 .skeleton {

@@ -40,7 +40,7 @@ export default function Storefront() {
 
     const setPageId = useSessionStore((store) => store.setPageId);
 
-    const {scopeId, setScopeId} = useStorefrontScope();
+    const {scopeId} = useStorefrontScope();
 
     const config = storefrontConfig(null);
 
@@ -87,6 +87,11 @@ export default function Storefront() {
 
     const shelfEntries = useMemo(() => groupShelves(shelves), [shelves]);
 
+    const filteredKey = useMemo(() => {
+        const plain = shelfEntries.filter((entry) => entry.kind === 'shelf');
+        return (plain.find((entry) => /популярн/i.test(entry.shelf.title)) || plain[0])?.key ?? null;
+    }, [shelfEntries]);
+
     const query = useMemo(() => (scopeId === null
         ? {allPages: true, botType: effectiveBotType, sorting: config.sorting}
         : {pageId: scopeId, sorting: config.sorting}), [scopeId, effectiveBotType, config.sorting]);
@@ -130,11 +135,6 @@ export default function Storefront() {
 
     const openHero = useOpenHero();
 
-    const openHome = useCallback(() => {
-        setScopeId(null);
-        navigate('/');
-    }, [navigate, setScopeId]);
-
     const openCatalog = useCallback((target) => {
         setPageId(target.pageId);
         navigate(catalogRoute(target.path));
@@ -149,7 +149,12 @@ export default function Storefront() {
         <div className={style.screen}>
             <OfferSplit offer={picker.picked} onPick={picker.pick} onClose={picker.close}/>
 
-            <StorefrontHero items={hero} onOpen={openHero} onBrand={openHome} perView={config.heroSize}/>
+            <StorefrontHero items={hero} onOpen={openHero}/>
+
+            <h1 className={style.tagline}>
+                Геймворд — игры и подписки для <span className={style.ps}>PlayStation</span> и{' '}
+                <span className={style.xbox}>Xbox</span>
+            </h1>
 
             {shelfEntries.map((entry) => (entry.kind === 'subscriptions' ? (
                 <SubscriptionShelf
@@ -165,6 +170,7 @@ export default function Storefront() {
                     shelf={entry.shelf}
                     size={config.shelfSize}
                     showOrigin={showOrigin}
+                    withFilters={entry.key === filteredKey}
                     onOpen={openOffer}
                     onOpenCatalog={openCatalog}
                 />

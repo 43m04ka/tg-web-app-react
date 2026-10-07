@@ -30,6 +30,31 @@
     font-size: var(--a2-size-s);
 }
 
+.positionFacts,
+.positionLinks {
+    grid-column: 1 / -1;
+    font-size: var(--a2-size-s);
+}
+
+.positionFacts {
+    margin-top: -4px;
+    color: var(--a2-text-muted);
+}
+
+.positionLinks {
+    display: flex;
+    gap: 14px;
+}
+
+.positionLinks a {
+    color: var(--a2-accent);
+    text-decoration: none;
+}
+
+.positionLinks a:hover {
+    text-decoration: underline;
+}
+
 .codes {
     display: flex;
     flex-direction: column;

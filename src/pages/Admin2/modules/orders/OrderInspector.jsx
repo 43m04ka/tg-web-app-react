@@ -222,15 +222,40 @@ export default function OrderInspector({id, onClose}) {
                     >
                         {positions.length ? (
                             <ul className={style.positions}>
-                                {positions.map((item) => (
-                                    <li key={item.id} className={style.position}>
-                                        <span className={style.positionName}>{item.name}</span>
-                                        <span className={style.positionMeta}>
-                                            {item.quantity} × <Money value={item.price}/>
-                                        </span>
-                                        <Money value={item.sum}/>
-                                    </li>
-                                ))}
+                                {positions.map((item) => {
+                                    const details = item.details || {};
+                                    const facts = [
+                                        details.region,
+                                        details.activation && !details.region.includes(details.activation) ? `активация: ${details.activation}` : '',
+                                        details.platform,
+                                        details.edition
+                                    ].filter(Boolean);
+
+                                    return (
+                                        <li key={item.id} className={style.position}>
+                                            <span className={style.positionName}>{item.name}</span>
+                                            <span className={style.positionMeta}>
+                                                {item.quantity} × <Money value={item.price}/>
+                                            </span>
+                                            <Money value={item.sum}/>
+
+                                            {facts.length ? <span className={style.positionFacts}>{facts.join(' · ')}</span> : null}
+
+                                            {details.siteUrl || details.storeUrl ? (
+                                                <span className={style.positionLinks}>
+                                                    {details.siteUrl ? (
+                                                        <a href={details.siteUrl} target="_blank" rel="noopener noreferrer">На сайте</a>
+                                                    ) : null}
+                                                    {details.storeUrl ? (
+                                                        <a href={details.storeUrl} target="_blank" rel="noopener noreferrer">
+                                                            В {details.storeName}
+                                                        </a>
+                                                    ) : null}
+                                                </span>
+                                            ) : null}
+                                        </li>
+                                    );
+                                })}
                             </ul>
                         ) : <Note>Позиций нет — это пополнение баланса.</Note>}
                     </InspectorSection>

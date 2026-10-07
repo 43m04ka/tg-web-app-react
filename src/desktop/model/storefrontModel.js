@@ -154,7 +154,13 @@ export const heroItem = (banner, {originOf, productById, originByPage} = {}) => 
         promoEndDate: data.promoEndDate || null,
         productId,
         product,
-        url: text(data.url)
+        url: text(data.url),
+        slot: data.slot === 'side' ? 'side' : 'main',
+        gradient: text(data.gradient),
+        buttons: (Array.isArray(data.buttons) ? data.buttons : [])
+            .map((button) => ({label: text(button?.label), url: text(button?.url)}))
+            .filter((button) => button.label)
+            .slice(0, 2)
     };
 };
 
@@ -208,4 +214,103 @@ export const buildHero = ({
     });
 
     return picked;
+};
+
+export const SIDE_BANNERS = 2;
+
+export const splitHero = (items) => {
+    const list = items || [];
+    const side = list.filter((item) => item.slot === 'side').slice(0, SIDE_BANNERS);
+    const main = list.filter((item) => item.slot !== 'side');
+
+    if (side.length || main.length <= SIDE_BANNERS) return {main, side};
+
+    return {main: main.slice(0, -SIDE_BANNERS), side: main.slice(-SIDE_BANNERS)};
+};
+
+const PLATFORM_FILTERS = [
+    {key: 'ps5', label: 'PS5', test: (offer) => /ps\s?5/i.test(offer.product?.platform)},
+    {key: 'ps4', label: 'PS4', test: (offer) => /ps\s?4/i.test(offer.product?.platform)},
+    {key: 'xbox', label: 'Xbox', test: (offer) => offer.origins.some((origin) => familyOf(origin.type) === 'xbox')}
+];
+
+const REGION_FILTERS = [
+    {key: 'ps', label: 'PS Турция', flag: 'tr'},
+    {key: 'ps_india', label: 'PS Индия', flag: 'in'}
+];
+
+export const SHELF_SORTS = [
+    {key: 'default', label: 'По умолчанию'},
+    {key: 'discount', label: 'Сначала скидка'},
+    {key: 'priceAsc', label: 'Сначала дешевле'},
+    {key: 'priceDesc', label: 'Сначала дороже'}
+];
+
+export const shelfFilters = (offers) => {
+    const list = offers || [];
+
+    const platforms = PLATFORM_FILTERS
+        .filter((filter) => list.some(filter.test))
+        .map(({key, label}) => ({key, label}));
+
+    const regions = REGION_FILTERS
+        .filter((filter) => list.some((offer) => offer.origins.some((origin) => origin.type === filter.key)))
+        .map(({key, label, flag}) => ({key: `region:${key}`, label, flag}));
+
+    return [...platforms, ...regions];
+};
+
+const narrowToRegion = (offer, type) => {
+    const origin = offer.origins.find((item) => item.type === type);
+    if (!origin) return null;
+
+    return {
+        ...offer,
+        product: origin.product || offer.product,
+        price: origin.price,
+        oldPrice: origin.product?.oldPrice ?? null,
+        origins: [origin]
+    };
+};
+
+export const filterOffers = (offers, key) => {
+    const list = offers || [];
+    if (!key || key === 'all') return list;
+
+    if (key.startsWith('region:')) {
+        const type = key.slice('region:'.length);
+        return list.map((offer) => narrowToRegion(offer, type)).filter(Boolean);
+    }
+
+    const filter = PLATFORM_FILTERS.find((item) => item.key === key);
+    return filter ? list.filter(filter.test) : list;
+};
+
+const discountOf = (offer) => {
+    const price = Number(offer.price);
+    const before = Number(offer.oldPrice);
+    return Number.isFinite(price) && Number.isFinite(before) && before > price ? 1 - price / before : 0;
+};
+
+const priceValue = (offer) => {
+    const price = Number(offer.price);
+    return offer.price !== null && Number.isFinite(price) ? price : null;
+};
+
+const byPrice = (direction) => (a, b) => {
+    const left = priceValue(a);
+    const right = priceValue(b);
+
+    if (left === null) return right === null ? 0 : 1;
+    if (right === null) return -1;
+    return (left - right) * direction;
+};
+
+export const sortOffers = (offers, sorting) => {
+    const list = [...(offers || [])];
+
+    if (sorting === 'discount') return list.sort((a, b) => discountOf(b) - discountOf(a));
+    if (sorting === 'priceAsc') return list.sort(byPrice(1));
+    if (sorting === 'priceDesc') return list.sort(byPrice(-1));
+    return list;
 };

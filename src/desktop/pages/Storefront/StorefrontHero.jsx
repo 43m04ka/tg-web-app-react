@@ -1,146 +1,156 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import {discountPercent, formatPrice, formatPromoDate} from '../../../pages/Main/bannerFormat';
 import {ChevronIcon} from '../../shell/DesktopIcons';
+import {splitHero} from '../../model/storefrontModel';
 import {useImageReady} from '../../ui/Cover';
+import OriginMark from './OriginMark';
 import style from './Storefront.module.scss';
 
 const AUTOPLAY_MS = 6000;
 
-function HeroCard({item, index, onOpen}) {
-    const isReady = useImageReady(item.image);
-
+const bannerPrices = (item) => {
     const percent = discountPercent(item.price, item.oldPrice);
     const promo = formatPromoDate(item.promoEndDate);
-    const footnote = promo ? `Акция до ${promo}` : item.note;
-    const price = formatPrice(item.price);
+
+    return {
+        percent,
+        price: formatPrice(item.price),
+        oldPrice: percent > 0 ? formatPrice(item.oldPrice) : '',
+        footnote: promo ? `Акция до ${promo}` : item.note
+    };
+};
+
+const imageStyle = (item, isReady, position) => (item.image ? {
+    backgroundImage: `url(${item.image})`,
+    backgroundPosition: item.imageFit === 'coverTop' ? 'top center' : position,
+    opacity: isReady ? 1 : 0
+} : {background: item.gradient || undefined});
+
+function SideCard({item, index, onOpen}) {
+    const isReady = useImageReady(item.image);
+    const {price, oldPrice, footnote} = bannerPrices(item);
 
     return (
-        <article className={style.heroCard} style={{'--i': index}} onClick={() => onOpen?.(item)}>
-            <span
-                className={style.heroImage}
-                style={{
-                    backgroundImage: item.image ? `url(${item.image})` : undefined,
-                    backgroundPosition: item.imageFit === 'coverTop' ? 'top center' : 'center',
-                    opacity: isReady ? 1 : 0
-                }}
-                aria-hidden="true"
-            />
+        <article className={style.sideCard} style={{'--i': index}} onClick={() => onOpen?.(item)}>
+            <span className={style.heroImage} style={imageStyle(item, isReady, 'center')} aria-hidden="true"/>
 
             <div className={style.heroBody}>
-                {item.subtitle ? <span className={style.heroTag}>{item.subtitle}</span> : null}
+                <span className={style.heroTop}>
+                    {item.subtitle ? <span className={style.heroTag}>{item.subtitle}</span> : null}
+                    <OriginMark origin={item.origin} className={style.heroOrigin}/>
+                </span>
 
-                {item.origin ? (
-                    <span className={style.heroOrigin}>
-                        {item.origin.icon ? (
-                            <span
-                                className={style.heroOriginIcon}
-                                style={{backgroundImage: `url(${item.origin.icon})`}}
-                                aria-hidden="true"
-                            />
-                        ) : null}
-                        {item.origin.label}
-                    </span>
-                ) : null}
-
-                <span className={style.heroName}>{item.title}</span>
+                <span className={style.sideName}>{item.title}</span>
 
                 {price ? (
                     <span className={style.heroPrices}>
                         <span className={style.heroPrice}>{price}</span>
-                        {percent > 0 ? (
-                            <span className={style.heroOldPrice}>{formatPrice(item.oldPrice)}</span>
-                        ) : null}
+                        {oldPrice ? <span className={style.heroOldPrice}>{oldPrice}</span> : null}
                     </span>
-                ) : null}
-
-                {footnote ? <span className={style.heroNote}>{footnote}</span> : null}
+                ) : footnote ? <span className={style.heroNote}>{footnote}</span> : null}
             </div>
         </article>
     );
 }
 
-function HeroTrack({items, lead, perView, onOpen}) {
-    const offset = lead ? 1 : 0;
-    const count = items.length + offset;
+function MainSlide({item, onOpen, onButton}) {
+    const isReady = useImageReady(item.image);
+    const {percent, price, oldPrice, footnote} = bannerPrices(item);
+    const hasButtons = item.buttons.length > 0;
+
+    return (
+        <article
+            className={`${style.mainSlide} ${hasButtons ? '' : style.mainSlideClickable}`}
+            onClick={hasButtons ? undefined : () => onOpen?.(item)}
+        >
+            <span className={style.mainImage} style={imageStyle(item, isReady, 'center right')} aria-hidden="true"/>
+
+            <div className={style.mainBody}>
+                <span className={style.mainMeta}>
+                    {item.subtitle ? <span className={style.mainTag}>{item.subtitle}</span> : null}
+                    <OriginMark origin={item.origin} className={style.heroOrigin}/>
+                </span>
+
+                <span className={style.mainName}>{item.title}</span>
+
+                {footnote ? <span className={style.mainNote}>{footnote}</span> : null}
+
+                {price ? (
+                    <span className={style.mainPrices}>
+                        <span className={style.mainPrice}>{price}</span>
+                        {oldPrice ? <span className={style.heroOldPrice}>{oldPrice}</span> : null}
+                        {percent > 0 ? <span className={style.discount}>−{percent}%</span> : null}
+                    </span>
+                ) : null}
+
+                {hasButtons ? (
+                    <span className={style.mainButtons}>
+                        {item.buttons.map((button, index) => (
+                            <button
+                                key={index}
+                                type="button"
+                                className={index === 0 ? style.mainButton : style.mainButtonGhost}
+                                onClick={() => onButton(item, button)}
+                            >
+                                {button.label}
+                            </button>
+                        ))}
+                    </span>
+                ) : null}
+            </div>
+        </article>
+    );
+}
+
+function MainCarousel({items, onOpen, onButton}) {
     const trackRef = useRef(null);
     const pausedRef = useRef(false);
-    const [edges, setEdges] = useState({start: true, end: true});
+    const [active, setActive] = useState(0);
+
+    const count = items.length;
+
+    const goTo = useCallback((index) => {
+        const track = trackRef.current;
+        if (!track) return;
+
+        track.scrollTo({left: ((index + count) % count) * track.clientWidth, behavior: 'smooth'});
+    }, [count]);
 
     const measure = useCallback(() => {
         const track = trackRef.current;
-        if (!track) return;
-
-        const max = track.scrollWidth - track.clientWidth;
-        setEdges({start: track.scrollLeft <= 2, end: track.scrollLeft >= max - 2});
-    }, []);
-
-    const step = useCallback((direction) => {
-        const track = trackRef.current;
-        if (!track) return;
-
-        const card = track.firstElementChild;
-        const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
-        const width = card ? card.getBoundingClientRect().width + gap : track.clientWidth;
-        const max = track.scrollWidth - track.clientWidth;
-
-        if (direction > 0 && track.scrollLeft >= max - 2) {
-            track.scrollTo({left: 0, behavior: 'smooth'});
-            return;
-        }
-
-        track.scrollBy({left: direction * width, behavior: 'smooth'});
+        if (track?.clientWidth) setActive(Math.round(track.scrollLeft / track.clientWidth));
     }, []);
 
     useEffect(() => {
-        measure();
-
-        const track = trackRef.current;
-        if (!track || typeof ResizeObserver === 'undefined') return undefined;
-
-        const observer = new ResizeObserver(measure);
-        observer.observe(track);
-
-        return () => observer.disconnect();
-    }, [measure, count]);
-
-    useEffect(() => {
-        if (count <= perView) return undefined;
+        if (count <= 1) return undefined;
 
         const timer = setInterval(() => {
-            if (!pausedRef.current && !document.hidden) step(1);
+            if (!pausedRef.current && !document.hidden) goTo(active + 1);
         }, AUTOPLAY_MS);
 
         return () => clearInterval(timer);
-    }, [count, perView, step]);
-
-    const scrollable = !(edges.start && edges.end);
+    }, [active, count, goTo]);
 
     return (
         <div
-            className={style.heroViewport}
+            className={style.mainViewport}
             onMouseEnter={() => { pausedRef.current = true; }}
             onMouseLeave={() => { pausedRef.current = false; }}
         >
-            <div
-                ref={trackRef}
-                className={style.heroTrack}
-                style={{'--per-view': perView}}
-                onScroll={measure}
-            >
-                {lead}
-                {items.map((item, index) => (
-                    <HeroCard key={item.id} item={item} index={index + offset} onOpen={onOpen}/>
+            <div ref={trackRef} className={style.mainTrack} onScroll={measure}>
+                {items.map((item) => (
+                    <MainSlide key={item.id} item={item} onOpen={onOpen} onButton={onButton}/>
                 ))}
             </div>
 
-            {scrollable ? (
+            {count > 1 ? (
                 <>
                     <button
                         type="button"
                         className={`${style.heroArrow} ${style.heroArrowPrev}`}
-                        disabled={edges.start}
                         aria-label="Предыдущий баннер"
-                        onClick={() => step(-1)}
+                        onClick={() => goTo(active - 1)}
                     >
                         <ChevronIcon/>
                     </button>
@@ -149,35 +159,69 @@ function HeroTrack({items, lead, perView, onOpen}) {
                         type="button"
                         className={`${style.heroArrow} ${style.heroArrowNext}`}
                         aria-label="Следующий баннер"
-                        onClick={() => step(1)}
+                        onClick={() => goTo(active + 1)}
                     >
                         <ChevronIcon/>
                     </button>
+
+                    <span className={style.mainDots}>
+                        {items.map((item, index) => (
+                            <button
+                                key={item.id}
+                                type="button"
+                                className={`${style.mainDot} ${index === active ? style.mainDotOn : ''}`}
+                                aria-label={`Баннер ${index + 1}`}
+                                onClick={() => goTo(index)}
+                            />
+                        ))}
+                    </span>
                 </>
             ) : null}
         </div>
     );
 }
 
-export default function StorefrontHero({items, onOpen, onBrand, perView = 3}) {
-    const hasBrand = typeof onBrand === 'function';
+export default function StorefrontHero({items, onOpen}) {
+    const navigate = useNavigate();
+    const {main, side} = splitHero(items);
 
-    if (!items.length && !hasBrand) return null;
+    const openButton = useCallback((item, button) => {
+        const {url} = button;
 
-    const lead = hasBrand ? (
-        <button key="brand" type="button" className={style.brandCard} style={{'--i': 0}} onClick={onBrand}>
-            <span className={style.brandGlow} aria-hidden="true"/>
+        if (!url) {
+            onOpen?.(item);
+            return;
+        }
 
-            <h1 className={style.brandTitle}>
-                Геймворд — игры и подписки для <span className={style.ps}>PlayStation</span> и{' '}
-                <span className={style.xbox}>Xbox</span>
-            </h1>
-        </button>
-    ) : null;
+        if (url.startsWith('/')) {
+            navigate(url);
+            return;
+        }
+
+        let target = null;
+        try {
+            target = new URL(url);
+        } catch {
+            return;
+        }
+
+        if (target.origin === window.location.origin) navigate(`${target.pathname}${target.search}${target.hash}`);
+        else window.open(url, '_blank', 'noopener');
+    }, [navigate, onOpen]);
+
+    if (!main.length && !side.length) return null;
 
     return (
-        <div className={style.hero}>
-            <HeroTrack items={items} lead={lead} perView={Math.max(1, perView)} onOpen={onOpen}/>
+        <div className={`${style.hero} ${side.length ? '' : style.heroSolo}`}>
+            {main.length ? <MainCarousel items={main} onOpen={onOpen} onButton={openButton}/> : null}
+
+            {side.length ? (
+                <div className={style.side}>
+                    {side.map((item, index) => (
+                        <SideCard key={item.id} item={item} index={index + 1} onOpen={onOpen}/>
+                    ))}
+                </div>
+            ) : null}
         </div>
     );
 }

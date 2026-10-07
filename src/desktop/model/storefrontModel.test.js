@@ -1,4 +1,4 @@
-import {buildHero, buildShelves, familyOf, mergeOffers, offerKey} from './storefrontModel';
+import {buildHero, buildShelves, familyOf, filterOffers, mergeOffers, offerKey, shelfFilters, sortOffers, splitHero} from './storefrontModel';
 import {createProductOrigin} from '../../shared/lib/productOrigin';
 
 const pages = [
@@ -301,5 +301,59 @@ describe('buildHero', () => {
 
     it('без баннеров промо пустое', () => {
         expect(buildHero({banners: null})).toEqual([]);
+    });
+});
+
+describe('splitHero', () => {
+    const item = (id, slot = 'main') => ({id, slot});
+
+    it('keeps explicit side banners on the right', () => {
+        const {main, side} = splitHero([item(1), item(2, 'side'), item(3), item(4, 'side'), item(5, 'side')]);
+        expect(main.map((entry) => entry.id)).toEqual([1, 3]);
+        expect(side.map((entry) => entry.id)).toEqual([2, 4]);
+    });
+
+    it('borrows the last two banners when none is marked side', () => {
+        const {main, side} = splitHero([item(1), item(2), item(3), item(4)]);
+        expect(main.map((entry) => entry.id)).toEqual([1, 2]);
+        expect(side.map((entry) => entry.id)).toEqual([3, 4]);
+    });
+
+    it('leaves short lists in the carousel', () => {
+        expect(splitHero([item(1), item(2)])).toEqual({main: [item(1), item(2)], side: []});
+    });
+});
+
+describe('shelf filters', () => {
+    const ps = {pageId: 1, type: 'ps', price: 100};
+    const india = {pageId: 2, type: 'ps_india', price: 80};
+    const xbox = {pageId: 3, type: 'xbox', price: 90};
+
+    const offers = [
+        {key: 'a', product: {platform: 'PS5'}, price: 80, oldPrice: null, origins: [{...india, product: {id: 2, oldPrice: 160}}, {...ps, product: {id: 1}}]},
+        {key: 'b', product: {platform: 'PS4, PS5'}, price: 100, oldPrice: 200, origins: [{...ps, product: {id: 3}}]},
+        {key: 'c', product: {platform: 'Xbox Series X|S'}, price: 90, oldPrice: null, origins: [{...xbox, product: {id: 4}}]}
+    ];
+
+    it('lists only filters that match something', () => {
+        expect(shelfFilters(offers).map((item) => item.key)).toEqual(['ps5', 'ps4', 'xbox', 'region:ps', 'region:ps_india']);
+    });
+
+    it('narrows merged offers to the picked region', () => {
+        const result = filterOffers(offers, 'region:ps');
+        expect(result.map((offer) => offer.key)).toEqual(['a', 'b']);
+        expect(result[0].price).toBe(100);
+        expect(result[0].origins).toHaveLength(1);
+    });
+
+    it('filters by platform', () => {
+        expect(filterOffers(offers, 'ps4').map((offer) => offer.key)).toEqual(['b']);
+        expect(filterOffers(offers, 'xbox').map((offer) => offer.key)).toEqual(['c']);
+    });
+
+    it('sorts by discount and price', () => {
+        expect(sortOffers(offers, 'discount')[0].key).toBe('b');
+        expect(sortOffers(offers, 'priceAsc').map((offer) => offer.key)).toEqual(['a', 'c', 'b']);
+        expect(sortOffers(offers, 'priceDesc').map((offer) => offer.key)).toEqual(['b', 'c', 'a']);
     });
 });

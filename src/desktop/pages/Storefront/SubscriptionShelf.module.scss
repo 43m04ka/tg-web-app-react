@@ -70,9 +70,11 @@
   display: inline-flex;
   align-items: center;
   gap: var(--d-gap-3);
-  font-size: var(--d-fs-xl);
-  font-weight: var(--fw-bold);
-  letter-spacing: -0.4px;
+  font-family: var(--d-font-display);
+  font-size: var(--d-fs-3xl);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.3px;
 }
 
 .icon {

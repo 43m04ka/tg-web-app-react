@@ -83,6 +83,7 @@ export default function PageBanners({page, rows, all, total, pages, isLoading}) 
                             <span className={style.blockMeta}>
                                 <Badge tone="neutral">{item.type === 'product' ? 'Товар' : 'Произвольный'}</Badge>
                                 <span className={style.blockNote}>{bannerScope(item, pages)}</span>
+                                {item.data?.slot === 'side' ? <Badge tone="neutral">справа</Badge> : null}
                                 {item.isHidden ? <Badge tone="warning">скрыт</Badge> : null}
                             </span>
                         </span>

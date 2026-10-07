@@ -15,6 +15,7 @@ import {keys} from '../../platform/resources';
 import {useMutation} from '../../platform/useMutation';
 import {createBanner, deleteBanner, searchBannerSources, updateBanner} from './api';
 import {
+    BANNER_SLOTS,
     BANNER_TYPES,
     GRADIENT_PRESETS,
     IMAGE_FITS,
@@ -148,6 +149,10 @@ export default function BannerInspector({banner, pages, count, pageId = null, on
                     />
                 </Field>
 
+                <Field label="Место на главной ПК" hint="Справа показываются первые два малых баннера">
+                    <Select options={BANNER_SLOTS} value={draft.slot} onChange={set('slot')}/>
+                </Field>
+
                 <Toggle
                     checked={draft.isHidden}
                     label="Скрыть из карусели"
@@ -228,6 +233,31 @@ export default function BannerInspector({banner, pages, count, pageId = null, on
                     <Input value={draft.url} onChange={set('url')}/>
                 </Field>
             </InspectorSection>
+
+            {draft.slot === 'main' ? (
+                <InspectorSection
+                    title="Кнопки"
+                    note={isProduct
+                        ? 'До двух кнопок на большом баннере. Пустая ссылка открывает карточку товара.'
+                        : 'До двух кнопок на большом баннере. Без кнопок кликается весь баннер.'}
+                >
+                    <Field label="Кнопка 1 — текст">
+                        <Input value={draft.button1Label} placeholder="Купить" onChange={set('button1Label')}/>
+                    </Field>
+
+                    <Field label="Кнопка 1 — ссылка" hint="https://… или /catalog/…">
+                        <Input value={draft.button1Url} onChange={set('button1Url')}/>
+                    </Field>
+
+                    <Field label="Кнопка 2 — текст">
+                        <Input value={draft.button2Label} placeholder="Подробнее об акции" onChange={set('button2Label')}/>
+                    </Field>
+
+                    <Field label="Кнопка 2 — ссылка">
+                        <Input value={draft.button2Url} onChange={set('button2Url')}/>
+                    </Field>
+                </InspectorSection>
+            ) : null}
 
             <InspectorSection title="Картинка">
                 <Field

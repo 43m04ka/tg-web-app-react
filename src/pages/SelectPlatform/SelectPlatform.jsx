@@ -15,6 +15,7 @@ import PopularRail from './PopularRail';
 import PlatformCard from './PlatformCard';
 import PlatformLink from './PlatformLink';
 import TypingHint from './TypingHint';
+import MobileFooter from '../../shared/ui/MobileFooter/MobileFooter';
 import style from './SelectPlatform.module.scss';
 
 const MIN_FADE_PX = 24;
@@ -326,6 +327,8 @@ export default function SelectPlatform() {
                     </section>
                 );
             })}
+
+            <MobileFooter/>
         </div>
     );
 }

@@ -8,6 +8,11 @@ export const IMAGE_FITS = [
     {value: 'coverTop', title: 'Кадрировать сверху (обложка)'}
 ];
 
+export const BANNER_SLOTS = [
+    {value: 'main', title: 'Большой баннер (карусель)'},
+    {value: 'side', title: 'Малый баннер справа'}
+];
+
 export const GRADIENT_PRESETS = [
     'linear-gradient(115deg, oklch(0.5 0.17 340), oklch(0.42 0.16 30))',
     'linear-gradient(115deg, oklch(0.48 0.15 260), oklch(0.38 0.12 210))',
@@ -39,7 +44,12 @@ export const emptyBanner = (pageId = null) => ({
     gradient: GRADIENT_PRESETS[0],
     price: '',
     oldPrice: '',
-    promoEndDate: ''
+    promoEndDate: '',
+    slot: 'main',
+    button1Label: '',
+    button1Url: '',
+    button2Label: '',
+    button2Url: ''
 });
 
 export const toDraft = (banner) => {
@@ -63,9 +73,19 @@ export const toDraft = (banner) => {
         gradient: text(data.gradient) || GRADIENT_PRESETS[0],
         price: data.price === null || data.price === undefined ? '' : String(data.price),
         oldPrice: data.oldPrice === null || data.oldPrice === undefined ? '' : String(data.oldPrice),
-        promoEndDate: text(data.promoEndDate)
+        promoEndDate: text(data.promoEndDate),
+        slot: data.slot === 'side' ? 'side' : 'main',
+        button1Label: text(data.buttons?.[0]?.label),
+        button1Url: text(data.buttons?.[0]?.url),
+        button2Label: text(data.buttons?.[1]?.label),
+        button2Url: text(data.buttons?.[1]?.url)
     };
 };
+
+const draftButtons = (draft) => [
+    {label: draft.button1Label.trim(), url: draft.button1Url.trim()},
+    {label: draft.button2Label.trim(), url: draft.button2Url.trim()}
+].filter((button) => button.label);
 
 export const toPayload = (draft) => {
     const base = {
@@ -75,6 +95,8 @@ export const toPayload = (draft) => {
         isHidden: draft.isHidden ? 1 : 0
     };
 
+    const layout = {slot: draft.slot, buttons: draftButtons(draft)};
+
     if (draft.type === 'product') {
         return {
             ...base,
@@ -83,6 +105,7 @@ export const toPayload = (draft) => {
                 subtitle: draft.subtitle.trim(),
                 note: draft.note.trim(),
                 url: draft.url.trim(),
+                ...layout,
                 override: {
                     title: draft.title.trim(),
                     image: draft.image.trim(),
@@ -99,6 +122,7 @@ export const toPayload = (draft) => {
             subtitle: draft.subtitle.trim(),
             note: draft.note.trim(),
             url: draft.url.trim(),
+            ...layout,
             image: draft.image.trim(),
             imageFit: draft.imageFit,
             gradient: draft.gradient.trim(),
@@ -109,7 +133,17 @@ export const toPayload = (draft) => {
     };
 };
 
+const isLink = (value) => !value || /^(https?:\/\/|\/)/i.test(value);
+
 export const bannerProblem = (draft) => {
+    if (!isLink(draft.button1Url.trim()) || !isLink(draft.button2Url.trim())) {
+        return 'Ссылка кнопки должна начинаться с http://, https:// или /';
+    }
+
+    if ((draft.button1Url.trim() && !draft.button1Label.trim()) || (draft.button2Url.trim() && !draft.button2Label.trim())) {
+        return 'У кнопки со ссылкой нужен текст';
+    }
+
     if (draft.type === 'product') {
         if (numberOrNull(draft.productId) === null) return 'Выберите товар';
         return null;

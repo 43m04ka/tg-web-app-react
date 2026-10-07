@@ -3,6 +3,7 @@ import {discountPercent, formatPrice, shortPlatform, subscriptionTerm} from '../
 import {releaseInfo} from '../../../pages/Product/productView';
 import Cover from '../../ui/Cover';
 import MembershipBadge from '../../../shared/ui/MembershipBadge/MembershipBadge';
+import OriginMark from './OriginMark';
 import style from './Storefront.module.scss';
 
 export default function OfferCard({
@@ -32,18 +33,7 @@ export default function OfferCard({
                     </span>
                 ) : null}
 
-                {showOrigin && origin ? (
-                    <span className={style.originBadge}>
-                        {origin.icon ? (
-                            <span
-                                className={style.originIcon}
-                                style={{backgroundImage: `url(${origin.icon})`}}
-                                aria-hidden="true"
-                            />
-                        ) : null}
-                        {origin.label}
-                    </span>
-                ) : null}
+                {showOrigin && origin ? <OriginMark origin={origin} className={style.originBadge}/> : null}
 
                 {term ? <span className={style.term}>{term}</span> : null}
                 {platform ? <span className={style.platform}>{platform}</span> : null}
@@ -55,20 +45,22 @@ export default function OfferCard({
                 ) : null}
             </Cover>
 
-            {kind ? <span className={style.kind}>{kind}</span> : null}
-            <span className={style.name}>{product.name}</span>
+            <div className={style.cardBody}>
+                {kind ? <span className={style.kind}>{kind}</span> : null}
+                <span className={style.name}>{product.name}</span>
 
-            <span className={style.prices}>
-                <span className={style.price}>
-                    {alsoIn > 0 ? <span className={style.from}>от </span> : null}
-                    {formatPrice(price)}
+                <span className={style.prices}>
+                    <span className={style.price}>
+                        {alsoIn > 0 ? <span className={style.from}>от </span> : null}
+                        {formatPrice(price)}
+                    </span>
+                    {percent > 0 ? <span className={style.discount}>−{percent}%</span> : null}
                 </span>
-                {percent > 0 ? <span className={style.discount}>−{percent}%</span> : null}
-            </span>
 
-            {percent > 0 && oldPrice ? (
-                <span className={style.oldPrice}>{formatPrice(oldPrice)}</span>
-            ) : null}
+                {percent > 0 && oldPrice ? (
+                    <span className={style.oldPrice}>{formatPrice(oldPrice)}</span>
+                ) : null}
+            </div>
         </article>
     );
 }

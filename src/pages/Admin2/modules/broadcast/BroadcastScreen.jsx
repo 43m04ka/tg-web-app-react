@@ -1,5 +1,5 @@
 import React, {useCallback, useMemo, useState} from 'react';
-import {Button, ErrorState, Note, Panel, SkeletonRows, Toggle, Workspace} from '../../ui';
+import {Button, ErrorState, Note, Panel, Spinner, Toggle, Workspace} from '../../ui';
 import {usePageHeader} from '../../shell/pageHeader';
 import HeaderActions from '../../shell/HeaderActions';
 import {askConfirm, toast, toastFail} from '../../platform/notify';
@@ -185,10 +185,13 @@ export default function BroadcastScreen() {
         );
     }
 
-    if (stats.isLoading && !stats.data) {
+    if (!stats.data) {
         return (
             <Workspace>
-                <SkeletonRows count={8}/>
+                <div className={style.loading}>
+                    <Spinner size={28}/>
+                    <span>Загружаем данные рассылки…</span>
+                </div>
             </Workspace>
         );
     }
@@ -196,7 +199,7 @@ export default function BroadcastScreen() {
     return (
         <Workspace>
             <HeaderActions>
-                <Button size="s" variant="ghost" onClick={stats.refresh}>Обновить</Button>
+                <Button size="s" variant="ghost" loading={stats.isFetching} onClick={stats.refresh}>Обновить</Button>
                 <Button size="s" variant="ghost" onClick={reset}>Очистить</Button>
             </HeaderActions>
 

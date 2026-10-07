@@ -38,6 +38,7 @@ export function useResource(key, fetcher, options = {}) {
         data: entry.data === undefined ? null : entry.data,
         error: entry.error || null,
         isLoading: Boolean(entry.loading) && entry.data === undefined,
+        isFetching: Boolean(entry.loading),
         isStale: Boolean(entry.stale),
         updatedAt: entry.updatedAt || 0,
         refresh,

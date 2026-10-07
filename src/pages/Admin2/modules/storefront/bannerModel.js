@@ -10,7 +10,7 @@ export const IMAGE_FITS = [
 
 export const BANNER_SLOTS = [
     {value: 'main', title: 'Большой баннер (карусель)'},
-    {value: 'side', title: 'Малый баннер справа'}
+    {value: 'side', title: 'Малый квадратный справа (карусель)'}
 ];
 
 export const GRADIENT_PRESETS = [

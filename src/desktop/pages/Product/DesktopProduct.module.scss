@@ -51,10 +51,62 @@
   min-width: 0;
 }
 
+.mediaRow {
+  display: grid;
+  grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+  gap: var(--d-gap-5);
+}
+
+.features {
+  justify-content: flex-start;
+}
+
+.featureList {
+  display: grid;
+  gap: var(--d-gap-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--d-gap-3);
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-semibold);
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.featureMark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: var(--accent-surface);
+  color: var(--accent-text);
+}
+
+.featureMark .checkGlyph {
+  width: 12px;
+  height: 12px;
+}
+
+.mediaRowSolo {
+  grid-template-columns: minmax(0, 320px);
+}
+
+.mediaRow .cover {
+  align-self: start;
+}
+
 .cover {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 1 / 1;
   border-radius: var(--radius-xl);
   background: var(--surface-2) center / cover no-repeat;
   border: 1px solid var(--border-subtle);
@@ -206,6 +258,26 @@
   font-size: var(--d-fs-md);
   line-height: 1.6;
   color: var(--text-secondary);
+}
+
+.descriptionClosed {
+  max-height: 180px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent);
+  mask-image: linear-gradient(180deg, #000 55%, transparent);
+}
+
+.descriptionToggle {
+  align-self: flex-start;
+  margin-top: calc(-1 * var(--d-gap-2));
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--accent-text);
+  cursor: pointer;
+}
+
+.descriptionToggle:hover {
+  color: var(--accent-hover);
 }
 
 .specs {
@@ -449,15 +521,210 @@
   color: var(--accent-text);
 }
 
-.editions,
-.addons {
+.addonsHead {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--d-gap-4);
+  scroll-margin-top: var(--d-gap-6);
+}
+
+.blockCount {
+  margin-left: 6px;
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text-muted);
+}
+
+.addonsNote {
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--accent-text);
+}
+
+.editions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: var(--d-gap-4);
+}
+
+.addons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--d-gap-3);
 }
 
 .edition,
 .addon {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--border-subtle);
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--m-slow) var(--m-spring),
+              background-color var(--m-base) var(--m-ease),
+              box-shadow var(--m-base) var(--m-ease);
+}
+
+.edition:hover,
+.addon:hover {
+  transform: translateY(-3px);
+  background: var(--surface-3);
+}
+
+.edition:active,
+.addon:active {
+  transform: translateY(-1px) scale(0.99);
+  transition-duration: var(--m-fast);
+}
+
+.editionOn,
+.editionOn:hover,
+.addonOn,
+.addonOn:hover {
+  background: color-mix(in oklab, var(--accent) 12%, var(--surface-2));
+  box-shadow: inset 0 0 0 2px var(--accent), 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.editionCover,
+.addonCover {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: var(--surface-3) center / cover no-repeat;
+}
+
+.tileDiscount {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  background: var(--danger);
+  color: #fff;
+  font-size: var(--d-fs-xs);
+  font-weight: var(--fw-bold);
+}
+
+.checkGlyph {
+  flex: none;
+  width: 14px;
+  height: 14px;
+}
+
+.editionBody,
+.addonBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--d-gap-3) var(--d-gap-4) var(--d-gap-4);
+}
+
+.editionName {
+  font-size: var(--d-fs-md);
+  font-weight: var(--fw-bold);
+  line-height: 1.25;
+}
+
+.editionPrices {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.editionPrice {
+  font-size: var(--d-fs-lg);
+  font-weight: 800;
+}
+
+.editionOldPrice {
+  font-size: var(--d-fs-sm);
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.editionContents {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 4px;
+  padding-top: var(--d-gap-3);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.editionItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: var(--d-fs-xs);
+  font-weight: var(--fw-semibold);
+  line-height: 1.35;
+  color: var(--text-secondary);
+}
+
+.editionItem .featureMark {
+  width: 17px;
+  height: 17px;
+  border-radius: 5px;
+}
+
+.editionItem .checkGlyph {
+  width: 11px;
+  height: 11px;
+}
+
+.addonName {
+  min-height: 2.6em;
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-semibold);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.addonPrice {
+  font-size: var(--d-fs-md);
+  font-weight: 800;
+}
+
+.tilePick {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  background: var(--surface-3);
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-bold);
+  transition: background-color var(--m-base) var(--m-ease),
+              color var(--m-base) var(--m-ease);
+}
+
+.edition:hover .tilePick,
+.addon:hover .tilePick {
+  background: oklch(1 0 0 / 0.14);
+}
+
+.editionOn .tilePick,
+.editionOn:hover .tilePick,
+.addonOn .tilePick,
+.addonOn:hover .tilePick {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.addonSummary {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -465,39 +732,28 @@
   padding: var(--d-gap-3) var(--d-gap-4);
   border-radius: var(--radius-md);
   background: var(--surface-2);
-  border: 1px solid transparent;
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-semibold);
   text-align: left;
-  transition: background-color var(--m-base) var(--m-ease),
-              border-color var(--duration-fast) var(--ease-out);
+  cursor: pointer;
+  transition: background-color var(--m-base) var(--m-ease);
 }
 
-.edition:hover,
-.addon:hover {
+.addonSummary:hover {
   background: var(--surface-3);
 }
 
-.editionOn,
-.addonOn {
-  background: var(--accent-surface);
-  border-color: var(--accent-soft);
-}
-
-.editionLabel,
-.addonName {
-  font-size: var(--d-fs-sm);
-  font-weight: var(--fw-semibold);
+.addonSummaryText {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.editionPrice,
-.addonPrice {
+.addonSummaryAction {
   flex: none;
-  font-size: var(--d-fs-sm);
   font-weight: var(--fw-bold);
-  color: var(--text-secondary);
+  color: var(--accent-text);
 }
 
 .buy {

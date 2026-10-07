@@ -149,7 +149,7 @@ export default function BannerInspector({banner, pages, count, pageId = null, on
                     />
                 </Field>
 
-                <Field label="Место на главной ПК" hint="Справа показываются первые два малых баннера">
+                <Field label="Место на главной ПК" hint="Малые баннеры листаются справа в квадратной карусели. Картинка нужна квадратная: по умолчанию берём обложку товара">
                     <Select options={BANNER_SLOTS} value={draft.slot} onChange={set('slot')}/>
                 </Field>
 

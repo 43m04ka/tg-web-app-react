@@ -7,7 +7,8 @@ import {useImageReady} from '../../ui/Cover';
 import OriginMark from './OriginMark';
 import style from './Storefront.module.scss';
 
-const AUTOPLAY_MS = 6000;
+const MAIN_AUTOPLAY_MS = 6000;
+const SIDE_AUTOPLAY_MS = 7500;
 
 const bannerPrices = (item) => {
     const percent = discountPercent(item.price, item.oldPrice);
@@ -21,19 +22,19 @@ const bannerPrices = (item) => {
     };
 };
 
-const imageStyle = (item, isReady, position) => (item.image ? {
-    backgroundImage: `url(${item.image})`,
+const imageStyle = (image, item, isReady, position) => (image ? {
+    backgroundImage: `url(${image})`,
     backgroundPosition: item.imageFit === 'coverTop' ? 'top center' : position,
     opacity: isReady ? 1 : 0
 } : {background: item.gradient || undefined});
 
-function SideCard({item, index, onOpen}) {
-    const isReady = useImageReady(item.image);
+function SideSlide({item, onOpen}) {
+    const isReady = useImageReady(item.cover);
     const {price, oldPrice, footnote} = bannerPrices(item);
 
     return (
-        <article className={style.sideCard} style={{'--i': index}} onClick={() => onOpen?.(item)}>
-            <span className={style.heroImage} style={imageStyle(item, isReady, 'center')} aria-hidden="true"/>
+        <article className={style.sideSlide} onClick={() => onOpen?.(item)}>
+            <span className={style.heroImage} style={imageStyle(item.cover, item, isReady, 'center')} aria-hidden="true"/>
 
             <div className={style.heroBody}>
                 <span className={style.heroTop}>
@@ -64,7 +65,7 @@ function MainSlide({item, onOpen, onButton}) {
             className={`${style.mainSlide} ${hasButtons ? '' : style.mainSlideClickable}`}
             onClick={hasButtons ? undefined : () => onOpen?.(item)}
         >
-            <span className={style.mainImage} style={imageStyle(item, isReady, 'center right')} aria-hidden="true"/>
+            <span className={style.mainImage} style={imageStyle(item.image, item, isReady, 'center right')} aria-hidden="true"/>
 
             <div className={style.mainBody}>
                 <span className={style.mainMeta}>
@@ -103,7 +104,7 @@ function MainSlide({item, onOpen, onButton}) {
     );
 }
 
-function MainCarousel({items, onOpen, onButton}) {
+function Carousel({items, interval, className, label, children}) {
     const trackRef = useRef(null);
     const pausedRef = useRef(false);
     const [active, setActive] = useState(0);
@@ -127,21 +128,19 @@ function MainCarousel({items, onOpen, onButton}) {
 
         const timer = setInterval(() => {
             if (!pausedRef.current && !document.hidden) goTo(active + 1);
-        }, AUTOPLAY_MS);
+        }, interval);
 
         return () => clearInterval(timer);
-    }, [active, count, goTo]);
+    }, [active, count, goTo, interval]);
 
     return (
         <div
-            className={style.mainViewport}
+            className={`${style.carousel} ${className}`}
             onMouseEnter={() => { pausedRef.current = true; }}
             onMouseLeave={() => { pausedRef.current = false; }}
         >
-            <div ref={trackRef} className={style.mainTrack} onScroll={measure}>
-                {items.map((item) => (
-                    <MainSlide key={item.id} item={item} onOpen={onOpen} onButton={onButton}/>
-                ))}
+            <div ref={trackRef} className={style.carouselTrack} onScroll={measure}>
+                {items.map((item) => children(item))}
             </div>
 
             {count > 1 ? (
@@ -149,7 +148,7 @@ function MainCarousel({items, onOpen, onButton}) {
                     <button
                         type="button"
                         className={`${style.heroArrow} ${style.heroArrowPrev}`}
-                        aria-label="Предыдущий баннер"
+                        aria-label={`${label}: предыдущий`}
                         onClick={() => goTo(active - 1)}
                     >
                         <ChevronIcon/>
@@ -158,7 +157,7 @@ function MainCarousel({items, onOpen, onButton}) {
                     <button
                         type="button"
                         className={`${style.heroArrow} ${style.heroArrowNext}`}
-                        aria-label="Следующий баннер"
+                        aria-label={`${label}: следующий`}
                         onClick={() => goTo(active + 1)}
                     >
                         <ChevronIcon/>
@@ -170,7 +169,7 @@ function MainCarousel({items, onOpen, onButton}) {
                                 key={item.id}
                                 type="button"
                                 className={`${style.mainDot} ${index === active ? style.mainDotOn : ''}`}
-                                aria-label={`Баннер ${index + 1}`}
+                                aria-label={`${label} ${index + 1}`}
                                 onClick={() => goTo(index)}
                             />
                         ))}
@@ -212,15 +211,17 @@ export default function StorefrontHero({items, onOpen}) {
     if (!main.length && !side.length) return null;
 
     return (
-        <div className={`${style.hero} ${side.length ? '' : style.heroSolo}`}>
-            {main.length ? <MainCarousel items={main} onOpen={onOpen} onButton={openButton}/> : null}
+        <div className={`${style.hero} ${side.length && main.length ? '' : style.heroSolo}`}>
+            {main.length ? (
+                <Carousel items={main} interval={MAIN_AUTOPLAY_MS} className="" label="Баннер">
+                    {(item) => <MainSlide key={item.id} item={item} onOpen={onOpen} onButton={openButton}/>}
+                </Carousel>
+            ) : null}
 
             {side.length ? (
-                <div className={style.side}>
-                    {side.map((item, index) => (
-                        <SideCard key={item.id} item={item} index={index + 1} onOpen={onOpen}/>
-                    ))}
-                </div>
+                <Carousel items={side} interval={SIDE_AUTOPLAY_MS} className={style.sideViewport} label="Малый баннер">
+                    {(item) => <SideSlide key={item.id} item={item} onOpen={onOpen}/>}
+                </Carousel>
             ) : null}
         </div>
     );

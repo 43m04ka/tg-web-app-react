@@ -156,6 +156,7 @@ export const heroItem = (banner, {originOf, productById, originByPage} = {}) => 
         product,
         url: text(data.url),
         slot: data.slot === 'side' ? 'side' : 'main',
+        cover: text(override.image) || text(data.cover) || text(product?.image) || image,
         gradient: text(data.gradient),
         buttons: (Array.isArray(data.buttons) ? data.buttons : [])
             .map((button) => ({label: text(button?.label), url: text(button?.url)}))
@@ -216,16 +217,16 @@ export const buildHero = ({
     return picked;
 };
 
-export const SIDE_BANNERS = 2;
+const FALLBACK_SIDE = 2;
 
 export const splitHero = (items) => {
     const list = items || [];
-    const side = list.filter((item) => item.slot === 'side').slice(0, SIDE_BANNERS);
+    const side = list.filter((item) => item.slot === 'side');
     const main = list.filter((item) => item.slot !== 'side');
 
-    if (side.length || main.length <= SIDE_BANNERS) return {main, side};
+    if (side.length || main.length <= FALLBACK_SIDE) return {main, side};
 
-    return {main: main.slice(0, -SIDE_BANNERS), side: main.slice(-SIDE_BANNERS)};
+    return {main: main.slice(0, -FALLBACK_SIDE), side: main.slice(-FALLBACK_SIDE)};
 };
 
 const PLATFORM_FILTERS = [
@@ -241,7 +242,6 @@ const REGION_FILTERS = [
 
 export const SHELF_SORTS = [
     {key: 'default', label: 'По умолчанию'},
-    {key: 'discount', label: 'Сначала скидка'},
     {key: 'priceAsc', label: 'Сначала дешевле'},
     {key: 'priceDesc', label: 'Сначала дороже'}
 ];
@@ -286,12 +286,6 @@ export const filterOffers = (offers, key) => {
     return filter ? list.filter(filter.test) : list;
 };
 
-const discountOf = (offer) => {
-    const price = Number(offer.price);
-    const before = Number(offer.oldPrice);
-    return Number.isFinite(price) && Number.isFinite(before) && before > price ? 1 - price / before : 0;
-};
-
 const priceValue = (offer) => {
     const price = Number(offer.price);
     return offer.price !== null && Number.isFinite(price) ? price : null;
@@ -309,7 +303,6 @@ const byPrice = (direction) => (a, b) => {
 export const sortOffers = (offers, sorting) => {
     const list = [...(offers || [])];
 
-    if (sorting === 'discount') return list.sort((a, b) => discountOf(b) - discountOf(a));
     if (sorting === 'priceAsc') return list.sort(byPrice(1));
     if (sorting === 'priceDesc') return list.sort(byPrice(-1));
     return list;

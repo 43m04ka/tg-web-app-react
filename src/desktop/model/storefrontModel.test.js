@@ -307,10 +307,10 @@ describe('buildHero', () => {
 describe('splitHero', () => {
     const item = (id, slot = 'main') => ({id, slot});
 
-    it('keeps explicit side banners on the right', () => {
+    it('keeps every explicit side banner for the square carousel', () => {
         const {main, side} = splitHero([item(1), item(2, 'side'), item(3), item(4, 'side'), item(5, 'side')]);
         expect(main.map((entry) => entry.id)).toEqual([1, 3]);
-        expect(side.map((entry) => entry.id)).toEqual([2, 4]);
+        expect(side.map((entry) => entry.id)).toEqual([2, 4, 5]);
     });
 
     it('borrows the last two banners when none is marked side', () => {
@@ -351,8 +351,7 @@ describe('shelf filters', () => {
         expect(filterOffers(offers, 'xbox').map((offer) => offer.key)).toEqual(['c']);
     });
 
-    it('sorts by discount and price', () => {
-        expect(sortOffers(offers, 'discount')[0].key).toBe('b');
+    it('sorts by price', () => {
         expect(sortOffers(offers, 'priceAsc').map((offer) => offer.key)).toEqual(['a', 'c', 'b']);
         expect(sortOffers(offers, 'priceDesc').map((offer) => offer.key)).toEqual(['b', 'c', 'a']);
     });

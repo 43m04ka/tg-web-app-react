@@ -108,7 +108,18 @@ export const descriptionLines = (description) =>
         .map((line) => line.trim())
         .filter(Boolean);
 
-export const subscriptionOffer = (product) => membershipPlaque(product);
+export const editionContents = (description) =>
+    descriptionLines(description)
+        .filter((line) => line.startsWith('•'))
+        .map((line) => line
+            .replace(/^•\s*/, '')
+            .replace(/,\s*в (который|которые|которых) .*$/i, '')
+            .replace(/[:*]+$/, '')
+            .trim())
+        .filter(Boolean)
+        .slice(0, 6);
+
+export const subscriptionOffer =(product) => membershipPlaque(product);
 
 export const isPurchasable = (product) =>
     Boolean(product?.onSale) && Number(product?.price) > 0;

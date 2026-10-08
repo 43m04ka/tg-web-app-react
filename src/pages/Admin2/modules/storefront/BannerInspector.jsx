@@ -15,6 +15,7 @@ import {keys} from '../../platform/resources';
 import {useMutation} from '../../platform/useMutation';
 import {createBanner, deleteBanner, searchBannerSources, updateBanner} from './api';
 import {
+    BANNER_DEVICES,
     BANNER_SLOTS,
     BANNER_TYPES,
     GRADIENT_PRESETS,
@@ -147,6 +148,10 @@ export default function BannerInspector({banner, pages, count, pageId = null, on
                             pageId: event.target.value === '' ? null : Number(event.target.value)
                         }))}
                     />
+                </Field>
+
+                <Field label="Версия сайта" hint="Например, широкая картинка для мобильной и квадратная для ПК — двумя баннерами">
+                    <Select options={BANNER_DEVICES} value={draft.device} onChange={set('device')}/>
                 </Field>
 
                 <Field label="Место на главной ПК" hint="Малые баннеры листаются справа в квадратной карусели. Картинка нужна квадратная: по умолчанию берём обложку товара">

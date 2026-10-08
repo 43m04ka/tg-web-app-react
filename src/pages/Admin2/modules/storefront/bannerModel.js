@@ -13,6 +13,14 @@ export const BANNER_SLOTS = [
     {value: 'side', title: 'Малый квадратный справа (карусель)'}
 ];
 
+export const BANNER_DEVICES = [
+    {value: 'all', title: 'ПК и мобильная версия'},
+    {value: 'pc', title: 'Только ПК'},
+    {value: 'mobile', title: 'Только мобильная версия'}
+];
+
+const DEVICE_VALUES = BANNER_DEVICES.map((item) => item.value);
+
 export const GRADIENT_PRESETS = [
     'linear-gradient(115deg, oklch(0.5 0.17 340), oklch(0.42 0.16 30))',
     'linear-gradient(115deg, oklch(0.48 0.15 260), oklch(0.38 0.12 210))',
@@ -46,6 +54,7 @@ export const emptyBanner = (pageId = null) => ({
     oldPrice: '',
     promoEndDate: '',
     slot: 'main',
+    device: 'all',
     button1Label: '',
     button1Url: '',
     button2Label: '',
@@ -75,6 +84,7 @@ export const toDraft = (banner) => {
         oldPrice: data.oldPrice === null || data.oldPrice === undefined ? '' : String(data.oldPrice),
         promoEndDate: text(data.promoEndDate),
         slot: data.slot === 'side' ? 'side' : 'main',
+        device: DEVICE_VALUES.includes(data.device) ? data.device : 'all',
         button1Label: text(data.buttons?.[0]?.label),
         button1Url: text(data.buttons?.[0]?.url),
         button2Label: text(data.buttons?.[1]?.label),
@@ -95,7 +105,7 @@ export const toPayload = (draft) => {
         isHidden: draft.isHidden ? 1 : 0
     };
 
-    const layout = {slot: draft.slot, buttons: draftButtons(draft)};
+    const layout = {slot: draft.slot, device: draft.device, buttons: draftButtons(draft)};
 
     if (draft.type === 'product') {
         return {

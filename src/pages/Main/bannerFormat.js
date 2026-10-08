@@ -35,4 +35,5 @@ export const formatPromoDate = (value) => {
 };
 
 export const selectPageBanners = (banners, pageId) =>
-    (banners || []).filter((banner) => banner.pageId === null || banner.pageId === pageId);
+    (banners || []).filter((banner) => (banner.pageId === null || banner.pageId === pageId)
+        && banner.data?.device !== 'pc');

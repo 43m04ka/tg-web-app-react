@@ -52,6 +52,11 @@ export default function BannerCarousel({items}) {
 
         hapticImpact('light');
 
+        if (url.startsWith('/')) {
+            navigate(url);
+            return;
+        }
+
         const tg = getTelegramObject();
         if (typeof tg.openLink === 'function') tg.openLink(url);
         else window.open(url, '_blank', 'noopener');

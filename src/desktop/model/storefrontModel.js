@@ -165,6 +165,8 @@ export const heroItem = (banner, {originOf, productById, originByPage} = {}) => 
     };
 };
 
+const HERO_TYPES = new Set(['product', 'custom']);
+
 export const buildHero = ({
     banners,
     mainPageProducts,
@@ -188,14 +190,17 @@ export const buildHero = ({
     const usedOffers = new Set();
 
     const candidates = [...banners]
-        .filter((banner) => banner.type === 'product' && allowed.has(banner.pageId))
+        .filter((banner) => HERO_TYPES.has(banner.type) && banner.data?.device !== 'mobile'
+            && allowed.has(banner.pageId))
         .sort((a, b) => (a.serialNumber ?? 0) - (b.serialNumber ?? 0));
 
     const take = (banner) => {
         const item = heroItem(banner, {originOf, productById, originByPage});
         if (!item) return;
 
-        const key = [familyOf(item.origin?.type), normalize(item.title)].join('|');
+        const key = item.productId === null
+            ? `banner|${item.id}`
+            : [familyOf(item.origin?.type), normalize(item.title)].join('|');
         if (usedOffers.has(key)) return;
 
         picked.push(item);

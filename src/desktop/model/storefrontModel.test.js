@@ -299,6 +299,26 @@ describe('buildHero', () => {
         })).toEqual([]);
     });
 
+    it('свои баннеры показываются, кроме тех, что только для мобильной', () => {
+        const custom = (id, data) => ({id, type: 'custom', pageId: 20, serialNumber: id, data});
+        const hero = buildHero({
+            banners: [
+                custom(1, {image: 'pc.jpg', url: '/catalog/ps_tur_deals', slot: 'side', device: 'pc'}),
+                custom(2, {image: 'pc2.jpg', url: '/catalog/ps_tur_deals', slot: 'side'}),
+                custom(3, {image: 'mobile.jpg', url: '/catalog/ps_tur_deals', device: 'mobile'})
+            ],
+            mainPageProducts,
+            originOf,
+            originByPage,
+            pageIds: [20],
+            scopeId: 20,
+            limit: Infinity
+        });
+
+        expect(hero.map((item) => item.id)).toEqual([1, 2]);
+        expect(hero[0]).toMatchObject({slot: 'side', url: '/catalog/ps_tur_deals', cover: 'pc.jpg'});
+    });
+
     it('без баннеров промо пустое', () => {
         expect(buildHero({banners: null})).toEqual([]);
     });

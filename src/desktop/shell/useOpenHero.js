@@ -11,7 +11,12 @@ export function useOpenHero() {
 
     return useCallback((item) => {
         if (item.productId === null || item.productId === undefined || item.productId === '') {
-            if (item.url) window.open(item.url, '_blank', 'noopener');
+            if (item.url.startsWith('/')) {
+                if (item.pageId !== null && item.pageId !== undefined) setPageId(item.pageId);
+                navigate(item.url);
+            } else if (item.url) {
+                window.open(item.url, '_blank', 'noopener');
+            }
             return;
         }
 

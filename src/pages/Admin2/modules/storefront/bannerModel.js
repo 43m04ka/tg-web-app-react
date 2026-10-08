@@ -55,6 +55,7 @@ export const emptyBanner = (pageId = null) => ({
     promoEndDate: '',
     slot: 'main',
     device: 'all',
+    shade: true,
     button1Label: '',
     button1Url: '',
     button2Label: '',
@@ -85,6 +86,7 @@ export const toDraft = (banner) => {
         promoEndDate: text(data.promoEndDate),
         slot: data.slot === 'side' ? 'side' : 'main',
         device: DEVICE_VALUES.includes(data.device) ? data.device : 'all',
+        shade: data.shade !== false,
         button1Label: text(data.buttons?.[0]?.label),
         button1Url: text(data.buttons?.[0]?.url),
         button2Label: text(data.buttons?.[1]?.label),
@@ -105,7 +107,7 @@ export const toPayload = (draft) => {
         isHidden: draft.isHidden ? 1 : 0
     };
 
-    const layout = {slot: draft.slot, device: draft.device, buttons: draftButtons(draft)};
+    const layout = {slot: draft.slot, device: draft.device, shade: Boolean(draft.shade), buttons: draftButtons(draft)};
 
     if (draft.type === 'product') {
         return {

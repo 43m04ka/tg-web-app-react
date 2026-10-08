@@ -213,7 +213,7 @@ export default function StorefrontScreen() {
                 subtitle={current ? typeName(current.type) : ''}
                 wide
                 scroll
-                actions={current && structural && group === 'body' ? (
+                actions={current && structural && !isMainPage(current) && group === 'body' ? (
                     <Button size="s" variant="primary" onClick={() => setEditing({kind: 'block', item: null})}>
                         Добавить блок
                     </Button>
@@ -224,6 +224,16 @@ export default function StorefrontScreen() {
                         title="Выберите страницу"
                         text="Слева — площадки и их страницы. Внутри страницы собирается то, что покупатель видит на главной."
                     />
+                ) : isMainPage(current) ? (
+                    <div className={style.bannerBar}>
+                        <Note tone="neutral">
+                            Главная сайта на компьютере настраивается в отдельном разделе «ПК-версия»:
+                            сводные каталоги, баннеры и предпросмотр.
+                        </Note>
+                        <Button size="s" variant="primary" onClick={() => navigate('/admin/desktop')}>
+                            Открыть ПК-версию
+                        </Button>
+                    </div>
                 ) : !structural ? (
                     <Note tone="neutral">
                         {PRICING_NOTES[current.type] || 'Эта витрина собирается не блоками.'}

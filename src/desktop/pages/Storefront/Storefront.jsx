@@ -15,7 +15,7 @@ import {useOfferPicker} from '../../shell/useOfferPicker';
 import {useGridColumns} from '../../shell/useGridColumns';
 import {originIndex, resolveBotType, storefrontList} from '../../model/desktopNav';
 import {storefrontConfig} from '../../model/storefrontConfig';
-import {buildHero, buildShelves, mergeOffers} from '../../model/storefrontModel';
+import {buildHero, buildShelves, buildSummaryShelves, mergeOffers} from '../../model/storefrontModel';
 import OfferCard from './OfferCard';
 import Shelf from './Shelf';
 import SubscriptionShelf, {groupShelves} from './SubscriptionShelf';
@@ -37,6 +37,7 @@ export default function Storefront() {
     const mainPageProducts = useStructureStore((store) => store.mainPageProducts);
     const banners = useStructureStore((store) => store.banners);
     const mainPageId = useStructureStore((store) => store.mainPageId);
+    const desktopShelves = useStructureStore((store) => store.desktopShelves);
 
     const setPageId = useSessionStore((store) => store.setPageId);
 
@@ -81,8 +82,11 @@ export default function Storefront() {
     );
 
     const shelves = useMemo(
-        () => buildShelves({structureBlocks, catalogs, mainPageProducts, originOf, pageIds, scopeId, mainPageId}),
-        [structureBlocks, catalogs, mainPageProducts, originOf, pageIds, scopeId, mainPageId]
+        () => (scopeId === null
+            ? buildSummaryShelves({desktopShelves, catalogs, mainPageProducts, originOf, pageIds})
+            : null)
+            ?? buildShelves({structureBlocks, catalogs, mainPageProducts, originOf, pageIds, scopeId, mainPageId}),
+        [desktopShelves, structureBlocks, catalogs, mainPageProducts, originOf, pageIds, scopeId, mainPageId]
     );
 
     const shelfEntries = useMemo(() => groupShelves(shelves), [shelves]);

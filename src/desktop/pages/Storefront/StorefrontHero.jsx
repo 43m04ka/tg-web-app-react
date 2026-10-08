@@ -36,7 +36,7 @@ function SideSlide({item, onOpen}) {
         <article className={style.sideSlide} onClick={() => onOpen?.(item)}>
             <span className={style.heroImage} style={imageStyle(item.cover, item, isReady, 'center')} aria-hidden="true"/>
 
-            <div className={style.heroBody}>
+            <div className={`${style.heroBody} ${item.shade ? '' : style.noShade}`}>
                 <span className={style.heroTop}>
                     {item.subtitle ? <span className={style.heroTag}>{item.subtitle}</span> : null}
                     <OriginMark origin={item.origin} className={style.heroOrigin}/>
@@ -67,7 +67,7 @@ function MainSlide({item, onOpen, onButton}) {
         >
             <span className={style.mainImage} style={imageStyle(item.image, item, isReady, 'center right')} aria-hidden="true"/>
 
-            <div className={style.mainBody}>
+            <div className={`${style.mainBody} ${item.shade ? '' : style.noShade}`}>
                 <span className={style.mainMeta}>
                     {item.subtitle ? <span className={style.mainTag}>{item.subtitle}</span> : null}
                     <OriginMark origin={item.origin} className={style.heroOrigin}/>

@@ -19,6 +19,7 @@ const normalize = (raw) => {
         mainPageProducts: pick(data, 'mainPageProducts'),
         banners: pick(data, 'banners'),
         popularProducts: pick(data, 'popularProducts'),
+        desktopShelves: pick(data, 'desktopShelves'),
         catalogs: pick(data, 'allCatalogs', 'catalogs'),
         maintenance: pick(data, 'maintenanceMode') || {enabled: false, until: null, sections: {}, domains: {}}
     };

@@ -34,6 +34,8 @@ export const keys = {
     pageBlocks: (pageId, group) => ['structure', 'blocks', pageId, group],
     previewCards: ['structure', 'preview-cards'],
     banners: ['structure', 'banners'],
+    desktopShelves: ['structure', 'desktop-shelves'],
+    allBlocks: ['structure', 'all-blocks'],
     startPages: ['structure', 'start-pages'],
     searchClues: ['structure', 'search-clues'],
     popular: ['structure', 'popular'],

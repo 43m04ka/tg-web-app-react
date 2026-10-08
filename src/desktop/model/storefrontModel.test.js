@@ -1,4 +1,4 @@
-import {buildHero, buildShelves, familyOf, filterOffers, mergeOffers, offerKey, shelfFilters, sortOffers, splitHero} from './storefrontModel';
+import {buildHero, buildShelves, buildSummaryShelves, familyOf, filterOffers, mergeOffers, offerKey, shelfFilters, sortOffers, splitHero} from './storefrontModel';
 import {createProductOrigin} from '../../shared/lib/productOrigin';
 
 const pages = [
@@ -374,5 +374,44 @@ describe('shelf filters', () => {
     it('sorts by price', () => {
         expect(sortOffers(offers, 'priceAsc').map((offer) => offer.key)).toEqual(['a', 'c', 'b']);
         expect(sortOffers(offers, 'priceDesc').map((offer) => offer.key)).toEqual(['b', 'c', 'a']);
+    });
+});
+
+
+describe('buildSummaryShelves', () => {
+    const products = [
+        product(1, 292, 'Stray', 900),
+        product(2, 293, 'Stray', 700),
+        product(3, 242, 'Halo', 1500),
+        product(4, 298, 'Hades', 500)
+    ];
+
+    const build = (desktopShelves, pageIds = [20, 35, 28]) => buildSummaryShelves({
+        desktopShelves, catalogs, mainPageProducts: products, originOf, pageIds
+    });
+
+    it('без сводных каталогов отдаёт null, чтобы сработала старая сборка', () => {
+        expect(build([])).toBeNull();
+        expect(build(null)).toBeNull();
+    });
+
+    it('объединяет товары отмеченных каталогов и склеивает одну игру разных регионов', () => {
+        const [shelf] = build([{id: 1, title: 'Популярное', catalogIds: [292, 293, 242], serialNumber: 0}]);
+
+        expect(shelf.title).toBe('Популярное');
+        expect(shelf.pages.map((page) => page.pageId)).toEqual([20, 35, 28]);
+        expect(shelf.offers).toHaveLength(2);
+        expect(shelf.offers.find((offer) => offer.product.name === 'Stray').price).toBe(700);
+    });
+
+    it('держит порядок, пропускает скрытые, пустые и чужие витрины', () => {
+        const shelves = build([
+            {id: 1, title: 'Скидки', catalogIds: [298], serialNumber: 2},
+            {id: 2, title: 'Популярное', catalogIds: [292], serialNumber: 1},
+            {id: 3, title: 'Скрытая', catalogIds: [292], serialNumber: 0, isHidden: 1},
+            {id: 4, title: 'Пустая', catalogIds: [999], serialNumber: 3}
+        ], [20]);
+
+        expect(shelves.map((shelf) => shelf.title)).toEqual(['Популярное', 'Скидки']);
     });
 });

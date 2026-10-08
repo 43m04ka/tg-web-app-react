@@ -126,6 +126,39 @@ export const buildShelves = ({
         .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title, 'ru'));
 };
 
+export const buildSummaryShelves = ({desktopShelves, catalogs, mainPageProducts, originOf, pageIds} = {}) => {
+    if (!Array.isArray(desktopShelves) || !desktopShelves.length || !Array.isArray(catalogs)) return null;
+
+    const catalogById = new Map(catalogs.map((catalog) => [Number(catalog.id), catalog]));
+    const storefronts = new Set(pageIds || []);
+
+    const productsByCatalog = new Map();
+    (mainPageProducts || []).forEach((product) => {
+        const list = productsByCatalog.get(product.catalogId);
+        if (list) list.push(product);
+        else productsByCatalog.set(product.catalogId, [product]);
+    });
+
+    return desktopShelves
+        .filter((shelf) => !shelf.isHidden && String(shelf.title || '').trim())
+        .sort((a, b) => (a.serialNumber ?? 0) - (b.serialNumber ?? 0) || a.id - b.id)
+        .map((shelf, index) => {
+            const attached = (shelf.catalogIds || [])
+                .map((id) => catalogById.get(Number(id)))
+                .filter((catalog) => catalog && storefronts.has(catalog.structurePageId));
+
+            return {
+                key: `summary:${shelf.id}`,
+                title: String(shelf.title).trim(),
+                icon: null,
+                order: index,
+                pages: attached.map((catalog) => ({pageId: catalog.structurePageId, path: catalog.path, type: 'ordinary'})),
+                offers: mergeOffers(attached.flatMap((catalog) => productsByCatalog.get(catalog.id) || []), originOf)
+            };
+        })
+        .filter((shelf) => shelf.offers.length > 0);
+};
+
 const text = (value) => String(value ?? '').trim();
 
 export const heroItem = (banner, {originOf, productById, originByPage} = {}) => {
@@ -158,6 +191,7 @@ export const heroItem = (banner, {originOf, productById, originByPage} = {}) => 
         slot: data.slot === 'side' ? 'side' : 'main',
         cover: text(override.image) || text(data.cover) || text(product?.image) || image,
         gradient: text(data.gradient),
+        shade: data.shade !== false,
         buttons: (Array.isArray(data.buttons) ? data.buttons : [])
             .map((button) => ({label: text(button?.label), url: text(button?.url)}))
             .filter((button) => button.label)

@@ -101,7 +101,7 @@ export default function BannerCarousel({items}) {
                             style={slideBackground(data)}
                             onClick={isClickable ? () => openBanner(banner) : undefined}
                         >
-                            <div className={style.scrim} aria-hidden="true"/>
+                            {data.shade === false ? null : <div className={style.scrim} aria-hidden="true"/>}
 
                             <div className={style.top}>
                                 {data.subtitle ? <span className={style.kicker}>{data.subtitle}</span> : null}

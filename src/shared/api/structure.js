@@ -18,6 +18,9 @@ export const fetchMainPageProducts = (signal) =>
 export const fetchBanners = (signal) =>
     safeRequestResult('/api/structure/banners', {signal, retries: 2});
 
+export const fetchDesktopShelves = (signal) =>
+    safeRequestResult('/api/structure/desktopShelves', {signal, retries: 2});
+
 export const fetchPopularProducts = (signal) =>
     safeRequestResult('/api/structure/popularProducts', {signal, retries: 2}).then(bySerialNumber);
 

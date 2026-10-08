@@ -159,6 +159,12 @@ export default function BannerInspector({banner, pages, count, pageId = null, on
                 </Field>
 
                 <Toggle
+                    checked={draft.shade}
+                    label="Затемнение под текстом"
+                    onChange={(value) => setDraft((prev) => ({...prev, shade: value}))}
+                />
+
+                <Toggle
                     checked={draft.isHidden}
                     label="Скрыть из карусели"
                     onChange={(value) => setDraft((prev) => ({...prev, isHidden: value}))}

@@ -1,0 +1,211 @@
+.layout {
+    position: relative;
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+}
+
+.editor {
+    display: flex;
+    gap: 12px;
+    width: calc(80% - 12px);
+    min-width: 0;
+    min-height: 0;
+}
+
+.intro {
+    margin-top: 10px;
+}
+
+.rows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+}
+
+.rowOrder {
+    flex: none;
+    width: 22px;
+    color: var(--a2-text-faint);
+    font-family: var(--a2-font-mono);
+    font-size: var(--a2-size-xs);
+    text-align: center;
+}
+
+.rowBody {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.rowTitle {
+    overflow: hidden;
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rowMeta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    min-width: 0;
+}
+
+.rowTools {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 4px;
+}
+
+.catalogGroups {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.catalogGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.catalogPage {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.catalog {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-s);
+    background: var(--a2-card);
+    cursor: pointer;
+}
+
+.catalog:hover {
+    border-color: var(--a2-border-strong);
+}
+
+.catalogOn {
+    border-color: var(--a2-accent);
+    background: var(--a2-accent-soft);
+}
+
+.catalogName {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    color: var(--a2-text);
+    font-size: var(--a2-size-s);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.catalogPath {
+    flex: none;
+    color: var(--a2-text-faint);
+    font-family: var(--a2-font-mono);
+    font-size: var(--a2-size-xs);
+}
+
+.preview {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-plane);
+    overflow: hidden;
+    transition: width var(--a2-motion-slow) var(--a2-ease), box-shadow var(--a2-motion-slow) var(--a2-ease);
+}
+
+.preview:hover {
+    width: 80%;
+    box-shadow: var(--a2-shadow-raised);
+}
+
+.previewHead {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--a2-border);
+}
+
+.previewTitle {
+    overflow: hidden;
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.previewTools {
+    display: flex;
+    flex: none;
+    gap: 4px;
+}
+
+.previewButton {
+    padding: 4px 8px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-s);
+    background: var(--a2-card);
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-xs);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.previewButton:hover {
+    border-color: var(--a2-accent);
+    color: var(--a2-accent);
+}
+
+.previewBox {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    background: #0b0d12;
+}
+
+.previewFrame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 0;
+    transform-origin: top left;
+}

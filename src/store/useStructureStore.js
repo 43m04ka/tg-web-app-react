@@ -1,8 +1,10 @@
 import {create} from 'zustand';
 import {INITIAL_DATA, hasItems} from '../shared/lib/initialData';
+import {PREVIEW_MESSAGE, PREVIEW_READY} from '../shared/lib/desktopPreview';
 import {
     fetchBanners,
     fetchCatalogs,
+    fetchDesktopShelves,
     fetchMainPageProducts,
     fetchPages,
     fetchPopularProducts,
@@ -24,8 +26,11 @@ const SOURCES = [
     {key: 'structureBlocks', initial: 'structureBlocks', load: fetchStructureBlocks},
     {key: 'mainPageProducts', initial: 'mainPageProducts', load: fetchMainPageProducts},
     {key: 'popularProducts', initial: 'popularProducts', load: fetchPopularProducts, awaited: true, warm: (items) => warmImages(items.map(({product}) => product?.image))},
-    {key: 'catalogs', initial: 'catalogs', load: fetchCatalogs}
+    {key: 'catalogs', initial: 'catalogs', load: fetchCatalogs},
+    {key: 'desktopShelves', initial: 'desktopShelves', load: fetchDesktopShelves}
 ];
+
+const previewOverride = {};
 
 const CRITICAL_COUNT = SOURCES.filter((source) => source.critical).length;
 const WARM_IMAGE_LIMIT = 12;
@@ -87,6 +92,7 @@ async function runLoad(set, get) {
 
     const fetchOne = async ({key, load, transform, derive}) => {
         const result = await load();
+        if (key in previewOverride) return;
         if (hasItems(result)) set({[key]: transform ? transform(result) : result, ...(derive ? derive(result) : null)});
     };
 
@@ -107,6 +113,23 @@ async function runLoad(set, get) {
     });
 
     await background;
+}
+
+if (typeof window !== 'undefined' && window.parent !== window
+    && new URLSearchParams(window.location.search).get('preview') === 'desktop') {
+    window.addEventListener('message', (event) => {
+        if (event.origin !== window.location.origin || event.data?.type !== PREVIEW_MESSAGE) return;
+
+        const data = {};
+        ['desktopShelves', 'banners'].forEach((key) => {
+            if (Array.isArray(event.data[key])) data[key] = event.data[key];
+        });
+
+        Object.assign(previewOverride, data);
+        useStructureStore.setState(data);
+    });
+
+    window.parent.postMessage({type: PREVIEW_READY}, window.location.origin);
 }
 
 export const selectIsStructureReady = (state) => state.status === 'ready' || state.status === 'error';

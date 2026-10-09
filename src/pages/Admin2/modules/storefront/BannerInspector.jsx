@@ -15,7 +15,6 @@ import {keys} from '../../platform/resources';
 import {useMutation} from '../../platform/useMutation';
 import {createBanner, deleteBanner, searchBannerSources, updateBanner} from './api';
 import {
-    BANNER_DEVICES,
     BANNER_SLOTS,
     BANNER_TYPES,
     GRADIENT_PRESETS,
@@ -29,11 +28,11 @@ import style from './StorefrontScreen.module.scss';
 
 const SEARCH_DELAY = 350;
 
-export default function BannerInspector({banner, pages, count, pageId = null, slot = 'main', onClose}) {
+export default function BannerInspector({banner, pages, count, pageId = null, slot = 'main', device, scopeLocked = false, onClose}) {
     const isNew = !banner;
 
     const [draft, setDraft] = useState(() => (isNew
-        ? {...toDraft(null), serialNumber: count, pageId, slot}
+        ? {...toDraft(null), serialNumber: count, pageId, slot, device}
         : toDraft(banner)));
 
     const [query, setQuery] = useState('');
@@ -102,11 +101,13 @@ export default function BannerInspector({banner, pages, count, pageId = null, sl
 
     const scopeOptions = useMemo(() => ([
         {value: '', title: 'Все витрины'},
-        ...(pages || []).map((page) => ({value: String(page.id), title: page.name || `Витрина №${page.id}`}))
+        ...(pages || [])
+            .filter((page) => page.type !== 'main')
+            .map((page) => ({value: String(page.id), title: page.name || `Витрина №${page.id}`}))
     ]), [pages]);
 
     const isProduct = draft.type === 'product';
-    const isMainScope = (pages || []).some((page) => page.id === draft.pageId && page.type === 'main');
+    const isPc = device === 'pc';
     const live = isProduct ? (banner?.data || {}) : null;
 
     return (
@@ -114,7 +115,7 @@ export default function BannerInspector({banner, pages, count, pageId = null, sl
             open
             width="s"
             title={isNew ? 'Новый баннер' : bannerTitle(banner)}
-            subtitle={isProduct ? 'Товар' : 'Произвольный'}
+            subtitle={`${isProduct ? 'Товар' : 'Произвольный'} · ${isPc ? 'ПК-версия' : 'мобильная версия'}`}
             dirty={dirty}
             onClose={onClose}
             footer={(
@@ -122,7 +123,7 @@ export default function BannerInspector({banner, pages, count, pageId = null, sl
                     <Button
                         variant="primary"
                         disabled={save.loading || Boolean(problem) || !dirty}
-                        onClick={() => save.run(toPayload(isMainScope ? {...draft, device: 'all'} : draft))}
+                        onClick={() => save.run(toPayload({...draft, device}))}
                     >
                         {save.loading ? 'Сохраняем…' : 'Сохранить'}
                     </Button>
@@ -140,26 +141,24 @@ export default function BannerInspector({banner, pages, count, pageId = null, sl
                     <Select options={BANNER_TYPES} value={draft.type} onChange={set('type')}/>
                 </Field>
 
-                <Field label="Где показывать" hint="«Все витрины» — баннер попадёт на каждую площадку">
-                    <Select
-                        options={scopeOptions}
-                        value={draft.pageId === null ? '' : String(draft.pageId)}
-                        onChange={(event) => setDraft((prev) => ({
-                            ...prev,
-                            pageId: event.target.value === '' ? null : Number(event.target.value)
-                        }))}
-                    />
-                </Field>
-
-                {isMainScope ? null : (
-                    <Field label="Версия сайта" hint="Например, широкая картинка для мобильной и квадратная для ПК — двумя баннерами">
-                        <Select options={BANNER_DEVICES} value={draft.device} onChange={set('device')}/>
+                {scopeLocked ? null : (
+                    <Field label="Где показывать" hint="«Все витрины» — баннер попадёт на каждую площадку">
+                        <Select
+                            options={scopeOptions}
+                            value={draft.pageId === null ? '' : String(draft.pageId)}
+                            onChange={(event) => setDraft((prev) => ({
+                                ...prev,
+                                pageId: event.target.value === '' ? null : Number(event.target.value)
+                            }))}
+                        />
                     </Field>
                 )}
 
-                <Field label="Место на главной ПК" hint="Малые баннеры листаются справа в квадратной карусели. Картинка нужна квадратная: по умолчанию берём обложку товара">
-                    <Select options={BANNER_SLOTS} value={draft.slot} onChange={set('slot')}/>
-                </Field>
+                {isPc ? (
+                    <Field label="Место на ПК" hint="Малые баннеры листаются справа в квадратной карусели. Картинка нужна квадратная: по умолчанию берём обложку товара">
+                        <Select options={BANNER_SLOTS} value={draft.slot} onChange={set('slot')}/>
+                    </Field>
+                ) : null}
 
                 <Toggle
                     checked={draft.shade}
@@ -248,7 +247,7 @@ export default function BannerInspector({banner, pages, count, pageId = null, sl
                 </Field>
             </InspectorSection>
 
-            {draft.slot === 'main' ? (
+            {isPc && draft.slot === 'main' ? (
                 <InspectorSection
                     title="Кнопки"
                     note={isProduct

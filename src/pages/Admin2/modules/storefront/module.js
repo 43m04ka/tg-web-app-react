@@ -4,7 +4,7 @@ const screen = lazy(() => import('./StorefrontScreen'));
 
 export default {
     id: 'storefront',
-    title: 'Витрина',
+    title: 'Витрины',
     group: 'storefront',
     icon: 'storefront',
     order: 55,
@@ -15,7 +15,7 @@ export default {
     commands: [
         {
             id: 'storefront.pages',
-            title: 'Витрина: страницы, блоки и баннеры',
+            title: 'Витрины: каталоги и баннеры мобильной и ПК-версии',
             icon: 'storefront',
             run: ({go}) => go('/storefront'),
         },

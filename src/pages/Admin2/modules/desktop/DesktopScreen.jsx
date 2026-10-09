@@ -17,7 +17,7 @@ import ShelfInspector from './ShelfInspector';
 import style from './DesktopScreen.module.scss';
 
 export default function DesktopScreen() {
-    usePageHeader('ПК-версия');
+    usePageHeader('Главная (ПК)');
 
     const [tab, setTab] = useState('shelves');
     const [editing, setEditing] = useState(null);
@@ -215,6 +215,8 @@ export default function DesktopScreen() {
                             count={allBanners.length}
                             pageId={mainPage?.id ?? null}
                             slot={bannerEdit.slot}
+                            device="pc"
+                            scopeLocked
                             onClose={() => setBannerEdit(null)}
                         />
                     ) : null}

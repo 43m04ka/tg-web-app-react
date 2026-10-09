@@ -380,7 +380,7 @@
 
 .startGrid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
     gap: 4px;
 }
 
@@ -539,7 +539,7 @@
 
 .bannerColumns {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
     align-items: start;
     gap: 16px;
     margin-top: 16px;
@@ -581,4 +581,8 @@
     color: var(--a2-text-faint);
     font-size: var(--a2-size-s);
     text-align: center;
+}
+
+.deviceTabs {
+    margin-top: 10px;
 }

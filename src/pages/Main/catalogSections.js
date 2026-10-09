@@ -22,7 +22,7 @@ export const buildSections = ({structureBlocks, catalogs, mainPageProducts, page
     });
 
     return structureBlocks
-        .filter((block) => block.structurePageId === pageId && block.group === 'body')
+        .filter((block) => block.structurePageId === pageId)
         .sort((a, b) => (a.serialNumber ?? 0) - (b.serialNumber ?? 0))
         .map((block) => {
             if (!isCatalogBlock(block)) return {block, products: []};

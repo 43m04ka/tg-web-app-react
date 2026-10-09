@@ -4,7 +4,7 @@ const screen = lazy(() => import('./DesktopScreen'));
 
 export default {
     id: 'desktop',
-    title: 'ПК-версия',
+    title: 'Главная (ПК)',
     group: 'storefront',
     icon: 'desktop',
     order: 54,
@@ -14,7 +14,7 @@ export default {
     commands: [
         {
             id: 'desktop.storefront',
-            title: 'ПК-версия: главная, сводные каталоги и баннеры',
+            title: 'Главная (ПК): сводные каталоги и баннеры',
             icon: 'desktop',
             run: ({go}) => go('/desktop'),
         },

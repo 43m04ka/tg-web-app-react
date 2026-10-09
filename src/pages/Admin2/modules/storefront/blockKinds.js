@@ -7,24 +7,7 @@ export const LINK_TARGETS = [
 
 export const linkTarget = (key) => LINK_TARGETS.find((target) => target.key === key) || LINK_TARGETS[0];
 
-export const HEAD_KINDS = [
-    {
-        key: 'static',
-        label: 'Картинка',
-        hint: 'Просто изображение в карусели, без перехода',
-        type: 'slider-non-clickable',
-        fields: {image: true, link: false, name: false, catalogPath: false, color: false, icon: false, deleteDate: false}
-    },
-    {
-        key: 'link',
-        label: 'Картинка со ссылкой',
-        hint: 'Изображение, по клику ведёт на товар, каталог или внешний адрес',
-        type: 'slider-clickable',
-        fields: {image: true, link: true, name: false, catalogPath: false, color: false, icon: false, deleteDate: false}
-    }
-];
-
-export const BODY_KINDS = [
+export const BLOCK_KINDS = [
     {
         key: 'ordinary',
         label: 'Каталог',
@@ -62,24 +45,15 @@ export const BODY_KINDS = [
     }
 ];
 
-export const GROUPS = [
-    {value: 'head', title: 'Карусель'},
-    {value: 'body', title: 'Содержимое'}
-];
+export const kindByKey = (key) => BLOCK_KINDS.find((kind) => kind.key === key) || BLOCK_KINDS[0];
 
-export const kindsFor = (group) => (group === 'head' ? HEAD_KINDS : BODY_KINDS);
-
-export const kindByKey = (group, key) => kindsFor(group).find((kind) => kind.key === key) || kindsFor(group)[0];
-
-export const detectKind = (item, group) => {
+export const detectKind = (item) => {
     const type = String(item?.type || '');
 
-    if (group === 'head') return type === 'slider-non-clickable' ? HEAD_KINDS[0] : HEAD_KINDS[1];
+    if (type === 'banner-non-clickable') return kindByKey('banner-static');
+    if (type === 'banner-clickable') return kindByKey('banner-link');
 
-    if (type === 'banner-non-clickable') return kindByKey('body', 'banner-static');
-    if (type === 'banner-clickable') return kindByKey('body', 'banner-link');
-
-    return BODY_KINDS.find((kind) => kind.type === type) || BODY_KINDS[0];
+    return BLOCK_KINDS.find((kind) => kind.type === type) || BLOCK_KINDS[0];
 };
 
 export const detectLink = (path) => {
@@ -96,15 +70,15 @@ export const detectLink = (path) => {
         : {target: 'external', value};
 };
 
-export const describeBlock = (item, group) => {
-    const kind = detectKind(item, group);
+export const describeBlock = (item) => {
+    const kind = detectKind(item);
     if (!kind.fields.link) return kind.label;
 
     return `${kind.label} · ${linkTarget(detectLink(item?.path).target).label}`;
 };
 
-export const describeTarget = (item, group) => {
-    const kind = detectKind(item, group);
+export const describeTarget = (item) => {
+    const kind = detectKind(item);
 
     if (kind.fields.link) {
         const {target, value} = detectLink(item?.path);
@@ -116,12 +90,11 @@ export const describeTarget = (item, group) => {
     return '—';
 };
 
-export const toBlockPayload = (values, {group, structurePageId}) => {
-    const kind = kindByKey(group, values.kind);
+export const toBlockPayload = (values, {structurePageId} = {}) => {
+    const kind = kindByKey(values.kind);
     const {fields} = kind;
 
     const payload = {
-        group,
         type: kind.type,
         serialNumber: Number(values.serialNumber) || 0,
         isRoundedBorderTop: values.isRoundedBorderTop ? 1 : 0,
@@ -144,8 +117,8 @@ export const toBlockPayload = (values, {group, structurePageId}) => {
     return payload;
 };
 
-export const toFormValues = (item, group) => {
-    const kind = detectKind(item || {}, group);
+export const toFormValues = (item) => {
+    const kind = detectKind(item || {});
     const link = detectLink(item?.path);
 
     return {
@@ -164,8 +137,8 @@ export const toFormValues = (item, group) => {
     };
 };
 
-export const blockProblem = (values, group) => {
-    const kind = kindByKey(group, values.kind);
+export const blockProblem = (values) => {
+    const kind = kindByKey(values.kind);
     const {fields} = kind;
 
     if (fields.name && !String(values.name || '').trim()) return 'Без названия полка выйдет безымянной';

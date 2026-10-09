@@ -14,9 +14,9 @@ const catalogs = [
 ];
 
 const blocks = [
-    {structurePageId: 20, group: 'body', type: 'ordinary', path: '/catalog/ps_tur_popular', name: 'Популярное', serialNumber: 0},
-    {structurePageId: 35, group: 'body', type: 'ordinary-choice', path: '/choice-catalog/ps_ind_popular', name: 'Хиты', serialNumber: 0},
-    {structurePageId: 38, group: 'body', type: 'ordinary', path: 'ps_tur_popular', name: 'Не отсюда', serialNumber: 0}
+    {structurePageId: 20, type: 'ordinary', path: '/catalog/ps_tur_popular', name: 'Популярное', serialNumber: 0},
+    {structurePageId: 35, type: 'ordinary-choice', path: '/choice-catalog/ps_ind_popular', name: 'Хиты', serialNumber: 0},
+    {structurePageId: 38, type: 'ordinary', path: 'ps_tur_popular', name: 'Не отсюда', serialNumber: 0}
 ];
 
 describe('catalogOptions', () => {

@@ -1,20 +1,21 @@
 import {lazy} from 'react';
 
-const start = lazy(() => import('../storefront/StartPagesScreen'));
+const start = lazy(() => import('../storefront/MobileMainScreen'));
 
 export default {
     id: 'start',
-    title: 'Стартовый экран',
+    title: 'Главная (МОБ)',
     group: 'storefront',
     icon: 'storefront',
-    order: 56,
+    order: 54.5,
     routes: [
         {path: '/start', element: start},
+        {path: '/popular', element: start},
     ],
     commands: [
         {
             id: 'start.pages',
-            title: 'Стартовый экран: страницы',
+            title: 'Главная (МОБ): стартовый экран и популярное',
             icon: 'storefront',
             run: ({go}) => go('/start'),
         },

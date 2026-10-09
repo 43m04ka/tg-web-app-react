@@ -13,13 +13,12 @@ import {
 
 describe('detectKind', () => {
     it('узнаёт вид по типу из базы', () => {
-        expect(detectKind({type: 'banner-clickable'}, 'body').key).toBe('banner-link');
-        expect(detectKind({type: 'discount'}, 'body').key).toBe('discount');
-        expect(detectKind({type: 'slider-non-clickable'}, 'head').key).toBe('static');
+        expect(detectKind({type: 'banner-clickable'}).key).toBe('banner-link');
+        expect(detectKind({type: 'discount'}).key).toBe('discount');
     });
 
     it('падает на обычный каталог для незнакомого типа', () => {
-        expect(detectKind({type: 'невесть что'}, 'body').key).toBe('ordinary');
+        expect(detectKind({type: 'невесть что'}).key).toBe('ordinary');
     });
 });
 
@@ -39,13 +38,13 @@ describe('detectLink', () => {
 describe('toBlockPayload', () => {
     it('обнуляет поля, которых у нового вида нет', () => {
         const values = {
-            ...toFormValues({type: 'banner-clickable', url: 'u', path: '/card/1'}, 'body'),
+            ...toFormValues({type: 'banner-clickable', url: 'u', path: '/card/1'}),
             kind: 'ordinary',
             name: 'Полка',
             path: 'ps_games'
         };
 
-        const payload = toBlockPayload(values, {group: 'body', structurePageId: 3});
+        const payload = toBlockPayload(values, {structurePageId: 3});
 
         expect(payload.url).toBeNull();
         expect(payload.path).toBe('ps_games');
@@ -54,8 +53,7 @@ describe('toBlockPayload', () => {
 
     it('собирает path кликабельного блока из префикса', () => {
         const payload = toBlockPayload(
-            {kind: 'banner-link', linkTarget: 'card', linkValue: '42', url: 'pic', serialNumber: 1},
-            {group: 'body'}
+            {kind: 'banner-link', linkTarget: 'card', linkValue: '42', url: 'pic', serialNumber: 1}
         );
 
         expect(payload.path).toBe('/card/42');
@@ -64,8 +62,7 @@ describe('toBlockPayload', () => {
 
     it('внешнюю ссылку кладёт без префикса', () => {
         const payload = toBlockPayload(
-            {kind: 'banner-link', linkTarget: 'external', linkValue: 'https://x.ru', url: 'pic'},
-            {group: 'body'}
+            {kind: 'banner-link', linkTarget: 'external', linkValue: 'https://x.ru', url: 'pic'}
         );
 
         expect(payload.path).toBe('https://x.ru');
@@ -74,7 +71,6 @@ describe('toBlockPayload', () => {
     it('переживает обход туда и обратно', () => {
         const stored = {
             type: 'discount',
-            group: 'body',
             name: 'Скидки',
             path: 'sale',
             serialNumber: 2,
@@ -85,7 +81,7 @@ describe('toBlockPayload', () => {
             isRoundedBorderBottom: 0
         };
 
-        const back = toBlockPayload(toFormValues(stored, 'body'), {group: 'body'});
+        const back = toBlockPayload(toFormValues(stored));
 
         expect(back).toMatchObject({
             type: 'discount',
@@ -100,20 +96,20 @@ describe('toBlockPayload', () => {
 
 describe('blockProblem', () => {
     it('требует обязательные поля вида', () => {
-        expect(blockProblem({kind: 'ordinary', name: '', path: 'x'}, 'body')).toMatch(/названия/);
-        expect(blockProblem({kind: 'ordinary', name: 'A', path: ''}, 'body')).toMatch(/путь/i);
-        expect(blockProblem({kind: 'banner-static', url: ''}, 'body')).toMatch(/картинка/i);
+        expect(blockProblem({kind: 'ordinary', name: '', path: 'x'})).toMatch(/названия/);
+        expect(blockProblem({kind: 'ordinary', name: 'A', path: ''})).toMatch(/путь/i);
+        expect(blockProblem({kind: 'banner-static', url: ''})).toMatch(/картинка/i);
     });
 
     it('пускает только цифры в ID карточки', () => {
-        expect(blockProblem({kind: 'banner-link', url: 'p', linkTarget: 'card', linkValue: 'abc'}, 'body'))
+        expect(blockProblem({kind: 'banner-link', url: 'p', linkTarget: 'card', linkValue: 'abc'}))
             .toMatch(/цифры/);
-        expect(blockProblem({kind: 'banner-link', url: 'p', linkTarget: 'card', linkValue: '42'}, 'body'))
+        expect(blockProblem({kind: 'banner-link', url: 'p', linkTarget: 'card', linkValue: '42'}))
             .toBeNull();
     });
 
     it('требует схему у внешнего адреса', () => {
-        expect(blockProblem({kind: 'banner-link', url: 'p', linkTarget: 'external', linkValue: 'x.ru'}, 'body'))
+        expect(blockProblem({kind: 'banner-link', url: 'p', linkTarget: 'external', linkValue: 'x.ru'}))
             .toMatch(/http/);
     });
 });
@@ -145,9 +141,9 @@ describe('порядок блоков', () => {
 
 describe('подписи', () => {
     it('описывает блок и его цель', () => {
-        expect(describeBlock({type: 'ordinary'}, 'body')).toBe('Каталог');
-        expect(describeBlock({type: 'banner-clickable', path: '/card/1'}, 'body')).toMatch(/Карточка товара/);
-        expect(describeTarget({type: 'banner-clickable', path: '/card/1'}, 'body')).toMatch(/1$/);
-        expect(describeTarget({type: 'banner-non-clickable'}, 'body')).toBe('—');
+        expect(describeBlock({type: 'ordinary'})).toBe('Каталог');
+        expect(describeBlock({type: 'banner-clickable', path: '/card/1'})).toMatch(/Карточка товара/);
+        expect(describeTarget({type: 'banner-clickable', path: '/card/1'})).toMatch(/1$/);
+        expect(describeTarget({type: 'banner-non-clickable'})).toBe('—');
     });
 });

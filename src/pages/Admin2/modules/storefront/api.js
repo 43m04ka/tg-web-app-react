@@ -8,7 +8,7 @@ export const updatePage = (pageId, updateData) => httpPost('/updatePageData', {p
 
 export const deletePage = (id) => httpPost('/deletePage', {id});
 
-export const fetchBlocks = (pageId, group) => httpPost('/getStructureCatalogList', {pageId, group});
+export const fetchBlocks = (pageId) => httpPost('/getStructureCatalogList', {pageId});
 
 export const createBlock = (catalogData) => httpPost('/createStructureCatalog', {catalogData});
 

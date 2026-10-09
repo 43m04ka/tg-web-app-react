@@ -100,12 +100,11 @@ describe('mergeOffers', () => {
 
 describe('buildShelves', () => {
     const structureBlocks = [
-        {id: 1, group: 'body', type: 'ordinary', name: 'Популярное', path: 'ps_tur_popular', structurePageId: 20, serialNumber: 2},
-        {id: 2, group: 'body', type: 'ordinary', name: 'Популярное', path: '/catalog/ps_ind_popular', structurePageId: 35, serialNumber: 3},
-        {id: 3, group: 'body', type: 'ordinary', name: 'Популярное', path: 'xbox_us_popular', structurePageId: 28, serialNumber: 1},
-        {id: 4, group: 'body', type: 'ordinary', name: 'Скидки недели', path: 'ps_tur_deals', structurePageId: 20, serialNumber: 5},
-        {id: 5, group: 'body', type: 'banner-clickable', name: '', path: null, structurePageId: 20, serialNumber: 0},
-        {id: 6, group: 'head', type: 'ordinary', name: 'Шапка', path: 'ps_tur_popular', structurePageId: 20, serialNumber: 0}
+        {id: 1, type: 'ordinary', name: 'Популярное', path: 'ps_tur_popular', structurePageId: 20, serialNumber: 2},
+        {id: 2, type: 'ordinary', name: 'Популярное', path: '/catalog/ps_ind_popular', structurePageId: 35, serialNumber: 3},
+        {id: 3, type: 'ordinary', name: 'Популярное', path: 'xbox_us_popular', structurePageId: 28, serialNumber: 1},
+        {id: 4, type: 'ordinary', name: 'Скидки недели', path: 'ps_tur_deals', structurePageId: 20, serialNumber: 5},
+        {id: 5, type: 'banner-clickable', name: '', path: null, structurePageId: 20, serialNumber: 0}
     ];
 
     const mainPageProducts = [
@@ -128,7 +127,7 @@ describe('buildShelves', () => {
         const shelves = buildShelves({
             structureBlocks: [
                 ...structureBlocks,
-                {id: 9, group: 'body', type: 'ordinary', name: 'Хиты главной', path: 'ps_tur_deals', structurePageId: 99, serialNumber: 1}
+                {id: 9, type: 'ordinary', name: 'Хиты главной', path: 'ps_tur_deals', structurePageId: 99, serialNumber: 1}
             ],
             catalogs,
             mainPageProducts,

@@ -78,7 +78,7 @@ export const buildShelves = ({
     const storefronts = new Set(pageIds || []);
 
     const useMain = scopeId === null && mainPageId !== null && structureBlocks.some((block) =>
-        block.structurePageId === mainPageId && block.group === 'body' && isCatalogBlock(block)
+        block.structurePageId === mainPageId && isCatalogBlock(block)
         && storefronts.has(catalogByPath.get(cleanPath(block.path))?.structurePageId));
 
     const allowed = new Set(useMain ? [mainPageId] : (scopeId === null ? (pageIds || []) : [scopeId]));
@@ -93,7 +93,7 @@ export const buildShelves = ({
     const groups = new Map();
 
     structureBlocks
-        .filter((block) => block.group === 'body' && isCatalogBlock(block))
+        .filter(isCatalogBlock)
         .filter((block) => allowed.has(block.structurePageId))
         .forEach((block) => {
             const title = String(block.name || '').trim();

@@ -91,8 +91,8 @@ export default function PageBanners({rows, all, pages, isLoading, bySlot = false
             <>
                 <div className={style.bannerBar}>
                     <Note tone="neutral">
-                        Баннеры этой страницы и общие для всех витрин. Баннер товара берёт цену и картинку
-                        из карточки на лету.
+                        Баннеры ПК-версии: этой страницы и общие для всех витрин. Баннер товара берёт цену
+                        и картинку из карточки на лету.
                     </Note>
                 </div>
 
@@ -123,8 +123,8 @@ export default function PageBanners({rows, all, pages, isLoading, bySlot = false
         <>
             <div className={style.bannerBar}>
                 <Note tone="neutral">
-                    Карусель наверху главной. Здесь баннеры этой страницы и общие для всех витрин.
-                    Баннер товара берёт цену и картинку из карточки на лету.
+                    Карусель наверху витрины в мобильной версии: баннеры этой страницы и общие для всех
+                    витрин. Баннер товара берёт цену и картинку из карточки на лету.
                 </Note>
                 <Button size="s" variant="primary" onClick={() => onEdit(null)}>
                     Новый баннер

@@ -11,7 +11,7 @@ export const catalogOptions = ({catalogs, pages, blocks}) => {
 
     const names = new Map();
     (blocks || [])
-        .filter((block) => block.group === 'body' && isCatalogBlock(block) && String(block.name || '').trim())
+        .filter((block) => isCatalogBlock(block) && String(block.name || '').trim())
         .sort((a, b) => (a.serialNumber ?? 0) - (b.serialNumber ?? 0))
         .forEach((block) => {
             const key = `${block.structurePageId}|${cleanPath(block.path)}`;

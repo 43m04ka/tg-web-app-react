@@ -14,38 +14,38 @@ import {keys} from '../../platform/resources';
 import {useMutation} from '../../platform/useMutation';
 import {createBlock, updateBlock} from './api';
 import {
+    BLOCK_KINDS,
     LINK_TARGETS,
     blockProblem,
     kindByKey,
-    kindsFor,
     linkTarget,
     toBlockPayload,
     toFormValues
 } from './blockKinds';
 
-export default function BlockInspector({block, group, page, count, onClose}) {
+export default function BlockInspector({block, page, count, onClose}) {
     const isNew = !block;
 
     const [values, setValues] = useState(() => (isNew
-        ? {...toFormValues(null, group), serialNumber: count}
-        : toFormValues(block, group)));
+        ? {...toFormValues(null), serialNumber: count}
+        : toFormValues(block)));
 
-    const kind = kindByKey(group, values.kind);
+    const kind = kindByKey(values.kind);
     const {fields} = kind;
 
     const dirty = useMemo(() => {
         if (isNew) return true;
 
-        const base = toFormValues(block, group);
+        const base = toFormValues(block);
         return Object.keys(base).some((field) => String(base[field]) !== String(values[field]));
-    }, [values, block, group, isNew]);
+    }, [values, block, isNew]);
 
-    const problem = blockProblem(values, group);
+    const problem = blockProblem(values);
 
     const save = useMutation(
         (input) => (isNew ? createBlock(input) : updateBlock(block.id, input)),
         {
-            invalidates: [keys.pageBlocks(page.id, group), keys.structure],
+            invalidates: [keys.pageBlocks(page.id), keys.structure],
             done: isNew ? 'Блок добавлен' : 'Блок сохранён',
             onDone: onClose
         }
@@ -60,17 +60,16 @@ export default function BlockInspector({block, group, page, count, onClose}) {
         if (problem) return;
 
         save.run(toBlockPayload(values, {
-            group,
             structurePageId: isNew ? page.id : undefined
         }));
-    }, [problem, save, values, group, isNew, page]);
+    }, [problem, save, values, isNew, page]);
 
     return (
         <Inspector
             open
             width="s"
             title={isNew ? 'Новый блок' : (block.name || kind.label)}
-            subtitle={group === 'head' ? 'Карусель' : 'Содержимое'}
+            subtitle="Содержимое"
             dirty={dirty}
             onClose={onClose}
             footer={(
@@ -85,7 +84,7 @@ export default function BlockInspector({block, group, page, count, onClose}) {
             <InspectorSection title="Что это" note={kind.hint}>
                 <Field label="Вид блока">
                     <Select
-                        options={kindsFor(group).map((item) => ({value: item.key, title: item.label}))}
+                        options={BLOCK_KINDS.map((item) => ({value: item.key, title: item.label}))}
                         value={values.kind}
                         onChange={set('kind')}
                     />

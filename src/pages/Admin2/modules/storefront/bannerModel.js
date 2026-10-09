@@ -13,13 +13,9 @@ export const BANNER_SLOTS = [
     {value: 'side', title: 'Малый квадратный справа (карусель)'}
 ];
 
-export const BANNER_DEVICES = [
-    {value: 'all', title: 'ПК и мобильная версия'},
-    {value: 'pc', title: 'Только ПК'},
-    {value: 'mobile', title: 'Только мобильная версия'}
-];
+const DEVICE_VALUES = ['mobile', 'pc'];
 
-const DEVICE_VALUES = BANNER_DEVICES.map((item) => item.value);
+const OTHER_DEVICE = {mobile: 'pc', pc: 'mobile'};
 
 export const GRADIENT_PRESETS = [
     'linear-gradient(115deg, oklch(0.5 0.17 340), oklch(0.42 0.16 30))',
@@ -54,7 +50,7 @@ export const emptyBanner = (pageId = null) => ({
     oldPrice: '',
     promoEndDate: '',
     slot: 'main',
-    device: 'all',
+    device: 'mobile',
     shade: true,
     button1Label: '',
     button1Url: '',
@@ -85,7 +81,7 @@ export const toDraft = (banner) => {
         oldPrice: data.oldPrice === null || data.oldPrice === undefined ? '' : String(data.oldPrice),
         promoEndDate: text(data.promoEndDate),
         slot: data.slot === 'side' ? 'side' : 'main',
-        device: DEVICE_VALUES.includes(data.device) ? data.device : 'all',
+        device: DEVICE_VALUES.includes(data.device) ? data.device : 'mobile',
         shade: data.shade !== false,
         button1Label: text(data.buttons?.[0]?.label),
         button1Url: text(data.buttons?.[0]?.url),
@@ -187,6 +183,9 @@ export const bannerScope = (banner, pages) => {
 
     return (pages || []).find((page) => page.id === banner.pageId)?.name || `Витрина №${banner.pageId}`;
 };
+
+export const bannersFor = (list, pageId, device) => sortBanners(list).filter((banner) =>
+    (banner.pageId === null || banner.pageId === pageId) && banner.data?.device !== OTHER_DEVICE[device]);
 
 export const sortBanners = (list) => (list || []).slice().sort((left, right) => {
     const order = (left.serialNumber ?? 0) - (right.serialNumber ?? 0);

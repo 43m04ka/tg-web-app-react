@@ -1,5 +1,6 @@
 import {
     bannerProblem,
+    bannersFor,
     bannerScope,
     bannerTitle,
     emptyBanner,
@@ -158,5 +159,19 @@ describe('подписи', () => {
     it('называет область показа', () => {
         expect(bannerScope({pageId: null}, [])).toBe('Все витрины');
         expect(bannerScope({pageId: 2}, [{id: 2, name: 'Турция'}])).toBe('Турция');
+    });
+});
+
+describe('bannersFor', () => {
+    const list = [
+        {id: 1, pageId: 2, serialNumber: 1, data: {device: 'mobile'}},
+        {id: 2, pageId: 2, serialNumber: 0, data: {device: 'pc'}},
+        {id: 3, pageId: null, serialNumber: 2, data: {device: 'pc'}},
+        {id: 4, pageId: 5, serialNumber: 0, data: {device: 'pc'}}
+    ];
+
+    it('берёт баннеры своей версии: этой витрины и общие', () => {
+        expect(bannersFor(list, 2, 'pc').map((item) => item.id)).toEqual([2, 3]);
+        expect(bannersFor(list, 2, 'mobile').map((item) => item.id)).toEqual([1]);
     });
 });

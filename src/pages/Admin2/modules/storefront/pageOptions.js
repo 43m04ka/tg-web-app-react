@@ -27,12 +27,3 @@ export const typeName = (value) => (value === MAIN_TYPE
 
 export const sortPages = (list) => (list || []).slice()
     .sort((left, right) => (left.serialNumber ?? 0) - (right.serialNumber ?? 0) || left.id - right.id);
-
-export const pageGroups = (pages) => {
-    const sorted = sortPages(pages);
-
-    return [
-        {key: 'main', title: 'Главная', items: sorted.filter(isMainPage)},
-        {key: 'storefronts', title: 'Витрины', items: sorted.filter((page) => !isMainPage(page))}
-    ].filter((group) => group.items.length);
-};

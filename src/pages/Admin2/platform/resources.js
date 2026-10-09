@@ -31,7 +31,7 @@ export const keys = {
     serviceCodes: (offerId, status) => ['services', 'codes', offerId, status],
     structure: ['structure'],
     pages: ['structure', 'pages'],
-    pageBlocks: (pageId, group) => ['structure', 'blocks', pageId, group],
+    pageBlocks: (pageId) => ['structure', 'blocks', pageId],
     previewCards: ['structure', 'preview-cards'],
     banners: ['structure', 'banners'],
     desktopShelves: ['structure', 'desktop-shelves'],

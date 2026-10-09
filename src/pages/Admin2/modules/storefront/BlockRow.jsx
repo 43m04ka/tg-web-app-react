@@ -28,8 +28,8 @@ function BlockArt({item, kind}) {
     );
 }
 
-export default function BlockRow({item, index, group, catalog, isFirst, isLast, isBusy, onMove, onEdit, onRemove}) {
-    const kind = detectKind(item, group);
+export default function BlockRow({item, index, catalog, isFirst, isLast, isBusy, onMove, onEdit, onRemove}) {
+    const kind = detectKind(item);
     const until = kind.fields.deleteDate && item.deleteDate ? dateOf(item.deleteDate) : null;
     const missing = kind.fields.catalogPath && item.path && catalog === null;
 
@@ -44,7 +44,7 @@ export default function BlockRow({item, index, group, catalog, isFirst, isLast, 
 
                 <span className={style.blockMeta}>
                     <Badge tone="neutral">{kind.label}</Badge>
-                    <span className={style.blockNote}>{describeTarget(item, group)}</span>
+                    <span className={style.blockNote}>{describeTarget(item)}</span>
                     {missing ? <Badge tone="danger">каталог не найден</Badge> : null}
                     {kind.fields.catalogPath && !item.path ? <Badge tone="warning">без каталога</Badge> : null}
                     {kind.fields.image && !item.url ? <Badge tone="warning">без картинки</Badge> : null}

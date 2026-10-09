@@ -1,11 +1,10 @@
-import {API_BASE_URL} from '../config/env';
 import {preparePaymentNetwork} from '../lib/paymentNetwork';
 import {apiFetch, request} from './client';
 
 export const createOrder = async (payload) => {
     await preparePaymentNetwork();
 
-    const response = await fetch(`${API_BASE_URL}/api/order/create`, {
+    const response = await apiFetch('/api/order/create', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)

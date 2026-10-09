@@ -8,6 +8,7 @@ import {useProduct, useRecommendations} from '../../../pages/Product/useProduct'
 import {subscriptionOffer} from '../../../pages/Product/productView';
 import {isSubscription} from '../../../pages/Main/catalogSections';
 import {subscriptionRoute} from '../../../shared/lib/pageRoutes';
+import {forgetView} from '../../../shared/lib/viewMemory';
 
 export function useDesktopProduct(productId) {
     const navigate = useNavigate();
@@ -117,6 +118,7 @@ export function useDesktopProduct(productId) {
 
     const selectEdition = useCallback((next) => {
         if (!next || next.id === productId) return;
+        forgetView(`shell:card:${next.id}`);
         navigate(`/card/${next.id}`, {replace: true});
     }, [navigate, productId]);
 

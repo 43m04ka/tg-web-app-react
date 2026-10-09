@@ -1,6 +1,5 @@
-import {API_BASE_URL} from '../config/env';
 import {preparePaymentNetwork} from '../lib/paymentNetwork';
-import {requestResult} from './client';
+import {apiFetch, requestResult} from './client';
 
 export const fetchCodeCatalog = (signal) =>
     requestResult('/api/codes/catalog', {signal, retries: 2});
@@ -8,7 +7,7 @@ export const fetchCodeCatalog = (signal) =>
 export const createCodeOrder = async (payload) => {
     await preparePaymentNetwork();
 
-    const response = await fetch(`${API_BASE_URL}/api/codes/create`, {
+    const response = await apiFetch('/api/codes/create', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)

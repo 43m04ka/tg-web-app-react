@@ -13,6 +13,10 @@ export function useProduct(productId, preview) {
     const [reloadToken, setReloadToken] = useState(0);
 
     const isForcedRef = useRef(false);
+    const lastRef = useRef(null);
+    const isMissing = !entry;
+
+    if (entry?.product) lastRef.current = {productId, product: entry.product};
 
     const reload = useCallback(() => {
         isForcedRef.current = true;
@@ -58,9 +62,11 @@ export function useProduct(productId, preview) {
             });
 
         return () => controller.abort();
-    }, [productId, reloadToken, remember]);
+    }, [productId, reloadToken, remember, isMissing]);
 
-    return {product: entry?.product || preview || null, error, reload};
+    const kept = lastRef.current?.productId === productId ? lastRef.current.product : null;
+
+    return {product: entry?.product || kept || preview || null, error, reload};
 }
 
 export function useRecommendations(pageId, excludedIds) {

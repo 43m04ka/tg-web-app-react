@@ -102,11 +102,51 @@ export const buildSpecs = (product) => {
 export const eyebrow = (product) =>
     [product.typeLabel, product.publisherName].filter(hasValue).join(' · ');
 
+const WRAPPING_QUOTES = [['"', '"'], ['«', '»'], ['“', '”']];
+
+const unwrapQuotes = (lines) => {
+    if (!lines.length) return lines;
+
+    const text = lines.join('');
+    const last = lines.length - 1;
+    const pair = WRAPPING_QUOTES.find(([open, close]) =>
+        lines[0].startsWith(open) && lines[last].endsWith(close)
+        && text.split(open).length - 1 === (open === close ? 2 : 1)
+        && text.split(close).length - 1 === (open === close ? 2 : 1));
+
+    if (!pair) return lines;
+
+    const result = [...lines];
+    result[0] = result[0].slice(pair[0].length).trim();
+    result[last] = result[last].slice(0, -pair[1].length).trim();
+    return result.filter(Boolean);
+};
+
+const ENTITIES = {
+    nbsp: ' ',
+    amp: '&',
+    quot: '"',
+    apos: "'",
+    lt: '<',
+    gt: '>',
+    laquo: '«',
+    raquo: '»',
+    mdash: '—',
+    ndash: '–',
+    hellip: '…'
+};
+
+const decodeEntities = (text) => text.replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (entity, code) => {
+    if (code[0] !== '#') return ENTITIES[code.toLowerCase()] ?? entity;
+    const value = code[1].toLowerCase() === 'x' ? parseInt(code.slice(2), 16) : Number(code.slice(1));
+    return Number.isFinite(value) ? String.fromCodePoint(value) : entity;
+});
+
 export const descriptionLines = (description) =>
-    String(description || '')
-        .split(/<br\s*\/?>/i)
-        .map((line) => line.trim())
-        .filter(Boolean);
+    unwrapQuotes(String(description || '')
+        .split(/<br\s*\/?>|<\/?p\b[^>]*>|\r?\n/i)
+        .map((line) => decodeEntities(line.replace(/<[^>]*>/g, '')).replace(/\s+/g, ' ').trim())
+        .filter(Boolean));
 
 export const editionContents = (description) =>
     descriptionLines(description)

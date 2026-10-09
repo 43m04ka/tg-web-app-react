@@ -1,4 +1,3 @@
-import {API_BASE_URL} from '../config/env';
 import {preparePaymentNetwork} from '../lib/paymentNetwork';
 import {apiFetch} from './client';
 
@@ -16,7 +15,7 @@ export const fetchSteamQuote = async (amount, signal) => {
 export const createSteamOrder = async (payload) => {
     await preparePaymentNetwork();
 
-    const response = await fetch(`${API_BASE_URL}/api/steam/create`, {
+    const response = await apiFetch('/api/steam/create', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)

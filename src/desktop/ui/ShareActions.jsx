@@ -16,6 +16,7 @@ export default function ShareActions({productId, text, link, className = ''}) {
     const {isTg} = usePlatform();
 
     const [notice, setNotice] = useState(null);
+    const [isNoticeOn, setNoticeOn] = useState(false);
     const timerRef = useRef(0);
 
     useEffect(() => () => clearTimeout(timerRef.current), []);
@@ -23,7 +24,8 @@ export default function ShareActions({productId, text, link, className = ''}) {
     const flash = useCallback((message) => {
         clearTimeout(timerRef.current);
         setNotice(message);
-        timerRef.current = setTimeout(() => setNotice(null), NOTICE_MS);
+        setNoticeOn(true);
+        timerRef.current = setTimeout(() => setNoticeOn(false), NOTICE_MS);
     }, []);
 
     const share = useCallback(async () => {
@@ -53,7 +55,9 @@ export default function ShareActions({productId, text, link, className = ''}) {
                 <span className={style.chevron} aria-hidden="true">›</span>
             </button>
 
-            {notice ? <span className={style.notice} role="status">{notice}</span> : null}
+            <div className={`${style.noticeBox} ${isNoticeOn ? style.noticeBoxOn : ''}`} role="status">
+                <span className={style.notice}>{notice}</span>
+            </div>
         </div>
     );
 }

@@ -163,6 +163,8 @@
 
 .action {
   position: relative;
+  display: grid;
+  place-items: center;
   width: 38px;
   height: 38px;
   border-radius: var(--radius-full);
@@ -197,8 +199,9 @@
 }
 
 .actionIcon {
-  width: 19px;
-  height: 19px;
+  display: block;
+  width: 20px;
+  height: 20px;
   transition: transform var(--m-base) var(--m-spring);
 }
 

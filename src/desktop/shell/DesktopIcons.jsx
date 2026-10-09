@@ -10,16 +10,16 @@ export const SearchIcon = (props) => (
 export const BasketIcon = (props) => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
          strokeLinecap="round" strokeLinejoin="round" {...props}>
-        <circle cx="9" cy="21" r="1"/>
-        <circle cx="20" cy="21" r="1"/>
-        <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/>
+        <circle cx="9.6" cy="19.6" r="1.2"/>
+        <circle cx="17.6" cy="19.6" r="1.2"/>
+        <path d="M2 3h2.1c.5 0 .9.3 1 .8l2.5 10.7a1.6 1.6 0 0 0 1.6 1.3h8.6a1.6 1.6 0 0 0 1.6-1.2L21 7.5H5.9"/>
     </svg>
 );
 
 export const UserIcon = (props) => (
     <svg viewBox="0 0 24 24" fill="none" {...props}>
-        <circle cx="12" cy="8.4" r="3.9" stroke="currentColor" strokeWidth="1.9"/>
-        <path d="M4.6 20.2c.9-3.6 3.8-5.6 7.4-5.6s6.5 2 7.4 5.6"
+        <circle cx="12" cy="8.1" r="3.9" stroke="currentColor" strokeWidth="1.9"/>
+        <path d="M4.6 19.9c.9-3.6 3.8-5.6 7.4-5.6s6.5 2 7.4 5.6"
               stroke="currentColor" strokeWidth="1.9" strokeLinecap="round"/>
     </svg>
 );
@@ -49,7 +49,7 @@ export const GridIcon = (props) => (
 export const HeartIcon = (props) => (
     <svg viewBox="0 0 24 24" {...props}>
         <path
-            d="M12 20.4c-.4 0-.8-.14-1.1-.4C7 16.8 3.4 13.7 3.4 10.1A4.7 4.7 0 0 1 12 7.4a4.7 4.7 0 0 1 8.6 2.7c0 3.6-3.6 6.7-7.5 9.9-.3.26-.7.4-1.1.4Z"
+            d="M12 19.7c-.4 0-.8-.14-1.1-.4C7 16.1 3.4 13 3.4 9.4A4.7 4.7 0 0 1 12 6.7a4.7 4.7 0 0 1 8.6 2.7c0 3.6-3.6 6.7-7.5 9.9-.3.26-.7.4-1.1.4Z"
             stroke="currentColor"
             strokeWidth="1.8"
             strokeLinejoin="round"

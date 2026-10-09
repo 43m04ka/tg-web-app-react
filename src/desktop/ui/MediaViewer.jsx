@@ -161,7 +161,7 @@ export default function MediaViewer({items, index, onIndex, onClose}) {
 export function PlayGlyph({className}) {
     return (
         <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M9.2 5.6 19.2 12 9.2 18.4Z"/>
+            <path d="M7.9 5.5 17.9 12 7.9 18.5Z"/>
         </svg>
     );
 }

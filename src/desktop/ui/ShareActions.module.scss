@@ -71,10 +71,44 @@
   transform: translateX(3px);
 }
 
+.noticeBox {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: grid-template-rows var(--m-slow) var(--m-soft) 160ms,
+              opacity 320ms var(--m-soft),
+              transform 320ms var(--m-soft);
+}
+
+.noticeBoxOn {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transform: none;
+  transition: grid-template-rows var(--m-slow) var(--m-ease),
+              opacity var(--m-base) var(--m-ease),
+              transform var(--m-slow) var(--m-ease);
+}
+
 .notice {
-  padding: var(--d-gap-2) var(--d-gap-4) var(--d-gap-3);
+  min-height: 0;
+  overflow: hidden;
+  padding: 0 var(--d-gap-4);
   font-size: var(--d-fs-xs);
   font-weight: var(--fw-semibold);
   color: var(--accent-text);
-  animation: global(gw-rise-sm) var(--m-base) var(--m-ease) both;
+}
+
+.notice::before,
+.notice::after {
+  content: '';
+  display: block;
+}
+
+.notice::before {
+  height: var(--d-gap-2);
+}
+
+.notice::after {
+  height: var(--d-gap-3);
 }

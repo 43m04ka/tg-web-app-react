@@ -9,6 +9,7 @@ import {useResource} from '../../platform/useResource';
 import {fetchBanners, fetchCatalogs, fetchPages} from '../storefront/api';
 import {sortBanners} from '../storefront/bannerModel';
 import PageBanners from '../storefront/PageBanners';
+import BannerInspector from '../storefront/BannerInspector';
 import {fetchAllBlocks, fetchDesktopShelves, updateDesktopShelf} from './api';
 import {catalogOptions, listOf, moveShelf, optionIndex, sortShelves, withDraft} from './desktopModel';
 import DesktopPreview from './DesktopPreview';
@@ -20,6 +21,7 @@ export default function DesktopScreen() {
 
     const [tab, setTab] = useState('shelves');
     const [editing, setEditing] = useState(null);
+    const [bannerEdit, setBannerEdit] = useState(null);
     const [draft, setDraft] = useState(null);
     const [isBusy, setBusy] = useState(false);
 
@@ -49,8 +51,15 @@ export default function DesktopScreen() {
     const previewBanners = useMemo(() => allBanners.filter((item) => !item.isHidden), [allBanners]);
 
     const open = useCallback((item) => {
+        setBannerEdit(null);
         setDraft(null);
         setEditing({item});
+    }, []);
+
+    const openBanner = useCallback((item, slot = 'main') => {
+        setEditing(null);
+        setDraft(null);
+        setBannerEdit({item, slot});
     }, []);
 
     const close = useCallback(() => {
@@ -125,12 +134,12 @@ export default function DesktopScreen() {
                         {tab === 'banners' ? (
                             mainPage ? (
                                 <PageBanners
-                                    page={mainPage}
                                     rows={pcBanners}
                                     all={allBanners}
-                                    total={allBanners.length}
                                     pages={pageList}
                                     isLoading={banners.isLoading && !banners.data}
+                                    bySlot
+                                    onEdit={openBanner}
                                 />
                             ) : <SkeletonRows count={4}/>
                         ) : (
@@ -195,6 +204,18 @@ export default function DesktopScreen() {
                             count={rows.length}
                             onDraft={setDraft}
                             onClose={close}
+                        />
+                    ) : null}
+
+                    {bannerEdit ? (
+                        <BannerInspector
+                            key={bannerEdit.item?.id ?? `new-${bannerEdit.slot}`}
+                            banner={bannerEdit.item}
+                            pages={pageList}
+                            count={allBanners.length}
+                            pageId={mainPage?.id ?? null}
+                            slot={bannerEdit.slot}
+                            onClose={() => setBannerEdit(null)}
                         />
                     ) : null}
                 </div>

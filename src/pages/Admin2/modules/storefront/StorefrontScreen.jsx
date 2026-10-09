@@ -23,6 +23,7 @@ import {describeBlock, moveBlock, sortBlocks} from './blockKinds';
 import {sortBanners} from './bannerModel';
 import {selectPageBanners} from '../../../Main/bannerFormat';
 import {PRICING_NOTES, hasStructure, isMainPage, pageGroups, typeName} from './pageOptions';
+import BannerInspector from './BannerInspector';
 import BlockInspector from './BlockInspector';
 import BlockRow from './BlockRow';
 import PageBanners from './PageBanners';
@@ -249,12 +250,11 @@ export default function StorefrontScreen() {
 
                         {group === 'banners' ? (
                             <PageBanners
-                                page={current}
                                 rows={pageBanners}
                                 all={allBanners}
-                                total={allBanners.length}
                                 pages={list}
                                 isLoading={banners.isLoading && !banners.data}
+                                onEdit={(item) => setEditing({kind: 'banner', item})}
                             />
                         ) : (
                             <>
@@ -298,6 +298,17 @@ export default function StorefrontScreen() {
                     page={editing.item}
                     onClose={() => setEditing(null)}
                     onRemoved={() => navigate('/admin/storefront')}
+                />
+            ) : null}
+
+            {editing?.kind === 'banner' && current ? (
+                <BannerInspector
+                    key={editing.item?.id ?? 'new'}
+                    banner={editing.item}
+                    pages={list}
+                    count={allBanners.length}
+                    pageId={current.id}
+                    onClose={() => setEditing(null)}
                 />
             ) : null}
 

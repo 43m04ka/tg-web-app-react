@@ -536,3 +536,41 @@
     display: block;
     padding: 0;
 }
+
+.bannerGroup {
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+}
+
+.bannerGroupHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.bannerGroupTitle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+}
+
+.bannerGroupCount {
+    color: var(--a2-text-faint);
+    font-family: var(--a2-font-mono);
+    font-size: var(--a2-size-xs);
+}
+
+.bannerGroupEmpty {
+    margin-top: 10px;
+    padding: 12px;
+    border: 1px dashed var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-s);
+    text-align: center;
+}

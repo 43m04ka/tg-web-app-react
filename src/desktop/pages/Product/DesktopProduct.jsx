@@ -31,7 +31,7 @@ import Spinner from '../../ui/Spinner';
 import {useDesktopProduct} from './useDesktopProduct';
 import {useCountdown} from './useCountdown';
 import {useRegionOffers} from './useRegionOffers';
-import {ProductGlyph, featureIconName, specIconName} from './productIcons';
+import {FeatureMark, ProductGlyph, specIconName, uniqueFeatures} from './productIcons';
 import style from './DesktopProduct.module.scss';
 import {memberPrice} from '../../../shared/lib/membership';
 
@@ -182,7 +182,7 @@ export default function DesktopProduct() {
     const platforms = hasValue(product.platform)
         ? String(product.platform).split(',').map((item) => item.trim()).filter(Boolean)
         : [];
-    const features = chips.slice(platforms.length);
+    const features = uniqueFeatures(chips.slice(platforms.length));
     const isBento = media.length >= 5;
     const tiles = media.slice(0, isBento ? 5 : 3);
     const hiddenCount = media.length - tiles.length;
@@ -542,7 +542,7 @@ export default function DesktopProduct() {
                                     <button type="button" className={style.pick} onClick={showEditions}>
                                         <span className={style.pickLabel}>Издание</span>
                                         <span className={style.pickValue}>
-                                            {`${editions.findIndex((item) => item.product.id === productId) + 1} из ${editions.length}`}
+                                            {editions.find((item) => item.product.id === productId)?.label || product.name}
                                         </span>
                                         <span className={style.pickAction}>
                                             Все издания
@@ -555,7 +555,7 @@ export default function DesktopProduct() {
                                         <span className={style.pickLabel}>Дополнения</span>
                                         <span className={style.pickValue}>
                                             {selectedAddons.length
-                                                ? `${selectedAddons.length} · +${formatPrice(addonsTotal)}`
+                                                ? selectedAddons.map((addon) => addon.name).join(', ')
                                                 : `доступно ${addons.length}`}
                                         </span>
                                         <span className={style.pickAction}>
@@ -768,9 +768,7 @@ function HeroFeatures({items, coverRef}) {
                         className={`${style.feature} ${index >= fit ? style.featureLate : ''}`}
                         style={{'--i': index - fit}}
                     >
-                        <span className={style.featureMark} aria-hidden="true">
-                            <ProductGlyph name={featureIconName(item)} className={style.featureGlyph}/>
-                        </span>
+                        <FeatureMark text={item} style={style}/>
                         {item}
                     </li>
                 ))}

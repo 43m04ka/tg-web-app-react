@@ -339,6 +339,25 @@
   height: 14px;
 }
 
+.feature .featureMarkPlain {
+  background: none;
+}
+
+.featureFlag {
+  display: block;
+  width: 20px;
+  height: 14px;
+  box-shadow: 0 0 0 1px oklch(1 0 0 / 0.12);
+  border-radius: 2.5px;
+}
+
+.featurePsPlus {
+  display: block;
+  width: 20px;
+  height: 20px;
+  background: url('../../../shared/assets/subscriptions/logoPS.png') center / contain no-repeat;
+}
+
 .featuresToggle {
   height: 100%;
   padding: 7px 14px;
@@ -624,6 +643,7 @@
 
 .edition,
 .addon {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -656,7 +676,18 @@
 .addonOn,
 .addonOn:hover {
   background: color-mix(in oklab, var(--accent) 12%, var(--surface-2));
-  box-shadow: inset 0 0 0 2px var(--accent), 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.editionOn::after,
+.addonOn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 2px var(--accent);
+  pointer-events: none;
 }
 
 .editionOn {
@@ -1094,9 +1125,7 @@
 .pickValue {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
   font-weight: var(--fw-bold);
 }
 

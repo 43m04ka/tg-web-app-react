@@ -203,6 +203,66 @@ export const featureIconName = (text) => {
 
 export const specIconName = (label) => SPEC_ICONS[label] || 'check';
 
+const PLAYERS_ONLY = /^(?:(\d+(?:\s*[-–]\s*\d+)?)\s+игрок\S*|игроков:\s*(\d+(?:\s*[-–]\s*\d+)?))$/i;
+
+const playersKey = (text) => {
+    const match = String(text || '').trim().match(PLAYERS_ONLY);
+    return match ? (match[1] || match[2]).replace(/\s/g, '').replace('–', '-') : null;
+};
+
+export const uniqueFeatures = (items) => {
+    const seen = new Set();
+
+    return items.filter((item) => {
+        const key = playersKey(item);
+        if (key === null) return true;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
+};
+
+function RussianFlag({className}) {
+    return (
+        <svg className={className} viewBox="0 0 24 16" aria-hidden="true">
+            <clipPath id="ru-flag">
+                <rect width="24" height="16" rx="2.5"/>
+            </clipPath>
+            <g clipPath="url(#ru-flag)">
+                <rect width="24" height="16" fill="#fff"/>
+                <rect y="5.33" width="24" height="5.34" fill="#0039a6"/>
+                <rect y="10.67" width="24" height="5.33" fill="#d52b1e"/>
+            </g>
+        </svg>
+    );
+}
+
+export function FeatureMark({text, style}) {
+    const name = featureIconName(text);
+
+    if (name === 'language' && /русск/i.test(text)) {
+        return (
+            <span className={`${style.featureMark} ${style.featureMarkPlain}`} aria-hidden="true">
+                <RussianFlag className={style.featureFlag}/>
+            </span>
+        );
+    }
+
+    if (name === 'plus') {
+        return (
+            <span className={`${style.featureMark} ${style.featureMarkPlain}`} aria-hidden="true">
+                <span className={style.featurePsPlus}/>
+            </span>
+        );
+    }
+
+    return (
+        <span className={style.featureMark} aria-hidden="true">
+            <ProductGlyph name={name} className={style.featureGlyph}/>
+        </span>
+    );
+}
+
 export function ProductGlyph({name, className}) {
     return (
         <svg className={className} viewBox="0 0 24 24" aria-hidden="true" {...stroke}>

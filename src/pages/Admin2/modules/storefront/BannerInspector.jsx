@@ -106,6 +106,7 @@ export default function BannerInspector({banner, pages, count, pageId = null, sl
     ]), [pages]);
 
     const isProduct = draft.type === 'product';
+    const isMainScope = (pages || []).some((page) => page.id === draft.pageId && page.type === 'main');
     const live = isProduct ? (banner?.data || {}) : null;
 
     return (
@@ -121,7 +122,7 @@ export default function BannerInspector({banner, pages, count, pageId = null, sl
                     <Button
                         variant="primary"
                         disabled={save.loading || Boolean(problem) || !dirty}
-                        onClick={() => save.run(toPayload(draft))}
+                        onClick={() => save.run(toPayload(isMainScope ? {...draft, device: 'all'} : draft))}
                     >
                         {save.loading ? 'Сохраняем…' : 'Сохранить'}
                     </Button>
@@ -150,9 +151,11 @@ export default function BannerInspector({banner, pages, count, pageId = null, sl
                     />
                 </Field>
 
-                <Field label="Версия сайта" hint="Например, широкая картинка для мобильной и квадратная для ПК — двумя баннерами">
-                    <Select options={BANNER_DEVICES} value={draft.device} onChange={set('device')}/>
-                </Field>
+                {isMainScope ? null : (
+                    <Field label="Версия сайта" hint="Например, широкая картинка для мобильной и квадратная для ПК — двумя баннерами">
+                        <Select options={BANNER_DEVICES} value={draft.device} onChange={set('device')}/>
+                    </Field>
+                )}
 
                 <Field label="Место на главной ПК" hint="Малые баннеры листаются справа в квадратной карусели. Картинка нужна квадратная: по умолчанию берём обложку товара">
                     <Select options={BANNER_SLOTS} value={draft.slot} onChange={set('slot')}/>

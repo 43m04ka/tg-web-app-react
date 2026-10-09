@@ -96,7 +96,7 @@ export default function PageBanners({rows, all, pages, isLoading, bySlot = false
                     </Note>
                 </div>
 
-                {isLoading ? <SkeletonRows count={4}/> : SLOT_GROUPS.map((group) => {
+                {isLoading ? <SkeletonRows count={4}/> : <div className={style.bannerColumns}>{SLOT_GROUPS.map((group) => {
                     const list = rows.filter((item) => slotOf(item) === group.slot);
 
                     return (
@@ -114,7 +114,7 @@ export default function PageBanners({rows, all, pages, isLoading, bySlot = false
                             {list.length ? renderRows(list) : <div className={style.bannerGroupEmpty}>{group.empty}</div>}
                         </section>
                     );
-                })}
+                })}</div>}
             </>
         );
     }

@@ -1108,6 +1108,19 @@
   transition: background-color var(--m-fast) var(--m-ease);
 }
 
+.pickStack {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  column-gap: var(--d-gap-4);
+  row-gap: var(--d-gap-2);
+}
+
+.pickStack .pickAction {
+  grid-column: 2;
+  justify-self: end;
+}
+
 .pick + .pick {
   border-top: 1px solid var(--border-subtle);
 }

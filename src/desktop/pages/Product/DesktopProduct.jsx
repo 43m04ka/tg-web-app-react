@@ -551,7 +551,7 @@ export default function DesktopProduct() {
                                     </button>
                                 ) : null}
                                 {addons.length ? (
-                                    <button type="button" className={style.pick} onClick={showAddons}>
+                                    <button type="button" className={`${style.pick} ${style.pickStack}`} onClick={showAddons}>
                                         <span className={style.pickLabel}>Дополнения</span>
                                         <span className={style.pickValue}>
                                             {selectedAddons.length

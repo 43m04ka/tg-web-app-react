@@ -1142,6 +1142,14 @@
   font-weight: var(--fw-bold);
 }
 
+.pickLine {
+  display: block;
+}
+
+.pickLine + .pickLine {
+  margin-top: 6px;
+}
+
 .pickAction {
   flex: none;
   display: inline-flex;

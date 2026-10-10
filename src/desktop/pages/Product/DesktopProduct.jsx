@@ -555,7 +555,9 @@ export default function DesktopProduct() {
                                         <span className={style.pickLabel}>Дополнения</span>
                                         <span className={style.pickValue}>
                                             {selectedAddons.length
-                                                ? selectedAddons.map((addon) => addon.name).join(', ')
+                                                ? selectedAddons.map((addon) => (
+                                                    <span key={addon.id} className={style.pickLine}>{addon.name}</span>
+                                                ))
                                                 : `доступно ${addons.length}`}
                                         </span>
                                         <span className={style.pickAction}>

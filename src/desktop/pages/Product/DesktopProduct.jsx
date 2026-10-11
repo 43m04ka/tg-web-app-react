@@ -31,7 +31,7 @@ import Spinner from '../../ui/Spinner';
 import {useDesktopProduct} from './useDesktopProduct';
 import {useCountdown} from './useCountdown';
 import {useRegionOffers} from './useRegionOffers';
-import {FeatureMark, ProductGlyph, specIconName, uniqueFeatures} from './productIcons';
+import {FeatureMark, ProductGlyph, RegionFlag, specIconName, uniqueFeatures} from './productIcons';
 import style from './DesktopProduct.module.scss';
 import {memberPrice} from '../../../shared/lib/membership';
 
@@ -362,7 +362,7 @@ export default function DesktopProduct() {
                                 {editions.map(({product: edition, label}) => {
                                     const isOn = edition.id === productId;
                                     const percent = discountPercent(edition.price, edition.oldPrice);
-                                    const contents = editionContents(edition.description);
+                                    const contents = editionContents(edition);
                                     const items = contents.length ? contents : [
                                         'Основная игра',
                                         hasValue(edition.platform) ? `Версия для ${edition.platform}` : null
@@ -396,7 +396,7 @@ export default function DesktopProduct() {
                                                         {items.map((item) => (
                                                             <span key={item} className={style.editionItem}>
                                                                 <span className={style.featureMark} aria-hidden="true"><CheckGlyph/></span>
-                                                                {item}
+                                                                <span className={style.editionItemText}>{item}</span>
                                                             </span>
                                                         ))}
                                                     </span>
@@ -494,7 +494,13 @@ export default function DesktopProduct() {
                                                 />
                                             ) : null}
                                             <span className={style.regionText}>
-                                                <span className={style.regionName}>{region.label}</span>
+                                                <span className={style.regionName}>
+                                                    <RegionFlag
+                                                        text={`${region.product?.regionActivate || ''} ${region.label || ''}`}
+                                                        className={style.regionFlag}
+                                                    />
+                                                    {region.label}
+                                                </span>
                                                 {gap > 0 ? (
                                                     <span className={style.regionGap}>дешевле на {formatPrice(gap)}</span>
                                                 ) : null}

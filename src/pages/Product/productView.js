@@ -148,16 +148,9 @@ export const descriptionLines = (description) =>
         .map((line) => decodeEntities(line.replace(/<[^>]*>/g, '')).replace(/\s+/g, ' ').trim())
         .filter(Boolean));
 
-export const editionContents = (description) =>
-    descriptionLines(description)
-        .filter((line) => line.startsWith('•'))
-        .map((line) => line
-            .replace(/^•\s*/, '')
-            .replace(/,\s*в (который|которые|которых) .*$/i, '')
-            .replace(/[:*]+$/, '')
-            .trim())
-        .filter(Boolean)
-        .slice(0, 6);
+export const editionContents = (product) => (Array.isArray(product?.editionFeatures)
+    ? product.editionFeatures.map((item) => String(item || '').trim()).filter(Boolean)
+    : []);
 
 export const subscriptionOffer =(product) => membershipPlaque(product);
 

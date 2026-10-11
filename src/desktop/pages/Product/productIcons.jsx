@@ -237,6 +237,53 @@ function RussianFlag({className}) {
     );
 }
 
+function IndiaFlag({className}) {
+    return (
+        <svg className={className} viewBox="0 0 24 16" aria-hidden="true">
+            <clipPath id="in-flag">
+                <rect width="24" height="16" rx="2.5"/>
+            </clipPath>
+            <g clipPath="url(#in-flag)">
+                <rect width="24" height="16" fill="#fff"/>
+                <rect width="24" height="5.33" fill="#ff9933"/>
+                <rect y="10.67" width="24" height="5.33" fill="#138808"/>
+                <circle cx="12" cy="8" r="2" fill="none" stroke="#000080" strokeWidth="0.6"/>
+                <circle cx="12" cy="8" r="0.5" fill="#000080"/>
+            </g>
+        </svg>
+    );
+}
+
+function TurkeyFlag({className}) {
+    return (
+        <svg className={className} viewBox="0 0 24 16" aria-hidden="true">
+            <clipPath id="tr-flag">
+                <rect width="24" height="16" rx="2.5"/>
+            </clipPath>
+            <g clipPath="url(#tr-flag)">
+                <rect width="24" height="16" fill="#e30a17"/>
+                <circle cx="9.4" cy="8" r="4" fill="#fff"/>
+                <circle cx="10.4" cy="8" r="3.2" fill="#e30a17"/>
+                <path
+                    fill="#fff"
+                    d="M12.2 8 13.215 7.647 13.236 6.573 13.885 7.429 14.914 7.118 14.3 8 14.914 8.882 13.885 8.571 13.236 9.427 13.215 8.353Z"
+                />
+            </g>
+        </svg>
+    );
+}
+
+const REGION_FLAGS = [
+    [/инди|india/i, IndiaFlag],
+    [/турц|turk/i, TurkeyFlag],
+    [/росс|russia/i, RussianFlag]
+];
+
+export function RegionFlag({text, className}) {
+    const Flag = REGION_FLAGS.find(([pattern]) => pattern.test(String(text || '')))?.[1];
+    return Flag ? <Flag className={className}/> : null;
+}
+
 export function FeatureMark({text, style}) {
     const name = featureIconName(text);
 

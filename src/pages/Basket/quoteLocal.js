@@ -4,10 +4,16 @@ export const unitPrice = (item) => Math.round(Number(item?.similarCard?.price ||
 
 export const unitOldPrice = (item) => Math.round(Number(item?.similarCard?.oldPrice || item?.oldPrice || 0));
 
-const isIndiaItem = (item) =>
-    item.priceInOtherCurrency !== null
-    && item.priceInOtherCurrency !== undefined
-    && item.priceInOtherCurrency !== 0;
+export const unitRupees = (item) => {
+    const fromSimilar = item?.similarCard?.price ? item.similarCard.priceInOtherCurrency : null;
+    const value = fromSimilar ?? item?.priceInOtherCurrency;
+    return value === null || value === undefined ? null : Number(value);
+};
+
+const isIndiaItem = (item) => {
+    const value = unitRupees(item);
+    return value !== null && value !== 0;
+};
 
 const buildPosition = (item) => {
     const price = unitPrice(item);
@@ -41,7 +47,7 @@ const indiaTotals = (items, rules) => {
     if (indiaItems.length === 0) return {itemsTotal: rubTotal, positions: rubPositions, calc: null};
     if (!rules) return null;
 
-    const rsTotal = indiaItems.reduce((sum, item) => sum + (item.priceInOtherCurrency * item.count || 0), 0);
+    const rsTotal = indiaItems.reduce((sum, item) => sum + (unitRupees(item) * item.count || 0), 0);
     const rsRounded = Math.ceil(rsTotal / RS_STEP) * RS_STEP;
     const rule = findRule(rules, rsRounded);
 

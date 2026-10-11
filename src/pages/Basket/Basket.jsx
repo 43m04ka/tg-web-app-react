@@ -12,7 +12,7 @@ import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import ProductCard from '../Main/ProductCard';
 import {discountPercent, shortPlatform, subscriptionTerm} from '../Main/catalogSections';
 import {money, pageCartItems, rupees} from './cartModel';
-import {unitOldPrice, unitPrice} from './quoteLocal';
+import {unitOldPrice, unitPrice, unitRupees} from './quoteLocal';
 import {useBasketQuote} from './useBasketQuote';
 import {usePromoMemory} from './usePromoMemory';
 import {useRecommendations} from './useRecommendations';
@@ -41,7 +41,7 @@ function CartRow({item, regionTitle, isRupee, onOpen, onCount}) {
                 <div className={style.rowBottom}>
                     <div className={style.rowPrices}>
                         <span key={price} className={style.rowPrice}>
-                            {isRupee ? rupees(item.priceInOtherCurrency) : money(price)}
+                            {isRupee ? rupees(unitRupees(item)) : money(price)}
                         </span>
                         {percent > 0 ? <span className={style.rowOldPrice}>{money(oldPrice)}</span> : null}
                     </div>
@@ -231,7 +231,7 @@ export default function Basket() {
                                     <CartRow
                                         item={item}
                                         regionTitle={regionTitle}
-                                        isRupee={isIndia && Boolean(item.priceInOtherCurrency)}
+                                        isRupee={isIndia && Boolean(unitRupees(item))}
                                         onOpen={openProduct}
                                         onCount={changeCount}
                                     />

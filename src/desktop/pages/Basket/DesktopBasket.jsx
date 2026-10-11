@@ -8,7 +8,7 @@ import {productRoute} from '../../../shared/lib/pageRoutes';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
 import {discountPercent, shortPlatform, subscriptionTerm} from '../../../pages/Main/catalogSections';
 import {money, pageCartItems, rupees} from '../../../pages/Basket/cartModel';
-import {unitOldPrice, unitPrice} from '../../../pages/Basket/quoteLocal';
+import {unitOldPrice, unitPrice, unitRupees} from '../../../pages/Basket/quoteLocal';
 import {useBasketQuote} from '../../../pages/Basket/useBasketQuote';
 import {usePromoMemory} from '../../../pages/Basket/usePromoMemory';
 import {useRecommendations} from '../../../pages/Basket/useRecommendations';
@@ -73,7 +73,7 @@ function CartRow({item, regionTitle, isRupee, index, isLeaving, onOpen, onCount,
 
             <div className={style.rowPrices}>
                 <span key={price} className={style.rowPrice}>
-                    {isRupee ? rupees(item.priceInOtherCurrency) : money(price)}
+                    {isRupee ? rupees(unitRupees(item)) : money(price)}
                 </span>
                 {percent > 0 ? <span className={style.rowOldPrice}>{money(oldPrice)}</span> : null}
 
@@ -242,7 +242,7 @@ export default function DesktopBasket() {
                                 item={item}
                                 index={index}
                                 regionTitle={regionTitle}
-                                isRupee={isIndia && Boolean(item.priceInOtherCurrency)}
+                                isRupee={isIndia && Boolean(unitRupees(item))}
                                 isLeaving={leavingId === item.id}
                                 onOpen={openProduct}
                                 onCount={changeCount}

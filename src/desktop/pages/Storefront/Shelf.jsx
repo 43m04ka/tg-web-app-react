@@ -6,17 +6,22 @@ import SelectMenu from '../../ui/SelectMenu';
 import OfferCard from './OfferCard';
 import style from './Storefront.module.scss';
 
-export default function Shelf({shelf, size, showOrigin, withFilters = false, onOpen, onOpenCatalog}) {
+export default function Shelf({shelf, size, showOrigin, withFilters = false, categories = null, onOpen, onOpenCatalog}) {
     const [isOpen, setOpen] = useState(false);
     const [filter, setFilter] = useState('all');
     const [sorting, setSorting] = useState('default');
     const ref = useReveal();
 
-    const filters = useMemo(() => (withFilters ? shelfFilters(shelf.offers) : []), [withFilters, shelf.offers]);
+    const filters = useMemo(
+        () => (withFilters ? shelfFilters(shelf.offers, categories) : []),
+        [withFilters, shelf.offers, categories]
+    );
+
+    const activeFilter = filter === 'all' || filters.some((item) => item.key === filter) ? filter : 'all';
 
     const offers = useMemo(
-        () => (withFilters ? sortOffers(filterOffers(shelf.offers, filter), sorting) : shelf.offers),
-        [withFilters, shelf.offers, filter, sorting]
+        () => (withFilters ? sortOffers(filterOffers(shelf.offers, activeFilter, categories), sorting) : shelf.offers),
+        [withFilters, shelf.offers, activeFilter, categories, sorting]
     );
 
     const hasMore = offers.length > size;
@@ -36,7 +41,7 @@ export default function Shelf({shelf, size, showOrigin, withFilters = false, onO
                             <button
                                 key={item.key}
                                 type="button"
-                                className={item.key === filter ? `${style.filterChip} ${style.filterChipOn}` : style.filterChip}
+                                className={item.key === activeFilter ? `${style.filterChip} ${style.filterChipOn}` : style.filterChip}
                                 onClick={() => setFilter(item.key)}
                             >
                                 {item.flag ? <FlagIcon className={style.originFlag} code={item.flag} aria-hidden="true"/> : null}
@@ -87,7 +92,7 @@ export default function Shelf({shelf, size, showOrigin, withFilters = false, onO
                 <p className={style.shelfEmpty}>Под этот фильтр в подборке ничего нет</p>
             ) : null}
 
-            <div key={`${filter}:${sorting}`} className={style.grid}>
+            <div key={`${activeFilter}:${sorting}`} className={style.grid}>
                 {visible.map((offer, index) => (
                     <OfferCard
                         key={offer.key}

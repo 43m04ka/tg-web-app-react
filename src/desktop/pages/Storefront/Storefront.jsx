@@ -15,7 +15,7 @@ import {useOfferPicker} from '../../shell/useOfferPicker';
 import {useGridColumns} from '../../shell/useGridColumns';
 import {originIndex, resolveBotType, storefrontList} from '../../model/desktopNav';
 import {storefrontConfig} from '../../model/storefrontConfig';
-import {buildHero, buildShelves, buildSummaryShelves, mergeOffers} from '../../model/storefrontModel';
+import {buildCategories, buildHero, buildShelves, buildSummaryShelves, mergeOffers} from '../../model/storefrontModel';
 import OfferCard from './OfferCard';
 import Shelf from './Shelf';
 import SubscriptionShelf, {groupShelves} from './SubscriptionShelf';
@@ -90,6 +90,13 @@ export default function Storefront() {
     );
 
     const shelfEntries = useMemo(() => groupShelves(shelves), [shelves]);
+
+    const categories = useMemo(
+        () => (scopeId === null
+            ? buildCategories({desktopShelves, catalogs, mainPageProducts, originOf, pageIds})
+            : null),
+        [scopeId, desktopShelves, catalogs, mainPageProducts, originOf, pageIds]
+    );
 
     const filteredKey = useMemo(() => {
         const plain = shelfEntries.filter((entry) => entry.kind === 'shelf');
@@ -185,6 +192,7 @@ export default function Storefront() {
                     size={config.shelfSize}
                     showOrigin={showOrigin}
                     withFilters={entry.key === filteredKey}
+                    categories={categories}
                     onOpen={openOffer}
                     onOpenCatalog={openCatalog}
                 />

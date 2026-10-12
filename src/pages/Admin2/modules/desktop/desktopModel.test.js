@@ -1,4 +1,4 @@
-import {catalogOptions, moveShelf, shelfProblem, toShelfPayload, toggleCatalog, withDraft} from './desktopModel';
+import {catalogOptions, categoryRule, emptyShelf, moveShelf, shelfProblem, toShelfDraft, toShelfPayload, toggleCatalog, withDraft} from './desktopModel';
 
 const pages = [
     {id: 38, type: 'main', name: 'Главная'},
@@ -41,7 +41,7 @@ describe('черновик сводного каталога', () => {
     it('переключает каталог и собирает payload', () => {
         const next = toggleCatalog(toggleCatalog(toggleCatalog(draft, 292), 293), 292);
 
-        expect(toShelfPayload(next)).toEqual({title: 'Популярное', catalogIds: [293], serialNumber: 2, isHidden: 0});
+        expect(toShelfPayload(next)).toEqual({title: 'Популярное', kind: 'shelf', options: {}, catalogIds: [293], serialNumber: 2, isHidden: 0});
     });
 
     it('подмешивает черновик в список для предпросмотра', () => {
@@ -60,5 +60,27 @@ describe('moveShelf', () => {
 
         expect(moveShelf(rows, 3, -1).map((row) => [row.id, row.serialNumber])).toEqual([[1, 0], [3, 1], [2, 2]]);
         expect(moveShelf(rows, 1, -1)).toBeNull();
+    });
+});
+
+describe('черновик категории', () => {
+    it('требует условие и отдаёт только заданные настройки', () => {
+        const draft = {...emptyShelf(3, 'filter'), title: 'PS5'};
+
+        expect(shelfProblem(draft)).toMatch(/платформу/);
+
+        const next = {...draft, options: {...draft.options, platform: 'ps5'}};
+        expect(shelfProblem(next)).toBe('');
+        expect(toShelfPayload(next)).toEqual({
+            title: 'PS5', kind: 'filter', options: {platform: 'ps5'}, catalogIds: [], serialNumber: 3, isHidden: 0
+        });
+    });
+
+    it('восстанавливает черновик из записи категории', () => {
+        const draft = toShelfDraft({id: 4, kind: 'filter', title: 'PS Индия', options: {region: 'ps_india', flag: 'in'}});
+
+        expect(draft.kind).toBe('filter');
+        expect(draft.options).toEqual({flag: 'in', platform: '', region: 'ps_india'});
+        expect(categoryRule({options: {region: 'ps_india', platform: 'ps5'}})).toEqual(['Только PS5', 'PS Индия']);
     });
 });

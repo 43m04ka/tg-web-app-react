@@ -1,4 +1,4 @@
-import {buildHero, buildShelves, buildSummaryShelves, familyOf, filterOffers, mergeOffers, offerKey, shelfFilters, sortOffers, splitHero} from './storefrontModel';
+import {buildCategories, buildHero, buildShelves, buildSummaryShelves, familyOf, filterOffers, mergeOffers, offerKey, shelfFilters, sortOffers, splitHero} from './storefrontModel';
 import {createProductOrigin} from '../../shared/lib/productOrigin';
 
 const pages = [
@@ -349,7 +349,7 @@ describe('shelf filters', () => {
     const xbox = {pageId: 3, type: 'xbox', price: 90};
 
     const offers = [
-        {key: 'a', product: {platform: 'PS5'}, price: 80, oldPrice: null, origins: [{...india, product: {id: 2, oldPrice: 160}}, {...ps, product: {id: 1}}]},
+        {key: 'a', product: {platform: 'PS5'}, price: 80, oldPrice: null, origins: [{...india, product: {id: 2, oldPrice: 160, platform: 'PS5'}}, {...ps, product: {id: 1}}]},
         {key: 'b', product: {platform: 'PS4, PS5'}, price: 100, oldPrice: 200, origins: [{...ps, product: {id: 3}}]},
         {key: 'c', product: {platform: 'Xbox Series X|S'}, price: 90, oldPrice: null, origins: [{...xbox, product: {id: 4}}]}
     ];
@@ -368,6 +368,35 @@ describe('shelf filters', () => {
     it('filters by platform', () => {
         expect(filterOffers(offers, 'ps4').map((offer) => offer.key)).toEqual(['b']);
         expect(filterOffers(offers, 'xbox').map((offer) => offer.key)).toEqual(['c']);
+    });
+
+    const categories = buildCategories({
+        desktopShelves: [
+            {id: 7, kind: 'filter', title: 'Индия PS5', options: {region: 'ps_india', platform: 'ps5', flag: 'in'}, serialNumber: 1},
+            {id: 8, kind: 'filter', title: 'Только PS4', options: {platform: 'ps4'}, serialNumber: 0},
+            {id: 9, kind: 'filter', title: 'Скрытая', options: {region: 'ps'}, serialNumber: 2, isHidden: 1},
+            {id: 10, kind: 'filter', title: 'Пусто', options: {region: 'xbox', platform: 'ps5'}, serialNumber: 3},
+            {id: 11, title: 'Полка', catalogIds: [1], serialNumber: 0}
+        ]
+    });
+
+    it('builds admin categories in order without hidden ones and shelves', () => {
+        expect(categories.map((item) => item.label)).toEqual(['Только PS4', 'Индия PS5', 'Пусто']);
+        expect(buildCategories({desktopShelves: [{id: 1, title: 'Полка'}]})).toBeNull();
+    });
+
+    it('lists admin categories that match something instead of the built-in set', () => {
+        expect(shelfFilters(offers, categories)).toEqual([
+            {key: 'category:8', label: 'Только PS4', flag: null},
+            {key: 'category:7', label: 'Индия PS5', flag: 'in'}
+        ]);
+    });
+
+    it('applies platform and region of an admin category', () => {
+        const result = filterOffers(offers, 'category:7', categories);
+        expect(result.map((offer) => offer.key)).toEqual(['a']);
+        expect(result[0].price).toBe(80);
+        expect(filterOffers(offers, 'category:8', categories).map((offer) => offer.key)).toEqual(['b']);
     });
 
     it('sorts by price', () => {
@@ -412,5 +441,19 @@ describe('buildSummaryShelves', () => {
         ], [20]);
 
         expect(shelves.map((shelf) => shelf.title)).toEqual(['Популярное', 'Скидки']);
+    });
+
+    it('не превращает категории в полки', () => {
+        expect(build([{id: 1, kind: 'filter', title: 'PS5', catalogIds: [292], options: {platform: 'ps5'}}])).toBeNull();
+    });
+
+    it('категория со своими каталогами берёт их товары', () => {
+        const [category] = buildCategories({
+            desktopShelves: [{id: 5, kind: 'filter', title: 'Halo', catalogIds: [242], options: {}}],
+            catalogs, mainPageProducts: products, originOf, pageIds: [20, 35, 28]
+        });
+
+        expect(category.offers.map((offer) => offer.product.name)).toEqual(['Halo']);
+        expect(filterOffers([], 'category:5', [category]).map((offer) => offer.product.name)).toEqual(['Halo']);
     });
 });

@@ -52,26 +52,80 @@ export const optionIndex = (groups) => {
     return index;
 };
 
-export const emptyShelf = (serialNumber = 0) => ({title: '', catalogIds: [], serialNumber, isHidden: false});
+export const isFilter = (row) => row?.kind === 'filter';
+
+export const FLAG_OPTIONS = [
+    {value: '', title: 'Без флага'},
+    {value: 'tr', title: 'Турция'},
+    {value: 'in', title: 'Индия'}
+];
+
+export const PLATFORM_OPTIONS = [
+    {value: '', title: 'Любая платформа'},
+    {value: 'ps5', title: 'Только PS5'},
+    {value: 'ps4', title: 'Только PS4'}
+];
+
+export const REGION_OPTIONS = [
+    {value: '', title: 'Все витрины'},
+    {value: 'ps', title: 'PS Турция'},
+    {value: 'ps_india', title: 'PS Индия'},
+    {value: 'xbox', title: 'Xbox'}
+];
+
+const emptyOptions = () => ({flag: '', platform: '', region: ''});
+
+export const emptyShelf = (serialNumber = 0, kind = 'shelf') => ({
+    title: '',
+    kind,
+    options: emptyOptions(),
+    catalogIds: [],
+    serialNumber,
+    isHidden: false
+});
 
 export const toShelfDraft = (shelf) => (shelf ? {
     title: String(shelf.title || ''),
+    kind: isFilter(shelf) ? 'filter' : 'shelf',
+    options: {...emptyOptions(), ...(shelf.options || {})},
     catalogIds: (shelf.catalogIds || []).map(Number),
     serialNumber: shelf.serialNumber ?? 0,
     isHidden: Boolean(shelf.isHidden)
 } : emptyShelf());
 
+const compactOptions = (options) => Object.fromEntries(
+    Object.entries(options || {}).filter(([, value]) => value)
+);
+
 export const toShelfPayload = (draft) => ({
     title: draft.title.trim(),
+    kind: draft.kind === 'filter' ? 'filter' : 'shelf',
+    options: draft.kind === 'filter' ? compactOptions(draft.options) : {},
     catalogIds: draft.catalogIds,
     serialNumber: Number(draft.serialNumber) || 0,
     isHidden: draft.isHidden ? 1 : 0
 });
 
 export const shelfProblem = (draft) => {
+    if (draft.kind === 'filter') {
+        if (!draft.title.trim()) return 'Нужно название категории';
+        if (!draft.options.platform && !draft.options.region && !draft.catalogIds.length) {
+            return 'Выберите платформу, витрину или каталоги, иначе категория покажет то же, что «Все платформы»';
+        }
+        return '';
+    }
+
     if (!draft.title.trim()) return 'Нужно название полки';
     if (!draft.catalogIds.length) return 'Отметьте хотя бы один каталог';
     return '';
+};
+
+export const categoryRule = (row) => {
+    const options = row.options || {};
+    return [
+        PLATFORM_OPTIONS.find((item) => item.value && item.value === options.platform)?.title,
+        REGION_OPTIONS.find((item) => item.value && item.value === options.region)?.title
+    ].filter(Boolean);
 };
 
 export const toggleCatalog = (draft, id) => ({

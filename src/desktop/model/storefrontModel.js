@@ -126,20 +126,27 @@ export const buildShelves = ({
         .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title, 'ru'));
 };
 
-export const buildSummaryShelves = ({desktopShelves, catalogs, mainPageProducts, originOf, pageIds} = {}) => {
-    if (!Array.isArray(desktopShelves) || !desktopShelves.length || !Array.isArray(catalogs)) return null;
+const isFilterRow = (row) => row?.kind === 'filter';
 
-    const catalogById = new Map(catalogs.map((catalog) => [Number(catalog.id), catalog]));
-    const storefronts = new Set(pageIds || []);
-
+const groupByCatalog = (products) => {
     const productsByCatalog = new Map();
-    (mainPageProducts || []).forEach((product) => {
+    (products || []).forEach((product) => {
         const list = productsByCatalog.get(product.catalogId);
         if (list) list.push(product);
         else productsByCatalog.set(product.catalogId, [product]);
     });
+    return productsByCatalog;
+};
 
-    return desktopShelves
+export const buildSummaryShelves = ({desktopShelves, catalogs, mainPageProducts, originOf, pageIds} = {}) => {
+    const rows = (Array.isArray(desktopShelves) ? desktopShelves : []).filter((row) => !isFilterRow(row));
+    if (!rows.length || !Array.isArray(catalogs)) return null;
+
+    const catalogById = new Map(catalogs.map((catalog) => [Number(catalog.id), catalog]));
+    const storefronts = new Set(pageIds || []);
+    const productsByCatalog = groupByCatalog(mainPageProducts);
+
+    return rows
         .filter((shelf) => !shelf.isHidden && String(shelf.title || '').trim())
         .sort((a, b) => (a.serialNumber ?? 0) - (b.serialNumber ?? 0) || a.id - b.id)
         .map((shelf, index) => {
@@ -285,8 +292,57 @@ export const SHELF_SORTS = [
     {key: 'priceDesc', label: 'Сначала дороже'}
 ];
 
-export const shelfFilters = (offers) => {
+export const buildCategories = ({desktopShelves, catalogs, mainPageProducts, originOf, pageIds} = {}) => {
+    const rows = (Array.isArray(desktopShelves) ? desktopShelves : [])
+        .filter((row) => isFilterRow(row) && !row.isHidden && String(row.title || '').trim());
+    if (!rows.length) return null;
+
+    const catalogById = new Map((catalogs || []).map((catalog) => [Number(catalog.id), catalog]));
+    const storefronts = new Set(pageIds || []);
+    const productsByCatalog = groupByCatalog(mainPageProducts);
+
+    return rows
+        .sort((a, b) => (a.serialNumber ?? 0) - (b.serialNumber ?? 0) || a.id - b.id)
+        .map((row) => {
+            const options = row.options || {};
+            const attached = (row.catalogIds || [])
+                .map((id) => catalogById.get(Number(id)))
+                .filter((catalog) => catalog && storefronts.has(catalog.structurePageId));
+
+            return {
+                key: `category:${row.id}`,
+                label: String(row.title).trim(),
+                flag: options.flag || null,
+                platform: options.platform || null,
+                region: options.region || null,
+                offers: attached.length
+                    ? mergeOffers(attached.flatMap((catalog) => productsByCatalog.get(catalog.id) || []), originOf)
+                    : null
+            };
+        });
+};
+
+const PLATFORM_TESTS = {ps5: /ps\s?5/i, ps4: /ps\s?4/i};
+
+const applyCategory = (offers, category) => {
+    let list = category.offers || offers || [];
+
+    if (category.region) list = list.map((offer) => narrowToRegion(offer, category.region)).filter(Boolean);
+
+    const test = PLATFORM_TESTS[category.platform];
+    if (test) list = list.filter((offer) => test.test(offer.product?.platform));
+
+    return list;
+};
+
+export const shelfFilters = (offers, categories = null) => {
     const list = offers || [];
+
+    if (categories) {
+        return categories
+            .filter((category) => applyCategory(list, category).length)
+            .map(({key, label, flag}) => ({key, label, flag}));
+    }
 
     const platforms = PLATFORM_FILTERS
         .filter((filter) => list.some(filter.test))
@@ -312,9 +368,14 @@ const narrowToRegion = (offer, type) => {
     };
 };
 
-export const filterOffers = (offers, key) => {
+export const filterOffers = (offers, key, categories = null) => {
     const list = offers || [];
     if (!key || key === 'all') return list;
+
+    if (key.startsWith('category:')) {
+        const category = (categories || []).find((item) => item.key === key);
+        return category ? applyCategory(list, category) : list;
+    }
 
     if (key.startsWith('region:')) {
         const type = key.slice('region:'.length);

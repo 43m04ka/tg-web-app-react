@@ -11,7 +11,7 @@ import {sortBanners} from '../storefront/bannerModel';
 import PageBanners from '../storefront/PageBanners';
 import BannerInspector from '../storefront/BannerInspector';
 import {fetchAllBlocks, fetchDesktopShelves, updateDesktopShelf} from './api';
-import {catalogOptions, listOf, moveShelf, optionIndex, sortShelves, withDraft} from './desktopModel';
+import {catalogOptions, categoryRule, isFilter, listOf, moveShelf, optionIndex, sortShelves, withDraft} from './desktopModel';
 import DesktopPreview from './DesktopPreview';
 import ShelfInspector from './ShelfInspector';
 import style from './DesktopScreen.module.scss';
@@ -31,7 +31,10 @@ export default function DesktopScreen() {
     const blocks = useResource(keys.allBlocks, fetchAllBlocks);
     const banners = useResource(keys.banners, fetchBanners);
 
-    const rows = useMemo(() => sortShelves(listOf(shelves.data)), [shelves.data]);
+    const allRows = useMemo(() => sortShelves(listOf(shelves.data)), [shelves.data]);
+    const shelfRows = useMemo(() => allRows.filter((row) => !isFilter(row)), [allRows]);
+    const categoryRows = useMemo(() => allRows.filter(isFilter), [allRows]);
+    const rows = tab === 'filters' ? categoryRows : shelfRows;
     const pageList = useMemo(() => listOf(pages.data), [pages.data]);
     const mainPage = useMemo(() => pageList.find((page) => page.type === 'main') || null, [pageList]);
 
@@ -47,13 +50,13 @@ export default function DesktopScreen() {
         [allBanners, mainPage]
     );
 
-    const previewShelves = useMemo(() => withDraft(rows, editing, draft), [rows, editing, draft]);
+    const previewShelves = useMemo(() => withDraft(allRows, editing, draft), [allRows, editing, draft]);
     const previewBanners = useMemo(() => allBanners.filter((item) => !item.isHidden), [allBanners]);
 
-    const open = useCallback((item) => {
+    const open = useCallback((item, kind = 'shelf') => {
         setBannerEdit(null);
         setDraft(null);
-        setEditing({item});
+        setEditing({item, kind: item ? (isFilter(item) ? 'filter' : 'shelf') : kind});
     }, []);
 
     const openBanner = useCallback((item, slot = 'main') => {
@@ -120,11 +123,14 @@ export default function DesktopScreen() {
                         scroll
                         actions={tab === 'shelves' ? (
                             <Button size="s" variant="primary" onClick={() => open(null)}>Новый сводный каталог</Button>
+                        ) : tab === 'filters' ? (
+                            <Button size="s" variant="primary" onClick={() => open(null, 'filter')}>Новая категория</Button>
                         ) : null}
                     >
                         <Tabs
                             items={[
-                                {id: 'shelves', title: 'Сводные каталоги', count: rows.length},
+                                {id: 'shelves', title: 'Сводные каталоги', count: shelfRows.length},
+                                {id: 'filters', title: 'Категории', count: categoryRows.length},
                                 {id: 'banners', title: 'Баннеры', count: pcBanners.length}
                             ]}
                             value={tab}
@@ -145,20 +151,35 @@ export default function DesktopScreen() {
                         ) : (
                             <>
                                 <div className={style.intro}>
-                                    <Note tone="neutral">
-                                        Сводный каталог — это полка на главной ПК. Создайте его и отметьте обычные
-                                        каталоги разных витрин: их товары соберутся в одну полку, одинаковые игры
-                                        склеятся в одну карточку с лучшей ценой. Порядок полок — стрелками.
-                                    </Note>
+                                    {tab === 'filters' ? (
+                                        <Note tone="neutral">
+                                            Категории — кнопки над полкой «Популярное» рядом с «Все платформы»:
+                                            PS5, PS4, PS Турция, PS Индия и другие. У каждой можно задать название,
+                                            флаг, платформу, витрину и свои каталоги. Порядок кнопок — стрелками.
+                                        </Note>
+                                    ) : (
+                                        <Note tone="neutral">
+                                            Сводный каталог — это полка на главной ПК. Создайте его и отметьте обычные
+                                            каталоги разных витрин: их товары соберутся в одну полку, одинаковые игры
+                                            склеятся в одну карточку с лучшей ценой. Порядок полок — стрелками.
+                                        </Note>
+                                    )}
                                 </div>
 
                                 {shelves.isLoading && !shelves.data ? <SkeletonRows count={5}/> : null}
 
                                 {shelves.data && rows.length === 0 ? (
-                                    <EmptyState
-                                        title="Сводных каталогов нет"
-                                        text="Пока их нет, главная ПК собирает полки по-старому — из блоков страницы «Главная»."
-                                    />
+                                    tab === 'filters' ? (
+                                        <EmptyState
+                                            title="Категорий нет"
+                                            text="Пока их нет, над полкой стоят стандартные кнопки: PS5, PS4, Xbox, PS Турция, PS Индия."
+                                        />
+                                    ) : (
+                                        <EmptyState
+                                            title="Сводных каталогов нет"
+                                            text="Пока их нет, главная ПК собирает полки по-старому — из блоков страницы «Главная»."
+                                        />
+                                    )
                                 ) : null}
 
                                 <div className={style.rows}>
@@ -169,6 +190,9 @@ export default function DesktopScreen() {
                                             <span className={style.rowBody}>
                                                 <span className={style.rowTitle}>{item.title}</span>
                                                 <span className={style.rowMeta}>
+                                                    {categoryRule(item).map((rule) => (
+                                                        <Badge key={rule} tone="info">{rule}</Badge>
+                                                    ))}
                                                     {(item.catalogIds || []).map((id) => {
                                                         const option = byId.get(Number(id));
                                                         return (
@@ -198,8 +222,9 @@ export default function DesktopScreen() {
 
                     {editing ? (
                         <ShelfInspector
-                            key={editing.item?.id ?? 'new'}
+                            key={editing.item?.id ?? `new-${editing.kind}`}
                             shelf={editing.item}
+                            kind={editing.kind}
                             groups={groups}
                             count={rows.length}
                             onDraft={setDraft}

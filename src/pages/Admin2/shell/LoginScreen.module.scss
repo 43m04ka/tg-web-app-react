@@ -56,3 +56,14 @@
     color: var(--a2-text-muted);
     font-size: var(--a2-size-s);
 }
+
+.pick {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pickLabel {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+}

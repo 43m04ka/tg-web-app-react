@@ -6,7 +6,6 @@ export const keys = {
     associationsSchedule: ['associations', 'schedule'],
     settings: ['settings'],
     sessions: ['admin-sessions'],
-    codeRecipients: ['login-code-recipients'],
     agentToken: ['agent', 'token'],
     agentPlans: ['agent', 'plans'],
     agentActive: ['agent', 'active'],

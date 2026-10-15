@@ -21,15 +21,13 @@ import {
     downloadAgentToken,
     fetchAgentToken,
     fetchAllSettings,
-    fetchCodeRecipients,
     fetchSessions,
     revokeAgentToken,
     revokeOtherSessions,
     revokeSession,
-    saveCodeRecipients,
     updateSetting
 } from './api';
-import {adminTitle, agoTitle, leftTitle, otherCount, sortSessions, toggleChatId} from './accessModel';
+import {agoTitle, leftTitle, otherCount, sortSessions} from './accessModel';
 import style from './AccessScreen.module.scss';
 
 export default function AccessScreen() {
@@ -38,36 +36,11 @@ export default function AccessScreen() {
     const sessions = useResource(keys.sessions, fetchSessions, {refreshMs: 60000});
     const settings = useResource(keys.settings, fetchAllSettings);
 
-    const recipients = useResource(keys.codeRecipients, fetchCodeRecipients);
     const agentToken = useResource(keys.agentToken, fetchAgentToken, {refreshMs: 60000});
     const [issuing, setIssuing] = useState(false);
-    const [savingRecipients, setSavingRecipients] = useState(false);
 
     const secondStep = settings.data?.settings?.admin_login_code?.value === true;
-    const admins = useMemo(() => recipients.data?.result || [], [recipients.data]);
-    const chosen = useMemo(() => admins.filter((admin) => admin.selected).map((admin) => admin.chatId), [admins]);
     const agent = agentToken.data?.result || null;
-
-    const toggleRecipient = useCallback(async (chatId) => {
-        const next = toggleChatId(chosen, chatId);
-
-        if (!next.length) {
-            toastFail('Нужен хотя бы один получатель', 'Иначе код входа некому будет прислать');
-            return;
-        }
-
-        setSavingRecipients(true);
-
-        try {
-            await saveCodeRecipients(next);
-            invalidate(keys.codeRecipients);
-            toast({tone: 'positive', title: 'Получатели кода сохранены'});
-        } catch (error) {
-            toastFail(error.message || 'Не получилось сохранить', error.hint || '');
-        } finally {
-            setSavingRecipients(false);
-        }
-    }, [chosen]);
 
     const issueAgentToken = useCallback(async () => {
         const answer = await askConfirm({
@@ -263,29 +236,140 @@ export default function AccessScreen() {
 
                 <Note tone={secondStep ? 'accent' : 'warning'}>
                     {secondStep
-                        ? 'После логина и пароля бот Геймворд шлёт шестизначный код выбранным админам. Код живёт пять минут и сгорает после пяти промахов.'
+                        ? 'После логина и пароля бот Геймворд шлёт шестизначный код админу, которого вы выберете на экране входа. Код живёт пять минут и сгорает после пяти промахов.'
                         : 'Сейчас пароль — единственный барьер при новом входе. Код всё равно спросят у входа, которым не пользовались неделю.'}
                 </Note>
 
-                <span className={style.label}>Кому приходит код</span>
+                <Note tone="neutral">
+                    Старая панель умеет только одношаговый вход. Пока работаете в ней,
+                    второй шаг держите выключенным — иначе она перестанет пускать.
+                </Note>
 
-                {recipients.isLoading && !recipients.data ? <SkeletonRows count={1}/> : null}
+                {settings.error ? <ErrorState error={settings.error} onRetry={settings.refresh}/> : null}
+            </Panel>
 
-                <div className={style.admins}>
-                    {admins.map((admin) => (
-                        <label key={admin.chatId} className={style.admin}>
-                            <input
-                                type="checkbox"
-                                checked={admin.selected}
-                                disabled={savingRecipients}
-                                onChange={() => toggleRecipient(admin.chatId)}
-                            />
-                            <span>{adminTitle(admin)}</span>
-                        </label>
+            <Panel title="Токен агента" scroll>
+                <div className={`${style.token} ${agent ? style.tokenOn : ''}`}>
+                    <div className={style.tokenHead}>
+                        <span className={style.dot}/>
+                        <span className={style.tokenTitle}>
+                            <span className={style.tokenState}>{agent ? 'Агент подключён' : 'Токен не выпущен'}</span>
+                            <span className={style.tokenSub}>
+                                {agent
+                                    ? `последняя активность ${agoTitle(agent.lastSeenAt)}`
+                                    : 'Claude+Agent на ПК не может отправлять планы'}
+                            </span>
+                        </span>
+                    </div>
+
+                    {agent ? (
+                        <div className={style.stats}>
+                            <span className={style.stat}>
+                                <span className={style.statLabel}>Выпущен</span>
+                                <span className={style.statValue}>{agoTitle(agent.issuedAt)}</span>
+                            </span>
+                            <span className={style.stat}>
+                                <span className={style.statLabel}>Действует ещё</span>
+                                <span className={style.statValue}>{leftTitle(agent.expiresAt)}</span>
+                            </span>
+                        </div>
+                    ) : null}
+
+                    <div className={style.tokenActions}>
+                        <Button variant={agent ? 'secondary' : 'primary'} loading={issuing} onClick={issueAgentToken}>
+                            {agent ? 'Перевыпустить' : 'Выпустить и скачать'}
+                        </Button>
+                        {agent ? <Button variant="ghost" onClick={dropAgentToken}>Отозвать</Button> : null}
+                    </div>
+                </div>
+
+                <p className={style.hint}>
+                    Открывает только раздел планов агента. Файл agent_token.txt подключается в трее
+                    Claude+Agent: «Токен агента…». Новый токен сразу гасит прежний.
+                </p>
+
+                {agentToken.error ? <ErrorState error={agentToken.error} onRetry={agentToken.refresh}/> : null}
+            </Panel>
+        </Workspace>
+        );
+    }
+
+    return (
+        <Workspace>
+            <HeaderActions>
+                <Button size="s" variant="ghost" onClick={sessions.refresh}>Обновить</Button>
+            </HeaderActions>
+
+            <Panel
+                title="Входы в админку"
+                subtitle={rows.length ? `${rows.length} активных` : ''}
+                wide
+                scroll
+                actions={others > 0 ? (
+                    <Button size="s" variant="danger" onClick={dropOthers}>
+                        Отозвать остальные ({others})
+                    </Button>
+                ) : null}
+            >
+                <Note tone="neutral">
+                    Один вход — один выданный токен. Отзыв срабатывает сразу. Вход, которым
+                    не пользовались неделю, просит код из Telegram, а через месяц простоя
+                    закрывается и удаляется сам.
+                </Note>
+
+                {sessions.isLoading && !sessions.data ? <SkeletonRows count={3}/> : null}
+
+                {sessions.data && rows.length === 0 ? (
+                    <EmptyState
+                        title="Активных входов нет"
+                        text="Список наполняется, когда кто-то входит в панель."
+                    />
+                ) : null}
+
+                <div className={style.list}>
+                    {rows.map((item) => (
+                        <div key={item.id} className={`${style.item} ${item.current ? style.itemCurrent : ''}`}>
+                            <span className={style.body}>
+                                <span className={style.device}>
+                                    {item.device}
+                                    {item.current ? <Badge tone="accent">этот вход</Badge> : null}
+                                    {item.kind === 'agent' ? <Badge tone="warning">агент</Badge> : null}
+                                </span>
+
+                                <span className={style.meta}>
+                                    {item.ip ? <Mono muted>{item.ip}</Mono> : null}
+                                    <span>активность {agoTitle(item.lastSeenAt)}</span>
+                                    {item.reconfirmAt ? <span>код через {leftTitle(item.reconfirmAt)}</span> : null}
+                                    <span>закроется через {leftTitle(item.expiresAt)}</span>
+                                </span>
+                            </span>
+
+                            <Button size="s" variant="ghost" onClick={() => dropOne(item)}>
+                                Отозвать
+                            </Button>
+                        </div>
                     ))}
                 </div>
 
-                {recipients.error ? <ErrorState error={recipients.error} onRetry={recipients.refresh}/> : null}
+                <Note tone="warning">
+                    Отзыв гасит токен, но не пароль: со знанием логина и пароля можно войти
+                    заново и получить новый. Пароль остаётся корневым доступом.
+                </Note>
+            </Panel>
+
+            <Panel title="Вход" scroll>
+                <Toggle
+                    checked={secondStep}
+                    label="Спрашивать код из Telegram"
+                    disabled={settings.isLoading && !settings.data}
+                    onChange={toggleSecondStep}
+                />
+
+                <Note tone={secondStep ? 'accent' : 'warning'}>
+                    {secondStep
+                        ? 'После логина и пароля бот Геймворд шлёт шестизначный код админу, которого вы выберете на экране входа. Код живёт пять минут и сгорает после пяти промахов.'
+                        : 'Сейчас пароль — единственный барьер при новом входе. Код всё равно спросят у входа, которым не пользовались неделю.'}
+                </Note>
 
                 <Note tone="neutral">
                     Старая панель умеет только одношаговый вход. Пока работаете в ней,

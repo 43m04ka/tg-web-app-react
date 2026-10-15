@@ -10,10 +10,6 @@ export const fetchAllSettings = () => httpGet('/settings/all');
 
 export const updateSetting = ({key, value, type}) => httpPost('/settings/update', {key, value, type});
 
-export const fetchCodeRecipients = () => httpGet('/login-code/recipients');
-
-export const saveCodeRecipients = (chatIds) => httpPost('/login-code/recipients', {chatIds});
-
 export const fetchAgentToken = () => httpGet('/agent/token');
 
 export const revokeAgentToken = () => httpPost('/agent/token/revoke', {});

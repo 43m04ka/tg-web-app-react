@@ -41,8 +41,12 @@ export const useSession = () => {
     return session;
 };
 
-export const signIn = async ({login, password}) => {
-    const payload = await http('/authentication', {method: 'POST', body: {login, password}});
+const pickedRecipient = (payload) => (payload && payload.answer === 'PICK_RECIPIENT'
+    ? {status: 'pick', admins: Array.isArray(payload.admins) ? payload.admins : []}
+    : null);
+
+export const signIn = async ({login, password, recipient}) => {
+    const payload = await http('/authentication', {method: 'POST', body: {login, password, recipient}});
 
     if (payload && payload.token) {
         saveSession({
@@ -54,6 +58,9 @@ export const signIn = async ({login, password}) => {
 
         return {status: 'signed'};
     }
+
+    const pick = pickedRecipient(payload);
+    if (pick) return pick;
 
     if (payload && payload.answer === 'CODE_SENT' && payload.ticket) {
         return {
@@ -82,13 +89,16 @@ export const confirmSignIn = async ({ticket, code, login}) => {
     return {status: 'signed'};
 };
 
-export const startReconfirm = async () => {
-    const payload = await http('/authentication/reconfirm', {method: 'POST', body: {}});
+export const startReconfirm = async ({recipient} = {}) => {
+    const payload = await http('/authentication/reconfirm', {method: 'POST', body: {recipient}});
 
     if (payload && payload.answer === 'OK') {
         finishReconfirmLocally();
         return {status: 'signed'};
     }
+
+    const pick = pickedRecipient(payload);
+    if (pick) return pick;
 
     if (payload && payload.answer === 'CODE_SENT' && payload.ticket) {
         return {status: 'confirmation', ticket: payload.ticket, attempts: payload.attempts || null};

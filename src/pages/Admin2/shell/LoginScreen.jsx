@@ -1,9 +1,32 @@
 import React, {useState} from 'react';
 import {confirmReconfirm, confirmSignIn, signIn, signOut, startReconfirm} from '../platform/session';
+import {adminTitle} from '../modules/access/accessModel';
 import {Button} from '../ui/primitives/Button';
 import {Field, Input} from '../ui/primitives/Field';
 import {Note} from '../ui/primitives/Feedback';
 import style from './LoginScreen.module.scss';
+
+const LAST_RECIPIENT_KEY = 'gw-admin2-code-recipient';
+
+const readLastRecipient = () => {
+    try {
+        return window.localStorage.getItem(LAST_RECIPIENT_KEY) || '';
+    } catch {
+        return '';
+    }
+};
+
+const rememberRecipient = (chatId) => {
+    try {
+        window.localStorage.setItem(LAST_RECIPIENT_KEY, String(chatId));
+    } catch {
+        void 0;
+    }
+};
+
+const orderAdmins = (admins, last) => [...admins].sort((left, right) => (
+    Number(String(right.chatId) === last) - Number(String(left.chatId) === last)
+));
 
 export default function LoginScreen({reconfirm = false}) {
     const [step, setStep] = useState(reconfirm ? 'reconfirm' : 'credentials');
@@ -12,72 +35,51 @@ export default function LoginScreen({reconfirm = false}) {
     const [code, setCode] = useState('');
     const [ticket, setTicket] = useState('');
     const [attempts, setAttempts] = useState(null);
+    const [admins, setAdmins] = useState([]);
+    const [sentTo, setSentTo] = useState(null);
+    const [sending, setSending] = useState('');
     const [error, setError] = useState('');
     const [busy, setBusy] = useState(false);
 
-    const submitCredentials = async (event) => {
-        event.preventDefault();
-        setBusy(true);
-        setError('');
+    const reconfirming = step.startsWith('reconfirm');
 
-        try {
-            const result = await signIn({login: login.trim(), password});
-
-            if (result.status === 'confirmation') {
-                setTicket(result.ticket);
-                setAttempts(result.attempts);
-                setCode('');
-                setStep('confirmation');
-            } else if (result.status !== 'signed') {
-                setError('Сервер не выдал токен');
-            }
-        } catch (failure) {
-            setError(failure.status === 401 ? 'Логин или пароль не подходят' : failure.message);
-        } finally {
-            setBusy(false);
+    const accept = (result, recipient) => {
+        if (result.status === 'pick') {
+            setAdmins(orderAdmins(result.admins, readLastRecipient()));
+            setStep(reconfirming ? 'reconfirm-pick' : 'pick');
+            return;
         }
+
+        if (result.status === 'confirmation') {
+            if (recipient) rememberRecipient(recipient.chatId);
+            setSentTo(recipient || null);
+            setTicket(result.ticket);
+            setAttempts(result.attempts);
+            setCode('');
+            setStep(reconfirming ? 'reconfirm-code' : 'confirmation');
+            return;
+        }
+
+        if (result.status !== 'signed') setError(reconfirming ? 'Сервер не прислал код' : 'Сервер не выдал токен');
     };
 
-    const requestReconfirm = async (event) => {
-        event.preventDefault();
+    const request = async (recipient) => {
         setBusy(true);
+        setSending(recipient ? String(recipient.chatId) : '');
         setError('');
 
         try {
-            const result = await startReconfirm();
+            const chatId = recipient ? recipient.chatId : undefined;
+            const result = reconfirming
+                ? await startReconfirm({recipient: chatId})
+                : await signIn({login: login.trim(), password, recipient: chatId});
 
-            if (result.status === 'confirmation') {
-                setTicket(result.ticket);
-                setAttempts(result.attempts);
-                setCode('');
-                setStep('reconfirm-code');
-            } else if (result.status !== 'signed') {
-                setError('Сервер не прислал код');
-            }
+            accept(result, recipient);
         } catch (failure) {
-            setError(failure.message);
+            setError(!reconfirming && failure.status === 401 ? 'Логин или пароль не подходят' : failure.message);
         } finally {
             setBusy(false);
-        }
-    };
-
-    const submitReconfirm = async (event) => {
-        event.preventDefault();
-        setBusy(true);
-        setError('');
-
-        try {
-            const result = await confirmReconfirm({ticket, code: code.trim()});
-            if (result.status !== 'signed') setError('Код не подошёл');
-        } catch (failure) {
-            setError(failure.message);
-
-            if (failure.status === 401 && /заново|новый|устарел/.test(failure.message || '')) {
-                setStep('reconfirm');
-                setTicket('');
-            }
-        } finally {
-            setBusy(false);
+            setSending('');
         }
     };
 
@@ -87,34 +89,48 @@ export default function LoginScreen({reconfirm = false}) {
         setError('');
 
         try {
-            const result = await confirmSignIn({ticket, code: code.trim(), login: login.trim()});
+            const result = reconfirming
+                ? await confirmReconfirm({ticket, code: code.trim()})
+                : await confirmSignIn({ticket, code: code.trim(), login: login.trim()});
+
             if (result.status !== 'signed') setError('Код не подошёл');
         } catch (failure) {
             setError(failure.message);
 
-            // Билет сгорел или устарел — возвращаем к логину, иначе человек будет
-            // вводить коды в форму, которая уже ничего не примет
-            if (failure.status === 401 && /заново/.test(failure.message || '')) {
-                setStep('credentials');
+            if (failure.status === 401 && /заново|новый|устарел/.test(failure.message || '')) {
                 setTicket('');
-                setPassword('');
+
+                if (reconfirming) {
+                    setStep('reconfirm');
+                } else {
+                    setStep('credentials');
+                    setPassword('');
+                }
             }
         } finally {
             setBusy(false);
         }
     };
 
+    const back = () => {
+        setTicket('');
+        setError('');
+        setStep(reconfirming ? 'reconfirm' : 'credentials');
+    };
+
+    const onSubmit = (event) => {
+        event.preventDefault();
+
+        if (step === 'credentials' || step === 'reconfirm') request(null);
+        else if (step === 'confirmation' || step === 'reconfirm-code') submitCode(event);
+    };
+
+    const picking = step === 'pick' || step === 'reconfirm-pick';
+    const entering = step === 'confirmation' || step === 'reconfirm-code';
+
     return (
         <div className={style.screen}>
-            <form
-                className={style.card}
-                onSubmit={{
-                    credentials: submitCredentials,
-                    confirmation: submitCode,
-                    reconfirm: requestReconfirm,
-                    'reconfirm-code': submitReconfirm,
-                }[step]}
-            >
+            <form className={style.card} onSubmit={onSubmit}>
                 <div className={style.head}>
                     <span className={style.mark}>GW</span>
                     <div className={style.heading}>
@@ -130,24 +146,6 @@ export default function LoginScreen({reconfirm = false}) {
                         Этим входом не пользовались больше недели. Пароль вводить не нужно —
                         подтвердите вход кодом, который придёт в Telegram от бота Геймворд.
                     </Note>
-                ) : null}
-
-                {step === 'reconfirm-code' ? (
-                    <>
-                        <Note tone="accent">
-                            Код отправлен в Telegram выбранным админам. Он действует пять минут
-                            {attempts ? `, попыток — ${attempts}` : ''}.
-                        </Note>
-                        <Field label="Код подтверждения">
-                            <Input
-                                value={code}
-                                autoFocus
-                                inputMode="numeric"
-                                mono
-                                onChange={(event) => setCode(event.target.value)}
-                            />
-                        </Field>
-                    </>
                 ) : null}
 
                 {step === 'credentials' ? (
@@ -171,10 +169,29 @@ export default function LoginScreen({reconfirm = false}) {
                     </>
                 ) : null}
 
-                {step === 'confirmation' ? (
+                {picking ? (
+                    <div className={style.pick}>
+                        <span className={style.pickLabel}>Кому прислать код</span>
+                        {admins.map((admin, index) => (
+                            <Button
+                                key={admin.chatId}
+                                variant={index === 0 ? 'primary' : 'secondary'}
+                                block
+                                disabled={busy && sending !== String(admin.chatId)}
+                                loading={sending === String(admin.chatId)}
+                                onClick={() => request(admin)}
+                            >
+                                {adminTitle(admin)}
+                            </Button>
+                        ))}
+                    </div>
+                ) : null}
+
+                {entering ? (
                     <>
                         <Note tone="accent">
-                            Шестизначный код отправлен в Telegram выбранным админам. Он действует пять минут
+                            Шестизначный код отправлен в Telegram
+                            {sentTo ? ` — ${adminTitle(sentTo)}` : ''}. Он действует пять минут
                             {attempts ? `, попыток — ${attempts}` : ''}.
                         </Note>
                         <Field label="Код подтверждения">
@@ -191,27 +208,27 @@ export default function LoginScreen({reconfirm = false}) {
 
                 {error ? <Note tone="danger">{error}</Note> : null}
 
-                <Button type="submit" variant="primary" block loading={busy}>
-                    {{credentials: 'Войти', reconfirm: 'Отправить код'}[step] || 'Подтвердить'}
-                </Button>
+                {picking ? null : (
+                    <Button type="submit" variant="primary" block loading={busy}>
+                        {{credentials: 'Войти', reconfirm: 'Получить код'}[step] || 'Подтвердить'}
+                    </Button>
+                )}
 
-                {step === 'reconfirm' || step === 'reconfirm-code' ? (
-                    <Button variant="ghost" block onClick={signOut}>
-                        Выйти и войти по паролю
+                {picking || step === 'confirmation' ? (
+                    <Button variant="ghost" block onClick={step === 'confirmation' && admins.length > 1 ? () => setStep('pick') : back}>
+                        Назад
                     </Button>
                 ) : null}
 
-                {step === 'confirmation' ? (
-                    <Button
-                        variant="ghost"
-                        block
-                        onClick={() => {
-                            setStep('credentials');
-                            setTicket('');
-                            setError('');
-                        }}
-                    >
-                        Назад
+                {step === 'reconfirm-code' && admins.length > 1 ? (
+                    <Button variant="ghost" block onClick={() => setStep('reconfirm-pick')}>
+                        Отправить другому админу
+                    </Button>
+                ) : null}
+
+                {reconfirming ? (
+                    <Button variant="ghost" block onClick={signOut}>
+                        Выйти и войти по паролю
                     </Button>
                 ) : null}
             </form>

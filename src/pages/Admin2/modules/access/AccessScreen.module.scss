@@ -44,37 +44,92 @@
     font-size: var(--a2-size-xs);
 }
 
-.label {
-    color: var(--a2-text-faint);
-    font-size: var(--a2-size-xs);
+.token {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 14px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-card);
+}
+
+.tokenHead {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dot {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--a2-text-faint);
+}
+
+.tokenOn {
+    border-color: var(--a2-accent);
+    background: var(--a2-accent-soft);
+}
+
+.tokenOn .dot {
+    background: var(--a2-accent);
+    box-shadow: 0 0 0 4px var(--a2-accent-soft);
+}
+
+.tokenTitle {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.tokenState {
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
     font-weight: 600;
 }
 
-.admins {
-    display: flex;
-    flex-wrap: wrap;
+.tokenSub {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
 }
 
-.admin {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    height: 32px;
-    padding: 0 12px;
-    border: 1px solid var(--a2-border);
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 10px;
     border-radius: var(--a2-radius-m);
     background: var(--a2-plane);
+}
+
+.statLabel {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+}
+
+.statValue {
     color: var(--a2-text);
     font-size: var(--a2-size-s);
     font-weight: 600;
-    cursor: pointer;
 }
 
-.admin input {
-    width: 16px;
-    height: 16px;
+.tokenActions {
+    display: flex;
+    gap: 8px;
+}
+
+.hint {
     margin: 0;
-    accent-color: var(--a2-accent);
-    cursor: pointer;
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    line-height: 1.5;
 }

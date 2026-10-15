@@ -44,11 +44,3 @@ export const adminTitle = (admin) => {
 
     return `Чат ${admin?.chatId}`;
 };
-
-export const toggleChatId = (list, chatId) => {
-    const current = list || [];
-
-    return current.includes(chatId)
-        ? current.filter((item) => item !== chatId)
-        : current.concat(chatId);
-};

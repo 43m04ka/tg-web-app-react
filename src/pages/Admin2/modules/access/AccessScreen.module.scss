@@ -43,3 +43,38 @@
     color: var(--a2-text-faint);
     font-size: var(--a2-size-xs);
 }
+
+.label {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+    font-weight: 600;
+}
+
+.admins {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.admin {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-plane);
+    color: var(--a2-text);
+    font-size: var(--a2-size-s);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.admin input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--a2-accent);
+    cursor: pointer;
+}

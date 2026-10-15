@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {http} from './http';
 import {dropCache} from './cache';
 import {toast} from './notify';
-import {clearSession, getSession, saveSession, setUnauthorizedHandler, subscribeSession} from './token';
+import {clearSession, getSession, saveSession, setReconfirmHandler, setUnauthorizedHandler, subscribeSession} from './token';
 
 const describeDevice = () => {
     const agent = navigator.userAgent || '';
@@ -23,6 +23,14 @@ setUnauthorizedHandler(() => {
     clearSession();
 
     if (had) toast({tone: 'warning', title: 'Сессия закончилась', text: 'Войдите заново — вы вернётесь на этот же экран'});
+});
+
+setReconfirmHandler(() => {
+    const current = getSession();
+
+    if (!current || current.reconfirm) return;
+
+    saveSession({...current, reconfirm: true});
 });
 
 export const useSession = () => {
@@ -71,6 +79,41 @@ export const confirmSignIn = async ({ticket, code, login}) => {
         startedAt: Date.now(),
     });
 
+    return {status: 'signed'};
+};
+
+export const startReconfirm = async () => {
+    const payload = await http('/authentication/reconfirm', {method: 'POST', body: {}});
+
+    if (payload && payload.answer === 'OK') {
+        finishReconfirmLocally();
+        return {status: 'signed'};
+    }
+
+    if (payload && payload.answer === 'CODE_SENT' && payload.ticket) {
+        return {status: 'confirmation', ticket: payload.ticket, attempts: payload.attempts || null};
+    }
+
+    return {status: 'failed'};
+};
+
+const finishReconfirmLocally = () => {
+    const current = getSession();
+    if (!current) return;
+
+    const rest = {...current};
+    delete rest.reconfirm;
+
+    dropCache();
+    saveSession(rest);
+};
+
+export const confirmReconfirm = async ({ticket, code}) => {
+    const payload = await http('/authentication/reconfirm/confirm', {method: 'POST', body: {ticket, code}});
+
+    if (!payload || payload.answer !== 'OK') return {status: 'failed'};
+
+    finishReconfirmLocally();
     return {status: 'signed'};
 };
 

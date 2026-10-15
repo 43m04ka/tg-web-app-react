@@ -1,5 +1,5 @@
 import {API_BASE_URL} from '../../../shared/config/env';
-import {getToken, reportUnauthorized} from './token';
+import {getToken, reportReconfirm, reportUnauthorized} from './token';
 
 const AREAS = {
     admin: '/api/admin',
@@ -123,7 +123,11 @@ const runOnce = async (url, {method, body, form, signal, timeoutMs, as}) => {
         const payload = await readPayload(response);
 
         if (response.status === 401) {
-            reportUnauthorized();
+            const reconfirm = payload && typeof payload === 'object' && payload.reason === 'reconfirm';
+
+            if (reconfirm) reportReconfirm();
+            else reportUnauthorized();
+
             throw new HttpError(messageOf(payload, 401), {status: 401, url});
         }
 

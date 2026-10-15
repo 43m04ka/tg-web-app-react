@@ -3,6 +3,7 @@ const STORAGE_KEY = 'admin2.session';
 const listeners = new Set();
 
 let unauthorizedHandler = null;
+let reconfirmHandler = null;
 
 const read = () => {
     try {
@@ -56,4 +57,12 @@ export const setUnauthorizedHandler = (handler) => {
 
 export const reportUnauthorized = () => {
     if (unauthorizedHandler) unauthorizedHandler();
+};
+
+export const setReconfirmHandler = (handler) => {
+    reconfirmHandler = handler;
+};
+
+export const reportReconfirm = () => {
+    if (reconfirmHandler) reconfirmHandler();
 };

@@ -33,3 +33,22 @@ export const sortSessions = (list) => (list || []).slice().sort((left, right) =>
 });
 
 export const otherCount = (list) => (list || []).filter((item) => !item.current).length;
+
+export const adminTitle = (admin) => {
+    const name = String(admin?.name || '').trim();
+    const username = String(admin?.username || '').trim();
+
+    if (username && name) return `@${username} · ${name}`;
+    if (username) return `@${username}`;
+    if (name) return name;
+
+    return `Чат ${admin?.chatId}`;
+};
+
+export const toggleChatId = (list, chatId) => {
+    const current = list || [];
+
+    return current.includes(chatId)
+        ? current.filter((item) => item !== chatId)
+        : current.concat(chatId);
+};

@@ -16,9 +16,9 @@ export default function Admin2() {
     return (
         <div className={style.root} data-a2-root data-a2-theme={theme}>
             <ViewportGuard>
-                {session
+                {session && !session.reconfirm
                     ? <AdminShell theme={theme} onToggleTheme={toggle}/>
-                    : <LoginScreen/>}
+                    : <LoginScreen key={session?.reconfirm ? 'reconfirm' : 'login'} reconfirm={Boolean(session?.reconfirm)}/>}
 
                 <Toaster/>
                 <ConfirmHost/>

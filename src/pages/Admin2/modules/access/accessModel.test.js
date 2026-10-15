@@ -1,4 +1,4 @@
-import {agoTitle, leftTitle, otherCount, sortSessions} from './accessModel';
+import {adminTitle, agoTitle, leftTitle, otherCount, sortSessions, toggleChatId} from './accessModel';
 
 const NOW = Date.parse('2026-09-11T12:00:00Z');
 
@@ -51,5 +51,17 @@ describe('otherCount', () => {
         expect(otherCount([{current: true}, {current: false}, {current: false}])).toBe(2);
         expect(otherCount([])).toBe(0);
         expect(otherCount(null)).toBe(0);
+    });
+});
+
+describe('получатели кода', () => {
+    it('подписывает админа ником и именем', () => {
+        expect(adminTitle({chatId: '1', username: 'imms11', name: 'Владелец'})).toBe('@imms11 · Владелец');
+        expect(adminTitle({chatId: '1', username: '', name: ''})).toBe('Чат 1');
+    });
+
+    it('переключает chatId в списке', () => {
+        expect(toggleChatId(['1'], '2')).toEqual(['1', '2']);
+        expect(toggleChatId(['1', '2'], '1')).toEqual(['2']);
     });
 });

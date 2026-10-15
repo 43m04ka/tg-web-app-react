@@ -1,0 +1,185 @@
+.plan {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.planHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.planTitle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    color: var(--a2-text);
+    font-size: var(--a2-size-l);
+    font-weight: 700;
+}
+
+.planActions {
+    display: flex;
+    gap: 6px;
+}
+
+.summary {
+    margin: 0;
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+    white-space: pre-wrap;
+}
+
+.now {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+}
+
+.counter {
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-s);
+    white-space: nowrap;
+}
+
+.steps {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.step {
+    display: flex;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+}
+
+.stepCurrent {
+    border-color: var(--a2-accent);
+    background: var(--a2-accent-soft);
+}
+
+.stepNumber {
+    flex: none;
+    width: 22px;
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-s);
+    font-weight: 700;
+    text-align: right;
+}
+
+.stepBody {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.stepTitle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+}
+
+.stepMeta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+}
+
+.verdict {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-xs);
+}
+
+.details {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-xs);
+}
+
+.details summary {
+    cursor: pointer;
+    user-select: none;
+}
+
+.pre {
+    max-height: 260px;
+    margin: 6px 0 0;
+    padding: 8px 10px;
+    overflow: auto;
+    border-radius: var(--a2-radius-s);
+    background: var(--a2-plane);
+    color: var(--a2-text);
+    font-family: var(--a2-font-mono);
+    font-size: var(--a2-size-xs);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.log {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 6px;
+}
+
+.logLine {
+    display: flex;
+    gap: 10px;
+}
+
+.history {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.historyItem {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 12px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-card);
+    color: var(--a2-text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.historyItemActive {
+    border-color: var(--a2-accent);
+}
+
+.historyTitle {
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+}
+
+.historyMeta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    color: var(--a2-text-faint);
+    font-size: var(--a2-size-xs);
+}

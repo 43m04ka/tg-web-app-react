@@ -10,4 +10,4 @@ export const setOrderCost = ({orderId, costPrice}) => httpPost('/order/set-cost'
 
 export const markPayoutManual = (orderId) => httpPost('/order/payout-manual', {orderId});
 
-export const notifyClosedProfile = (orderId) => httpGet('/sendMassageUndefinedName', {query: {orderId}});
+export const notifyClosedProfile = (orderId) => httpPost('/sendMassageUndefinedName', {orderId});

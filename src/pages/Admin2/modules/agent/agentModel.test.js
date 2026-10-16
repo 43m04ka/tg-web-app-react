@@ -40,6 +40,16 @@ describe('план агента', () => {
         expect(statusOf('paused').title).toBe('на паузе');
     });
 
+    it('показывает шаг рассылки и ожидание кнопки', () => {
+        const step = {title: 'Акция', kind: 'broadcast', stage: 'test-ok', state: 'waiting'};
+        const waiting = plan({status: 'confirm', current: 0, steps: [step]});
+
+        expect(isActive(waiting)).toBe(true);
+        expect(statusOf('confirm').title).toBe('ждёт подтверждения рассылки');
+        expect(stepTarget(step)).toBe('рассылка: проба принята, ждёт кнопки «Отправить всем»');
+        expect(nowLine(waiting)).toBe('Шаг 1 из 1: проба принята, ждёт кнопки «Отправить всем»');
+    });
+
     it('форматирует длительность', () => {
         expect(durationTitle(250)).toBe('250 мс');
         expect(durationTitle(42000)).toBe('42 с');

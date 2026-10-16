@@ -51,10 +51,9 @@ export function useServer() {
     };
 
     const sendMassageUndefinedName = async (orderId) => {
-        const response = await fetch(`${URL}/sendMassageUndefinedName`, {
-            method: 'POST',
+        const response = await fetch(`${URL}/sendMassageUndefinedName?time=${Date.now()}&orderId=${orderId}`, {
+            method: 'GET',
             headers: adminAuthHeadersJson(),
-            body: JSON.stringify(withJsonAuth({orderId})),
         });
 
         await throwIfFailed(response, 'Не удалось отправить сообщение');

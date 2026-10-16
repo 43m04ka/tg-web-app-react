@@ -36,7 +36,7 @@ const useNow = (enabled) => {
 
 function StepRow({step, index, current, planStatus}) {
     const state = stepStateOf(step.state);
-    const isCurrent = index === current && ['running', 'review', 'paused', 'confirm'].includes(planStatus);
+    const isCurrent = index === current && ['running', 'review', 'paused'].includes(planStatus);
 
     return (
         <div className={`${style.step} ${isCurrent ? style.stepCurrent : ''}`}>
@@ -54,13 +54,6 @@ function StepRow({step, index, current, planStatus}) {
                     {step.result?.status ? <span>HTTP {step.result.status}</span> : null}
                     {step.result?.ms ? <span>{durationTitle(step.result.ms)}</span> : null}
                 </span>
-
-                {step.broadcast ? (
-                    <details className={style.details}>
-                        <summary>Рассылка</summary>
-                        <pre className={style.pre}>{JSON.stringify(step.broadcast, null, 2)}</pre>
-                    </details>
-                ) : null}
 
                 {step.body ? (
                     <details className={style.details}>

@@ -1,5 +1,5 @@
 import vkBridge from '@vkontakte/vk-bridge';
-import {isVk} from './platform';
+import {getVkGroupId, isVk} from './platform';
 
 const state = {
     initPromise: null,
@@ -55,6 +55,29 @@ export const getVkUser = () => {
     }
 
     return state.userPromise;
+};
+
+const MESSAGES_KEY = '__vk_messages_asked';
+
+export const askVkMessages = async () => {
+    if (!isVk()) return false;
+
+    const groupId = getVkGroupId();
+    const key = `${MESSAGES_KEY}:${groupId}`;
+
+    try {
+        if (sessionStorage.getItem(key)) return true;
+        sessionStorage.setItem(key, '1');
+    } catch (error) {
+    }
+
+    try {
+        await initVk();
+        const result = await vkBridge.send('VKWebAppAllowMessagesFromGroup', {group_id: groupId});
+        return Boolean(result?.result);
+    } catch (error) {
+        return false;
+    }
 };
 
 export const subscribeVkSafeArea = (onChange) => {

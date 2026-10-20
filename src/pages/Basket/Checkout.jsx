@@ -41,6 +41,7 @@ import {OrderAccepted, PaymentFail, PaymentSuccess, PaymentWaiting} from './Paym
 import LegalNote from '../../shared/ui/LegalNote/LegalNote';
 import VpnGate, {usePaymentNetwork} from '../../shared/ui/VpnGate/VpnGate';
 import style from './Basket.module.scss';
+import {useVkMessages} from '../../shared/hooks/useVkMessages';
 
 const FORM_KEY = 'checkout:form';
 
@@ -158,6 +159,8 @@ function Faq({items}) {
 }
 
 export default function Checkout() {
+    useVkMessages();
+
     const navigate = useNavigate();
     const {contentSafeAreaInset, safeAreaInset} = useAppInsets();
     const {vkGroupId} = useTelegram();

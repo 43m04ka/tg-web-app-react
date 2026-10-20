@@ -28,6 +28,7 @@ import {useSteamQuote} from './useSteamQuote';
 import LegalNote from '../../shared/ui/LegalNote/LegalNote';
 import VpnGate, {usePaymentNetwork} from '../../shared/ui/VpnGate/VpnGate';
 import style from './Steam.module.scss';
+import {useVkMessages} from '../../shared/hooks/useVkMessages';
 
 const FORM_KEY = 'steam:form';
 
@@ -43,6 +44,8 @@ const nativeContact = (user) => {
 };
 
 export default function Steam() {
+    useVkMessages();
+
     const navigate = useNavigate();
     const {contentSafeAreaInset, safeAreaInset} = useAppInsets();
 

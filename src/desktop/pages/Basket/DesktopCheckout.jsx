@@ -40,6 +40,7 @@ import {DesktopAccepted, DesktopFail, DesktopSuccess, DesktopWaiting} from './Ch
 import LegalNote from '../../../shared/ui/LegalNote/LegalNote';
 import VpnGate, {usePaymentNetwork} from '../../../shared/ui/VpnGate/VpnGate';
 import style from './DesktopCheckout.module.scss';
+import {useVkMessages} from '../../../shared/hooks/useVkMessages';
 
 const FORM_KEY = 'checkout:form';
 const REQUIRED_KEYS = ['login', 'password'];
@@ -352,6 +353,8 @@ function Faq({items}) {
 }
 
 export default function DesktopCheckout() {
+    useVkMessages();
+
     const navigate = useNavigate();
     const {vkGroupId} = useTelegram();
 

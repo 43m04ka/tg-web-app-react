@@ -1,4 +1,5 @@
 import {preparePaymentNetwork} from '../lib/paymentNetwork';
+import {withVkGroup} from '../lib/vkOrder';
 import {apiFetch, requestResult} from './client';
 
 export const fetchCodeCatalog = (signal) =>
@@ -10,7 +11,7 @@ export const createCodeOrder = async (payload) => {
     const response = await apiFetch('/api/codes/create', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(payload)
+        body: JSON.stringify(withVkGroup(payload))
     });
 
     const data = await response.json().catch(() => ({}));

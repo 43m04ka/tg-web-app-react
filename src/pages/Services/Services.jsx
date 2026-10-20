@@ -17,6 +17,7 @@ import {SCREEN, useCodeOrder} from './useCodeOrder';
 import LegalNote from '../../shared/ui/LegalNote/LegalNote';
 import VpnGate, {usePaymentNetwork} from '../../shared/ui/VpnGate/VpnGate';
 import style from './Services.module.scss';
+import {useVkMessages} from '../../shared/hooks/useVkMessages';
 
 const FORM_KEY = 'services:form';
 
@@ -32,6 +33,8 @@ const nativeContact = (user) => {
 };
 
 export default function Services() {
+    useVkMessages();
+
     const navigate = useNavigate();
     const location = useLocation();
     const {contentSafeAreaInset, safeAreaInset} = useAppInsets();

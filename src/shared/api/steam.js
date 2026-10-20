@@ -1,4 +1,5 @@
 import {preparePaymentNetwork} from '../lib/paymentNetwork';
+import {withVkGroup} from '../lib/vkOrder';
 import {apiFetch} from './client';
 
 export const fetchSteamQuote = async (amount, signal) => {
@@ -18,7 +19,7 @@ export const createSteamOrder = async (payload) => {
     const response = await apiFetch('/api/steam/create', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(payload)
+        body: JSON.stringify(withVkGroup(payload))
     });
 
     const data = await response.json().catch(() => ({}));

@@ -20,6 +20,47 @@ const VK_XBOX_APP_ID = '54475556';
 const VK_XBOX_GROUP_ID = 217049080;
 const VK_PS_GROUP_ID = 85243268;
 
+const VK_LAUNCH_KEY = '__vk_launch_params';
+const VK_GROUPS = [VK_XBOX_GROUP_ID, VK_PS_GROUP_ID];
+
+export const parseVkLaunch = (search) => {
+    const params = new URLSearchParams(search);
+    if (!params.get('vk_app_id') || !params.get('vk_user_id')) return null;
+
+    const launch = {};
+    params.forEach((value, key) => {
+        if (key.startsWith('vk_') || key === 'sign') launch[key] = value;
+    });
+
+    return launch;
+};
+
+const readVkLaunch = () => {
+    const fromUrl = parseVkLaunch(window.location.search);
+
+    try {
+        if (fromUrl) {
+            sessionStorage.setItem(VK_LAUNCH_KEY, JSON.stringify(fromUrl));
+            return fromUrl;
+        }
+
+        return JSON.parse(sessionStorage.getItem(VK_LAUNCH_KEY) || 'null');
+    } catch (e) {
+        return fromUrl;
+    }
+};
+
+const vkLaunch = readVkLaunch();
+
+export const getVkLaunchParams = () => vkLaunch;
+
+export const vkGroupOf = (launch) => {
+    const group = Number(launch?.vk_group_id);
+    if (VK_GROUPS.includes(group)) return group;
+
+    return String(launch?.vk_app_id) === VK_XBOX_APP_ID ? VK_XBOX_GROUP_ID : VK_PS_GROUP_ID;
+};
+
 const hasTgInitParams = () => {
     if (window.location.hash.includes('tgWebApp')) return true;
     try {
@@ -67,15 +108,11 @@ export const isTg = () => {
     return true;
 };
 
-export const isVk = () =>
-    vkBridge.isWebView() || vkBridge.isIframe() || window.location.pathname.includes('vk.com');
+export const isVk = () => vkBridge.isWebView() || (Boolean(vkLaunch) && vkBridge.isIframe());
 
 export const isWeb = () => !isVk() && !isTg();
 
-export const getVkGroupId = () => {
-    const vkAppId = new URLSearchParams(window.location.search).get('vk_app_id');
-    return String(vkAppId) === VK_XBOX_APP_ID ? VK_XBOX_GROUP_ID : VK_PS_GROUP_ID;
-};
+export const getVkGroupId = () => vkGroupOf(vkLaunch);
 
 const vkBotType = () =>
     (getVkGroupId() === VK_XBOX_GROUP_ID ? BOT_TYPE.VK_XBOX : BOT_TYPE.VK_PS);

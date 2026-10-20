@@ -66,6 +66,8 @@
 
 .logo {
   display: inline-flex;
+  color: inherit;
+  text-decoration: none;
   align-items: center;
   gap: var(--d-gap-3);
   flex: none;
@@ -105,6 +107,7 @@
 
 .link {
   position: relative;
+  text-decoration: none;
   padding: 4px 0;
   font-size: var(--d-fs-lg);
   font-weight: var(--fw-bold);

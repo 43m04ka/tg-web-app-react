@@ -7,6 +7,7 @@ import {useCatalogProducts} from '../../../pages/Catalog/useCatalogProducts';
 import {createProductOrigin} from '../../../shared/lib/productOrigin';
 import {catalogRoute, productRoute} from '../../../shared/lib/pageRoutes';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
+import {recallView, rememberView} from '../../../shared/lib/viewMemory';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import {useStorefrontScope} from '../../shell/StorefrontScope';
 import {useReveal} from '../../shell/useReveal';
@@ -121,11 +122,16 @@ export default function Storefront() {
     const catalogRef = useReveal();
 
     const columns = useGridColumns();
-    const [rows, setRows] = useState(ROWS_STEP);
+    const rowsKey = `storefront:rows:${scopeId ?? 'all'}`;
+    const [rows, setRows] = useState(() => recallView(rowsKey) || ROWS_STEP);
 
     useEffect(() => {
-        setRows(ROWS_STEP);
-    }, [scopeId]);
+        setRows(recallView(rowsKey) || ROWS_STEP);
+    }, [rowsKey]);
+
+    useEffect(() => {
+        rememberView(rowsKey, rows);
+    }, [rowsKey, rows]);
 
     const limit = rows * columns;
     const loadedCount = catalogOffers?.length ?? 0;

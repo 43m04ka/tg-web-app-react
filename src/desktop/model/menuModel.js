@@ -1,4 +1,5 @@
 import {catalogRoute, subscriptionRoute} from '../../shared/lib/pageRoutes';
+import {storefrontRoute} from './desktopNav';
 
 const SUBSCRIPTIONS = [
     {suffix: 'psplus', label: 'PlayStation Plus', ends: ['psplus']},
@@ -135,7 +136,7 @@ export const menuGroups = ({storefronts, sections, catalogs, blocks, pageLinks})
 };
 
 export const menuTarget = (item) => {
-    if (item.action === 'storefront') return '/';
+    if (item.action === 'storefront') return storefrontRoute(item.shop.id);
     if (item.action === 'section') return item.section.route;
 
     return item.to;

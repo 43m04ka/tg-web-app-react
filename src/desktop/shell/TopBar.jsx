@@ -6,11 +6,12 @@ import {useCartStore} from '../../store/useCartStore';
 import {usePlatform} from '../../shared/hooks/usePlatform';
 import {pageCartItems} from '../../pages/Basket/cartModel';
 import {resetSearchState} from '../../shared/lib/searchMemory';
-import {navLabel, sectionList, storefrontList} from '../model/desktopNav';
+import {navLabel, sectionList, storefrontList, storefrontRoute} from '../model/desktopNav';
 import {useScrolled} from './useScrolled';
 import {BasketIcon, UserIcon} from './DesktopIcons';
 import SearchBox from './SearchBox';
 import BackLink from '../ui/BackLink';
+import RouteLink from '../ui/RouteLink';
 import MenuDrop from './MenuDrop';
 import LogoDrum from './LogoDrum';
 import {useSiteMenu} from './useSiteMenu';
@@ -96,7 +97,7 @@ export default function TopBar({onSearchOpenChange}) {
     const pickStorefront = useCallback((item) => {
         setScopeId(item.id);
         setPageId(item.id);
-        go('/');
+        go(storefrontRoute(item.id));
     }, [go, setPageId, setScopeId]);
 
     const {groups: menu, select: selectMenuItem} = useSiteMenu();
@@ -109,42 +110,42 @@ export default function TopBar({onSearchOpenChange}) {
                         <BackLink to="/" label="Назад" className={style.back}/>
                     </div>
 
-                    <button type="button" className={style.logo} onClick={openHome}>
+                    <RouteLink to="/" className={style.logo} onOpen={openHome} aria-label="Главная">
                         <LogoDrum className={style.mark}/>
-                    </button>
+                    </RouteLink>
                 </div>
 
                 <nav className={style.nav} data-hidden={isFocusMode ? '' : undefined}>
-                    <button
-                        type="button"
+                    <RouteLink
+                        to="/"
                         className={isCatalog && !isScoped ? `${style.link} ${style.linkActive}` : style.link}
-                        onClick={openHome}
+                        onOpen={openHome}
                     >
                         Главная
-                    </button>
+                    </RouteLink>
 
                     {storefronts.map((item) => (
-                        <button
+                        <RouteLink
                             key={item.id}
-                            type="button"
+                            to={storefrontRoute(item.id)}
                             className={isCatalog && scopeId === item.id
                                 ? `${style.link} ${style.linkActive}`
                                 : style.link}
-                            onClick={() => pickStorefront(item)}
+                            onOpen={() => pickStorefront(item)}
                         >
                             {navLabel(item.type, item.label)}
-                        </button>
+                        </RouteLink>
                     ))}
 
                     {sections.map((section) => (
-                        <button
+                        <RouteLink
                             key={section.key}
-                            type="button"
+                            to={section.route}
                             className={`${style.link} ${pathname === section.route ? style.linkActive : ''}`}
-                            onClick={() => openSection(section)}
+                            onOpen={() => openSection(section)}
                         >
                             {section.label}
-                        </button>
+                        </RouteLink>
                     ))}
                 </nav>
 
@@ -178,14 +179,14 @@ export default function TopBar({onSearchOpenChange}) {
                         </button>
                     </div>
 
-                    <button
-                        type="button"
+                    <RouteLink
+                        to="/more"
                         className={`${style.action} ${pathname === '/more' ? style.actionActive : ''}`}
-                        onClick={() => go('/more')}
+                        onOpen={() => go('/more')}
                         aria-label="Профиль"
                     >
                         <UserIcon className={style.actionIcon}/>
-                    </button>
+                    </RouteLink>
                 </div>
             </div>
         </header>

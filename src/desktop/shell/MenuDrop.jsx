@@ -1,5 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {BurgerIcon, ChevronIcon, FlagIcon, MenuIcon} from './DesktopIcons';
+import RouteLink from '../ui/RouteLink';
+import {menuTarget} from '../model/menuModel';
 import style from './MenuDrop.module.scss';
 
 const LOGOS = {
@@ -76,21 +78,21 @@ export default function MenuDrop({groups = [], onSelect}) {
                                         <span className={style.heading}>{group.title}</span>
 
                                         {group.items.map((item) => (
-                                            <button
+                                            <RouteLink
                                                 key={item.key}
-                                                type="button"
+                                                to={menuTarget(item)}
                                                 role="menuitem"
                                                 className={item.key === active?.key ? `${style.option} ${style.optionOn}` : style.option}
                                                 onMouseEnter={() => setActiveKey(item.key)}
                                                 onFocus={() => setActiveKey(item.key)}
-                                                onClick={() => pick(item)}
+                                                onOpen={() => pick(item)}
                                             >
                                                 <span className={style.optionIcon}>
                                                     <MenuIcon name={item.icon}/>
                                                 </span>
                                                 <span className={style.optionLabel}>{item.label}</span>
                                                 {item.columns ? <ChevronIcon className={style.optionArrow}/> : null}
-                                            </button>
+                                            </RouteLink>
                                         ))}
                                     </div>
                                 ))}
@@ -108,34 +110,34 @@ export default function MenuDrop({groups = [], onSelect}) {
                                                     </span>
 
                                                     {column.links.map((link) => (
-                                                        <button
+                                                        <RouteLink
                                                             key={link.key}
-                                                            type="button"
+                                                            to={menuTarget(link)}
                                                             role="menuitem"
                                                             className={style.link}
-                                                            onClick={() => pick(link)}
+                                                            onOpen={() => pick(link)}
                                                         >
                                                             {link.label}
-                                                        </button>
+                                                        </RouteLink>
                                                     ))}
                                                 </div>
                                             ))}
                                         </div>
 
-                                        <button type="button" className={style.more} onClick={() => pick(active)}>
+                                        <RouteLink to={menuTarget(active)} className={style.more} onOpen={() => pick(active)}>
                                             Смотреть все
                                             <ChevronIcon className={style.moreArrow}/>
-                                        </button>
+                                        </RouteLink>
                                     </>
                                 ) : active ? (
                                     <div className={style.lone}>
                                         <span className={style.loneIcon}><MenuIcon name={active.icon}/></span>
                                         <span className={style.loneTitle}>{active.label}</span>
                                         {active.note ? <span className={style.loneNote}>{active.note}</span> : null}
-                                        <button type="button" className={style.more} onClick={() => pick(active)}>
+                                        <RouteLink to={menuTarget(active)} className={style.more} onOpen={() => pick(active)}>
                                             Перейти
                                             <ChevronIcon className={style.moreArrow}/>
-                                        </button>
+                                        </RouteLink>
                                     </div>
                                 ) : null}
                             </div>

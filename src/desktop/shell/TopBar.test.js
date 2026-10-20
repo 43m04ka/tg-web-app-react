@@ -74,7 +74,7 @@ const cartButton = () => [...container.querySelectorAll('button')]
 test('в баре сплошная навигация: главная, витрины и разделы', () => {
     render();
 
-    const labels = [...container.querySelectorAll('nav button')].map((node) => node.textContent);
+    const labels = [...container.querySelectorAll('nav a')].map((node) => node.textContent);
 
     expect(labels).toEqual(['Главная', 'PlayStation Турция', 'PlayStation Индия', 'Xbox', 'Steam', 'Сервисы']);
 });
@@ -130,7 +130,7 @@ test('при уходе в раздел счётчик корзины держи
     expect(cartButton().textContent).toBe('2');
 
     act(() => {
-        [...container.querySelectorAll('nav button')]
+        [...container.querySelectorAll('nav a')]
             .find((node) => node.textContent === 'Steam')
             .dispatchEvent(new MouseEvent('click', {bubbles: true}));
     });
@@ -144,14 +144,14 @@ test('при уходе в раздел счётчик корзины держи
 test('закрытый на обслуживание раздел пропадает из меню', () => {
     render('/main', null, {steam: {enabled: true}});
 
-    const labels = [...container.querySelectorAll('nav button')].map((node) => node.textContent);
+    const labels = [...container.querySelectorAll('nav a')].map((node) => node.textContent);
 
     expect(labels).toEqual(['Главная', 'PlayStation Турция', 'PlayStation Индия', 'Xbox', 'Сервисы']);
 });
 
 test('витрина и главная в баре уводят на главную с любой страницы', () => {
     const pickNav = (label) => {
-        const link = [...container.querySelectorAll('nav button')]
+        const link = [...container.querySelectorAll('nav a')]
             .find((node) => node.textContent === label);
 
         act(() => {

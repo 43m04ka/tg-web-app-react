@@ -10,6 +10,13 @@ const NAV_TITLES = {
     services: 'Сервисы'
 };
 
+export const storefrontRoute = (pageId) => (pageId === null || pageId === undefined ? '/' : `/?store=${pageId}`);
+
+export const storefrontParam = (search) => {
+    const value = Number(new URLSearchParams(search).get('store'));
+    return Number.isInteger(value) && value > 0 ? value : null;
+};
+
 export const navLabel = (type, fallback) => NAV_TITLES[type] || fallback || 'Витрина';
 
 const SECTION_ORDER = Object.keys(STANDALONE_PAGES);

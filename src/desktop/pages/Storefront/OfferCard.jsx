@@ -4,6 +4,9 @@ import {releaseInfo} from '../../../pages/Product/productView';
 import Cover from '../../ui/Cover';
 import MembershipBadge from '../../../shared/ui/MembershipBadge/MembershipBadge';
 import OriginMark from './OriginMark';
+import RouteLink from '../../ui/RouteLink';
+import {useStructureStore} from '../../../store/useStructureStore';
+import {productRoute} from '../../../shared/lib/pageRoutes';
 import style from './Storefront.module.scss';
 
 export default function OfferCard({
@@ -14,6 +17,8 @@ export default function OfferCard({
     index = 0
 }) {
     const {product, price, oldPrice, origins} = offer;
+    const catalogs = useStructureStore((store) => store.catalogs);
+    const href = productRoute(origins[0]?.product || product, catalogs) || `/card/${product.id}`;
 
     const percent = discountPercent(price, oldPrice);
     const platform = shortPlatform(product.platform);
@@ -25,7 +30,7 @@ export default function OfferCard({
     const kind = String(product.typeLabel || '').trim();
 
     return (
-        <article className={style.card} style={{'--i': index}} onClick={() => onOpen?.(offer)}>
+        <RouteLink to={href} className={style.card} style={{'--i': index}} onOpen={() => onOpen?.(offer)}>
             <Cover src={product.image} className={style.cover}>
                 {preOrder ? (
                     <span className={showOrigin && origin ? `${style.release} ${style.releaseLow}` : style.release}>
@@ -61,6 +66,6 @@ export default function OfferCard({
                     <span className={style.oldPrice}>{formatPrice(oldPrice)}</span>
                 ) : null}
             </div>
-        </article>
+        </RouteLink>
     );
 }

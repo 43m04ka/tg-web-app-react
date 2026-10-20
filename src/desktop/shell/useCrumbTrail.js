@@ -4,7 +4,7 @@ import {useSessionStore} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
 import {cleanPath} from '../../pages/Main/catalogSections';
 import {catalogRoute} from '../../shared/lib/pageRoutes';
-import {navLabel} from '../model/desktopNav';
+import {navLabel, storefrontRoute} from '../model/desktopNav';
 import {regionLabel} from '../../shared/lib/region';
 import {useStorefrontScope} from './StorefrontScope';
 
@@ -26,7 +26,7 @@ export function useCrumbTrail({catalogId = null, catalogPath = null, current = n
     const openStorefront = useCallback((pageId) => {
         setScopeId(pageId);
         setPageId(pageId);
-        navigate('/');
+        navigate(storefrontRoute(pageId));
     }, [navigate, setPageId, setScopeId]);
 
     return useMemo(() => {

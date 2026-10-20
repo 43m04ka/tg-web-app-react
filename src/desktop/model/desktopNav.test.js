@@ -3,6 +3,8 @@ import {
     pageIdOfType,
     resolveBotType,
     sectionList,
+    storefrontParam,
+    storefrontRoute,
     storefrontList
 } from './desktopNav';
 
@@ -60,4 +62,13 @@ test('для стенда без своих витрин берётся запа
 test('страница по типу', () => {
     expect(pageIdOfType(pages, 'steam')).toBe(4);
     expect(pageIdOfType(pages, 'nope')).toBeNull();
+});
+
+test('витрина в адресе главной', () => {
+    expect(storefrontRoute(5)).toBe('/?store=5');
+    expect(storefrontRoute(null)).toBe('/');
+    expect(storefrontParam('?store=5')).toBe(5);
+    expect(storefrontParam('?view=desktop&store=12')).toBe(12);
+    expect(storefrontParam('')).toBeNull();
+    expect(storefrontParam('?store=abc')).toBeNull();
 });

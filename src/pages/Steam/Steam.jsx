@@ -44,7 +44,7 @@ const nativeContact = (user) => {
 };
 
 export default function Steam() {
-    useVkMessages();
+    const askMessages = useVkMessages();
 
     const navigate = useNavigate();
     const {contentSafeAreaInset, safeAreaInset} = useAppInsets();
@@ -107,15 +107,18 @@ export default function Steam() {
 
     const network = usePaymentNetwork();
 
-    const submit = useCallback(() => {
+    const submit = useCallback(async () => {
         setTouched(true);
 
         if (!isReady || flow.isSending) return;
 
         hapticImpact('medium');
 
+        const vkMessagesAllowed = await askMessages();
+
         flow.submit({
             platform,
+            vkMessagesAllowed,
             contact: nativeContact(user) || `Почта: ${email.trim()}`,
             username: user?.username || undefined,
             steamLogin: login.trim(),
@@ -123,7 +126,7 @@ export default function Steam() {
             paymentMethod: payment.method,
             amount
         });
-    }, [isReady, flow, platform, user, email, login, amount, payment.method]);
+    }, [askMessages, isReady, flow, platform, user, email, login, amount, payment.method]);
 
     if (flow.screen === SCREEN.WAITING) {
         return <SteamWaiting order={flow.order} onOpenAgain={flow.openAgain}

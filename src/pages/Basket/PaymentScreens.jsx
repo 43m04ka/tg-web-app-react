@@ -3,6 +3,7 @@ import {hapticImpact} from '../../shared/lib/haptic';
 import {shortPlatform} from '../Main/catalogSections';
 import {money, rupees} from './cartModel';
 import style from './Basket.module.scss';
+import VkWriteButton from '../../shared/ui/VkWriteButton/VkWriteButton';
 
 function PurchasedItems({snapshot}) {
     const items = snapshot?.items || [];
@@ -121,6 +122,8 @@ export function PaymentWaiting({order, onOpenAgain, onCancel, isPaymentOpen = tr
                     </button>
                 ) : null}
 
+                <VkWriteButton className={style.secondary}/>
+
                 <button type="button" className={style.secondary} disabled={isCanceling} onClick={cancel}>
                     {isCanceling ? 'Отменяем…' : 'Отменить оплату'}
                 </button>
@@ -152,6 +155,7 @@ export function PaymentSuccess({order, snapshot, onClose}) {
 
             <div className={style.stateActions}>
                 <button type="button" className={style.primary} onClick={onClose}>Вернуться в каталог</button>
+                <VkWriteButton className={style.secondary}/>
             </div>
         </Shell>
     );
@@ -203,6 +207,7 @@ export function OrderAccepted({order, snapshot, onClose}) {
 
             <div className={style.stateActions}>
                 <button type="button" className={style.primary} onClick={onClose}>Вернуться в каталог</button>
+                <VkWriteButton className={style.secondary}/>
             </div>
         </Shell>
     );

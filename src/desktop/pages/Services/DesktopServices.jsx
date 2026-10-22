@@ -28,7 +28,6 @@ import {CodeDoneDesktop, CodeFailDesktop, CodeStalledDesktop, CodeWaitingDesktop
 import LegalNote from '../../../shared/ui/LegalNote/LegalNote';
 import VpnGate, {usePaymentNetwork} from '../../../shared/ui/VpnGate/VpnGate';
 import style from './DesktopServices.module.scss';
-import {useVkMessages} from '../../../shared/hooks/useVkMessages';
 
 const FORM_KEY = 'services:form';
 
@@ -88,8 +87,6 @@ function Faq({items}) {
 }
 
 export default function DesktopServices() {
-    useVkMessages();
-
     const navigate = useNavigate();
     const location = useLocation();
 

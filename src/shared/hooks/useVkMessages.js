@@ -1,11 +1,9 @@
-import {useEffect} from 'react';
+import {useCallback} from 'react';
 import {usePlatform} from './usePlatform';
 import {askVkMessages} from '../lib/vk';
 
 export function useVkMessages() {
     const {isVk} = usePlatform();
 
-    useEffect(() => {
-        if (isVk) askVkMessages();
-    }, [isVk]);
+    return useCallback(() => (isVk ? askVkMessages() : Promise.resolve(undefined)), [isVk]);
 }

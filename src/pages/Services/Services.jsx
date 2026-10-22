@@ -33,7 +33,7 @@ const nativeContact = (user) => {
 };
 
 export default function Services() {
-    useVkMessages();
+    const askMessages = useVkMessages();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -144,15 +144,18 @@ export default function Services() {
 
     const network = usePaymentNetwork();
 
-    const submit = useCallback(() => {
+    const submit = useCallback(async () => {
         setTouched(true);
 
         if (!isReady || flow.isSending) return;
 
         hapticImpact('medium');
 
+        const vkMessagesAllowed = await askMessages();
+
         flow.submit({
             platform,
+            vkMessagesAllowed,
             contact: nativeContact(user) || `Почта: ${email.trim()}`,
             username: user?.username || undefined,
             email: email.trim(),
@@ -163,7 +166,7 @@ export default function Services() {
             title: [brand?.name, offer.groupName, offer.denomination].filter(Boolean).join(' · '),
             manual: isManual(offer)
         });
-    }, [isReady, flow, platform, user, email, offer, brand, payment.method]);
+    }, [askMessages, isReady, flow, platform, user, email, offer, brand, payment.method]);
 
     if (flow.screen === SCREEN.WAITING) {
         return <CodeWaiting order={flow.order} onOpenAgain={flow.openAgain}

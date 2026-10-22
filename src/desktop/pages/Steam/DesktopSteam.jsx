@@ -31,7 +31,6 @@ import {
     SteamWaitingDesktop
 } from './SteamStates';
 import style from './DesktopSteam.module.scss';
-import {useVkMessages} from '../../../shared/hooks/useVkMessages';
 
 const FORM_KEY = 'steam:form';
 
@@ -94,8 +93,6 @@ function Faq({items}) {
 }
 
 export default function DesktopSteam() {
-    useVkMessages();
-
     const navigate = useNavigate();
 
     const userId = useSessionStore(selectUserId);

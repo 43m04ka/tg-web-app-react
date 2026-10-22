@@ -42,6 +42,7 @@ import LegalNote from '../../shared/ui/LegalNote/LegalNote';
 import VpnGate, {usePaymentNetwork} from '../../shared/ui/VpnGate/VpnGate';
 import style from './Basket.module.scss';
 import {useVkMessages} from '../../shared/hooks/useVkMessages';
+import {VK_MESSAGES_NOTE} from '../../shared/lib/vk';
 
 const FORM_KEY = 'checkout:form';
 
@@ -159,7 +160,7 @@ function Faq({items}) {
 }
 
 export default function Checkout() {
-    useVkMessages();
+    const askMessages = useVkMessages();
 
     const navigate = useNavigate();
     const {contentSafeAreaInset, safeAreaInset} = useAppInsets();
@@ -290,7 +291,7 @@ export default function Checkout() {
 
     const network = usePaymentNetwork(isOnline);
 
-    const submit = useCallback(() => {
+    const submit = useCallback(async () => {
         setTouched(true);
 
         if (!isReady || flow.isSending) return;
@@ -301,9 +302,12 @@ export default function Checkout() {
             ? user?.username
             : (channel === 'telegram' ? contactHandle(channel, contactValue) : undefined);
 
+        const vkMessagesAllowed = await askMessages();
+
         flow.submit({
             platform,
             vkGroupId: isVk ? vkGroupId : undefined,
+            vkMessagesAllowed,
             pageId,
             contact,
             username: handle || undefined,
@@ -329,7 +333,7 @@ export default function Checkout() {
             total
         });
     }, [
-        accountKind, accountValues, channel, contact, contactValue, email, flow, hasNativeContact,
+        accountKind, accountValues, askMessages, channel, contact, contactValue, email, flow, hasNativeContact,
         isReady, isVk, method, pageId, pageItems, pageType, platform, quote, selected, total, user, vkGroupId
     ]);
 
@@ -421,7 +425,10 @@ export default function Checkout() {
 
                     <div className={style.card}>
                         {hasNativeContact ? (
-                            <p className={style.hint}>{contactHint(user)}</p>
+                            <>
+                                <p className={style.hint}>{contactHint(user)}</p>
+                                {user?.platform === 'vk' ? <p className={style.hint}>{VK_MESSAGES_NOTE}</p> : null}
+                            </>
                         ) : (
                             <>
                                 {platform === 'tg' ? (

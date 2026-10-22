@@ -59,26 +59,45 @@ export const getVkUser = () => {
 
 const MESSAGES_KEY = '__vk_messages_asked';
 
+const messagesState = {allowed: null};
+
+export const getVkMessagesAllowed = () => messagesState.allowed;
+
+const rememberMessages = (key, allowed) => {
+    messagesState.allowed = allowed;
+
+    try {
+        sessionStorage.setItem(key, allowed ? '1' : '0');
+    } catch (error) {
+    }
+
+    return allowed;
+};
+
 export const askVkMessages = async () => {
-    if (!isVk()) return false;
+    if (!isVk()) return undefined;
 
     const groupId = getVkGroupId();
     const key = `${MESSAGES_KEY}:${groupId}`;
 
     try {
-        if (sessionStorage.getItem(key)) return true;
-        sessionStorage.setItem(key, '1');
+        const saved = sessionStorage.getItem(key);
+        if (saved === '1' || saved === '0') return rememberMessages(key, saved === '1');
     } catch (error) {
     }
 
     try {
         await initVk();
         const result = await vkBridge.send('VKWebAppAllowMessagesFromGroup', {group_id: groupId});
-        return Boolean(result?.result);
+        return rememberMessages(key, Boolean(result?.result));
     } catch (error) {
-        return false;
+        return rememberMessages(key, false);
     }
 };
+
+export const VK_MESSAGES_NOTE = 'При оформлении ВК попросит разрешить сообщения от сообщества — так придёт уведомление о заказе.';
+
+export const vkCommunityChatUrl = () => `https://vk.com/im/convo/-${getVkGroupId()}?entrypoint=community_page&tab=all`;
 
 export const subscribeVkSafeArea = (onChange) => {
     const listener = (event) => {

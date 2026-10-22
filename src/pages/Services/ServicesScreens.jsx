@@ -4,6 +4,7 @@ import {getTelegramObject} from '../../shared/lib/telegram';
 import {money} from '../Basket/cartModel';
 import {supportUrlForBot} from '../More/moreMenu';
 import style from './Services.module.scss';
+import VkWriteButton from '../../shared/ui/VkWriteButton/VkWriteButton';
 
 function Rows({order, status, tone}) {
     return (
@@ -115,6 +116,8 @@ export function CodeWaiting({order, onOpenAgain, onCancel, isPaymentOpen = true}
                     </button>
                 ) : null}
 
+                <VkWriteButton className={style.stateSecondary}/>
+
                 <button type="button" className={style.stateSecondary} disabled={isCanceling} onClick={cancel}>
                     {isCanceling ? 'Отменяем…' : 'Отменить оплату'}
                 </button>
@@ -162,6 +165,7 @@ export function CodeDone({order, botType, onClose}) {
                 <button type="button" className={style.statePrimary} onClick={onClose}>
                     Купить ещё
                 </button>
+                <VkWriteButton className={style.stateSecondary}/>
                 <ManagerButton botType={botType}/>
             </div>
         </Shell>

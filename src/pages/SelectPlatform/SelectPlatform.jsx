@@ -9,6 +9,7 @@ import {hapticImpact} from '../../shared/lib/haptic';
 import {primeKeyboard} from '../../shared/lib/keyboard';
 import {getTelegramObject} from '../../shared/lib/telegram';
 import {standaloneRoute} from '../../shared/lib/pageRoutes';
+import {closedSection} from '../../shared/lib/maintenance';
 import {regionIcon, regionLabel} from '../../shared/lib/region';
 import {glowStyle} from './accent';
 import PopularRail from './PopularRail';
@@ -66,7 +67,16 @@ const toGroups = (items) => {
     return groups;
 };
 
-export default function SelectPlatform() {
+const isOpenItem = (item, pages, sections) => {
+    if (item.type !== 'page') return true;
+
+    const page = pages?.find((candidate) => candidate.id === item.structurePageId);
+    return !page || !closedSection(standaloneRoute(page.type) || '/main', sections);
+};
+
+const hasContent = (group) => !group.header || group.children.some((item) => item.type === 'page' || item.type === 'link');
+
+export default function SelectPlatform({sections}) {
     const navigate = useNavigate();
     const {botType, isSettled} = usePlatform();
     const {safeAreaInset, contentSafeAreaInset} = useAppInsets();
@@ -108,9 +118,10 @@ export default function SelectPlatform() {
 
         const visible = itemsOf(botType);
         const fallback = fallbackBotType(botType);
+        const items = visible.length || !fallback ? visible : itemsOf(fallback);
 
-        return toGroups(visible.length || !fallback ? visible : itemsOf(fallback));
-    }, [startPages, botType, isSettled]);
+        return toGroups(items.filter((item) => isOpenItem(item, pages, sections))).filter(hasContent);
+    }, [startPages, pages, sections, botType, isSettled]);
 
     const popular = useMemo(() => {
         if (!Array.isArray(popularProducts) || !isSettled) return [];

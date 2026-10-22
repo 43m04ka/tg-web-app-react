@@ -17,6 +17,14 @@ export const MAINTENANCE_DOMAINS = [
     {id: 'xn--b1abecuspq.xn--p1ai', title: 'геймворд.рф', hint: 'Перенаправляет на gwstore.ru'}
 ];
 
+export const MAINTENANCE_PLATFORMS = [
+    {id: 'tg', title: 'Telegram'},
+    {id: 'web', title: 'Сайт'},
+    {id: 'vk-ps', title: 'ВК PlayStation'},
+    {id: 'vk-xbox', title: 'ВК Xbox'}
+];
+
+const PLATFORM_IDS = new Set(MAINTENANCE_PLATFORMS.map((platform) => platform.id));
 const SECTION_IDS = new Set(MAINTENANCE_SECTIONS.map((section) => section.id));
 const DOMAIN_IDS = new Set(MAINTENANCE_DOMAINS.map((domain) => domain.id));
 
@@ -32,7 +40,11 @@ export const sectionIdOf = (pathname) => {
 export const sectionTitleOf = (id) =>
     MAINTENANCE_SECTIONS.find((section) => section.id === id)?.title || null;
 
-const pickEnabled = (raw, allowed) => {
+const pickPlatforms = (raw) => (Array.isArray(raw)
+    ? [...new Set(raw.filter((id) => PLATFORM_IDS.has(id)))]
+    : []);
+
+const pickEnabled = (raw, allowed, withPlatforms = false) => {
     const source = raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
 
     return Object.entries(source).reduce((picked, [id, item]) => {
@@ -43,11 +55,23 @@ const pickEnabled = (raw, allowed) => {
         const until = typeof item?.until === 'string' && item.until.trim() ? item.until : null;
         picked[id] = {enabled: true, until};
 
+        const platforms = withPlatforms ? pickPlatforms(item?.platforms) : [];
+        if (platforms.length) picked[id].platforms = platforms;
+
         return picked;
     }, {});
 };
 
-export const normalizeSections = (raw) => pickEnabled(raw, SECTION_IDS);
+export const normalizeSections = (raw) => pickEnabled(raw, SECTION_IDS, true);
+
+export const sectionsFor = (sections, botType) => {
+    const platform = PLATFORM_IDS.has(botType) ? botType : 'web';
+
+    return Object.entries(normalizeSections(sections)).reduce((picked, [id, state]) => {
+        if (!state.platforms || state.platforms.includes(platform)) picked[id] = state;
+        return picked;
+    }, {});
+};
 
 export const normalizeDomains = (raw) => pickEnabled(raw, DOMAIN_IDS);
 

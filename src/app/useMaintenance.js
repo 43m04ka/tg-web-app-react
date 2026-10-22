@@ -1,7 +1,8 @@
 import {useCallback, useEffect, useState} from 'react';
 import {fetchMaintenanceMode} from '../shared/api/settings';
 import {INITIAL_DATA} from '../shared/lib/initialData';
-import {closedCount, closedDomain, normalizeDomains, normalizeSections} from '../shared/lib/maintenance';
+import {usePlatform} from '../shared/hooks/usePlatform';
+import {closedCount, closedDomain, normalizeDomains, normalizeSections, sectionsFor} from '../shared/lib/maintenance';
 
 const BYPASS_STORAGE_KEY = 'maintenance_bypass';
 const ADMIN_PATHS = ['/admin'];
@@ -18,6 +19,7 @@ const hasBypass = () => {
 };
 
 export function useMaintenance() {
+    const {botType} = usePlatform();
     const [mode, setMode] = useState(() => ({
         enabled: !!INITIAL_DATA.maintenance.enabled,
         until: INITIAL_DATA.maintenance.until || null,
@@ -70,6 +72,6 @@ export function useMaintenance() {
     return {
         isMaintenance: (mode.enabled || Boolean(domain)) && !bypassed,
         maintenanceUntil: mode.enabled ? mode.until : domain?.until || null,
-        maintenanceSections: bypassed ? {} : mode.sections
+        maintenanceSections: bypassed ? {} : sectionsFor(mode.sections, botType)
     };
 }

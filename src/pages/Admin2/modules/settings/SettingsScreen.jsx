@@ -3,6 +3,7 @@ import {
     Badge,
     Button,
     ButtonRow,
+    Chip,
     ErrorState,
     Grid,
     Input,
@@ -19,7 +20,7 @@ import {keys} from '../../platform/resources';
 import {askConfirm} from '../../platform/notify';
 import {signOut} from '../../platform/session';
 import {API_BASE_URL} from '../../../../shared/config/env';
-import {MAINTENANCE_DOMAINS, MAINTENANCE_SECTIONS, normalizeDomains, normalizeSections} from '../../../../shared/lib/maintenance';
+import {MAINTENANCE_DOMAINS, MAINTENANCE_PLATFORMS, MAINTENANCE_SECTIONS, normalizeDomains, normalizeSections} from '../../../../shared/lib/maintenance';
 import {cancelAssociationsSchedule, fetchAssociationsSchedule, runAssociations, scheduleAssociations} from '../catalogs/api';
 import {fetchSettings, refreshStructure, updateSetting} from './api';
 import {formatMoscow, fromMoscowInput, toMoscowInput} from '../../platform/moscowTime';
@@ -28,6 +29,7 @@ import style from './SettingsScreen.module.scss';
 
 const sectionsPayload = (sections) => Object.entries(sections).reduce((picked, [id, item]) => {
     picked[id] = {enabled: true, until: item.until || ''};
+    if (item.platforms?.length) picked[id].platforms = item.platforms;
     return picked;
 }, {});
 
@@ -111,9 +113,27 @@ export default function SettingsScreen() {
 
     const onSectionUntil = useCallback((id, text) => {
         setSections((current) => (current[id]
-            ? {...current, [id]: {enabled: true, until: fromMoscowInput(text) || null}}
+            ? {...current, [id]: {...current[id], until: fromMoscowInput(text) || null}}
             : current));
     }, []);
+
+    const onSectionPlatform = useCallback((id, platform) => {
+        const state = sections[id];
+        if (!state) return;
+
+        const current = state.platforms || [];
+        const platforms = platform === null
+            ? []
+            : current.includes(platform)
+                ? current.filter((item) => item !== platform)
+                : [...current, platform];
+
+        const next = {...state};
+        if (platforms.length && platforms.length < MAINTENANCE_PLATFORMS.length) next.platforms = platforms;
+        else delete next.platforms;
+
+        saveSections({...sections, [id]: next});
+    }, [sections, saveSections]);
 
     const saveDomains = useCallback((next) => {
         setDomains(next);
@@ -274,6 +294,26 @@ export default function SettingsScreen() {
                                             disabled={write.loading}
                                             onChange={(next) => onSection(section, next)}
                                         />
+
+                                        {state ? (
+                                            <div className={style.platforms}>
+                                                <Chip
+                                                    active={!state.platforms}
+                                                    onClick={() => onSectionPlatform(section.id, null)}
+                                                >
+                                                    Все площадки
+                                                </Chip>
+                                                {MAINTENANCE_PLATFORMS.map((platform) => (
+                                                    <Chip
+                                                        key={platform.id}
+                                                        active={Boolean(state.platforms?.includes(platform.id))}
+                                                        onClick={() => onSectionPlatform(section.id, platform.id)}
+                                                    >
+                                                        {platform.title}
+                                                    </Chip>
+                                                ))}
+                                            </div>
+                                        ) : null}
                                     </li>
                                 );
                             })}

@@ -139,6 +139,13 @@
     transition: border-color var(--a2-motion) var(--a2-ease), background var(--a2-motion) var(--a2-ease);
 }
 
+.platforms {
+    display: flex;
+    flex-wrap: wrap;
+    grid-column: 1 / -1;
+    gap: 6px;
+}
+
 .sectionClosed {
     border-color: var(--a2-danger);
     background: var(--a2-danger-soft);

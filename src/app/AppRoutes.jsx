@@ -112,7 +112,7 @@ export default function AppRoutes({sections}) {
             className={`${style.stage} ${isLeaving ? style.leaving : ''}`}
         >
             <Routes location={shown}>
-                <Route path="/" element={<SelectPlatform/>}/>
+                <Route path="/" element={<SelectPlatform sections={sections}/>}/>
                 <Route path="/pay" element={<Pay/>}/>
                 <Route path="/payment/*" element={<Navigate to={readPending() ? '/pay' : '/'} replace/>}/>
                 <Route path="/main" element={<RequireCatalogPage><Main/></RequireCatalogPage>}/>

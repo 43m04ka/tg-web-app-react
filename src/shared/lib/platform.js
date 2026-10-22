@@ -108,7 +108,7 @@ export const isTg = () => {
     return true;
 };
 
-export const isVk = () => vkBridge.isWebView() || (Boolean(vkLaunch) && vkBridge.isIframe());
+export const isVk = () => vkBridge.isWebView() || Boolean(vkLaunch);
 
 export const isWeb = () => !isVk() && !isTg();
 

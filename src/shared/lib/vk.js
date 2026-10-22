@@ -1,5 +1,8 @@
 import vkBridge from '@vkontakte/vk-bridge';
-import {getVkGroupId, isVk} from './platform';
+import {getVkGroupId, getVkLaunchParams, isVk} from './platform';
+
+const INIT_TIMEOUT_MS = 1500;
+const USER_TIMEOUT_MS = 3000;
 
 const state = {
     initPromise: null,
@@ -7,36 +10,52 @@ const state = {
     user: null
 };
 
+const withTimeout = (promise, ms) => Promise.race([
+    promise,
+    new Promise((resolve, reject) => setTimeout(() => reject(new Error(`timeout ${ms}ms`)), ms))
+]);
+
+const canTalkToVk = () => isVk() && vkBridge.isEmbedded();
+
 export const initVk = () => {
-    if (!isVk()) return Promise.resolve(false);
+    if (!canTalkToVk()) return Promise.resolve(false);
 
     if (!state.initPromise) {
         state.initPromise = (async () => {
             try {
-                await vkBridge.send('VKWebAppInit');
-                await vkBridge
-                    .send('VKWebAppSetViewSettings', {status_bar_style: 'light', action_bar_color: 'none'})
-                    .catch(() => {});
-                return true;
+                await withTimeout(vkBridge.send('VKWebAppInit'), INIT_TIMEOUT_MS);
             } catch (error) {
-                console.error('[vk] init failed:', error);
-                state.initPromise = null;
-                return false;
+                console.error('[vk] init:', error?.message || error);
             }
+
+            vkBridge
+                .send('VKWebAppSetViewSettings', {status_bar_style: 'light', action_bar_color: 'none'})
+                .catch(() => {});
+
+            return true;
         })();
     }
 
     return state.initPromise;
 };
 
+const launchUser = () => {
+    const id = Number(getVkLaunchParams()?.vk_user_id);
+    if (!Number.isInteger(id) || id <= 0) return null;
+
+    return {id, first_name: '', last_name: '', photoUrl: null, platform: 'vk'};
+};
+
 export const getVkUser = () => {
     if (state.user) return Promise.resolve(state.user);
+
+    if (!canTalkToVk()) return Promise.resolve(launchUser());
 
     if (!state.userPromise) {
         state.userPromise = (async () => {
             try {
                 await initVk();
-                const vkUser = await vkBridge.send('VKWebAppGetUserInfo');
+                const vkUser = await withTimeout(vkBridge.send('VKWebAppGetUserInfo'), USER_TIMEOUT_MS);
                 state.user = {
                     id: vkUser.id,
                     first_name: vkUser.first_name,
@@ -46,8 +65,8 @@ export const getVkUser = () => {
                 };
                 return state.user;
             } catch (error) {
-                console.error('[vk] getUserInfo failed:', error);
-                return null;
+                console.error('[vk] getUserInfo:', error?.message || error);
+                return launchUser();
             } finally {
                 state.userPromise = null;
             }
@@ -79,6 +98,11 @@ export const askVkMessages = async () => {
 
     const groupId = getVkGroupId();
     const key = `${MESSAGES_KEY}:${groupId}`;
+
+    if (!canTalkToVk()) {
+        messagesState.allowed = false;
+        return false;
+    }
 
     try {
         const saved = sessionStorage.getItem(key);

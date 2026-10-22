@@ -2,7 +2,7 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 import {createCodeOrder} from '../../shared/api/codes';
 import {cancelOrderPayment, fetchOrderStatus} from '../../shared/api/order';
 import {fetchOrderHistory} from '../../shared/api/account';
-import {getTelegramObject} from '../../shared/lib/telegram';
+import {openPaymentLink} from '../../shared/lib/paymentLink';
 
 const POLL_MS = 5000;
 const POLL_TIMEOUT_MS = 15 * 60 * 1000;
@@ -13,14 +13,6 @@ export const SCREEN = {
     DONE: 'done',
     FAIL: 'fail',
     STALLED: 'stalled'
-};
-
-const openPayment = (url) => {
-    if (!url) return;
-
-    const tg = getTelegramObject();
-    if (typeof tg.openLink === 'function') tg.openLink(url);
-    else window.open(url, '_blank', 'noopener');
 };
 
 const isPendingToday = (order) => {
@@ -37,6 +29,7 @@ export function useCodeOrder(userId) {
     const [order, setOrder] = useState(null);
     const [isSending, setSending] = useState(false);
     const [error, setError] = useState('');
+    const [isPaymentOpen, setPaymentOpen] = useState(false);
 
     const timerRef = useRef(0);
     const startedAtRef = useRef(0);
@@ -54,12 +47,13 @@ export function useCodeOrder(userId) {
         setScreen(SCREEN.NONE);
         setOrder(null);
         setError('');
+        setPaymentOpen(false);
     }, [stopPolling]);
 
     const watch = useCallback((watched, {openLink = true} = {}) => {
         stopPolling();
 
-        if (openLink) openPayment(watched.paymentUrl);
+        setPaymentOpen(openLink ? openPaymentLink(watched.paymentUrl) : false);
 
         setOrder(watched);
         setScreen(SCREEN.WAITING);
@@ -179,7 +173,9 @@ export function useCodeOrder(userId) {
         return result.error || 'Не удалось отменить оплату';
     }, [close, order, stopPolling, userId]);
 
-    const openAgain = useCallback(() => openPayment(order?.paymentUrl), [order]);
+    const openAgain = useCallback(() => {
+        if (openPaymentLink(order?.paymentUrl)) setPaymentOpen(true);
+    }, [order]);
 
-    return {screen, order, isSending, error, submit, cancel, close, openAgain};
+    return {screen, order, isSending, error, isPaymentOpen, submit, cancel, close, openAgain};
 }

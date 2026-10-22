@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {cancelOrderPayment, createOrder, fetchOrderStatus} from '../../shared/api/order';
 import {fetchOrderHistory} from '../../shared/api/account';
-import {getTelegramObject} from '../../shared/lib/telegram';
+import {openPaymentLink} from '../../shared/lib/paymentLink';
 
 const POLL_MS = 5000;
 
@@ -11,13 +11,6 @@ export const SCREEN = {
     ACCEPTED: 'accepted',
     SUCCESS: 'success',
     FAIL: 'fail'
-};
-
-const openPayment = (url) => {
-    const tg = getTelegramObject();
-
-    if (typeof tg.openLink === 'function') tg.openLink(url);
-    else window.open(url, '_blank', 'noopener');
 };
 
 const isPendingToday = (order) => {
@@ -34,6 +27,7 @@ export function useOrderFlow(userId) {
     const [status, setStatus] = useState(null);
     const [isSending, setSending] = useState(false);
     const [error, setError] = useState('');
+    const [isPaymentOpen, setPaymentOpen] = useState(false);
 
     const timerRef = useRef(0);
 
@@ -52,12 +46,13 @@ export function useOrderFlow(userId) {
         setSnapshot(null);
         setStatus(null);
         setError('');
+        setPaymentOpen(false);
     }, [stopPolling]);
 
     const watch = useCallback((orderId, paymentUrl) => {
         stopPolling();
 
-        if (paymentUrl) openPayment(paymentUrl);
+        setPaymentOpen(paymentUrl ? openPaymentLink(paymentUrl) : false);
 
         setScreen(SCREEN.WAITING);
 
@@ -159,8 +154,8 @@ export function useOrderFlow(userId) {
     }, [close, order, stopPolling, userId]);
 
     const openAgain = useCallback(() => {
-        if (order?.paymentUrl) openPayment(order.paymentUrl);
+        if (openPaymentLink(order?.paymentUrl)) setPaymentOpen(true);
     }, [order]);
 
-    return {screen, order, snapshot, status, isSending, error, submit, cancel, close, openAgain};
+    return {screen, order, snapshot, status, isSending, error, isPaymentOpen, submit, cancel, close, openAgain};
 }

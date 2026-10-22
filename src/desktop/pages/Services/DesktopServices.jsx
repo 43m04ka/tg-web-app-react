@@ -188,7 +188,8 @@ export default function DesktopServices() {
     }, [isReady, flow, platform, user, email, offer, brand, payment.method]);
 
     if (flow.screen === SCREEN.WAITING) {
-        return <CodeWaitingDesktop order={flow.order} onOpenAgain={flow.openAgain} onCancel={flow.cancel}/>;
+        return <CodeWaitingDesktop order={flow.order} onOpenAgain={flow.openAgain}
+            isPaymentOpen={flow.isPaymentOpen} onCancel={flow.cancel}/>;
     }
 
     if (flow.screen === SCREEN.DONE) {

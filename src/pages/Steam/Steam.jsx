@@ -126,7 +126,8 @@ export default function Steam() {
     }, [isReady, flow, platform, user, email, login, amount, payment.method]);
 
     if (flow.screen === SCREEN.WAITING) {
-        return <SteamWaiting order={flow.order} onOpenAgain={flow.openAgain} onCancel={flow.cancel}/>;
+        return <SteamWaiting order={flow.order} onOpenAgain={flow.openAgain}
+            isPaymentOpen={flow.isPaymentOpen} onCancel={flow.cancel}/>;
     }
 
     if (flow.screen === SCREEN.CREDITING) {

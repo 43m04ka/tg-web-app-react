@@ -86,7 +86,7 @@ function Rows({rows}) {
     );
 }
 
-export function DesktopWaiting({order, onOpenAgain, onCancel}) {
+export function DesktopWaiting({order, onOpenAgain, onCancel, isPaymentOpen = true}) {
     const [error, setError] = useState('');
     const [isCanceling, setCanceling] = useState(false);
 
@@ -104,7 +104,9 @@ export function DesktopWaiting({order, onOpenAgain, onCancel}) {
             tone="waiting"
             icon={<Spinner className={style.iconSpinner}/>}
             title="Ждём оплату"
-            text="Окно оплаты открылось в отдельной вкладке. Как только банк подтвердит перевод, статус обновится сам — эту страницу закрывать не нужно."
+            text={isPaymentOpen
+                ? 'Окно оплаты открылось в отдельной вкладке. Как только банк подтвердит перевод, статус обновится сам — эту страницу закрывать не нужно.'
+                : 'Нажмите «Перейти к оплате» — страница банка откроется в отдельной вкладке. Как только банк подтвердит перевод, статус обновится сам — эту страницу закрывать не нужно.'}
         >
             <Rows rows={[
                 {label: 'Заказ', value: `№${order?.orderId}`},
@@ -116,7 +118,7 @@ export function DesktopWaiting({order, onOpenAgain, onCancel}) {
             <div className={style.actions}>
                 {order?.paymentUrl ? (
                     <button type="button" className={style.primary} onClick={onOpenAgain}>
-                        Открыть оплату снова
+                        {isPaymentOpen ? 'Открыть оплату снова' : 'Перейти к оплате'}
                     </button>
                 ) : null}
 

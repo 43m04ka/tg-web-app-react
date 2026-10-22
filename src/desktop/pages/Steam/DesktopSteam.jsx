@@ -166,7 +166,8 @@ export default function DesktopSteam() {
     }, [isReady, flow, platform, user, email, login, amount, payment.method]);
 
     if (flow.screen === SCREEN.WAITING) {
-        return <SteamWaitingDesktop order={flow.order} onOpenAgain={flow.openAgain} onCancel={flow.cancel}/>;
+        return <SteamWaitingDesktop order={flow.order} onOpenAgain={flow.openAgain}
+            isPaymentOpen={flow.isPaymentOpen} onCancel={flow.cancel}/>;
     }
 
     if (flow.screen === SCREEN.CREDITING) {

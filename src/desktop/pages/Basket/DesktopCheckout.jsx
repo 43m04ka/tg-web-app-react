@@ -515,7 +515,8 @@ export default function DesktopCheckout() {
     ]);
 
     if (flow.screen === SCREEN.WAITING) {
-        return <DesktopWaiting order={flow.order} onOpenAgain={flow.openAgain} onCancel={flow.cancel}/>;
+        return <DesktopWaiting order={flow.order} onOpenAgain={flow.openAgain}
+            isPaymentOpen={flow.isPaymentOpen} onCancel={flow.cancel}/>;
     }
 
     if (flow.screen === SCREEN.SUCCESS) {

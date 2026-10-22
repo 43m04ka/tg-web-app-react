@@ -31,7 +31,7 @@ function ManagerButton({botType, label = 'Связаться с менеджер
     );
 }
 
-export function SteamWaitingDesktop({order, onOpenAgain, onCancel}) {
+export function SteamWaitingDesktop({order, onOpenAgain, onCancel, isPaymentOpen = true}) {
     const [error, setError] = useState('');
     const [isCanceling, setCanceling] = useState(false);
 
@@ -49,7 +49,9 @@ export function SteamWaitingDesktop({order, onOpenAgain, onCancel}) {
             tone="waiting"
             icon={<Spinner className={statusStyle.iconSpinner}/>}
             title="Ждём оплату"
-            lead="Окно оплаты открылось в отдельной вкладке — эту страницу закрывать не нужно"
+            lead={isPaymentOpen
+                ? 'Окно оплаты открылось в отдельной вкладке — эту страницу закрывать не нужно'
+                : 'Нажмите «Перейти к оплате» — страница банка откроется в отдельной вкладке'}
             note="Статус обновится сам, как только банк подтвердит перевод"
         >
             <StatusRows rows={rowsOf(order, 'Ожидает оплаты', 'toneWaiting')}/>
@@ -59,7 +61,7 @@ export function SteamWaitingDesktop({order, onOpenAgain, onCancel}) {
             <StatusActions>
                 {order?.paymentUrl ? (
                     <button type="button" className={statusStyle.primary} onClick={onOpenAgain}>
-                        Открыть оплату снова
+                        {isPaymentOpen ? 'Открыть оплату снова' : 'Перейти к оплате'}
                     </button>
                 ) : null}
 

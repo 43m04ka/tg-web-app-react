@@ -334,7 +334,8 @@ export default function Checkout() {
     ]);
 
     if (flow.screen === SCREEN.WAITING) {
-        return <PaymentWaiting order={flow.order} onOpenAgain={flow.openAgain} onCancel={flow.cancel}/>;
+        return <PaymentWaiting order={flow.order} onOpenAgain={flow.openAgain}
+            isPaymentOpen={flow.isPaymentOpen} onCancel={flow.cancel}/>;
     }
 
     if (flow.screen === SCREEN.SUCCESS) {

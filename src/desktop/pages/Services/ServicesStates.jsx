@@ -28,7 +28,7 @@ function ManagerButton({botType, label = 'Связаться с менеджер
     );
 }
 
-export function CodeWaitingDesktop({order, onOpenAgain, onCancel}) {
+export function CodeWaitingDesktop({order, onOpenAgain, onCancel, isPaymentOpen = true}) {
     const [error, setError] = useState('');
     const [isCanceling, setCanceling] = useState(false);
 
@@ -46,7 +46,9 @@ export function CodeWaitingDesktop({order, onOpenAgain, onCancel}) {
             tone="waiting"
             icon={<Spinner className={statusStyle.iconSpinner}/>}
             title="Ждём оплату"
-            lead="Окно оплаты открылось в отдельной вкладке — эту страницу закрывать не нужно"
+            lead={isPaymentOpen
+                ? 'Окно оплаты открылось в отдельной вкладке — эту страницу закрывать не нужно'
+                : 'Нажмите «Перейти к оплате» — страница банка откроется в отдельной вкладке'}
             note={order?.manual
                 ? 'Как только оплата пройдёт, менеджер возьмёт заказ в работу'
                 : 'Код зарезервирован за вами, пока счёт активен'}
@@ -58,7 +60,7 @@ export function CodeWaitingDesktop({order, onOpenAgain, onCancel}) {
             <StatusActions>
                 {order?.paymentUrl ? (
                     <button type="button" className={statusStyle.primary} onClick={onOpenAgain}>
-                        Открыть оплату снова
+                        {isPaymentOpen ? 'Открыть оплату снова' : 'Перейти к оплате'}
                     </button>
                 ) : null}
 

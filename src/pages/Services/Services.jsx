@@ -166,7 +166,8 @@ export default function Services() {
     }, [isReady, flow, platform, user, email, offer, brand, payment.method]);
 
     if (flow.screen === SCREEN.WAITING) {
-        return <CodeWaiting order={flow.order} onOpenAgain={flow.openAgain} onCancel={flow.cancel}/>;
+        return <CodeWaiting order={flow.order} onOpenAgain={flow.openAgain}
+            isPaymentOpen={flow.isPaymentOpen} onCancel={flow.cancel}/>;
     }
 
     if (flow.screen === SCREEN.DONE) {

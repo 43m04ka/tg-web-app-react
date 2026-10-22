@@ -70,7 +70,7 @@ function ManagerButton({botType, label = 'Связаться с менеджер
     );
 }
 
-export function CodeWaiting({order, onOpenAgain, onCancel}) {
+export function CodeWaiting({order, onOpenAgain, onCancel, isPaymentOpen = true}) {
     const [error, setError] = useState('');
     const [isCanceling, setCanceling] = useState(false);
 
@@ -95,7 +95,9 @@ export function CodeWaiting({order, onOpenAgain, onCancel}) {
 
             <div className={style.stateText}>
                 <span className={style.stateLead}>
-                    Окно оплаты открылось в отдельной вкладке — эту страницу закрывать не нужно
+                    {isPaymentOpen
+                        ? 'Окно оплаты открылось в отдельной вкладке — эту страницу закрывать не нужно'
+                        : 'Нажмите «Перейти к оплате» — страница банка откроется в отдельной вкладке'}
                 </span>
                 <span className={style.stateNote}>
                     {order?.manual
@@ -109,7 +111,7 @@ export function CodeWaiting({order, onOpenAgain, onCancel}) {
             <div className={style.stateActions}>
                 {order?.paymentUrl ? (
                     <button type="button" className={style.statePrimary} onClick={onOpenAgain}>
-                        Открыть оплату снова
+                        {isPaymentOpen ? 'Открыть оплату снова' : 'Перейти к оплате'}
                     </button>
                 ) : null}
 

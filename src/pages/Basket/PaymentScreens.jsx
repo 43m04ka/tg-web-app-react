@@ -76,7 +76,7 @@ function Shell({tone, icon, title, text, children}) {
     );
 }
 
-export function PaymentWaiting({order, onOpenAgain, onCancel}) {
+export function PaymentWaiting({order, onOpenAgain, onCancel, isPaymentOpen = true}) {
     const [error, setError] = useState('');
     const [isCanceling, setCanceling] = useState(false);
 
@@ -97,7 +97,9 @@ export function PaymentWaiting({order, onOpenAgain, onCancel}) {
             tone="stateWaiting"
             icon={<span className={style.spinner}/>}
             title="Ждём оплату"
-            text="Окно оплаты открылось в отдельной вкладке. Как только банк подтвердит перевод, статус обновится сам — эту страницу закрывать не нужно."
+            text={isPaymentOpen
+                ? 'Окно оплаты открылось в отдельной вкладке. Как только банк подтвердит перевод, статус обновится сам — эту страницу закрывать не нужно.'
+                : 'Нажмите «Перейти к оплате» — страница банка откроется в отдельной вкладке. Как только банк подтвердит перевод, статус обновится сам — эту страницу закрывать не нужно.'}
         >
             <div className={style.stateRows}>
                 <div className={style.stateRow}>
@@ -115,7 +117,7 @@ export function PaymentWaiting({order, onOpenAgain, onCancel}) {
             <div className={style.stateActions}>
                 {order?.paymentUrl ? (
                     <button type="button" className={style.primary} onClick={onOpenAgain}>
-                        Открыть оплату снова
+                        {isPaymentOpen ? 'Открыть оплату снова' : 'Перейти к оплате'}
                     </button>
                 ) : null}
 

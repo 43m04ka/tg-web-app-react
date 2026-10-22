@@ -2,7 +2,7 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 import {createSteamOrder} from '../../shared/api/steam';
 import {cancelOrderPayment, fetchOrderStatus} from '../../shared/api/order';
 import {fetchOrderHistory} from '../../shared/api/account';
-import {getTelegramObject} from '../../shared/lib/telegram';
+import {openPaymentLink} from '../../shared/lib/paymentLink';
 import {isLoginError, isUserFacingError} from './steamModel';
 
 const POLL_MS = 5000;
@@ -15,14 +15,6 @@ export const SCREEN = {
     DONE: 'done',
     FAIL: 'fail',
     STALLED: 'stalled'
-};
-
-const openPayment = (url) => {
-    if (!url) return;
-
-    const tg = getTelegramObject();
-    if (typeof tg.openLink === 'function') tg.openLink(url);
-    else window.open(url, '_blank', 'noopener');
 };
 
 const isPendingToday = (order) => {
@@ -38,6 +30,7 @@ export function useSteamOrder(userId) {
     const [order, setOrder] = useState(null);
     const [isSending, setSending] = useState(false);
     const [error, setError] = useState('');
+    const [isPaymentOpen, setPaymentOpen] = useState(false);
     const [loginError, setLoginError] = useState('');
 
     const timerRef = useRef(0);
@@ -56,12 +49,13 @@ export function useSteamOrder(userId) {
         setScreen(SCREEN.NONE);
         setOrder(null);
         setError('');
+        setPaymentOpen(false);
     }, [stopPolling]);
 
     const watch = useCallback((watched, {openLink = true} = {}) => {
         stopPolling();
 
-        if (openLink) openPayment(watched.paymentUrl);
+        setPaymentOpen(openLink ? openPaymentLink(watched.paymentUrl) : false);
 
         setOrder(watched);
         setScreen(watched.status === 'paid' ? SCREEN.CREDITING : SCREEN.WAITING);
@@ -194,12 +188,14 @@ export function useSteamOrder(userId) {
         return result.error || 'Не удалось отменить оплату';
     }, [close, order, userId]);
 
-    const openAgain = useCallback(() => openPayment(order?.paymentUrl), [order]);
+    const openAgain = useCallback(() => {
+        if (openPaymentLink(order?.paymentUrl)) setPaymentOpen(true);
+    }, [order]);
 
     const clearLoginError = useCallback(() => setLoginError(''), []);
 
     return {
         screen, order, isSending, error, loginError,
-        submit, cancel, close, openAgain, clearLoginError
+        isPaymentOpen, submit, cancel, close, openAgain, clearLoginError
     };
 }

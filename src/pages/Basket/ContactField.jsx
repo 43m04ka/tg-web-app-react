@@ -45,8 +45,8 @@ export default function ContactField({channel, value, isTouched, onChannel, onCh
                     <input
                         className={style.bareInput}
                         value={value}
-                        type={active.key === 'phone' ? 'tel' : 'text'}
-                        inputMode={active.key === 'phone' ? 'tel' : 'text'}
+                        type={active.key === 'phone' || active.key === 'whatsapp' ? 'tel' : 'text'}
+                        inputMode={active.key === 'phone' || active.key === 'whatsapp' ? 'tel' : 'text'}
                         placeholder={active.placeholder}
                         autoComplete={active.key === 'email' ? 'email' : 'off'}
                         autoCapitalize="none"

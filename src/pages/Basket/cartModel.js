@@ -198,11 +198,19 @@ export const CONTACT_CHANNELS = [
         error: 'Ник от 4 символов, без пробелов и точек'
     },
     {
-        key: 'phone',
+        key: 'whatsapp',
         title: 'WhatsApp',
         label: 'Номер WhatsApp',
         placeholder: '+7 999 000-00-00',
         note: 'Напишем в WhatsApp по этому номеру',
+        error: 'Номер из 10–15 цифр'
+    },
+    {
+        key: 'phone',
+        title: 'Телефон',
+        label: 'Номер телефона',
+        placeholder: '+7 999 000-00-00',
+        note: 'Позвоним или напишем по этому номеру',
         error: 'Номер из 10–15 цифр'
     }
 ];
@@ -225,7 +233,7 @@ export const isContactValid = (channelKey, value) => {
     if (channelKey === 'telegram') return TELEGRAM_NAME.test(stripAt(text));
     if (channelKey === 'vk') return VK_LINK.test(text) || VK_NAME.test(stripAt(text));
     if (channelKey === 'email') return isEmailValid(text);
-    if (channelKey === 'phone') return PHONE.test(digitsOf(text));
+    if (channelKey === 'phone' || channelKey === 'whatsapp') return PHONE.test(digitsOf(text));
 
     return text.length > 2;
 };
@@ -235,7 +243,7 @@ export const contactHandle = (channelKey, value) => {
 
     if (channelKey === 'telegram') return stripAt(text);
     if (channelKey === 'vk') return VK_LINK.test(text) ? text : `https://vk.com/${stripAt(text)}`;
-    if (channelKey === 'phone') return digitsOf(text);
+    if (channelKey === 'phone' || channelKey === 'whatsapp') return digitsOf(text);
 
     return text;
 };
@@ -246,7 +254,8 @@ export const formatContact = (channelKey, value) => {
     if (channelKey === 'telegram') return `Telegram: @${handle}`;
     if (channelKey === 'vk') return `VK: ${handle}`;
     if (channelKey === 'email') return `Почта: ${handle}`;
-    if (channelKey === 'phone') return `WhatsApp: ${handle}`;
+    if (channelKey === 'whatsapp') return `WhatsApp: ${handle}`;
+    if (channelKey === 'phone') return `Телефон: ${handle}`;
 
     return handle;
 };

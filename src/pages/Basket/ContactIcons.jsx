@@ -58,5 +58,6 @@ export const CHANNEL_ICONS = {
     telegram: TelegramIcon,
     vk: VkIcon,
     email: MailIcon,
-    phone: WhatsAppIcon
+    whatsapp: WhatsAppIcon,
+    phone: PhoneIcon
 };

@@ -289,7 +289,7 @@ function ContactBlock({channel, value, isTouched, onChannel, onChange}) {
                     <input
                         className={style.bareInput}
                         value={value}
-                        type={active.key === 'phone' ? 'tel' : 'text'}
+                        type={active.key === 'phone' || active.key === 'whatsapp' ? 'tel' : 'text'}
                         placeholder={active.placeholder}
                         autoComplete={active.key === 'email' ? 'email' : 'off'}
                         autoCapitalize="none"

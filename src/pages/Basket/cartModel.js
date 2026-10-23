@@ -198,14 +198,6 @@ export const CONTACT_CHANNELS = [
         error: 'Ник от 4 символов, без пробелов и точек'
     },
     {
-        key: 'vk',
-        title: 'VK',
-        label: 'Страница ВКонтакте',
-        placeholder: 'vk.com/durov',
-        note: 'Ссылка на страницу или короткое имя',
-        error: 'Похоже на неверную ссылку'
-    },
-    {
         key: 'email',
         title: 'Почта',
         label: 'Адрес почты',

@@ -17,6 +17,7 @@ import {
     buildAccountData,
     contactHandle,
     faqFor,
+    findChannel,
     findMethod,
     formatContact,
     isAccountFilled,
@@ -186,7 +187,7 @@ export default function Checkout() {
     const [method, setMethod] = useState(saved.method || 'sbp');
     const [accountKind, setAccountKind] = useState(saved.accountKind || ACCOUNT_KINDS.NEW);
     const [accountValues, setAccountValues] = useState(saved.accountValues || {});
-    const [channel, setChannel] = useState(saved.channel || (isVk ? 'vk' : 'telegram'));
+    const [channel, setChannel] = useState(() => findChannel(saved.channel).key);
     const [contactValue, setContactValue] = useState(saved.contactValue || '');
     const [email, setEmail] = useState(saved.email || '');
     const [isTouched, setTouched] = useState(false);

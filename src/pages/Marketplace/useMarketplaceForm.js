@@ -24,10 +24,14 @@ export const ORDER_FIELDS = [
 export const NAME_FIELD = {key: 'name', title: 'Ваше имя', placeholder: 'Как к вам обращаться'};
 
 export const CONTACT_FIELDS = [
-    {key: 'telegram', title: 'Telegram', placeholder: '@username'},
     {key: 'email', title: 'E-mail', placeholder: 'mail@example.com', type: 'email'},
-    {key: 'phone', title: 'Телефон', placeholder: '+7 900 000-00-00', type: 'tel'}
+    {key: 'telegram', title: 'Telegram', placeholder: '@username'},
+    {key: 'phone', title: 'WhatsApp', placeholder: '+7 900 000-00-00', type: 'tel'}
 ];
+
+const MESSENGERS = ['telegram', 'phone'];
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const SUPPORT_URL = 'https://t.me/gwstore_admin';
 
@@ -55,13 +59,16 @@ export function useMarketplaceForm() {
     const [error, setError] = useState('');
 
     const isMissing = (key) => !form[key].trim();
-    const hasContact = CONTACT_FIELDS.some((field) => !isMissing(field.key));
+    const hasEmail = EMAIL_PATTERN.test(form.email.trim());
+    const hasMessenger = MESSENGERS.some((key) => !isMissing(key));
 
     const isBad = (key) => isTouched && (REQUIRED.includes(key)
         ? isMissing(key)
-        : CONTACT_FIELDS.some((field) => field.key === key) && !hasContact);
+        : key === 'email'
+            ? !hasEmail
+            : MESSENGERS.includes(key) && !hasMessenger);
 
-    const isReady = Boolean(form.marketplace) && REQUIRED.every((key) => !isMissing(key)) && hasContact;
+    const isReady = Boolean(form.marketplace) && REQUIRED.every((key) => !isMissing(key)) && hasEmail && hasMessenger;
 
     const blockReason = !isTouched || isReady
         ? null
@@ -69,7 +76,9 @@ export function useMarketplaceForm() {
             ? 'Выберите площадку'
             : REQUIRED.some(isMissing)
                 ? 'Заполните обязательные поля'
-                : 'Укажите хотя бы один способ связи';
+                : !hasEmail
+                    ? (isMissing('email') ? 'Укажите e-mail' : 'Проверьте e-mail')
+                    : 'Укажите Telegram или WhatsApp';
 
     const update = (key, value) => setForm((current) => ({...current, [key]: value}));
 

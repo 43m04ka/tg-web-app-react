@@ -182,7 +182,7 @@ function OrderInspector({id, onClose}) {
                                 label: 'Telegram',
                                 value: tg ? <a className={style.fileLink} href={tg} target="_blank" rel="noreferrer">{order.telegram}</a> : order.telegram
                             } : null,
-                            order.phone ? {label: 'Телефон', value: <a className={style.fileLink} href={`tel:${order.phone}`}>{order.phone}</a>} : null,
+                            order.phone ? {label: 'WhatsApp', value: <a className={style.fileLink} href={`https://wa.me/${order.phone.replace(/\D/g, '')}`} target="_blank" rel="noreferrer">{order.phone}</a>} : null,
                             order.email ? {label: 'E-mail', value: <a className={style.fileLink} href={`mailto:${order.email}`}>{order.email}</a>} : null,
                             order.contact ? {label: 'Контакт', value: order.contact} : null
                         ]}/>

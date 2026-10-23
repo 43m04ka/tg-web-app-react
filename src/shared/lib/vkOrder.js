@@ -1,7 +1,7 @@
-import {getVkGroupId} from './platform';
+import {getVkGroupId, isVkApp} from './platform';
 
-export const withVkGroup = (payload, groupOf = getVkGroupId) => {
-    if (payload?.platform !== 'vk' || payload.vkGroupId) return payload;
+export const withVkGroup = (payload, groupOf = getVkGroupId, appOf = isVkApp) => {
+    if (payload?.platform !== 'vk') return payload;
 
-    return {...payload, vkGroupId: groupOf()};
+    return {...payload, vkGroupId: payload.vkGroupId || groupOf(), vkClient: appOf() ? 'app' : 'web'};
 };

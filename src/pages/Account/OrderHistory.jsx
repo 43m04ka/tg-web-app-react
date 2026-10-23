@@ -22,6 +22,7 @@ import {
     statusOf
 } from './orderStatus';
 import style from './Account.module.scss';
+import {paysInVkChat} from '../../shared/lib/paymentLink';
 
 const SKELETONS = ['a', 'b', 'c'];
 
@@ -152,7 +153,7 @@ export default function OrderHistory() {
                                     </span>
                                 ) : null}
 
-                                {status.tone === 'wait' && order.paymentUrl ? (
+                                {status.tone === 'wait' && order.paymentUrl && !paysInVkChat() ? (
                                     <button type="button" className={style.pay}
                                             onClick={() => {
                                                 hapticImpact('medium');

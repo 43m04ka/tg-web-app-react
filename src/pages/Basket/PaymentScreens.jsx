@@ -4,6 +4,7 @@ import {shortPlatform} from '../Main/catalogSections';
 import {money, rupees} from './cartModel';
 import style from './Basket.module.scss';
 import VkWriteButton from '../../shared/ui/VkWriteButton/VkWriteButton';
+import {VK_CHAT_SCREEN} from '../../shared/lib/paymentLink';
 
 function PurchasedItems({snapshot}) {
     const items = snapshot?.items || [];
@@ -77,7 +78,7 @@ function Shell({tone, icon, title, text, children}) {
     );
 }
 
-export function PaymentWaiting({order, onOpenAgain, onCancel, isPaymentOpen = true}) {
+export function PaymentWaiting({order, onOpenAgain, onCancel, isPaymentOpen = true, paymentChannel = 'browser'}) {
     const [error, setError] = useState('');
     const [isCanceling, setCanceling] = useState(false);
 
@@ -98,9 +99,9 @@ export function PaymentWaiting({order, onOpenAgain, onCancel, isPaymentOpen = tr
             tone="stateWaiting"
             icon={<span className={style.spinner}/>}
             title="Ждём оплату"
-            text={isPaymentOpen
+            text={VK_CHAT_SCREEN[paymentChannel]?.text || (isPaymentOpen
                 ? 'Окно оплаты открылось в отдельной вкладке. Как только банк подтвердит перевод, статус обновится сам — эту страницу закрывать не нужно.'
-                : 'Нажмите «Перейти к оплате» — страница банка откроется в отдельной вкладке. Как только банк подтвердит перевод, статус обновится сам — эту страницу закрывать не нужно.'}
+                : 'Нажмите «Перейти к оплате» — страница банка откроется в отдельной вкладке. Как только банк подтвердит перевод, статус обновится сам — эту страницу закрывать не нужно.')}
         >
             <div className={style.stateRows}>
                 <div className={style.stateRow}>
@@ -116,9 +117,9 @@ export function PaymentWaiting({order, onOpenAgain, onCancel, isPaymentOpen = tr
             {error ? <p className={style.stateError}>{error}</p> : null}
 
             <div className={style.stateActions}>
-                {order?.paymentUrl ? (
+                {order?.paymentUrl || VK_CHAT_SCREEN[paymentChannel] ? (
                     <button type="button" className={style.primary} onClick={onOpenAgain}>
-                        {isPaymentOpen ? 'Открыть оплату снова' : 'Перейти к оплате'}
+                        {VK_CHAT_SCREEN[paymentChannel]?.button || (isPaymentOpen ? 'Открыть оплату снова' : 'Перейти к оплате')}
                     </button>
                 ) : null}
 

@@ -93,7 +93,7 @@ const rememberMessages = (key, allowed) => {
     return allowed;
 };
 
-export const askVkMessages = async () => {
+export const askVkMessages = async ({force = false} = {}) => {
     if (!isVk()) return undefined;
 
     const groupId = getVkGroupId();
@@ -106,7 +106,7 @@ export const askVkMessages = async () => {
 
     try {
         const saved = sessionStorage.getItem(key);
-        if (saved === '1' || saved === '0') return rememberMessages(key, saved === '1');
+        if (saved === '1' || (saved === '0' && !force)) return rememberMessages(key, saved === '1');
     } catch (error) {
     }
 

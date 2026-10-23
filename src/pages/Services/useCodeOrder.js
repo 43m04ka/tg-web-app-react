@@ -2,7 +2,8 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 import {createCodeOrder} from '../../shared/api/codes';
 import {cancelOrderPayment, fetchOrderStatus} from '../../shared/api/order';
 import {fetchOrderHistory} from '../../shared/api/account';
-import {openPaymentLink} from '../../shared/lib/paymentLink';
+import {openPaymentLink, paysInVkChat} from '../../shared/lib/paymentLink';
+import {vkCommunityChatUrl} from '../../shared/lib/vk';
 
 const POLL_MS = 5000;
 const POLL_TIMEOUT_MS = 15 * 60 * 1000;
@@ -30,6 +31,7 @@ export function useCodeOrder(userId) {
     const [isSending, setSending] = useState(false);
     const [error, setError] = useState('');
     const [isPaymentOpen, setPaymentOpen] = useState(false);
+    const [linkSent, setLinkSent] = useState(null);
 
     const timerRef = useRef(0);
     const startedAtRef = useRef(0);
@@ -48,12 +50,15 @@ export function useCodeOrder(userId) {
         setOrder(null);
         setError('');
         setPaymentOpen(false);
+        setLinkSent(null);
     }, [stopPolling]);
 
     const watch = useCallback((watched, {openLink = true} = {}) => {
         stopPolling();
 
-        setPaymentOpen(openLink ? openPaymentLink(watched.paymentUrl) : false);
+        const inChat = paysInVkChat();
+        setPaymentOpen(openLink && !inChat ? openPaymentLink(watched.paymentUrl) : false);
+        setLinkSent(inChat ? watched.paymentLinkSent !== false : null);
 
         setOrder(watched);
         setScreen(SCREEN.WAITING);
@@ -141,7 +146,8 @@ export function useCodeOrder(userId) {
                 quantity: result.quantity,
                 title: snapshot?.title || 'Код пополнения',
                 manual: Boolean(snapshot?.manual),
-                paymentUrl: result.paymentUrl || null
+                paymentUrl: result.paymentUrl || null,
+                paymentLinkSent: result.paymentLinkSent
             });
 
             return result;
@@ -174,8 +180,17 @@ export function useCodeOrder(userId) {
     }, [close, order, stopPolling, userId]);
 
     const openAgain = useCallback(() => {
+        if (paysInVkChat()) {
+            window.open(vkCommunityChatUrl(), '_blank');
+            return;
+        }
+
         if (openPaymentLink(order?.paymentUrl)) setPaymentOpen(true);
     }, [order]);
 
-    return {screen, order, isSending, error, isPaymentOpen, submit, cancel, close, openAgain};
+    const reject = useCallback((message) => setError(message), []);
+
+    const paymentChannel = paysInVkChat() ? (linkSent === false ? 'vk_failed' : 'vk') : 'browser';
+
+    return {screen, order, isSending, error, isPaymentOpen, paymentChannel, submit, cancel, close, openAgain, reject};
 }

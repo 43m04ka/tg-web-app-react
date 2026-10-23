@@ -110,6 +110,11 @@ export const isTg = () => {
 
 export const isVk = () => vkBridge.isWebView() || Boolean(vkLaunch);
 
+const VK_APP_PLATFORMS = new Set(['mobile_android', 'mobile_iphone', 'mobile_ipad', 'mobile_android_messenger', 'mobile_iphone_messenger']);
+
+export const isVkApp = () => isVk()
+    && (VK_APP_PLATFORMS.has(vkLaunch?.vk_platform) || (!vkLaunch?.vk_platform && vkBridge.isWebView()));
+
 export const isWeb = () => !isVk() && !isTg();
 
 export const getVkGroupId = () => vkGroupOf(vkLaunch);

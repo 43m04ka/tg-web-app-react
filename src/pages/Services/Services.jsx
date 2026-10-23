@@ -18,6 +18,7 @@ import LegalNote from '../../shared/ui/LegalNote/LegalNote';
 import VpnGate, {usePaymentNetwork} from '../../shared/ui/VpnGate/VpnGate';
 import style from './Services.module.scss';
 import {useVkMessages} from '../../shared/hooks/useVkMessages';
+import {VK_CHAT_NEEDS_MESSAGES, paysInVkChat} from '../../shared/lib/paymentLink';
 
 const FORM_KEY = 'services:form';
 
@@ -153,6 +154,11 @@ export default function Services() {
 
         const vkMessagesAllowed = await askMessages();
 
+        if (paysInVkChat() && vkMessagesAllowed !== true) {
+            flow.reject(VK_CHAT_NEEDS_MESSAGES);
+            return;
+        }
+
         flow.submit({
             platform,
             vkMessagesAllowed,
@@ -170,7 +176,7 @@ export default function Services() {
 
     if (flow.screen === SCREEN.WAITING) {
         return <CodeWaiting order={flow.order} onOpenAgain={flow.openAgain}
-            isPaymentOpen={flow.isPaymentOpen} onCancel={flow.cancel}/>;
+            isPaymentOpen={flow.isPaymentOpen} paymentChannel={flow.paymentChannel} onCancel={flow.cancel}/>;
     }
 
     if (flow.screen === SCREEN.DONE) {

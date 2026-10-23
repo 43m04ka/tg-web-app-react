@@ -43,6 +43,7 @@ import LegalNote from '../../shared/ui/LegalNote/LegalNote';
 import VpnGate, {usePaymentNetwork} from '../../shared/ui/VpnGate/VpnGate';
 import style from './Basket.module.scss';
 import {useVkMessages} from '../../shared/hooks/useVkMessages';
+import {VK_CHAT_NEEDS_MESSAGES, paysInVkChat} from '../../shared/lib/paymentLink';
 import {VK_MESSAGES_NOTE} from '../../shared/lib/vk';
 
 const FORM_KEY = 'checkout:form';
@@ -305,6 +306,11 @@ export default function Checkout() {
 
         const vkMessagesAllowed = await askMessages();
 
+        if (paysInVkChat() && vkMessagesAllowed !== true) {
+            flow.reject(VK_CHAT_NEEDS_MESSAGES);
+            return;
+        }
+
         flow.submit({
             platform,
             vkGroupId: isVk ? vkGroupId : undefined,
@@ -340,7 +346,7 @@ export default function Checkout() {
 
     if (flow.screen === SCREEN.WAITING) {
         return <PaymentWaiting order={flow.order} onOpenAgain={flow.openAgain}
-            isPaymentOpen={flow.isPaymentOpen} onCancel={flow.cancel}/>;
+            isPaymentOpen={flow.isPaymentOpen} paymentChannel={flow.paymentChannel} onCancel={flow.cancel}/>;
     }
 
     if (flow.screen === SCREEN.SUCCESS) {
@@ -523,10 +529,10 @@ export default function Checkout() {
                 >
                     {flow.isSending
                         ? 'Оформляем…'
-                        : isOnline ? 'Перейти к оплате' : 'Оформить заказ'}
+                        : isOnline && !paysInVkChat() ? 'Перейти к оплате' : 'Оформить заказ'}
                 </button>
 
-                <LegalNote className={style.legal} action={isOnline ? 'Перейти к оплате' : 'Оформить заказ'}/>
+                <LegalNote className={style.legal} action={isOnline && !paysInVkChat() ? 'Перейти к оплате' : 'Оформить заказ'}/>
             </div>
         </div>
     );

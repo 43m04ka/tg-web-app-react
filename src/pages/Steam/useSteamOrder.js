@@ -2,7 +2,8 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 import {createSteamOrder} from '../../shared/api/steam';
 import {cancelOrderPayment, fetchOrderStatus} from '../../shared/api/order';
 import {fetchOrderHistory} from '../../shared/api/account';
-import {openPaymentLink} from '../../shared/lib/paymentLink';
+import {openPaymentLink, paysInVkChat} from '../../shared/lib/paymentLink';
+import {vkCommunityChatUrl} from '../../shared/lib/vk';
 import {isLoginError, isUserFacingError} from './steamModel';
 
 const POLL_MS = 5000;
@@ -31,6 +32,7 @@ export function useSteamOrder(userId) {
     const [isSending, setSending] = useState(false);
     const [error, setError] = useState('');
     const [isPaymentOpen, setPaymentOpen] = useState(false);
+    const [linkSent, setLinkSent] = useState(null);
     const [loginError, setLoginError] = useState('');
 
     const timerRef = useRef(0);
@@ -50,12 +52,15 @@ export function useSteamOrder(userId) {
         setOrder(null);
         setError('');
         setPaymentOpen(false);
+        setLinkSent(null);
     }, [stopPolling]);
 
     const watch = useCallback((watched, {openLink = true} = {}) => {
         stopPolling();
 
-        setPaymentOpen(openLink ? openPaymentLink(watched.paymentUrl) : false);
+        const inChat = paysInVkChat();
+        setPaymentOpen(openLink && !inChat ? openPaymentLink(watched.paymentUrl) : false);
+        setLinkSent(inChat ? watched.paymentLinkSent !== false : null);
 
         setOrder(watched);
         setScreen(watched.status === 'paid' ? SCREEN.CREDITING : SCREEN.WAITING);
@@ -156,7 +161,8 @@ export function useSteamOrder(userId) {
                 total: result.total,
                 topupAmount: result.topupAmount,
                 steamLogin: payload.steamLogin,
-                paymentUrl: result.paymentUrl || null
+                paymentUrl: result.paymentUrl || null,
+                paymentLinkSent: result.paymentLinkSent
             });
 
             return result;
@@ -189,13 +195,22 @@ export function useSteamOrder(userId) {
     }, [close, order, userId]);
 
     const openAgain = useCallback(() => {
+        if (paysInVkChat()) {
+            window.open(vkCommunityChatUrl(), '_blank');
+            return;
+        }
+
         if (openPaymentLink(order?.paymentUrl)) setPaymentOpen(true);
     }, [order]);
+
+    const reject = useCallback((message) => setError(message), []);
+
+    const paymentChannel = paysInVkChat() ? (linkSent === false ? 'vk_failed' : 'vk') : 'browser';
 
     const clearLoginError = useCallback(() => setLoginError(''), []);
 
     return {
         screen, order, isSending, error, loginError,
-        isPaymentOpen, submit, cancel, close, openAgain, clearLoginError
+        isPaymentOpen, paymentChannel, submit, cancel, close, openAgain, clearLoginError, reject
     };
 }

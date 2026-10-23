@@ -5,6 +5,7 @@ import {money} from '../Basket/cartModel';
 import {supportUrlForBot} from '../More/moreMenu';
 import style from './Steam.module.scss';
 import VkWriteButton from '../../shared/ui/VkWriteButton/VkWriteButton';
+import {VK_CHAT_SCREEN} from '../../shared/lib/paymentLink';
 
 function Rows({order, status, tone}) {
     return (
@@ -68,7 +69,7 @@ function ManagerButton({botType, label = 'Связаться с менеджер
     );
 }
 
-export function SteamWaiting({order, onOpenAgain, onCancel, isPaymentOpen = true}) {
+export function SteamWaiting({order, onOpenAgain, onCancel, isPaymentOpen = true, paymentChannel = 'browser'}) {
     const [error, setError] = useState('');
     const [isCanceling, setCanceling] = useState(false);
 
@@ -93,9 +94,9 @@ export function SteamWaiting({order, onOpenAgain, onCancel, isPaymentOpen = true
 
             <div className={style.stateText}>
                 <span className={style.stateLead}>
-                    {isPaymentOpen
+                    {VK_CHAT_SCREEN[paymentChannel]?.lead || (isPaymentOpen
                         ? 'Окно оплаты открылось в отдельной вкладке — эту страницу закрывать не нужно'
-                        : 'Нажмите «Перейти к оплате» — страница банка откроется в отдельной вкладке'}
+                        : 'Нажмите «Перейти к оплате» — страница банка откроется в отдельной вкладке')}
                 </span>
                 <span className={style.stateNote}>Статус обновится сам, как только банк подтвердит перевод</span>
             </div>
@@ -103,9 +104,9 @@ export function SteamWaiting({order, onOpenAgain, onCancel, isPaymentOpen = true
             {error ? <p className={style.stateError}>{error}</p> : null}
 
             <div className={style.stateActions}>
-                {order?.paymentUrl ? (
+                {order?.paymentUrl || VK_CHAT_SCREEN[paymentChannel] ? (
                     <button type="button" className={style.statePrimary} onClick={onOpenAgain}>
-                        {isPaymentOpen ? 'Открыть оплату снова' : 'Перейти к оплате'}
+                        {VK_CHAT_SCREEN[paymentChannel]?.button || (isPaymentOpen ? 'Открыть оплату снова' : 'Перейти к оплате')}
                     </button>
                 ) : null}
 

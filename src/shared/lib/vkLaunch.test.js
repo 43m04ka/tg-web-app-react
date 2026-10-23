@@ -17,7 +17,7 @@ test('группа берётся из vk_group_id, иначе по прилож
 
 test('заказ из ВК получает группу, остальные не трогаются', () => {
     const group = () => 217049080;
-    expect(withVkGroup({platform: 'vk', amount: 1}, group)).toEqual({platform: 'vk', amount: 1, vkGroupId: 217049080});
-    expect(withVkGroup({platform: 'vk', vkGroupId: 85243268}, group).vkGroupId).toBe(85243268);
+    expect(withVkGroup({platform: 'vk', amount: 1}, group, () => false)).toEqual({platform: 'vk', amount: 1, vkGroupId: 217049080, vkClient: 'web'});
+    expect(withVkGroup({platform: 'vk', vkGroupId: 85243268}, group, () => true)).toEqual({platform: 'vk', vkGroupId: 85243268, vkClient: 'app'});
     expect(withVkGroup({platform: 'tg'}, group)).toEqual({platform: 'tg'});
 });

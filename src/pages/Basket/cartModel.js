@@ -198,19 +198,11 @@ export const CONTACT_CHANNELS = [
         error: 'Ник от 4 символов, без пробелов и точек'
     },
     {
-        key: 'email',
-        title: 'Почта',
-        label: 'Адрес почты',
-        placeholder: 'mail@example.com',
-        note: 'Ответим письмом на этот адрес',
-        error: 'Проверьте адрес почты'
-    },
-    {
         key: 'phone',
-        title: 'Телефон',
-        label: 'Номер телефона',
+        title: 'WhatsApp',
+        label: 'Номер WhatsApp',
         placeholder: '+7 999 000-00-00',
-        note: 'Напишем в мессенджер по этому номеру',
+        note: 'Напишем в WhatsApp по этому номеру',
         error: 'Номер из 10–15 цифр'
     }
 ];
@@ -254,7 +246,7 @@ export const formatContact = (channelKey, value) => {
     if (channelKey === 'telegram') return `Telegram: @${handle}`;
     if (channelKey === 'vk') return `VK: ${handle}`;
     if (channelKey === 'email') return `Почта: ${handle}`;
-    if (channelKey === 'phone') return `Телефон: ${handle}`;
+    if (channelKey === 'phone') return `WhatsApp: ${handle}`;
 
     return handle;
 };

@@ -75,18 +75,8 @@ export function useServer() {
     const deleteCode = (authenticationData, codeId) =>
         post('/services/codes/delete', {authenticationData, codeId}, 'Не удалось удалить код');
 
-    const getSupplierCatalog = async () => {
-        const data = await get('/services/supplier/catalog', 'Не удалось загрузить каталог PanYanStore');
-        return data.result?.items || [];
-    };
-
-    const getSupplierBalance = async () => {
-        const data = await get('/services/supplier/balance', 'Не удалось получить баланс PanYanStore');
-        return data.result || null;
-    };
-
     return {
-        getServiceTree, getCatalogs, getSupplierCatalog, getSupplierBalance,
+        getServiceTree, getCatalogs,
         createBrand, updateBrand, deleteBrand,
         createOffer, updateOffer, deleteOffer, bulkSaveOffers,
         getCodes, addCodes, deleteCode,

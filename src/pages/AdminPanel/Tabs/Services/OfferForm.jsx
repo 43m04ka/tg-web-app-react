@@ -8,8 +8,7 @@ import FlagPicker from '../../Elements/FlagPicker/FlagPicker';
 import {isFlagName} from '../../Elements/FlagPicker/flags';
 import {useServer} from './useServer';
 import CodeStock from './CodeStock';
-import SupplierPicker, {useSupplierCatalog} from './SupplierPicker';
-import {FULFILLMENT_OPTIONS, KIND_OPTIONS, MARKUP_OPTIONS, money, parsePrice, salePrice} from './serviceModel';
+import {FULFILLMENT_OPTIONS, KIND_OPTIONS, money, parsePrice} from './serviceModel';
 import s from './Services.module.scss';
 
 const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
@@ -24,10 +23,7 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
     const initial = useMemo(() => ({
         kind: String(source?.kind ?? 'gift_card'),
         groupName: String(source?.groupName ?? ''),
-        fulfillment: String(source?.fulfillment ?? 'supplier'),
-        supplierItemId: source?.supplierItemId ? String(source.supplierItemId) : '',
-        markupType: String(source?.markupType ?? ''),
-        markupValue: source?.markupValue === undefined || source?.markupValue === null ? '' : String(source.markupValue),
+        fulfillment: String(source?.fulfillment ?? 'code'),
         regionName: String(source?.regionName ?? 'Россия'),
         regionIcon: String(source?.regionIcon ?? ''),
         regionFlag: String(source?.regionFlag ?? ''),
@@ -40,14 +36,6 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
 
     const [values, setValues] = useState(initial);
     const [saving, setSaving] = useState(false);
-
-    const supplier = values.fulfillment === 'supplier';
-    const catalog = useSupplierCatalog();
-    const supplierItem = useMemo(
-        () => (catalog.items || []).find((item) => String(item.itemId) === values.supplierItemId) || null,
-        [catalog.items, values.supplierItemId],
-    );
-    const buyerPrice = supplierItem ? salePrice(supplierItem.price, values.markupType, values.markupValue) : null;
 
     const handleChange = (key, value) => setValues((prev) => ({...prev, [key]: value}));
 
@@ -94,21 +82,7 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
             return null;
         }
 
-        if (supplier && !values.supplierItemId) {
-            showToast('Выберите товар PanYanStore — по нему покупается код', 'error');
-            return null;
-        }
-
-        const markupValue = Number(String(values.markupValue).replace(',', '.') || 0);
-        if (supplier && values.markupType && (!Number.isFinite(markupValue) || markupValue < 0
-            || (values.markupType === 'fixed' && !Number.isInteger(markupValue)))) {
-            showToast(values.markupType === 'fixed'
-                ? 'Комиссия в рублях — целое число не меньше нуля'
-                : 'Комиссия в процентах — число не меньше нуля', 'error');
-            return null;
-        }
-
-        const price = supplier && supplierItem ? Math.ceil(supplierItem.price) : parsePrice(values.price);
+        const price = parsePrice(values.price);
         if (price === null || price <= 0) {
             showToast('Цена за один код — целое число больше нуля', 'error');
             return null;
@@ -131,9 +105,6 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
             kind: values.kind,
             groupName: values.groupName.trim() || null,
             fulfillment: values.fulfillment,
-            supplierItemId: values.supplierItemId || null,
-            markupType: values.markupType || null,
-            markupValue: values.markupType ? markupValue : null,
             regionName,
             regionIcon: values.regionIcon || null,
             regionFlag: values.regionFlag.trim() || null,
@@ -157,11 +128,6 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
             } else {
                 const updateData = {};
                 Object.keys(changed).forEach((key) => { updateData[key] = payload[key]; });
-                if ('markupType' in updateData || 'markupValue' in updateData) {
-                    updateData.markupType = payload.markupType;
-                    updateData.markupValue = payload.markupValue;
-                }
-                if (supplier && payload.price !== source.price) updateData.price = payload.price;
 
                 await updateOffer(authenticationData, offerId, updateData);
                 showToast('Номинал сохранён', 'success');
@@ -255,7 +221,7 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
                                value={values.denomination}
                                onChange={(event) => handleChange('denomination', event.target.value)}/>
                     </Row>
-                    <Row label="Выдача" hint="PanYanStore — код покупается у поставщика сразу после оплаты. Менеджер — оформляет вручную">
+                    <Row label="Выдача" hint="Со склада — код уходит сразу после оплаты. Менеджером — склад не нужен">
                         <select className={`${f.input} ${f.select}`} value={values.fulfillment}
                                 onChange={(event) => handleChange('fulfillment', event.target.value)}>
                             {FULFILLMENT_OPTIONS.map((option) => (
@@ -289,44 +255,6 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
                     </Row>
                 </Group>
 
-                {supplier ? (
-                    <Group title="PanYanStore">
-                        <Row label="Товар" top hint="Код какого товара покупать у поставщика после оплаты">
-                            <SupplierPicker itemId={values.supplierItemId} items={catalog.items}
-                                            error={catalog.error}
-                                            onPick={(item) => handleChange('supplierItemId', String(item.itemId))}/>
-                        </Row>
-                        <Row label="Комиссия" hint="Добавляется к цене поставщика. Цена поставщика меняется — наша пересчитается сама">
-                            <div className={s['markupField']}>
-                                <select className={`${f.input} ${f.select}`} value={values.markupType}
-                                        onChange={(event) => handleChange('markupType', event.target.value)}>
-                                    {MARKUP_OPTIONS.map((option) => (
-                                        <option key={option.key} value={option.key}>{option.name}</option>
-                                    ))}
-                                </select>
-                                {values.markupType ? (
-                                    <input className={f.input} type="number" min={0}
-                                           step={values.markupType === 'fixed' ? 1 : 0.1}
-                                           placeholder={values.markupType === 'fixed' ? '150' : '5'}
-                                           value={values.markupValue}
-                                           onChange={(event) => handleChange('markupValue', event.target.value)}/>
-                                ) : null}
-                                {values.markupType ? (
-                                    <span className={s['mono']}>{values.markupType === 'fixed' ? '₽' : '%'}</span>
-                                ) : null}
-                            </div>
-                        </Row>
-                        <Row label="Цена для покупателя" hint="Цена поставщика + комиссия, округляется вверх до рубля">
-                            <span className={s['cardPrice']}>
-                                {buyerPrice
-                                    ? `${money(buyerPrice)} (поставщик ${money(supplierItem.price)})`
-                                    : '—'}
-                            </span>
-                        </Row>
-                    </Group>
-                ) : null}
-
-                {supplier ? null : (
                 <Group title="Цена">
                     <Row label="Цена за код" hint="Рубли, целое число. Именно её платит покупатель за один код">
                         <input className={f.input} type="number" min={1} step={1} placeholder="1490"
@@ -344,7 +272,6 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
                         ) : null}
                     </Row>
                 </Group>
-                )}
 
                 <Group title="Витрина">
                     <Row label="Порядок" hint="Меньше — выше в списке номиналов">
@@ -361,14 +288,7 @@ const OfferForm = ({offerId, brandId, findOffer, onClose, onSaved}) => {
                     </Row>
                 </Group>
 
-                {supplier ? (
-                    <Group title="Выдача">
-                        <p className={s['formNote']}>
-                            Своего склада нет: после оплаты сервер покупает код у PanYanStore и отдаёт покупателю.
-                            Если у поставщика кончились коды или деньги на балансе, оформить заказ нельзя.
-                        </p>
-                    </Group>
-                ) : values.fulfillment === 'manual' ? (
+                {values.fulfillment === 'manual' ? (
                     <Group title="Склад кодов">
                         <p className={s['formNote']}>
                             Позицию оформляет менеджер: склад для неё не нужен и не проверяется.

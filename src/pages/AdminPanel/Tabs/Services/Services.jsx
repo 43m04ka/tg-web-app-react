@@ -5,9 +5,7 @@ import {useServer} from './useServer';
 import BrandForm from './BrandForm';
 import OfferForm from './OfferForm';
 import PlanMatrix from './PlanMatrix';
-import {
-    brandStock, hasMarkup, isFromCatalog, isManual, isSupplier, kindName, markupText, money, offerPrice,
-} from './serviceModel';
+import {brandStock, isFromCatalog, isManual, kindName, money} from './serviceModel';
 import s from './Services.module.scss';
 
 const plural = (count, forms) => {
@@ -23,11 +21,7 @@ const offerWord = (count) => `${count} ${plural(count, ['номинал', 'но�
 
 const norm = (value) => String(value ?? '').toLowerCase();
 
-const needsCodes = (offer) => !isManual(offer) && !isFromCatalog(offer) && !isSupplier(offer);
-
-const supplierOffers = (brand) => (brand.offers || []).filter(isSupplier);
-
-const withoutMarkup = (brand) => supplierOffers(brand).filter((offer) => !hasMarkup(offer)).length;
+const needsCodes = (offer) => !isManual(offer) && !isFromCatalog(offer);
 
 const emptyOffers = (brand) => (brand.offers || [])
     .filter((offer) => needsCodes(offer) && !(offer.stock?.available > 0)).length;
@@ -71,7 +65,6 @@ const ServicesList = ({onCountChange}) => {
     const [loading, setLoading] = useState(true);
     const [expanded, setExpanded] = useState(() => new Set());
     const [query, setQuery] = useState('');
-    const [balance, setBalance] = useState(null);
 
     const treeRef = useRef([]);
     treeRef.current = brands || [];
@@ -91,12 +84,6 @@ const ServicesList = ({onCountChange}) => {
 
     useEffect(() => { load(); }, [load]);
 
-    useEffect(() => {
-        serverRef.current.getSupplierBalance()
-            .then((data) => setBalance(data ? {ok: true, ...data} : null))
-            .catch((error) => setBalance({ok: false, error: error.message}));
-    }, [brands]);
-
     const totals = useMemo(() => (brands || []).reduce((sum, brand) => {
         const stock = brandStock(brand);
         return {
@@ -105,17 +92,15 @@ const ServicesList = ({onCountChange}) => {
             available: sum.available + stock.available,
             starving: sum.starving + emptyOffers(brand),
             codeOffers: sum.codeOffers + codeOffers(brand),
-            supplier: sum.supplier + supplierOffers(brand).length,
-            withoutMarkup: sum.withoutMarkup + withoutMarkup(brand),
         };
-    }, {brands: 0, offers: 0, available: 0, starving: 0, codeOffers: 0, supplier: 0, withoutMarkup: 0}), [brands]);
+    }, {brands: 0, offers: 0, available: 0, starving: 0, codeOffers: 0}), [brands]);
 
     useEffect(() => {
         if (loading) {
             onCountChange('Загрузка…');
             return;
         }
-        onCountChange(`${totals.brands} брендов · ${totals.offers} номиналов`);
+        onCountChange(`${totals.brands} брендов · ${totals.offers} номиналов · ${totals.available} кодов`);
     }, [loading, totals, onCountChange]);
 
     const findBrand = useCallback(
@@ -176,7 +161,7 @@ const ServicesList = ({onCountChange}) => {
         openTab({
             id,
             title: offer ? `${brand.name} · ${offer.denomination}` : `${brand.name} · новый номинал`,
-            subtitle: offer ? `${offer.regionName} · ${money(offerPrice(offer))}` : 'Создание',
+            subtitle: offer ? `${offer.regionName} · ${money(offer.price)}` : 'Создание',
             entity: 'service-offer',
             entityId: offer?.id ?? -1,
             content: (
@@ -200,7 +185,7 @@ const ServicesList = ({onCountChange}) => {
 
             (brand.offers || []).forEach((offer) => updateTab(`service-offer-${offer.id}`, {
                 title: `${brand.name} · ${offer.denomination}`,
-                subtitle: `${offer.regionName} · ${money(offerPrice(offer))}`,
+                subtitle: `${offer.regionName} · ${money(offer.price)}`,
             }));
         });
     }, [brands, updateTab]);
@@ -217,9 +202,7 @@ const ServicesList = ({onCountChange}) => {
             const visible = !needle || brandHit
                 ? offers
                 : offers.filter((offer) => norm(offer.denomination).includes(needle)
-                    || norm(offer.regionName).includes(needle)
-                    || norm(offer.groupName).includes(needle)
-                    || String(offer.supplierItemId || '') === needle);
+                    || norm(offer.regionName).includes(needle));
 
             if (needle && !brandHit && visible.length === 0) return list;
 
@@ -254,30 +237,18 @@ const ServicesList = ({onCountChange}) => {
                     <span className={s['counter']}>
                         {loading
                             ? 'Загрузка…'
-                            : `${totals.brands} брендов · ${totals.offers} номиналов`}
+                            : `${totals.brands} брендов · ${totals.offers} номиналов · ${totals.available} кодов`}
                     </span>
-                    {balance ? (
-                        <span className={balance.ok ? s['badge'] : `${s['badge']} ${s['stockEmpty']}`}>
-                            {balance.ok
-                                ? `Баланс PanYanStore: ${money(balance.balance)}${
-                                    Number(balance.credit_limit) > 0 ? ` · кредит ${money(balance.credit_limit)}` : ''}`
-                                : `PanYanStore: ${balance.error}`}
-                        </span>
-                    ) : null}
                 </div>
 
                 <p className={s['lead']}>
-                    Выдача: PanYanStore — код покупается у поставщика сразу после оплаты, цена = цена
-                    поставщика + комиссия номинала. Свой склад — коды загружаются вручную. Менеджер —
-                    оформляет человек. «Сетка» — подписки «тариф × период».
+                    Коды и гифт-карты продаются со склада: покупатель платит — сервер сразу отдаёт ему
+                    свободный код и помечает его проданным. Пока счёт не оплачен, код держится в брони
+                    и другому покупателю не достанется. Подписки чаще оформляет менеджер: склад им не
+                    нужен, после оплаты уведомление уходит человеку. Целую сетку «тариф × период»
+                    удобнее завести кнопкой «Сетка», а бренд можно привязать к обычному каталогу —
+                    тогда его товары попадают на витрину сами.
                 </p>
-
-                {!loading && totals.withoutMarkup > 0 ? (
-                    <p className={s['alert']}>
-                        Без комиссии: {offerWord(totals.withoutMarkup)} PanYanStore из {totals.supplier} — продаются
-                        по цене поставщика. Комиссия задаётся в номинале.
-                    </p>
-                ) : null}
 
                 {!loading && totals.starving > 0 ? (
                     <p className={s['alert']}>
@@ -361,11 +332,6 @@ const ServicesList = ({onCountChange}) => {
                                     {total === 0 ? (
                                         <span className={`${s['badge']} ${s['badgeMuted']}`}>не в витрине</span>
                                     ) : null}
-                                    {withoutMarkup(brand) > 0 ? (
-                                        <span className={`${s['badge']} ${s['stockHeld']}`}>
-                                            {withoutMarkup(brand)} без комиссии
-                                        </span>
-                                    ) : null}
                                     {starving > 0 && starving < codeOffers(brand) ? (
                                         <span className={`${s['badge']} ${s['stockEmpty']}`}>
                                             {starving} без кодов
@@ -380,7 +346,6 @@ const ServicesList = ({onCountChange}) => {
                                     ) : null}
                                 </button>
 
-                                {codeOffers(brand) > 0 ? (
                                 <span className={s['brandStock']}>
                                     <span className={`${s['badge']} ${
                                         stock.available > 0 ? s['stockFree'] : s['stockEmpty']
@@ -394,7 +359,6 @@ const ServicesList = ({onCountChange}) => {
                                     ) : null}
                                     <span className={s['mono']}>{stock.sold} продано</span>
                                 </span>
-                                ) : null}
 
                                 <span className={s['brandActions']}>
                                     <button type="button" className={s['btn']}
@@ -434,8 +398,6 @@ const ServicesList = ({onCountChange}) => {
                                                     const reserved = offer.stock?.reserved || 0;
                                                     const linked = isFromCatalog(offer);
                                                     const byHand = isManual(offer) || linked;
-                                                    const supplier = isSupplier(offer);
-                                                    const supplierStock = offer.supplier?.inStock || 0;
 
                                                     return (
                                                         <button
@@ -459,30 +421,12 @@ const ServicesList = ({onCountChange}) => {
                                                                     </span>
                                                                 </span>
                                                                 <span className={s['cardPrice']}>
-                                                                    {money(offerPrice(offer))}
+                                                                    {money(offer.price)}
                                                                 </span>
                                                             </span>
 
                                                             <span className={s['cardBottom']}>
-                                                                {supplier ? (
-                                                                    <>
-                                                                        <span className={`${s['dot']} ${
-                                                                            supplierStock > 0 ? s['dotFree'] : s['dotEmpty']
-                                                                        }`}/>
-                                                                        <span className={s['cardStock']}>
-                                                                            {!offer.supplier
-                                                                                ? 'нет в каталоге PanYanStore'
-                                                                                : supplierStock > 0
-                                                                                    ? `${supplierStock} у поставщика`
-                                                                                    : 'нет у поставщика'}
-                                                                        </span>
-                                                                        <span className={hasMarkup(offer)
-                                                                            ? s['cardTag']
-                                                                            : `${s['cardTag']} ${s['cardTagWarn']}`}>
-                                                                            {hasMarkup(offer) ? markupText(offer) : 'без комиссии'}
-                                                                        </span>
-                                                                    </>
-                                                                ) : byHand ? (
+                                                                {byHand ? (
                                                                     <>
                                                                         <span className={`${s['dot']} ${s['dotHand']}`}/>
                                                                         <span className={s['cardStock']}>

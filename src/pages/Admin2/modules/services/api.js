@@ -10,7 +10,7 @@ export const updateBrand = ({brandId, updateData}) => httpPost('/services/brand/
 
 export const deleteBrand = (brandId) => httpPost('/services/brand/delete', {brandId});
 
-export const createOffer = (offerData) => httpPost('/services/offer/create', {offerData});
+export const importSupplierItems = ({brandId, itemIds}) => httpPost('/services/supplier/import', {brandId, itemIds});
 
 export const saveMarkups = (items) => httpPost('/services/offer/markup', {items});
 

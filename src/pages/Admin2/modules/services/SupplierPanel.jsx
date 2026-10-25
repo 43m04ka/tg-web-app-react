@@ -4,9 +4,7 @@ import {useResource} from '../../platform/useResource';
 import {useMutation} from '../../platform/useMutation';
 import {keys} from '../../platform/resources';
 import {askConfirm} from '../../platform/notify';
-import {REGION_FLAGS} from '../../../AdminPanel/Elements/FlagPicker/flags';
-import {createOffer, fetchSupplierBalance, fetchSupplierCatalog, saveMarkups, saveOffers} from './api';
-import {parseSupplierItem, REGION_FLAG_NAMES} from './panyanItem';
+import {fetchSupplierBalance, fetchSupplierCatalog, importSupplierItems, saveMarkups, saveOffers} from './api';
 import style from './ServicesScreen.module.scss';
 
 const MARKUP_OPTIONS = [
@@ -15,13 +13,11 @@ const MARKUP_OPTIONS = [
     {value: 'fixed', title: '₽'},
 ];
 
-const ICONS = new Map(REGION_FLAGS.map((flag) => [flag.name, flag.icon]));
-
 const rub = (value) => `${Math.round(Number(value) || 0).toLocaleString('ru-RU')} ₽`;
 
 const toNumber = (value) => Number(String(value ?? '').replace(',', '.'));
 
-export const salePrice = (base, markupType, markupValue) => {
+const salePrice = (base, markupType, markupValue) => {
     const price = Number(base);
     if (!Number.isFinite(price) || price <= 0) return null;
 
@@ -69,25 +65,6 @@ const balanceText = (balance) => {
     return `Баланс PanYanStore ${rub(balance.balance)}${credit > 0 ? ` · кредит ${rub(credit)}` : ''}`;
 };
 
-export const offerFromItem = (item, brand, serialNumber) => {
-    const parsed = parseSupplierItem(item);
-
-    return {
-        brandId: brand.id,
-        kind: parsed.kind,
-        groupName: parsed.groupName,
-        regionName: parsed.regionName,
-        regionFlag: parsed.regionFlag,
-        regionIcon: ICONS.get(REGION_FLAG_NAMES[parsed.regionName] || parsed.regionName) || null,
-        denomination: parsed.denomination,
-        fulfillment: 'supplier',
-        supplierItemId: item.itemId,
-        price: Math.ceil(item.price),
-        serialNumber,
-        isHidden: false,
-    };
-};
-
 function RegionFill({onApply}) {
     const [markup, setMarkup] = useState({markupType: 'percent', markupValue: ''});
     const problem = markupProblem(markup);
@@ -129,7 +106,14 @@ export default function SupplierPanel({brand}) {
     const [query, setQuery] = useState('');
 
     useEffect(() => {
-        setDrafts({});
+        setDrafts((current) => {
+            const next = {};
+            offers.forEach((offer) => {
+                const draft = current[offer.id];
+                if (draft && !sameMarkup(draft, storedMarkup(offer))) next[offer.id] = draft;
+            });
+            return next;
+        });
     }, [offers]);
 
     const markupOf = useCallback((offer) => drafts[offer.id] || storedMarkup(offer), [drafts]);
@@ -161,7 +145,7 @@ export default function SupplierPanel({brand}) {
     const withoutMarkup = offers.filter((offer) => !markupOf(offer).markupType || !toNumber(markupOf(offer).markupValue)).length;
 
     const save = useMutation(saveMarkups, {invalidates: [keys.services], done: 'Комиссии сохранены'});
-    const add = useMutation(createOffer, {invalidates: [keys.services], done: 'Позиция добавлена'});
+    const add = useMutation(importSupplierItems, {invalidates: [keys.services], done: 'Позиция добавлена'});
     const remove = useMutation(saveOffers, {invalidates: [keys.services], done: 'Позиция удалена'});
 
     const onSave = useCallback(() => {
@@ -190,9 +174,8 @@ export default function SupplierPanel({brand}) {
     }, [items, linked, query]);
 
     const onAdd = useCallback((item) => {
-        const serial = (brand.offers || []).reduce((max, offer) => Math.max(max, Number(offer.serialNumber) || 0), 0) + 1;
-        add.run(offerFromItem(item, brand, serial));
-    }, [add, brand]);
+        add.run({brandId: brand.id, itemIds: [item.itemId]});
+    }, [add, brand.id]);
 
     const onRemove = useCallback(async (offer) => {
         const answer = await askConfirm({

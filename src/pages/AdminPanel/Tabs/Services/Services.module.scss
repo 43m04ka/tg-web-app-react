@@ -1008,3 +1008,57 @@
   width: 110px;
   border-bottom: none;
 }
+
+.cardTagWarn {
+  background: rgba(var(--warning-rgb), 0.14);
+  color: var(--warning);
+}
+
+.supplierPick {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.supplierItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+}
+
+.supplierName {
+  font-size: var(--fs-md);
+  color: var(--text);
+}
+
+.supplierRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-ui);
+  text-align: left;
+  cursor: pointer;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: var(--surface-hover);
+  }
+}
+
+.markupField {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}

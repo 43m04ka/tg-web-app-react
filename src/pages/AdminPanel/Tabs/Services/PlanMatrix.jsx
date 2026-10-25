@@ -6,7 +6,7 @@ import {useFeedback} from '../../Elements/Feedback/Feedback';
 import FlagPicker from '../../Elements/FlagPicker/FlagPicker';
 import {isFlagName} from '../../Elements/FlagPicker/flags';
 import {useServer} from './useServer';
-import {FULFILLMENT_OPTIONS, KIND_OPTIONS, money, parsePrice} from './serviceModel';
+import {MATRIX_FULFILLMENT_OPTIONS, KIND_OPTIONS, money, parsePrice} from './serviceModel';
 import s from './Services.module.scss';
 
 const NO_GROUP = '__none__';
@@ -315,7 +315,7 @@ const PlanMatrix = ({brandId, findBrand, onClose, onSaved}) => {
                     <Row label="Выдача" hint="Подписки обычно оформляет менеджер — склад кодов им не нужен">
                         <select className={`${f.input} ${f.select}`} value={fulfillment}
                                 onChange={(event) => setFulfillment(event.target.value)}>
-                            {FULFILLMENT_OPTIONS.map((option) => (
+                            {MATRIX_FULFILLMENT_OPTIONS.map((option) => (
                                 <option key={option.key} value={option.key}>{option.name}</option>
                             ))}
                         </select>

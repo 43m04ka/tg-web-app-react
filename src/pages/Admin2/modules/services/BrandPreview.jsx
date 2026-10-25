@@ -15,7 +15,8 @@ const readCollapsed = () => {
 };
 
 const toStorefrontOffer = (offer) => {
-    const fulfillment = offer.fulfillment || 'code';
+    const supplier = offer.fulfillment === 'supplier';
+    const fulfillment = supplier ? 'code' : (offer.fulfillment || 'code');
 
     return {
         id: offer.id,
@@ -26,10 +27,12 @@ const toStorefrontOffer = (offer) => {
         regionIcon: offer.regionIcon,
         regionFlag: offer.regionFlag,
         denomination: offer.denomination,
-        price: offer.price,
+        price: supplier && offer.salePrice ? offer.salePrice : offer.price,
         oldPrice: offer.oldPrice,
         fulfillment,
-        stock: fulfillment === 'manual' ? null : (offer.stock?.available ?? Number(offer.stock) ?? 0),
+        stock: fulfillment === 'manual'
+            ? null
+            : (supplier ? offer.supplier?.inStock || 0 : (offer.stock?.available ?? Number(offer.stock) ?? 0)),
     };
 };
 

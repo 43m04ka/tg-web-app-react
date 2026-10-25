@@ -10,6 +10,14 @@ export const updateBrand = ({brandId, updateData}) => httpPost('/services/brand/
 
 export const deleteBrand = (brandId) => httpPost('/services/brand/delete', {brandId});
 
+export const createOffer = (offerData) => httpPost('/services/offer/create', {offerData});
+
+export const saveMarkups = (items) => httpPost('/services/offer/markup', {items});
+
+export const fetchSupplierCatalog = () => httpGet('/services/supplier/catalog');
+
+export const fetchSupplierBalance = () => httpGet('/services/supplier/balance');
+
 export const saveOffers = ({brandId, offers, deleteIds}) => httpPost('/services/offer/bulk', {brandId, offers, deleteIds});
 
 export const fetchCodes = ({offerId, status}) => httpGet('/services/codes', {query: {offerId, status}});

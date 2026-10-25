@@ -32,6 +32,8 @@ export const keys = {
     serviceTree: ['services', 'tree'],
     serviceCatalogs: ['services', 'catalogs'],
     serviceCodes: (offerId, status) => ['services', 'codes', offerId, status],
+    serviceSupplierCatalog: ['services', 'supplier', 'catalog'],
+    serviceSupplierBalance: ['services', 'supplier', 'balance'],
     structure: ['structure'],
     pages: ['structure', 'pages'],
     pageBlocks: (pageId) => ['structure', 'blocks', pageId],

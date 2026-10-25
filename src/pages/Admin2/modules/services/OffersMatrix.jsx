@@ -64,7 +64,12 @@ const serialize = (rows) => rows.map((row, index) => ({
 
 export default function OffersMatrix({brand}) {
     const own = useMemo(
-        () => (brand.offers || []).filter((offer) => !offer.fromCatalog),
+        () => (brand.offers || []).filter((offer) => !offer.fromCatalog && offer.fulfillment !== 'supplier'),
+        [brand.offers],
+    );
+
+    const supplierCount = useMemo(
+        () => (brand.offers || []).filter((offer) => offer.fulfillment === 'supplier').length,
         [brand.offers],
     );
 
@@ -159,6 +164,10 @@ export default function OffersMatrix({brand}) {
 
             {!rows.length ? (
                 <Note>Предложений нет. Добавьте строку — это «тариф × номинал» с ценой.</Note>
+            ) : null}
+
+            {supplierCount ? (
+                <Note>Позиции с автовыдачей ({supplierCount}) — во вкладке «PanYanStore».</Note>
             ) : null}
 
             {problems.length ? (

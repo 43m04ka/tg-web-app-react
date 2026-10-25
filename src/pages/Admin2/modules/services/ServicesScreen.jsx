@@ -21,12 +21,14 @@ import BrandForm from './BrandForm';
 import OffersMatrix from './OffersMatrix';
 import CatalogLinks from './CatalogLinks';
 import StockPanel from './StockPanel';
+import SupplierPanel from './SupplierPanel';
 import BrandPreview from './BrandPreview';
 import style from './ServicesScreen.module.scss';
 
 const TABS = [
     {id: 'brand', title: 'Оформление'},
     {id: 'offers', title: 'Предложения'},
+    {id: 'supplier', title: 'PanYanStore'},
     {id: 'links', title: 'Каталоги'},
     {id: 'stock', title: 'Склад'},
 ];
@@ -39,6 +41,26 @@ const stockOf = (brand) => (brand.offers || []).reduce(
 const emptyStockOf = (brand) => (brand.offers || [])
     .filter((offer) => !offer.fromCatalog && offer.fulfillment === 'code' && !offer.stock?.available)
     .length;
+
+const supplierOf = (brand) => (brand.offers || []).filter((offer) => offer.fulfillment === 'supplier');
+
+const withoutMarkupOf = (brand) => supplierOf(brand)
+    .filter((offer) => !offer.markupType || !Number(offer.markupValue))
+    .length;
+
+const hasOwnStock = (brand) => (brand.offers || []).some((offer) => !offer.fromCatalog && offer.fulfillment === 'code');
+
+const summaryOf = (brand) => {
+    const total = (brand.offers || []).length;
+    const supplier = supplierOf(brand).length;
+
+    return [
+        supplier === total && total ? '' : `${total} предложений`,
+        supplier ? `PanYanStore ${supplier}` : '',
+        withoutMarkupOf(brand) ? `без комиссии ${withoutMarkupOf(brand)}` : '',
+        hasOwnStock(brand) ? `склад ${stockOf(brand)}` : '',
+    ].filter(Boolean).join(' · ');
+};
 
 const move = (list, from, to) => {
     const next = list.slice();
@@ -188,9 +210,7 @@ export default function ServicesScreen() {
                                         ? <Badge tone="warning">{`без кодов: ${emptyStockOf(brand)}`}</Badge>
                                         : null}
                                 </span>
-                                <span className={style.itemNote}>
-                                    {(brand.offers || []).length} предложений · склад {stockOf(brand)}
-                                </span>
+                                <span className={style.itemNote}>{summaryOf(brand)}</span>
                             </span>
 
                             <span className={style.grip} aria-hidden="true">⠿</span>
@@ -211,7 +231,7 @@ export default function ServicesScreen() {
                     <Panel
                         wide
                         title={current.name}
-                        subtitle={`${(current.offers || []).length} предложений · свободных кодов ${stockOf(current)}`}
+                        subtitle={summaryOf(current)}
                     >
                         <div className={style.tabs}>
                             <Tabs items={TABS} value={tab} onChange={setTab}/>
@@ -220,6 +240,7 @@ export default function ServicesScreen() {
                         <div className={style.content}>
                             {tab === 'brand' ? <BrandForm brand={current}/> : null}
                             {tab === 'offers' ? <OffersMatrix brand={current}/> : null}
+                            {tab === 'supplier' ? <SupplierPanel brand={current}/> : null}
                             {tab === 'links' ? <CatalogLinks brand={current}/> : null}
                             {tab === 'stock' ? <StockPanel brand={current}/> : null}
                         </div>

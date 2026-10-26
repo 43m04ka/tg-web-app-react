@@ -31,6 +31,7 @@ import {
     SteamWaitingDesktop
 } from './SteamStates';
 import style from './DesktopSteam.module.scss';
+import {useAccountEmail} from '../../../shared/hooks/useAccountEmail';
 
 const FORM_KEY = 'steam:form';
 
@@ -104,6 +105,7 @@ export default function DesktopSteam() {
 
     const [login, setLogin] = useState(saved.login || '');
     const [email, setEmail] = useState(saved.email || '');
+    useAccountEmail(setEmail);
     const [amountText, setAmountText] = useState(saved.amountText || '');
     const [isTouched, setTouched] = useState(false);
     const [isConfirmed, setConfirmed] = useState(false);

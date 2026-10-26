@@ -15,12 +15,14 @@ import {
 import {ChevronIcon, ExternalIcon} from './MoreIcons';
 import {menuForBot} from './moreMenu';
 import {useProfileSummary} from './useProfileSummary';
+import AccountCard from '../../shared/ui/AccountCard/AccountCard';
 import style from './More.module.scss';
 
 const PREVIEW_LIMIT = 2;
 
-const greetingName = (user) => {
-    const name = String(user?.first_name || user?.username || '').trim();
+const greetingName = (user, account) => {
+    const fromAccount = account?.username || String(account?.email || '').split('@')[0];
+    const name = String((user?.isGuest ? fromAccount : '') || user?.first_name || user?.username || fromAccount || '').trim();
     return name || 'Гость';
 };
 
@@ -37,13 +39,14 @@ export default function More() {
     const {contentSafeAreaInset, safeAreaInset} = useAppInsets();
 
     const user = useSessionStore((state) => state.user);
+    const account = useSessionStore((state) => state.account);
     const botType = useSessionStore((state) => state.botType);
 
     const {orders, favorites, isLoading} = useProfileSummary();
 
     const [photoFailed, setPhotoFailed] = useState(false);
 
-    const name = greetingName(user);
+    const name = greetingName(user, account);
     const avatar = user?.photoUrl || null;
 
     const groups = useMemo(() => menuForBot(botType), [botType]);
@@ -169,6 +172,10 @@ export default function More() {
                     </button>
                 ))}
             </div>
+
+            <section className={style.section}>
+                <AccountCard/>
+            </section>
 
             {groups.filter((group) => group.kind === 'list').map((group) => (
                 <section key={group.key} className={style.section}>

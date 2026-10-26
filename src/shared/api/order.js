@@ -1,8 +1,9 @@
 import {preparePaymentNetwork} from '../lib/paymentNetwork';
 import {withVkGroup} from '../lib/vkOrder';
 import {apiFetch, request} from './client';
+import {withLogin} from '../lib/loginGate';
 
-export const createOrder = async (payload) => {
+export const createOrder = withLogin(async (payload) => {
     await preparePaymentNetwork();
 
     const response = await apiFetch('/api/order/create', {
@@ -14,7 +15,7 @@ export const createOrder = async (payload) => {
     const data = await response.json().catch(() => ({}));
 
     return {...data, ok: response.ok, httpStatus: response.status};
-};
+});
 
 export const fetchOrderStatus = (orderId, signal) =>
     request('/api/payment/status', {query: {id: orderId}, signal, retries: 0});

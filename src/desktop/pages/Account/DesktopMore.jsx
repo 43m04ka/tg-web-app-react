@@ -14,12 +14,14 @@ import {useProfileSummary} from '../../../pages/More/useProfileSummary';
 import {ChevronIcon, ExternalIcon} from '../../../pages/More/MoreIcons';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import {Reveal} from '../../shell/useReveal';
+import AccountCard from '../../../shared/ui/AccountCard/AccountCard';
 import style from './DesktopMore.module.scss';
 
 const PREVIEW_LIMIT = 4;
 
-const greetingName = (user) => {
-    const name = String(user?.first_name || user?.username || '').trim();
+const greetingName = (user, account) => {
+    const fromAccount = account?.username || String(account?.email || '').split('@')[0];
+    const name = String((user?.isGuest ? fromAccount : '') || user?.first_name || user?.username || fromAccount || '').trim();
     return name || 'Гость';
 };
 
@@ -35,13 +37,14 @@ export default function DesktopMore() {
     const navigate = useNavigate();
 
     const user = useSessionStore((state) => state.user);
+    const account = useSessionStore((state) => state.account);
     const botType = useSessionStore((state) => state.botType);
 
     const {orders, favorites, isLoading} = useProfileSummary();
 
     const [photoFailed, setPhotoFailed] = useState(false);
 
-    const name = greetingName(user);
+    const name = greetingName(user, account);
     const avatar = user?.photoUrl || null;
 
     const groups = useMemo(() => menuForBot(botType), [botType]);
@@ -125,6 +128,11 @@ export default function DesktopMore() {
 
             <div className={style.body}>
                 <div className={style.column}>
+                    <Reveal as="section" className={style.section}>
+                        <h2 className={style.sectionTitle}>Аккаунт</h2>
+                        <AccountCard/>
+                    </Reveal>
+
                     {lists.map((group) => (
                         <Reveal as="section" key={group.key} className={style.section}>
                             {group.title ? <h2 className={style.sectionTitle}>{group.title}</h2> : null}

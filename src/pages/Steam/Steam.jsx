@@ -30,6 +30,7 @@ import VpnGate, {usePaymentNetwork} from '../../shared/ui/VpnGate/VpnGate';
 import style from './Steam.module.scss';
 import {useVkMessages} from '../../shared/hooks/useVkMessages';
 import {VK_CHAT_NEEDS_MESSAGES, paysInVkChat} from '../../shared/lib/paymentLink';
+import {useAccountEmail} from '../../shared/hooks/useAccountEmail';
 
 const FORM_KEY = 'steam:form';
 
@@ -59,6 +60,7 @@ export default function Steam() {
 
     const [login, setLogin] = useState(saved.login || '');
     const [email, setEmail] = useState(saved.email || '');
+    useAccountEmail(setEmail);
     const [amountText, setAmountText] = useState(saved.amountText || '');
     const [isTouched, setTouched] = useState(false);
 

@@ -1,6 +1,7 @@
 import {API_BASE_URL, DIRECT_API_URL, IS_TUNNEL_HOST} from '../config/env';
 import {reportDirectFailure} from '../lib/paymentNetwork';
 import {rewriteUploads} from '../lib/uploads';
+import {withAuthHeaders} from '../lib/authToken';
 
 const DEFAULT_TIMEOUT_MS = 12000;
 const DEFAULT_RETRIES = 1;
@@ -40,6 +41,7 @@ const isDirectNetworkError = (url, error) =>
 
 export async function apiFetch(path, init = {}) {
     const url = `${API_BASE_URL}${path}`;
+    init = {...init, headers: withAuthHeaders(path, init.headers)};
 
     try {
         return await fetch(url, init);
@@ -72,7 +74,7 @@ export async function request(path, {
         try {
             const response = await fetch(url, {
                 method,
-                headers: {'Content-Type': 'application/json'},
+                headers: withAuthHeaders(path, {'Content-Type': 'application/json'}),
                 body: body === undefined ? undefined : JSON.stringify(body),
                 signal: timeout.signal
             });

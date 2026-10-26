@@ -12,6 +12,7 @@ import {readPending} from '../pages/Pay/payModel';
 import BackButton from '../shared/ui/BackButton/BackButton';
 import NavBar from '../shared/ui/NavBar/NavBar';
 import Splash from '../shared/ui/Splash/Splash';
+import LoginSheet from '../shared/ui/LoginSheet/LoginSheet';
 import {useAccentTheme} from '../shared/hooks/useAccentTheme';
 import {useIsDesktop} from '../shared/hooks/useIsDesktop';
 import {useSessionStore} from '../store/useSessionStore';
@@ -86,6 +87,7 @@ export default function App() {
         return (
             <Suspense fallback={<Splash/>}>
                 <DesktopShell sections={maintenanceSections}/>
+                <LoginSheet/>
             </Suspense>
         );
     }
@@ -97,6 +99,7 @@ export default function App() {
                 <AppRoutes sections={maintenanceSections}/>
             </main>
             {pageId === null || isStandalone || pathname === '/pay' ? null : <NavBar/>}
+            <LoginSheet/>
         </div>
     );
 }

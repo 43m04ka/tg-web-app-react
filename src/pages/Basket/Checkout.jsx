@@ -45,6 +45,7 @@ import style from './Basket.module.scss';
 import {useVkMessages} from '../../shared/hooks/useVkMessages';
 import {VK_CHAT_NEEDS_MESSAGES, paysInVkChat} from '../../shared/lib/paymentLink';
 import {VK_MESSAGES_NOTE} from '../../shared/lib/vk';
+import {useAccountEmail} from '../../shared/hooks/useAccountEmail';
 
 const FORM_KEY = 'checkout:form';
 
@@ -191,6 +192,7 @@ export default function Checkout() {
     const [channel, setChannel] = useState(() => findChannel(saved.channel).key);
     const [contactValue, setContactValue] = useState(saved.contactValue || '');
     const [email, setEmail] = useState(saved.email || '');
+    useAccountEmail(setEmail);
     const [isTouched, setTouched] = useState(false);
 
     const pageType = useMemo(

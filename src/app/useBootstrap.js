@@ -1,9 +1,9 @@
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {usePlatformUser} from '../shared/hooks/usePlatformUser';
 import {usePlatform} from '../shared/hooks/usePlatform';
 import {configureTelegramViewport} from '../shared/lib/telegram';
 import {useTelegramSdk} from '../shared/hooks/useTelegramSdk';
-import {syncUser} from '../shared/api/structure';
+import {authenticate} from '../shared/lib/authenticate';
 import {loadPriceRules} from '../shared/api/priceRules';
 import {warmRecommendations} from '../pages/Basket/recommendQueue';
 import {BOOTSTRAP_TIMEOUT_MS} from '../shared/config/env';
@@ -18,7 +18,7 @@ export function useBootstrap() {
     const isPlatformResolved = useTelegramSdk() > 0;
 
     const setUser = useSessionStore((state) => state.setUser);
-    const setInternalUserId = useSessionStore((state) => state.setInternalUserId);
+    const setAccount = useSessionStore((state) => state.setAccount);
     const setSyncFailed = useSessionStore((state) => state.setSyncFailed);
     const setPlatform = useSessionStore((state) => state.setPlatform);
     const syncToken = useSessionStore((state) => state.syncToken);
@@ -29,9 +29,6 @@ export function useBootstrap() {
     const pages = useStructureStore((state) => state.pages);
 
     const [isTimedOut, setIsTimedOut] = useState(false);
-
-    const userRef = useRef(user);
-    userRef.current = user;
 
     const userKey = isUserReady && user ? userKeyOf(user) : null;
 
@@ -61,20 +58,20 @@ export function useBootstrap() {
 
         const controller = new AbortController();
 
-        syncUser(userRef.current, controller.signal)
-            .then((internalId) => {
+        authenticate(controller.signal)
+            .then((account) => {
                 if (controller.signal.aborted) return;
-                if (internalId) setInternalUserId(internalId);
+                if (account) setAccount(account);
                 else setSyncFailed();
             })
             .catch((error) => {
                 if (controller.signal.aborted) return;
-                console.error('[bootstrap] syncUser:', error.message);
+                console.error('[bootstrap] authenticate:', error.message);
                 setSyncFailed();
             });
 
         return () => controller.abort();
-    }, [userKey, syncToken, setInternalUserId, setSyncFailed]);
+    }, [userKey, syncToken, setAccount, setSyncFailed]);
 
     useEffect(() => {
         if (pageId === null || pageId === undefined) return;

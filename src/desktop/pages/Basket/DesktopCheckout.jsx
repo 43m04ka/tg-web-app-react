@@ -40,6 +40,7 @@ import {DesktopAccepted, DesktopFail, DesktopSuccess, DesktopWaiting} from './Ch
 import LegalNote from '../../../shared/ui/LegalNote/LegalNote';
 import VpnGate, {usePaymentNetwork} from '../../../shared/ui/VpnGate/VpnGate';
 import style from './DesktopCheckout.module.scss';
+import {useAccountEmail} from '../../../shared/hooks/useAccountEmail';
 
 const FORM_KEY = 'checkout:form';
 const REQUIRED_KEYS = ['login', 'password'];
@@ -378,6 +379,7 @@ export default function DesktopCheckout() {
     const [channel, setChannel] = useState(() => desktopChannel(saved.channel));
     const [contactValue, setContactValue] = useState(saved.contactValue || '');
     const [email, setEmail] = useState(saved.email || '');
+    useAccountEmail(setEmail);
     const [isTouched, setTouched] = useState(false);
     const [methods, setMethods] = useState(() => normalizeMethods(null));
 

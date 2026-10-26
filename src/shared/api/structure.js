@@ -30,29 +30,3 @@ export const fetchCatalogs = (signal, {includeStatus = false} = {}) =>
         retries: 2,
         query: includeStatus ? {includeStatus: 'true'} : undefined
     });
-
-const resolveChatId = async (user) => {
-    if (user.platform !== 'web') return String(user.id);
-
-    try {
-        const response = await fetch('https://api.ipify.org?format=json');
-        return String((await response.json()).ip);
-    } catch (e) {
-        return String(user.id);
-    }
-};
-
-export const syncUser = async (user, signal) => {
-    const payload = await request('/api/structure/syncUser', {
-        method: 'POST',
-        signal,
-        retries: 2,
-        body: {
-            chatId: await resolveChatId(user),
-            username: user.username || user.first_name || '',
-            platform: user.platform || 'tg'
-        }
-    });
-
-    return payload?.result ?? null;
-};

@@ -28,6 +28,7 @@ import {CodeDoneDesktop, CodeFailDesktop, CodeStalledDesktop, CodeWaitingDesktop
 import LegalNote from '../../../shared/ui/LegalNote/LegalNote';
 import VpnGate, {usePaymentNetwork} from '../../../shared/ui/VpnGate/VpnGate';
 import style from './DesktopServices.module.scss';
+import {useAccountEmail} from '../../../shared/hooks/useAccountEmail';
 
 const FORM_KEY = 'services:form';
 
@@ -108,6 +109,7 @@ export default function DesktopServices() {
     const [groupName, setGroupName] = useState(saved.groupName ?? null);
     const [offerId, setOfferId] = useState(saved.offerId ?? null);
     const [email, setEmail] = useState(saved.email || '');
+    useAccountEmail(setEmail);
     const [isTouched, setTouched] = useState(false);
 
     const flow = useCodeOrder(userId);

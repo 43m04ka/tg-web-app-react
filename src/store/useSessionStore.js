@@ -12,6 +12,8 @@ export const useSessionStore = create((set) => ({
 
     user: null,
     internalUserId: null,
+    account: null,
+    login: null,
     syncFailed: false,
     syncToken: 0,
     pageId: null,
@@ -19,6 +21,9 @@ export const useSessionStore = create((set) => ({
     setPageId: (pageId) => set({pageId}),
     setUser: (user) => set({user}),
     setInternalUserId: (internalUserId) => set({internalUserId, syncFailed: false}),
+    setAccount: (account) => set(account ? {account, internalUserId: account.id, syncFailed: false} : {account: null}),
+    openLogin: (reason = 'order') => set({login: {reason}}),
+    closeLogin: () => set({login: null}),
     setSyncFailed: () => set({syncFailed: true}),
     resync: () => set((state) => (state.internalUserId
         ? state
@@ -33,3 +38,5 @@ export const useSessionStore = create((set) => ({
 }));
 
 export const selectUserId = (state) => state.internalUserId;
+
+export const selectIsGuest = (state) => state.account?.kind !== 'user';

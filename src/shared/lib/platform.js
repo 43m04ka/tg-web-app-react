@@ -29,7 +29,7 @@ export const parseVkLaunch = (search) => {
 
     const launch = {};
     params.forEach((value, key) => {
-        if (key.startsWith('vk_') || key === 'sign') launch[key] = value;
+        if (key.startsWith('vk_') || key === 'sign' || key === 'sign_keys') launch[key] = value;
     });
 
     return launch;

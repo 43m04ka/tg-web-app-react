@@ -19,6 +19,7 @@ import VpnGate, {usePaymentNetwork} from '../../shared/ui/VpnGate/VpnGate';
 import style from './Services.module.scss';
 import {useVkMessages} from '../../shared/hooks/useVkMessages';
 import {VK_CHAT_NEEDS_MESSAGES, paysInVkChat} from '../../shared/lib/paymentLink';
+import {useAccountEmail} from '../../shared/hooks/useAccountEmail';
 
 const FORM_KEY = 'services:form';
 
@@ -58,6 +59,7 @@ export default function Services() {
     const [groupName, setGroupName] = useState(saved.groupName ?? null);
     const [offerId, setOfferId] = useState(saved.offerId ?? null);
     const [email, setEmail] = useState(saved.email || '');
+    useAccountEmail(setEmail);
     const [isTouched, setTouched] = useState(false);
 
     const flow = useCodeOrder(userId);

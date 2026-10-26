@@ -1,11 +1,12 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useSessionStore} from '../../../store/useSessionStore';
-import {fetchTelegramLinkStatus, startEmailLogin, startTelegramLink, verifyEmailLogin} from '../../api/auth';
+import {fetchMe, fetchTelegramLinkStatus, startEmailLogin, startTelegramLink, verifyEmailLogin} from '../../api/auth';
 import {isTelegramWebApp} from '../../lib/loginContext';
 import style from './LoginSheet.module.scss';
 
 const POLL_MS = 2000;
 const RESEND_SEC = 60;
+const EMAIL_POLL_MS = 3000;
 
 const TITLES = {
     order: 'Войдите, чтобы оформить заказ',
@@ -145,6 +146,27 @@ function EmailBlock({onDone, initialEmail}) {
         setError(result?.error || 'Не удалось отправить код, попробуйте позже');
     }, [email, isBusy]);
 
+    useEffect(() => {
+        if (phase !== 'code') return undefined;
+
+        const expected = email.trim().toLowerCase();
+        const controller = new AbortController();
+        const timerId = setInterval(async () => {
+            if (document.visibilityState === 'hidden') return;
+            const result = await fetchMe(controller.signal).catch(() => null);
+            if (controller.signal.aborted || !result?.user) return;
+            if (result.user.kind === 'user' && String(result.user.email || '').toLowerCase() === expected) {
+                clearInterval(timerId);
+                onDone(result.user);
+            }
+        }, EMAIL_POLL_MS);
+
+        return () => {
+            controller.abort();
+            clearInterval(timerId);
+        };
+    }, [phase, email, onDone]);
+
     const verify = useCallback(async (event) => {
         event?.preventDefault();
         if (isBusy) return;
@@ -165,7 +187,7 @@ function EmailBlock({onDone, initialEmail}) {
     if (phase === 'code') {
         return (
             <form className={style.block} onSubmit={verify}>
-                <p className={style.note}>Мы отправили код на <b>{email.trim()}</b>. Если письма нет, проверьте папку «Спам».</p>
+                <p className={style.note}>Мы отправили код на <b>{email.trim()}</b>. Введите его или нажмите «Подтвердить вход» в письме. Если письма нет, проверьте папку «Спам».</p>
                 <input
                     className={`${style.input} ${style.codeInput}`}
                     inputMode="numeric"

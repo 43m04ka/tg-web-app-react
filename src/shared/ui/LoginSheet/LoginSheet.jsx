@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useSessionStore} from '../../../store/useSessionStore';
 import {fetchMe, fetchTelegramLinkStatus, startEmailLogin, startTelegramLink, verifyEmailLogin} from '../../api/auth';
 import {isTelegramWebApp} from '../../lib/loginContext';
+import CodeInput from './CodeInput';
 import style from './LoginSheet.module.scss';
 
 const POLL_MS = 2000;
@@ -184,20 +185,15 @@ function EmailBlock({onDone, initialEmail}) {
         setError(result?.error || 'Не удалось войти, попробуйте ещё раз');
     }, [email, code, isBusy, onDone]);
 
+    useEffect(() => {
+        if (phase === 'code' && code.length === 6) verify();
+    }, [code]);
+
     if (phase === 'code') {
         return (
             <form className={style.block} onSubmit={verify}>
                 <p className={style.note}>Мы отправили код на <b>{email.trim()}</b>. Введите его или нажмите «Подтвердить вход» в письме. Если письма нет, проверьте папку «Спам».</p>
-                <input
-                    className={`${style.input} ${style.codeInput}`}
-                    inputMode="numeric"
-                    autoComplete="one-time-code"
-                    maxLength={6}
-                    placeholder="Код из письма"
-                    value={code}
-                    onChange={(event) => setCode(event.target.value.replace(/\D/g, '').slice(0, 6))}
-                    autoFocus
-                />
+                <CodeInput value={code} onChange={setCode} disabled={isBusy} autoFocus/>
                 {error ? <p className={style.error}>{error}</p> : null}
                 <button type="submit" className={style.primary} disabled={code.length !== 6 || isBusy}>
                     {isBusy ? 'Проверяем…' : 'Войти'}

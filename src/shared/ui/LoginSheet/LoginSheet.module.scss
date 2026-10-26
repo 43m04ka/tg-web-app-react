@@ -174,19 +174,40 @@
   outline: none;
 }
 
-.codeInput {
-  flex: none;
-  padding: 0 u(14);
+.codeCells {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: u(8);
+}
+
+.codeCell {
+  width: 100%;
+  min-width: 0;
+  height: u(56);
+  padding: 0;
   text-align: center;
   font-size: u(24);
-  letter-spacing: u(6);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  caret-color: var(--accent-soft);
   border-radius: var(--radius-lg);
   background: var(--surface-1);
   border: 1.5px solid var(--border-subtle);
+  outline: none;
+  transition: border-color var(--duration-base) var(--ease-out);
 
   &:focus {
     border-color: var(--accent-soft);
   }
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+.codeCellFilled {
+  border-color: var(--border-strong);
 }
 
 .primary,

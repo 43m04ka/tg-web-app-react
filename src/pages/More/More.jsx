@@ -20,10 +20,12 @@ import style from './More.module.scss';
 
 const PREVIEW_LIMIT = 2;
 
-const greetingName = (user, account) => {
-    const fromAccount = account?.username || String(account?.email || '').split('@')[0];
-    const name = String((user?.isGuest ? fromAccount : '') || user?.first_name || user?.username || fromAccount || '').trim();
-    return name || 'Гость';
+const greetingOf = (user, account) => {
+    const linkedName = account?.telegram || account?.vk ? account?.username : '';
+    const name = String((user?.isGuest ? '' : user?.first_name || user?.username) || linkedName || '').trim();
+    if (name) return {name, isEmail: false};
+    if (account?.email) return {name: account.email, isEmail: true};
+    return {name: 'Гость', isEmail: false};
 };
 
 const pluralOrders = (count) => {
@@ -46,7 +48,7 @@ export default function More() {
 
     const [photoFailed, setPhotoFailed] = useState(false);
 
-    const name = greetingName(user, account);
+    const {name, isEmail} = greetingOf(user, account);
     const avatar = user?.photoUrl || null;
 
     const groups = useMemo(() => menuForBot(botType), [botType]);
@@ -155,7 +157,7 @@ export default function More() {
                 </span>
 
                 <span className={style.headBody}>
-                    <span className={style.hello}>Привет, {name} 👋</span>
+                    <span className={`${style.hello} ${isEmail ? style.helloEmail : ''}`}>{isEmail ? name : `Привет, ${name} 👋`}</span>
                     <span className={style.helloNote}>Заказы, избранное и справка — здесь</span>
                 </span>
             </header>

@@ -19,10 +19,12 @@ import style from './DesktopMore.module.scss';
 
 const PREVIEW_LIMIT = 4;
 
-const greetingName = (user, account) => {
-    const fromAccount = account?.username || String(account?.email || '').split('@')[0];
-    const name = String((user?.isGuest ? fromAccount : '') || user?.first_name || user?.username || fromAccount || '').trim();
-    return name || 'Гость';
+const greetingOf = (user, account) => {
+    const linkedName = account?.telegram || account?.vk ? account?.username : '';
+    const name = String((user?.isGuest ? '' : user?.first_name || user?.username) || linkedName || '').trim();
+    if (name) return {name, isEmail: false};
+    if (account?.email) return {name: account.email, isEmail: true};
+    return {name: 'Гость', isEmail: false};
 };
 
 const pluralOrders = (count) => {
@@ -44,7 +46,7 @@ export default function DesktopMore() {
 
     const [photoFailed, setPhotoFailed] = useState(false);
 
-    const name = greetingName(user, account);
+    const {name, isEmail} = greetingOf(user, account);
     const avatar = user?.photoUrl || null;
 
     const groups = useMemo(() => menuForBot(botType), [botType]);
@@ -102,7 +104,7 @@ export default function DesktopMore() {
                 </span>
 
                 <span className={style.headBody}>
-                    <h1 className={style.hello}>Привет, {name}</h1>
+                    <h1 className={`${style.hello} ${isEmail ? style.helloEmail : ''}`}>{isEmail ? name : `Привет, ${name}`}</h1>
                     <span className={style.helloNote}>Заказы, избранное и справка — здесь</span>
                 </span>
 

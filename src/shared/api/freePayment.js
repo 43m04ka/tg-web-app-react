@@ -15,9 +15,9 @@ export const createFreePayment = async ({email, amount}) => {
     return {...data, ok: response.ok, httpStatus: response.status};
 };
 
-export const fetchFreePaymentStatus = async (id) => {
+export const fetchFreePaymentStatus = async (id, email) => {
     const response = await apiFetch(
-        `/api/payment/free/status?id=${encodeURIComponent(id)}&time=${Date.now()}`
+        `/api/payment/free/status?id=${encodeURIComponent(id)}&email=${encodeURIComponent(email || '')}&time=${Date.now()}`
     );
 
     if (!response.ok) return null;

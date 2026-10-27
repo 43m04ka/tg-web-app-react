@@ -63,7 +63,7 @@ export function usePayFlow() {
         if (screenOf(watched.status) !== SCREEN.WAITING) return;
 
         const check = async () => {
-            const next = await fetchFreePaymentStatus(watched.id).catch(() => null);
+            const next = await fetchFreePaymentStatus(watched.id, watched.email).catch(() => null);
             if (next) apply(next);
         };
 

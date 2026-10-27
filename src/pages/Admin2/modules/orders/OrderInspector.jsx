@@ -205,6 +205,7 @@ export default function OrderInspector({id, onClose}) {
                         <InspectorRows items={[
                             {label: 'Создан', value: <Time value={order.createdAt}/>},
                             {label: 'Обновлён', value: <Time value={order.updatedAt}/>},
+                            {label: 'Статус менял', value: order.statusChangedBy || '—'},
                             {label: 'Тип', value: TYPE_TITLES[order.type] || order.type},
                             {label: 'Площадка', value: PLATFORM_TITLES[order.platform] || order.platform},
                             {label: 'Страница', value: order.pageTitle || '—'},

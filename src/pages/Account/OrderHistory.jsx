@@ -4,6 +4,7 @@ import {useAppInsets} from '../../shared/hooks/useAppInsets';
 import {useInfiniteList} from '../../shared/hooks/useInfiniteList';
 import {hapticImpact} from '../../shared/lib/haptic';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
+import OrderCodes from '../../shared/ui/OrderCodes/OrderCodes';
 import {fetchOrderHistory} from '../../shared/api/account';
 import {rupees} from '../Basket/cartModel';
 import {useAccountList} from './useAccountList';
@@ -146,6 +147,8 @@ export default function OrderHistory() {
                                         ))}
                                     </ul>
                                 ) : null}
+
+                                <OrderCodes codes={order.codes} compact/>
 
                                 {topup?.meta?.leftoverRs > 0 ? (
                                     <span className={style.orderNote}>

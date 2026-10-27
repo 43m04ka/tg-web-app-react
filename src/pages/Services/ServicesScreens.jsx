@@ -5,6 +5,7 @@ import {money} from '../Basket/cartModel';
 import {supportUrlForBot} from '../More/moreMenu';
 import style from './Services.module.scss';
 import VkWriteButton from '../../shared/ui/VkWriteButton/VkWriteButton';
+import OrderCodes from '../../shared/ui/OrderCodes/OrderCodes';
 import {VK_CHAT_SCREEN} from '../../shared/lib/paymentLink';
 
 function Rows({order, status, tone}) {
@@ -128,16 +129,22 @@ export function CodeWaiting({order, onOpenAgain, onCancel, isPaymentOpen = true,
 }
 
 export function CodeDone({order, botType, onClose}) {
+    const codes = Array.isArray(order?.codes) ? order.codes : [];
+    const many = codes.length > 1 || order?.quantity > 1;
+    const issued = codes.length > 0;
+
     return (
         <Shell>
             <div className={`${style.stateIcon} ${style.stateIconDone}`} aria-hidden="true">✓</div>
-            <h1 className={style.stateTitle}>{order?.manual ? 'Заказ оплачен!' : 'Код отправлен!'}</h1>
+            <h1 className={style.stateTitle}>{order?.manual || !issued ? 'Заказ оплачен!' : `${many ? 'Коды выданы' : 'Код выдан'}!`}</h1>
 
             <Rows
                 order={order}
-                status={order?.manual ? 'Оплачено, оформляем' : 'Оплачено, код выдан'}
+                status={order?.manual ? 'Оплачено, оформляем' : issued ? 'Оплачено, код выдан' : 'Оплачено, выдаём код'}
                 tone="toneDone"
             />
+
+            {!order?.manual ? <OrderCodes codes={codes}/> : null}
 
             <div className={style.stateText}>
                 {order?.manual ? (
@@ -152,11 +159,13 @@ export function CodeDone({order, botType, onClose}) {
                 ) : (
                     <>
                         <span className={style.stateLead}>
-                            {order?.quantity > 1 ? 'Коды пришли' : 'Код пришёл'} отдельным сообщением в этот же чат
+                            {issued
+                                ? `${many ? 'Коды также есть' : 'Код также есть'} в разделе «Мои заказы» и в письме на вашу почту`
+                                : `${many ? 'Коды появятся' : 'Код появится'} здесь через несколько секунд`}
                         </span>
                         <span className={style.stateNote}>
-                            {order?.quantity > 1 ? 'Коды одноразовые' : 'Код одноразовый'} — сохраните
-                            {order?.quantity > 1 ? ' их' : ' его'}, повторно мы не выдадим
+                            {many ? 'Коды одноразовые' : 'Код одноразовый'} — сохраните
+                            {many ? ' их' : ' его'}, повторно мы не выдадим
                         </span>
                     </>
                 )}

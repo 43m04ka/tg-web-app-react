@@ -25,7 +25,7 @@ export const setAuthToken = (token) => {
 
 export const AUTH_HEADER = 'X-Auth-Token';
 
-const PRIVATE_PATHS = /^\/api\/(auth|basket|favorite|order|steam\/create|codes\/create|payment\/cancel)(\/|\?|$)/;
+const PRIVATE_PATHS = /^\/api\/(auth|basket|favorite|order|steam\/create|codes\/create|payment\/cancel|payment\/status)(\/|\?|$)/;
 
 export const needsAuth = (path) => PRIVATE_PATHS.test(String(path || '').replace(/^https?:\/\/[^/]+/, ''));
 

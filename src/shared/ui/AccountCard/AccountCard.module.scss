@@ -103,3 +103,31 @@
   background: transparent;
   border: 1px solid var(--border-subtle);
 }
+
+.everywhere {
+  align-self: center;
+  padding: u(4) u(6);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  background: transparent;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.everywhereConfirm {
+  color: var(--danger, #ff5d5d);
+  font-weight: var(--fw-semibold);
+}
+
+.notice {
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+  text-align: center;
+  color: var(--text-secondary);
+}

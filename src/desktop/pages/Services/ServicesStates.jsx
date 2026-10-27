@@ -2,6 +2,7 @@ import React, {useCallback, useState} from 'react';
 import {money} from '../../../pages/Basket/cartModel';
 import {supportUrlForBot} from '../../../pages/More/moreMenu';
 import Spinner from '../../ui/Spinner';
+import OrderCodes from '../../../shared/ui/OrderCodes/OrderCodes';
 import StatusStage, {StatusActions, StatusError, StatusRows, statusStyle} from '../../ui/StatusStage';
 
 const rowsOf = (order, status, tone) => [
@@ -79,22 +80,28 @@ export function CodeWaitingDesktop({order, onOpenAgain, onCancel, isPaymentOpen 
 }
 
 export function CodeDoneDesktop({order, botType, onClose}) {
-    const many = order?.quantity > 1;
+    const codes = Array.isArray(order?.codes) ? order.codes : [];
+    const many = codes.length > 1 || order?.quantity > 1;
+    const issued = codes.length > 0;
 
     return (
         <StatusStage
             tone="success"
             icon="✓"
-            title={order?.manual ? 'Заказ оплачен!' : 'Код отправлен!'}
+            title={order?.manual || !issued ? 'Заказ оплачен!' : `${many ? 'Коды выданы' : 'Код выдан'}!`}
             lead={order?.manual
                 ? 'Менеджер уже получил заказ и напишет вам в этот же чат'
-                : `${many ? 'Коды пришли' : 'Код пришёл'} отдельным сообщением в этот же чат`}
+                : issued
+                    ? `${many ? 'Коды также есть' : 'Код также есть'} в разделе «Мои заказы» и в письме на вашу почту`
+                    : `${many ? 'Коды появятся' : 'Код появится'} здесь через несколько секунд`}
             note={order?.manual
                 ? 'Подписку оформляют вручную — обычно это занимает до часа в рабочее время'
                 : `${many ? 'Коды одноразовые' : 'Код одноразовый'} — сохраните ${many ? 'их' : 'его'}, повторно мы не выдадим`}
         >
+            {!order?.manual ? <OrderCodes codes={codes}/> : null}
+
             <StatusRows
-                rows={rowsOf(order, order?.manual ? 'Оплачено, оформляем' : 'Оплачено, код выдан', 'toneDone')}
+                rows={rowsOf(order, order?.manual ? 'Оплачено, оформляем' : issued ? 'Оплачено, код выдан' : 'Оплачено, выдаём код', 'toneDone')}
             />
 
             <StatusActions>

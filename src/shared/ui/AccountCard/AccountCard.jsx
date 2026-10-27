@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useSessionStore} from '../../../store/useSessionStore';
 import {logout} from '../../api/auth';
 import {setAuthToken} from '../../lib/authToken';
@@ -18,18 +18,44 @@ export default function AccountCard({className = ''}) {
     const openLogin = useSessionStore((state) => state.openLogin);
     const setAccount = useSessionStore((state) => state.setAccount);
     const [isBusy, setBusy] = useState(false);
+    const [confirmAll, setConfirmAll] = useState(false);
+    const [notice, setNotice] = useState('');
 
     const canLogout = !isTelegramWebApp() && !isVk();
 
-    const leave = useCallback(async () => {
+    useEffect(() => {
+        if (!confirmAll) return undefined;
+        const timer = window.setTimeout(() => setConfirmAll(false), 5000);
+        return () => window.clearTimeout(timer);
+    }, [confirmAll]);
+
+    const leave = useCallback(async (everywhere = false) => {
         if (isBusy) return;
         setBusy(true);
-        await logout().catch(() => null);
+        setNotice('');
+        const result = await logout(everywhere).catch(() => null);
+        if (everywhere && !result?.ok) {
+            setNotice('Не удалось выйти на всех устройствах. Попробуйте ещё раз.');
+            setBusy(false);
+            return;
+        }
         setAuthToken(null);
         const next = await authenticate().catch(() => null);
         if (next) setAccount(next);
+        if (everywhere) setNotice(next?.kind === 'user' ? 'Вы вышли на всех других устройствах' : 'Вы вышли на всех устройствах');
+        setConfirmAll(false);
         setBusy(false);
     }, [isBusy, setAccount]);
+
+    const leaveEverywhere = useCallback(() => {
+        if (!confirmAll) {
+            setConfirmAll(true);
+            return;
+        }
+        leave(true);
+    }, [confirmAll, leave]);
+
+    const noticeLine = notice ? <span className={style.notice} role="status">{notice}</span> : null;
 
     if (!account) return null;
 
@@ -41,6 +67,7 @@ export default function AccountCard({className = ''}) {
                     <span className={style.text}>Войдите через Telegram или почту, чтобы оформлять заказы и видеть их на любом устройстве</span>
                 </div>
                 <button type="button" className={style.primary} onClick={() => openLogin('account')}>Войти</button>
+                {noticeLine}
             </div>
         );
     }
@@ -64,9 +91,14 @@ export default function AccountCard({className = ''}) {
                     <button type="button" className={style.secondary} onClick={() => openLogin('link')}>Привязать</button>
                 ) : null}
                 {canLogout ? (
-                    <button type="button" className={style.ghost} onClick={leave} disabled={isBusy}>Выйти</button>
+                    <button type="button" className={style.ghost} onClick={() => leave(false)} disabled={isBusy}>Выйти</button>
                 ) : null}
             </div>
+            <button type="button" className={`${style.everywhere} ${confirmAll ? style.everywhereConfirm : ''}`}
+                    onClick={leaveEverywhere} disabled={isBusy}>
+                {confirmAll ? 'Нажмите ещё раз, чтобы выйти везде' : 'Выйти на всех устройствах'}
+            </button>
+            {noticeLine}
         </div>
     );
 }

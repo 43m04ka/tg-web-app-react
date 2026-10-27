@@ -1,6 +1,6 @@
 export const SITE_CONTACTS = {
     brand: 'Геймворд | Игровой дискаунтер',
-    email: 'gwstore@bk.ru',
+    email: 'info@gwstore.ru',
     phone: '+79065799797',
     support: {label: '@gwstore_admin', href: 'https://t.me/gwstore_admin'},
     hours: 'Заказы принимаем круглосуточно, выдаём ежедневно с 10:00 до 22:00 по МСК',

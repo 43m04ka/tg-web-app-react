@@ -7,6 +7,7 @@ import {vkCommunityChatUrl} from '../../shared/lib/vk';
 
 const POLL_MS = 5000;
 const POLL_TIMEOUT_MS = 15 * 60 * 1000;
+const CODES_WAIT_MS = 3 * 60 * 1000;
 
 export const SCREEN = {
     NONE: null,
@@ -35,6 +36,7 @@ export function useCodeOrder(userId) {
 
     const timerRef = useRef(0);
     const startedAtRef = useRef(0);
+    const paidAtRef = useRef(0);
 
     const stopPolling = useCallback(() => {
         if (!timerRef.current) return;
@@ -63,6 +65,7 @@ export function useCodeOrder(userId) {
         setOrder(watched);
         setScreen(SCREEN.WAITING);
         startedAtRef.current = Date.now();
+        paidAtRef.current = 0;
 
         timerRef.current = window.setInterval(async () => {
             const next = await fetchOrderStatus(watched.orderId).catch(() => null);
@@ -71,8 +74,10 @@ export function useCodeOrder(userId) {
                 setOrder((current) => ({...current, ...next, orderId: watched.orderId}));
 
                 if (next.status === 'paid' || next.status === 'completed') {
-                    stopPolling();
+                    if (!paidAtRef.current) paidAtRef.current = Date.now();
                     setScreen(SCREEN.DONE);
+                    const hasCodes = Array.isArray(next.codes) && next.codes.length > 0;
+                    if (watched.manual || hasCodes || Date.now() - paidAtRef.current > CODES_WAIT_MS) stopPolling();
                     return;
                 }
 

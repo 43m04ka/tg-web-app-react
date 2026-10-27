@@ -1,6 +1,7 @@
 import React, {useMemo, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
+import OrderCodes from '../../../shared/ui/OrderCodes/OrderCodes';
 import {fetchOrderHistory} from '../../../shared/api/account';
 import {rupees} from '../../../pages/Basket/cartModel';
 import {useAccountList} from '../../../pages/Account/useAccountList';
@@ -143,6 +144,8 @@ export default function DesktopHistory() {
                                         ))}
                                     </ul>
                                 ) : null}
+
+                                <OrderCodes codes={order.codes} compact/>
 
                                 {topup?.meta?.leftoverRs > 0 ? (
                                     <span className={style.orderNote}>

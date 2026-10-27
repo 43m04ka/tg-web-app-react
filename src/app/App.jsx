@@ -13,7 +13,6 @@ import BackButton from '../shared/ui/BackButton/BackButton';
 import NavBar from '../shared/ui/NavBar/NavBar';
 import Splash from '../shared/ui/Splash/Splash';
 import LoginSheet from '../shared/ui/LoginSheet/LoginSheet';
-import EmailLinkNotice from '../shared/ui/LoginSheet/EmailLinkNotice';
 import {useAccentTheme} from '../shared/hooks/useAccentTheme';
 import {useIsDesktop} from '../shared/hooks/useIsDesktop';
 import {useSessionStore} from '../store/useSessionStore';
@@ -89,7 +88,6 @@ export default function App() {
             <Suspense fallback={<Splash/>}>
                 <DesktopShell sections={maintenanceSections}/>
                 <LoginSheet/>
-                <EmailLinkNotice/>
             </Suspense>
         );
     }
@@ -102,7 +100,6 @@ export default function App() {
             </main>
             {pageId === null || isStandalone || pathname === '/pay' ? null : <NavBar/>}
             <LoginSheet/>
-            <EmailLinkNotice/>
         </div>
     );
 }

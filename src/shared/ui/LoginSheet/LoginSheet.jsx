@@ -1,13 +1,11 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useSessionStore} from '../../../store/useSessionStore';
-import {fetchMe, fetchTelegramLinkStatus, startEmailLogin, startTelegramLink, verifyEmailLogin} from '../../api/auth';
+import {startEmailLogin, startTelegramLink, verifyEmailLogin, verifyTelegramLink} from '../../api/auth';
 import {isTelegramWebApp} from '../../lib/loginContext';
 import CodeInput from './CodeInput';
 import style from './LoginSheet.module.scss';
 
-const POLL_MS = 2000;
 const RESEND_SEC = 60;
-const EMAIL_POLL_MS = 3000;
 
 const TITLES = {
     order: 'Войдите, чтобы оформить заказ',
@@ -35,6 +33,8 @@ function MailIcon() {
 function TelegramBlock({onDone}) {
     const [link, setLink] = useState(null);
     const [phase, setPhase] = useState('idle');
+    const [code, setCode] = useState('');
+    const [isBusy, setBusy] = useState(false);
     const [error, setError] = useState('');
     const aliveRef = useRef(true);
 
@@ -54,31 +54,51 @@ function TelegramBlock({onDone}) {
         };
     }, [loadLink]);
 
+    const verify = useCallback(async (event) => {
+        event?.preventDefault();
+        if (isBusy || !link) return;
+        setBusy(true);
+        setError('');
+        const result = await verifyTelegramLink(link.nonce, code.trim()).catch(() => null);
+        if (!aliveRef.current) return;
+        setBusy(false);
+
+        if (result?.ok && result.user) {
+            onDone(result.user);
+            return;
+        }
+
+        if (result?.code === 'expired' || result?.code === 'attempts') {
+            setPhase('idle');
+            setCode('');
+            setError(result.error);
+            loadLink(true);
+            return;
+        }
+
+        if (result?.code === 'wrong') setCode('');
+        setError(result?.error || 'Не удалось войти, попробуйте ещё раз');
+    }, [isBusy, link, code, onDone, loadLink]);
+
     useEffect(() => {
-        if (phase !== 'waiting' || !link) return undefined;
+        if (phase === 'code' && code.length === 6) verify();
+    }, [code]);
 
-        const controller = new AbortController();
-        const timerId = setInterval(async () => {
-            if (document.visibilityState === 'hidden') return;
-            const result = await fetchTelegramLinkStatus(link.nonce, controller.signal).catch(() => null);
-            if (!result || controller.signal.aborted) return;
-
-            if (result.status === 'confirmed' && result.user) {
-                clearInterval(timerId);
-                onDone(result.user);
-            } else if (result.status === 'expired' || result.httpStatus >= 400) {
-                clearInterval(timerId);
-                setPhase('idle');
-                setError(result.error || 'Ссылка устарела, нажмите кнопку ещё раз');
-                loadLink(true);
-            }
-        }, POLL_MS);
-
-        return () => {
-            controller.abort();
-            clearInterval(timerId);
-        };
-    }, [phase, link, onDone, loadLink]);
+    if (phase === 'code') {
+        return (
+            <form className={style.block} onSubmit={verify}>
+                <p className={style.note}>
+                    Откройте бота Геймворд и нажмите «Запустить» — он пришлёт код. Введите его здесь.
+                    {' '}<a href={link?.url || undefined} target="_blank" rel="noopener noreferrer">Открыть бота</a>
+                </p>
+                <CodeInput value={code} onChange={setCode} disabled={isBusy} autoFocus/>
+                {error ? <p className={style.error}>{error}</p> : null}
+                <button type="submit" className={style.primary} disabled={code.length !== 6 || isBusy}>
+                    {isBusy ? 'Проверяем…' : 'Войти'}
+                </button>
+            </form>
+        );
+    }
 
     return (
         <div className={style.block}>
@@ -92,19 +112,13 @@ function TelegramBlock({onDone}) {
                         event.preventDefault();
                         return;
                     }
-                    setPhase('waiting');
+                    setError('');
+                    setPhase('code');
                 }}
             >
                 <span className={style.methodIcon}><TelegramIcon/></span>
                 <span className={style.methodLabel}>Войти через Telegram</span>
             </a>
-
-            {phase === 'waiting' ? (
-                <p className={style.hint}>
-                    <span className={style.spinner} aria-hidden="true"/>
-                    Откройте бота Геймворд и нажмите «Подтвердить вход». Эта страница обновится сама.
-                </p>
-            ) : null}
 
             {error ? <p className={style.error}>{error}</p> : null}
         </div>
@@ -147,27 +161,6 @@ function EmailBlock({onDone, initialEmail}) {
         setError(result?.error || 'Не удалось отправить код, попробуйте позже');
     }, [email, isBusy]);
 
-    useEffect(() => {
-        if (phase !== 'code') return undefined;
-
-        const expected = email.trim().toLowerCase();
-        const controller = new AbortController();
-        const timerId = setInterval(async () => {
-            if (document.visibilityState === 'hidden') return;
-            const result = await fetchMe(controller.signal).catch(() => null);
-            if (controller.signal.aborted || !result?.user) return;
-            if (result.user.kind === 'user' && String(result.user.email || '').toLowerCase() === expected) {
-                clearInterval(timerId);
-                onDone(result.user);
-            }
-        }, EMAIL_POLL_MS);
-
-        return () => {
-            controller.abort();
-            clearInterval(timerId);
-        };
-    }, [phase, email, onDone]);
-
     const verify = useCallback(async (event) => {
         event?.preventDefault();
         if (isBusy) return;
@@ -192,7 +185,7 @@ function EmailBlock({onDone, initialEmail}) {
     if (phase === 'code') {
         return (
             <form className={style.block} onSubmit={verify}>
-                <p className={style.note}>Мы отправили код на <b>{email.trim()}</b>. Введите его или нажмите «Подтвердить вход» в письме. Если письма нет, проверьте папку «Спам».</p>
+                <p className={style.note}>Мы отправили код на <b>{email.trim()}</b>. Введите его здесь. Если письма нет, проверьте папку «Спам».</p>
                 <CodeInput value={code} onChange={setCode} disabled={isBusy} autoFocus/>
                 {error ? <p className={style.error}>{error}</p> : null}
                 <button type="submit" className={style.primary} disabled={code.length !== 6 || isBusy}>

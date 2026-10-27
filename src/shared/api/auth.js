@@ -25,11 +25,8 @@ export const startEmailLogin = (email) => call('/api/auth/email/start', {body: {
 
 export const verifyEmailLogin = (email, code) => call('/api/auth/email/verify', {body: {email, code}});
 
-export const confirmEmailLink = (token) => call('/api/auth/email/link', {body: {token}});
-
 export const startTelegramLink = () => call('/api/auth/telegram/link');
 
-export const fetchTelegramLinkStatus = (nonce, signal) =>
-    call(`/api/auth/telegram/link/status?nonce=${encodeURIComponent(nonce)}&time=${Date.now()}`, {method: 'GET', signal});
+export const verifyTelegramLink = (nonce, code) => call('/api/auth/telegram/link/verify', {body: {nonce, code}});
 
 export const logout = (everywhere = false) => call('/api/auth/logout', {body: {everywhere}});

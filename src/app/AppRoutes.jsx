@@ -10,6 +10,8 @@ import More from '../pages/More/More';
 import Product from '../pages/Product/Product';
 import Favorites from '../pages/Account/Favorites';
 import OrderHistory from '../pages/Account/OrderHistory';
+import Reviews from '../pages/Reviews/Reviews';
+import ReviewForm from '../pages/Reviews/ReviewForm';
 import Steam from '../pages/Steam/Steam';
 import Services from '../pages/Services/Services';
 import Subscription from '../pages/Subscription/Subscription';
@@ -73,7 +75,7 @@ export default function AppRoutes({sections}) {
 
     useEffect(() => {
         if (location.pathname === shown.pathname) {
-            if (location.search !== shown.search) setShown(location);
+            if (location.search !== shown.search || location.hash !== shown.hash) setShown(location);
             return undefined;
         }
 
@@ -114,6 +116,10 @@ export default function AppRoutes({sections}) {
             <Routes location={shown}>
                 <Route path="/" element={<SelectPlatform sections={sections}/>}/>
                 <Route path="/pay" element={<Pay/>}/>
+                <Route path="/reviews" element={<Reviews/>}/>
+                <Route path="/info/reviews" element={<Navigate to="/reviews" replace/>}/>
+                <Route path="/reviews/write" element={<ReviewForm/>}/>
+                <Route path="/reviews/write/:orderId" element={<ReviewForm/>}/>
                 <Route path="/payment/*" element={<Navigate to={readPending() ? '/pay' : '/'} replace/>}/>
                 <Route path="/main" element={<RequireCatalogPage><Main/></RequireCatalogPage>}/>
                 <Route path="/steam" element={

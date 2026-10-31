@@ -7,6 +7,8 @@ import DesktopCheckout from './pages/Basket/DesktopCheckout';
 import DesktopMore from './pages/Account/DesktopMore';
 import DesktopFavorites from './pages/Account/DesktopFavorites';
 import DesktopHistory from './pages/Account/DesktopHistory';
+import Reviews from '../pages/Reviews/Reviews';
+import ReviewForm from '../pages/Reviews/ReviewForm';
 import DesktopSteam from './pages/Steam/DesktopSteam';
 import DesktopServices from './pages/Services/DesktopServices';
 import DesktopSubscription from './pages/Subscription/DesktopSubscription';
@@ -82,6 +84,10 @@ export default function DesktopRoutes({sections}) {
             <Route path="/" element={<Storefront/>}/>
             <Route path="/main" element={<Navigate to="/" replace/>}/>
             <Route path="/pay" element={<DesktopPay/>}/>
+            <Route path="/reviews" element={<Reviews/>}/>
+            <Route path="/info/reviews" element={<Navigate to="/reviews" replace/>}/>
+            <Route path="/reviews/write" element={<ReviewForm/>}/>
+            <Route path="/reviews/write/:orderId" element={<ReviewForm/>}/>
             <Route path="/activate" element={<DesktopMarketplace/>}/>
             <Route path="/payment/*" element={<Navigate to={readPending() ? '/pay' : '/'} replace/>}/>
             <Route path="/steam" element={<EnsureStandalone type="steam"><DesktopSteam/></EnsureStandalone>}/>

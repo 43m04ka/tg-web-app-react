@@ -321,3 +321,4 @@
     color: var(--a2-danger);
     font-size: var(--a2-size-xs);
 }
+.reviewActions { display: flex; flex-wrap: wrap; gap: 10px; label { display: flex; flex-direction: column; gap: 8px; width: 100%; font-size: 12px; } input { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid var(--border); border-radius: 8px; background: transparent; color: inherit; } }

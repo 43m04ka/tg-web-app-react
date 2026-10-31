@@ -42,7 +42,7 @@ describe('menuGroups', () => {
             'Пополнение Steam',
             'Оплата сервисов'
         ]);
-        expect(buyers.items.map((item) => item.label)).toEqual(['Получить заказ с маркетплейса', 'База знаний', 'Контакты']);
+        expect(buyers.items.map((item) => item.label)).toEqual(['Отзывы', 'Получить заказ с маркетплейса', 'База знаний', 'Контакты']);
     });
 
     it('раскладывает подборки PlayStation по регионам без подписок и баннеров', () => {
@@ -71,7 +71,7 @@ describe('menuGroups', () => {
         });
 
         expect(groups[0].items.map((item) => item.key)).not.toContain('steam');
-        expect(groups[1].items.map((item) => item.label)).toEqual(['Получить заказ с маркетплейса', 'База знаний', 'Контакты', 'Отзывы']);
-        expect(groups[1].items[3].extra).toBe(true);
+        expect(groups[1].items.map((item) => item.label)).toEqual(['Отзывы', 'Получить заказ с маркетплейса', 'База знаний', 'Контакты']);
+        expect(groups[1].items[0].to).toBe('/reviews');
     });
 });

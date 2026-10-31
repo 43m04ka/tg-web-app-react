@@ -31,6 +31,14 @@ export const MENU_GROUPS = [
                 color: 'var(--accent)'
             },
             {
+                key: 'reviews',
+                name: 'Отзывы',
+                bots: ['vk-xbox', 'vk-ps', 'tg', 'web'],
+                to: '/reviews',
+                Icon: NewsIcon,
+                color: 'var(--accent)'
+            },
+            {
                 key: 'support-vk-ps',
                 name: 'Поддержка',
                 bots: ['vk-ps'],

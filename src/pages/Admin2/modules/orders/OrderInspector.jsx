@@ -27,6 +27,7 @@ import {
     statusTone,
 } from './model';
 import StatusMenu from './StatusMenu';
+import ReviewInviteActions from './ReviewInviteActions';
 import style from './OrderInspector.module.scss';
 
 const TABS = [
@@ -213,6 +214,7 @@ export default function OrderInspector({id, onClose}) {
                         ]}/>
                     </InspectorSection>
 
+                    <ReviewInviteActions key={order.id} order={order}/>
                     <InspectorSection
                         title="Позиции"
                         actions={(

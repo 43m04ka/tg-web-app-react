@@ -104,6 +104,7 @@ export const menuGroups = ({storefronts, sections, catalogs, blocks, pageLinks})
     ].filter(Boolean);
 
     const buyers = [
+        {key: 'reviews', icon: 'doc', label: 'Отзывы', action: 'route', to: '/reviews'},
         {key: 'activate', icon: 'box', label: 'Получить заказ с маркетплейса', note: 'Активация заказа, оформленного на маркетплейсе', action: 'route', to: '/activate'},
         {
             key: 'guides',
@@ -126,7 +127,7 @@ export const menuGroups = ({storefronts, sections, catalogs, blocks, pageLinks})
 
     const fixedRoutes = buyers.map((item) => item.to);
     const extras = (pageLinks || [])
-        .filter((link) => !fixedRoutes.includes(link.to))
+        .filter((link) => link.to !== '/info/reviews' && !fixedRoutes.includes(link.to))
         .map((link) => ({...link, icon: 'doc', action: 'route', extra: true}));
 
     return [

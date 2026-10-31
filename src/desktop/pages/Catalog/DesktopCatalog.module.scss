@@ -184,6 +184,12 @@
   min-width: 0;
 }
 
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .title {
   font-size: var(--d-fs-2xl);
   font-weight: var(--fw-bold);

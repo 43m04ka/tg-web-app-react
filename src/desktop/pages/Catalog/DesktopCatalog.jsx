@@ -26,6 +26,7 @@ import {useOfferPicker} from '../../shell/useOfferPicker';
 import {useCrumbTrail} from '../../shell/useCrumbTrail';
 import Crumbs from '../../ui/Crumbs';
 import FilterPanel from './FilterPanel';
+import CatalogShare from '../../../pages/Catalog/CatalogShare';
 import style from './DesktopCatalog.module.scss';
 
 const SKELETON_COUNT = 12;
@@ -146,7 +147,10 @@ export default function DesktopCatalog() {
 
                 <header className={style.head}>
                     <div className={style.headText}>
-                        <h1 className={style.title}>{title}</h1>
+                        <div className={style.titleRow}>
+                            <h1 className={style.title}>{title}</h1>
+                            <CatalogShare key={path} path={path} desktop/>
+                        </div>
                         <span className={style.count}>
                             {total ? `${total.toLocaleString('ru-RU')} ${productsPlural(total)}` : ' '}
                         </span>

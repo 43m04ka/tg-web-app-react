@@ -69,7 +69,12 @@
 .headerRow {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: u(12);
+}
+
+.headerRow:empty {
+  display: none;
 }
 
 .back {
@@ -106,7 +111,7 @@
 
 .title {
   margin: 0;
-  font-size: u(16);
+  font-size: u(21);
   font-weight: 800;
   line-height: 1.25;
   letter-spacing: u(-0.2);

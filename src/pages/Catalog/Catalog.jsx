@@ -25,6 +25,7 @@ import {FunnelIcon, SortIcon} from './CatalogIcons';
 import ProductGrid, {ProductGridSkeleton} from './ProductGrid';
 import FilterSheet from './FilterSheet';
 import {useCatalogProducts} from './useCatalogProducts';
+import CatalogShare from './CatalogShare';
 import style from './Catalog.module.scss';
 
 const SIMILAR_LIMIT = 6;
@@ -158,6 +159,9 @@ export default function Catalog() {
                 <div className={style.headerRow}>
                     {hasNativeBack ? null : <BackPill className={style.back} onClick={back}/>}
 
+                    {catalogId !== null ? <CatalogShare key={path} path={path}/> : null}
+                </div>
+
                     <div className={style.headerText}>
                         <h1 className={style.title}>{title}</h1>
                         <span className={style.count}>
@@ -168,7 +172,6 @@ export default function Catalog() {
                                     : `${total.toLocaleString('ru-RU')} ${productsPlural(total)}`}
                         </span>
                     </div>
-                </div>
 
                 <div className={style.controls}>
                     <button

@@ -8,8 +8,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
-  gap: var(--d-gap-2);
-  width: var(--psnav-width, 124px);
+  gap: 0;
   padding: 4px 0;
   font-size: var(--d-fs-md);
   font-weight: var(--fw-bold);
@@ -42,6 +41,22 @@
 :global(html[data-view='desktop']) .title:active:not(:disabled) { transform: translateY(1px); }
 
 .selection {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  width: 0;
+  height: 18px;
+  margin-left: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: width 320ms var(--m-ease), margin-left 320ms var(--m-ease), opacity 260ms var(--m-ease);
+}
+.title[data-selected] .selection {
+  width: 37px;
+  margin-left: var(--d-gap-2);
+  opacity: 1;
+}
+.selectionContent {
   flex: none;
   display: inline-flex;
   align-items: center;

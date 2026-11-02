@@ -104,10 +104,12 @@ export default function PlayStationNav({items, scopeId, onSelect}) {
                 aria-label="PlayStation" title={selectedRegion ? `PlayStation — ${selectedRegion.name}` : undefined}
                 aria-haspopup="dialog" aria-expanded={isOpen && !isClosing} onClick={open}>
                 <span className={style.label}>PlayStation</span>
-                {selectedRegion ? <span className={style.selection} key={selectedItem.type}>
-                    <FlagIcon code={selectedRegion.flag} className={style.smallFlag} aria-hidden="true"/>
-                    <ChevronIcon className={style.chevron} aria-hidden="true"/>
-                </span> : null}
+                <span className={style.selection} aria-hidden="true">
+                    {selectedRegion ? <span className={style.selectionContent} key={selectedItem.type}>
+                        <FlagIcon code={selectedRegion.flag} className={style.smallFlag} aria-hidden="true"/>
+                        <ChevronIcon className={style.chevron} aria-hidden="true"/>
+                    </span> : null}
+                </span>
             </button>
             {isOpen ? createPortal(
                 <div className={style.overlay} data-closing={isClosing || undefined} onClick={() => close()}>

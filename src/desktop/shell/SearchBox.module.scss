@@ -3,7 +3,8 @@
   z-index: 1;
   flex: 1 1 auto;
   min-width: 0;
-  max-width: none;
+  max-width: 360px;
+  margin-left: auto;
   opacity: 1;
   transform: none;
   visibility: visible;
@@ -11,6 +12,10 @@
               opacity var(--m-base) var(--m-ease),
               transform var(--m-slow) var(--m-spring),
               visibility 0s;
+}
+
+.rootOpen {
+  max-width: var(--d-max);
 }
 
 .rootHidden {

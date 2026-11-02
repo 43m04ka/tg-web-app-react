@@ -13,7 +13,7 @@ import BackLink from '../ui/BackLink';
 import RouteLink from '../ui/RouteLink';
 import MenuDrop from './MenuDrop';
 import BrandLogo from './BrandLogo';
-import {SITE_CONTACTS} from '../../shared/lib/siteContacts';
+import ReviewRating from './ReviewRating';
 import PlayStationNav from './PlayStationNav';
 import {useSiteMenu} from './useSiteMenu';
 import {useStorefrontScope} from './StorefrontScope';
@@ -109,11 +109,17 @@ export default function TopBar({onSearchOpenChange}) {
         <header className={isScrolled ? `${style.bar} ${style.barScrolled}` : style.bar}>
             <div className={style.utility}>
                 <div className={style.utilityInner}>
-                    <span>Игры и подписки для PlayStation и Xbox</span>
+                    <span className={style.fulfillment} title="Приём заказов круглосуточно">
+                        <span className={style.statusDot} aria-hidden="true"/>
+                        Выдача заказов с 10:00 до 22:00 МСК, приём заказов круглосуточно
+                    </span>
                     <div className={style.utilityLinks}>
-                        <span>Выдача заказов 10:00–22:00 МСК</span>
-                        <RouteLink to="/reviews">Отзывы</RouteLink>
-                        <a href={SITE_CONTACTS.support.href} target="_blank" rel="noopener noreferrer">Поддержка</a>
+                        <RouteLink to="/activate" className={style.marketplace}>Получить заказ с маркетплейса</RouteLink>
+                        <RouteLink to="/faq">База знаний</RouteLink>
+                        <span className={style.reviewsGroup}>
+                            <RouteLink to="/reviews">Отзывы</RouteLink>
+                            <ReviewRating/>
+                        </span>
                     </div>
                 </div>
             </div>

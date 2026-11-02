@@ -5,7 +5,7 @@ import {useStructureStore} from '../../../store/useStructureStore';
 import {usePlatform} from '../../../shared/hooks/usePlatform';
 import {useCatalogProducts} from '../../../pages/Catalog/useCatalogProducts';
 import {createProductOrigin} from '../../../shared/lib/productOrigin';
-import {catalogRoute, productRoute} from '../../../shared/lib/pageRoutes';
+import {catalogRoute} from '../../../shared/lib/pageRoutes';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
 import {recallView, rememberView} from '../../../shared/lib/viewMemory';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
@@ -17,6 +17,10 @@ import {useGridColumns} from '../../shell/useGridColumns';
 import {originIndex, resolveBotType, storefrontList} from '../../model/desktopNav';
 import {storefrontConfig} from '../../model/storefrontConfig';
 import {buildCategories, buildHero, buildShelves, buildSummaryShelves, mergeOffers} from '../../model/storefrontModel';
+import {buildHomePopular, buildHomeSubscriptions, currentHomeHero, homePreorder} from '../../model/homepageModel';
+import {HomeServices, PreorderSection} from './HomeSections';
+import {useOpenSections} from '../../shell/MaintenanceScope';
+import {pageIdOfType} from '../../model/desktopNav';
 import OfferCard from './OfferCard';
 import Shelf from './Shelf';
 import SubscriptionShelf, {groupShelves} from './SubscriptionShelf';
@@ -36,13 +40,16 @@ export default function Storefront() {
     const catalogs = useStructureStore((store) => store.catalogs);
     const structureBlocks = useStructureStore((store) => store.structureBlocks);
     const mainPageProducts = useStructureStore((store) => store.mainPageProducts);
+    const popularProducts = useStructureStore((store) => store.popularProducts);
     const banners = useStructureStore((store) => store.banners);
     const mainPageId = useStructureStore((store) => store.mainPageId);
     const desktopShelves = useStructureStore((store) => store.desktopShelves);
 
     const setPageId = useSessionStore((store) => store.setPageId);
 
-    const {scopeId} = useStorefrontScope();
+    const {scopeId, setScopeId} = useStorefrontScope();
+    const isHome = scopeId === null;
+    const openSections = useOpenSections([{key: 'services', route: '/services'}]);
 
     const config = storefrontConfig(null);
 
@@ -90,7 +97,11 @@ export default function Storefront() {
         [desktopShelves, structureBlocks, catalogs, mainPageProducts, originOf, pageIds, scopeId, mainPageId]
     );
 
-    const shelfEntries = useMemo(() => groupShelves(shelves), [shelves]);
+    const homePopular = useMemo(() => buildHomePopular({shelves, popularProducts, products: mainPageProducts, originOf, botType: effectiveBotType, pageIds}),
+        [shelves, popularProducts, mainPageProducts, originOf, effectiveBotType, pageIds]);
+    const homeSubscriptions = useMemo(() => buildHomeSubscriptions({products: mainPageProducts, catalogs, originOf}), [mainPageProducts, catalogs, originOf]);
+    const preorder = useMemo(() => homePreorder({banners, products: mainPageProducts, originOf, originByPage}), [banners, mainPageProducts, originOf, originByPage]);
+    const shelfEntries = useMemo(() => groupShelves(isHome ? homeSubscriptions : shelves), [isHome, homeSubscriptions, shelves]);
 
     const categories = useMemo(
         () => (scopeId === null
@@ -109,7 +120,7 @@ export default function Storefront() {
         : {pageId: scopeId, sorting: config.sorting}), [scopeId, effectiveBotType, config.sorting]);
 
     const {items, total, hasMore, isLoading, isLoadingMore, error, loadMore, retry} =
-        useCatalogProducts(query, {enabled: Array.isArray(startPages)});
+        useCatalogProducts(query, {enabled: !isHome && Array.isArray(startPages)});
 
     const catalogOffers = useMemo(
         () => (items === null ? null : mergeOffers(items, originOf)),
@@ -137,8 +148,8 @@ export default function Storefront() {
     const loadedCount = catalogOffers?.length ?? 0;
 
     useEffect(() => {
-        if (loadedCount < limit && hasMore && !isLoading && !isLoadingMore && !error) loadMore();
-    }, [loadedCount, limit, hasMore, isLoading, isLoadingMore, error, loadMore]);
+        if (!isHome && loadedCount < limit && hasMore && !isLoading && !isLoadingMore && !error) loadMore();
+    }, [isHome, loadedCount, limit, hasMore, isLoading, isLoadingMore, error, loadMore]);
 
     const visibleOffers = useMemo(
         () => (catalogOffers === null ? null : catalogOffers.slice(0, limit)),
@@ -154,22 +165,30 @@ export default function Storefront() {
 
     const openCatalog = useCallback((target) => {
         setPageId(target.pageId);
+        setScopeId(target.pageId);
         navigate(catalogRoute(target.path));
-    }, [navigate, setPageId]);
+    }, [navigate, setPageId, setScopeId]);
+
+    const openService = useCallback((brandId) => {
+        const id = pageIdOfType(pages, 'services');
+        if (id === null) return;
+        setPageId(id);
+        navigate('/services', {state: brandId === null ? null : {brandId}});
+    }, [pages, setPageId, navigate]);
 
     const isFirstLoad = isLoading && !isLoadingMore && catalogOffers === null;
     const showOrigin = scopeId === null;
 
-    useScrollMemory(`storefront:${scopeId ?? 'all'}`, {ready: catalogOffers !== null});
+    useScrollMemory(`storefront:${scopeId ?? 'all'}`, {ready: isHome ? Array.isArray(mainPageProducts) : catalogOffers !== null});
 
     return (
         <div className={style.screen}>
             <OfferSplit offer={picker.picked} onPick={picker.pick} onClose={picker.close}/>
 
-            <StorefrontHero items={hero} onOpen={openHero}/>
+            <StorefrontHero items={isHome ? currentHomeHero(hero) : hero} onOpen={openHero}/>
 
 
-            {config.steps.length ? (
+            {!isHome && config.steps.length ? (
                 <ol className={style.steps}>
                     {config.steps.map((step, index) => (
                         <li key={step.title} className={style.step} style={{'--i': index}}>
@@ -182,6 +201,11 @@ export default function Storefront() {
                     ))}
                 </ol>
             ) : null}
+
+            {isHome && homePopular.offers.length ? <Shelf shelf={homePopular} size={config.shelfSize}
+                showOrigin withFilters categories={categories} onOpen={openOffer} onOpenCatalog={openCatalog}/> : null}
+
+            {isHome ? <PreorderSection item={preorder} onOpen={openHero}/> : null}
 
             {shelfEntries.map((entry) => (entry.kind === 'subscriptions' ? (
                 <SubscriptionShelf
@@ -204,7 +228,9 @@ export default function Storefront() {
                 />
             )))}
 
-            <section className={style.shelf} ref={catalogRef} data-reveal="out">
+            {isHome && openSections.length && pageIdOfType(pages, 'services') !== null ? <HomeServices onOpen={openService}/> : null}
+
+            {!isHome ? <section className={style.shelf} ref={catalogRef} data-reveal="out">
                 <header className={style.shelfHead}>
                     <span className={style.shelfTitle}>{config.catalogTitle}</span>
                     {total ? <span className={style.shelfNote}>{total.toLocaleString('ru-RU')}</span> : null}
@@ -257,7 +283,7 @@ export default function Storefront() {
                         ) : null}
                     </>
                 ) : null}
-            </section>
+            </section> : null}
         </div>
     );
 }

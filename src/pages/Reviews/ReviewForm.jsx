@@ -11,7 +11,7 @@ export default function ReviewForm() {
     const token = new URLSearchParams(location.hash.slice(1)).get('token');
     const [data, setData] = useState(null);
     const [error, setError] = useState('');
-    const [rating, setRating] = useState(0);
+    const [rating, setRating] = useState(5);
     const [text, setText] = useState('');
     const [name, setName] = useState('');
     const [files, setFiles] = useState([]);

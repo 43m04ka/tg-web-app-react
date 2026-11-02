@@ -15,6 +15,8 @@ import {useRecommendations} from '../../../pages/Basket/useRecommendations';
 import {usePendingOrder} from '../../../pages/Basket/usePendingOrder';
 import {mergeOffers} from '../../model/storefrontModel';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
+import {useStorefrontScope} from '../../shell/StorefrontScope';
+import {navLabel} from '../../model/desktopNav';
 import {useOfferPicker} from '../../shell/useOfferPicker';
 import {Reveal} from '../../shell/useReveal';
 import Cover from '../../ui/Cover';
@@ -126,6 +128,8 @@ export default function DesktopBasket() {
 
     const userId = useSessionStore(selectUserId);
     const pageId = useSessionStore((state) => state.pageId);
+    const setPageId = useSessionStore((state) => state.setPageId);
+    const {setScopeId} = useStorefrontScope();
     const pages = useStructureStore((state) => state.pages);
     const startPages = useStructureStore((state) => state.startPages);
     const catalogs = useStructureStore((state) => state.catalogs);
@@ -148,6 +152,16 @@ export default function DesktopBasket() {
         () => pageCartItems(items, catalogs, pageId),
         [items, catalogs, pageId]
     );
+
+    const cartRegions = useMemo(() => (pages || []).map((entry) => ({...entry,
+        count: pageCartItems(items, catalogs, entry.id)?.filter((item) =>
+            (catalogs || []).some((catalog) => catalog.id === item.catalogId && catalog.structurePageId === entry.id)).length || 0
+    })).filter((entry) => entry.count > 0), [pages, items, catalogs]);
+
+    const pickRegion = (id) => {
+        setPageId(id);
+        setScopeId(id);
+    };
 
     const {promo, apply, clear} = usePromoMemory();
     const {quote, isLoading, error, retry} = useBasketQuote({items: pageItems, pageType, promo});
@@ -204,6 +218,11 @@ export default function DesktopBasket() {
                 <h1 className={style.title}>Ваша корзина</h1>
                 {count > 0 ? <span className={style.headCount}>{count} в заказе</span> : null}
             </header>
+
+            {cartRegions.length > 1 ? <nav className={style.regions} aria-label="Витрины в корзине">
+                {cartRegions.map((entry) => <button type="button" key={entry.id} aria-pressed={entry.id === pageId}
+                    onClick={() => pickRegion(entry.id)}>{navLabel(entry.type, entry.name)} <span>{entry.count}</span></button>)}
+            </nav> : null}
 
             {pending ? (
                 <button type="button" className={style.pending} onClick={goToCheckout}>

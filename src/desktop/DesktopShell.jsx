@@ -8,12 +8,14 @@ import SiteFooter from './shell/SiteFooter';
 import CookieNotice from './shell/CookieNotice';
 import DesktopRoutes from './DesktopRoutes';
 import {useCartStore} from '../store/useCartStore';
+import {useStructureStore} from '../store/useStructureStore';
 import {selectUserId, useSessionStore} from '../store/useSessionStore';
 import {ScrollAreaContext} from './shell/ScrollAreaContext';
 import {StorefrontScopeContext} from './shell/StorefrontScope';
 import {MaintenanceContext} from './shell/MaintenanceScope';
 import {useDesktopAccent} from './shell/useDesktopAccent';
 import {storefrontParam} from './model/desktopNav';
+import {routeStorefront} from './model/routeStorefront';
 import style from './DesktopShell.module.scss';
 
 export default function DesktopShell({sections}) {
@@ -28,11 +30,18 @@ export default function DesktopShell({sections}) {
         ? storeParam
         : pathname === '/' && navigationType === 'POP' ? null : undefined;
     const [keptScope, setScopeId] = useState(() => urlScope ?? null);
-    const scopeId = urlScope === undefined ? keptScope : urlScope;
+    const catalogs = useStructureStore((state) => state.catalogs);
+    const products = useStructureStore((state) => state.mainPageProducts);
+    const setPageId = useSessionStore((state) => state.setPageId);
+    const routeScope = routeStorefront({pathname, catalogs, products});
+    const scopeId = routeScope ?? (urlScope === undefined ? keptScope : urlScope);
 
     useEffect(() => {
-        if (urlScope !== undefined) setScopeId(urlScope);
-    }, [urlScope]);
+        if (routeScope !== null) setScopeId(routeScope);
+        else if (urlScope !== undefined) setScopeId(urlScope);
+        const target = routeScope ?? storeParam;
+        if (target !== null) setPageId(target);
+    }, [urlScope, routeScope, storeParam, setPageId]);
 
     const scope = useMemo(() => ({scopeId, setScopeId}), [scopeId]);
 

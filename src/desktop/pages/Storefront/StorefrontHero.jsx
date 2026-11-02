@@ -10,6 +10,12 @@ import style from './Storefront.module.scss';
 const MAIN_AUTOPLAY_MS = 6000;
 const SIDE_AUTOPLAY_MS = 7500;
 
+const openFromKey = (event, open) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    open();
+};
+
 const bannerPrices = (item) => {
     const percent = discountPercent(item.price, item.oldPrice);
     const promo = formatPromoDate(item.promoEndDate);
@@ -33,7 +39,8 @@ function SideSlide({item, onOpen}) {
     const {price, oldPrice, footnote} = bannerPrices(item);
 
     return (
-        <article className={style.sideSlide} onClick={() => onOpen?.(item)}>
+        <article className={style.sideSlide} onClick={() => onOpen?.(item)} role="link" tabIndex={0}
+            aria-label={item.title} onKeyDown={(event) => openFromKey(event, () => onOpen?.(item))}>
             <span className={style.heroImage} style={imageStyle(item.cover, item, isReady, 'center')} aria-hidden="true"/>
 
             <div className={`${style.heroBody} ${item.shade ? '' : style.noShade}`}>
@@ -64,6 +71,10 @@ function MainSlide({item, onOpen, onButton}) {
         <article
             className={`${style.mainSlide} ${hasButtons ? '' : style.mainSlideClickable}`}
             onClick={hasButtons ? undefined : () => onOpen?.(item)}
+            role={hasButtons ? undefined : 'link'}
+            tabIndex={hasButtons ? undefined : 0}
+            aria-label={hasButtons ? undefined : item.title}
+            onKeyDown={hasButtons ? undefined : (event) => openFromKey(event, () => onOpen?.(item))}
         >
             <span className={style.mainImage} style={imageStyle(item.image, item, isReady, 'center right')} aria-hidden="true"/>
 

@@ -152,12 +152,12 @@
 }
 
 .mainButton {
-  background: var(--accent);
-  color: var(--accent-contrast);
+  background: var(--brand-gradient);
+  color: var(--brand-button-text);
 }
 
 .mainButton:hover {
-  background: var(--accent-hover);
+  filter: brightness(1.12);
   transform: translateY(-1px);
 }
 

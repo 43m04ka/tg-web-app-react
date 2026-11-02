@@ -4,13 +4,20 @@ import style from './Reviews.module.scss';
 
 export const purchaseDate = (value) => new Date(value).toLocaleDateString('ru-RU', {day: 'numeric', month: 'long', year: 'numeric'});
 
+const avatarColors = ['#db477d', '#6b55cb', '#2878c7', '#218c79', '#bd7135', '#5669c8'];
+
+export const avatarColor = (name = '') => avatarColors[Array.from(name).reduce((sum, letter) => sum + letter.codePointAt(0), 0) % avatarColors.length];
+
+export const reviewName = (value) => String(value || '').trim().split(/\s+/u)[0] || 'Покупатель';
+
 export default function ReviewCard({review}) {
+    const name = reviewName(review.displayName);
     return (
         <article className={style.card}>
             <header className={style.author}>
-                <span className={style.avatar} aria-hidden="true">{Array.from(review.displayName || 'П')[0].toUpperCase()}</span>
+                <span className={style.avatar} style={{backgroundColor: avatarColor(name)}} aria-hidden="true">{Array.from(name)[0].toUpperCase()}</span>
                 <div>
-                    <div className={style.name}>{review.displayName}<span className={style.verified}>✓ Покупка подтверждена</span></div>
+                    <div className={style.name}>{name}<span className={style.verified}>✓ Покупка подтверждена</span></div>
                     <span className={style.date}>Покупка {purchaseDate(review.purchasedAt)}</span>
                 </div>
             </header>

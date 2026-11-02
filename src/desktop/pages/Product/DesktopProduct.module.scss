@@ -1210,13 +1210,8 @@
   gap: var(--d-gap-3);
   height: 56px;
   border-radius: var(--radius-lg);
-  background: linear-gradient(
-    135deg,
-    color-mix(in oklch, var(--accent-hover) 80%, white) 0%,
-    var(--accent) 52%,
-    color-mix(in oklch, var(--accent) 82%, black) 100%
-  );
-  color: var(--accent-contrast);
+  background: var(--brand-gradient);
+  color: var(--brand-button-text);
   font-size: var(--d-fs-lg);
   font-weight: var(--fw-bold);
   overflow: hidden;

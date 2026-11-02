@@ -3,11 +3,13 @@ import {useNavigate} from 'react-router-dom';
 import {useSessionStore} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
 import {productRoute} from '../../shared/lib/pageRoutes';
+import {useStorefrontScope} from './StorefrontScope';
 
 export function useOpenHero() {
     const navigate = useNavigate();
     const catalogs = useStructureStore((store) => store.catalogs);
     const setPageId = useSessionStore((store) => store.setPageId);
+    const {setScopeId} = useStorefrontScope();
 
     return useCallback((item) => {
         if (item.productId === null || item.productId === undefined || item.productId === '') {
@@ -20,9 +22,12 @@ export function useOpenHero() {
             return;
         }
 
-        if (item.origin) setPageId(item.origin.pageId);
+        if (item.origin) {
+            setPageId(item.origin.pageId);
+            setScopeId(item.origin.pageId);
+        }
 
         const route = item.product ? productRoute(item.product, catalogs) : null;
         navigate(route || `/card/${item.productId}`);
-    }, [catalogs, navigate, setPageId]);
+    }, [catalogs, navigate, setPageId, setScopeId]);
 }

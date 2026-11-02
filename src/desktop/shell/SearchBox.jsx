@@ -68,7 +68,7 @@ export default function SearchBox({onOpenChange, hidden = false}) {
         [startPages, botType]
     );
 
-    const {scopeId} = useStorefrontScope();
+    const {scopeId, setScopeId} = useStorefrontScope();
 
     const scope = useMemo(
         () => scopeFilter(scopeId, effectiveBotType),
@@ -192,13 +192,16 @@ export default function SearchBox({onOpenChange, hidden = false}) {
 
     const openOffer = useCallback((offer) => {
         const origin = offer.origins[0] || originOf(offer.product);
-        if (origin) setPageId(origin.pageId);
+        if (origin) {
+            setPageId(origin.pageId);
+            setScopeId(origin.pageId);
+        }
         if (trimmed.length >= MIN_QUERY) setRecent(rememberSearch(trimmed));
 
         close();
         setQuery('');
         navigate(productRoute(offer.product, catalogs) || `/card/${offer.product.id}`);
-    }, [catalogs, close, navigate, originOf, setPageId, trimmed]);
+    }, [catalogs, close, navigate, originOf, setPageId, setScopeId, trimmed]);
 
     const results = Array.isArray(items) ? items : [];
     const hasResults = results.length > 0;

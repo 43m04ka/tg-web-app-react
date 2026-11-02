@@ -1,12 +1,11 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {useSessionStore} from '../../store/useSessionStore';
 import {useStructureStore} from '../../store/useStructureStore';
 import {useCartStore} from '../../store/useCartStore';
 import {usePlatform} from '../../shared/hooks/usePlatform';
-import {pageCartItems} from '../../pages/Basket/cartModel';
 import {resetSearchState} from '../../shared/lib/searchMemory';
-import {navLabel, sectionList, storefrontList, storefrontRoute} from '../model/desktopNav';
+import {navLabel, resolveBotType, sectionList, storefrontList, storefrontRoute} from '../model/desktopNav';
 import {useScrolled} from './useScrolled';
 import {BasketIcon, UserIcon} from './DesktopIcons';
 import SearchBox from './SearchBox';
@@ -14,6 +13,7 @@ import BackLink from '../ui/BackLink';
 import RouteLink from '../ui/RouteLink';
 import MenuDrop from './MenuDrop';
 import LogoDrum from './LogoDrum';
+import PlayStationNav from './PlayStationNav';
 import {useSiteMenu} from './useSiteMenu';
 import {useStorefrontScope} from './StorefrontScope';
 import {useOpenSections} from './MaintenanceScope';
@@ -48,7 +48,6 @@ export default function TopBar({onSearchOpenChange}) {
 
     const isScrolled = useScrolled();
     const isStandalone = pathname === '/steam' || pathname === '/services';
-    const isCatalog = pathname === '/' || pathname.startsWith('/catalog');
     const isSearchPage = pathname === '/search';
 
     const [isSearchOpen, setSearchOpen] = useState(false);
@@ -62,12 +61,13 @@ export default function TopBar({onSearchOpenChange}) {
     }, [onSearchOpenChange]);
 
     const isScoped = scopeId !== null;
-    const cartSize = isScoped ? (pageCartItems(cartItems, catalogs, pageId)?.length ?? 0) : 0;
-
-    const keptCartRef = useRef(cartSize);
-    if (!isStandalone) keptCartRef.current = cartSize;
-
-    const cartCount = isStandalone ? keptCartRef.current : cartSize;
+    const cartCount = cartItems?.length ?? 0;
+    const playstation = storefronts.filter((item) => item.type === 'ps' || item.type === 'ps_india').map((item) => {
+        const entry = (startPages || []).find((row) => row.structurePageId === item.id && row.type === 'page'
+            && row.platform === resolveBotType(startPages, botType));
+        return {...item, note: entry?.text, choiceIcon: entry?.icon, choiceColor: entry?.color};
+    });
+    const otherStorefronts = storefronts.filter((item) => item.type !== 'ps' && item.type !== 'ps_india');
 
     const go = useCallback((path, options) => {
         if (pathname === '/search') resetSearchState();
@@ -79,16 +79,6 @@ export default function TopBar({onSearchOpenChange}) {
         go(section.route);
     }, [go, setPageId]);
 
-    const storefrontIds = useMemo(() => storefronts.map((item) => item.id), [storefronts]);
-
-    useEffect(() => {
-        if (isStandalone) return;
-
-        const target = scopeId ?? (storefrontIds.includes(pageId) ? pageId : storefrontIds[0] ?? null);
-
-        if (target !== null && target !== pageId) setPageId(target);
-    }, [isStandalone, scopeId, pageId, storefrontIds, setPageId]);
-
     const openHome = useCallback(() => {
         setScopeId(null);
         go('/');
@@ -99,6 +89,18 @@ export default function TopBar({onSearchOpenChange}) {
         setPageId(item.id);
         go(storefrontRoute(item.id));
     }, [go, setPageId, setScopeId]);
+
+    const openCart = useCallback(() => {
+        const hasCurrentItems = cartItems?.some((item) => catalogs?.some((catalog) => catalog.id === item.catalogId && catalog.structurePageId === pageId));
+        const target = hasCurrentItems ? pageId
+            : catalogs?.find((catalog) => catalog.id === cartItems?.[0]?.catalogId)?.structurePageId
+                ?? storefronts[0]?.id ?? null;
+        if (target !== null) {
+            setScopeId(target);
+            setPageId(target);
+        }
+        go('/basket');
+    }, [cartItems, catalogs, pageId, storefronts, setScopeId, setPageId, go]);
 
     const {groups: menu, select: selectMenuItem} = useSiteMenu();
 
@@ -118,17 +120,19 @@ export default function TopBar({onSearchOpenChange}) {
                 <nav className={style.nav} data-hidden={isFocusMode ? '' : undefined}>
                     <RouteLink
                         to="/"
-                        className={isCatalog && !isScoped ? `${style.link} ${style.linkActive}` : style.link}
+                        className={pathname === '/' && !isScoped ? `${style.link} ${style.linkActive}` : style.link}
                         onOpen={openHome}
                     >
                         Главная
                     </RouteLink>
 
-                    {storefronts.map((item) => (
+                    <PlayStationNav items={playstation} scopeId={scopeId} onSelect={pickStorefront}/>
+
+                    {otherStorefronts.map((item) => (
                         <RouteLink
                             key={item.id}
                             to={storefrontRoute(item.id)}
-                            className={isCatalog && scopeId === item.id
+                            className={!isStandalone && scopeId === item.id
                                 ? `${style.link} ${style.linkActive}`
                                 : style.link}
                             onOpen={() => pickStorefront(item)}
@@ -137,7 +141,7 @@ export default function TopBar({onSearchOpenChange}) {
                         </RouteLink>
                     ))}
 
-                    {sections.map((section) => (
+                    {[...sections].sort((a, b) => (a.key === 'services' ? -1 : 1) - (b.key === 'services' ? -1 : 1)).map((section) => (
                         <RouteLink
                             key={section.key}
                             to={section.route}
@@ -161,15 +165,11 @@ export default function TopBar({onSearchOpenChange}) {
                         className={style.slot}
                         style={{'--slot': '38px'}}
                         data-slot="cart"
-                        data-hidden={isStandalone ? '' : undefined}
-                        aria-hidden={isStandalone ? 'true' : undefined}
                     >
                         <button
                             type="button"
                             className={`${style.action} ${pathname === '/basket' ? style.actionActive : ''}`}
-                            onClick={() => go('/basket')}
-                            disabled={!isScoped}
-                            title={isScoped ? undefined : 'Выберите витрину'}
+                            onClick={openCart}
                             aria-label="Корзина"
                         >
                             <BasketIcon className={style.actionIcon}/>

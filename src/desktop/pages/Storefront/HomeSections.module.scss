@@ -1,0 +1,92 @@
+.preorder {
+  isolation: isolate;
+  position: relative;
+  overflow: hidden;
+  min-height: 310px;
+  border: 1px solid var(--border);
+  border-radius: 26px;
+  background: #22212c;
+}
+
+.art {
+  position: absolute;
+  inset: 0 0 0 auto;
+  height: 100%;
+  width: 70%;
+  object-fit: cover;
+  object-position: center 30%;
+  z-index: -2;
+}
+
+.preorder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #15131e 10%, rgb(21 19 30 / 0.94) 32%, rgb(21 19 30 / 0.12));
+  z-index: -1;
+}
+
+.preorderBody {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 44px;
+  gap: 18px;
+  max-width: 65%;
+}
+
+.eyebrow {
+  color: #b4e8a4;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.preorder h2 {
+  font-family: var(--d-font-display);
+  font-size: clamp(26px, 3vw, 42px);
+  line-height: 1.2;
+  margin: 0;
+}
+
+.preorder p { color: #d0cbd8; margin: 0; line-height: 1.6; }
+.buyRow { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.buyRow strong { font-size: 26px; }
+.primary {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 24px;
+  border-radius: 13px;
+  background: var(--brand-gradient);
+  color: var(--brand-button-text);
+  font-weight: 700;
+}
+.primary:hover { filter: brightness(1.12); }
+.services h2 { margin: 0; font-size: 24px; }
+.services header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.services header button { color: var(--text-muted); }
+.serviceGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.service {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  text-align: left;
+  padding: 22px;
+  border-radius: 18px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  transition: border-color 160ms, transform 160ms;
+}
+.service:hover { border-color: var(--accent); transform: translateY(-3px); }
+.service strong { overflow: hidden; text-overflow: ellipsis; }
+.service img, .initial { width: 38px; height: 38px; flex: none; border-radius: 10px; object-fit: contain; }
+.initial { display: grid; place-items: center; background: var(--surface-4); font-size: 22px; }
+.arrow { margin-left: auto; color: var(--accent-text); }
+@media (max-width: 1000px) {
+  .preorderBody { padding: 32px; max-width: 80%; }
+  .serviceGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

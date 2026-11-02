@@ -167,7 +167,7 @@ const FEATURE_RULES = [
     ['purchase', /покупки в игре|purchases/i],
     ['vibration', /вибрац|триггерн|dualsense|dualshock|haptic/i],
     ['speed', /кадров|\bfps\b|частота обновлени|refresh rate/i],
-    ['boost', /\bpro\b|улучшенн|улучшени|оптимизирован|optimized|enhanced|интеллектуальная доставка|smart delivery/i],
+    ['boost', /\bpro\b|улучшен|улучшени|оптимизирован|optimized|enhanced|интеллектуальная доставка|умная доставка|smart delivery/i],
     ['rays', /трассировк|ray ?tracing/i],
     ['display', /\b4K\b|HDR|ultra hd|8K/i],
     ['trophy', /достижени|achievement|трофе/i],

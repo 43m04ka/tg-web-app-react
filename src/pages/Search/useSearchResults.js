@@ -3,7 +3,7 @@ import {searchProducts} from '../../shared/api/catalog';
 import {recallView, rememberView} from '../../shared/lib/viewMemory';
 import {useProductStore} from '../../store/useProductStore';
 
-const DEBOUNCE_MS = 320;
+const DEBOUNCE_MS = 240;
 const MIN_QUERY_LENGTH = 2;
 
 const IDLE = {items: null, suggestions: [], isLoading: false, error: false, isRestored: false};
@@ -51,6 +51,7 @@ export function useSearchResults({query, scope, filters, sorting}) {
                 sorting: request.sorting
             }, controller.signal)
                 .then((payload) => {
+                    if (controller.signal.aborted) return;
                     const items = Array.isArray(payload?.items) ? payload.items : [];
                     const suggestions = Array.isArray(payload?.suggestions) ? payload.suggestions : [];
 

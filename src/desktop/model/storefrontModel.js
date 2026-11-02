@@ -221,17 +221,18 @@ export const buildHero = ({
     if (!Array.isArray(banners)) return [];
 
     const useMain = scopeId === null && mainPageId !== null
-        && banners.some((banner) => banner.type === 'product' && banner.pageId === mainPageId);
+        && banners.some((banner) => HERO_TYPES.has(banner.type) && !banner.isHidden && banner.pageId === mainPageId && banner.data?.device !== 'mobile');
 
     const allowed = new Set(useMain ? [mainPageId] : (scopeId === null ? (pageIds || []) : [scopeId]));
     const productById = new Map((mainPageProducts || []).map((product) => [String(product.id), product]));
+    if (scopeId === null) allowed.add(null);
 
     const picked = [];
     const usedPages = new Set();
     const usedOffers = new Set();
 
     const candidates = [...banners]
-        .filter((banner) => HERO_TYPES.has(banner.type) && banner.data?.device !== 'mobile'
+        .filter((banner) => !banner.isHidden && HERO_TYPES.has(banner.type) && banner.data?.device !== 'mobile'
             && allowed.has(banner.pageId))
         .sort((a, b) => (a.serialNumber ?? 0) - (b.serialNumber ?? 0));
 

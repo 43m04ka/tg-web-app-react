@@ -6,7 +6,7 @@ import {ScrollAreaContext} from './ScrollAreaContext';
 import {useSiteMenu} from './useSiteMenu';
 import {menuTarget} from '../model/menuModel';
 import {SITE_CONTACTS, SOCIALS} from '../../shared/lib/siteContacts';
-import logo from '../assets/logo-full.png';
+import BrandLogo from './BrandLogo';
 import paymentLogos from '../assets/payment-logos.png';
 import style from './SiteFooter.module.scss';
 
@@ -19,6 +19,7 @@ export default function SiteFooter() {
     const areaRef = useContext(ScrollAreaContext);
     const {groups, select} = useSiteMenu();
     const textPages = useTextPageLinks();
+    const telegram = SOCIALS.find((item) => item.label === 'Telegram');
 
     const legalLinks = useMemo(() => footerLinks(textPages), [textPages]);
 
@@ -34,12 +35,12 @@ export default function SiteFooter() {
             <div className={style.inner}>
                 <div className={style.top}>
                     <div className={style.about}>
-                        <img className={style.logo} src={logo} alt="Геймворд"/>
+                        <BrandLogo large/>
 
                         <a className={style.mail} href={`mailto:${SITE_CONTACTS.email}`}>{SITE_CONTACTS.email}</a>
 
                         <p className={style.text}>
-                            Прием заказов осуществляется круглосуточно. Активация и обработка заказов осуществляется с 10:00 до 22:00 по МСК ежедневно.
+                            Заказы принимаем круглосуточно.<br/>Выдаём ежедневно с 10:00 до 22:00 по МСК.
                         </p>
 
                         <div className={style.socials}>
@@ -80,6 +81,14 @@ export default function SiteFooter() {
                             </div>
                         ))}
                     </nav>
+                    {telegram ? <div className={style.channel}>
+                        <span className={style.heading}>Мы в Telegram</span>
+                        <p>Новости магазина и предложения.</p>
+                        <a className={style.channelLink} href={telegram.href} target="_blank" rel="noopener noreferrer">
+                            <svg className={style.channelIcon} viewBox="0 0 24 24" aria-hidden="true"><path d={telegram.path} fill="currentColor"/></svg>
+                            Открыть канал <span aria-hidden="true">↗</span>
+                        </a>
+                    </div> : null}
                 </div>
 
                 <div className={style.bottom}>

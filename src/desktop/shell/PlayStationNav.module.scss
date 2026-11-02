@@ -9,7 +9,7 @@
   align-items: center;
   justify-content: flex-start;
   gap: var(--d-gap-2);
-  width: 124px;
+  width: var(--psnav-width, 124px);
   padding: 4px 0;
   font-size: var(--d-fs-md);
   font-weight: var(--fw-bold);

@@ -228,7 +228,6 @@ export const buildHero = ({
     if (scopeId === null) allowed.add(null);
 
     const picked = [];
-    const usedPages = new Set();
     const usedOffers = new Set();
 
     const candidates = [...banners]
@@ -247,13 +246,7 @@ export const buildHero = ({
 
         picked.push(item);
         usedOffers.add(key);
-        usedPages.add(banner.pageId);
     };
-
-    candidates.forEach((banner) => {
-        if (picked.length >= limit || usedPages.has(banner.pageId)) return;
-        take(banner);
-    });
 
     candidates.forEach((banner) => {
         if (picked.length >= limit) return;
@@ -264,16 +257,8 @@ export const buildHero = ({
     return picked;
 };
 
-const FALLBACK_SIDE = 2;
-
 export const splitHero = (items) => {
-    const list = items || [];
-    const side = list.filter((item) => item.slot === 'side');
-    const main = list.filter((item) => item.slot !== 'side');
-
-    if (side.length || main.length <= FALLBACK_SIDE) return {main, side};
-
-    return {main: main.slice(0, -FALLBACK_SIDE), side: main.slice(-FALLBACK_SIDE)};
+    return {main: items || [], side: []};
 };
 
 const PLATFORM_FILTERS = [

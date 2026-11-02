@@ -55,6 +55,18 @@ describe('toPayload', () => {
 });
 
 describe('toDraft', () => {
+    it('открывает старый боковой баннер в общей карусели, сохраняя его содержимое', () => {
+        const stored = {id: 9, type: 'custom', pageId: 20, serialNumber: 3, isHidden: 1,
+            data: {slot: 'side', device: 'pc', title: 'Новость', note: 'Описание', image: 'art.jpg',
+                url: '/news', buttons: [{label: 'Подробнее', url: '/news'}]}};
+        const before = JSON.stringify(stored);
+        const back = toPayload(toDraft(stored));
+        expect(back).toMatchObject({pageId: 20, serialNumber: 3, isHidden: 1,
+            data: {slot: 'main', device: 'pc', title: 'Новость', note: 'Описание', image: 'art.jpg',
+                buttons: [{label: 'Подробнее', url: '/news'}]}});
+        expect(JSON.stringify(stored)).toBe(before);
+    });
+
     it('читает ручную правку из override, а не разрешённое значение', () => {
         const banner = {
             id: 1,

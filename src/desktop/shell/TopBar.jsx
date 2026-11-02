@@ -12,7 +12,8 @@ import SearchBox from './SearchBox';
 import BackLink from '../ui/BackLink';
 import RouteLink from '../ui/RouteLink';
 import MenuDrop from './MenuDrop';
-import LogoDrum from './LogoDrum';
+import BrandLogo from './BrandLogo';
+import {SITE_CONTACTS} from '../../shared/lib/siteContacts';
 import PlayStationNav from './PlayStationNav';
 import {useSiteMenu} from './useSiteMenu';
 import {useStorefrontScope} from './StorefrontScope';
@@ -106,6 +107,16 @@ export default function TopBar({onSearchOpenChange}) {
 
     return (
         <header className={isScrolled ? `${style.bar} ${style.barScrolled}` : style.bar}>
+            <div className={style.utility}>
+                <div className={style.utilityInner}>
+                    <span>Игры и подписки для PlayStation и Xbox</span>
+                    <div className={style.utilityLinks}>
+                        <span>Выдача заказов 10:00–22:00 МСК</span>
+                        <RouteLink to="/reviews">Отзывы</RouteLink>
+                        <a href={SITE_CONTACTS.support.href} target="_blank" rel="noopener noreferrer">Поддержка</a>
+                    </div>
+                </div>
+            </div>
             <div className={style.inner}>
                 <div className={style.lead} data-hidden={isFocusMode ? '' : undefined}>
                     <div className={style.backSlot} data-hidden={showBack ? undefined : ''}>
@@ -113,7 +124,7 @@ export default function TopBar({onSearchOpenChange}) {
                     </div>
 
                     <RouteLink to="/" className={style.logo} onOpen={openHome} aria-label="Главная">
-                        <LogoDrum className={style.mark}/>
+                        <BrandLogo/>
                     </RouteLink>
                 </div>
 
@@ -159,7 +170,6 @@ export default function TopBar({onSearchOpenChange}) {
                 />
 
                 <div className={style.actions} data-hidden={isFocusMode ? '' : undefined}>
-                    <MenuDrop groups={menu} onSelect={selectMenuItem}/>
 
                     <div
                         className={style.slot}
@@ -187,6 +197,7 @@ export default function TopBar({onSearchOpenChange}) {
                     >
                         <UserIcon className={style.actionIcon}/>
                     </RouteLink>
+                    <MenuDrop groups={menu} onSelect={selectMenuItem} compact/>
                 </div>
             </div>
         </header>

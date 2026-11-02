@@ -188,7 +188,7 @@ export default function Storefront() {
             <StorefrontHero items={isHome ? currentHomeHero(hero) : hero} onOpen={openHero}/>
 
 
-            {!isHome && config.steps.length ? (
+            {config.steps.length ? (
                 <ol className={style.steps}>
                     {config.steps.map((step, index) => (
                         <li key={step.title} className={style.step} style={{'--i': index}}>

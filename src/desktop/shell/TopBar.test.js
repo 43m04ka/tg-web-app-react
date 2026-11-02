@@ -87,7 +87,7 @@ test('в баре сплошная навигация: главная, витр�
 test('корзина доступна с главной без выбора витрины и показывает все позиции', () => {
     render();
 
-    expect(container.textContent).toContain('Меню');
+    expect(container.querySelector('button[aria-label="Меню"]')).not.toBeNull();
     expect(container.querySelector('[aria-label="Геймворд"]')).not.toBeNull();
     expect(cartButton().disabled).toBe(false);
     expect(cartButton().textContent).toBe('2');
@@ -121,7 +121,7 @@ test('кнопка меню разворачивает выпадающий сп
     const trigger = [...container.querySelectorAll('button')]
         .find((node) => node.getAttribute('aria-haspopup') === 'menu');
 
-    expect(trigger.textContent.trim()).toBe('Меню');
+    expect(trigger.getAttribute('aria-label')).toBe('Меню');
     expect(container.querySelector('[role="menu"]')).toBe(null);
 
     act(() => {

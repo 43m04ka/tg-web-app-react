@@ -1597,7 +1597,7 @@
 .about { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); background: transparent; border: 0; box-shadow: none; padding: 8px 0; }
 .aboutSolo { grid-template-columns: minmax(0, 1fr); }
 .about:not(.aboutSolo) .aboutSpecs { padding-left: 0; border-left: 0; }
-.aboutSpecs .specs { padding: 4px 16px; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-1); gap: 0; }
+.aboutSpecs .specs { display: grid; grid-template-columns: minmax(0, 1fr); padding: 4px 16px; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-1); gap: 0; }
 .aboutSpecs .spec { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); grid-template-rows: auto; column-gap: 12px; row-gap: 0; padding: 10px 0; align-items: baseline; }
 .spec + .spec { border-top: 1px solid var(--border-subtle); }
 .specIcon { display: none; }

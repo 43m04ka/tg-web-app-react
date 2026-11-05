@@ -8,6 +8,14 @@ import style from './Storefront.module.scss';
 
 const MAIN_AUTOPLAY_MS = 6000;
 
+const slideStep = (track) => {
+    const first = track?.children[0];
+    const second = track?.children[1];
+    return first && second
+        ? second.getBoundingClientRect().left - first.getBoundingClientRect().left
+        : first?.getBoundingClientRect().width || 0;
+};
+
 const openFromKey = (event, open) => {
     if (event.key !== 'Enter' && event.key !== ' ') return;
     event.preventDefault();
@@ -101,13 +109,14 @@ function Carousel({items, interval, className, label, children}) {
         const track = trackRef.current;
         if (!track) return;
 
-        track.scrollTo({left: ((index + count) % count) * track.clientWidth, behavior: reducedMotion ? 'instant' : 'smooth'});
+        track.scrollTo({left: ((index + count) % count) * slideStep(track), behavior: reducedMotion ? 'instant' : 'smooth'});
     }, [count, reducedMotion]);
 
     const measure = useCallback(() => {
         const track = trackRef.current;
-        if (track?.clientWidth) setActive(Math.round(track.scrollLeft / track.clientWidth));
-    }, []);
+        const step = slideStep(track);
+        if (step) setActive(Math.min(count - 1, Math.round(track.scrollLeft / step)));
+    }, [count]);
 
     useEffect(() => {
         if (count <= 1 || isPaused || reducedMotion) return undefined;
@@ -130,7 +139,7 @@ function Carousel({items, interval, className, label, children}) {
     useEffect(() => {
         const track = trackRef.current;
         if (!track || typeof ResizeObserver === 'undefined') return undefined;
-        const observer = new ResizeObserver(() => track.scrollTo({left: activeRef.current * track.clientWidth, behavior: 'instant'}));
+        const observer = new ResizeObserver(() => track.scrollTo({left: activeRef.current * slideStep(track), behavior: 'instant'}));
         observer.observe(track);
         return () => observer.disconnect();
     }, []);
@@ -139,7 +148,7 @@ function Carousel({items, interval, className, label, children}) {
         const slides = trackRef.current?.children;
         if (!slides) return;
         [...slides].forEach((slide, index) => {
-            if (index === active) {
+            if (index === active || index === active + 1) {
                 slide.removeAttribute('inert');
                 slide.removeAttribute('aria-hidden');
             } else {
@@ -169,6 +178,7 @@ function Carousel({items, interval, className, label, children}) {
         >
             <div ref={trackRef} className={style.carouselTrack} onScroll={measure} tabIndex={0} aria-label="Слайды карусели">
                 {items.map((item) => children(item))}
+                {count > 1 ? <div className={style.heroPage}>{children(items[0], true)}</div> : null}
             </div>
 
             {count > 1 ? (
@@ -214,12 +224,6 @@ function Carousel({items, interval, className, label, children}) {
 export default function StorefrontHero({items, onOpen}) {
     const navigate = useNavigate();
     const main = items || [];
-    const pages = [];
-    for (let index = 0; index < main.length; index += 2) {
-        const pair = main.slice(index, index + 2);
-        if (pair.length === 1 && main.length > 1) pair.push(main[0]);
-        pages.push({id: pair.map((item) => item.id).join('|'), items: pair});
-    }
 
     const openButton = useCallback((item, button) => {
         const {url} = button;
@@ -250,8 +254,10 @@ export default function StorefrontHero({items, onOpen}) {
     return (
         <div className={`${style.hero} ${style.heroSolo}`}>
             {main.length ? (
-                <Carousel key={main.map((item) => item.id).join('|')} items={pages} interval={MAIN_AUTOPLAY_MS} className="" label="Баннеры">
-                    {(page) => <div key={page.id} className={style.heroPage}>{page.items.map((item) => <MainSlide key={item.id} item={item} onOpen={onOpen} onButton={openButton}/>)}</div>}
+                <Carousel key={main.map((item) => item.id).join('|')} items={main} interval={MAIN_AUTOPLAY_MS} className="" label="Баннеры">
+                    {(item, duplicate = false) => duplicate
+                        ? <MainSlide item={item} onOpen={onOpen} onButton={openButton}/>
+                        : <div key={item.id} className={style.heroPage}><MainSlide item={item} onOpen={onOpen} onButton={openButton}/></div>}
                 </Carousel>
             ) : null}
 

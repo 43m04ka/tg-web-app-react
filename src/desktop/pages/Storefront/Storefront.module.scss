@@ -16,7 +16,8 @@
 .heroRow { display: block; }
 .heroRow .hero, .heroRow .carousel, .heroRow .carouselTrack { height: auto; min-width: 0; }
 .heroRow .carousel { border-radius: 0; box-shadow: none; }
-.heroPage { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; scroll-snap-align: start; }
+.heroRow .carouselTrack { grid-auto-columns: calc((100% - 16px) / 2); gap: 16px; }
+.heroPage { display: grid; grid-template-columns: minmax(0, 1fr); scroll-snap-align: start; }
 .heroPage .mainSlide { height: auto; aspect-ratio: 4 / 3; border-radius: var(--radius-xl); scroll-snap-align: none; }
 .heroRow .mainImage { inset: 0; background-position: center; background-size: cover; }
 .heroRow .mainBody { padding: 24px 24px 48px; background: linear-gradient(0deg, rgba(6, 8, 12, .9), rgba(6, 8, 12, .1) 80%); }

@@ -13,6 +13,17 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
+.hero { height: auto; }
+.hero .carousel, .hero .carouselTrack { height: auto; min-width: 0; }
+.hero .carousel { border-radius: 0; box-shadow: none; }
+.heroPage { display: grid; grid-template-columns: minmax(0, 1fr); scroll-snap-align: start; }
+.heroPage .mainSlide { height: auto; aspect-ratio: 4 / 3; border-radius: var(--radius-xl); scroll-snap-align: none; }
+.heroPage .mainImage { inset: 0; background-position: center; background-size: cover; }
+.heroPage .mainBody { padding: 24px 24px 48px; background: linear-gradient(0deg, rgba(6, 8, 12, .9), rgba(6, 8, 12, .1) 80%); }
+.heroPage .mainBody.noShade { background: none; }
+.heroPage .mainName { max-width: 100%; font-size: clamp(24px, 2.5vw, 34px); }
+.heroPage .mainBody[hidden] { display: none; }
+
 .carousel {
   position: relative;
   min-width: 0;

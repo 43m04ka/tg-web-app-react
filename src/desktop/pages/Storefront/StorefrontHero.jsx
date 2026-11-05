@@ -214,6 +214,12 @@ function Carousel({items, interval, className, label, children}) {
 export default function StorefrontHero({items, onOpen}) {
     const navigate = useNavigate();
     const main = items || [];
+    const pages = [];
+    for (let index = 0; index < main.length; index += 2) {
+        const pair = main.slice(index, index + 2);
+        if (pair.length === 1 && main.length > 1) pair.push(main[0]);
+        pages.push({id: pair.map((item) => item.id).join('|'), items: pair});
+    }
 
     const openButton = useCallback((item, button) => {
         const {url} = button;
@@ -244,8 +250,8 @@ export default function StorefrontHero({items, onOpen}) {
     return (
         <div className={`${style.hero} ${style.heroSolo}`}>
             {main.length ? (
-                <Carousel key={main.map((item) => item.id).join('|')} items={main} interval={MAIN_AUTOPLAY_MS} className="" label="Баннер">
-                    {(item) => <MainSlide key={item.id} item={item} onOpen={onOpen} onButton={openButton}/>}
+                <Carousel key={main.map((item) => item.id).join('|')} items={pages} interval={MAIN_AUTOPLAY_MS} className="" label="Баннеры">
+                    {(page) => <div key={page.id} className={style.heroPage}>{page.items.map((item) => <MainSlide key={item.id} item={item} onOpen={onOpen} onButton={openButton}/>)}</div>}
                 </Carousel>
             ) : null}
 

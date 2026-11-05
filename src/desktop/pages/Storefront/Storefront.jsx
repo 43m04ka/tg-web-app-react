@@ -189,20 +189,6 @@ export default function Storefront() {
             <StorefrontHero items={isHome ? currentHomeHero(hero) : hero} onOpen={openHero}/>
 
 
-            {config.steps.length ? (
-                <ol className={style.steps}>
-                    {config.steps.map((step, index) => (
-                        <li key={step.title} className={style.step} style={{'--i': index}}>
-                            <span className={style.stepNumber}>{index + 1}</span>
-                            <span className={style.stepBody}>
-                                <span className={style.stepTitle}>{step.title}</span>
-                                <span className={style.stepText}>{step.text}</span>
-                            </span>
-                        </li>
-                    ))}
-                </ol>
-            ) : null}
-
             </div>
 
             {isHome && homePopular.offers.length ? <Shelf shelf={homePopular} size={config.shelfSize}

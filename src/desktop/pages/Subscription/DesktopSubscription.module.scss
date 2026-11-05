@@ -510,8 +510,8 @@
   gap: var(--d-gap-3);
   height: 50px;
   border-radius: var(--radius-full);
-  background: var(--brand-gradient);
-  color: var(--brand-button-text);
+  background: linear-gradient(135deg, #2478ed, #2855d4);
+  color: #ffffff;
   font-size: var(--d-fs-md);
   font-weight: var(--fw-bold);
   transition: background-color var(--m-fast) var(--m-ease),

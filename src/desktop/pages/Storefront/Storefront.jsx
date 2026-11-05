@@ -185,6 +185,7 @@ export default function Storefront() {
         <div className={style.screen}>
             <OfferSplit offer={picker.picked} onPick={picker.pick} onClose={picker.close}/>
 
+            <div className={style.heroRow}>
             <StorefrontHero items={isHome ? currentHomeHero(hero) : hero} onOpen={openHero}/>
 
 
@@ -201,6 +202,8 @@ export default function Storefront() {
                     ))}
                 </ol>
             ) : null}
+
+            </div>
 
             {isHome && homePopular.offers.length ? <Shelf shelf={homePopular} size={config.shelfSize}
                 showOrigin withFilters categories={categories} onOpen={openOffer} onOpenCatalog={openCatalog}/> : null}

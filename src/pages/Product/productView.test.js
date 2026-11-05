@@ -1,4 +1,11 @@
-import {buildChips, localizeFeature, promotionEnd, promotionLabel} from './productView';
+import {buildChips, localizeFeature, promotionEnd, promotionLabel, parseReleaseDate} from './productView';
+
+test('дата выхода различает Excel, миллисекунды и служебные даты', () => {
+    expect(parseReleaseDate('1970-01-01T00:00:44.728Z').toISOString()).toBe('2022-06-16T00:00:00.000Z');
+    expect(parseReleaseDate(44728).toISOString()).toBe('2022-06-16T00:00:00.000Z');
+    expect(parseReleaseDate(Date.UTC(2027, 4, 26)).toISOString()).toBe('2027-05-26T00:00:00.000Z');
+    for (const value of [null, '', 0, '1970-01-01', '9989-12-30', '9999-12-31', 'неизвестно']) expect(parseReleaseDate(value)).toBe(null);
+});
 
 test('условная бессрочная скидка не превращается в таймер на сотни лет', () => {
     for (const raw of ['02/08/2799 23:59:59', String(Date.UTC(2799, 1, 8)), '9999-12-31T00:00:00Z', 'неизвестно', null]) {

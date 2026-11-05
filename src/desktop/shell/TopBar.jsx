@@ -116,10 +116,7 @@ export default function TopBar({onSearchOpenChange}) {
                     <div className={style.utilityLinks}>
                         <RouteLink to="/activate" className={style.marketplace}>Получить заказ с маркетплейса</RouteLink>
                         <RouteLink to="/faq">База знаний</RouteLink>
-                        <span className={style.reviewsGroup}>
-                            <RouteLink to="/reviews">Отзывы</RouteLink>
-                            <ReviewRating/>
-                        </span>
+                        <ReviewRating withLabel/>
                     </div>
                 </div>
             </div>

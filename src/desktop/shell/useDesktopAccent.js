@@ -3,6 +3,6 @@ import {applyTheme} from '../../shared/lib/theme';
 
 export function useDesktopAccent() {
     useEffect(() => {
-        applyTheme('#8bdc78');
+        applyTheme('#a5abc4');
     }, []);
 }

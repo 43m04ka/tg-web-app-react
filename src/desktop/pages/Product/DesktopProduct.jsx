@@ -2,8 +2,6 @@ import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useStat
 import {Navigate, useNavigate, useParams} from 'react-router-dom';
 import {discountPercent, formatPrice} from '../../../pages/Main/catalogSections';
 import {
-    buildChips,
-    buildSpecs,
     descriptionLines,
     editionContents,
     eyebrow,
@@ -31,11 +29,14 @@ import Spinner from '../../ui/Spinner';
 import {useDesktopProduct} from './useDesktopProduct';
 import {useCountdown} from './useCountdown';
 import {useRegionOffers} from './useRegionOffers';
-import {FeatureMark, ProductGlyph, RegionFlag, specIconName, uniqueFeatures} from './productIcons';
+import {ProductGlyph, RegionFlag, specIconName} from './productIcons';
 import style from './DesktopProduct.module.scss';
+import {fullGameSpecs, gameCriteria, relatedPurchases} from './productDetails';
+import OfferCard from '../Storefront/OfferCard';
+import storefrontStyle from '../Storefront/Storefront.module.scss';
+import {mergeOffers} from '../../model/storefrontModel';
 import {memberPrice} from '../../../shared/lib/membership';
 
-const FEATURES_MOTION_MS = 420;
 const DESCRIPTION_MOTION_MS = 480;
 const DESCRIPTION_CLAMP_PX = 230;
 const DESCRIPTION_SLACK_PX = 72;
@@ -67,7 +68,6 @@ export default function DesktopProduct() {
         selectedAddons,
         offer,
         offerRoute,
-        recommendations,
         cartCount,
         isFavorite,
         isAdding,
@@ -175,14 +175,14 @@ export default function DesktopProduct() {
     if (planRoute) return <Navigate to={planRoute} replace/>;
 
     const discount = discountPercent(product.price, product.oldPrice);
-    const chips = buildChips(product);
-    const specs = buildSpecs(product);
+    const criteria = gameCriteria(product);
+    const specs = fullGameSpecs(product);
+    const related = mergeOffers(relatedPurchases(product, originOf), originOf);
     const lines = descriptionLines(product.description);
     const origin = originOf(product);
     const platforms = hasValue(product.platform)
         ? String(product.platform).split(',').map((item) => item.trim()).filter(Boolean)
         : [];
-    const features = uniqueFeatures(chips.slice(platforms.length));
     const isBento = media.length >= 5;
     const tiles = media.slice(0, isBento ? 5 : 3);
     const hiddenCount = media.length - tiles.length;
@@ -283,9 +283,14 @@ export default function DesktopProduct() {
                                 <StarRating rating={product.starRating}/>
                             </div>
 
-                            {features.length ? (
-                                <HeroFeatures key={productId} items={features} coverRef={coverRef}/>
-                            ) : null}
+                            <div className={style.criteria}>
+                                {criteria.map((item) => (
+                                    <div key={item.label} className={`${style.criterion} ${item.russian ? style.criterionRussian : ''}`}>
+                                        {item.russian ? <RegionFlag text="Россия" className={style.languageFlag}/> : <ProductGlyph name={item.icon}/>}
+                                        <span><span className={style.criterionLabel}>{item.label}</span><strong>{item.value || 'Не указан'}</strong></span>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
@@ -301,12 +306,12 @@ export default function DesktopProduct() {
 
                             {specs.length ? (
                                 <div className={style.aboutSpecs}>
-                                    <h2 className={style.blockTitle}>Информация</h2>
+                                    <h2 className={style.blockTitle}>Характеристики</h2>
                                     <dl className={style.specs}>
                                         {specs.map((spec) => (
-                                            <div key={spec.label} className={style.spec}>
+                                            <div key={spec.label} className={`${style.spec} ${spec.label === 'Возможности игры' ? style.specWide : ''}`}>
                                                 <span className={style.specIcon} aria-hidden="true">
-                                                    <ProductGlyph name={specIconName(spec.label)}/>
+                                                    <ProductGlyph name={spec.icon || specIconName(spec.label)}/>
                                                 </span>
                                                 <dt className={style.specLabel}>{spec.label}</dt>
                                                 <dd className={style.specValue}>{spec.value}</dd>
@@ -486,20 +491,13 @@ export default function DesktopProduct() {
                                             aria-pressed={region.isCurrent}
                                         >
                                             <span className={style.regionRadio} aria-hidden="true"/>
-                                            {region.icon ? (
-                                                <span
-                                                    className={style.regionIcon}
-                                                    style={{backgroundImage: `url(${region.icon})`}}
-                                                    aria-hidden="true"
-                                                />
-                                            ) : null}
                                             <span className={style.regionText}>
                                                 <span className={style.regionName}>
                                                     <RegionFlag
                                                         text={`${region.product?.regionActivate || ''} ${region.label || ''}`}
                                                         className={style.regionFlag}
                                                     />
-                                                    {region.label}
+                                                    {region.label.replace(/^PS\s+/i, '')}
                                                 </span>
                                                 {gap > 0 ? (
                                                     <span className={style.regionGap}>дешевле на {formatPrice(gap)}</span>
@@ -547,8 +545,8 @@ export default function DesktopProduct() {
                                 {editions.length > 1 ? (
                                     <button type="button" className={style.pick} onClick={showEditions}>
                                         <span className={style.pickLabel}>Издание</span>
-                                        <span className={style.pickValue}>
-                                            {editions.find((item) => item.product.id === productId)?.label || product.name}
+                                        <span className={style.pickValue} title={product.name}>
+                                            {product.name.split(/\s+[—–]\s+/).pop()}
                                         </span>
                                         <span className={style.pickAction}>
                                             Все издания
@@ -557,13 +555,11 @@ export default function DesktopProduct() {
                                     </button>
                                 ) : null}
                                 {addons.length ? (
-                                    <button type="button" className={`${style.pick} ${style.pickStack}`} onClick={showAddons}>
+                                    <button type="button" className={style.pick} onClick={showAddons}>
                                         <span className={style.pickLabel}>Дополнения</span>
                                         <span className={style.pickValue}>
                                             {selectedAddons.length
-                                                ? selectedAddons.map((addon) => (
-                                                    <span key={addon.id} className={style.pickLine}>{addon.name}</span>
-                                                ))
+                                                ? `Выбрано ${selectedAddons.length} из ${addons.length}`
                                                 : `доступно ${addons.length}`}
                                         </span>
                                         <span className={style.pickAction}>
@@ -638,24 +634,12 @@ export default function DesktopProduct() {
                 </aside>
             </div>
 
-            {recommendations?.length ? (
+            {related.length ? (
                 <section className={style.shelf}>
-                    <h2 className={style.blockTitle}>Похожее</h2>
-                    <div className={style.recommendations}>
-                        {recommendations.slice(0, RECOMMENDATIONS_LIMIT).map((item, index) => (
-                            <article
-                                key={item.id}
-                                className={style.recommendation}
-                                style={{'--i': index}}
-                                onClick={() => openProduct(item)}
-                            >
-                                <span
-                                    className={style.recommendationCover}
-                                    style={item.image ? {backgroundImage: `url(${item.image})`} : undefined}
-                                />
-                                <span className={style.recommendationName}>{item.name}</span>
-                                <span className={style.recommendationPrice}>{formatPrice(item.price)}</span>
-                            </article>
+                    <h2 className={style.blockTitle}>С этим покупают</h2>
+                    <div className={storefrontStyle.grid}>
+                        {related.slice(0, RECOMMENDATIONS_LIMIT).map((item, index) => (
+                            <OfferCard key={item.key} offer={item} index={index} onOpen={(offer) => openProduct(offer.product)}/>
                         ))}
                     </div>
                 </section>
@@ -677,123 +661,6 @@ function ArrowGlyph() {
         <svg className={style.pickArrow} viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M12 5v14m0 0-6-6m6 6 6-6" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
-    );
-}
-
-function topWithin(element, root) {
-    let top = 0;
-    let node = element;
-    while (node && node !== root) {
-        top += node.offsetTop;
-        node = node.offsetParent;
-    }
-    return top;
-}
-
-function HeroFeatures({items, coverRef}) {
-    const boxRef = useRef(null);
-    const listRef = useRef(null);
-    const collapsedRef = useRef(0);
-    const openingRef = useRef(false);
-    const timerRef = useRef(0);
-    const [isOpen, setOpen] = useState(false);
-    const [isMoving, setMoving] = useState(false);
-    const [fit, setFit] = useState(items.length);
-
-    const refit = useCallback(() => setFit(items.length), [items.length]);
-
-    useEffect(() => {
-        const cover = coverRef.current;
-        if (!cover) return undefined;
-
-        document.fonts?.ready.then(refit);
-        if (typeof ResizeObserver === 'undefined') return undefined;
-
-        const observer = new ResizeObserver(refit);
-        observer.observe(cover);
-        return () => observer.disconnect();
-    }, [coverRef, refit]);
-
-    useEffect(() => () => clearTimeout(timerRef.current), []);
-
-    useLayoutEffect(() => {
-        const cover = coverRef.current;
-        const list = listRef.current;
-        if (isOpen || isMoving || !cover || !list || fit <= 0) return;
-
-        const root = cover.offsetParent;
-        const limit = topWithin(cover, root) + cover.offsetHeight - topWithin(list, root);
-        if (list.offsetHeight > limit + 1) setFit(fit - 1);
-    });
-
-    const animate = (from, to, done) => {
-        const box = boxRef.current;
-        box.style.height = `${from}px`;
-        void box.offsetHeight;
-        box.style.height = `${to}px`;
-        clearTimeout(timerRef.current);
-        timerRef.current = setTimeout(() => {
-            box.style.height = '';
-            done();
-        }, FEATURES_MOTION_MS);
-    };
-
-    useLayoutEffect(() => {
-        if (!isOpen || !openingRef.current) return;
-        openingRef.current = false;
-        animate(collapsedRef.current, listRef.current.offsetHeight, () => setMoving(false));
-    }, [isOpen]);
-
-    const toggle = () => {
-        const box = boxRef.current;
-        if (!box || isMoving) return;
-
-        if (!isOpen) {
-            collapsedRef.current = box.offsetHeight;
-            box.style.height = `${collapsedRef.current}px`;
-            openingRef.current = true;
-            setMoving(true);
-            setOpen(true);
-            return;
-        }
-
-        setMoving(true);
-        animate(box.offsetHeight, collapsedRef.current, () => {
-            setOpen(false);
-            setMoving(false);
-        });
-    };
-
-    const shown = isOpen ? items : items.slice(0, fit);
-    const hidden = items.length - fit;
-
-    return (
-        <div ref={boxRef} className={style.featuresBox}>
-            <ul ref={listRef} className={style.features}>
-                {shown.map((item, index) => (
-                    <li
-                        key={item}
-                        className={`${style.feature} ${index >= fit ? style.featureLate : ''}`}
-                        style={{'--i': index - fit}}
-                    >
-                        <FeatureMark text={item} style={style}/>
-                        {item}
-                    </li>
-                ))}
-                {hidden > 0 || isOpen ? (
-                    <li>
-                        <button
-                            type="button"
-                            className={style.featuresToggle}
-                            onClick={toggle}
-                            aria-expanded={isOpen}
-                        >
-                            {isOpen ? 'Свернуть' : `Ещё ${hidden}`}
-                        </button>
-                    </li>
-                ) : null}
-            </ul>
-        </div>
     );
 }
 

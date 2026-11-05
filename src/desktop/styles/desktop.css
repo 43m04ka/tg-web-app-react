@@ -30,7 +30,8 @@ html[data-view='desktop'] body {
 }
 
 html[data-view='desktop'] {
-    --brand-gradient: linear-gradient(115deg, #285b98 0%, #67417f 46%, #465f39 100%);
+    --brand-gradient: linear-gradient(115deg, #242936 0%, #34303e 52%, #252a30 100%);
+    --control-gradient: linear-gradient(135deg, #343947 0%, #252832 55%, #1b1e26 100%);
     --brand-button-text: #ffffff;
     scrollbar-width: thin;
     scrollbar-color: var(--surface-4) transparent;

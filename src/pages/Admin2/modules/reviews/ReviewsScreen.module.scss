@@ -1,0 +1,6 @@
+.screen { display: grid; gap: 20px; padding: 24px; max-width: 1100px; }
+.panel { display: flex; flex-direction: column; align-items: stretch; gap: 16px; padding: 24px; border: 1px solid var(--a-border, #353540); border-radius: 16px; }
+.panel > button { align-self: flex-start; }
+.result { display: grid; gap: 12px; }
+.row { display: flex; flex-direction: column; gap: 7px; padding: 16px 0; border-top: 1px solid var(--a-border, #353540); overflow-wrap: anywhere; }
+.row span { font-size: 13px; opacity: .8; }

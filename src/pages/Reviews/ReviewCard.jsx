@@ -17,7 +17,7 @@ export default function ReviewCard({review}) {
             <header className={style.author}>
                 <span className={style.avatar} style={{backgroundColor: avatarColor(name)}} aria-hidden="true">{Array.from(name)[0].toUpperCase()}</span>
                 <div>
-                    <div className={style.name}>{name}<span className={style.verified}>✓ Покупка подтверждена</span></div>
+                    <div className={style.name}>{name}{review.verified ? <span className={style.verified}>✓ Покупка подтверждена</span> : null}</div>
                     <span className={style.date}>Покупка {purchaseDate(review.purchasedAt)}</span>
                 </div>
             </header>

@@ -20,6 +20,7 @@ import settings from '../modules/settings/module';
 import access from '../modules/access/module';
 import agent from '../modules/agent/module';
 import kit from '../modules/kit/module';
+import reviews from '../modules/reviews/module';
 
 export const BASE = '/admin';
 
@@ -30,7 +31,7 @@ export const GROUPS = [
     {id: 'tools', title: 'Инструменты'},
 ];
 
-const REGISTERED = [overview, orders, marketplace, customers, steam, payments, promo, products, catalogs, prices, services, subscriptions, desktop, start, storefront, pages, broadcast, media, settings, access, agent, kit];
+const REGISTERED = [overview, orders, marketplace, customers, steam, payments, promo, products, catalogs, prices, services, subscriptions, desktop, start, storefront, pages, broadcast, media, settings, access, agent, kit, reviews];
 
 export const modules = REGISTERED
     .slice()

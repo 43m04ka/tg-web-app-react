@@ -116,9 +116,7 @@ const ICONS = {
     leaf: <path d="M5 19c0-8 5-13.5 14.5-14 .3 9.5-5.5 14-12 14ZM5 19c3-4 6-6.5 9.5-8"/>,
     storage: (
         <>
-            <rect x="3.5" y="13" width="17" height="6.5" rx="2"/>
-            <path d="m5.5 13 2.2-7a1.6 1.6 0 0 1 1.5-1h5.6a1.6 1.6 0 0 1 1.5 1l2.2 7"/>
-            <circle cx="16.5" cy="16.25" r=".9" fill="currentColor" stroke="none"/>
+            <path d="M12 3v12m-5-5 5 5 5-5M4 20h16"/>
         </>
     ),
     language: <path d="M4 5.5h16a1 1 0 0 1 1 1V16a1 1 0 0 1-1 1h-9l-4.5 3v-3H4a1 1 0 0 1-1-1V6.5a1 1 0 0 1 1-1ZM9 14l3-6.5 3 6.5M10 12h4"/>,

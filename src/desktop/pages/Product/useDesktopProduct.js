@@ -4,7 +4,7 @@ import {selectUserId, useSessionStore} from '../../../store/useSessionStore';
 import {useStructureStore} from '../../../store/useStructureStore';
 import {selectCartCount, useCartStore} from '../../../store/useCartStore';
 import {selectIsFavorite, useFavoriteStore} from '../../../store/useFavoriteStore';
-import {useProduct, useRecommendations} from '../../../pages/Product/useProduct';
+import {useProduct} from '../../../pages/Product/useProduct';
 import {subscriptionOffer} from '../../../pages/Product/productView';
 import {isSubscription} from '../../../pages/Main/catalogSections';
 import {subscriptionRoute} from '../../../shared/lib/pageRoutes';
@@ -64,15 +64,6 @@ export function useDesktopProduct(productId) {
         () => (product?.conceptAddOns || []).filter((item) => item && item.id && Number(item.price) > 0),
         [product]
     );
-
-    const excludedIds = useMemo(() => {
-        const ids = new Set([productId]);
-        editions.forEach((edition) => ids.add(edition.product.id));
-        addons.forEach((addon) => ids.add(addon.id));
-        return ids;
-    }, [productId, editions, addons]);
-
-    const recommendations = useRecommendations(pageId, excludedIds);
 
     const productPageId = useMemo(() => {
         if (!product || !Array.isArray(catalogs)) return null;
@@ -167,7 +158,6 @@ export function useDesktopProduct(productId) {
         selectedAddons,
         offer,
         offerRoute,
-        recommendations,
         cartCount,
         isFavorite,
         isAdding,

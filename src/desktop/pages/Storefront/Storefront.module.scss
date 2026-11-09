@@ -114,7 +114,7 @@
 
 .mainName {
   max-width: 58%;
-  font-family: var(--d-font-display);
+  font-family: var(--d-font-banner);
   font-size: clamp(32px, 3.2vw, 46px);
   font-weight: 700;
   line-height: 1.14;
@@ -228,7 +228,7 @@
 }
 
 .sideName {
-  font-family: var(--d-font-display);
+  font-family: var(--d-font-banner);
   font-size: var(--d-fs-lg);
   font-weight: 700;
   line-height: 1.2;

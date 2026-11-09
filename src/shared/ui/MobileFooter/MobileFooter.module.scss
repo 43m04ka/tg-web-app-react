@@ -9,7 +9,8 @@
   z-index: 1;
   margin-top: u(28);
   padding: u(28) u(20) u(24);
-  border-top: 1px solid #28292e;
+  border: 1px solid #28292e;
+  border-radius: u(24);
   background: #090a0c;
   color: var(--text);
 }

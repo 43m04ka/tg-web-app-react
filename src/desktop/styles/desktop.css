@@ -30,8 +30,14 @@ html[data-view='desktop'] body {
 }
 
 html[data-view='desktop'] {
-    --brand-gradient: linear-gradient(115deg, #242936 0%, #34303e 52%, #252a30 100%);
-    --control-gradient: linear-gradient(135deg, #343947 0%, #252832 55%, #1b1e26 100%);
+    --accent: #2478ed;
+    --accent-hover: #398aff;
+    --accent-soft: #397bd4;
+    --accent-surface: #15253e;
+    --accent-text: #84b5ff;
+    --accent-contrast: #ffffff;
+    --brand-gradient: linear-gradient(135deg, #2478ed, #2855d4);
+    --control-gradient: linear-gradient(135deg, #2478ed, #2855d4);
     --brand-button-text: #ffffff;
     scrollbar-width: thin;
     scrollbar-color: var(--surface-4) transparent;
@@ -93,7 +99,8 @@ html[data-view='desktop'] button:active:not(:disabled) {
 
     --d-card-min: 200px;
 
-    --d-font-display: 'Unbounded', var(--font-sans);
+    --d-font-display: var(--font-sans);
+    --d-font-banner: 'Unbounded', var(--font-sans);
 }
 
 @media (max-width: 1360px) {

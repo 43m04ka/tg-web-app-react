@@ -13,7 +13,7 @@ function PurchasedItems({snapshot}) {
 
     return (
         <div className={style.bought}>
-            <span className={style.boughtTitle}>Что вы купили</span>
+            <span className={style.boughtTitle}>Состав заказа:</span>
 
             <div className={style.boughtList}>
                 {items.map((item, index) => {
@@ -64,7 +64,7 @@ function PurchasedItems({snapshot}) {
 
 function Stage({tone, icon, title, text, children}) {
     return (
-        <div className={style.stage}>
+        <div className={`${style.stage} ${tone === 'accepted' ? style.acceptedStage : ''}`}>
             <div className={`${style.icon} ${style[tone]}`} aria-hidden="true">{icon}</div>
             <h1 className={style.title}>{title}</h1>
             <p className={style.text}>{text}</p>
@@ -139,12 +139,12 @@ export function DesktopSuccess({order, snapshot, onClose}) {
             title="Оплачено"
             text="Спасибо! Заказ передан менеджеру — он свяжется с вами и выдаст покупку."
         >
-            <Rows rows={[
+            <div className={style.summary}><Rows rows={[
                 {label: 'Заказ', value: `№${snapshot?.orderId ?? order?.orderId}`},
-                {label: 'Сумма', value: money(snapshot?.total ?? order?.total)}
+                {label: 'Сумма заказа', value: money(snapshot?.total ?? order?.total)}
             ]}/>
 
-            <PurchasedItems snapshot={snapshot}/>
+            <PurchasedItems snapshot={snapshot}/></div>
 
             <div className={style.actions}>
                 <button type="button" className={style.primary} onClick={onClose}>Вернуться в каталог</button>
@@ -177,14 +177,16 @@ export function DesktopAccepted({order, snapshot, onClose}) {
             tone="accepted"
             icon="✓"
             title="Заказ принят"
-            text="Менеджер свяжется с вами и пришлёт реквизиты для оплаты. Платить прямо сейчас не нужно."
+            text={['split', 'dolyami'].includes(order?.paymentMethod) || /Сплит|Долями/i.test(snapshot?.paymentTitle || '')
+                ? 'Ваш заказ принят. Менеджер свяжется с Вами по указанным контактам и пришлёт ссылку для оплаты частями.'
+                : 'Ваш заказ принят. Менеджер свяжется с Вами по указанным контактам и пришлёт ссылку для оплаты.'}
         >
-            <Rows rows={[
+            <div className={style.summary}><Rows rows={[
                 {label: 'Заказ', value: `№${order?.orderId}`},
-                {label: 'Сумма', value: money(snapshot?.total ?? order?.total)}
+                {label: 'Сумма заказа', value: money(snapshot?.total ?? order?.total)}
             ]}/>
 
-            <PurchasedItems snapshot={snapshot}/>
+            <PurchasedItems snapshot={snapshot}/></div>
 
             <div className={style.actions}>
                 <button type="button" className={style.primary} onClick={onClose}>Вернуться в каталог</button>

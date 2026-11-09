@@ -497,7 +497,7 @@ export default function DesktopProduct() {
                                                         text={`${region.product?.regionActivate || ''} ${region.label || ''}`}
                                                         className={style.regionFlag}
                                                     />
-                                                    {region.label.replace(/^PS\s+/i, '')}
+                                                    Регион {region.label.replace(/^(?:PS|PlayStation)\s+/i, '')}
                                                 </span>
                                                 {gap > 0 ? (
                                                     <span className={style.regionGap}>дешевле на {formatPrice(gap)}</span>

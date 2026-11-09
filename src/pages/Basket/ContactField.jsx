@@ -2,16 +2,17 @@ import React from 'react';
 import {hapticSelection} from '../../shared/lib/haptic';
 import {CONTACT_CHANNELS, findChannel, isContactValid} from './cartModel';
 import {CHANNEL_ICONS} from './ContactIcons';
-import style from './Basket.module.scss';
+import baseStyle from './Basket.module.scss';
 
-export default function ContactField({channel, value, isTouched, onChannel, onChange}) {
+export default function ContactField({channel, value, isTouched, onChannel, onChange, hideChannels = false, styles = baseStyle}) {
+    const style = styles;
     const active = findChannel(channel);
     const isValid = isContactValid(active.key, value);
     const isBad = isTouched && !isValid;
 
     return (
         <div className={style.contact}>
-            <div className={style.channels} role="tablist">
+            {!hideChannels ? <div className={style.channels} role="tablist">
                 {CONTACT_CHANNELS.map((option) => {
                     const Icon = CHANNEL_ICONS[option.key];
                     const isActive = option.key === active.key;
@@ -34,12 +35,12 @@ export default function ContactField({channel, value, isTouched, onChannel, onCh
                         </button>
                     );
                 })}
-            </div>
+            </div> : null}
 
             <label key={active.key} className={`${style.field} ${style.contactField}`}>
                 <span className={style.fieldLabel}>{active.label}</span>
 
-                <span className={`${style.contactInput} ${isBad ? style.contactInputBad : ''}`}>
+                <span className={`${style.contactInput} ${isBad ? style.contactInputBad || style.inputBad : ''}`}>
                     {active.key === 'telegram' ? <span className={style.contactPrefix}>@</span> : null}
 
                     <input

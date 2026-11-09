@@ -9,6 +9,7 @@ export default function ReviewForm() {
     const {orderId} = useParams();
     const location = useLocation();
     const token = new URLSearchParams(location.hash.slice(1)).get('token');
+    const general = !token && !orderId;
     const [data, setData] = useState(null);
     const [error, setError] = useState('');
     const [rating, setRating] = useState(5);
@@ -22,10 +23,8 @@ export default function ReviewForm() {
 
     useEffect(() => {
         const controller = new AbortController();
-        if (!token && !orderId) {
-            setError('Откройте персональную ссылку или выберите ваш заказ в разделе отзывов');
-            return () => controller.abort();
-        }
+        setError('');
+        setData(null);
         fetchReviewForm({orderId, token, signal: controller.signal}).then((result) => {
             setData(result);
             setName(result.displayName);
@@ -45,10 +44,10 @@ export default function ReviewForm() {
         form.set('consent', String(consent));
         form.set('publicationConsent', String(publicationConsent));
         if (token) form.set('token', token);
-        else form.set('orderId', orderId);
+        else if (orderId) form.set('orderId', orderId);
         files.forEach((file) => form.append('photos', file));
         try {
-            await submitReview(form, Boolean(token));
+            await submitReview(form, Boolean(token), general);
             setSent(true);
         } catch (failure) {
             setError(failure.message);
@@ -65,7 +64,7 @@ export default function ReviewForm() {
                 {error ? <p className={style.error} role="alert">{error}</p> : null}
                 {!data && !error ? <p className={style.empty} role="status">Загружаем ваш заказ…</p> : null}
                 {data ? <form className={style.form} onSubmit={send}>
-                    <div className={style.order}><strong>{data.order.id ? `Заказ №${data.order.id}` : 'Ваша покупка'}</strong><span>Покупка {purchaseDate(data.order.purchasedAt)}</span>{data.order.items.map((item, index) => <span key={index}>{item.name}{item.quantity > 1 ? ` × ${item.quantity}` : ''}</span>)}</div>
+                    {!general ? <div className={style.order}><strong>{data.order.id ? `Заказ №${data.order.id}` : 'Ваша покупка'}</strong><span>Покупка {purchaseDate(data.order.purchasedAt)}</span>{data.order.items.map((item, index) => <span key={index}>{item.name}{item.quantity > 1 ? ` × ${item.quantity}` : ''}</span>)}</div> : null}
                     <fieldset className={style.rating}><legend>Ваша оценка</legend><div role="radiogroup" aria-label="Оценка покупки">{[1, 2, 3, 4, 5].map((value) => <button type="button" key={value} role="radio" aria-checked={rating === value} aria-label={`${value} из 5`} className={value <= rating ? style.selected : ''} onClick={() => setRating(value)} disabled={busy}>★</button>)}</div><span>{rating ? `${rating} из 5` : 'Выберите от 1 до 5 звёзд'}</span></fieldset>
                     <label className={style.field}>Имя или ник<input value={name} onChange={(event) => setName(event.target.value)} maxLength={64} required disabled={busy}/></label>
                     <label className={style.field}>Ваш отзыв<textarea value={text} onChange={(event) => setText(event.target.value)} minLength={1} maxLength={3000} required disabled={busy} rows={5} placeholder="Что вам понравилось?"/><span>{text.length} / 3000</span></label>

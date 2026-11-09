@@ -46,6 +46,7 @@ import {useVkMessages} from '../../shared/hooks/useVkMessages';
 import {VK_CHAT_NEEDS_MESSAGES, paysInVkChat} from '../../shared/lib/paymentLink';
 import {VK_MESSAGES_NOTE} from '../../shared/lib/vk';
 import {useAccountEmail} from '../../shared/hooks/useAccountEmail';
+import AdditionalContacts, {additionalContactsText, additionalContactsValid} from './AdditionalContacts';
 
 const FORM_KEY = 'checkout:form';
 
@@ -191,6 +192,7 @@ export default function Checkout() {
     const [accountValues, setAccountValues] = useState(saved.accountValues || {});
     const [channel, setChannel] = useState(() => findChannel(saved.channel).key);
     const [contactValue, setContactValue] = useState(saved.contactValue || '');
+    const [extraContacts, setExtraContacts] = useState(saved.extraContacts || []);
     const [email, setEmail] = useState(saved.email || '');
     useAccountEmail(setEmail);
     const [isTouched, setTouched] = useState(false);
@@ -214,8 +216,8 @@ export default function Checkout() {
     }, [userId, loadCart]);
 
     useEffect(() => {
-        rememberView(FORM_KEY, {method, accountKind, accountValues, channel, contactValue, email});
-    }, [method, accountKind, accountValues, channel, contactValue, email]);
+        rememberView(FORM_KEY, {method, accountKind, accountValues, channel, contactValue, email, extraContacts});
+    }, [method, accountKind, accountValues, channel, contactValue, email, extraContacts]);
 
     const total = quote?.total ?? 0;
 
@@ -273,11 +275,12 @@ export default function Checkout() {
     const needsEmail = selected.requiresEmail;
     const isOnline = selected.flow === 'auto';
 
-    const contact = hasNativeContact
-        ? nativeContact(user)
-        : formatContact(channel, contactValue);
+    const primaryChannel = hasNativeContact ? user.platform === 'vk' ? 'vk' : 'telegram' : channel;
+    const contact = [hasNativeContact ? nativeContact(user) : formatContact(channel, contactValue),
+        ...additionalContactsText(extraContacts, primaryChannel)].join('\n');
 
-    const isContactReady = hasNativeContact || isContactValid(channel, contactValue);
+    const isContactReady = (hasNativeContact || isContactValid(channel, contactValue))
+        && additionalContactsValid(extraContacts, primaryChannel);
     const isEmailReady = !needsEmail || isEmailValid(email);
     const isAccountReady = isAccountFilled(pageType, accountKind, accountValues);
     const isReady = Boolean(userId) && isContactReady && isEmailReady && isAccountReady
@@ -456,6 +459,9 @@ export default function Checkout() {
                                 />
                             </>
                         )}
+
+                        <AdditionalContacts contacts={extraContacts} primary={primaryChannel}
+                            onChange={setExtraContacts} isTouched={isTouched} styles={style}/>
 
                         {needsEmail ? (
                             <label className={style.field}>

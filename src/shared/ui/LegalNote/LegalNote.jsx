@@ -2,8 +2,8 @@ import React from 'react';
 import {useTextPageLinks} from '../../textPages/useTextPages';
 import {textPageRoute} from '../../textPages/textPageModel';
 
-export const PRIVACY_URL = '/info/pk';
-export const OFFER_URL = '/info/privacy';
+export const PRIVACY_URL = '/info/privacy';
+export const OFFER_URL = '/info/terms';
 
 export default function LegalNote({action, className}) {
     const pages = useTextPageLinks();

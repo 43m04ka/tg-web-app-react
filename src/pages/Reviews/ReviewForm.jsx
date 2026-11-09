@@ -63,7 +63,7 @@ export default function ReviewForm() {
                 <header className={style.heading}><span className={style.eyebrow}>Ваш опыт важен</span><h1>Как прошла покупка?</h1><p>Поделитесь впечатлениями о заказе</p></header>
                 {error ? <p className={style.error} role="alert">{error}</p> : null}
                 {!data && !error ? <p className={style.empty} role="status">Загружаем ваш заказ…</p> : null}
-                {data ? <form className={style.form} onSubmit={send}>
+                {data && (general || data.order) ? <form className={style.form} onSubmit={send}>
                     {!general ? <div className={style.order}><strong>{data.order.id ? `Заказ №${data.order.id}` : 'Ваша покупка'}</strong><span>Покупка {purchaseDate(data.order.purchasedAt)}</span>{data.order.items.map((item, index) => <span key={index}>{item.name}{item.quantity > 1 ? ` × ${item.quantity}` : ''}</span>)}</div> : null}
                     <fieldset className={style.rating}><legend>Ваша оценка</legend><div role="radiogroup" aria-label="Оценка покупки">{[1, 2, 3, 4, 5].map((value) => <button type="button" key={value} role="radio" aria-checked={rating === value} aria-label={`${value} из 5`} className={value <= rating ? style.selected : ''} onClick={() => setRating(value)} disabled={busy}>★</button>)}</div><span>{rating ? `${rating} из 5` : 'Выберите от 1 до 5 звёзд'}</span></fieldset>
                     <label className={style.field}>Имя или ник<input value={name} onChange={(event) => setName(event.target.value)} maxLength={64} required disabled={busy}/></label>

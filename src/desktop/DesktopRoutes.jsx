@@ -26,6 +26,7 @@ import {useStructureStore} from '../store/useStructureStore';
 import {usePlatform} from '../shared/hooks/usePlatform';
 import {closedSection} from '../shared/lib/maintenance';
 import {useStorefrontClosure} from '../shared/hooks/useStorefrontClosure';
+import {hiddenStorefront} from '../shared/lib/storefrontMaintenance';
 import {isStandalonePage, pageTypeOf} from '../shared/lib/pageRoutes';
 import {defaultStorefrontId, pageIdOfType} from './model/desktopNav';
 import Storefront from './pages/Storefront/Storefront';
@@ -78,7 +79,8 @@ export default function DesktopRoutes({sections}) {
     const closed = closedSection(location.pathname, sections) || storefrontClosed;
 
     if (closed) {
-        return <Maintenance until={closed.until} section={closed.title} sectionId={closed.id}/>;
+        if (hiddenStorefront(closed)) return <Navigate to="/" replace/>;
+        return <Maintenance until={closed.until} section={closed.title} sectionId={closed.id} platforms={closed.platforms}/>;
     }
 
     return (

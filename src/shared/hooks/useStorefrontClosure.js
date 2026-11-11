@@ -14,5 +14,5 @@ export function useStorefrontClosure(sections) {
     const catalogPage = (rawCatalogs || []).find((c) => String(c.id) === catalogId || String(c.path || '').replace(/^\//, '') === catalogId)?.structurePageId;
     const page = (pages || []).find((p) => String(p.id) === String(store || catalogPage || selectedId));
     const state = sections?.[page?.type];
-    return state ? {id: page.type, title: sectionTitleOf(page.type), until: state.until} : null;
+    return state ? {id: page.type, title: sectionTitleOf(page.type), until: state.until, platforms: state.platforms} : null;
 }

@@ -91,7 +91,7 @@ export const closedSection = (pathname, sections) => {
     const state = normalizeSections(sections)[id];
     if (!state) return null;
 
-    return {id, title: sectionTitleOf(id), until: state.until};
+    return {id, title: sectionTitleOf(id), until: state.until, ...(state.platforms?.length ? {platforms: state.platforms} : {})};
 };
 
 export const closedCount = (sections) => Object.keys(normalizeSections(sections)).length;

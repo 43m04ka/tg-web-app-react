@@ -1,9 +1,14 @@
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import {fetchCodeCatalog} from '../../shared/api/codes';
+import {useStructureStore} from '../../store/useStructureStore';
+import {usePlatform} from '../../shared/hooks/usePlatform';
+import {filterServiceCatalog} from '../../shared/lib/storefrontMaintenance';
 
 let cached = null;
 
 export function useCodeCatalog() {
+    const catalogs = useStructureStore((s) => s.catalogs);
+    const {botType} = usePlatform();
     const [brands, setBrands] = useState(cached);
     const [error, setError] = useState(false);
     const [token, setToken] = useState(0);
@@ -12,7 +17,7 @@ export function useCodeCatalog() {
         let isAlive = true;
         const controller = new AbortController();
 
-        fetchCodeCatalog(controller.signal)
+        fetchCodeCatalog(controller.signal, botType)
             .then((result) => {
                 if (!isAlive) return;
 
@@ -29,12 +34,13 @@ export function useCodeCatalog() {
             isAlive = false;
             controller.abort();
         };
-    }, [token]);
+    }, [token, botType]);
 
     const retry = useCallback(() => {
         setError(false);
         setToken((value) => value + 1);
     }, []);
 
-    return {brands, error, retry};
+    const visibleBrands = useMemo(() => filterServiceCatalog(brands, catalogs), [brands, catalogs]);
+    return {brands: visibleBrands, error, retry};
 }

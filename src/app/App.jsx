@@ -28,7 +28,7 @@ const StandalonePay = lazy(() => import('../desktop/StandalonePay'));
 
 export default function App() {
     const {isReady} = useBootstrap();
-    const {isMaintenance, maintenanceUntil, maintenanceSections} = useMaintenance();
+    const {isMaintenance, maintenanceUntil, maintenanceSections, maintenancePlatforms} = useMaintenance();
     const {pathname, search} = useLocation();
     const pageId = useSessionStore((state) => state.pageId);
     const pages = useStructureStore((state) => state.pages);
@@ -79,7 +79,7 @@ export default function App() {
         );
     }
 
-    if (isMaintenance) return <Maintenance until={maintenanceUntil}/>;
+    if (isMaintenance) return <Maintenance until={maintenanceUntil} platforms={maintenancePlatforms}/>;
 
     if (!isReady) return <Splash/>;
 

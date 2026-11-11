@@ -3,8 +3,8 @@ import {withVkGroup} from '../lib/vkOrder';
 import {apiFetch, requestResult} from './client';
 import {withLogin} from '../lib/loginGate';
 
-export const fetchCodeCatalog = (signal) =>
-    requestResult('/api/codes/catalog', {signal, retries: 2});
+export const fetchCodeCatalog = (signal, botType) =>
+    requestResult('/api/codes/catalog', {signal, query: botType ? {botType} : undefined, retries: 2});
 
 export const createCodeOrder = withLogin(async (payload) => {
     await preparePaymentNetwork();

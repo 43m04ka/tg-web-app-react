@@ -62,7 +62,7 @@ export default function TopBar({onSearchOpenChange}) {
     }, [onSearchOpenChange]);
 
     const isScoped = scopeId !== null;
-    const cartCount = cartItems?.length ?? 0;
+    const cartCount = cartItems?.filter((item) => catalogs?.some((catalog) => catalog.id === item.catalogId)).length ?? 0;
     const playstation = storefronts.filter((item) => item.type === 'ps' || item.type === 'ps_india').map((item) => {
         const entry = (startPages || []).find((row) => row.structurePageId === item.id && row.type === 'page'
             && row.platform === resolveBotType(startPages, botType));

@@ -41,3 +41,18 @@ export function filterStorefrontStructure(source, closed = {}) {
     if (source.desktopShelves) result.desktopShelves = source.desktopShelves.map((shelf) => ({...shelf, catalogIds: (shelf.catalogIds || []).filter((id) => !blockedCatalogs.has(String(id)))})).filter((shelf) => shelf.kind !== 'catalogs' || shelf.catalogIds.length);
     return result;
 }
+
+export function allStorefrontsClosed(pages, closed = {}) {
+    const shops = (pages || []).filter((p) => p.isHidden !== 1 && ['ps', 'ps_india', 'xbox', 'services', 'steam'].includes(p.type));
+    return shops.length > 0 && shops.every((p) => closed[p.type] || (closed.main && ['ps', 'ps_india', 'xbox'].includes(p.type)));
+}
+
+export const hiddenStorefront = (closed) => Boolean(closed && ['ps', 'ps_india', 'xbox', 'services', 'steam'].includes(closed.id) && !closed.platforms?.length);
+
+export function filterServiceCatalog(brands, catalogs) {
+    if (!Array.isArray(brands) || !Array.isArray(catalogs)) return brands;
+    const ids = new Set(catalogs.map((c) => String(c.id)));
+    const allowed = (offer) => offer.catalogId == null || ids.has(String(offer.catalogId));
+    return brands.map((brand) => ({...brand, offers: (brand.offers || []).filter(allowed), catalogLinks: (brand.catalogLinks || []).filter(allowed)}))
+        .filter((brand, index) => !brands[index].offers?.length || brand.offers.length > 0);
+}

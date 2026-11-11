@@ -1,4 +1,4 @@
-import {filterStorefrontStructure} from './storefrontMaintenance';
+import {filterStorefrontStructure, allStorefrontsClosed, hiddenStorefront, filterServiceCatalog} from './storefrontMaintenance';
 
 const source = {
     pages: [{id: 20, type: 'ps'}, {id: 35, type: 'ps_india'}, {id: 28, type: 'xbox'}, {id: 40, type: 'services'}],
@@ -24,4 +24,20 @@ test('сервисы скрывают своё меню и баннеры', () =
     const next = filterStorefrontStructure(source, {services: {enabled: true}});
     expect(next.pages.some((p) => p.type === 'services')).toBe(false);
     expect(next.banners.some((b) => b.data.url === '/services')).toBe(false);
+});
+
+test('экран всего магазина включается только когда не осталось открытых витрин', () => {
+    expect(allStorefrontsClosed(source.pages, {ps_india: {}})).toBe(false);
+    expect(allStorefrontsClosed(source.pages, {ps: {}, ps_india: {}, xbox: {}, services: {}})).toBe(true);
+    expect(hiddenStorefront({id: 'ps_india'})).toBe(true);
+    expect(hiddenStorefront({id: 'ps_india', platforms: ['web']})).toBe(false);
+});
+
+test('связанные индийские подписки удаляются из сервисов, обычные услуги остаются', () => {
+    const brands = [{offers: [{catalogId: 2}, {catalogId: 1}, {id: 'code'}], catalogLinks: [{catalogId: 2}, {catalogId: 1}]}, {offers: [{catalogId: 2}]}];
+    const result = filterServiceCatalog(brands, [{id: 1}]);
+    expect(result).toHaveLength(1);
+    expect(result[0].offers).toEqual([{catalogId: 1}, {id: 'code'}]);
+    expect(result[0].catalogLinks).toEqual([{catalogId: 1}]);
+    expect(brands[0].offers).toHaveLength(3);
 });

@@ -1,4 +1,7 @@
 export const MAINTENANCE_SECTIONS = [
+    {id: 'ps', title: 'PlayStation Турция', hint: 'Все товары, баннеры и заказы Турции', paths: []},
+    {id: 'ps_india', title: 'PlayStation Индия', hint: 'Все товары, баннеры и заказы Индии', paths: []},
+    {id: 'xbox', title: 'Xbox', hint: 'Все товары, баннеры и заказы Xbox', paths: []},
     {id: 'main', title: 'Главная и каталоги', hint: 'Витрины PS и Xbox, списки каталогов, карточки товаров', paths: ['/main', '/catalog', '/card']},
     {id: 'steam', title: 'Пополнение Steam', hint: 'Отдельная витрина Steam и её заказы', paths: ['/steam']},
     {id: 'services', title: 'Сервисы', hint: 'Витрина услуг', paths: ['/services']},

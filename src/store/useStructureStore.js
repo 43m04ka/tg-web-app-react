@@ -1,4 +1,5 @@
 import {create} from 'zustand';
+import {filterStorefrontStructure} from '../shared/lib/storefrontMaintenance';
 import {INITIAL_DATA, hasItems} from '../shared/lib/initialData';
 import {PREVIEW_MESSAGE, PREVIEW_READY} from '../shared/lib/desktopPreview';
 import {
@@ -63,12 +64,20 @@ const seedFromInjected = () => {
 };
 
 let isFetching = false;
+const rawStructure = {...seedFromInjected(), pages: INITIAL_DATA.pages || null};
+let closedStorefronts = {};
 
 export const useStructureStore = create((set, get) => ({
     ...seedFromInjected(),
 
     status: 'idle',
     error: null,
+    maintenancePages: INITIAL_DATA.pages || [],
+    maintenanceCatalogs: INITIAL_DATA.catalogs || [],
+    setMaintenance: (sections) => {
+        closedStorefronts = sections;
+        set({...filterStorefrontStructure(rawStructure, sections), maintenancePages: rawStructure.pages || [], maintenanceCatalogs: rawStructure.catalogs || []});
+    },
 
     load: async () => {
         if (isFetching) return;
@@ -93,7 +102,10 @@ async function runLoad(set, get) {
     const fetchOne = async ({key, load, transform, derive}) => {
         const result = await load();
         if (key in previewOverride) return;
-        if (hasItems(result)) set({[key]: transform ? transform(result) : result, ...(derive ? derive(result) : null)});
+        if (hasItems(result)) {
+            rawStructure[key] = key === 'pages' ? result : transform ? transform(result) : result;
+            set({...filterStorefrontStructure(rawStructure, closedStorefronts), maintenancePages: rawStructure.pages || [], maintenanceCatalogs: rawStructure.catalogs || [], ...(derive ? derive(result) : null)});
+        }
     };
 
     const background = Promise.all(

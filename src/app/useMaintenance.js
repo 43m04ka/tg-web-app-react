@@ -2,6 +2,7 @@ import {useCallback, useEffect, useState} from 'react';
 import {fetchMaintenanceMode} from '../shared/api/settings';
 import {INITIAL_DATA} from '../shared/lib/initialData';
 import {usePlatform} from '../shared/hooks/usePlatform';
+import {useStructureStore} from '../store/useStructureStore';
 import {closedCount, closedDomain, normalizeDomains, normalizeSections, sectionsFor} from '../shared/lib/maintenance';
 
 const BYPASS_STORAGE_KEY = 'maintenance_bypass';
@@ -49,7 +50,6 @@ export function useMaintenance() {
     const isClosed = mode.enabled || Boolean(domain) || closedCount(mode.sections) > 0;
 
     useEffect(() => {
-        if (!isClosed) return undefined;
 
         const controller = new AbortController();
         const timerId = setInterval(() => refresh(controller.signal), POLL_MS);
@@ -68,6 +68,10 @@ export function useMaintenance() {
     }, [isClosed, refresh]);
 
     const bypassed = hasBypass();
+    const activeSections = JSON.stringify(bypassed ? {} : sectionsFor(mode.sections, botType));
+    useEffect(() => {
+        useStructureStore.getState().setMaintenance(JSON.parse(activeSections));
+    }, [activeSections]);
 
     return {
         isMaintenance: (mode.enabled || Boolean(domain)) && !bypassed,

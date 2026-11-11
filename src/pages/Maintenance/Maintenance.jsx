@@ -40,7 +40,7 @@ export default function Maintenance({until, section, sectionId}) {
 
     const goHome = useCallback(() => {
         hapticImpact('light');
-        navigate('/main');
+        navigate('/');
     }, [navigate]);
 
     return (

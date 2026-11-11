@@ -2,11 +2,11 @@ import {filterStorefrontStructure} from './storefrontMaintenance';
 
 const source = {
     pages: [{id: 20, type: 'ps'}, {id: 35, type: 'ps_india'}, {id: 28, type: 'xbox'}, {id: 40, type: 'services'}],
-    catalogs: [{id: 1, structurePageId: 20}, {id: 2, structurePageId: 35}],
+    catalogs: [{id: 1, structurePageId: 20}, {id: 2, path: 'india_games', structurePageId: 35}],
     startPages: [{structurePageId: 20}, {structurePageId: 35}],
     popularProducts: [{product: {id: 200, catalogId: 2}}, {product: {id: 100, catalogId: 1}}],
     mainPageProducts: [{id: 200, catalogId: 2}],
-    banners: [{data: {catalogId: 2}}, {data: {url: '/?store=35'}}, {data: {url: '/catalog/2'}}, {data: {url: '/services'}}]
+    banners: [{data: {catalogId: 2}}, {data: {url: '/?store=35'}}, {data: {url: '/catalog/2'}}, {data: {url: '/catalog/india_games'}}, {data: {url: '/services'}}]
 };
 
 test('Индия скрывается целиком, другие витрины остаются', () => {

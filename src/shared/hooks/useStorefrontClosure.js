@@ -10,8 +10,8 @@ export function useStorefrontClosure(sections) {
     const rawCatalogs = useStructureStore((s) => s.maintenanceCatalogs);
     const store = new URLSearchParams(location.search).get('store');
     if (!store && !/^\/(main|catalog|card|basket|checkout|subscription)(\/|$)/.test(location.pathname)) return null;
-    const catalogId = location.pathname.match(/^\/catalog\/([^/]+)/)?.[1];
-    const catalogPage = (rawCatalogs || []).find((c) => String(c.id) === catalogId)?.structurePageId;
+    const catalogId = location.pathname.match(/^\/(?:catalog|subscription)\/([^/]+)/)?.[1];
+    const catalogPage = (rawCatalogs || []).find((c) => String(c.id) === catalogId || String(c.path || '').replace(/^\//, '') === catalogId)?.structurePageId;
     const page = (pages || []).find((p) => String(p.id) === String(store || catalogPage || selectedId));
     const state = sections?.[page?.type];
     return state ? {id: page.type, title: sectionTitleOf(page.type), until: state.until} : null;

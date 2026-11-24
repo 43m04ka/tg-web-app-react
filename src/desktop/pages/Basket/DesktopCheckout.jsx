@@ -33,6 +33,7 @@ import {unitPrice} from '../../../pages/Basket/quoteLocal';
 import {useBasketQuote} from '../../../pages/Basket/useBasketQuote';
 import {usePromoMemory} from '../../../pages/Basket/usePromoMemory';
 import {useOrderFlow, SCREEN} from '../../../pages/Basket/useOrderFlow';
+import {useTurkeyCodesMode} from '../../../shared/hooks/useTurkeyCodesMode';
 import {useScrollMemory} from '../../shell/ScrollAreaContext';
 import Spinner from '../../ui/Spinner';
 import DesktopPromo from './DesktopPromo';
@@ -388,10 +389,20 @@ export default function DesktopCheckout() {
         [pages, pageId]
     );
 
+    const [turkeyCodes] = useTurkeyCodesMode();
+    const isTurkeyCodes = pageType === 'ps' && turkeyCodes;
+    const orderPageType = isTurkeyCodes ? 'ps_turkey_codes' : pageType;
+
     const pageItems = useMemo(() => pageCartItems(items, catalogs, pageId), [items, catalogs, pageId]);
 
     const {promo, apply, clear} = usePromoMemory();
-    const {quote, isLoading, error, retry} = useBasketQuote({items: pageItems, pageType, promo});
+    const {quote, isLoading, error, retry} = useBasketQuote({
+        items: pageItems,
+        pageType,
+        promo,
+        forceServer: isTurkeyCodes,
+        fulfillment: isTurkeyCodes ? 'codes' : null
+    });
 
     const flow = useOrderFlow(userId);
 
@@ -456,7 +467,7 @@ export default function DesktopCheckout() {
 
     const isContactReady = hasNativeContact || isContactValid(channel, contactValue);
     const isEmailReady = !needsEmail || isEmailValid(email);
-    const isAccountReady = isAccountFilled(pageType, accountKind, accountValues);
+    const isAccountReady = isAccountFilled(orderPageType, accountKind, accountValues);
     const isReady = Boolean(userId) && isContactReady && isEmailReady && isAccountReady
         && total > 0 && !isLoading && !error;
 
@@ -487,10 +498,13 @@ export default function DesktopCheckout() {
             pageId,
             contact,
             username: handle || undefined,
-            accountData: buildAccountData(pageType, accountKind, accountValues),
+            accountData: isTurkeyCodes
+                ? 'Выдача кодами пополнения PS Store (Турция), аккаунт не требуется.'
+                : buildAccountData(pageType, accountKind, accountValues),
             email: email.trim() || undefined,
             paymentMethod: method,
-            promoCode: quote?.promo?.name || undefined
+            promoCode: quote?.promo?.name || undefined,
+            fulfillment: isTurkeyCodes ? 'codes' : undefined
         }, {
             items: (pageItems || []).map((item) => ({
                 id: item.id,
@@ -510,7 +524,7 @@ export default function DesktopCheckout() {
         });
     }, [
         accountKind, accountValues, channel, contact, contactValue, email, flow, hasNativeContact,
-        isReady, isVk, method, pageId, pageItems, pageType, platform, quote, selected, total, user, vkGroupId
+        isReady, isTurkeyCodes, isVk, method, pageId, pageItems, pageType, platform, quote, selected, total, user, vkGroupId
     ]);
 
     if (flow.screen === SCREEN.WAITING) {
@@ -577,7 +591,7 @@ export default function DesktopCheckout() {
                     </section>
 
                     <AccountBlock
-                        pageType={pageType}
+                        pageType={orderPageType}
                         kind={accountKind}
                         values={accountValues}
                         isTouched={isTouched}
@@ -625,7 +639,7 @@ export default function DesktopCheckout() {
 
                     <section className={style.block}>
                         <h2 className={style.blockTitle}>Часто спрашивают</h2>
-                        <Faq items={faqFor(pageType)}/>
+                        <Faq items={faqFor(orderPageType)}/>
                     </section>
 
                 </div>

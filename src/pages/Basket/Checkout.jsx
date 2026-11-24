@@ -201,14 +201,20 @@ export default function Checkout() {
         [pages, pageId]
     );
 
-    const turkeyCodes = useTurkeyCodesMode();
+    const [turkeyCodes] = useTurkeyCodesMode();
     const isTurkeyCodes = pageType === 'ps' && turkeyCodes;
     const orderPageType = isTurkeyCodes ? 'ps_turkey_codes' : pageType;
 
     const pageItems = useMemo(() => pageCartItems(items, catalogs, pageId), [items, catalogs, pageId]);
 
     const {promo, apply, clear} = usePromoMemory();
-    const {quote, isLoading, error, retry} = useBasketQuote({items: pageItems, pageType, promo, forceServer: isTurkeyCodes});
+    const {quote, isLoading, error, retry} = useBasketQuote({
+        items: pageItems,
+        pageType,
+        promo,
+        forceServer: isTurkeyCodes,
+        fulfillment: isTurkeyCodes ? 'codes' : null
+    });
 
     const flow = useOrderFlow(userId);
 
@@ -330,7 +336,8 @@ export default function Checkout() {
                 : buildAccountData(pageType, accountKind, accountValues),
             email: email.trim() || undefined,
             paymentMethod: method,
-            promoCode: quote?.promo?.name || undefined
+            promoCode: quote?.promo?.name || undefined,
+            fulfillment: isTurkeyCodes ? 'codes' : undefined
         }, {
             items: (pageItems || []).map((item) => ({
                 id: item.id,

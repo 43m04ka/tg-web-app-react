@@ -9,8 +9,7 @@ export const fetchMaintenanceMode = async (signal) => {
             enabled: typeof settings?.maintenance_mode?.value === 'boolean' ? settings.maintenance_mode.value : null,
             until: settings?.maintenance_mode_until?.value || null,
             sections: settings?.maintenance_sections?.value || {},
-            domains: settings?.maintenance_domains?.value || {},
-            turkeyFulfillment: settings?.ps_turkey_fulfillment?.value === 'codes' ? 'codes' : 'manager'
+            domains: settings?.maintenance_domains?.value || {}
         };
     } catch (error) {
         console.error('[api] maintenance mode:', error.message);

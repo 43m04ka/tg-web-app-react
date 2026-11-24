@@ -412,6 +412,51 @@
   line-height: 1.5;
 }
 
+.fulfillment {
+  display: flex;
+  flex-direction: column;
+  gap: var(--d-gap-2);
+  padding: var(--d-gap-4);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  animation: global(gw-rise-sm) var(--m-base) var(--m-ease) both;
+}
+
+.fulfillmentTitle {
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-bold);
+}
+
+.fulfillmentTrack {
+  display: flex;
+  gap: var(--d-gap-1);
+  padding: var(--d-gap-1);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+}
+
+.fulfillmentOption {
+  flex: 1;
+  padding: var(--d-gap-2) var(--d-gap-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--d-fs-xs);
+  font-weight: var(--fw-bold);
+  color: var(--text-faint);
+  text-align: center;
+  transition: background var(--m-fast) var(--m-ease), color var(--m-fast) var(--m-ease);
+}
+
+.fulfillmentOptionActive {
+  background: var(--surface-3);
+  color: var(--text);
+}
+
+.fulfillmentNote {
+  font-size: var(--d-fs-2xs);
+  color: var(--text-faint);
+  line-height: 1.5;
+}
+
 .totalsRow {
   display: flex;
   align-items: baseline;

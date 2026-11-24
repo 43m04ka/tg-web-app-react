@@ -527,6 +527,56 @@
   text-wrap: pretty;
 }
 
+.fulfillment {
+  display: flex;
+  flex-direction: column;
+  gap: u(9);
+  padding: u(14) u(16);
+  border-radius: u(18);
+  background: oklch(0.44 0.15 285 / 0.14);
+  border: 1px solid oklch(0.6 0.16 285 / 0.32);
+  animation: rise 320ms var(--ease-out) backwards;
+}
+
+.fulfillmentTitle {
+  font-size: u(12.5);
+  font-weight: 800;
+  letter-spacing: u(0.4);
+  text-transform: uppercase;
+  color: oklch(0.82 0.11 288);
+}
+
+.fulfillmentTrack {
+  display: flex;
+  gap: u(4);
+  padding: u(4);
+  border-radius: u(13);
+  background: oklch(0.3 0.06 285 / 0.35);
+}
+
+.fulfillmentOption {
+  flex: 1;
+  padding: u(9) u(10);
+  border-radius: u(10);
+  font-size: u(12.5);
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-align: center;
+  transition: background 160ms var(--ease-out), color 160ms var(--ease-out);
+}
+
+.fulfillmentOptionActive {
+  background: oklch(0.6 0.16 285 / 0.4);
+  color: var(--text);
+}
+
+.fulfillmentNote {
+  font-size: u(11.5);
+  line-height: 1.45;
+  color: var(--text-muted);
+  text-wrap: pretty;
+}
+
 .pending {
   display: flex;
   align-items: center;

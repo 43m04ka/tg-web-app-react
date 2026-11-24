@@ -74,6 +74,41 @@ function CartRow({item, regionTitle, foreignPrice, onOpen, onCount}) {
     );
 }
 
+function FulfillmentSwitch({isCodes, onChange}) {
+    return (
+        <div className={style.fulfillment}>
+            <span className={style.fulfillmentTitle}>Способ выдачи</span>
+
+            <div className={style.fulfillmentTrack} role="tablist">
+                <button
+                    type="button"
+                    role="tab"
+                    aria-selected={!isCodes}
+                    className={`${style.fulfillmentOption} ${!isCodes ? style.fulfillmentOptionActive : ''}`}
+                    onClick={() => onChange(false)}
+                >
+                    Оформит менеджер
+                </button>
+                <button
+                    type="button"
+                    role="tab"
+                    aria-selected={isCodes}
+                    className={`${style.fulfillmentOption} ${isCodes ? style.fulfillmentOptionActive : ''}`}
+                    onClick={() => onChange(true)}
+                >
+                    Кодами сразу
+                </button>
+            </div>
+
+            <span className={style.fulfillmentNote}>
+                {isCodes
+                    ? 'Коды пополнения PSN придут автоматически сразу после оплаты.'
+                    : 'Менеджер пополнит баланс на вашем аккаунте после оплаты.'}
+            </span>
+        </div>
+    );
+}
+
 function TopupSummary({calc}) {
     if (!calc || (calc.mode !== 'ps_india' && calc.mode !== 'ps_turkey_codes')) return null;
 
@@ -134,7 +169,7 @@ export default function Basket() {
     const regionTitle = page?.name || null;
     const pageType = pages ? (page?.type || null) : undefined;
     const isIndia = pageType === 'ps_india';
-    const turkeyCodes = useTurkeyCodesMode();
+    const [turkeyCodes, setTurkeyCodes] = useTurkeyCodesMode();
     const isTurkeyCodes = pageType === 'ps' && turkeyCodes;
 
     const pageItems = useMemo(
@@ -143,7 +178,15 @@ export default function Basket() {
     );
 
     const {promo, apply, clear} = usePromoMemory();
-    const {quote, isLoading, error, retry} = useBasketQuote({items: pageItems, pageType, promo, forceServer: isTurkeyCodes});
+    const {quote, isLoading, error, retry} = useBasketQuote({
+        items: pageItems,
+        pageType,
+        promo,
+        forceServer: isTurkeyCodes,
+        fulfillment: isTurkeyCodes ? 'codes' : null
+    });
+
+    const hasTryItems = pageType === 'ps' && (pageItems || []).some((item) => unitRupees(item));
 
     const scrollRef = useScrollMemory('basket', {ready: pageItems !== null});
 
@@ -230,6 +273,10 @@ export default function Basket() {
                     />
                 ) : (
                     <>
+                        {hasTryItems ? (
+                            <FulfillmentSwitch isCodes={isTurkeyCodes} onChange={setTurkeyCodes}/>
+                        ) : null}
+
                         <div className={style.list}>
                             {pageItems.map((item, index) => (
                                 <div

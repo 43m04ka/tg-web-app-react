@@ -7,7 +7,7 @@ import {buildQuote} from './quoteLocal';
 const INDIA = 'india';
 const SERVER_QUOTE_DELAY_MS = 450;
 
-export function useBasketQuote({items, pageType, promo, forceServer}) {
+export function useBasketQuote({items, pageType, promo, forceServer, fulfillment}) {
     const [rules, setRules] = useState(() => peekPriceRules(INDIA));
     const [isFailed, setFailed] = useState(false);
     const [attempt, setAttempt] = useState(0);
@@ -21,6 +21,7 @@ export function useBasketQuote({items, pageType, promo, forceServer}) {
     const usesServer = forceServer || (needsRules && !rules && isFailed);
     const itemsKey = (items || []).map((item) => `${item.id}:${item.count}`).join(',');
     const promoName = promo?.name || null;
+    const fulfillmentKey = usesServer ? (fulfillment || null) : null;
 
     useEffect(() => {
         if (!needsRules || rules) return undefined;
@@ -50,7 +51,7 @@ export function useBasketQuote({items, pageType, promo, forceServer}) {
         setServerFailed(false);
 
         const timerId = setTimeout(() => {
-            fetchBasketQuote({userId, pageId, promoCode: promoName}, controller.signal)
+            fetchBasketQuote({userId, pageId, promoCode: promoName, fulfillment: fulfillmentKey}, controller.signal)
                 .then((result) => {
                     if (controller.signal.aborted) return;
                     if (result) setServerQuote(result);
@@ -65,7 +66,7 @@ export function useBasketQuote({items, pageType, promo, forceServer}) {
             clearTimeout(timerId);
             controller.abort();
         };
-    }, [usesServer, userId, pageId, itemsKey, promoName, attempt]);
+    }, [usesServer, userId, pageId, itemsKey, promoName, fulfillmentKey, attempt]);
 
     const localQuote = useMemo(
         () => (pageType === undefined || usesServer ? null : buildQuote({items, pageType, promo, indiaRules: rules})),

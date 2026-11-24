@@ -15,7 +15,7 @@ import {useResource} from '../../platform/useResource';
 import {useMutation} from '../../platform/useMutation';
 import {keys} from '../../platform/resources';
 import {askConfirm, toast, toastFail} from '../../platform/notify';
-import {fetchOrder, markPayoutManual, notifyClosedProfile, setOrderCost, setOrderStatus} from './api';
+import {fetchOrder, markPayoutManual, notifyClosedProfile, retrySupplierPayout, setOrderCost, setOrderStatus} from './api';
 import {
     PAYMENT_TITLES,
     PAYOUT_TITLES,
@@ -108,6 +108,11 @@ export default function OrderInspector({id, onClose}) {
     const payout = useMutation(markPayoutManual, {
         invalidates: [keys.orders],
         done: 'Отмечено ручное пополнение',
+    });
+
+    const supplierRetry = useMutation(retrySupplierPayout, {
+        invalidates: [keys.orders, keys.order(id)],
+        done: 'Покупка кодов повторена',
     });
 
     const saveCost = useMutation(setOrderCost, {
@@ -350,7 +355,59 @@ export default function OrderInspector({id, onClose}) {
                         </InspectorSection>
                     ) : null}
 
-                    {order.type === 'catalog' ? (
+                    {order.type === 'catalog' && order.calc?.mode === 'ps_turkey_codes' ? (
+                        <InspectorSection
+                            title="Коды пополнения PanYanStore"
+                            actions={codes.length ? (
+                                <Button
+                                    size="s"
+                                    variant="ghost"
+                                    onClick={() => copyText(codes.map((item) => item.code).join('\n'), 'Коды скопированы')}
+                                >
+                                    Скопировать
+                                </Button>
+                            ) : null}
+                        >
+                            <InspectorRows items={[
+                                {
+                                    label: 'Выдача',
+                                    value: (
+                                        <Badge tone={PAYOUT_TONES[order.payoutStatus] || 'neutral'}>
+                                            {PAYOUT_TITLES[order.payoutStatus] || order.payoutStatus}
+                                        </Badge>
+                                    ),
+                                },
+                                {label: 'Номинал', value: order.calc?.denomination || '—'},
+                                {label: 'Завершена', value: <Time value={order.payoutCompletedAt}/>},
+                                order.payoutError ? {label: 'Ошибка поставщика', value: order.payoutError} : null,
+                            ]}/>
+
+                            {codes.length ? (
+                                <ul className={style.codes}>
+                                    {codes.map((item) => (
+                                        <li key={item.id}><Mono>{item.code}</Mono></li>
+                                    ))}
+                                </ul>
+                            ) : null}
+
+                            {order.payoutStatus === 'error' ? (
+                                <>
+                                    <Note tone="danger">
+                                        Деньги приняты, а коды не выданы. Повторите покупку у поставщика или выдайте коды вручную.
+                                    </Note>
+                                    <Button
+                                        variant="secondary"
+                                        loading={supplierRetry.loading}
+                                        onClick={() => supplierRetry.run(order.id)}
+                                    >
+                                        Повторить покупку кодов
+                                    </Button>
+                                </>
+                            ) : null}
+                        </InspectorSection>
+                    ) : null}
+
+                    {order.type === 'catalog' && order.calc?.mode !== 'ps_turkey_codes' ? (
                         <InspectorSection title="Выдача">
                             <Note>
                                 Каталожный заказ выдаёт менеджер. Когда всё передано покупателю, переведите заказ в «Выполнен».

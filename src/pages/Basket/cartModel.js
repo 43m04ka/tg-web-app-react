@@ -316,7 +316,26 @@ const FAQ_DEFAULT = [
     }
 ];
 
-const FAQ = {ps: FAQ_PSN, ps_india: FAQ_INDIA, xbox: FAQ_XBOX};
+const FAQ_TURKEY_CODES = [
+    {
+        question: 'Как я получу заказ?',
+        answer: 'После оплаты коды пополнения PS Store Турции придут автоматически — прямо сюда, в чат с ботом. Активируйте их на своём турецком аккаунте и купите игры на зачисленный баланс.'
+    },
+    {
+        question: 'Почему сумма отличается от цены игр?',
+        answer: 'Баланс пополняется кодами фиксированных номиналов. Мы округляем сумму вверх до ближайшей собираемой комбинации, а остаток остаётся на вашем аккаунте.'
+    },
+    {
+        question: 'Куда денется остаток лир?',
+        answer: 'Он сохранится на балансе аккаунта и уйдёт в счёт следующей покупки — не сгорает.'
+    },
+    {
+        question: 'Что если оплата не прошла?',
+        answer: 'Деньги не спишутся: неоплаченный счёт закрывается сам. Можно вернуться в корзину и оформить заказ заново.'
+    }
+];
+
+const FAQ = {ps: FAQ_PSN, ps_india: FAQ_INDIA, ps_turkey_codes: FAQ_TURKEY_CODES, xbox: FAQ_XBOX};
 
 export const faqFor = (pageType) => FAQ[pageType] || FAQ_DEFAULT;
 
@@ -333,3 +352,5 @@ export const positionsPlural = (count) => {
 export const money = (value) => `${Math.round(Number(value) || 0).toLocaleString('ru-RU')} ₽`;
 
 export const rupees = (value) => `${Math.round(Number(value) || 0).toLocaleString('ru-RU')} ₹`;
+
+export const lira = (value) => `${Math.round(Number(value) || 0).toLocaleString('ru-RU')} ₺`;

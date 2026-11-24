@@ -10,6 +10,8 @@ export const setOrderCost = ({orderId, costPrice}) => httpPost('/order/set-cost'
 
 export const markPayoutManual = (orderId) => httpPost('/order/payout-manual', {orderId});
 
+export const retrySupplierPayout = (orderId) => httpPost('/services/supplier/retry', {orderId});
+
 export const notifyClosedProfile = (orderId) => httpPost('/sendMassageUndefinedName', {orderId});
 
 export const createReviewLink = ({orderId, send = false}) => httpPost('/order/review-link', {orderId, send});

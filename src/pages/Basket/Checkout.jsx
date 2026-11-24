@@ -33,6 +33,7 @@ import {
 import {fetchPaymentMethods} from '../../shared/api/payments';
 import {unitPrice} from './quoteLocal';
 import {useBasketQuote} from './useBasketQuote';
+import {useTurkeyCodesMode} from '../../shared/hooks/useTurkeyCodesMode';
 import {usePromoMemory} from './usePromoMemory';
 import {useOrderFlow, SCREEN} from './useOrderFlow';
 import AccountFields from './AccountFields';
@@ -200,10 +201,14 @@ export default function Checkout() {
         [pages, pageId]
     );
 
+    const turkeyCodes = useTurkeyCodesMode();
+    const isTurkeyCodes = pageType === 'ps' && turkeyCodes;
+    const orderPageType = isTurkeyCodes ? 'ps_turkey_codes' : pageType;
+
     const pageItems = useMemo(() => pageCartItems(items, catalogs, pageId), [items, catalogs, pageId]);
 
     const {promo, apply, clear} = usePromoMemory();
-    const {quote, isLoading, error, retry} = useBasketQuote({items: pageItems, pageType, promo});
+    const {quote, isLoading, error, retry} = useBasketQuote({items: pageItems, pageType, promo, forceServer: isTurkeyCodes});
 
     const flow = useOrderFlow(userId);
 
@@ -279,7 +284,7 @@ export default function Checkout() {
 
     const isContactReady = hasNativeContact || isContactValid(channel, contactValue);
     const isEmailReady = !needsEmail || isEmailValid(email);
-    const isAccountReady = isAccountFilled(pageType, accountKind, accountValues);
+    const isAccountReady = isAccountFilled(orderPageType, accountKind, accountValues);
     const isReady = Boolean(userId) && isContactReady && isEmailReady && isAccountReady
         && total > 0 && !isLoading && !error;
 
@@ -320,7 +325,9 @@ export default function Checkout() {
             pageId,
             contact,
             username: handle || undefined,
-            accountData: buildAccountData(pageType, accountKind, accountValues),
+            accountData: isTurkeyCodes
+                ? 'Выдача кодами пополнения PS Store (Турция), аккаунт не требуется.'
+                : buildAccountData(pageType, accountKind, accountValues),
             email: email.trim() || undefined,
             paymentMethod: method,
             promoCode: quote?.promo?.name || undefined
@@ -343,7 +350,7 @@ export default function Checkout() {
         });
     }, [
         accountKind, accountValues, askMessages, channel, contact, contactValue, email, flow, hasNativeContact,
-        isReady, isVk, method, pageId, pageItems, pageType, platform, quote, selected, total, user, vkGroupId
+        isReady, isTurkeyCodes, isVk, method, pageId, pageItems, pageType, platform, quote, selected, total, user, vkGroupId
     ]);
 
     if (flow.screen === SCREEN.WAITING) {
@@ -421,7 +428,7 @@ export default function Checkout() {
                 </section>
 
                 <AccountFields
-                    pageType={pageType}
+                    pageType={orderPageType}
                     kind={accountKind}
                     values={accountValues}
                     isTouched={isTouched}
@@ -497,7 +504,7 @@ export default function Checkout() {
 
                 <section className={style.block}>
                     <h2 className={style.blockTitle}>Часто спрашивают</h2>
-                    <Faq items={faqFor(pageType)}/>
+                    <Faq items={faqFor(orderPageType)}/>
                 </section>
 
             </div>

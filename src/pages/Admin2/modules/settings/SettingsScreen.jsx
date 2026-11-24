@@ -66,9 +66,23 @@ export default function SettingsScreen() {
     }, [settings.data]);
 
     const maintenance = values.maintenance_mode?.value === true;
+    const turkeyCodes = values.ps_turkey_fulfillment?.value === 'codes';
     const closedCount = Object.keys(sections).length;
     const closedDomains = Object.keys(domains).length;
     const plannedAt = schedule.data?.scheduled ? schedule.data.runAtIso : null;
+
+    const onTurkeyCodes = useCallback(async (next) => {
+        const answer = await askConfirm({
+            title: next ? 'Включить выдачу кодами для Турции?' : 'Вернуть оформление менеджерами?',
+            text: next
+                ? 'Корзина Турции будет сворачиваться в пополнение баланса, а коды PanYanStore уйдут покупателю автоматически после оплаты.'
+                : 'Заказы Турции снова будут оформляться менеджерами по данным аккаунта покупателя.',
+            confirmText: next ? 'Включить коды' : 'Вернуть менеджеров',
+            tone: 'accent',
+        });
+
+        if (answer) write.run({key: 'ps_turkey_fulfillment', value: next ? 'codes' : 'manager', type: 'string'});
+    }, [write]);
 
     const onMaintenance = useCallback(async (next) => {
         const answer = await askConfirm({
@@ -384,6 +398,25 @@ export default function SettingsScreen() {
                                 <Button size="s" variant="secondary" loading={rebuild.loading} onClick={() => rebuild.run()}>
                                     Обновить
                                 </Button>
+                            </div>
+                        </section>
+                        <section className={style.card}>
+                            <header className={style.cardHead}>
+                                <span className={style.cardTitle}>PS Турция</span>
+                                {turkeyCodes
+                                    ? <Badge tone="positive">выдача кодами</Badge>
+                                    : <Badge>оформляют менеджеры</Badge>}
+                            </header>
+
+                            <div className={style.action}>
+                                <div className={style.actionText}>
+                                    <span className={style.actionTitle}>Коды пополнения PanYanStore</span>
+                                    <span className={style.actionHint}>
+                                        Корзина сворачивается в пополнение баланса: после оплаты коды покупаются
+                                        у PanYanStore и уходят покупателю автоматически, данные аккаунта не нужны.
+                                    </span>
+                                </div>
+                                <Toggle checked={turkeyCodes} disabled={write.loading} onChange={onTurkeyCodes}/>
                             </div>
                         </section>
                         <section className={style.card}>

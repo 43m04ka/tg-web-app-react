@@ -7,7 +7,7 @@ import {buildQuote} from './quoteLocal';
 const INDIA = 'india';
 const SERVER_QUOTE_DELAY_MS = 450;
 
-export function useBasketQuote({items, pageType, promo}) {
+export function useBasketQuote({items, pageType, promo, forceServer}) {
     const [rules, setRules] = useState(() => peekPriceRules(INDIA));
     const [isFailed, setFailed] = useState(false);
     const [attempt, setAttempt] = useState(0);
@@ -18,7 +18,7 @@ export function useBasketQuote({items, pageType, promo}) {
     const pageId = useSessionStore((state) => state.pageId);
 
     const needsRules = pageType === 'ps_india';
-    const usesServer = needsRules && !rules && isFailed;
+    const usesServer = forceServer || (needsRules && !rules && isFailed);
     const itemsKey = (items || []).map((item) => `${item.id}:${item.count}`).join(',');
     const promoName = promo?.name || null;
 

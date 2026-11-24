@@ -11,19 +11,20 @@ import BackPill from '../../shared/ui/BackPill/BackPill';
 import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import ProductCard from '../Main/ProductCard';
 import {discountPercent, shortPlatform, subscriptionTerm} from '../Main/catalogSections';
-import {money, pageCartItems, rupees} from './cartModel';
+import {money, pageCartItems, rupees, lira} from './cartModel';
 import {unitOldPrice, unitPrice, unitRupees} from './quoteLocal';
 import {useBasketQuote} from './useBasketQuote';
+import {useTurkeyCodesMode} from '../../shared/hooks/useTurkeyCodesMode';
 import {usePromoMemory} from './usePromoMemory';
 import {useRecommendations} from './useRecommendations';
 import {usePendingOrder} from './usePendingOrder';
 import PromoField from './PromoField';
 import style from './Basket.module.scss';
 
-function CartRow({item, regionTitle, isRupee, onOpen, onCount}) {
+function CartRow({item, regionTitle, foreignPrice, onOpen, onCount}) {
     const price = unitPrice(item);
     const oldPrice = unitOldPrice(item);
-    const percent = isRupee ? 0 : discountPercent(price, oldPrice);
+    const percent = foreignPrice ? 0 : discountPercent(price, oldPrice);
     const meta = [subscriptionTerm(item), shortPlatform(item.platform), item.typeLabel, regionTitle].filter(Boolean).join(' · ');
 
     return (
@@ -41,7 +42,7 @@ function CartRow({item, regionTitle, isRupee, onOpen, onCount}) {
                 <div className={style.rowBottom}>
                     <div className={style.rowPrices}>
                         <span key={price} className={style.rowPrice}>
-                            {isRupee ? rupees(unitRupees(item)) : money(price)}
+                            {foreignPrice ? foreignPrice(unitRupees(item)) : money(price)}
                         </span>
                         {percent > 0 ? <span className={style.rowOldPrice}>{money(oldPrice)}</span> : null}
                     </div>
@@ -73,8 +74,14 @@ function CartRow({item, regionTitle, isRupee, onOpen, onCount}) {
     );
 }
 
-function IndiaSummary({calc}) {
-    if (!calc || calc.mode !== 'ps_india') return null;
+function TopupSummary({calc}) {
+    if (!calc || (calc.mode !== 'ps_india' && calc.mode !== 'ps_turkey_codes')) return null;
+
+    const isTurkey = calc.mode === 'ps_turkey_codes';
+    const format = isTurkey ? lira : rupees;
+    const total = isTurkey ? calc.tryTotal : calc.rsTotal;
+    const rounded = isTurkey ? calc.tryRounded : calc.rsRounded;
+    const leftover = isTurkey ? calc.leftoverTry : calc.leftoverRs;
 
     return (
         <div className={style.india}>
@@ -82,12 +89,12 @@ function IndiaSummary({calc}) {
 
             <div className={style.indiaRow}>
                 <span>Стоимость товаров</span>
-                <span className={style.indiaValue}>{rupees(calc.rsTotal)}</span>
+                <span className={style.indiaValue}>{format(total)}</span>
             </div>
 
             <div className={style.indiaRow}>
-                <span>Пополним баланс, кратно 1000</span>
-                <span className={style.indiaAccent}>{rupees(calc.rsRounded)}</span>
+                <span>{isTurkey ? 'Пополним баланс кодами' : 'Пополним баланс, кратно 1000'}</span>
+                <span className={style.indiaAccent}>{format(rounded)}</span>
             </div>
 
             <div className={style.indiaRow}>
@@ -96,9 +103,10 @@ function IndiaSummary({calc}) {
             </div>
 
             <span className={style.indiaNote}>
-                {calc.leftoverRs > 0
-                    ? `Остаток ${rupees(calc.leftoverRs)} сохранится на аккаунте и уйдёт в счёт следующей покупки.`
+                {leftover > 0
+                    ? `Остаток ${format(leftover)} сохранится на аккаунте и уйдёт в счёт следующей покупки.`
                     : 'Сумма спишется ровно под расчёт, без остатка.'}
+                {isTurkey ? ' Коды пополнения придут автоматически сразу после оплаты.' : ''}
             </span>
         </div>
     );
@@ -126,6 +134,8 @@ export default function Basket() {
     const regionTitle = page?.name || null;
     const pageType = pages ? (page?.type || null) : undefined;
     const isIndia = pageType === 'ps_india';
+    const turkeyCodes = useTurkeyCodesMode();
+    const isTurkeyCodes = pageType === 'ps' && turkeyCodes;
 
     const pageItems = useMemo(
         () => pageCartItems(items, catalogs, pageId),
@@ -133,7 +143,7 @@ export default function Basket() {
     );
 
     const {promo, apply, clear} = usePromoMemory();
-    const {quote, isLoading, error, retry} = useBasketQuote({items: pageItems, pageType, promo});
+    const {quote, isLoading, error, retry} = useBasketQuote({items: pageItems, pageType, promo, forceServer: isTurkeyCodes});
 
     const scrollRef = useScrollMemory('basket', {ready: pageItems !== null});
 
@@ -231,7 +241,9 @@ export default function Basket() {
                                     <CartRow
                                         item={item}
                                         regionTitle={regionTitle}
-                                        isRupee={isIndia && Boolean(unitRupees(item))}
+                                        foreignPrice={(isIndia || isTurkeyCodes) && unitRupees(item)
+                                            ? (isTurkeyCodes ? lira : rupees)
+                                            : null}
                                         onOpen={openProduct}
                                         onCount={changeCount}
                                     />
@@ -241,7 +253,7 @@ export default function Basket() {
 
                         <PromoField promo={quote?.promo || null} onApply={apply} onClear={clear}/>
 
-                        <IndiaSummary calc={quote?.calc}/>
+                        <TopupSummary calc={quote?.calc}/>
 
                         <div className={`${style.totals} ${isLoading ? style.totalsPending : ''}`}>
                             {error ? (
@@ -252,7 +264,7 @@ export default function Basket() {
                                 <>
                                     <div className={style.totalsRow}>
                                         <span className={style.totalsLabel}>
-                                            {isIndia ? 'Пополнение и подписки' : `Товары (${count})`}
+                                            {isIndia || isTurkeyCodes ? 'Пополнение и подписки' : `Товары (${count})`}
                                         </span>
                                         <span key={quote?.itemsTotal} className={style.totalsValue}>
                                             {money(quote?.itemsTotal ?? 0)}

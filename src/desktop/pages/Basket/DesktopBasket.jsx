@@ -129,33 +129,56 @@ function TopupSummary({calc}) {
     );
 }
 
-function FulfillmentSwitch({isCodes, onChange}) {
+function FulfillmentOption({active, label, price, note, onClick}) {
+    return (
+        <button
+            type="button"
+            role="tab"
+            aria-selected={active}
+            className={`${style.fulfillmentOption} ${active ? style.fulfillmentOptionActive : ''}`}
+            onClick={onClick}
+        >
+            <span className={style.fulfillmentLabel}>{label}</span>
+            {price !== null && price !== undefined ? (
+                <span key={price} className={style.fulfillmentPrice}>{money(price)}</span>
+            ) : null}
+            <span className={style.fulfillmentHint}>{note}</span>
+        </button>
+    );
+}
+
+function FulfillmentSwitch({isCodes, onChange, managerPrice, codesPrice}) {
     return (
         <div className={style.fulfillment}>
-            <span className={style.fulfillmentTitle}>Способ выдачи</span>
-
-            <div className={style.fulfillmentTrack} role="tablist">
-                <button
-                    type="button"
-                    role="tab"
-                    aria-selected={!isCodes}
-                    className={`${style.fulfillmentOption} ${!isCodes ? style.fulfillmentOptionActive : ''}`}
-                    onClick={() => onChange(false)}
-                >
-                    Оформит менеджер
-                </button>
-                <button
-                    type="button"
-                    role="tab"
-                    aria-selected={isCodes}
-                    className={`${style.fulfillmentOption} ${isCodes ? style.fulfillmentOptionActive : ''}`}
-                    onClick={() => onChange(true)}
-                >
-                    Кодами сразу
-                </button>
+            <div className={style.fulfillmentHead}>
+                <span className={style.fulfillmentTitle}>Способ выдачи</span>
+                <span key={isCodes ? 'codes' : 'manager'} className={style.fulfillmentBadge}>
+                    {isCodes ? 'Мгновенно' : 'Вручную'}
+                </span>
             </div>
 
-            <span className={style.fulfillmentNote}>
+            <div className={style.fulfillmentTrack} role="tablist">
+                <span
+                    className={`${style.fulfillmentPill} ${isCodes ? style.fulfillmentPillCodes : ''}`}
+                    aria-hidden="true"
+                />
+                <FulfillmentOption
+                    active={!isCodes}
+                    label="Менеджер"
+                    price={managerPrice}
+                    note="пополнит на аккаунте"
+                    onClick={() => onChange(false)}
+                />
+                <FulfillmentOption
+                    active={isCodes}
+                    label="Кодами сразу"
+                    price={codesPrice}
+                    note="автоматически"
+                    onClick={() => onChange(true)}
+                />
+            </div>
+
+            <span key={isCodes ? 'codes' : 'manager'} className={style.fulfillmentNote}>
                 {isCodes
                     ? 'Коды пополнения PSN придут автоматически сразу после оплаты.'
                     : 'Менеджер пополнит баланс на вашем аккаунте после оплаты.'}
@@ -186,7 +209,7 @@ export default function DesktopBasket() {
     const regionTitle = page?.name || null;
     const pageType = pages ? (page?.type || null) : undefined;
     const isIndia = pageType === 'ps_india';
-    const [turkeyCodes, setTurkeyCodes] = useTurkeyCodesMode();
+    const [turkeyCodes, setTurkeyCodes, turkeyMethods] = useTurkeyCodesMode();
     const isTurkeyCodes = pageType === 'ps' && turkeyCodes;
 
     const pageItems = useMemo(
@@ -194,16 +217,17 @@ export default function DesktopBasket() {
         [items, catalogs, pageId]
     );
 
+    const hasTryItems = pageType === 'ps' && (pageItems || []).some((item) => unitRupees(item));
+
     const {promo, apply, clear} = usePromoMemory();
     const {quote, isLoading, error, retry} = useBasketQuote({
         items: pageItems,
         pageType,
         promo,
-        forceServer: isTurkeyCodes,
+        forceServer: hasTryItems,
         fulfillment: isTurkeyCodes ? 'codes' : null
     });
-
-    const hasTryItems = pageType === 'ps' && (pageItems || []).some((item) => unitRupees(item));
+    const showFulfillmentSwitch = hasTryItems && turkeyMethods.manager && turkeyMethods.codes;
 
     const originOf = useMemo(
         () => createProductOrigin({catalogs, pages, startPages}),
@@ -309,8 +333,13 @@ export default function DesktopBasket() {
                     <aside className={isLoading ? `${style.panel} ${style.panelPending}` : style.panel}>
                         <span className={style.panelTitle}>Ваш заказ</span>
 
-                        {hasTryItems ? (
-                            <FulfillmentSwitch isCodes={isTurkeyCodes} onChange={setTurkeyCodes}/>
+                        {showFulfillmentSwitch ? (
+                            <FulfillmentSwitch
+                                isCodes={isTurkeyCodes}
+                                onChange={setTurkeyCodes}
+                                managerPrice={quote?.modes?.manager?.total ?? null}
+                                codesPrice={quote?.modes?.codes?.total ?? null}
+                            />
                         ) : null}
 
                         <DesktopPromo promo={quote?.promo || null} onApply={apply} onClear={clear}/>

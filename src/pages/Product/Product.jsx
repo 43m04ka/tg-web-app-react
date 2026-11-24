@@ -14,6 +14,7 @@ import EmptyState from '../../shared/ui/EmptyState/EmptyState';
 import ProductCard from '../Main/ProductCard';
 import BackPill from '../../shared/ui/BackPill/BackPill';
 import ProductChips from './ProductChips';
+import ProductFulfillment from './ProductFulfillment';
 import ProductShare from './ProductShare';
 import {discountPercent, isSubscription} from '../Main/catalogSections';
 import {subscriptionRoute} from '../../shared/lib/pageRoutes';
@@ -30,6 +31,7 @@ import ProductSkeleton from './ProductSkeleton';
 import ProductVideo from './ProductVideo';
 import StarRating from './StarRating';
 import {useProduct, useRecommendations} from './useProduct';
+import {useTurkeyCodesMode} from '../../shared/hooks/useTurkeyCodesMode';
 import {
     buildChips,
     buildSpecs,
@@ -57,7 +59,9 @@ export default function Product() {
     const pageId = useSessionStore((state) => state.pageId);
     const setPageId = useSessionStore((state) => state.setPageId);
     const catalogs = useStructureStore((state) => state.catalogs);
+    const pages = useStructureStore((state) => state.pages);
     const mainPageProducts = useStructureStore((state) => state.mainPageProducts);
+    const [turkeyCodes, setTurkeyCodes, turkeyMethods] = useTurkeyCodesMode();
 
     const preview = useMemo(
         () => (mainPageProducts || []).find((item) => item.id === productId) || null,
@@ -310,6 +314,13 @@ export default function Product() {
     const specs = buildSpecs(product);
     const link = productLink(product, isTg);
 
+    const productPage = (pages || []).find((item) => item.id === pageId) || null;
+    const tryAmount = Number(product.priceInOtherCurrency) > 0 ? Number(product.priceInOtherCurrency) : null;
+    const showFulfillment = productPage?.type === 'ps'
+        && tryAmount !== null
+        && turkeyMethods.manager
+        && turkeyMethods.codes;
+
     const total = Number(product.price) + selectedAddons.reduce((sum, addon) => sum + Number(addon.price), 0);
     const oldTotal = discount > 0
         ? Number(product.oldPrice) + selectedAddons.reduce((sum, addon) => sum + Number(addon.oldPrice || addon.price), 0)
@@ -338,6 +349,16 @@ export default function Product() {
                 </section>
 
                 <ProductChips chips={chips}/>
+
+                {showFulfillment ? (
+                    <ProductFulfillment
+                        userId={userId}
+                        tryAmount={tryAmount}
+                        managerPrice={Number(product.price)}
+                        isCodes={turkeyCodes}
+                        onChange={setTurkeyCodes}
+                    />
+                ) : null}
 
                 <ProductEditions editions={editions} activeId={productId} onSelect={selectEdition}/>
 

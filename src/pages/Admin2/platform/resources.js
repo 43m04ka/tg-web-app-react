@@ -34,6 +34,7 @@ export const keys = {
     serviceCodes: (offerId, status) => ['services', 'codes', offerId, status],
     serviceSupplierCatalog: ['services', 'supplier', 'catalog'],
     serviceSupplierBalance: ['services', 'supplier', 'balance'],
+    serviceTurkeyCodes: ['services', 'supplier', 'turkey-codes'],
     structure: ['structure'],
     pages: ['structure', 'pages'],
     pageBlocks: (pageId) => ['structure', 'blocks', pageId],

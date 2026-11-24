@@ -1,0 +1,135 @@
+@import '../../app/styles/units';
+
+@keyframes fulfillmentRise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fulfillmentSwap {
+  from {
+    opacity: 0;
+    transform: translateY(u(-5));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fulfillmentPop {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(0.96);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.fulfillment {
+  display: flex;
+  flex-direction: column;
+  gap: u(10);
+  padding: u(14) u(16);
+  border-radius: u(18);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  animation: fulfillmentRise 320ms var(--ease-out) backwards;
+}
+
+.title {
+  font-size: u(12.5);
+  font-weight: 800;
+  letter-spacing: u(0.4);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.track {
+  position: relative;
+  display: flex;
+  gap: u(4);
+  padding: u(4);
+  border-radius: u(13);
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+}
+
+.pill {
+  position: absolute;
+  top: u(4);
+  bottom: u(4);
+  left: u(4);
+  width: calc((100% - u(12)) / 2);
+  border-radius: u(10);
+  background: var(--accent-surface);
+  border: 1px solid var(--accent-soft);
+  transition: transform 240ms var(--ease-out);
+  pointer-events: none;
+}
+
+.pillCodes {
+  transform: translateX(calc(100% + u(4)));
+}
+
+.option {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: u(2);
+  padding: u(8) u(8) u(7);
+  border-radius: u(10);
+  text-align: center;
+  color: var(--text-faint);
+  transition: color 180ms var(--ease-out);
+}
+
+.option:active {
+  animation: fulfillmentPop 160ms var(--ease-out);
+}
+
+.optionActive {
+  color: var(--accent-text);
+}
+
+.label {
+  font-size: u(12.5);
+  font-weight: 800;
+}
+
+.price {
+  font-size: u(13);
+  font-weight: 800;
+  color: var(--text-secondary);
+  animation: fulfillmentSwap 220ms var(--ease-out);
+  transition: color 180ms var(--ease-out);
+}
+
+.optionActive .price {
+  color: var(--text);
+}
+
+.hint {
+  font-size: u(10.5);
+  line-height: 1.3;
+  color: var(--text-faint);
+  text-wrap: balance;
+}
+
+.note {
+  font-size: u(11.5);
+  line-height: 1.45;
+  color: var(--text-muted);
+  text-wrap: pretty;
+  animation: fulfillmentSwap 220ms var(--ease-out);
+}

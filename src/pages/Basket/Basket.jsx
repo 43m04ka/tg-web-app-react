@@ -74,33 +74,51 @@ function CartRow({item, regionTitle, foreignPrice, onOpen, onCount}) {
     );
 }
 
-function FulfillmentSwitch({isCodes, onChange}) {
+function FulfillmentOption({active, label, price, note, onClick}) {
+    return (
+        <button
+            type="button"
+            role="tab"
+            aria-selected={active}
+            className={`${style.fulfillmentOption} ${active ? style.fulfillmentOptionActive : ''}`}
+            onClick={onClick}
+        >
+            <span className={style.fulfillmentLabel}>{label}</span>
+            {price !== null && price !== undefined ? (
+                <span key={price} className={style.fulfillmentPrice}>{money(price)}</span>
+            ) : null}
+            <span className={style.fulfillmentHint}>{note}</span>
+        </button>
+    );
+}
+
+function FulfillmentSwitch({isCodes, onChange, managerPrice, codesPrice}) {
     return (
         <div className={style.fulfillment}>
             <span className={style.fulfillmentTitle}>Способ выдачи</span>
 
             <div className={style.fulfillmentTrack} role="tablist">
-                <button
-                    type="button"
-                    role="tab"
-                    aria-selected={!isCodes}
-                    className={`${style.fulfillmentOption} ${!isCodes ? style.fulfillmentOptionActive : ''}`}
+                <span
+                    className={`${style.fulfillmentPill} ${isCodes ? style.fulfillmentPillCodes : ''}`}
+                    aria-hidden="true"
+                />
+                <FulfillmentOption
+                    active={!isCodes}
+                    label="Менеджер"
+                    price={managerPrice}
+                    note="пополнит на аккаунте"
                     onClick={() => onChange(false)}
-                >
-                    Оформит менеджер
-                </button>
-                <button
-                    type="button"
-                    role="tab"
-                    aria-selected={isCodes}
-                    className={`${style.fulfillmentOption} ${isCodes ? style.fulfillmentOptionActive : ''}`}
+                />
+                <FulfillmentOption
+                    active={isCodes}
+                    label="Кодами сразу"
+                    price={codesPrice}
+                    note="автоматически после оплаты"
                     onClick={() => onChange(true)}
-                >
-                    Кодами сразу
-                </button>
+                />
             </div>
 
-            <span className={style.fulfillmentNote}>
+            <span key={isCodes ? 'codes' : 'manager'} className={style.fulfillmentNote}>
                 {isCodes
                     ? 'Коды пополнения PSN придут автоматически сразу после оплаты.'
                     : 'Менеджер пополнит баланс на вашем аккаунте после оплаты.'}
@@ -169,7 +187,7 @@ export default function Basket() {
     const regionTitle = page?.name || null;
     const pageType = pages ? (page?.type || null) : undefined;
     const isIndia = pageType === 'ps_india';
-    const [turkeyCodes, setTurkeyCodes] = useTurkeyCodesMode();
+    const [turkeyCodes, setTurkeyCodes, turkeyMethods] = useTurkeyCodesMode();
     const isTurkeyCodes = pageType === 'ps' && turkeyCodes;
 
     const pageItems = useMemo(
@@ -177,16 +195,17 @@ export default function Basket() {
         [items, catalogs, pageId]
     );
 
+    const hasTryItems = pageType === 'ps' && (pageItems || []).some((item) => unitRupees(item));
+
     const {promo, apply, clear} = usePromoMemory();
     const {quote, isLoading, error, retry} = useBasketQuote({
         items: pageItems,
         pageType,
         promo,
-        forceServer: isTurkeyCodes,
+        forceServer: hasTryItems,
         fulfillment: isTurkeyCodes ? 'codes' : null
     });
-
-    const hasTryItems = pageType === 'ps' && (pageItems || []).some((item) => unitRupees(item));
+    const showFulfillmentSwitch = hasTryItems && turkeyMethods.manager && turkeyMethods.codes;
 
     const scrollRef = useScrollMemory('basket', {ready: pageItems !== null});
 
@@ -273,8 +292,13 @@ export default function Basket() {
                     />
                 ) : (
                     <>
-                        {hasTryItems ? (
-                            <FulfillmentSwitch isCodes={isTurkeyCodes} onChange={setTurkeyCodes}/>
+                        {showFulfillmentSwitch ? (
+                            <FulfillmentSwitch
+                                isCodes={isTurkeyCodes}
+                                onChange={setTurkeyCodes}
+                                managerPrice={quote?.modes?.manager?.total ?? null}
+                                codesPrice={quote?.modes?.codes?.total ?? null}
+                            />
                         ) : null}
 
                         <div className={style.list}>

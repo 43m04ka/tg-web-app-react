@@ -17,7 +17,10 @@ import StarRating from '../../../pages/Product/StarRating';
 import EmptyState from '../../../shared/ui/EmptyState/EmptyState';
 import {usePlatform} from '../../../shared/hooks/usePlatform';
 import {createProductOrigin} from '../../../shared/lib/productOrigin';
-import {useSessionStore} from '../../../store/useSessionStore';
+import {useSessionStore, selectUserId} from '../../../store/useSessionStore';
+import {useTurkeyCodesMode} from '../../../shared/hooks/useTurkeyCodesMode';
+import {fetchTurkeyPrices} from '../../../shared/api/basket';
+import {money} from '../../../pages/Basket/cartModel';
 import {useStructureStore} from '../../../store/useStructureStore';
 import {HeartIcon} from '../../shell/DesktopIcons';
 import {useScrollArea, useScrollMemory} from '../../shell/ScrollAreaContext';
@@ -53,6 +56,9 @@ export default function DesktopProduct() {
     const pages = useStructureStore((store) => store.pages);
     const startPages = useStructureStore((store) => store.startPages);
     const setPageId = useSessionStore((store) => store.setPageId);
+    const userId = useSessionStore(selectUserId);
+    const pageId = useSessionStore((store) => store.pageId);
+    const [turkeyCodes, setTurkeyCodes, turkeyMethods] = useTurkeyCodesMode();
     const {scopeId, setScopeId} = useStorefrontScope();
 
     const {
@@ -203,6 +209,12 @@ export default function DesktopProduct() {
     const saving = oldTotal && oldTotal > total ? oldTotal - total : 0;
 
     const currentRegion = regions?.find((item) => item.isCurrent) || null;
+    const productPage = (pages || []).find((item) => item.id === pageId) || null;
+    const tryAmount = Number(product.priceInOtherCurrency) > 0 ? Number(product.priceInOtherCurrency) : null;
+    const showFulfillment = productPage?.type === 'ps'
+        && tryAmount !== null
+        && turkeyMethods.manager
+        && turkeyMethods.codes;
     const hasPriceGap = Boolean(regions) && regions.some((item) => item.price !== regions[0].price);
     const cheaperBy = (region) => (region.isBest && hasPriceGap && currentRegion && !region.isCurrent
         && currentRegion.price !== null && region.price !== null
@@ -514,6 +526,16 @@ export default function DesktopProduct() {
                                 })}
                             </div>
                         </section>
+                    ) : null}
+
+                    {showFulfillment ? (
+                        <ProductFulfillment
+                            userId={userId}
+                            tryAmount={tryAmount}
+                            managerPrice={Number(product.price)}
+                            isCodes={turkeyCodes}
+                            onChange={setTurkeyCodes}
+                        />
                     ) : null}
 
                     <div className={style.buy}>
@@ -897,5 +919,84 @@ function ClockGlyph() {
             <circle cx="12" cy="12" r="9"/>
             <path d="M12 7v5l3 2"/>
         </svg>
+    );
+}
+
+function FulfillmentOption({active, label, price, note, onClick}) {
+    return (
+        <button
+            type="button"
+            role="tab"
+            aria-selected={active}
+            className={`${style.fulfillmentOption} ${active ? style.fulfillmentOptionActive : ''}`}
+            onClick={onClick}
+        >
+            <span className={style.fulfillmentLabel}>{label}</span>
+            {price !== null && price !== undefined ? (
+                <span key={price} className={style.fulfillmentPrice}>{money(price)}</span>
+            ) : null}
+            <span className={style.fulfillmentHint}>{note}</span>
+        </button>
+    );
+}
+
+function ProductFulfillment({userId, tryAmount, managerPrice, isCodes, onChange}) {
+    const [codesPrice, setCodesPrice] = useState(null);
+
+    useEffect(() => {
+        if (!userId || !tryAmount) return undefined;
+
+        const controller = new AbortController();
+
+        setCodesPrice(null);
+
+        fetchTurkeyPrices(userId, [tryAmount], controller.signal)
+            .then((result) => {
+                if (controller.signal.aborted) return;
+
+                const price = result?.prices?.[tryAmount];
+                setCodesPrice(typeof price === 'number' ? price : null);
+            })
+            .catch(() => {});
+
+        return () => controller.abort();
+    }, [userId, tryAmount]);
+
+    return (
+        <section className={`${style.section} ${style.fulfillment}`}>
+            <div className={style.fulfillmentHead}>
+                <span className={style.sectionTitle}>Способ выдачи</span>
+                <span key={isCodes ? 'codes' : 'manager'} className={style.fulfillmentBadge}>
+                    {isCodes ? 'Мгновенно' : 'Вручную'}
+                </span>
+            </div>
+
+            <div className={style.fulfillmentTrack} role="tablist">
+                <span
+                    className={`${style.fulfillmentPill} ${isCodes ? style.fulfillmentPillCodes : ''}`}
+                    aria-hidden="true"
+                />
+                <FulfillmentOption
+                    active={!isCodes}
+                    label="Менеджер"
+                    price={managerPrice}
+                    note="пополнит на аккаунте"
+                    onClick={() => onChange(false)}
+                />
+                <FulfillmentOption
+                    active={isCodes}
+                    label="Кодами сразу"
+                    price={codesPrice}
+                    note="автоматически"
+                    onClick={() => onChange(true)}
+                />
+            </div>
+
+            <span key={isCodes ? 'codes' : 'manager'} className={style.fulfillmentNote}>
+                {isCodes
+                    ? 'Коды пополнения PSN придут автоматически сразу после оплаты.'
+                    : 'Менеджер пополнит баланс на вашем аккаунте после оплаты.'}
+            </span>
+        </section>
     );
 }

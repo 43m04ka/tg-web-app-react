@@ -415,11 +415,19 @@
 .fulfillment {
   display: flex;
   flex-direction: column;
-  gap: var(--d-gap-2);
+  gap: var(--d-gap-3);
   padding: var(--d-gap-4);
-  border-radius: var(--radius-md);
-  background: var(--surface-2);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
   animation: global(gw-rise-sm) var(--m-base) var(--m-ease) both;
+}
+
+.fulfillmentHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--d-gap-3);
 }
 
 .fulfillmentTitle {
@@ -427,34 +435,98 @@
   font-weight: var(--fw-bold);
 }
 
+.fulfillmentBadge {
+  padding: 2px var(--d-gap-2);
+  border-radius: var(--radius-full);
+  font-size: var(--d-fs-2xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  background: var(--accent-surface);
+  border: 1px solid var(--accent-soft);
+  animation: global(gw-rise-sm) var(--m-fast) var(--m-ease) both;
+}
+
 .fulfillmentTrack {
+  position: relative;
   display: flex;
   gap: var(--d-gap-1);
   padding: var(--d-gap-1);
-  border-radius: var(--radius-sm);
-  background: var(--surface-1);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+}
+
+.fulfillmentPill {
+  position: absolute;
+  top: var(--d-gap-1);
+  bottom: var(--d-gap-1);
+  left: var(--d-gap-1);
+  width: calc((100% - var(--d-gap-1) * 3) / 2);
+  border-radius: calc(var(--radius-md) - var(--d-gap-1));
+  background: var(--accent-surface);
+  border: 1px solid var(--accent-soft);
+  box-shadow: 0 6px 18px oklch(0 0 0 / 0.25);
+  transition: transform var(--m-base) var(--m-spring);
+  pointer-events: none;
+}
+
+.fulfillmentPillCodes {
+  transform: translateX(calc(100% + var(--d-gap-1)));
 }
 
 .fulfillmentOption {
+  position: relative;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
   padding: var(--d-gap-2) var(--d-gap-3);
-  border-radius: var(--radius-sm);
-  font-size: var(--d-fs-xs);
-  font-weight: var(--fw-bold);
-  color: var(--text-faint);
+  border-radius: calc(var(--radius-md) - var(--d-gap-1));
   text-align: center;
-  transition: background var(--m-fast) var(--m-ease), color var(--m-fast) var(--m-ease);
+  color: var(--text-faint);
+  transition: color var(--m-fast) var(--m-ease);
 }
 
-.fulfillmentOptionActive {
-  background: var(--surface-3);
+.fulfillmentOption:hover {
+  color: var(--text-muted);
+}
+
+.fulfillmentOptionActive,
+.fulfillmentOptionActive:hover {
+  color: var(--accent-text);
+}
+
+.fulfillmentLabel {
+  font-size: var(--d-fs-xs);
+  font-weight: var(--fw-bold);
+}
+
+.fulfillmentPrice {
+  font-size: var(--d-fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text-secondary);
+  animation: global(gw-rise-sm) var(--m-fast) var(--m-ease) both;
+  transition: color var(--m-fast) var(--m-ease);
+}
+
+.fulfillmentOptionActive .fulfillmentPrice {
   color: var(--text);
+}
+
+.fulfillmentHint {
+  font-size: var(--d-fs-2xs);
+  line-height: 1.3;
+  color: var(--text-faint);
 }
 
 .fulfillmentNote {
   font-size: var(--d-fs-2xs);
-  color: var(--text-faint);
+  color: var(--text-muted);
   line-height: 1.5;
+  animation: global(gw-rise-sm) var(--m-fast) var(--m-ease) both;
 }
 
 .totalsRow {

@@ -17,6 +17,14 @@ export const fetchBasketQuote = ({userId, pageId, promoCode, fulfillment}, signa
         retries: 1
     });
 
+export const fetchTurkeyPrices = (userId, amounts, signal) =>
+    requestResult('/api/basket/turkey-price', {
+        method: 'POST',
+        body: {userId, amounts},
+        signal,
+        retries: 1
+    });
+
 export const checkPromo = (name, signal) =>
     requestResult('/api/basket/usePromo', {query: {name}, signal, retries: 0});
 

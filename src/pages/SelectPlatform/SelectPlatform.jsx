@@ -70,8 +70,11 @@ const toGroups = (items) => {
 const isOpenItem = (item, pages, sections) => {
     if (item.type !== 'page') return true;
 
-    const page = pages?.find((candidate) => candidate.id === item.structurePageId);
-    return !page || !closedSection(standaloneRoute(page.type) || '/main', sections);
+    if (!Array.isArray(pages)) return true;
+
+    const page = pages.find((candidate) => candidate.id === item.structurePageId);
+    if (!page) return false;
+    return !closedSection(standaloneRoute(page.type) || '/main', sections);
 };
 
 const hasContent = (group) => !group.header || group.children.some((item) => item.type === 'page' || item.type === 'link');

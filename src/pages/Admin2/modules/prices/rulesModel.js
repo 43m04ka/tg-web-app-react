@@ -6,8 +6,14 @@ export const PLATFORMS = [
         source: 'Цена источника в лирах',
     },
     {
+        id: 'turkey_codes',
+        title: 'PS Турция коды',
+        commission: false,
+        source: 'Цена источника в лирах',
+    },
+    {
         id: 'india',
-        title: 'PS Индия',
+        title: 'PS Индия коды',
         commission: true,
         source: 'Цена источника в рупиях',
     },

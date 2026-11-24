@@ -488,8 +488,8 @@
   gap: u(9);
   padding: u(14) u(16);
   border-radius: u(18);
-  background: oklch(0.44 0.15 285 / 0.14);
-  border: 1px solid oklch(0.6 0.16 285 / 0.32);
+  background: var(--accent-surface);
+  border: 1px solid var(--accent-soft);
   animation: rise 320ms var(--ease-out) backwards;
 }
 
@@ -498,7 +498,7 @@
   font-weight: 800;
   letter-spacing: u(0.4);
   text-transform: uppercase;
-  color: oklch(0.82 0.11 288);
+  color: var(--accent-text);
 }
 
 .indiaRow {
@@ -517,7 +517,7 @@
 
 .indiaAccent {
   font-weight: 800;
-  color: oklch(0.85 0.12 288);
+  color: var(--accent-text);
 }
 
 .indiaNote {

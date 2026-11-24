@@ -10,9 +10,9 @@ const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
 // Кассы же принимают оплату только из российской сети
 export const IS_TUNNEL_HOST = hostname === 'gwstorebot.ru' || hostname === 'www.gwstorebot.ru';
 
-export let API_BASE_URL = hostname === 'gwstore.ru' || hostname === 'www.gwstore.ru'
+export let API_BASE_URL = process.env.REACT_APP_API_BASE_URL || (hostname === 'gwstore.ru' || hostname === 'www.gwstore.ru'
     ? DIRECT_API_URL
-    : TUNNEL_API_URL;
+    : TUNNEL_API_URL);
 
 export const setDirectApi = (isDirect) => {
     if (!IS_TUNNEL_HOST) return;

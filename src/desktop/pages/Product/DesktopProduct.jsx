@@ -965,7 +965,7 @@ function ProductFulfillment({userId, tryAmount, managerPrice, isCodes, onChange}
     return (
         <section className={`${style.section} ${style.fulfillment}`}>
             <div className={style.fulfillmentHead}>
-                <span className={style.sectionTitle}>Способ выдачи</span>
+                <span className={style.sectionTitle}>Способ активации</span>
                 <span key={isCodes ? 'codes' : 'manager'} className={style.fulfillmentBadge}>
                     {isCodes ? 'Мгновенно' : 'Вручную'}
                 </span>
@@ -978,14 +978,14 @@ function ProductFulfillment({userId, tryAmount, managerPrice, isCodes, onChange}
                 />
                 <FulfillmentOption
                     active={!isCodes}
-                    label="Менеджер"
+                    label="Со входом в аккаунт"
                     price={managerPrice}
                     note="пополнит на аккаунте"
                     onClick={() => onChange(false)}
                 />
                 <FulfillmentOption
                     active={isCodes}
-                    label="Кодами сразу"
+                    label="Без входа в аккаунт"
                     price={codesPrice}
                     note="автоматически"
                     onClick={() => onChange(true)}

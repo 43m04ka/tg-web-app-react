@@ -624,6 +624,8 @@
   line-height: 1.45;
   color: var(--text-muted);
   text-wrap: pretty;
+  display: block;
+  text-align: center;
   animation: valueSwap 220ms var(--ease-out);
 }
 

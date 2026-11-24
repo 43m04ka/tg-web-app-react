@@ -151,7 +151,7 @@ function FulfillmentSwitch({isCodes, onChange, managerPrice, codesPrice}) {
     return (
         <div className={style.fulfillment}>
             <div className={style.fulfillmentHead}>
-                <span className={style.fulfillmentTitle}>Способ выдачи</span>
+                <span className={style.fulfillmentTitle}>Способ активации</span>
                 <span key={isCodes ? 'codes' : 'manager'} className={style.fulfillmentBadge}>
                     {isCodes ? 'Мгновенно' : 'Вручную'}
                 </span>
@@ -164,14 +164,14 @@ function FulfillmentSwitch({isCodes, onChange, managerPrice, codesPrice}) {
                 />
                 <FulfillmentOption
                     active={!isCodes}
-                    label="Менеджер"
+                    label="Со входом в аккаунт"
                     price={managerPrice}
                     note="пополнит на аккаунте"
                     onClick={() => onChange(false)}
                 />
                 <FulfillmentOption
                     active={isCodes}
-                    label="Кодами сразу"
+                    label="Без входа в аккаунт"
                     price={codesPrice}
                     note="автоматически"
                     onClick={() => onChange(true)}

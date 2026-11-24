@@ -202,12 +202,13 @@ export default function SelectPlatform({sections}) {
 
     const revealProps = (key) => ({style: {'--i': itemOrder(key)}});
 
-    const renderChild = (item, isTile) => {
+    const renderChild = (item, isTile, isLastOdd) => {
         const isPicked = pickedId === item.id;
+        const asTile = isTile && item.type === 'page' && !isLastOdd;
         const className = [
             style.item,
             style.reveal,
-            isTile && item.type === 'page' ? '' : style.itemWide,
+            asTile ? '' : style.itemWide,
             isPicked ? style.picked : ''
         ].join(' ');
 
@@ -221,7 +222,7 @@ export default function SelectPlatform({sections}) {
                 <PlatformCard
                     item={{...page, ...item}}
                     isActive={isPicked || item.structurePageId === pageId}
-                    isTile={isTile}
+                    isTile={asTile}
                     onSelect={() => handleSelect(item, page)}
                 />
             );
@@ -312,7 +313,11 @@ export default function SelectPlatform({sections}) {
             <PopularRail items={popular} regionOf={regionOfProduct} onOpen={openProduct} orderOf={railOrder}/>
 
             {groups.map((group) => {
-                const isGrid = group.children.filter((item) => item.type === 'page').length > 1;
+                const pageChildren = group.children.filter((item) => item.type === 'page');
+                const isGrid = pageChildren.length > 1;
+                const lastOddId = isGrid && pageChildren.length % 2 === 1
+                    ? pageChildren[pageChildren.length - 1].id
+                    : null;
 
                 return (
                     <section key={group.key} className={`${style.group} ${isGrid ? style.groupGrid : ''}`}>
@@ -334,7 +339,7 @@ export default function SelectPlatform({sections}) {
                             </div>
                         ) : null}
 
-                        {group.children.map((item) => renderChild(item, isGrid))}
+                        {group.children.map((item) => renderChild(item, isGrid, item.id === lastOddId))}
                     </section>
                 );
             })}

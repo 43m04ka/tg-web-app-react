@@ -45,7 +45,7 @@ export default function ProductFulfillment({userId, tryAmount, managerPrice, isC
 
     return (
         <div className={style.fulfillment}>
-            <span className={style.title}>Способ выдачи</span>
+            <span className={style.title}>Способ активации</span>
 
             <div className={style.track} role="tablist">
                 <span
@@ -54,14 +54,14 @@ export default function ProductFulfillment({userId, tryAmount, managerPrice, isC
                 />
                 <FulfillmentOption
                     active={!isCodes}
-                    label="Менеджер"
+                    label="Со входом в аккаунт"
                     price={managerPrice}
                     note="пополнит на аккаунте"
                     onClick={() => onChange(false)}
                 />
                 <FulfillmentOption
                     active={isCodes}
-                    label="Кодами сразу"
+                    label="Без входа в аккаунт"
                     price={codesPrice}
                     note="автоматически после оплаты"
                     onClick={() => onChange(true)}

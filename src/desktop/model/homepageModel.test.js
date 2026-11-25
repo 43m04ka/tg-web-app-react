@@ -74,3 +74,12 @@ test('главная поддерживает общие новости и по�
     expect(buildHero({banners, mainPageId: 99, pageIds: [20, 28]}).map((item) => item.id)).toEqual([1, 2]);
     expect(buildHero({banners, mainPageId: 99, pageIds: [20, 28], scopeId: 20})).toEqual([]);
 });
+
+test('Xbox banner keeps Xbox product and price', () => {
+    const products = [game(1, 1, 'Grand Theft Auto VI', {price: 11320}), game(2, 3, 'Grand Theft Auto VI', {price: 9735})];
+    const banners = [{id: 4, type: 'product', pageId: 20, data: {productId: 1, image: '/ps.jpg'}}, {id: 15, type: 'product', pageId: 28, data: {productId: 2, price: 9735, image: '/xbox.jpg'}}];
+    const item = homePreorder({banners, products, originOf, pageId: 28});
+    expect(item.product.id).toBe(2);
+    expect(item.price).toBe(9735);
+    expect(homePreorder({banners: [], products: [products[0]], originOf, pageId: 28})).toBeNull();
+});

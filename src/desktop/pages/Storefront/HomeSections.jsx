@@ -16,7 +16,7 @@ export function PreorderSection({item, onOpen}) {
                 {item.note ? <p>{item.note}</p> : null}
                 <div className={style.buyRow}>
                     {item.price ? <strong>{formatPrice(item.price)}</strong> : null}
-                    <button type="button" className={style.primary} onClick={() => onOpen(item)}>Подробнее о предзаказе <span aria-hidden="true">↗</span></button>
+                    <button type="button" className={style.primary} onClick={() => onOpen(item)}>Подробнее об игре <span aria-hidden="true">↗</span></button>
                 </div>
             </div>
         </Reveal>

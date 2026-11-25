@@ -58,13 +58,14 @@ export const buildHomeSubscriptions = ({products, catalogs, originOf}) => {
         .map(({products: items, ...shelf}) => ({...shelf, offers: mergeOffers(items, originOf)}));
 };
 
-export const homePreorder = ({banners, products, originOf, originByPage}) => {
+export const homePreorder = ({banners, products, originOf, originByPage, pageId = null}) => {
     const productById = new Map((products || []).map((product) => [String(product.id), product]));
     const banner = (banners || []).find((item) => !item.isHidden
+        && (pageId === null || item.pageId === pageId)
         && GTA_VI.test([item.data?.title, item.data?.override?.title, productById.get(String(item.data?.productId))?.name].join(' '))
         && (item.data?.productId ? !productById.has(String(item.data.productId)) || isVisible(productById.get(String(item.data.productId))) : item.data?.url));
     if (banner) return heroItem(banner, {originOf, productById, originByPage});
-    const product = (products || []).find((item) => isGame(item) && GTA_VI.test(item.name));
+    const product = (products || []).find((item) => isGame(item) && GTA_VI.test(item.name) && (pageId === null || originOf(item)?.pageId === pageId));
     if (!product || !originOf(product)) return null;
     return {id: `gta:${product.id}`, title: product.name, subtitle: 'GTA VI', note: '',
         image: product.image, cover: product.image, productId: product.id, product,

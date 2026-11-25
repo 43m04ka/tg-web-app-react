@@ -100,7 +100,7 @@ export default function Storefront() {
     const homePopular = useMemo(() => buildHomePopular({shelves, popularProducts, products: mainPageProducts, originOf, botType: effectiveBotType, pageIds}),
         [shelves, popularProducts, mainPageProducts, originOf, effectiveBotType, pageIds]);
     const homeSubscriptions = useMemo(() => buildHomeSubscriptions({products: mainPageProducts, catalogs, originOf}), [mainPageProducts, catalogs, originOf]);
-    const preorder = useMemo(() => homePreorder({banners, products: mainPageProducts, originOf, originByPage}), [banners, mainPageProducts, originOf, originByPage]);
+    const preorder = useMemo(() => homePreorder({banners, products: mainPageProducts, originOf, originByPage, pageId: scopeId}), [banners, mainPageProducts, originOf, originByPage, scopeId]);
     const shelfEntries = useMemo(() => groupShelves(isHome ? homeSubscriptions : shelves), [isHome, homeSubscriptions, shelves]);
 
     const categories = useMemo(
@@ -189,10 +189,11 @@ export default function Storefront() {
 
 
 
+            {isHome || scopeId === pageIdOfType(pages, 'xbox') ? <PreorderSection item={preorder} onOpen={openHero}/> : null}
+
             {isHome && homePopular.offers.length ? <Shelf shelf={homePopular} size={config.shelfSize}
                 showOrigin withFilters categories={categories} onOpen={openOffer} onOpenCatalog={openCatalog}/> : null}
 
-            {isHome ? <PreorderSection item={preorder} onOpen={openHero}/> : null}
 
             {shelfEntries.map((entry) => (entry.kind === 'subscriptions' ? (
                 <SubscriptionShelf

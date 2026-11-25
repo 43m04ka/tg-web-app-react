@@ -112,13 +112,15 @@
     padding: 0 10px;
     border-radius: var(--a2-radius-m);
     color: var(--a2-text-muted);
-    font-size: var(--a2-size-m);
+    font-size: calc(var(--a2-size-m) * 0.95);
     text-decoration: none;
     transition: background var(--a2-motion) var(--a2-ease), color var(--a2-motion) var(--a2-ease);
 }
 
 .link svg {
     flex: none;
+    width: 15.2px;
+    height: 15.2px;
 }
 
 .link:hover {

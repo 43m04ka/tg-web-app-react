@@ -5,7 +5,7 @@ export default {
     title: 'PlayStation',
     group: 'storefront',
     icon: 'playstation',
-    order: 55,
+    order: 58,
     routes: [
         {path: '/playstation', element: lazy(() => import('./PlayStationScreen'))},
     ],

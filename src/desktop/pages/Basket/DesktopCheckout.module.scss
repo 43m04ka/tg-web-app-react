@@ -761,12 +761,12 @@
 }
 
 .primary {
-  background: var(--accent);
-  color: var(--accent-contrast);
+  background: var(--brand-gradient);
+  color: var(--brand-button-text);
 }
 
 .primary:hover:not(:disabled) {
-  background: var(--accent-hover);
+  filter: brightness(1.12);
   transform: translateY(-2px);
   box-shadow: 0 12px 28px -12px color-mix(in srgb, var(--accent) 60%, transparent);
 }

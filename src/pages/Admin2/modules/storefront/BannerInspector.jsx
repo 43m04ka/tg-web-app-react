@@ -15,7 +15,6 @@ import {keys} from '../../platform/resources';
 import {useMutation} from '../../platform/useMutation';
 import {createBanner, deleteBanner, searchBannerSources, updateBanner} from './api';
 import {
-    BANNER_SLOTS,
     BANNER_TYPES,
     GRADIENT_PRESETS,
     IMAGE_FITS,
@@ -155,9 +154,7 @@ export default function BannerInspector({banner, pages, count, pageId = null, sl
                 )}
 
                 {isPc ? (
-                    <Field label="Место на ПК" hint="Малые баннеры листаются справа в квадратной карусели. Картинка нужна квадратная: по умолчанию берём обложку товара">
-                        <Select options={BANNER_SLOTS} value={draft.slot} onChange={set('slot')}/>
-                    </Field>
+                    <Note tone="neutral">Большая карусель: текст и картинка на одном слайде.</Note>
                 ) : null}
 
                 <Toggle
@@ -247,7 +244,7 @@ export default function BannerInspector({banner, pages, count, pageId = null, sl
                 </Field>
             </InspectorSection>
 
-            {isPc && draft.slot === 'main' ? (
+            {isPc ? (
                 <InspectorSection
                     title="Кнопки"
                     note={isProduct

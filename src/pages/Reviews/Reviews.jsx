@@ -3,6 +3,7 @@ import {Link, useSearchParams} from 'react-router-dom';
 import {fetchReviewOrders, fetchReviews} from '../../shared/api/reviews';
 import {useSessionStore} from '../../store/useSessionStore';
 import ReviewCard, {purchaseDate} from './ReviewCard';
+import ExternalReviews from './ExternalReviews.jsx';
 import style from './Reviews.module.scss';
 
 export default function Reviews() {
@@ -16,6 +17,15 @@ export default function Reviews() {
     const [page, setPage] = useState(1);
     const [busy, setBusy] = useState(false);
     const [attempt, setAttempt] = useState(0);
+    const [external, setExternal] = useState(null);
+    const [externalError, setExternalError] = useState(false);
+
+    useEffect(() => {
+        let active = true;
+        import('./externalReviews.json').then((result) => { if (active) setExternal(result.default); })
+            .catch(() => { if (active) setExternalError(true); });
+        return () => { active = false; };
+    }, []);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -37,11 +47,15 @@ export default function Reviews() {
         return () => controller.abort();
     }, [mine, account?.id, account?.kind, attempt]);
 
+    const count = (data?.count || 0) + (external?.reviews.length || 0);
+    const average = count ? (((data?.average || 0) * (data?.count || 0) + (external?.reviews.length || 0) * 5) / count).toFixed(1) : null;
+    const countLabel = {one: 'отзыв', few: 'отзыва', many: 'отзывов', other: 'отзыва'}[new Intl.PluralRules('ru-RU').select(count)];
+
     return (
         <section className={style.screen}>
-            <header className={style.heading}><span className={style.eyebrow}>Опыт наших покупателей</span><h1>Отзывы</h1>
-                <div className={style.score}>{data?.count ? <><strong>{data.average}</strong><span>из 5</span><span className={style.scoreStars}>★★★★★</span></> : <strong className={style.noScore}>Пока без оценок</strong>}</div>
-                <p>{data ? `${data.count} отзывов о подтверждённых покупках` : 'Загружаем отзывы…'}</p>
+            <header className={`${style.heading} ${style.pageHeading}`}><h1>Отзывы клиентов</h1>
+                <div className={style.score}>{count ? <><span className={style.scoreStars} aria-hidden="true">★★★★★</span><strong>{average}</strong><span>из 5</span></> : <strong className={style.noScore}>{busy || !external ? 'Загружаем…' : 'Пока без оценок'}</strong>}</div>
+                <p>{data || external ? `${count.toLocaleString('ru-RU')} ${countLabel} покупателей` : 'Загружаем отзывы…'}</p>
                 <button type="button" className={style.button} onClick={() => {setMine(true); if (account?.kind !== 'user') openLogin('review');}}>Оставить отзыв</button>
             </header>
             <nav className={style.tabs} aria-label="Раздел отзывов"><button type="button" aria-pressed={!mine} onClick={() => {setMine(false); setError('');}}>Все отзывы</button><button type="button" aria-pressed={mine} onClick={() => {setMine(true); setError('');}}>Мои покупки</button></nav>
@@ -50,7 +64,7 @@ export default function Reviews() {
                 : orders === null ? <p className={style.empty}>Загружаем ваши покупки…</p>
                     : orders.length ? <div className={style.orders}>{orders.map((order) => <article key={order.id} className={style.order}><strong>Заказ №{order.id}</strong><span>{purchaseDate(order.purchasedAt)}</span>{order.items.map((item, index) => <span key={index}>{item.name}{item.quantity > 1 ? ` × ${item.quantity}` : ''}</span>)}{order.review ? <span className={style.verified}>✓ Отзыв оставлен · {order.review.rating} из 5</span> : <Link className={style.button} to={`/reviews/write/${order.id}`}>Оставить отзыв</Link>}</article>)}</div>
                         : <div className={style.empty}><h2>Покупок для отзыва пока нет</h2><p>Здесь появятся ваши оплаченные и выполненные заказы.</p></div>
-                : <>{data?.items.length ? <div className={style.grid}>{data.items.map((review) => <ReviewCard key={review.id} review={review}/>)}</div> : !busy && !error ? <div className={style.empty}><h2>Первый отзыв может быть вашим</h2><p>Поделитесь впечатлениями после покупки.</p></div> : null}{data?.hasMore ? <button className={style.more} type="button" disabled={busy} onClick={() => setPage((value) => value + 1)}>{busy ? 'Загружаем…' : 'Показать ещё'}</button> : null}</>}
+                : <><h2 className={style.sectionTitle}>Отзывы на сайте</h2>{data?.items.length ? <div className={style.grid}>{data.items.map((review) => <ReviewCard key={review.id} review={review}/>)}</div> : !busy && !error ? <div className={style.empty}><h2>Первый отзыв на сайте может быть вашим</h2><p>Поделитесь впечатлениями после покупки.</p></div> : null}{data?.hasMore ? <button className={style.more} type="button" disabled={busy} onClick={() => setPage((value) => value + 1)}>{busy ? 'Загружаем…' : 'Показать ещё'}</button> : null}{external?.reviews.length ? <ExternalReviews data={external}/> : !externalError ? <p className={style.notice} role="status">Загружаем отзывы с других площадок…</p> : <p className={style.notice} role="status">Не удалось загрузить отзывы с других площадок. Обновите страницу.</p>}</>}
         </section>
     );
 }

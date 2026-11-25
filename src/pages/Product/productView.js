@@ -45,7 +45,7 @@ export const promotionEnd = (product) => {
     const asNumber = Number(raw);
     const date = Number.isNaN(asNumber) ? new Date(raw) : new Date(asNumber);
 
-    return Number.isNaN(date.getTime()) ? null : date;
+    return Number.isNaN(date.getTime()) || date.getUTCFullYear() >= 2100 ? null : date;
 };
 
 export const promotionLabel = (product) => {
@@ -54,7 +54,35 @@ export const promotionLabel = (product) => {
 
     const date = promotionEnd(product);
 
-    return date ? date.toLocaleDateString('ru-RU') : String(raw);
+    return date ? date.toLocaleDateString('ru-RU') : null;
+};
+
+const FEATURE_TRANSLATIONS = [
+    [/^Xbox local co-op(?=\s*(?:\(|$))/i, 'Локальная совместная игра'],
+    [/^(?:Xbox )?Online co-op(?=\s*(?:\(|$))/i, 'Совместная игра по сети'],
+    [/^Xbox cross-platform co-op(?=\s*(?:\(|$))/i, 'Совместная игра между платформами'],
+    [/^Xbox local multiplayer(?=\s*(?:\(|$))/i, 'Локальная многопользовательская игра'],
+    [/^(?:Xbox )?online multiplayer(?=\s*(?:\(|$))/i, 'Многопользовательская игра по сети'],
+    [/^Xbox cross-platform multiplayer(?=\s*(?:\(|$))/i, 'Многопользовательская игра между платформами'],
+    [/^Xbox One X Enhanced$/i, 'Улучшено для Xbox One X'],
+    [/^Optimized for Xbox Series X\|S$/i, 'Оптимизировано для Xbox Series X|S'],
+    [/^Smart Delivery$/i, 'Умная доставка'],
+    [/^Single player$/i, 'Один игрок'],
+    [/^Shared\/split screen$/i, 'Общий или разделённый экран'],
+    [/^Xbox achievements$/i, 'Достижения Xbox'],
+    [/^Xbox cloud saves$/i, 'Облачные сохранения Xbox'],
+    [/^Xbox presence$/i, 'Присутствие в Xbox'],
+    [/^Xbox clubs$/i, 'Клубы Xbox'],
+    [/^Cloud enabled$/i, 'Облачная игра'],
+    [/^Ray Tracing$/i, 'Трассировка лучей'],
+    [/^Variable Refresh Rate$/i, 'Переменная частота обновления'],
+    [/^Console Keyboard & Mouse$/i, 'Клавиатура и мышь на консоли']
+];
+
+export const localizeFeature = (value) => {
+    const text = String(value).trim().replace(/\bGB\b/g, 'ГБ');
+    const match = FEATURE_TRANSLATIONS.find(([pattern]) => pattern.test(text));
+    return match ? text.replace(match[0], match[1]) : text;
 };
 
 export const isRussianLanguage = (language) =>
@@ -80,7 +108,7 @@ export const buildChips = (product) => {
         chips.push(isRussianLanguage(product.language) ? 'Русский текст' : 'На английском');
     }
 
-    (product.bubbles || []).filter(hasValue).forEach((bubble) => chips.push(String(bubble)));
+    (product.bubbles || []).filter(hasValue).forEach((bubble) => chips.push(localizeFeature(bubble)));
 
     return chips;
 };

@@ -9,8 +9,7 @@ export const IMAGE_FITS = [
 ];
 
 export const BANNER_SLOTS = [
-    {value: 'main', title: 'Большой баннер (карусель)'},
-    {value: 'side', title: 'Малый квадратный справа (карусель)'}
+    {value: 'main', title: 'Большая карусель'}
 ];
 
 const DEVICE_VALUES = ['mobile', 'pc'];
@@ -80,7 +79,7 @@ export const toDraft = (banner) => {
         price: data.price === null || data.price === undefined ? '' : String(data.price),
         oldPrice: data.oldPrice === null || data.oldPrice === undefined ? '' : String(data.oldPrice),
         promoEndDate: text(data.promoEndDate),
-        slot: data.slot === 'side' ? 'side' : 'main',
+        slot: 'main',
         device: DEVICE_VALUES.includes(data.device) ? data.device : 'mobile',
         shade: data.shade !== false,
         button1Label: text(data.buttons?.[0]?.label),
@@ -103,7 +102,7 @@ export const toPayload = (draft) => {
         isHidden: draft.isHidden ? 1 : 0
     };
 
-    const layout = {slot: draft.slot, device: draft.device, shade: Boolean(draft.shade), buttons: draftButtons(draft)};
+    const layout = {slot: 'main', device: draft.device, shade: Boolean(draft.shade), buttons: draftButtons(draft)};
 
     if (draft.type === 'product') {
         return {

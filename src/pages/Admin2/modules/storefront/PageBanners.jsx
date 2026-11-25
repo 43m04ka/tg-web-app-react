@@ -8,11 +8,10 @@ import {bannerScope, bannerTitle, moveBanner} from './bannerModel';
 import style from './StorefrontScreen.module.scss';
 
 const SLOT_GROUPS = [
-    {slot: 'main', title: 'Главная карусель', empty: 'Больших баннеров нет'},
-    {slot: 'side', title: 'Побочная карусель справа', empty: 'Малых баннеров нет'}
+    {slot: 'main', title: 'Большая карусель', empty: 'Баннеров пока нет'}
 ];
 
-const slotOf = (item) => (item.data?.slot === 'side' ? 'side' : 'main');
+const slotOf = () => 'main';
 
 export default function PageBanners({rows, all, pages, isLoading, bySlot = false, onEdit}) {
     const [isBusy, setBusy] = useState(false);
@@ -68,7 +67,6 @@ export default function PageBanners({rows, all, pages, isLoading, bySlot = false
                         <span className={style.blockMeta}>
                             <Badge tone="neutral">{item.type === 'product' ? 'Товар' : 'Произвольный'}</Badge>
                             <span className={style.blockNote}>{bannerScope(item, pages)}</span>
-                            {!bySlot && slotOf(item) === 'side' ? <Badge tone="neutral">справа</Badge> : null}
                             {item.isHidden ? <Badge tone="warning">скрыт</Badge> : null}
                         </span>
                     </span>
@@ -91,12 +89,12 @@ export default function PageBanners({rows, all, pages, isLoading, bySlot = false
             <>
                 <div className={style.bannerBar}>
                     <Note tone="neutral">
-                        Баннеры ПК-версии: этой страницы и общие для всех витрин. Баннер товара берёт цену
-                        и картинку из карточки на лету.
+                        Одна большая карусель для ПК. Меняйте порядок, тексты, картинки и кнопки.
+                        Цена товарного баннера обновляется из карточки.
                     </Note>
                 </div>
 
-                {isLoading ? <SkeletonRows count={4}/> : <div className={style.bannerColumns}>{SLOT_GROUPS.map((group) => {
+                {isLoading ? <SkeletonRows count={4}/> : <div>{SLOT_GROUPS.map((group) => {
                     const list = rows.filter((item) => slotOf(item) === group.slot);
 
                     return (

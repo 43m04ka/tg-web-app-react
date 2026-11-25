@@ -2,13 +2,17 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {discountPercent, formatPrice, formatPromoDate} from '../../../pages/Main/bannerFormat';
 import {ChevronIcon} from '../../shell/DesktopIcons';
-import {splitHero} from '../../model/storefrontModel';
 import {useImageReady} from '../../ui/Cover';
 import OriginMark from './OriginMark';
 import style from './Storefront.module.scss';
 
 const MAIN_AUTOPLAY_MS = 6000;
-const SIDE_AUTOPLAY_MS = 7500;
+
+const openFromKey = (event, open) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    open();
+};
 
 const bannerPrices = (item) => {
     const percent = discountPercent(item.price, item.oldPrice);
@@ -28,33 +32,6 @@ const imageStyle = (image, item, isReady, position) => (image ? {
     opacity: isReady ? 1 : 0
 } : {background: item.gradient || undefined});
 
-function SideSlide({item, onOpen}) {
-    const isReady = useImageReady(item.cover);
-    const {price, oldPrice, footnote} = bannerPrices(item);
-
-    return (
-        <article className={style.sideSlide} onClick={() => onOpen?.(item)}>
-            <span className={style.heroImage} style={imageStyle(item.cover, item, isReady, 'center')} aria-hidden="true"/>
-
-            <div className={`${style.heroBody} ${item.shade ? '' : style.noShade}`}>
-                <span className={style.heroTop}>
-                    {item.subtitle ? <span className={style.heroTag}>{item.subtitle}</span> : null}
-                    <OriginMark origin={item.origin} className={style.heroOrigin}/>
-                </span>
-
-                <span className={style.sideName}>{item.title}</span>
-
-                {price ? (
-                    <span className={style.heroPrices}>
-                        <span className={style.heroPrice}>{price}</span>
-                        {oldPrice ? <span className={style.heroOldPrice}>{oldPrice}</span> : null}
-                    </span>
-                ) : footnote ? <span className={style.heroNote}>{footnote}</span> : null}
-            </div>
-        </article>
-    );
-}
-
 function MainSlide({item, onOpen, onButton}) {
     const isReady = useImageReady(item.image);
     const {percent, price, oldPrice, footnote} = bannerPrices(item);
@@ -64,6 +41,10 @@ function MainSlide({item, onOpen, onButton}) {
         <article
             className={`${style.mainSlide} ${hasButtons ? '' : style.mainSlideClickable}`}
             onClick={hasButtons ? undefined : () => onOpen?.(item)}
+            role={hasButtons ? undefined : 'link'}
+            tabIndex={hasButtons ? undefined : 0}
+            aria-label={hasButtons ? undefined : item.title}
+            onKeyDown={hasButtons ? undefined : (event) => openFromKey(event, () => onOpen?.(item))}
         >
             <span className={style.mainImage} style={imageStyle(item.image, item, isReady, 'center right')} aria-hidden="true"/>
 
@@ -107,16 +88,21 @@ function MainSlide({item, onOpen, onButton}) {
 function Carousel({items, interval, className, label, children}) {
     const trackRef = useRef(null);
     const pausedRef = useRef(false);
+    const focusedRef = useRef(false);
+    const [isPaused, setPaused] = useState(false);
+    const [reducedMotion, setReducedMotion] = useState(() => Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches));
     const [active, setActive] = useState(0);
 
     const count = items.length;
+    const activeRef = useRef(active);
+    activeRef.current = active;
 
     const goTo = useCallback((index) => {
         const track = trackRef.current;
         if (!track) return;
 
-        track.scrollTo({left: ((index + count) % count) * track.clientWidth, behavior: 'smooth'});
-    }, [count]);
+        track.scrollTo({left: ((index + count) % count) * track.clientWidth, behavior: reducedMotion ? 'instant' : 'smooth'});
+    }, [count, reducedMotion]);
 
     const measure = useCallback(() => {
         const track = trackRef.current;
@@ -124,22 +110,64 @@ function Carousel({items, interval, className, label, children}) {
     }, []);
 
     useEffect(() => {
-        if (count <= 1) return undefined;
+        if (count <= 1 || isPaused || reducedMotion) return undefined;
 
         const timer = setInterval(() => {
-            if (!pausedRef.current && !document.hidden) goTo(active + 1);
+            if (!pausedRef.current && !focusedRef.current && !document.hidden) goTo(active + 1);
         }, interval);
 
         return () => clearInterval(timer);
-    }, [active, count, goTo, interval]);
+    }, [active, count, goTo, interval, isPaused, reducedMotion]);
+
+    useEffect(() => {
+        const media = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+        if (!media) return undefined;
+        const update = () => setReducedMotion(media.matches);
+        media.addEventListener?.('change', update);
+        return () => media.removeEventListener?.('change', update);
+    }, []);
+
+    useEffect(() => {
+        const track = trackRef.current;
+        if (!track || typeof ResizeObserver === 'undefined') return undefined;
+        const observer = new ResizeObserver(() => track.scrollTo({left: activeRef.current * track.clientWidth, behavior: 'instant'}));
+        observer.observe(track);
+        return () => observer.disconnect();
+    }, []);
+
+    useEffect(() => {
+        const slides = trackRef.current?.children;
+        if (!slides) return;
+        [...slides].forEach((slide, index) => {
+            if (index === active) {
+                slide.removeAttribute('inert');
+                slide.removeAttribute('aria-hidden');
+            } else {
+                slide.setAttribute('inert', '');
+                slide.setAttribute('aria-hidden', 'true');
+            }
+        });
+    }, [active, count]);
+
+    const onKeyDown = (event) => {
+        if (event.target.closest('button, a, input')) return;
+        if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+            event.preventDefault();
+            goTo(active + (event.key === 'ArrowRight' ? 1 : -1));
+        }
+    };
 
     return (
         <div
             className={`${style.carousel} ${className}`}
             onMouseEnter={() => { pausedRef.current = true; }}
             onMouseLeave={() => { pausedRef.current = false; }}
+            onFocusCapture={() => { focusedRef.current = true; }}
+            onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) focusedRef.current = false; }}
+            onKeyDown={onKeyDown}
+            role="region" aria-roledescription="карусель" aria-label="Баннеры магазина"
         >
-            <div ref={trackRef} className={style.carouselTrack} onScroll={measure}>
+            <div ref={trackRef} className={style.carouselTrack} onScroll={measure} tabIndex={0} aria-label="Слайды карусели">
                 {items.map((item) => children(item))}
             </div>
 
@@ -170,10 +198,13 @@ function Carousel({items, interval, className, label, children}) {
                                 type="button"
                                 className={`${style.mainDot} ${index === active ? style.mainDotOn : ''}`}
                                 aria-label={`${label} ${index + 1}`}
+                                aria-current={index === active ? 'true' : undefined}
                                 onClick={() => goTo(index)}
                             />
                         ))}
                     </span>
+                    <button type="button" className={style.carouselPause} aria-label={isPaused ? 'Продолжить смену баннеров' : 'Приостановить смену баннеров'}
+                        aria-pressed={isPaused} onClick={() => setPaused((value) => !value)}>{isPaused ? '▷' : 'Ⅱ'}</button>
                 </>
             ) : null}
         </div>
@@ -182,7 +213,7 @@ function Carousel({items, interval, className, label, children}) {
 
 export default function StorefrontHero({items, onOpen}) {
     const navigate = useNavigate();
-    const {main, side} = splitHero(items);
+    const main = items || [];
 
     const openButton = useCallback((item, button) => {
         const {url} = button;
@@ -208,21 +239,16 @@ export default function StorefrontHero({items, onOpen}) {
         else window.open(url, '_blank', 'noopener');
     }, [navigate, onOpen]);
 
-    if (!main.length && !side.length) return null;
+    if (!main.length) return null;
 
     return (
-        <div className={`${style.hero} ${side.length && main.length ? '' : style.heroSolo}`}>
+        <div className={`${style.hero} ${style.heroSolo}`}>
             {main.length ? (
-                <Carousel items={main} interval={MAIN_AUTOPLAY_MS} className="" label="Баннер">
+                <Carousel key={main.map((item) => item.id).join('|')} items={main} interval={MAIN_AUTOPLAY_MS} className="" label="Баннер">
                     {(item) => <MainSlide key={item.id} item={item} onOpen={onOpen} onButton={openButton}/>}
                 </Carousel>
             ) : null}
 
-            {side.length ? (
-                <Carousel items={side} interval={SIDE_AUTOPLAY_MS} className={style.sideViewport} label="Малый баннер">
-                    {(item) => <SideSlide key={item.id} item={item} onOpen={onOpen}/>}
-                </Carousel>
-            ) : null}
         </div>
     );
 }

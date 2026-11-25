@@ -208,11 +208,20 @@ describe('buildHero', () => {
         ...extra
     });
 
-    it('в промо попадает по одной витрине, пока хватает разных', () => {
+    it('соблюдает порядок админки и убирает повтор одной игры', () => {
         const hero = build();
 
         expect(hero.map((item) => item.origin.label)).toEqual(['PS Турция', 'PS Индия', 'Xbox']);
         expect(hero[0].subtitle).toBe('Ещё раз Турция');
+    });
+
+    it('не переставляет соседние баннеры одной витрины ради чередования регионов', () => {
+        const hero = buildHero({banners: [
+            banner(1, 20, 0, {productId: 101, title: 'GTA VI', image: 'gta.jpg'}),
+            banner(2, 20, 1, {productId: 102, title: 'EA SPORTS FC 26', image: 'fc.jpg'}),
+            banner(3, 28, 2, {productId: 103, title: 'Forza Horizon 5', image: 'forza.jpg'})
+        ], mainPageProducts, originOf, originByPage, pageIds: [20, 28]});
+        expect(hero.map((item) => item.id)).toEqual([1, 2, 3]);
     });
 
     it('одна игра не занимает два промо, даже если её рекламируют две витрины', () => {
@@ -326,16 +335,16 @@ describe('buildHero', () => {
 describe('splitHero', () => {
     const item = (id, slot = 'main') => ({id, slot});
 
-    it('keeps every explicit side banner for the square carousel', () => {
+    it('объединяет старые боковые и основные баннеры без потери порядка', () => {
         const {main, side} = splitHero([item(1), item(2, 'side'), item(3), item(4, 'side'), item(5, 'side')]);
-        expect(main.map((entry) => entry.id)).toEqual([1, 3]);
-        expect(side.map((entry) => entry.id)).toEqual([2, 4, 5]);
+        expect(main.map((entry) => entry.id)).toEqual([1, 2, 3, 4, 5]);
+        expect(side).toEqual([]);
     });
 
-    it('borrows the last two banners when none is marked side', () => {
+    it('оставляет все основные баннеры в одной карусели', () => {
         const {main, side} = splitHero([item(1), item(2), item(3), item(4)]);
-        expect(main.map((entry) => entry.id)).toEqual([1, 2]);
-        expect(side.map((entry) => entry.id)).toEqual([3, 4]);
+        expect(main.map((entry) => entry.id)).toEqual([1, 2, 3, 4]);
+        expect(side).toEqual([]);
     });
 
     it('leaves short lists in the carousel', () => {

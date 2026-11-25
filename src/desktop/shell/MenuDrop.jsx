@@ -21,7 +21,7 @@ function ColumnBadge({badge}) {
         : null;
 }
 
-export default function MenuDrop({groups = [], onSelect}) {
+export default function MenuDrop({groups = [], onSelect, compact = false}) {
     const [isOpen, setOpen] = useState(false);
     const [activeKey, setActiveKey] = useState(null);
     const rootRef = useRef(null);
@@ -58,14 +58,14 @@ export default function MenuDrop({groups = [], onSelect}) {
         <div className={style.root} ref={rootRef} onKeyDown={onKeyDown}>
             <button
                 type="button"
-                className={isOpen ? `${style.trigger} ${style.triggerOpen}` : style.trigger}
+                className={`${style.trigger} ${isOpen ? style.triggerOpen : ''} ${compact ? style.triggerCompact : ''}`}
                 onClick={() => setOpen((open) => !open)}
                 aria-expanded={isOpen}
                 aria-haspopup="menu"
+                aria-label={compact ? 'Меню' : undefined}
             >
                 <BurgerIcon className={style.burger}/>
-                <span className={style.title}>Меню</span>
-                <ChevronIcon className={style.chevron}/>
+                {!compact ? <><span className={style.title}>Меню</span><ChevronIcon className={style.chevron}/></> : null}
             </button>
 
             {isOpen ? (

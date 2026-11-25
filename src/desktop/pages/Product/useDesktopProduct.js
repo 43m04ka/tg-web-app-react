@@ -9,6 +9,7 @@ import {subscriptionOffer} from '../../../pages/Product/productView';
 import {isSubscription} from '../../../pages/Main/catalogSections';
 import {subscriptionRoute} from '../../../shared/lib/pageRoutes';
 import {forgetView} from '../../../shared/lib/viewMemory';
+import {useStorefrontScope} from '../../shell/StorefrontScope';
 
 export function useDesktopProduct(productId) {
     const navigate = useNavigate();
@@ -16,6 +17,7 @@ export function useDesktopProduct(productId) {
     const userId = useSessionStore(selectUserId);
     const pageId = useSessionStore((store) => store.pageId);
     const setPageId = useSessionStore((store) => store.setPageId);
+    const {setScopeId} = useStorefrontScope();
     const catalogs = useStructureStore((store) => store.catalogs);
     const mainPageProducts = useStructureStore((store) => store.mainPageProducts);
 
@@ -78,9 +80,10 @@ export function useDesktopProduct(productId) {
     }, [product, catalogs]);
 
     useEffect(() => {
-        if (productPageId === null || productPageId === pageId) return;
-        setPageId(productPageId);
-    }, [productPageId, pageId, setPageId]);
+        if (productPageId === null) return;
+        setScopeId(productPageId);
+        if (productPageId !== pageId) setPageId(productPageId);
+    }, [productPageId, pageId, setPageId, setScopeId]);
 
     const isPlan = Boolean(product) && isSubscription(product);
 

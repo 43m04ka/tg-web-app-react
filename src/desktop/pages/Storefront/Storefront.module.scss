@@ -5,9 +5,7 @@
 }
 
 .hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: var(--d-gap-5);
+  display: block;
   height: clamp(340px, 31vw, 420px);
 }
 
@@ -59,7 +57,7 @@
 
 .mainImage {
   position: absolute;
-  inset: 0;
+  inset: 0 0 0 30%;
   background: var(--surface-2) center right / cover no-repeat;
   transition: transform var(--m-lazy) var(--m-ease),
               opacity var(--m-slow) var(--m-ease);
@@ -72,7 +70,7 @@
 .mainBody {
   position: absolute;
   inset: 0;
-  padding: var(--d-gap-8) var(--d-gap-8) var(--d-gap-10);
+  padding: 40px 48px 64px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -90,24 +88,24 @@
 .mainMeta {
   display: flex;
   align-items: center;
-  gap: var(--d-gap-2);
+  gap: 10px;
 }
 
 .mainTag {
   padding: 5px 12px;
   border-radius: var(--radius-full);
-  background: var(--accent);
-  color: var(--accent-contrast);
-  font-size: var(--d-fs-xs);
+  background: var(--surface-4);
+  color: var(--text-secondary);
+  font-size: 12px;
   font-weight: var(--fw-bold);
 }
 
 .mainName {
-  max-width: 62%;
+  max-width: 58%;
   font-family: var(--d-font-display);
-  font-size: 30px;
+  font-size: clamp(32px, 3.2vw, 46px);
   font-weight: 700;
-  line-height: 1.12;
+  line-height: 1.14;
   letter-spacing: -0.5px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -116,9 +114,9 @@
 }
 
 .mainNote {
-  max-width: 52%;
-  font-size: var(--d-fs-md);
-  line-height: 1.45;
+  max-width: 48%;
+  font-size: 16px;
+  line-height: 1.5;
   color: var(--text-secondary);
 }
 
@@ -152,12 +150,12 @@
 }
 
 .mainButton {
-  background: var(--accent);
-  color: var(--accent-contrast);
+  background: var(--brand-gradient);
+  color: var(--brand-button-text);
 }
 
 .mainButton:hover {
-  background: var(--accent-hover);
+  filter: brightness(1.12);
   transform: translateY(-1px);
 }
 
@@ -174,15 +172,15 @@
 
 .mainDots {
   position: absolute;
-  right: var(--d-gap-6);
-  bottom: var(--d-gap-5);
+  left: 48px;
+  bottom: 22px;
   display: flex;
   gap: 6px;
 }
 
 .mainDot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: var(--radius-full);
   background: oklch(1 0 0 / 0.3);
   cursor: pointer;
@@ -191,7 +189,7 @@
 }
 
 .mainDotOn {
-  width: 22px;
+  width: 26px;
   background: var(--text);
 }
 
@@ -232,8 +230,8 @@
   position: absolute;
   top: 50%;
   z-index: 3;
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   display: grid;
   place-items: center;
   border: 1px solid oklch(1 0 0 / 0.14);
@@ -271,7 +269,8 @@
   transform: rotate(-90deg);
 }
 
-.carousel:hover .heroArrow {
+.carousel:hover .heroArrow,
+.carousel:focus-within .heroArrow {
   opacity: 1;
   transform: translateY(-50%) scale(1);
 }
@@ -852,3 +851,10 @@
   font-size: var(--d-fs-sm);
   color: var(--text-muted);
 }
+
+.carouselPause { position: absolute; right: 24px; bottom: 18px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--radius-full); background: rgb(0 0 0 / 0.28); color: var(--text-secondary); font-size: 15px; z-index: 5; transition: background-color var(--m-base) var(--m-ease); }
+.carouselPause:hover { background: rgb(255 255 255 / 0.14); }
+.carouselTrack:focus-visible, .mainSlide:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
+.step:last-child .stepNumber { background: color-mix(in srgb, var(--accent) 14%, var(--surface-1)); color: var(--accent-text); }
+@media (max-width: 1100px) { .mainBody { padding: 32px 36px 60px; } .mainDots { left: 36px; } .mainName { max-width: 65%; } .mainNote { max-width: 60%; } }
+@media (prefers-reduced-motion: reduce) { .carouselTrack { scroll-behavior: auto; } }

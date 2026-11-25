@@ -23,6 +23,10 @@
   border-color: var(--border);
 }
 
+.triggerCompact { width: 38px; padding: 0; justify-content: center; background: transparent; border-color: transparent; }
+.triggerCompact .burger { width: 20px; height: 20px; }
+.triggerCompact:hover { background: var(--surface-2); border-color: var(--border-subtle); }
+
 .triggerOpen {
   background: var(--surface-2);
   border-color: var(--accent);
@@ -67,7 +71,7 @@
   top: calc(100% + 10px);
   right: 0;
   width: min(880px, calc(100vw - 2 * var(--d-gap-6)));
-  max-height: calc(100vh - var(--d-topbar) - var(--d-gap-6));
+  max-height: calc(100vh - var(--d-topbar) - var(--d-utility, 0px) - var(--d-gap-6));
   overflow-y: auto;
   display: grid;
   grid-template-columns: 300px minmax(0, 1fr);

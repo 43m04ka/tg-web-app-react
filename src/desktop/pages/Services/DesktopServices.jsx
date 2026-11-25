@@ -101,7 +101,7 @@ export default function DesktopServices() {
     const target = useMemo(() => location.state || {}, [location.state]);
     const isSingle = Boolean(target.single);
 
-    const saved = useMemo(() => (isSingle ? target : recallView(FORM_KEY) || {}), [isSingle, target]);
+    const saved = useMemo(() => (isSingle || target.brandId != null ? target : recallView(FORM_KEY) || {}), [isSingle, target]);
 
     const [brandId, setBrandId] = useState(saved.brandId ?? null);
     const [kind, setKind] = useState(saved.kind ?? null);

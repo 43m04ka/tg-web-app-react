@@ -22,7 +22,7 @@ import {signOut} from '../../platform/session';
 import {API_BASE_URL} from '../../../../shared/config/env';
 import {MAINTENANCE_DOMAINS, MAINTENANCE_PLATFORMS, MAINTENANCE_SECTIONS, normalizeDomains, normalizeSections} from '../../../../shared/lib/maintenance';
 import {cancelAssociationsSchedule, fetchAssociationsSchedule, runAssociations, scheduleAssociations} from '../catalogs/api';
-import {fetchSettings, fetchTurkeyCodesStock, refreshStructure, updateSetting} from './api';
+import {fetchSettings, refreshStructure, updateSetting} from './api';
 import {formatMoscow, fromMoscowInput, toMoscowInput} from '../../platform/moscowTime';
 import style from './SettingsScreen.module.scss';
 
@@ -33,14 +33,11 @@ const sectionsPayload = (sections) => Object.entries(sections).reduce((picked, [
     return picked;
 }, {});
 
-const rub = (value) => `${Math.round(Number(value) || 0).toLocaleString('ru-RU')} ₽`;
-
 export default function SettingsScreen() {
     usePageHeader('Настройки');
 
     const settings = useResource(keys.settings, fetchSettings);
     const schedule = useResource(keys.associationsSchedule, fetchAssociationsSchedule);
-    const turkeyStock = useResource(keys.serviceTurkeyCodes, fetchTurkeyCodesStock);
     const values = settings.data?.settings || {};
 
     const write = useMutation(updateSetting, {invalidates: [keys.settings], done: 'Настройка сохранена'});
@@ -72,22 +69,6 @@ export default function SettingsScreen() {
     const closedCount = Object.keys(sections).length;
     const closedDomains = Object.keys(domains).length;
     const plannedAt = schedule.data?.scheduled ? schedule.data.runAtIso : null;
-
-    const methodsValue = values.ps_turkey_methods?.value || {};
-    const turkeyMethods = {
-        manager: methodsValue.manager !== false,
-        codes: methodsValue.codes !== false
-    };
-    const stock = turkeyStock.data?.result || null;
-    const stockBalance = stock?.balance || null;
-
-    const onTurkeyMethod = useCallback((field, next) => {
-        const draft = {...turkeyMethods, [field]: next};
-
-        if (!draft.manager && !draft.codes) return;
-
-        write.run({key: 'ps_turkey_methods', value: draft, type: 'object'});
-    }, [write, turkeyMethods]);
 
     const onMaintenance = useCallback(async (next) => {
         const answer = await askConfirm({
@@ -403,95 +384,6 @@ export default function SettingsScreen() {
                                 <Button size="s" variant="secondary" loading={rebuild.loading} onClick={() => rebuild.run()}>
                                     Обновить
                                 </Button>
-                            </div>
-                        </section>
-                        <section className={style.card}>
-                            <header className={style.cardHead}>
-                                <span className={style.cardTitle}>PS Турция</span>
-                                <Badge tone={turkeyMethods.manager && turkeyMethods.codes ? 'positive' : 'warning'}>
-                                    {turkeyMethods.manager && turkeyMethods.codes ? 'выбор у покупателя' : 'один способ'}
-                                </Badge>
-                            </header>
-
-                            <div className={style.actionStack}>
-                                <div className={style.actionMain}>
-                                    <div className={style.actionText}>
-                                        <span className={style.actionTitle}>Оформляет менеджер</span>
-                                        <span className={style.actionHint}>
-                                            Пополнение по данным аккаунта вручную, как раньше.
-                                        </span>
-                                    </div>
-                                    <Toggle
-                                        checked={turkeyMethods.manager}
-                                        onChange={(next) => onTurkeyMethod('manager', next)}
-                                        label="Оформляет менеджер"
-                                    />
-                                </div>
-
-                                <div className={style.actionMain}>
-                                    <div className={style.actionText}>
-                                        <span className={style.actionTitle}>Кодами сразу</span>
-                                        <span className={style.actionHint}>
-                                            Мгновенная выдача кодов пополнения после оплаты. Коды покупаются
-                                            у PanYanStore автоматически. Цены — в правилах price_rules_ps.
-                                        </span>
-                                    </div>
-                                    <Toggle
-                                        checked={turkeyMethods.codes}
-                                        onChange={(next) => onTurkeyMethod('codes', next)}
-                                        label="Кодами сразу"
-                                    />
-                                </div>
-
-                                <span className={style.actionHint}>
-                                    Если включены оба способа, покупатель выбирает сам в карточке игры и в корзине.
-                                    Хотя бы один способ всегда остаётся включённым.
-                                </span>
-                            </div>
-
-                            <div className={style.actionStack}>
-                                <div className={style.actionMain}>
-                                    <div className={style.actionText}>
-                                        <span className={style.actionTitle}>Доступность кодов PanYanStore</span>
-                                        {stockBalance ? (
-                                            <span className={style.actionHint}>
-                                                {`Баланс ${rub(stockBalance.balance)}${stockBalance.creditLimit > 0 ? ` · кредит ${rub(stockBalance.creditLimit)}` : ''}`}
-                                            </span>
-                                        ) : null}
-                                    </div>
-                                    <Button
-                                        size="s"
-                                        variant="ghost"
-                                        loading={turkeyStock.isFetching}
-                                        onClick={() => turkeyStock.refresh()}
-                                    >
-                                        Обновить
-                                    </Button>
-                                </div>
-
-                                {turkeyStock.error ? (
-                                    <Badge tone="danger">{turkeyStock.error.message || 'Остатки недоступны'}</Badge>
-                                ) : !stock ? (
-                                    <SkeletonRows rows={2}/>
-                                ) : !stock.configured ? (
-                                    <Badge tone="warning">PanYanStore не настроен на сервере</Badge>
-                                ) : stock.denoms.length ? (
-                                    <ul className={style.stockList}>
-                                        {stock.denoms.map((denom) => (
-                                            <li key={denom.amount} className={style.stockRow}>
-                                                <span className={style.stockAmount}>{denom.amount} ₺</span>
-                                                <span className={style.stockMeta}>{rub(denom.price)}</span>
-                                                <Badge tone={denom.inStock > 0 ? 'positive' : 'danger'}>
-                                                    {denom.inStock > 0 ? `${denom.inStock} шт` : 'нет'}
-                                                </Badge>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    <span className={style.actionHint}>
-                                        Номиналы TRY не найдены в каталоге поставщика.
-                                    </span>
-                                )}
                             </div>
                         </section>
                         <section className={style.card}>

@@ -8,7 +8,7 @@ export default {
     title: 'Сервисы',
     group: 'storefront',
     icon: 'services',
-    order: 60,
+    order: 65,
     routes: [
         {path: '/services', element: screen},
         {path: '/services/:brandId', element: screen},

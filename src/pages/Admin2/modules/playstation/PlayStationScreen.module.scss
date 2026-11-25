@@ -1,0 +1,105 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-l);
+    background: var(--a2-card);
+}
+
+.card [role='switch'] {
+    align-self: flex-start;
+}
+
+.cardHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.cardTitle {
+    color: var(--a2-text);
+    font-size: var(--a2-size-l);
+    font-weight: 600;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.row > *:first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+.actionStack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-m);
+    background: var(--a2-plane);
+}
+
+.actionMain {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.actionText {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.actionTitle {
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+}
+
+.actionHint {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+    line-height: 1.4;
+}
+
+.stockList {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.stockRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border: 1px solid var(--a2-border);
+    border-radius: var(--a2-radius-s);
+    background: var(--a2-card);
+}
+
+.stockAmount {
+    flex: 1;
+    min-width: 0;
+    color: var(--a2-text);
+    font-size: var(--a2-size-m);
+    font-weight: 600;
+}
+
+.stockMeta {
+    color: var(--a2-text-muted);
+    font-size: var(--a2-size-s);
+}

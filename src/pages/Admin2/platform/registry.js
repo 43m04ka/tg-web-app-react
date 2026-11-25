@@ -3,6 +3,7 @@ import orders from '../modules/orders/module';
 import marketplace from '../modules/marketplace/module';
 import customers from '../modules/customers/module';
 import steam from '../modules/steam/module';
+import playstation from '../modules/playstation/module';
 import payments from '../modules/payments/module';
 import promo from '../modules/promo/module';
 import broadcast from '../modules/broadcast/module';
@@ -31,7 +32,7 @@ export const GROUPS = [
     {id: 'tools', title: 'Инструменты'},
 ];
 
-const REGISTERED = [overview, orders, marketplace, customers, steam, payments, promo, products, catalogs, prices, services, subscriptions, desktop, start, storefront, pages, broadcast, media, settings, access, agent, kit, reviews];
+const REGISTERED = [overview, orders, marketplace, customers, playstation, steam, payments, promo, products, catalogs, prices, services, subscriptions, desktop, start, storefront, pages, broadcast, media, settings, access, agent, kit, reviews];
 
 export const modules = REGISTERED
     .slice()

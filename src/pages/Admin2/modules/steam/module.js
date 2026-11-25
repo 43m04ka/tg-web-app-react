@@ -5,7 +5,7 @@ export default {
     title: 'Steam',
     group: 'storefront',
     icon: 'steam',
-    order: 65,
+    order: 60,
     routes: [
         {path: '/steam', element: lazy(() => import('./SteamScreen'))},
     ],

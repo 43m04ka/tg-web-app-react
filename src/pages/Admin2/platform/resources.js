@@ -35,6 +35,7 @@ export const keys = {
     serviceSupplierCatalog: ['services', 'supplier', 'catalog'],
     serviceSupplierBalance: ['services', 'supplier', 'balance'],
     serviceTurkeyCodes: ['services', 'supplier', 'turkey-codes'],
+    serviceIndiaCodes: ['services', 'supplier', 'india-codes'],
     structure: ['structure'],
     pages: ['structure', 'pages'],
     pageBlocks: (pageId) => ['structure', 'blocks', pageId],

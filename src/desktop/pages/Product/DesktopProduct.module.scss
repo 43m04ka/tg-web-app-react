@@ -877,7 +877,6 @@
   color: var(--text-muted);
 }
 
-<<<<<<< HEAD
 .fulfillment {
   animation: global(gw-rise-sm) var(--m-base) var(--m-ease) both;
 }
@@ -985,14 +984,7 @@
   animation: global(gw-rise-sm) var(--m-fast) var(--m-ease) both;
 }
 
-.regions {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-=======
 .regions { display: flex; flex-direction: column; gap: 10px; }
->>>>>>> codex/storefront-fixes-20261105
 
 .region {
   display: grid;

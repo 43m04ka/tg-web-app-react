@@ -877,6 +877,7 @@
   color: var(--text-muted);
 }
 
+<<<<<<< HEAD
 .fulfillment {
   animation: global(gw-rise-sm) var(--m-base) var(--m-ease) both;
 }
@@ -989,53 +990,36 @@
   flex-direction: column;
   gap: 6px;
 }
+=======
+.regions { display: flex; flex-direction: column; gap: 10px; }
+>>>>>>> codex/storefront-fixes-20261105
 
 .region {
-  display: flex;
+  display: grid;
   align-items: center;
-  gap: var(--d-gap-3);
-  min-height: 54px;
-  padding: var(--d-gap-2) var(--d-gap-4);
-  border-radius: var(--radius-md);
-  background: var(--surface-2);
-  border: 1px solid transparent;
+  min-height: 66px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #23252a, #1b1c21);
+  border: 1px solid #36383f;
+  color: var(--text);
   text-align: left;
-  animation: global(gw-rise-sm) var(--m-base) var(--m-ease) both;
-  animation-delay: calc(var(--i, 0) * var(--m-stagger));
-  transition: background-color var(--m-base) var(--m-ease),
-              border-color var(--m-fast) var(--m-ease),
-              transform var(--m-base) var(--m-spring);
+  transition: border-color var(--m-fast) var(--m-ease), background-color var(--m-fast) var(--m-ease);
 }
-
-.region:hover {
-  background: var(--surface-3);
-}
-
-.region:active {
-  transform: scale(0.98);
-}
-
-.regionOn,
-.regionOn:hover {
-  background: color-mix(in oklab, var(--accent) 10%, var(--surface-2));
+.region:hover { border-color: #626772; background: #292d35; }
+.regionOn, .regionOn:hover {
+  background: linear-gradient(135deg, #182e50, #1b2438);
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+  box-shadow: inset 0 0 0 1px var(--accent);
   cursor: default;
 }
-
 .regionRadio {
-  flex: none;
-  width: 18px;
-  height: 18px;
+  display: grid;
+  place-items: center;
   border-radius: 50%;
-  border: 2px solid oklch(1 0 0 / 0.3);
-  transition: border-color var(--m-fast) var(--m-ease),
-              border-width var(--m-base) var(--m-spring);
+  border: 1.5px solid #707580;
 }
-
-.regionOn .regionRadio {
-  border: 5px solid var(--accent);
-}
+.regionOn .regionRadio { border-color: var(--accent); background: var(--accent); }
+.regionOn .regionRadio::after { content: '✓'; color: #fff; font-size: 11px; font-weight: 700; line-height: 1; }
 
 .regionIcon {
   flex: none;
@@ -1317,8 +1301,8 @@
   gap: var(--d-gap-3);
   height: 56px;
   border-radius: var(--radius-lg);
-  background: var(--brand-gradient);
-  color: var(--brand-button-text);
+  background: linear-gradient(135deg, #2478ed, #2855d4);
+  color: #ffffff;
   font-size: var(--d-fs-lg);
   font-weight: var(--fw-bold);
   overflow: hidden;
@@ -1428,7 +1412,7 @@
   gap: var(--d-gap-2);
   height: 56px;
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, var(--accent-hover), var(--accent));
+  background: var(--brand-gradient);
   box-shadow: 0 4px 20px -6px color-mix(in srgb, var(--accent) 70%, transparent);
   color: var(--accent-contrast);
   font-size: var(--d-fs-lg);
@@ -1702,3 +1686,48 @@
     transition: none;
   }
 }
+
+.criteria { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); overflow: hidden; background: var(--surface-1); }
+.criterion { min-width: 0; padding: 14px 12px; display: flex; align-items: center; gap: 10px; }
+.criterion:nth-child(even) { border-left: 1px solid var(--border-subtle); }
+.criterion:nth-child(n + 3) { border-top: 1px solid var(--border-subtle); }
+.criterion > svg { flex: none; width: 22px; height: 22px; color: var(--accent-text); }
+.criterion > span { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.criterionLabel { color: var(--text-muted); font-size: 11px; }
+.criterion strong { font-size: 13px; line-height: 1.4; overflow-wrap: anywhere; }
+.criterionRussian { background: color-mix(in srgb, var(--success) 7%, transparent); }
+.criterionRussian strong { color: var(--success); }
+.region { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: 6px 10px; padding: 13px 14px; }
+.regionRadio { width: 18px; height: 18px; box-sizing: border-box; }
+.regionName { overflow: visible; text-overflow: clip; font-size: 13px; }
+.regionBadge { grid-column: 2; grid-row: 2; justify-self: start; padding: 2px 7px; font-size: 10px; }
+.regionPrice { grid-column: 3; grid-row: 1 / span 2; align-self: center; white-space: nowrap; font-size: 15px; }
+.pick, .pickStack { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 12px; padding: 14px; }
+.pickLabel { grid-column: 1; font-size: 12px; }
+.pickValue { grid-column: 1; grid-row: 2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; overflow-wrap: normal; }
+.pickAction, .pickStack .pickAction { grid-column: 2; grid-row: 1 / span 2; font-size: 12px; white-space: nowrap; }
+.recommendations { grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch; gap: 20px; }
+.recommendations > a { min-width: 0; }
+.specValue { overflow-wrap: anywhere; }
+.about { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); background: transparent; border: 0; box-shadow: none; padding: 8px 0; }
+.aboutSolo { grid-template-columns: minmax(0, 1fr); }
+.about:not(.aboutSolo) .aboutSpecs { padding-left: 0; border-left: 0; }
+.aboutSpecs .specs { display: grid; grid-template-columns: minmax(0, 1fr); padding: 4px 16px; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-1); gap: 0; }
+.aboutSpecs .spec { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); grid-template-rows: auto; column-gap: 12px; row-gap: 0; padding: 10px 0; align-items: baseline; }
+.spec + .spec { border-top: 1px solid var(--border-subtle); }
+.specIcon { display: none; }
+.specLabel { grid-column: 1; grid-row: 1; font-size: 11px; }
+.specValue { grid-column: 2; grid-row: 1; font-size: 12px; text-align: right; }
+.specWide .specLabel { grid-column: 1 / -1; }
+.specWide .specValue { grid-column: 1 / -1; grid-row: 2; text-align: left; margin-top: 8px; }
+.about .blockTitle { font-size: 22px; }
+@media (max-width: 1180px) { .hero { grid-template-columns: 190px minmax(0, 1fr); gap: 20px; } .criterion { padding: 12px 8px; gap: 6px; } .criterion > svg { width: 18px; height: 18px; } .criterion strong { font-size: 12px; } .criterionLabel { font-size: 10px; } }
+@media (max-width: 1180px) { .about { grid-template-columns: minmax(0, 1fr); } .about:not(.aboutSolo) .aboutSpecs { padding-top: 0; border-top: 0; } .about:not(.aboutSolo) .specs { display: grid; grid-template-columns: minmax(0, 1fr); } }
+
+.region { align-items: center; }
+.regionPrice { grid-row: 1; }
+.region:has(.regionBadge) .regionPrice { grid-row: 1 / span 2; }
+.criterion > svg.languageFlag { flex: none; display: block; width: 30px; height: 20px; }
+.criterionLabel { font-size: 12px; }
+.criterion strong { font-size: 15px; }
+@media (max-width: 1180px) { .criterionLabel { font-size: 11px; } .criterion strong { font-size: 14px; } }

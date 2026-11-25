@@ -22,7 +22,7 @@ export default function ProductCheaper({regions, onSwitch}) {
                 />
             ) : null}
             <span className={style.cheaperText}>
-                В регионе {best.label} дешевле на <b>{formatPrice(cheaperBy)}</b>
+                Регион {best.label.replace(/^(?:PS|PlayStation)\s+/i, '')} — дешевле на <b>{formatPrice(cheaperBy)}</b>
             </span>
             <span className={style.cheaperArrow} aria-hidden="true">›</span>
         </button>

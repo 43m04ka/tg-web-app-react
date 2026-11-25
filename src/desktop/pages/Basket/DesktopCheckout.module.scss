@@ -72,7 +72,7 @@
 }
 
 .hint {
-  font-size: var(--d-fs-sm);
+  font-size: var(--d-fs-lg);
   line-height: 1.55;
   color: var(--text-muted);
   animation: global(gw-rise-sm) var(--m-base) var(--m-ease) both;
@@ -192,6 +192,8 @@
   grid-template-rows: 1fr;
   opacity: 1;
 }
+
+.revealHidden { display: none; }
 
 .revealInner {
   overflow: hidden;
@@ -450,6 +452,7 @@
 
 .channels {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--d-gap-2);
 }
 
@@ -487,6 +490,8 @@
   height: 16px;
 }
 
+.additionalChannels { display: flex; flex-wrap: wrap; gap: var(--d-gap-2); }
+
 .contactInput {
   display: flex;
   align-items: center;
@@ -515,11 +520,16 @@
   min-width: 0;
   font-size: var(--d-fs-md);
   color: var(--text);
+  border: 0;
+  outline: none;
+  box-shadow: none;
 }
 
 .bareInput::placeholder {
   color: var(--text-faint);
 }
+
+.input:focus-visible, .bareInput:focus-visible { outline: none; }
 
 .contactCheck {
   flex: none;

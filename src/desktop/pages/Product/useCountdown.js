@@ -12,10 +12,11 @@ export const countdownParts = (left) => {
     const days = Math.floor(left / DAY);
     const hours = Math.floor((left % DAY) / HOUR);
     const minutes = Math.floor((left % HOUR) / MINUTE);
+    const seconds = Math.floor((left % MINUTE) / 1000);
 
-    if (days > 0) return `${days} дн ${hours} ч ${pad(minutes)} мин`;
-    if (hours > 0) return `${hours} ч ${pad(minutes)} мин`;
-    return `${Math.max(1, minutes)} мин`;
+    if (days > 0) return `${days} дн ${hours} ч ${pad(minutes)} мин ${pad(seconds)} с`;
+    if (hours > 0) return `${hours} ч ${pad(minutes)} мин ${pad(seconds)} с`;
+    return `${minutes} мин ${pad(seconds)} с`;
 };
 
 export function useCountdown(endDate) {
@@ -26,7 +27,7 @@ export function useCountdown(endDate) {
         if (end === null) return undefined;
 
         setNow(Date.now());
-        const timerId = setInterval(() => setNow(Date.now()), 15 * 1000);
+        const timerId = setInterval(() => setNow(Date.now()), 1000);
         return () => clearInterval(timerId);
     }, [end]);
 

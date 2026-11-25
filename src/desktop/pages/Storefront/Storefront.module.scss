@@ -13,17 +13,17 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
-.hero { height: auto; }
-.hero .carousel, .hero .carouselTrack { height: auto; min-width: 0; }
-.hero .carousel { border-radius: 0; box-shadow: none; }
-.hero .carouselTrack { grid-auto-columns: calc((100% - 16px) / 2); gap: 16px; }
+.heroRow { display: block; }
+.heroRow .hero, .heroRow .carousel, .heroRow .carouselTrack { height: auto; min-width: 0; }
+.heroRow .carousel { border-radius: 0; box-shadow: none; }
+.heroRow .carouselTrack { grid-auto-columns: calc((100% - 16px) / 2); gap: 16px; }
 .heroPage { display: grid; grid-template-columns: minmax(0, 1fr); scroll-snap-align: start; }
 .heroPage .mainSlide { height: auto; aspect-ratio: 4 / 3; border-radius: var(--radius-xl); scroll-snap-align: none; }
-.heroPage .mainImage { inset: 0; background-position: center; background-size: cover; }
-.heroPage .mainBody { padding: 24px 24px 48px; background: linear-gradient(0deg, rgba(6, 8, 12, .9), rgba(6, 8, 12, .1) 80%); }
-.heroPage .mainBody.noShade { background: none; }
-.heroPage .mainName { max-width: 100%; font-size: clamp(24px, 2.5vw, 34px); }
-.heroPage .mainBody[hidden] { display: none; }
+.heroRow .mainImage { inset: 0; background-position: center; background-size: cover; }
+.heroRow .mainBody { padding: 24px 24px 48px; background: linear-gradient(0deg, rgba(6, 8, 12, .9), rgba(6, 8, 12, .1) 80%); }
+.heroRow .mainBody.noShade { background: none; }
+.heroRow .mainName { max-width: 100%; font-size: clamp(24px, 2.5vw, 34px); }
+.heroRow .mainBody[hidden] { display: none; }
 
 .carousel {
   position: relative;
@@ -114,7 +114,7 @@
 
 .mainName {
   max-width: 58%;
-  font-family: var(--d-font-display);
+  font-family: var(--d-font-banner);
   font-size: clamp(32px, 3.2vw, 46px);
   font-weight: 700;
   line-height: 1.14;
@@ -228,7 +228,7 @@
 }
 
 .sideName {
-  font-family: var(--d-font-display);
+  font-family: var(--d-font-banner);
   font-size: var(--d-fs-lg);
   font-weight: 700;
   line-height: 1.2;

@@ -371,6 +371,9 @@
   font-weight: var(--fw-semibold);
   letter-spacing: 0.6px;
   color: var(--text);
+  border: 0;
+  outline: none;
+  box-shadow: none;
 }
 
 .promoAction {
@@ -383,6 +386,8 @@
   color: var(--accent-text);
   transition: color var(--m-fast) var(--m-ease);
 }
+
+.promoInput:focus-visible { outline: none; }
 
 .promoAction:hover {
   color: var(--accent-hover);

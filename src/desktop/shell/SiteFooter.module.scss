@@ -30,12 +30,13 @@
 .channelLink { display: inline-flex; align-items: center; gap: 9px; padding: 11px 13px; margin-top: 2px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-1); color: var(--text); text-decoration: none; font-size: 13px; white-space: nowrap; transition: background-color var(--m-base) var(--m-ease), border-color var(--m-base) var(--m-ease), transform var(--m-base) var(--m-spring); }
 .channelLink:hover { background: var(--surface-2); border-color: var(--border-strong); transform: translateY(-2px); }
 .channelIcon { width: 18px; height: 18px; color: var(--text-secondary); }
-.bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; padding-top: 24px; border-top: 1px solid var(--border-subtle); }
-.legal { display: flex; flex-direction: column; gap: 6px; max-width: 800px; color: var(--text-faint); font-size: 11px; line-height: 1.6; }
+.bottom { position: relative; display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; padding-top: 24px; border-top: 1px solid var(--border-subtle); }
+.legal { display: flex; flex-direction: column; gap: 6px; width: 100%; color: var(--text-faint); font-size: 11px; line-height: 1.6; }
+.legal > :last-child { padding-right: 300px; }
 .legalLinks { display: flex; flex-wrap: wrap; gap: 6px 16px; }
 .legalLink { color: var(--text-muted); text-decoration: underline; text-underline-offset: 3px; }
 .legalLink:hover { color: var(--text); }
-.payments { flex: none; height: 24px; width: auto; opacity: 0.85; }
+.payments { position: absolute; right: 0; bottom: 0; height: 24px; width: auto; opacity: 0.85; }
 @media (max-width: 1180px) { .top { gap: 24px; } .columns { gap: 24px; } }
 @media (max-width: 960px) { .top { grid-template-columns: 1fr 1fr; } .columns { grid-column: 2; grid-row: 1 / 3; } .bottom { align-items: flex-start; flex-direction: column; } }
 @media (max-width: 600px) { .top { grid-template-columns: 1fr; } .columns { grid-column: auto; grid-row: auto; } }

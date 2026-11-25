@@ -25,6 +25,8 @@ import {useSessionStore} from '../store/useSessionStore';
 import {useStructureStore} from '../store/useStructureStore';
 import {pageTypeOf, standaloneRoute} from '../shared/lib/pageRoutes';
 import {closedSection} from '../shared/lib/maintenance';
+import {useStorefrontClosure} from '../shared/hooks/useStorefrontClosure';
+import {hiddenStorefront} from '../shared/lib/storefrontMaintenance';
 import Maintenance from '../pages/Maintenance/Maintenance';
 import style from './AppRoutes.module.scss';
 
@@ -95,15 +97,17 @@ export default function AppRoutes({sections}) {
         return () => clearTimeout(timerId);
     }, [location, shown]);
 
-    const closed = closedSection(shown.pathname, sections);
+    const storefrontClosed = useStorefrontClosure(sections);
+    const closed = closedSection(shown.pathname, sections) || storefrontClosed;
 
     if (closed) {
+        if (hiddenStorefront(closed)) return <Navigate to="/" replace/>;
         return (
             <div
                 key={`closed-${closed.id}`}
                 className={`${style.stage} ${isLeaving ? style.leaving : ''}`}
             >
-                <Maintenance until={closed.until} section={closed.title} sectionId={closed.id}/>
+                <Maintenance until={closed.until} section={closed.title} sectionId={closed.id} platforms={closed.platforms}/>
             </div>
         );
     }

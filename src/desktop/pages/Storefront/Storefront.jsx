@@ -185,9 +185,12 @@ export default function Storefront() {
         <div className={style.screen}>
             <OfferSplit offer={picker.picked} onPick={picker.pick} onClose={picker.close}/>
 
+            <div className={style.heroRow}>
             <StorefrontHero items={isHome ? currentHomeHero(hero) : hero} onOpen={openHero}/>
 
 
+
+            </div>
 
             {isHome || scopeId === pageIdOfType(pages, 'xbox') ? <PreorderSection item={preorder} onOpen={openHero}/> : null}
 

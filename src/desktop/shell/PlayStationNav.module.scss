@@ -170,3 +170,8 @@
   :global(html[data-view='desktop']) .close:active:not(:disabled),
   :global(html[data-view='desktop']) .cards > button:active:not(:disabled) { transform: none; }
 }
+
+.title { padding: 7px 9px; border-radius: var(--radius-sm); text-transform: uppercase; font-size: clamp(12px, 0.94vw, 15px); letter-spacing: 0; }
+.label::after { display: none; }
+.title:hover, .title[aria-expanded='true'], .group[data-active] .title { background: var(--surface-2); }
+@media (max-width: 1100px) { .title { padding-inline: 5px; } }

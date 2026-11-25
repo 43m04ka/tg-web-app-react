@@ -36,7 +36,7 @@ const bannerPrices = (item) => {
 
 const imageStyle = (image, item, isReady, position) => (image ? {
     backgroundImage: `url(${image})`,
-    backgroundPosition: item.imageFit === 'coverTop' ? 'top center' : position,
+    backgroundPosition: 'center',
     opacity: isReady ? 1 : 0
 } : {background: item.gradient || undefined});
 
@@ -51,12 +51,12 @@ function MainSlide({item, onOpen, onButton}) {
             onClick={hasButtons ? undefined : () => onOpen?.(item)}
             role={hasButtons ? undefined : 'link'}
             tabIndex={hasButtons ? undefined : 0}
-            aria-label={hasButtons ? undefined : item.title}
+            aria-label={hasButtons ? undefined : item.title || 'Акция магазина'}
             onKeyDown={hasButtons ? undefined : (event) => openFromKey(event, () => onOpen?.(item))}
         >
             <span className={style.mainImage} style={imageStyle(item.image, item, isReady, 'center right')} aria-hidden="true"/>
 
-            <div className={`${style.mainBody} ${item.shade ? '' : style.noShade}`}>
+            <div className={`${style.mainBody} ${item.shade ? '' : style.noShade}`} hidden={!item.title && !item.subtitle && !footnote && !price && !hasButtons}>
                 <span className={style.mainMeta}>
                     {item.subtitle ? <span className={style.mainTag}>{item.subtitle}</span> : null}
                     <OriginMark origin={item.origin} className={style.heroOrigin}/>

@@ -11,6 +11,11 @@ const RAMP = {
 
 const VARIABLES = Object.keys(RAMP);
 
+export const applyStoreTheme = () => {
+    const colors = ['#2478ed', '#398aff', '#397bd4', '#15253e', '#84b5ff', '#ffffff'];
+    VARIABLES.forEach((name, index) => document.documentElement.style.setProperty(name, colors[index]));
+};
+
 const NEUTRAL = {
     '--accent': 'oklch(0.97 0 0)',
     '--accent-hover': 'oklch(1 0 0)',

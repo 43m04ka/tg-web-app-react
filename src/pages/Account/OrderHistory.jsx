@@ -149,7 +149,7 @@ export default function OrderHistory() {
                                 ) : null}
 
                                 <OrderCodes codes={order.codes} compact/>
-                                {order.canReview ? <button type="button" className={style.pay} onClick={() => navigate(`/reviews/write/${order.id}`)}>Оставить отзыв</button> : null}
+                                {order.canReview ? <button type="button" className={style.pay} onClick={() => navigate('/reviews/write')}>Оставить отзыв</button> : null}
                                 {order.reviewId ? <span className={style.orderNote}>✓ Отзыв оставлен</span> : null}
 
                                 {topup?.meta?.leftoverRs > 0 ? (

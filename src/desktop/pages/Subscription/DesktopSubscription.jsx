@@ -423,7 +423,7 @@ export default function DesktopSubscription() {
                         <span className={style.perMonth}>{formatPrice(period.perMonth)} в месяц</span>
                     ) : null}
 
-                    {cartCount > 0 ? (
+                    {period?.isAvailable && cartCount > 0 ? (
                         <div className={style.counterRow}>
                             <div className={style.counter}>
                                 <button
@@ -459,7 +459,7 @@ export default function DesktopSubscription() {
                             onClick={addProduct}
                         >
                             {isAdding ? <Spinner/> : null}
-                            {isAdding ? 'Добавляем…' : 'Добавить в корзину'}
+                            {!period?.isAvailable ? 'Нет в наличии' : isAdding ? 'Добавляем…' : 'Добавить в корзину'}
                         </button>
                     )}
 

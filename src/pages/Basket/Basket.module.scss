@@ -1743,6 +1743,33 @@
   color: var(--gold);
 }
 
+.acceptedScreen > .stateText {
+  font-size: u(22);
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.orderSummary {
+  width: 100%;
+  border: 1px solid var(--border-subtle);
+  border-radius: u(18);
+  background: var(--surface-1);
+  overflow: hidden;
+}
+
+.orderSummary .stateRows, .orderSummary .bought {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.orderSummary .bought { border-top: 1px solid var(--border-subtle); }
+.orderSummary .stateRow, .orderSummary .boughtName, .orderSummary .boughtTitle { font-size: u(16); }
+.orderSummary .boughtNote { font-size: u(14); }
+.additionalChannels { display: flex; flex-wrap: wrap; gap: u(8); }
+.bareInput:focus-visible { outline: none; }
+
 .stateError {
   margin: 0;
   font-size: u(12.5);

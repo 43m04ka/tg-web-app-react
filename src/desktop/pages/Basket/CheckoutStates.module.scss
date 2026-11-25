@@ -10,6 +10,40 @@
   animation: global(gw-rise) var(--m-slow) var(--m-ease) both;
 }
 
+.acceptedStage > .text {
+  max-width: 620px;
+  color: var(--text);
+  font-size: 24px;
+  font-weight: var(--fw-bold);
+  line-height: 1.4;
+}
+
+.summary {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+}
+
+.summary .rows {
+  max-width: none;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.summary .bought {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--border-subtle);
+  border-radius: 0;
+}
+
+.summary .rowLabel, .summary .rowValue, .summary .boughtTitle,
+.summary .boughtName, .summary .boughtSum { font-size: 18px; }
+.summary .boughtMeta, .summary .boughtNote { font-size: 15px; }
+
 .icon {
   width: 76px;
   height: 76px;
@@ -154,7 +188,7 @@
 }
 
 .primary {
-  background: var(--accent);
+  background: var(--brand-gradient);
   color: var(--accent-contrast);
 }
 

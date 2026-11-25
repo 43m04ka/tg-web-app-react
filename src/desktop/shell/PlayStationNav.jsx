@@ -23,7 +23,7 @@ export default function PlayStationNav({items, scopeId, onSelect}) {
     const areaRef = useScrollArea();
     const activeItem = items.find((item) => item.id === scopeId) || null;
     const preferredItem = items.find((item) => item.type === preferredType) || null;
-    const selectedItem = activeItem || preferredItem;
+    const selectedItem = activeItem || preferredItem || (items.length === 1 ? items[0] : null);
     const selectedRegion = selectedItem ? REGIONS[selectedItem.type] : null;
     const active = Boolean(activeItem);
 
@@ -102,7 +102,7 @@ export default function PlayStationNav({items, scopeId, onSelect}) {
         <div className={style.group} data-active={active || undefined}>
             <button ref={triggerRef} type="button" className={style.title} data-selected={Boolean(selectedRegion) || undefined}
                 aria-label="PlayStation" title={selectedRegion ? `PlayStation — ${selectedRegion.name}` : undefined}
-                aria-haspopup="dialog" aria-expanded={isOpen && !isClosing} onClick={open}>
+                aria-haspopup={items.length > 1 ? 'dialog' : undefined} aria-expanded={isOpen && !isClosing} onClick={() => items.length === 1 ? onSelect(items[0]) : open()}>
                 <span className={style.label}>PlayStation</span>
                 <span className={style.selection} aria-hidden="true">
                     {selectedRegion ? <span className={style.selectionContent} key={selectedItem.type}>

@@ -15,14 +15,15 @@ export const hasValue = (value) => {
 export const parseReleaseDate = (value) => {
     if (!hasValue(value)) return null;
 
-    const direct = new Date(value);
+    const numeric = typeof value === 'number' || /^\d+(?:\.\d+)?$/.test(String(value).trim());
     const serial = Number(value);
-
-    if (!Number.isNaN(serial) && (Number.isNaN(direct.getTime()) || direct.getFullYear() < 1980)) {
-        return new Date(EXCEL_EPOCH + serial * DAY_MS);
+    let date = numeric
+        ? new Date(serial >= 100000000000 ? serial : serial >= 1000000000 ? serial * 1000 : EXCEL_EPOCH + serial * DAY_MS)
+        : new Date(value);
+    if (!numeric && date.getUTCFullYear() === 1970 && date.getTime() > 0 && date.getTime() < 10000000) {
+        date = new Date(EXCEL_EPOCH + date.getTime() * DAY_MS);
     }
-
-    return Number.isNaN(direct.getTime()) ? null : direct;
+    return Number.isNaN(date.getTime()) || date.getUTCFullYear() < 1980 || date.getUTCFullYear() >= 2100 ? null : date;
 };
 
 export const releaseInfo = (product) => {

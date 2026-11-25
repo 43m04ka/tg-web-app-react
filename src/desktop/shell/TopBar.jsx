@@ -62,7 +62,7 @@ export default function TopBar({onSearchOpenChange}) {
     }, [onSearchOpenChange]);
 
     const isScoped = scopeId !== null;
-    const cartCount = cartItems?.length ?? 0;
+    const cartCount = cartItems?.filter((item) => catalogs?.some((catalog) => catalog.id === item.catalogId)).length ?? 0;
     const playstation = storefronts.filter((item) => item.type === 'ps' || item.type === 'ps_india').map((item) => {
         const entry = (startPages || []).find((row) => row.structurePageId === item.id && row.type === 'page'
             && row.platform === resolveBotType(startPages, botType));
@@ -116,10 +116,7 @@ export default function TopBar({onSearchOpenChange}) {
                     <div className={style.utilityLinks}>
                         <RouteLink to="/activate" className={style.marketplace}>Получить заказ с маркетплейса</RouteLink>
                         <RouteLink to="/faq">База знаний</RouteLink>
-                        <span className={style.reviewsGroup}>
-                            <RouteLink to="/reviews">Отзывы</RouteLink>
-                            <ReviewRating/>
-                        </span>
+                        <ReviewRating withLabel/>
                     </div>
                 </div>
             </div>

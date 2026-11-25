@@ -42,6 +42,7 @@ import LegalNote from '../../../shared/ui/LegalNote/LegalNote';
 import VpnGate, {usePaymentNetwork} from '../../../shared/ui/VpnGate/VpnGate';
 import style from './DesktopCheckout.module.scss';
 import {useAccountEmail} from '../../../shared/hooks/useAccountEmail';
+import AdditionalContacts, {additionalContactsText, additionalContactsValid} from '../../../pages/Basket/AdditionalContacts';
 
 const FORM_KEY = 'checkout:form';
 const REQUIRED_KEYS = ['login', 'password'];
@@ -173,7 +174,7 @@ function AccountBlock({pageType, kind, values, isTouched, onKind, onChange}) {
             <div className={style.card}>
                 <p key={isNew ? 'new' : 'own'} className={style.hint}>{isNew ? form.newHint : form.ownHint}</p>
 
-                <div className={isNew ? style.reveal : `${style.reveal} ${style.revealOpen}`}>
+                <div className={isNew ? `${style.reveal} ${style.revealHidden}` : `${style.reveal} ${style.revealOpen}`}>
                     <div className={style.revealInner}>
                         <div className={style.fields}>
                             <button
@@ -379,6 +380,7 @@ export default function DesktopCheckout() {
     const [accountValues, setAccountValues] = useState(saved.accountValues || {});
     const [channel, setChannel] = useState(() => desktopChannel(saved.channel));
     const [contactValue, setContactValue] = useState(saved.contactValue || '');
+    const [extraContacts, setExtraContacts] = useState(saved.extraContacts || []);
     const [email, setEmail] = useState(saved.email || '');
     useAccountEmail(setEmail);
     const [isTouched, setTouched] = useState(false);
@@ -413,8 +415,8 @@ export default function DesktopCheckout() {
     }, [userId, loadCart]);
 
     useEffect(() => {
-        rememberView(FORM_KEY, {method, accountKind, accountValues, channel, contactValue, email});
-    }, [method, accountKind, accountValues, channel, contactValue, email]);
+        rememberView(FORM_KEY, {method, accountKind, accountValues, channel, contactValue, email, extraContacts});
+    }, [method, accountKind, accountValues, channel, contactValue, email, extraContacts]);
 
     const total = quote?.total ?? 0;
 
@@ -463,9 +465,12 @@ export default function DesktopCheckout() {
     const needsEmail = selected.requiresEmail;
     const isOnline = selected.flow === 'auto';
 
-    const contact = hasNativeContact ? nativeContact(user) : formatContact(channel, contactValue);
+    const primaryChannel = hasNativeContact ? user.platform === 'vk' ? 'vk' : 'telegram' : channel;
+    const contact = [hasNativeContact ? nativeContact(user) : formatContact(channel, contactValue),
+        ...additionalContactsText(extraContacts, primaryChannel)].join('\n');
 
-    const isContactReady = hasNativeContact || isContactValid(channel, contactValue);
+    const isContactReady = (hasNativeContact || isContactValid(channel, contactValue))
+        && additionalContactsValid(extraContacts, primaryChannel);
     const isEmailReady = !needsEmail || isEmailValid(email);
     const isAccountReady = isAccountFilled(orderPageType, accountKind, accountValues);
     const isReady = Boolean(userId) && isContactReady && isEmailReady && isAccountReady
@@ -614,6 +619,9 @@ export default function DesktopCheckout() {
                                     onChange={setContactValue}
                                 />
                             )}
+
+                            <AdditionalContacts contacts={extraContacts} primary={primaryChannel}
+                                onChange={setExtraContacts} isTouched={isTouched} styles={style}/>
 
                             {needsEmail ? (
                                 <label className={style.field}>

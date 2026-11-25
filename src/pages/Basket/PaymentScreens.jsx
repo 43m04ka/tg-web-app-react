@@ -14,7 +14,7 @@ function PurchasedItems({snapshot}) {
 
     return (
         <div className={style.bought}>
-            <span className={style.boughtTitle}>Что вы купили</span>
+            <span className={style.boughtTitle}>Состав заказа:</span>
 
             <div className={style.boughtList}>
                 {items.map((item) => {
@@ -69,7 +69,7 @@ function PurchasedItems({snapshot}) {
 
 function Shell({tone, icon, title, text, children}) {
     return (
-        <div className={style.stateScreen}>
+        <div className={`${style.stateScreen} ${tone === 'stateAccepted' ? style.acceptedScreen : ''}`}>
             <div className={`${style.stateIcon} ${style[tone]}`} aria-hidden="true">{icon}</div>
             <h1 className={style.stateTitle}>{title}</h1>
             <p className={style.stateText}>{text}</p>
@@ -141,18 +141,18 @@ export function PaymentSuccess({order, snapshot, onClose}) {
             title="Оплачено"
             text="Спасибо! Заказ передан менеджеру — он свяжется с вами и выдаст покупку."
         >
-            <div className={style.stateRows}>
+            <div className={style.orderSummary}><div className={style.stateRows}>
                 <div className={style.stateRow}>
                     <span>Заказ</span>
                     <span className={style.stateValue}>№{snapshot?.orderId ?? order?.orderId}</span>
                 </div>
                 <div className={style.stateRow}>
-                    <span>Сумма</span>
+                    <span>Сумма заказа</span>
                     <span className={style.stateValue}>{money(snapshot?.total ?? order?.total)}</span>
                 </div>
             </div>
 
-            <PurchasedItems snapshot={snapshot}/>
+            <PurchasedItems snapshot={snapshot}/></div>
 
             <div className={style.stateActions}>
                 <button type="button" className={style.primary} onClick={onClose}>Вернуться в каталог</button>
@@ -191,20 +191,22 @@ export function OrderAccepted({order, snapshot, onClose}) {
             tone="stateAccepted"
             icon="✓"
             title="Заказ принят"
-            text="Менеджер свяжется с вами и пришлёт реквизиты для оплаты. Платить прямо сейчас не нужно."
+            text={['split', 'dolyami'].includes(order?.paymentMethod) || /Сплит|Долями/i.test(snapshot?.paymentTitle || '')
+                ? 'Ваш заказ принят. Менеджер свяжется с Вами по указанным контактам и пришлёт ссылку для оплаты частями.'
+                : 'Ваш заказ принят. Менеджер свяжется с Вами по указанным контактам и пришлёт ссылку для оплаты.'}
         >
-            <div className={style.stateRows}>
+            <div className={style.orderSummary}><div className={style.stateRows}>
                 <div className={style.stateRow}>
                     <span>Заказ</span>
                     <span className={style.stateValue}>№{order?.orderId}</span>
                 </div>
                 <div className={style.stateRow}>
-                    <span>Сумма</span>
+                    <span>Сумма заказа</span>
                     <span className={style.stateValue}>{money(snapshot?.total ?? order?.total)}</span>
                 </div>
             </div>
 
-            <PurchasedItems snapshot={snapshot}/>
+            <PurchasedItems snapshot={snapshot}/></div>
 
             <div className={style.stateActions}>
                 <button type="button" className={style.primary} onClick={onClose}>Вернуться в каталог</button>

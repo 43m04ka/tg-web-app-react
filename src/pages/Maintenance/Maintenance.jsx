@@ -23,7 +23,7 @@ function SupportIcon() {
     );
 }
 
-export default function Maintenance({until, section, sectionId}) {
+export default function Maintenance({until, section, sectionId, platforms}) {
     const navigate = useNavigate();
     const {botType} = usePlatform();
     const supportUrl = supportUrlForBot(botType);
@@ -40,7 +40,7 @@ export default function Maintenance({until, section, sectionId}) {
 
     const goHome = useCallback(() => {
         hapticImpact('light');
-        navigate('/main');
+        navigate('/');
     }, [navigate]);
 
     return (
@@ -101,6 +101,15 @@ export default function Maintenance({until, section, sectionId}) {
 
                         <span className={style.supportArrow} aria-hidden="true">›</span>
                     </a>
+                ) : null}
+                {platforms?.length && platforms.length < 4 ? (
+                    <div>
+                        <p className={style.text}>{section ? 'Этот раздел' : 'Магазин'} доступен на других площадках:</p>
+                        {!platforms.includes('web') ? <a className={style.home} href="https://gwstore.ru/" target="_blank" rel="noopener noreferrer">Открыть сайт магазина</a> : null}
+                        {!platforms.includes('tg') ? <a className={style.home} href="https://t.me/gwstore_bot/app" target="_blank" rel="noopener noreferrer">Открыть магазин в Telegram</a> : null}
+                        {!platforms.includes('vk-ps') ? <a className={style.home} href="https://vk.com/gwstore.playstation" target="_blank" rel="noopener noreferrer">ВКонтакте · PlayStation</a> : null}
+                        {!platforms.includes('vk-xbox') ? <a className={style.home} href="https://vk.com/gwstore.xbox" target="_blank" rel="noopener noreferrer">ВКонтакте · Xbox</a> : null}
+                    </div>
                 ) : null}
             </div>
         </div>

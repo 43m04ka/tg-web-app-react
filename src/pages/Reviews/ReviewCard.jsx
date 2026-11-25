@@ -2,7 +2,7 @@ import React from 'react';
 import {API_BASE_URL} from '../../shared/config/env';
 import style from './Reviews.module.scss';
 
-export const purchaseDate = (value) => new Date(value).toLocaleDateString('ru-RU', {day: 'numeric', month: 'long', year: 'numeric'});
+export const purchaseDate = (value) => value ? new Date(value).toLocaleDateString('ru-RU', {day: 'numeric', month: 'long', year: 'numeric'}) : '';
 
 const avatarColors = ['#db477d', '#6b55cb', '#2878c7', '#218c79', '#bd7135', '#5669c8'];
 
@@ -17,8 +17,8 @@ export default function ReviewCard({review}) {
             <header className={style.author}>
                 <span className={style.avatar} style={{backgroundColor: avatarColor(name)}} aria-hidden="true">{Array.from(name)[0].toUpperCase()}</span>
                 <div>
-                    <div className={style.name}>{name}<span className={style.verified}>✓ Покупка подтверждена</span></div>
-                    <span className={style.date}>Покупка {purchaseDate(review.purchasedAt)}</span>
+                    <div className={style.name}>{name}{review.verified ? <span className={style.verified}>✓ Покупка подтверждена</span> : null}</div>
+                    {review.purchasedAt ? <span className={style.date}>Покупка {purchaseDate(review.purchasedAt)}</span> : null}
                 </div>
             </header>
             <div className={style.stars} aria-label={`${review.rating} из 5`}>{'★'.repeat(review.rating)}<span>{'★'.repeat(5 - review.rating)}</span></div>

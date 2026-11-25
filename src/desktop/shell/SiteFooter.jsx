@@ -8,12 +8,14 @@ import {menuTarget} from '../model/menuModel';
 import {SITE_CONTACTS, SOCIALS} from '../../shared/lib/siteContacts';
 import BrandLogo from './BrandLogo';
 import paymentLogos from '../assets/payment-logos.png';
-import style from './SiteFooter.module.scss';
+import desktopStyle from './SiteFooter.module.scss';
+import mobileStyle from '../../shared/ui/MobileFooter/MobileFooter.module.scss';
 
 
 const external = (href) => (/^https?:/.test(href) ? {target: '_blank', rel: 'noopener noreferrer'} : {});
 
-export default function SiteFooter() {
+export default function SiteFooter({mobile = false}) {
+    const style = mobile ? mobileStyle : desktopStyle;
     const navigate = useNavigate();
     const {pathname} = useLocation();
     const areaRef = useContext(ScrollAreaContext);

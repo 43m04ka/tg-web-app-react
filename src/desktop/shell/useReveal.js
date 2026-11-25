@@ -1,14 +1,13 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useScrollArea} from './ScrollAreaContext';
 
 const isSupported = () => typeof window !== 'undefined' && typeof window.IntersectionObserver === 'function';
 
-export function useReveal({once = true, margin = '0px 0px -8% 0px', threshold = 0.05} = {}) {
+export function useReveal({once = true, margin = '0px 0px -8% 0px', threshold = 0} = {}) {
     const areaRef = useScrollArea();
-    const nodeRef = useRef(null);
+    const [node, setNode] = useState(null);
 
     useEffect(() => {
-        const node = nodeRef.current;
         if (!node) return undefined;
 
         if (!isSupported()) {
@@ -30,9 +29,9 @@ export function useReveal({once = true, margin = '0px 0px -8% 0px', threshold = 
         observer.observe(node);
 
         return () => observer.disconnect();
-    }, [areaRef, once, margin, threshold]);
+    }, [node, areaRef, once, margin, threshold]);
 
-    return nodeRef;
+    return setNode;
 }
 
 export function Reveal({as: Tag = 'div', delay = 0, className, children, ...rest}) {

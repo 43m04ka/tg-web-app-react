@@ -19,6 +19,10 @@ export const setDirectApi = (isDirect) => {
     API_BASE_URL = isDirect ? DIRECT_API_URL : TUNNEL_API_URL;
 };
 
+export const switchToDirectApi = () => {
+    API_BASE_URL = DIRECT_API_URL;
+};
+
 export const GUEST_USER = {
     id: 5106439090,
     first_name: 'Гость',

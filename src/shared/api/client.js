@@ -1,10 +1,11 @@
-import {API_BASE_URL, DIRECT_API_URL, IS_TUNNEL_HOST} from '../config/env';
+import {API_BASE_URL, DIRECT_API_URL, IS_TUNNEL_HOST, TUNNEL_API_URL, switchToDirectApi} from '../config/env';
 import {reportDirectFailure} from '../lib/paymentNetwork';
 import {rewriteUploads} from '../lib/uploads';
 import {withAuthHeaders} from '../lib/authToken';
 
 const DEFAULT_TIMEOUT_MS = 12000;
 const DEFAULT_RETRIES = 1;
+const TUNNEL_TIMEOUT_MS = 3000;
 
 export class ApiError extends Error {
     constructor(message, {status = null, url = '', cause = null} = {}) {
@@ -69,7 +70,10 @@ export async function request(path, {
 
     for (let attempt = 0; attempt <= retries; attempt++) {
         url = buildUrl(path, params);
-        const timeout = withTimeout(signal, timeoutMs);
+        const timeout = withTimeout(
+            signal,
+            !fellBack && url.startsWith(TUNNEL_API_URL) ? Math.min(timeoutMs, TUNNEL_TIMEOUT_MS) : timeoutMs
+        );
 
         try {
             const response = await fetch(url, {
@@ -91,7 +95,11 @@ export async function request(path, {
 
             if (signal?.aborted) throw lastError;
 
-            if (!fellBack && isDirectNetworkError(url, lastError)) {
+            if (!fellBack && lastError.status === null && url.startsWith(TUNNEL_API_URL)) {
+                fellBack = true;
+                switchToDirectApi();
+                attempt -= 1;
+            } else if (!fellBack && isDirectNetworkError(url, lastError)) {
                 fellBack = true;
                 reportDirectFailure();
                 attempt -= 1;

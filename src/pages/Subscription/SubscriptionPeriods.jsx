@@ -1,6 +1,7 @@
 import React from 'react';
 import {pluralOf} from '../../shared/lib/plural';
 import {formatPrice} from '../Main/catalogSections';
+import SubscriptionDiscount from './SubscriptionDiscount';
 import style from './Subscription.module.scss';
 
 const ROW_LIMIT = 4;
@@ -56,7 +57,10 @@ export default function SubscriptionPeriods({tier, activeId, onSelect}) {
                                     </span>
 
                                     <span className={style.rowPrices}>
-                                        <span className={style.rowPrice}>{formatPrice(period.price)}</span>
+                                        <span className={style.rowPrice}>
+                                            <SubscriptionDiscount period={period}/>
+                                            {formatPrice(period.price)}
+                                        </span>
                                         {period.oldPrice ? (
                                             <span className={style.rowOldPrice}>{formatPrice(period.oldPrice)}</span>
                                         ) : null}
@@ -66,6 +70,7 @@ export default function SubscriptionPeriods({tier, activeId, onSelect}) {
                                 <>
                                     <span className={style.chipName}>{period.label}</span>
                                     <span className={style.chipPrice}>{formatPrice(period.price)}</span>
+                                    <SubscriptionDiscount period={period}/>
                                     {period.badge ? <span className={style.chipBadge}>{period.badge}</span> : null}
                                 </>
                             )}

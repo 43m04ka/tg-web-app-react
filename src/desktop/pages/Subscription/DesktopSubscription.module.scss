@@ -346,6 +346,9 @@
 }
 
 .periodPrice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--d-gap-2);
   font-size: var(--d-fs-lg);
   font-weight: var(--fw-bold);
 }
@@ -443,6 +446,12 @@
 .totalLabel {
   font-size: var(--d-fs-lg);
   font-weight: var(--fw-bold);
+}
+
+.totalPrice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--d-gap-2);
 }
 
 .totalValue {

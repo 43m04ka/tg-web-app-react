@@ -3,8 +3,10 @@ import {
     addBasketProduct,
     deleteBasketProduct,
     fetchBasket,
-    updateBasketCount
+    updateBasketCount,
+    updateSubscriptionEligibility
 } from '../shared/api/basket';
+import {applySubscriptionPricing, isPsPlus} from '../shared/lib/subscriptionPricing';
 
 const toList = (result) => (Array.isArray(result) ? result : []);
 
@@ -39,11 +41,27 @@ export const useCartStore = create((set, get) => ({
         set({items: [{...product, count: 1}, ...items]});
 
         try {
-            await addBasketProduct(userId, product.id);
+            await addBasketProduct(userId, product.id, product.noActiveSubscription);
             set((state) => ({revision: state.revision + 1}));
         } catch (error) {
             console.error('[cart] add:', error.message);
             get().reload(userId);
+        }
+    },
+
+    setSubscriptionEligibility: async (userId, catalogId, noActiveSubscription) => {
+        const matches = (item) => item.catalogId === catalogId && isPsPlus(item);
+        if (!userId || !(get().items || []).some(matches)) return;
+
+        set((state) => ({items: state.items.map((item) => matches(item)
+            ? applySubscriptionPricing(item, noActiveSubscription)
+            : item)}));
+        try {
+            await updateSubscriptionEligibility(userId, catalogId, noActiveSubscription);
+            await get().reload(userId);
+        } catch (error) {
+            await get().reload(userId);
+            throw error;
         }
     },
 

@@ -17,6 +17,10 @@ import {subscriptionShare} from '../../../pages/Subscription/subscriptionShare';
 import {useSubscriptionProducts} from '../../../pages/Subscription/useSubscriptionProducts';
 import {useSubscriptionInfo} from '../../../pages/Subscription/useSubscriptionInfo';
 import SubscriptionContents from '../../../pages/Subscription/SubscriptionContents';
+import SubscriptionDescription from '../../../pages/Subscription/SubscriptionDescription';
+import SubscriptionDiscount from '../../../pages/Subscription/SubscriptionDiscount';
+import SubscriptionEligibility from '../../../pages/Subscription/SubscriptionEligibility';
+import {useSubscriptionEligibility} from '../../../pages/Subscription/useSubscriptionEligibility';
 import SubscriptionGames from '../../../pages/Subscription/SubscriptionGames';
 import {useScrollArea} from '../../shell/ScrollAreaContext';
 import {HeartIcon} from '../../shell/DesktopIcons';
@@ -78,8 +82,9 @@ export default function DesktopSubscription() {
 
     const {items, error, retry} = useSubscriptionProducts(catalogId, seed);
     const info = useSubscriptionInfo(catalogId);
+    const eligibility = useSubscriptionEligibility(catalogId, items);
 
-    const plan = useMemo(() => buildPlan(items, {catalogPath: path, title}), [items, path, title]);
+    const plan = useMemo(() => buildPlan(eligibility.pricedItems, {catalogPath: path, title}), [eligibility.pricedItems, path, title]);
 
     const region = useMemo(() => {
         const page = (pages || []).find((item) => item.id === pageId) || null;
@@ -156,7 +161,7 @@ export default function DesktopSubscription() {
     }, [tier]);
 
     const addProduct = useCallback(async () => {
-        if (!period?.product || isAdding) return;
+        if (!period?.product || isAdding || eligibility.isUpdating) return;
 
         setIsAdding(true);
 
@@ -165,7 +170,7 @@ export default function DesktopSubscription() {
         } finally {
             setIsAdding(false);
         }
-    }, [period, isAdding, addToCart, userId]);
+    }, [period, isAdding, eligibility.isUpdating, addToCart, userId]);
 
     const changeCount = useCallback((next) => {
         if (productId === null) return;
@@ -278,6 +283,10 @@ export default function DesktopSubscription() {
                                 </div>
                             </div>
 
+                            {eligibility.isVisible ? (
+                                <SubscriptionEligibility checked={eligibility.noActiveSubscription} disabled={eligibility.isUpdating || isAdding} error={eligibility.error} onChange={eligibility.changeEligibility}/>
+                            ) : null}
+
                             {plan.tiers.length > 1 ? (
                                 <section className={style.block}>
                                     <h2 className={style.blockTitle}>
@@ -370,7 +379,10 @@ export default function DesktopSubscription() {
                                                     </span>
 
                                                     <span className={style.periodPrices}>
-                                                        <span className={style.periodPrice}>{formatPrice(item.price)}</span>
+                                                        <span className={style.periodPrice}>
+                                                            <SubscriptionDiscount period={item}/>
+                                                            {formatPrice(item.price)}
+                                                        </span>
                                                         {item.oldPrice ? (
                                                             <span className={style.periodOldPrice}>
                                                                 {formatPrice(item.oldPrice)}
@@ -389,6 +401,8 @@ export default function DesktopSubscription() {
                                     ) : null}
                                 </section>
                             ) : null}
+
+                            <SubscriptionDescription product={period?.product}/>
 
                             {info ? (
                                 <SubscriptionContents info={info} tierName={tier.name} onOpenGames={switchGames}/>
@@ -414,8 +428,11 @@ export default function DesktopSubscription() {
 
                     <div className={style.totalRow}>
                         <span className={style.totalLabel}>Цена</span>
-                        <span key={period?.price} className={style.totalValue}>
-                            {period ? formatPrice(period.price) : '—'}
+                        <span className={style.totalPrice}>
+                            <SubscriptionDiscount period={period}/>
+                            <span key={period?.price} className={style.totalValue}>
+                                {period ? formatPrice(period.price) : '—'}
+                            </span>
                         </span>
                     </div>
 
@@ -455,7 +472,7 @@ export default function DesktopSubscription() {
                         <button
                             type="button"
                             className={style.primary}
-                            disabled={!period?.isAvailable || isAdding}
+                            disabled={!period?.isAvailable || isAdding || eligibility.isUpdating}
                             onClick={addProduct}
                         >
                             {isAdding ? <Spinner/> : null}

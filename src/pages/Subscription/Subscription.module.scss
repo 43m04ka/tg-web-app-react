@@ -501,6 +501,7 @@
 
 .rowTitle {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: u(7);
   min-width: 0;
@@ -539,6 +540,9 @@
 }
 
 .rowPrice {
+  display: inline-flex;
+  align-items: center;
+  gap: u(6);
   font-size: u(15);
   font-weight: 800;
   color: var(--text);
@@ -699,6 +703,12 @@
   gap: u(1);
   min-width: 0;
   line-height: 1.15;
+}
+
+.barPriceRow {
+  display: flex;
+  align-items: center;
+  gap: u(6);
 }
 
 .barPrice {

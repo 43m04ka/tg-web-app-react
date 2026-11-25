@@ -4,6 +4,7 @@ import {getStartParam} from '../shared/lib/telegram';
 import {useSessionStore} from '../store/useSessionStore';
 import {useStructureStore} from '../store/useStructureStore';
 import {standaloneRoute} from '../shared/lib/pageRoutes';
+import {reviewStartRoute} from '../pages/Reviews/reviewFormModel';
 
 const CATALOG_PREFIX = 'catalog_';
 
@@ -24,6 +25,13 @@ export function useDeepLink(isReady) {
 
         const param = getStartParam();
         if (param === null || param === '') return;
+
+        const reviewRoute = reviewStartRoute(param);
+        if (reviewRoute) {
+            isHandledRef.current = true;
+            navigate(reviewRoute, {replace: true, state: {skipLeave: true}});
+            return;
+        }
 
         if (param.startsWith(CATALOG_PREFIX)) {
             if (!Array.isArray(catalogs)) return;

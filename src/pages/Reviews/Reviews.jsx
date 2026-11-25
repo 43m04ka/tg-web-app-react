@@ -55,7 +55,6 @@ export default function Reviews() {
         <section className={style.screen}>
             <header className={`${style.heading} ${style.pageHeading}`}><h1>Отзывы клиентов</h1>
                 <div className={style.score}>{count ? <><span className={style.scoreStars} aria-hidden="true">★★★★★</span><strong>{average}</strong><span className={style.scoreScale}>из 5</span><span className={style.scoreCount}>{count.toLocaleString('ru-RU')} {countLabel}</span></> : <strong className={style.noScore}>{busy || !external ? 'Загружаем…' : 'Пока без оценок'}</strong>}</div>
-                <p>{data || external ? `${count.toLocaleString('ru-RU')} ${countLabel} покупателей` : 'Загружаем отзывы…'}</p>
                 <button type="button" className={style.button} onClick={() => {setMine(true); if (account?.kind !== 'user') openLogin('review');}}>Оставить отзыв</button>
             </header>
             <nav className={style.tabs} aria-label="Раздел отзывов"><button type="button" aria-pressed={!mine} onClick={() => {setMine(false); setError('');}}>Все отзывы</button><button type="button" aria-pressed={mine} onClick={() => {setMine(true); setError('');}}>Мои отзывы</button></nav>

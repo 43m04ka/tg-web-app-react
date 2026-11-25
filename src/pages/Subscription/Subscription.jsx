@@ -19,6 +19,9 @@ import SubscriptionBar from './SubscriptionBar';
 import SubscriptionHero from './SubscriptionHero';
 import SubscriptionInfo, {showsPlayStationInfo} from './SubscriptionInfo';
 import SubscriptionContents from './SubscriptionContents';
+import SubscriptionDescription from './SubscriptionDescription';
+import SubscriptionEligibility from './SubscriptionEligibility';
+import {useSubscriptionEligibility} from './useSubscriptionEligibility';
 import SubscriptionGames from './SubscriptionGames';
 import SubscriptionPeriods from './SubscriptionPeriods';
 import SubscriptionTiers from './SubscriptionTiers';
@@ -76,10 +79,11 @@ export default function Subscription() {
 
     const {items, error, retry} = useSubscriptionProducts(catalogId, seed);
     const info = useSubscriptionInfo(catalogId);
+    const eligibility = useSubscriptionEligibility(catalogId, items);
 
     const plan = useMemo(
-        () => buildPlan(items, {catalogPath: path, title}),
-        [items, path, title]
+        () => buildPlan(eligibility.pricedItems, {catalogPath: path, title}),
+        [eligibility.pricedItems, path, title]
     );
 
     const region = useMemo(() => {
@@ -167,7 +171,7 @@ export default function Subscription() {
     }, [tier]);
 
     const addProduct = useCallback(async () => {
-        if (!period?.product || isAdding) return;
+        if (!period?.product || isAdding || eligibility.isUpdating) return;
 
         hapticImpact('medium');
         setIsAdding(true);
@@ -177,7 +181,7 @@ export default function Subscription() {
         } finally {
             setIsAdding(false);
         }
-    }, [period, isAdding, addToCart, userId]);
+    }, [period, isAdding, eligibility.isUpdating, addToCart, userId]);
 
     const changeCount = useCallback((next) => {
         if (productId === null) return;
@@ -292,9 +296,15 @@ export default function Subscription() {
                             onToggleFavorite={productId === null ? null : handleFavorite}
                         />
 
+                        {eligibility.isVisible ? (
+                            <SubscriptionEligibility checked={eligibility.noActiveSubscription} disabled={eligibility.isUpdating || isAdding} error={eligibility.error} onChange={eligibility.changeEligibility}/>
+                        ) : null}
+
                         <SubscriptionTiers tiers={plan.tiers} activeKey={tier.key} onSelect={selectTier}/>
 
                         <SubscriptionPeriods tier={tier} activeId={period?.id ?? null} onSelect={selectPeriod}/>
+
+                        <SubscriptionDescription product={period?.product}/>
 
                         {info ? (
                             <SubscriptionContents info={info} tierName={tier.name} onOpenGames={switchGames}/>
@@ -317,7 +327,7 @@ export default function Subscription() {
                 period={period}
                 summary={summary}
                 count={cartCount}
-                isBusy={isAdding}
+                isBusy={isAdding || eligibility.isUpdating}
                 bottomInset={safeAreaInset.bottom}
                 onAdd={addProduct}
                 onChangeCount={changeCount}

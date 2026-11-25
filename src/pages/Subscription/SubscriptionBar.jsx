@@ -1,5 +1,6 @@
 import React from 'react';
 import {formatPrice} from '../Main/catalogSections';
+import SubscriptionDiscount from './SubscriptionDiscount';
 import style from './Subscription.module.scss';
 
 export default function SubscriptionBar({
@@ -15,7 +16,10 @@ export default function SubscriptionBar({
     return (
         <div className={style.bar} style={{paddingBottom: `calc(${bottomInset}px + 14 * var(--u))`}}>
             <div className={style.barPrices}>
-                <span key={period?.price} className={style.barPrice}>{formatPrice(period?.price)}</span>
+                <span className={style.barPriceRow}>
+                    <span key={period?.price} className={style.barPrice}>{formatPrice(period?.price)}</span>
+                    <SubscriptionDiscount period={period}/>
+                </span>
                 <span className={style.barNote}>{summary}</span>
             </div>
 

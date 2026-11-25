@@ -3,6 +3,8 @@ import {Link, useLocation, useParams} from 'react-router-dom';
 import {fetchReviewForm, submitReview} from '../../shared/api/reviews';
 import {PRIVACY_URL, OFFER_URL} from '../../shared/ui/LegalNote/LegalNote';
 import {purchaseDate} from './ReviewCard';
+import ReviewPhotoUpload from './ReviewPhotoUpload';
+import {reviewRatingFromSearch} from './reviewFormModel';
 import style from './Reviews.module.scss';
 
 export default function ReviewForm() {
@@ -12,7 +14,7 @@ export default function ReviewForm() {
     const general = !token && !orderId;
     const [data, setData] = useState(null);
     const [error, setError] = useState('');
-    const [rating, setRating] = useState(5);
+    const [rating, setRating] = useState(() => reviewRatingFromSearch(location.search));
     const [text, setText] = useState('');
     const [name, setName] = useState('');
     const [files, setFiles] = useState([]);
@@ -68,18 +70,7 @@ export default function ReviewForm() {
                     <fieldset className={style.rating}><legend>Ваша оценка</legend><div role="radiogroup" aria-label="Оценка покупки">{[1, 2, 3, 4, 5].map((value) => <button type="button" key={value} role="radio" aria-checked={rating === value} aria-label={`${value} из 5`} className={value <= rating ? style.selected : ''} onClick={() => setRating(value)} disabled={busy}>★</button>)}</div><span>{rating ? `${rating} из 5` : 'Выберите от 1 до 5 звёзд'}</span></fieldset>
                     <label className={style.field}>Имя или ник<input value={name} onChange={(event) => setName(event.target.value)} maxLength={64} required disabled={busy}/></label>
                     <label className={style.field}>Ваш отзыв<textarea value={text} onChange={(event) => setText(event.target.value)} minLength={1} maxLength={3000} required disabled={busy} rows={5} placeholder="Что вам понравилось?"/><span>{text.length} / 3000</span></label>
-                    <label className={style.upload}>Добавить фотографии<input type="file" multiple accept="image/jpeg,image/png,image/webp" disabled={busy} onChange={(event) => {
-                        const selected = Array.from(event.target.files || []);
-                        if (selected.length > 4 || selected.some((file) => file.size > 5 * 1024 * 1024)) {
-                            setError('Можно прикрепить до четырёх фото, каждое не больше 5 МБ');
-                            setFiles([]);
-                            event.target.value = '';
-                            return;
-                        }
-                        setFiles(selected);
-                        setError('');
-                    }}/><span>До 4 фото · JPG, PNG, WebP · до 5 МБ каждое</span></label>
-                    {files.length ? <ul className={style.filenames}>{files.map((file, index) => <li key={index}>{file.name}</li>)}</ul> : null}
+                    <ReviewPhotoUpload files={files} disabled={busy} onChange={setFiles} onError={setError}/>
                     <p className={style.notice}>Имя, отзыв и фотографии будут видны всем. Не добавляйте контакты, данные аккаунтов и оплаты.</p>
                     <label className={style.consent}><input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} required disabled={busy}/><span>Даю согласие на обработку данных в соответствии с <a href={PRIVACY_URL} target="_blank" rel="noreferrer">Политикой конфиденциальности</a> и принимаю <a href={OFFER_URL} target="_blank" rel="noreferrer">Пользовательское соглашение</a>.</span></label>
                     <label className={style.consent}><input type="checkbox" checked={publicationConsent} onChange={(event) => setPublicationConsent(event.target.checked)} required disabled={busy}/><span>Разрешаю публикацию указанного имени, текста и фотографий отзыва в открытом доступе.</span></label>

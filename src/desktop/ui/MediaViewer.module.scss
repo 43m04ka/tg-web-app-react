@@ -81,8 +81,7 @@
   border: 1px solid var(--border);
   color: var(--text);
   transform: translateY(-50%);
-  transition: background-color var(--m-fast) var(--m-ease),
-              transform var(--m-base) var(--m-spring);
+  transition: background-color var(--m-fast) var(--m-ease);
 }
 
 .nav:hover {
@@ -103,16 +102,8 @@
   left: var(--d-gap-6);
 }
 
-.navPrev:hover {
-  transform: translateY(-50%) translateX(-3px);
-}
-
 .navNext {
   right: var(--d-gap-6);
-}
-
-.navNext:hover {
-  transform: translateY(-50%) translateX(3px);
 }
 
 .strip {
